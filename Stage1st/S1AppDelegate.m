@@ -7,6 +7,9 @@
 //
 
 #import "S1AppDelegate.h"
+#import "S1RootViewController.h"
+#import "S1TopicListViewController.h"
+#import "S1URLCache.h"
 
 @implementation S1AppDelegate
 
@@ -14,7 +17,17 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
+                                                         diskCapacity:10 * 1024 * 1024
+                                                             diskPath:nil];
+    [NSURLCache setSharedURLCache:URLCache];
+    self.window.backgroundColor = [UIColor blackColor];
+    S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
+    S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];
+    self.window.rootViewController = rootVC;
+    
+    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
+
     [self.window makeKeyAndVisible];
     return YES;
 }
