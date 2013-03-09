@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@class S1Topic;
+@class S1Topic, S1Tracer;
 
 @interface S1ContentViewController : UIViewController
 
+@property (nonatomic, copy) NSString *fid;
 @property (nonatomic, strong) S1Topic *topic;
+@property (nonatomic, strong) S1Tracer *tracer;
 
 
 @end

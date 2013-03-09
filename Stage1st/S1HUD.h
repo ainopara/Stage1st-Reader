@@ -10,7 +10,14 @@
 
 @interface S1HUD : UIView
 
+@property (nonatomic, copy) NSString *text;
+
+@property (nonatomic, copy) void (^refreshEventHandler)(S1HUD *aHUD);
+
 + (S1HUD *)showHUDInView:(UIView *)view;
+
+- (void)showActivityIndicator;
+- (void)showRefreshButton;
 
 - (void)hideWithDelay:(NSTimeInterval)delay;
 

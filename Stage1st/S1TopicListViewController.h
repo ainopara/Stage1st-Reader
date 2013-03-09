@@ -10,4 +10,6 @@
 
 @interface S1TopicListViewController : UIViewController
 
+- (void)update;
+
 @end

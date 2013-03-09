@@ -13,5 +13,6 @@
 - (id)initWithMasterViewController:(UIViewController *)controller;
 
 - (void)presentDetailViewController:(UIViewController *)controller;
+- (void)dismissDetailViewController;
 
 @end

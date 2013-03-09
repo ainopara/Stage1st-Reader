@@ -12,6 +12,6 @@
 
 + (NSArray *)topicsFromHTMLString:(NSString *)HTMLString;
 
-+ (NSString *)contentsFromHTMLString:(NSString *)HTMLString;
++ (NSString *)contentsFromHTMLString:(NSMutableString *)HTMLString withOffset:(NSInteger)offset;
 
 @end

@@ -10,4 +10,6 @@
 
 @interface S1SettingViewController : GSStaticTableViewController
 
+@property (nonatomic, copy) void (^completionHandler)(BOOL needToUpdate);
+
 @end

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<array>
+		<string>外野</string>
+		<string>动漫论坛</string>
+		<string>游戏论坛</string>
+		<string>ＰＣ数码</string>
+		<string>影视论坛</string>
+	</array>
+	<array>
+		<string>文史沙龙</string>
+		<string>彼岸文化</string>
+		<string>八卦体育</string>
+		<string>音乐论坛</string>
+		<string>二手交易区</string>
+		<string>英雄联盟</string>
+		<string>吃货</string>
+		<string>火暴</string>
+		<string>马叉虫</string>
+		<string>车欠女未</string>
+		<string>犭苗犭句</string>
+		<string>摄影区</string>
+		<string>开箱区</string>
+		<string>魔兽世界</string>
+	</array>
+</array>
+</plist>

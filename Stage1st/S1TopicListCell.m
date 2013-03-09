@@ -73,7 +73,7 @@
     [rectanglePath fill];
     
     //// Rounded Rectangle Drawing
-    UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect: CGRectMake(20, 17, 35, 20) cornerRadius:2];
+    UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect: CGRectMake(19, 17, 37, 20) cornerRadius:2];
     CGContextSaveGState(context);
     CGContextSetShadowWithColor(context, outerShadowOffset, outerShadowBlurRadius, outerShadow.CGColor);
     [fill setFill];

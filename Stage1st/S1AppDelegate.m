@@ -16,18 +16,36 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
+    
+    //User Defaults;
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
+        NSArray *order = [NSArray arrayWithContentsOfFile:path];
+        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
+    }
+    
+    //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                          diskCapacity:10 * 1024 * 1024
                                                              diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
+    
+    //Appearence
+    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"Navigation.png"] forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:[UIImage imageNamed:@"Bar_item.png"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    
     self.window.backgroundColor = [UIColor blackColor];
     S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
     S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];
     self.window.rootViewController = rootVC;
     
-    [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-
     [self.window makeKeyAndVisible];
     return YES;
 }

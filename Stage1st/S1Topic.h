@@ -8,10 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface S1Topic : NSObject
+@interface S1Topic : NSObject <NSCoding>
 
 @property (nonatomic, copy) NSString *topicID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *replyCount;
+
+//For Tracing
+@property (nonatomic, copy) NSString *lastViewedPage;
+@property (nonatomic, copy) NSDate *lastViewedDate;
 
 @end

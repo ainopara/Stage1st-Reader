@@ -35,17 +35,22 @@
         return [super cachedResponseForRequest:request];
     }
     else {
-        NSData *imageData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"placeholder" ofType:@"png"]];
-        NSURLResponse *response =
-        [[NSURLResponse alloc] initWithURL:request.URL
-                                  MIMEType:@"image/png"
-                     expectedContentLength:[imageData length]
-                          textEncodingName:nil];
-        
-        NSCachedURLResponse *cachedResponse =
-        [[NSCachedURLResponse alloc] initWithResponse:response
-                                                 data:imageData];
-        return cachedResponse;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
+            return [super cachedResponseForRequest:request];
+        }
+        else {
+            NSData *imageData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"placeholder" ofType:@"png"]];
+            NSURLResponse *response =
+            [[NSURLResponse alloc] initWithURL:request.URL
+                                      MIMEType:@"image/png"
+                         expectedContentLength:[imageData length]
+                              textEncodingName:nil];
+            
+            NSCachedURLResponse *cachedResponse =
+            [[NSCachedURLResponse alloc] initWithResponse:response
+                                                     data:imageData];
+            return cachedResponse;
+        }
     }
 }
 

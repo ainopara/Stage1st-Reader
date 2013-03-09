@@ -13,7 +13,31 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[Topic]ID:%@; Title:%@; Reply:%@", self.topicID, self.title, self.replyCount];
+    return [NSString stringWithFormat:@"[Topic] ID:%@, TimeStamp:%@", self.topicID, self.lastViewedDate];
+}
+
+
+#pragma mark - NSCoding
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.topicID forKey:@"TopicID"];
+    [encoder encodeObject:self.title forKey:@"Title"];
+    [encoder encodeObject:self.replyCount forKey:@"ReplyCount"];
+    [encoder encodeObject:self.lastViewedPage forKey:@"LastViewedPage"];
+    [encoder encodeObject:self.lastViewedDate forKey:@"LastViewedDate"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    if (self = [super init]) {
+        self.topicID = [decoder decodeObjectForKey:@"TopicID"];
+        self.title = [decoder decodeObjectForKey:@"Title"];
+        self.replyCount = [decoder decodeObjectForKey:@"ReplyCount"];
+        self.lastViewedPage = [decoder decodeObjectForKey:@"LastViewedPage"];
+        self.lastViewedDate = [decoder decodeObjectForKey:@"LastViewedDate"];
+    }
+    return self;
 }
 
 @end

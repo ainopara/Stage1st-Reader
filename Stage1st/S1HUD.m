@@ -7,14 +7,29 @@
 //
 
 #import "S1HUD.h"
+#import "UIControl+BlockWrapper.h"
 
-@implementation S1HUD
+typedef enum {
+    S1HUDStateShowText,
+    S1HUDStateShowControl
+} S1HUDState;
+
+
+@implementation S1HUD {
+    S1HUDState _state;
+}
 
 + (S1HUD *)showHUDInView:(UIView *)view
 {
     S1HUD *HUD = [[self alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
-    HUD.center = view.center;
+    HUD.center = CGPointMake(CGRectGetMidX(view.bounds), CGRectGetMidY(view.bounds));
+    HUD.alpha = 0.0;
+    HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
     [view addSubview:HUD];
+    [UIView animateWithDuration:0.25 animations:^{
+        HUD.alpha = 1.0;
+        HUD.transform = CGAffineTransformIdentity;
+    }];
     return HUD;
 }
 
@@ -24,16 +39,54 @@
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
+        _state = S1HUDStateShowControl;
     }
     return self;
 }
 
-- (void)layoutSubviews
+- (void)setText:(NSString *)text
 {
+    _text = text;
+    [self removeSubviews];
+    self.bounds = CGRectMake(0, 0, 120, 60);
+    _state = S1HUDStateShowText;
+    [self setNeedsDisplay];
+}
+
+
+- (void)showActivityIndicator
+{
+    [self removeSubviews];
     UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     indicatorView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     [self addSubview:indicatorView];
+    _state = S1HUDStateShowControl;
     [indicatorView startAnimating];
+}
+
+- (void)showRefreshButton
+{
+    [self removeSubviews];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.alpha = 0.8;
+    [button setImage:[UIImage imageNamed:@"Refresh.png"] forState:UIControlStateNormal];
+    [button addEventHandler:^(id sender, UIEvent *event) {
+        if (self.refreshEventHandler) {
+            self.refreshEventHandler(self);
+        }
+    } forControlEvent:UIControlEventTouchUpInside];
+    button.frame = CGRectMake(0, 0, 40, 40);
+    button.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    [self addSubview:button];
+    _state = S1HUDStateShowControl;
+}
+
+- (void)removeSubviews
+{
+    [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        UIView *view = obj;
+        [view removeFromSuperview];
+    }];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -71,7 +124,7 @@
     
     //// Abstracted Attributes
     CGRect roundedRectangleRect = CGRectInset(rect, 7.5, 7.5);
-    NSString* hUDTextContent = @"";
+    NSString* hUDTextContent = self.text;
     
     
     //// Rounded Rectangle Drawing
@@ -120,11 +173,14 @@
     
     
     //// HUDText Drawing
-    UIFont *textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-    CGFloat fontHeight = [textFont lineHeight];
-    CGRect textRect = CGRectMake(8.0, floorf((frame.size.height-fontHeight)/2), frame.size.width-2*8.0, fontHeight);
-    [textColor setFill];
-    [hUDTextContent drawInRect:textRect withFont:textFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:NSTextAlignmentCenter];
+    if (_state == S1HUDStateShowText) {
+        UIFont *textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:13.0f];
+        CGFloat fontHeight = [textFont lineHeight];
+        CGRect textRect = CGRectMake(8.0, floorf((frame.size.height-fontHeight)/2), frame.size.width-2*8.0, fontHeight);
+        [textColor setFill];
+        [hUDTextContent drawInRect:textRect withFont:textFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:NSTextAlignmentCenter];        
+    }
+
     
     
     //// Cleanup
