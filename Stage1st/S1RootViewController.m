@@ -104,7 +104,7 @@ typedef enum {
 {
     [self.detailViewController willMoveToParentViewController:nil];
     [self.masterViewController viewWillAppear:NO];
-    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          CGRect endFrame = self.view.bounds;
                          endFrame.origin.x = endFrame.size.width;
@@ -116,6 +116,7 @@ typedef enum {
                          [self.detailViewController.view removeGestureRecognizer:self.panGR];
                          [self.detailViewController.view removeFromSuperview];
                          [self.detailViewController removeFromParentViewController];
+                         self.detailViewController = nil;
                          self.masterViewController.view.userInteractionEnabled = YES;
                          [self.masterViewController viewDidAppear:NO];
                          _status = S1RootViewControllerStatusMasterViewDisplayed;
@@ -136,7 +137,7 @@ typedef enum {
     [self.detailViewController didMoveToParentViewController:self];
     self.masterViewController.view.userInteractionEnabled = NO;
     [self.masterViewController viewWillDisappear:NO];
-    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-160.0f, 0.0);
                          CGRect endFrame = self.view.bounds;
@@ -146,6 +147,11 @@ typedef enum {
                          [self.masterViewController viewDidDisappear:NO];
                          _status = S1RootViewControllerStatusDetailViewDisplayed;
                      }];
+}
+
+- (BOOL)presentingDetailViewController
+{
+    return !(self.detailViewController == nil);
 }
 
 #pragma mark - Helpers

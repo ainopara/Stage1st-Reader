@@ -50,6 +50,7 @@
     if (self) {
         // Custom initialization
         _webView = [[UIWebView alloc] init];
+        [_webView loadHTMLString:@"<html><body style=\"background-color:#f6f7e7;\"></body></html>" baseURL:nil];
         _currentPage = 1;
         _needToScrollToBottom = NO;
     }
@@ -71,7 +72,6 @@
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.backgroundColor = [UIColor colorWithWhite:0.20f alpha:1.0f];
-    [self.webView loadHTMLString:@"<html><body style=\"background-color:#f6f7e7;\"></body></html>" baseURL:nil];
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
@@ -130,24 +130,24 @@
     [self.view addSubview:self.toolbar];
 #undef _BAR_HEIGHT
     
-    [self fetchContentOfPage];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    NSAssert(self.topic != nil, @"topic object can not be nil");
-
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [UIView animateWithDuration:1.0 delay:1.5 options:UIViewAnimationOptionCurveEaseInOut
+    [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          self.maskView.alpha = 0.0;
                      }
                      completion:^(BOOL finished) {
-                         self.maskView.hidden = YES;
+                         [self.maskView removeFromSuperview];
+                         [self fetchContentOfPage];
                      }];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+//    [self.webView.scrollView setScrollsToTop:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -259,34 +259,10 @@
             }
             else if (result == REComposeResultPosted) {
                 if (composeViewController.text.length > 0) {
-                    NSString *suffix = @"\n\n——— 来自Stage1st Reader Evolution";
-                    NSString *replyWithSuffix = [composeViewController.text stringByAppendingString:suffix];
-                    NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
-                    NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                    [[S1HTTPClient sharedClient] postPath:path
-                                               parameters:@{ @"fid":self.fid, @"content":replyWithSuffix }
-                                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                                      NSLog(@"Reply Response: %@", HTMLString);
-                                                      if (_currentPage == _totalPages) {
-                                                          _needToScrollToBottom = YES;
-                                                          [self fetchContentOfPage];
-                                                      }
-                                                      [composeViewController dismissViewControllerAnimated:NO completion:nil];
-//                                                      if (!HTMLString) {
-//                                                          [composeViewController dismissViewControllerAnimated:NO completion:nil];
-//                                                      }
-                                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                                  }
-                                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                      NSLog(@"%@", error);
-                                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                                  }];
+                    [self replyWithReplyController:composeViewController];
                 }
             }
         }];
-        
         [self presentViewController:replyController animated:NO completion:nil];
     }
     //Weibo
@@ -380,6 +356,31 @@
                                      NSLog(@"%@", error);
                                      [HUD showRefreshButton];
                                  }];
+}
+
+- (void)replyWithReplyController:(REComposeViewController *)composeViewController
+{
+    NSString *suffix = @"\n\n——— 来自Stage1st Reader Evolution";
+    NSString *replyWithSuffix = [composeViewController.text stringByAppendingString:suffix];
+    NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
+    NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[S1HTTPClient sharedClient] postPath:path
+                               parameters:@{ @"fid":self.fid, @"content":replyWithSuffix }
+                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                                      NSLog(@"Reply Response: %@", HTMLString);
+                                      if (_currentPage == _totalPages) {
+                                          _needToScrollToBottom = YES;
+                                          [self fetchContentOfPage];
+                                      }
+                                      [composeViewController dismissViewControllerAnimated:NO completion:nil];
+                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                  }
+                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      NSLog(@"%@", error);
+                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                  }];
 }
 
 #pragma mark - Helpers

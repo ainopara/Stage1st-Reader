@@ -1,6 +1,6 @@
 
 img {
-    max-width: 288px;
+    max-width: 100%;
     display: inline-block;
 }
 
@@ -11,7 +11,7 @@ iframe {
 }
 
 .text img {
-    max-width: 250px; 
+    max-width: 95%;
 }
 
 .text {
@@ -68,6 +68,10 @@ h1 {
 }
 
 center {
+    display: none;
+}
+
+button {
     display: none;
 }
 

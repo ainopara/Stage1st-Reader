@@ -68,12 +68,26 @@
     
     
     //// Rectangle Drawing
-    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, 0, 320, 60)];
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:self.bounds];
     [background setFill];
     [rectanglePath fill];
     
+    CGRect roundRectangleRect;
+    CGRect textRect;
+    CGRect titleRect;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        roundRectangleRect = CGRectMake(19, 17, 37, 20);
+        textRect = CGRectMake(20, 19.5, 35, 18);
+        titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
+    }
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
+        textRect = CGRectMake(20+10, 19.5, 35, 18);
+        titleRect = CGRectMake(90, 17, self.bounds.size.width - 180, 38);
+    }
+    
     //// Rounded Rectangle Drawing
-    UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect: CGRectMake(19, 17, 37, 20) cornerRadius:2];
+    UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect:roundRectangleRect cornerRadius:2];
     CGContextSaveGState(context);
     CGContextSetShadowWithColor(context, outerShadowOffset, outerShadowBlurRadius, outerShadow.CGColor);
     [fill setFill];
@@ -86,12 +100,10 @@
     
     
     //// Text Drawing
-    CGRect textRect = CGRectMake(20, 19.5, 35, 18);
     [replyTextColor setFill];
     [textContent drawInRect: textRect withFont: [UIFont boldSystemFontOfSize:12.0f] lineBreakMode: NSLineBreakByClipping alignment: NSTextAlignmentCenter];
     
     //// Title Drawing
-    CGRect titleRect = CGRectMake(70, 8, 230, 38);
     [[UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:0.9] setFill];
     [titleContent drawInRect: titleRect withFont:[UIFont boldSystemFontOfSize:15.0f] lineBreakMode: NSLineBreakByTruncatingTail alignment: NSTextAlignmentLeft];
     

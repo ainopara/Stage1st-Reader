@@ -14,7 +14,7 @@
 
 static NSString * const topicPattern = @"<li><a href=.*?t(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
 static NSString * const cssPattern = @"</style>";
-static NSString * const cleanupPattern = @"(<br />(<br />)?\\r\\n<center>.*?</center>)|(<table.*?cellpadding=\"0\".*?</table>.*?</table>)|(src=\"http://bbs\\.saraba1st\\.com/2b/images/back\\.gif\")";
+static NSString * const cleanupPattern = @"(<br />(<br />)?\\r\\n<center>.*?</center>)|(<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(src=\"http://bbs\\.saraba1st\\.com/2b/images/back\\.gif\")";
 static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";
 
 

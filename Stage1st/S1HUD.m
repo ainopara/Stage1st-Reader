@@ -26,7 +26,7 @@ typedef enum {
     HUD.alpha = 0.0;
     HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
     [view addSubview:HUD];
-    [UIView animateWithDuration:0.25 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         HUD.alpha = 1.0;
         HUD.transform = CGAffineTransformIdentity;
     }];
@@ -193,7 +193,7 @@ typedef enum {
 
 - (void)hideWithDelay:(NSTimeInterval)delay
 {
-    [UIView animateWithDuration:0.3 delay:delay options:UIViewAnimationOptionCurveLinear
+    [UIView animateWithDuration:0.2 delay:delay options:UIViewAnimationOptionCurveLinear
                      animations:^{
                          self.alpha = 0.0;
                          self.transform = CGAffineTransformMakeScale(1.2, 1.2);

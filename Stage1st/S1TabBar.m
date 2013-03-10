@@ -9,6 +9,7 @@
 #import "S1TabBar.h"
 
 #define _DEFAULT_WIDTH 80.0f
+#define _DEFAULT_WIDTH_IPAD 96.0f
 
 @implementation S1TabBar {
     NSMutableArray *_buttons;
@@ -59,25 +60,37 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    CGFloat widthPerItem;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        widthPerItem = _DEFAULT_WIDTH;
+    } else {
+        widthPerItem = _DEFAULT_WIDTH_IPAD;
+    }
     CGPoint offset = scrollView.contentOffset;
-    CGFloat n = roundf(offset.x / _DEFAULT_WIDTH);
-    if ((offset.x - n*_DEFAULT_WIDTH) < ((n+1)*_DEFAULT_WIDTH -offset.x))
-        offset.x = n*_DEFAULT_WIDTH;
+    CGFloat n = roundf(offset.x / widthPerItem);
+    if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
+        offset.x = n*widthPerItem;
     else
-        offset.x = (n+1)*_DEFAULT_WIDTH;
+        offset.x = (n+1)*widthPerItem;
     [scrollView setContentOffset:offset animated:YES];
     return;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
+    CGFloat widthPerItem;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        widthPerItem = _DEFAULT_WIDTH;
+    } else {
+        widthPerItem = _DEFAULT_WIDTH_IPAD;
+    }
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
-        CGFloat n = roundf(offset.x / _DEFAULT_WIDTH);
-        if ((offset.x - n*_DEFAULT_WIDTH) < ((n+1)*_DEFAULT_WIDTH -offset.x))
-            offset.x = n*_DEFAULT_WIDTH;
+        CGFloat n = roundf(offset.x / widthPerItem);
+        if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
+            offset.x = n*widthPerItem;
         else
-            offset.x = (n+1)*_DEFAULT_WIDTH;
+            offset.x = (n+1)*widthPerItem;
         [scrollView setContentOffset:offset animated:YES];
     }
     return;
@@ -105,7 +118,12 @@
 {
     if (_keys.count == 0) return;
 
-    CGFloat widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+    CGFloat widthPerItem;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+    } else {
+        widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
+    }
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];

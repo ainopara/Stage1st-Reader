@@ -74,6 +74,7 @@
 - (void)textViewInit
 {   
     self.clipsToBounds = NO;
+    self.scrollsToTop = NO;
 
     _ruledView = [[DEComposeRuledView alloc] initWithFrame:[self ruledViewFrame]];
     _ruledView.lineColor = [UIColor colorWithWhite:0.5f alpha:0.15f];

@@ -15,4 +15,6 @@
 - (void)presentDetailViewController:(UIViewController *)controller;
 - (void)dismissDetailViewController;
 
+- (BOOL)presentingDetailViewController;
+
 @end

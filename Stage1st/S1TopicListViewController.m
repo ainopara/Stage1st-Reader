@@ -96,12 +96,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 #undef _BAR_HEIGHT
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    
-    [self.tableView setUserInteractionEnabled:YES];
-    [self.tableView setScrollsToTop:YES];
+    [super viewDidAppear:animated];
+    if (![[self rootViewController] presentingDetailViewController]) {
+        [self.tableView setUserInteractionEnabled:YES];
+        [self.tableView setScrollsToTop:YES];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -279,14 +280,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     S1ContentViewController *controller = [[S1ContentViewController alloc] init];
-    [controller setFid:self.threadsInfo[self.currentKey]];
-    [controller setTracer:self.tracer];
     S1Topic *topicToShow = self.topics[indexPath.row];
     S1Topic *tracedTopic = [self.tracer objectInRecentForKey:topicToShow.topicID];
     if (tracedTopic) {
         topicToShow.lastViewedPage = tracedTopic.lastViewedPage;
     }
     [controller setTopic:topicToShow];
+    [controller setFid:self.threadsInfo[self.currentKey]];
+    [controller setTracer:self.tracer];
+    
     [[self rootViewController] presentDetailViewController:controller];
 }
 
