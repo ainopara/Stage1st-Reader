@@ -14,9 +14,11 @@
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request
 {
     NSString *URLString = [[request URL] absoluteString];
-    if ([URLString hasPrefix:@"http://bbs.saraba1st.com/2b/images/post/smile"]) {
+    NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
+    NSString *prefix = [NSString stringWithFormat:@"%@/2b/images/post/smile", baseURLString];
+    if ([URLString hasPrefix:prefix]) {
         NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong"];
-        NSRange range = [URLString rangeOfString:@"http://bbs.saraba1st.com/2b/images/post/smile"];
+        NSRange range = [URLString rangeOfString:prefix];
         NSString *suffix = [URLString substringFromIndex:range.location + range.length];
         NSString *fullPath = [NSString stringWithFormat:@"%@%@", localPath, suffix];
         NSData *imageData = [NSData dataWithContentsOfFile:fullPath];
@@ -31,7 +33,7 @@
                                                  data:imageData];
         return cachedResponse;
     }
-    else if ([URLString hasPrefix:@"http://bbs.saraba1st.com"]) {
+    else if ([URLString hasPrefix:baseURLString]) {
         return [super cachedResponseForRequest:request];
     }
     else {

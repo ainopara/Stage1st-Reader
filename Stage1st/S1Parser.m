@@ -14,13 +14,13 @@
 
 static NSString * const topicPattern = @"<li><a href=.*?t(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
 static NSString * const cssPattern = @"</style>";
-static NSString * const cleanupPattern = @"(<br />(<br />)?\\r\\n<center>.*?</center>)|(<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(src=\"http://bbs\\.saraba1st\\.com/2b/images/back\\.gif\")";
+static NSString * const cleanupPattern = @"(?:<br />(<br />)?\\r\\n<center>.*?</center>)|(?:<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(?:src=\"http://.*?/images/back\\.gif\")|(?:onload=\"if\\(this.offsetWidth>'600'\\)this.width='600';\")";
 static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";
 
 
 @implementation S1Parser
 
-+ (NSArray *)topicsFromHTMLString:(NSString *)rawString
++ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context;
 {
     NSString *HTMLString = [rawString gtm_stringByUnescapingFromHTML];
     NSRegularExpression *re = [[NSRegularExpression alloc]
@@ -38,6 +38,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
                               [topic setTopicID:[HTMLString substringWithRange:[result rangeAtIndex:1]]];
                               [topic setTitle:[HTMLString substringWithRange:[result rangeAtIndex:2]]];
                               [topic setReplyCount:[HTMLString substringWithRange:[result rangeAtIndex:3]]];
+                              [topic setFID:context[@"FID"]];
                               [topics addObject:topic];
                           }
                       }];
@@ -72,7 +73,12 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     //Add Customized CSS
     NSRange rangeToReplace = [HTMLString rangeOfString:@"<!--css-->"];
     if (rangeToReplace.location != NSNotFound) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+        NSString *path = nil;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+        } else {
+            path = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
+        }
         NSString *stringToReplace = [NSString stringWithFormat:@"<link rel=\"stylesheet\" href=\"file://%@\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">", path];
         [HTMLString replaceCharactersInRange:rangeToReplace withString:stringToReplace];
     }

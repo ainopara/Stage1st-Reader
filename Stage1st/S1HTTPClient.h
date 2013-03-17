@@ -10,7 +10,8 @@
 
 @interface S1HTTPClient : AFHTTPClient
 
-
 + (S1HTTPClient *)sharedClient;
+
+- (id)initWithBaseURL:(NSURL *)url;
 
 @end

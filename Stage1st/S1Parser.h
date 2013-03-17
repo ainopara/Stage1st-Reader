@@ -10,7 +10,7 @@
 
 @interface S1Parser : NSObject
 
-+ (NSArray *)topicsFromHTMLString:(NSString *)HTMLString;
++ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context;
 
 + (NSString *)contentsFromHTMLString:(NSMutableString *)HTMLString withOffset:(NSInteger)offset;
 

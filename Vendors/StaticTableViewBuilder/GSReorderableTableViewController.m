@@ -85,6 +85,7 @@
 {
     [self moveObjectAtIndexPath:sourceIndexPath inArray:[self.sections[sourceIndexPath.section] rows] toIndexPath:destinationIndexPath inArray:[self.sections[destinationIndexPath.section] rows]];
     [self moveObjectAtIndexPath:sourceIndexPath inArray:self.keys[sourceIndexPath.section] toIndexPath:destinationIndexPath inArray:self.keys[destinationIndexPath.section]];
+    
 }
 
 #pragma mark - Helpers

@@ -10,6 +10,7 @@
 
 @interface S1Topic : NSObject <NSCoding>
 
+@property (nonatomic, copy) NSString *fID;
 @property (nonatomic, copy) NSString *topicID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *replyCount;

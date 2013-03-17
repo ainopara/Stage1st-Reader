@@ -28,6 +28,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://220.196.42.172" forKey:@"BaseURL"];
+    }
     
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024

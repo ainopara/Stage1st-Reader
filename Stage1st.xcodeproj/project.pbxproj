@@ -89,6 +89,8 @@
 		C096CD3C16EADD3300D4FF7F /* SVWebViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C096CD3516EADD3300D4FF7F /* SVWebViewController.bundle */; };
 		C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C096CD3716EADD3300D4FF7F /* SVWebViewController.m */; };
 		C096CD3F16EADE0000D4FF7F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C096CD3E16EADE0000D4FF7F /* MessageUI.framework */; };
+		C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */; };
+		C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */ = {isa = PBXBuildFile; fileRef = C0B1919616F0A80F0053E0C5 /* content_ipad.css */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -227,6 +229,9 @@
 		C096CD3816EADD3300D4FF7F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
 		C096CD3916EADD3300D4FF7F /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
 		C096CD3E16EADE0000D4FF7F /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		C0AEAE7F16F5F88D00CB0E71 /* S1BaseURLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1BaseURLViewController.h; path = Stage1st/S1BaseURLViewController.h; sourceTree = "<group>"; };
+		C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1BaseURLViewController.m; path = Stage1st/S1BaseURLViewController.m; sourceTree = "<group>"; };
+		C0B1919616F0A80F0053E0C5 /* content_ipad.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad.css; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -362,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				C08DB46A16DE3794002B4A92 /* content.css */,
+				C0B1919616F0A80F0053E0C5 /* content_ipad.css */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				C095874016CA8A36007E0119 /* InfoPlist.strings */,
 				C095874316CA8A36007E0119 /* main.m */,
@@ -525,6 +531,8 @@
 				C09587A516CB623E007E0119 /* S1SettingViewController.m */,
 				C083353816E503F60035C1AA /* S1LoginViewController.h */,
 				C083353916E503F60035C1AA /* S1LoginViewController.m */,
+				C0AEAE7F16F5F88D00CB0E71 /* S1BaseURLViewController.h */,
+				C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -634,6 +642,7 @@
 				C096CD3C16EADD3300D4FF7F /* SVWebViewController.bundle in Resources */,
 				C002D2BB16EC665D00A5414E /* Icon-72.png in Resources */,
 				C002D2BC16EC665D00A5414E /* Icon-72@2x.png in Resources */,
+				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,6 +692,7 @@
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C096CD3B16EADD3300D4FF7F /* SVModalWebViewController.m in Sources */,
 				C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */,
+				C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -778,7 +788,7 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "FB79F8DC-74C0-477B-B546-85145211C9C9";
+				PROVISIONING_PROFILE = "0FA1D3AD-820C-4541-887F-0B1ED6648B2A";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -793,7 +803,7 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "40A5D3E6-BFCE-481B-BF86-A11066A73A08";
+				PROVISIONING_PROFILE = "0FA1D3AD-820C-4541-887F-0B1ED6648B2A";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

@@ -8,6 +8,8 @@
 
 #import "S1RootViewController.h"
 
+#define _TRIGGER_THRESHOLD 60.0f
+
 typedef enum {
     S1RootViewControllerStatusMasterViewDisplayed,
     S1RootViewControllerStatusDetailViewDisplayed
@@ -29,6 +31,7 @@ typedef enum {
 
 @implementation S1RootViewController {
     S1RootViewControllerStatus _status;
+    CGFloat _screenWidth;
 }
 
 - (id)initWithMasterViewController:(UIViewController *)controller
@@ -43,6 +46,7 @@ typedef enum {
 - (void)loadView
 {
     UIView *containerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    _screenWidth = containerView.bounds.size.width;
     [self setView:containerView];
     [self addChildViewController:self.masterViewController];
     self.masterViewController.view.frame = self.view.bounds;
@@ -70,10 +74,12 @@ typedef enum {
     static DetailViewStatus detailViewStatus = DetailViewStatusInitial;
     CGPoint translation = [gestureRecognizer translationInView:self.detailViewController.view];
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.masterViewController.view.layer.shouldRasterize = YES;
+        self.masterViewController.view.layer.rasterizationScale = [[UIScreen mainScreen] scale];
         if (fabsf(translation.x) > fabsf(translation.y)) {
             if (translation.x > 0) {
                 self.detailViewController.view.transform = CGAffineTransformMakeTranslation(translation.x, 0);
-                self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-160.0f + translation.x/2, 0);
+                self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-_screenWidth/2 + translation.x/2, 0);
                 detailViewStatus = DetailViewStatusTransformed;
             }
         }
@@ -82,20 +88,21 @@ typedef enum {
     {
         if (detailViewStatus == DetailViewStatusTransformed) {
             self.detailViewController.view.transform = CGAffineTransformMakeTranslation(translation.x > 0 ? translation.x : 0, 0);
-            self.masterViewController.view.transform = CGAffineTransformMakeTranslation(translation.x > 0 ? -160.0f +translation.x/2 : -160.0f, 0);
+            self.masterViewController.view.transform = CGAffineTransformMakeTranslation(translation.x > 0 ? -_screenWidth/2 +translation.x/2 : -_screenWidth, 0);
         }
         else
             [gestureRecognizer setTranslation:(CGPoint){0.0f, 0.0f} inView:self.detailViewController.view];
     }
     else {
-        if (translation.x > 80.0f) {
+        if (translation.x > _TRIGGER_THRESHOLD) {
             [self dismissDetailViewController];
         } else {
             [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.detailViewController.view.transform = CGAffineTransformIdentity;
-                self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-160.0f, 0);
+                self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-_screenWidth/2, 0);
             } completion:nil];
         }
+        self.masterViewController.view.layer.shouldRasterize = NO;
         detailViewStatus = DetailViewStatusInitial;
     }
 }
@@ -139,7 +146,7 @@ typedef enum {
     [self.masterViewController viewWillDisappear:NO];
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-160.0f, 0.0);
+                         self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-_screenWidth/2, 0.0);
                          CGRect endFrame = self.view.bounds;
                          self.detailViewController.view.frame = endFrame;
                      }

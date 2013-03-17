@@ -36,6 +36,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSArray *topics;
 @property (nonatomic, strong) NSMutableDictionary *cache;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
+@property (nonatomic, strong) S1HTTPClient *HTTPClient;
 
 @end
 
@@ -93,6 +94,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.tabbarDelegate = self;
         
     [self.view addSubview:self.scrollTabBar];
+    
+    //Notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHTTPClient:) name:@"S1BaseURLMayChangedNotification" object:nil];
 #undef _BAR_HEIGHT
 }
 
@@ -121,6 +126,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1UserMayReorderedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1BaseURLMayChangedNotification" object:nil];
+}
+
 #pragma mark - Getters and Setters
 
 - (NSDictionary *)threadsInfo
@@ -140,15 +151,20 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _cache;
 }
 
+- (S1HTTPClient *)HTTPClient
+{
+    if (_HTTPClient) return _HTTPClient;
+    NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
+    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[baseURLString stringByAppendingString:@"/2b/"]]];
+    return _HTTPClient;
+}
+
 #pragma mark - Item Actions
 
 - (void)settings:(id)sender
 {
     [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
     S1SettingViewController *controller = [[S1SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [controller setCompletionHandler:^(BOOL needToUpdate){
-        if (needToUpdate) [self update];
-    }];
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:controller] animated:YES completion:nil];
 }
 
@@ -220,35 +236,36 @@ static NSString * const cellIdentifier = @"TopicCell";
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
     NSString *path = [NSString stringWithFormat:@"simple/?f%@.html", self.threadsInfo[key]];
-    [[S1HTTPClient sharedClient] getPath:path
-                              parameters:nil
-                                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                     NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                     if (HTMLString) {
-                                         NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString];
-                                         if (topics.count > 0) {
-                                             self.topics = topics;
-                                             self.cache[key] = topics;
-                                             [self.tableView reloadData];
-                                             if (toTop) {
-                                                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                                             }
-                                         }
+    [self.HTTPClient getPath:path
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                             NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                             if (HTMLString) {
+                                 NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": self.threadsInfo[self.currentKey]}];
+                                 if (topics.count > 0) {
+                                     self.topics = topics;
+                                     self.cache[key] = topics;
+                                     [self.tableView reloadData];
+                                     if (toTop) {
+                                         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
                                      }
-                                     if (self.refreshControl.refreshing) {
-                                         [self.refreshControl endRefreshing];
-                                     }
-                                     [HUD hideWithDelay:0.3];
-                                     self.scrollTabBar.userInteractionEnabled = YES;
                                  }
-                                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                     [HUD setText:@"Request Failed"];
-                                     [HUD hideWithDelay:0.3];
-                                     self.scrollTabBar.userInteractionEnabled = YES;
-                                     if (self.refreshControl.refreshing) {
-                                         [self.refreshControl endRefreshing];
-                                     }
-                                 }];
+                             }
+                             if (self.refreshControl.refreshing) {
+                                 [self.refreshControl endRefreshing];
+                             }
+                             [HUD hideWithDelay:0.3];
+                             self.scrollTabBar.userInteractionEnabled = YES;
+                         
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                             [HUD setText:@"Request Failed"];
+                             [HUD hideWithDelay:0.3];
+                             self.scrollTabBar.userInteractionEnabled = YES;
+                             if (self.refreshControl.refreshing) {
+                                 [self.refreshControl endRefreshing];
+                             }
+                     }];
 }
 
 
@@ -286,8 +303,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         topicToShow.lastViewedPage = tracedTopic.lastViewedPage;
     }
     [controller setTopic:topicToShow];
-    [controller setFid:self.threadsInfo[self.currentKey]];
     [controller setTracer:self.tracer];
+    [controller setHTTPClient:self.HTTPClient];
     
     [[self rootViewController] presentDetailViewController:controller];
 }
@@ -308,12 +325,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
 }
 
-- (void)update
+- (void)updateTabbar:(id)sender
 {
     self.currentKey = @"";
     self.topics = [NSArray array];
     [self.tableView reloadData];
     [self.scrollTabBar setKeys:[self keys]];
+}
+
+- (void)updateHTTPClient:(id)sender
+{
+    self.HTTPClient = nil;
 }
 
 @end

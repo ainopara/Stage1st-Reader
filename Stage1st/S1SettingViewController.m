@@ -9,11 +9,10 @@
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1LoginViewController.h"
+#import "S1BaseURLViewController.h"
 #import "GSStaticTableViewBuilder.h"
 
 @interface S1SettingViewController ()
-
-@property (nonatomic, assign) BOOL modified;
 
 @end
 
@@ -27,13 +26,30 @@
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"返回", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
     self.navigationItem.leftBarButtonItem = cancelItem;
     
-    self.modified = NO;
     __weak typeof(self) myself = self;
     
     [self addSection:^(GSSection *section) {
         [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell) {
+                cell.textLabel.text = NSLocalizedString(@"请求地址", @"URL");
+                cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
+                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }];
+            [row setEventHandlerBlock:^(UITableViewCell *cell) {
+                S1BaseURLViewController *controller = [[S1BaseURLViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                [myself.navigationController pushViewController:controller animated:YES];
+            }];
+        }];
+        [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"登录", @"Login");
+                NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"];
+                if (userID) {
+                    cell.detailTextLabel.text = userID;
+                } else {
+                    cell.detailTextLabel.text = NSLocalizedString(@"未登录", @"Not Login");
+                }
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
@@ -54,8 +70,9 @@
                 [controller setCompletionHandler:^(NSArray *keys) {
                     [[NSUserDefaults standardUserDefaults] setValue:keys forKey:@"Order"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                    NSNotification *notification = [NSNotification notificationWithName:@"S1UserMayReorderedNotification" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
                 }];
-                myself.modified = YES;
                 [myself.navigationController pushViewController:controller animated:YES];
             }];
         }];
@@ -110,9 +127,7 @@
 - (void)cancel:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        if (self.completionHandler) {
-            self.completionHandler(self.modified);
-        }
+        
     }];
 }
 

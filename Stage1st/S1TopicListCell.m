@@ -75,6 +75,7 @@
     CGRect roundRectangleRect;
     CGRect textRect;
     CGRect titleRect;
+    CGPoint titlePoint;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         roundRectangleRect = CGRectMake(19, 17, 37, 20);
         textRect = CGRectMake(20, 19.5, 35, 18);
@@ -83,7 +84,8 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
         textRect = CGRectMake(20+10, 19.5, 35, 18);
-        titleRect = CGRectMake(90, 17, self.bounds.size.width - 180, 38);
+        CGFloat fontHeight = [UIFont boldSystemFontOfSize:18.0].lineHeight;
+        titlePoint = CGPointMake(90, roundf((self.bounds.size.height-fontHeight)/2));
     }
     
     //// Rounded Rectangle Drawing
@@ -105,7 +107,14 @@
     
     //// Title Drawing
     [[UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:0.9] setFill];
-    [titleContent drawInRect: titleRect withFont:[UIFont boldSystemFontOfSize:15.0f] lineBreakMode: NSLineBreakByTruncatingTail alignment: NSTextAlignmentLeft];
+
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        [titleContent drawInRect: titleRect withFont:[UIFont boldSystemFontOfSize:15.0f] lineBreakMode: NSLineBreakByTruncatingTail alignment: NSTextAlignmentLeft];
+    }
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [titleContent drawAtPoint:titlePoint forWidth:self.bounds.size.width-90.0f withFont:[UIFont boldSystemFontOfSize:18.0] fontSize:17.0 lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+    }
+
     
     [decorateLineColor set];
     CGContextSetLineWidth(context, 2.0);

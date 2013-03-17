@@ -136,7 +136,7 @@
                      }
                      completion:^(BOOL finished) {
                          [self.maskView removeFromSuperview];
-                         [self fetchContentOfPage];
+                         [self fetchContent];
                      }];
 }
 
@@ -182,7 +182,7 @@
 {
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
-        [self fetchContentOfPage];
+        [self fetchContent];
     } else {
         [[self rootViewController] dismissDetailViewController];
     }
@@ -192,12 +192,12 @@
 {
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
-        [self fetchContentOfPage];
+        [self fetchContent];
     } else {
         if (![self atBottom]) {
             [self scrollToButtomAnimated:YES];
         } else {
-            [self fetchContentOfPage];
+            [self fetchContent];
             _needToScrollToBottom = YES;
         }
     }
@@ -208,7 +208,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage > 1) {
             _currentPage = 1;
-            [self fetchContentOfPage];
+            [self fetchContent];
         }
     }
 }
@@ -218,7 +218,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
-            [self fetchContentOfPage];
+            [self fetchContent];
         }
     }
 }
@@ -332,14 +332,14 @@
 
 #pragma mark - Networking
 
-- (void)fetchContentOfPage
+- (void)fetchContent
 {
     [self updatePageLabel];
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
     [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
         [aHUD hideWithDelay:0.0];
-        [self fetchContentOfPage];
+        [self fetchContent];
     }];
     NSString *path = [NSString stringWithFormat:@"simple/?t%@_%d.html", self.topic.topicID, _currentPage];
     [[S1HTTPClient sharedClient] getPath:path
@@ -365,22 +365,23 @@
     NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
     NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [[S1HTTPClient sharedClient] postPath:path
-                               parameters:@{ @"fid":self.fid, @"content":replyWithSuffix }
-                                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                      NSLog(@"Reply Response: %@", HTMLString);
-                                      if (_currentPage == _totalPages) {
-                                          _needToScrollToBottom = YES;
-                                          [self fetchContentOfPage];
-                                      }
-                                      [composeViewController dismissViewControllerAnimated:NO completion:nil];
-                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                  }
-                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                      NSLog(@"%@", error);
-                                      [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                  }];
+    [self.HTTPClient postPath:path
+                   parameters:@{ @"fid":self.topic.fID, @"content":replyWithSuffix }
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                              NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                              NSLog(@"Reply Response: %@", HTMLString);
+                              if (_currentPage == _totalPages) {
+                                  _needToScrollToBottom = YES;
+                                  [self fetchContent];
+                              }
+                              [composeViewController dismissViewControllerAnimated:NO completion:nil];
+                              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          
+                      }
+                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                              NSLog(@"%@", error);
+                              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                      }];
 }
 
 #pragma mark - Helpers
