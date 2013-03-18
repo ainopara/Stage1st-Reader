@@ -18,6 +18,7 @@
 #import "S1HUD.h"
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
+#import "MTStatusBarOverlay.h"
 
 
 #define _REPLY_PER_PAGE 50
@@ -255,11 +256,12 @@
         
         [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
             if (result == REComposeResultCancelled) {
-                [composeViewController dismissViewControllerAnimated:NO completion:nil];
+                [composeViewController dismissViewControllerAnimated:YES completion:nil];
             }
             else if (result == REComposeResultPosted) {
                 if (composeViewController.text.length > 0) {
-                    [self replyWithReplyController:composeViewController];
+                    [self replyWithReplyText:composeViewController.text];
+                    [composeViewController dismissViewControllerAnimated:YES completion:nil];
                 }
             }
         }];
@@ -285,7 +287,7 @@
     
     if (2 == buttonIndex) {
         [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"http://bbs.saraba1st.com/2b/read-htm-tid-%@.html", self.topic.topicID]];
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }
@@ -358,29 +360,36 @@
                                  }];
 }
 
-- (void)replyWithReplyController:(REComposeViewController *)composeViewController
+- (void)replyWithReplyText:(NSString *)text
 {
     NSString *suffix = @"\n\n——— 来自Stage1st Reader Evolution";
-    NSString *replyWithSuffix = [composeViewController.text stringByAppendingString:suffix];
+    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
     NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
+    
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    overlay.animation = MTStatusBarOverlayAnimationShrink;
+    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self.HTTPClient postPath:path
                    parameters:@{ @"fid":self.topic.fID, @"content":replyWithSuffix }
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                              NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                              NSLog(@"Reply Response: %@", HTMLString);
-                              if (_currentPage == _totalPages) {
-                                  _needToScrollToBottom = YES;
-                                  [self fetchContent];
-                              }
-                              [composeViewController dismissViewControllerAnimated:NO completion:nil];
-                              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          
+                          NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                          NSLog(@"Reply Response: %@", HTMLString);
+
+                          if (HTMLString.length > 0) {
+                              [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                              _needToScrollToBottom = YES;
+                              [self fetchContent];
+                          } else {
+                              [overlay postErrorMessage:@"回复很可能未成功" duration:2.5 animated:YES];
+                          }
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                              NSLog(@"%@", error);
-                              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          NSLog(@"%@", error);
+                          [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                       }];
 }
 

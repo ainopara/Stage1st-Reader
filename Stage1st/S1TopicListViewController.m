@@ -183,12 +183,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     [self.scrollTabBar deselectAll];
-    self.currentKey = nil;
+    self.currentKey = @"";
 }
 
 - (void)refresh:(id)sender
 {
-    if (self.scrollTabBar.userInteractionEnabled) {
+    if (self.refreshControl.hidden) {
+        [self.refreshControl endRefreshing];
+        return;
+    }
+    
+    if (self.scrollTabBar.enabled) {
         [self fetchTopicsForKeyFromServer:self.currentKey scrollToTop:NO];
     } else {
         [self.refreshControl endRefreshing];
@@ -200,12 +205,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
 {
     self.naviItem.title = @"Stage1st";
+    
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;
     }
     if (self.refreshControl.hidden) {
         self.refreshControl.hidden = NO;
     }
+    
     if (![self.currentKey isEqualToString:key]) {
         self.currentKey = key;
         [self fetchTopicsForKey:key];
@@ -232,39 +239,39 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)key scrollToTop:(BOOL)toTop
 {
-    self.scrollTabBar.userInteractionEnabled = NO;
+    self.scrollTabBar.enabled = NO;
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
     NSString *path = [NSString stringWithFormat:@"simple/?f%@.html", self.threadsInfo[key]];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                             if (HTMLString) {
-                                 NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": self.threadsInfo[self.currentKey]}];
-                                 if (topics.count > 0) {
-                                     self.topics = topics;
-                                     self.cache[key] = topics;
-                                     [self.tableView reloadData];
-                                     if (toTop) {
-                                         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                                     }
-                                 }
-                             }
-                             if (self.refreshControl.refreshing) {
-                                 [self.refreshControl endRefreshing];
-                             }
-                             [HUD hideWithDelay:0.3];
-                             self.scrollTabBar.userInteractionEnabled = YES;
+                        NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                        if (HTMLString) {
+                            NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": self.threadsInfo[self.currentKey]}];
+                            if (topics.count > 0) {
+                                self.topics = topics;
+                                self.cache[key] = topics;
+                                [self.tableView reloadData];
+                                if (toTop) {
+                                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                                }
+                            }
+                        }
+                        if (self.refreshControl.refreshing) {
+                            [self.refreshControl endRefreshing];
+                        }
+                        [HUD hideWithDelay:0.3];
+                        self.scrollTabBar.enabled = YES;
                          
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             [HUD setText:@"Request Failed"];
-                             [HUD hideWithDelay:0.3];
-                             self.scrollTabBar.userInteractionEnabled = YES;
-                             if (self.refreshControl.refreshing) {
-                                 [self.refreshControl endRefreshing];
-                             }
+                        [HUD setText:@"Request Failed"];
+                        [HUD hideWithDelay:0.3];
+                        self.scrollTabBar.enabled = YES;
+                        if (self.refreshControl.refreshing) {
+                            [self.refreshControl endRefreshing];
+                        }
                      }];
 }
 
@@ -327,10 +334,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)updateTabbar:(id)sender
 {
-    self.currentKey = @"";
-    self.topics = [NSArray array];
-    [self.tableView reloadData];
     [self.scrollTabBar setKeys:[self keys]];
+    self.tableView.hidden = YES;
 }
 
 - (void)updateHTTPClient:(id)sender

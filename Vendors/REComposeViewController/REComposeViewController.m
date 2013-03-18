@@ -65,7 +65,6 @@
     _backView.layer.shadowOpacity = 0.7;
     _backView.layer.shadowColor = [UIColor blackColor].CGColor;
     _backView.layer.shadowOffset = CGSizeMake(3, 5);
-    _backView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:_backView.bounds] CGPath];
     
     _sheetView.frame = _backView.bounds;
     _sheetView.layer.cornerRadius = _cornerRadius;
@@ -91,6 +90,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [_sheetView.textView becomeFirstResponder];
     
     [UIView animateWithDuration:0.4 animations:^{
@@ -175,6 +175,9 @@
     textViewContainerFrame.origin.y = _sheetView.navigationBar.frame.size.height;
     textViewContainerFrame.size.height = _sheetView.frame.size.height - _sheetView.navigationBar.frame.size.height;
     _sheetView.textViewContainer.frame = textViewContainerFrame;
+    
+    _backView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:_backView.bounds] CGPath];
+
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion

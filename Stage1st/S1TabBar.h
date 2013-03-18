@@ -15,11 +15,11 @@
 - (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys;
 - (void)deselectAll;
 
-@property (nonatomic, assign) id<S1TabBarDelegate> tabbarDelegate;
-
-//@property (nonatomic, copy) void (^eventHandler)(NSString *key);
+@property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
 
 @property (nonatomic, strong) NSArray *keys;
+@property (nonatomic, assign) BOOL enabled;
+
 
 
 @end

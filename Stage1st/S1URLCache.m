@@ -41,7 +41,7 @@
             return [super cachedResponseForRequest:request];
         }
         else {
-            NSData *imageData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"placeholder" ofType:@"png"]];
+            NSData *imageData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Placeholder" ofType:@"png"]];
             NSURLResponse *response =
             [[NSURLResponse alloc] initWithURL:request.URL
                                       MIMEType:@"image/png"

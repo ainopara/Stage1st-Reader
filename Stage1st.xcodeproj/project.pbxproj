@@ -90,6 +90,8 @@
 		C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C096CD3716EADD3300D4FF7F /* SVWebViewController.m */; };
 		C096CD3F16EADE0000D4FF7F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C096CD3E16EADE0000D4FF7F /* MessageUI.framework */; };
 		C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */; };
+		C0AEAE8316F60D7900CB0E71 /* Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = C0AEAE8216F60D7900CB0E71 /* Placeholder.png */; };
+		C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */; };
 		C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */ = {isa = PBXBuildFile; fileRef = C0B1919616F0A80F0053E0C5 /* content_ipad.css */; };
 /* End PBXBuildFile section */
 
@@ -231,6 +233,9 @@
 		C096CD3E16EADE0000D4FF7F /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C0AEAE7F16F5F88D00CB0E71 /* S1BaseURLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1BaseURLViewController.h; path = Stage1st/S1BaseURLViewController.h; sourceTree = "<group>"; };
 		C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1BaseURLViewController.m; path = Stage1st/S1BaseURLViewController.m; sourceTree = "<group>"; };
+		C0AEAE8216F60D7900CB0E71 /* Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Placeholder.png; path = Resources/Placeholder.png; sourceTree = "<group>"; };
+		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
+		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTStatusBarOverlay.m; sourceTree = "<group>"; };
 		C0B1919616F0A80F0053E0C5 /* content_ipad.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad.css; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -384,6 +389,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
 				C096CD2D16EADD3300D4FF7F /* SVWebViewController */,
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
 				C083352216E4E1550035C1AA /* REComposeViewController */,
@@ -397,6 +403,7 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C0AEAE8216F60D7900CB0E71 /* Placeholder.png */,
 				C08B602116E1B5CE00591827 /* Logo.png */,
 				C08B602216E1B5CE00591827 /* Logo@2x.png */,
 				C002D2B916EC665D00A5414E /* Icon-72.png */,
@@ -551,6 +558,16 @@
 			path = Vendors/SVWebViewController;
 			sourceTree = "<group>";
 		};
+		C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */,
+				C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */,
+			);
+			name = MTStatusBarOverlay;
+			path = Vendors/MTStatusBarOverlay;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -643,6 +660,7 @@
 				C002D2BB16EC665D00A5414E /* Icon-72.png in Resources */,
 				C002D2BC16EC665D00A5414E /* Icon-72@2x.png in Resources */,
 				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
+				C0AEAE8316F60D7900CB0E71 /* Placeholder.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,6 +711,7 @@
 				C096CD3B16EADD3300D4FF7F /* SVModalWebViewController.m in Sources */,
 				C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */,
 				C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */,
+				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

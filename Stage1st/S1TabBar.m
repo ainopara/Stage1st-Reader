@@ -30,6 +30,7 @@
     if (!self) return nil;    
     _keys = keys;
     _index = -1;
+    _enabled = YES;
     _buttons = [NSMutableArray arrayWithCapacity:keys.count];
     self.backgroundColor = [UIColor blackColor];
     self.bounces = NO;
@@ -98,6 +99,7 @@
 
 - (void)tapped:(UIButton *)sender
 {
+    if (!_enabled) return;
     if (_index >= 0)
         [_buttons[_index] setSelected:NO];
     _index = sender.tag;
