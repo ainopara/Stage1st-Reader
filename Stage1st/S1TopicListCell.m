@@ -59,7 +59,7 @@
     
     //// Shadow Declarations
     UIColor* outerShadow = outerShadowColor;
-    CGSize outerShadowOffset = CGSizeMake(0.1, -0.1);
+    CGSize outerShadowOffset = CGSizeMake(0.0, 0.0);
     CGFloat outerShadowBlurRadius = 1.6;
     
     //// Abstracted Attributes
@@ -77,15 +77,20 @@
     CGRect titleRect;
     CGPoint titlePoint;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        roundRectangleRect = CGRectMake(19, 17, 37, 20);
-        textRect = CGRectMake(20, 19.5, 35, 18);
+        roundRectangleRect = CGRectMake(19, 18, 37, 19);
+        textRect = CGRectMake(20, 20, 35, 18);
         titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
+        CGSize actualSize = [titleContent sizeWithFont:[UIFont boldSystemFontOfSize:15.0f] constrainedToSize:titleRect.size];
+        if (actualSize.height < 38.0f) {
+            titleRect = CGRectMake(70, 16.5, self.bounds.size.width - 90, 19);
+        }
+        
     }
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
         textRect = CGRectMake(20+10, 19.5, 35, 18);
         CGFloat fontHeight = [UIFont boldSystemFontOfSize:18.0].lineHeight;
-        titlePoint = CGPointMake(90, roundf((self.bounds.size.height-fontHeight)/2));
+        titlePoint = CGPointMake(90, roundf((self.bounds.size.height-fontHeight)/2)-0.5);
     }
     
     //// Rounded Rectangle Drawing
@@ -106,7 +111,8 @@
     [textContent drawInRect: textRect withFont: [UIFont boldSystemFontOfSize:12.0f] lineBreakMode: NSLineBreakByClipping alignment: NSTextAlignmentCenter];
     
     //// Title Drawing
-    [[UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:0.9] setFill];
+    [[UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:1.0] setFill];
+    
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [titleContent drawInRect: titleRect withFont:[UIFont boldSystemFontOfSize:15.0f] lineBreakMode: NSLineBreakByTruncatingTail alignment: NSTextAlignmentLeft];

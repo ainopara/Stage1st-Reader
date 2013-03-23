@@ -24,7 +24,7 @@
 #define kMaxArrowSize       3
 #define kMinArrowRadius     5
 #define kMaxArrowRadius     7
-#define kMaxDistance        48
+#define kMaxDistance        36
 
 @interface ODRefreshControl ()
 
@@ -242,11 +242,11 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
                 dontDraw = YES;
             }
         }
-        if (offset > 0 && _lastOffset > offset && !self.scrollView.isTracking) {
-            // If we are scrolling too fast, don't draw, and don't trigger unless the scrollView bounced back
-            _canRefresh = NO;
-            dontDraw = YES;
-        }
+//        if (offset > 0 && _lastOffset > offset && !self.scrollView.isTracking) {
+//            // If we are scrolling too fast, don't draw, and don't trigger unless the scrollView bounced back
+//            _canRefresh = NO;
+//            dontDraw = YES;
+//        }
         if (dontDraw) {
             _shapeLayer.path = nil;
             _shapeLayer.shadowPath = nil;

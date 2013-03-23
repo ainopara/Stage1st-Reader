@@ -60,18 +60,34 @@
         }];
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = @"板块顺序";
+                cell.textLabel.text = @"板块自定义";
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell) {
                 GSReorderableTableViewController *controller = [[GSReorderableTableViewController alloc] initWithKeys:[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"]];
-                controller.title = NSLocalizedString(@"板块顺序", @"Order");
+                controller.title = NSLocalizedString(@"板块自定义", @"Order");
                 [controller setCompletionHandler:^(NSArray *keys) {
                     [[NSUserDefaults standardUserDefaults] setValue:keys forKey:@"Order"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     NSNotification *notification = [NSNotification notificationWithName:@"S1UserMayReorderedNotification" object:nil];
                     [[NSNotificationCenter defaultCenter] postNotification:notification];
+                }];
+                [myself.navigationController pushViewController:controller animated:YES];
+            }];
+        }];
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell) {
+                cell.textLabel.text = @"字体大小";
+                cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }];
+            [row setEventHandlerBlock:^(UITableViewCell *cell) {
+                GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
+                controller.title = NSLocalizedString(@"字体大小", @"Order");
+                [controller setCompletionHandler:^(NSString *key) {
+                    [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];                    
                 }];
                 [myself.navigationController pushViewController:controller animated:YES];
             }];
@@ -97,7 +113,7 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"版本", @"Version");
-                cell.detailTextLabel.text = @"3.0";
+                cell.detailTextLabel.text = @"3.1";
             }];
         }];
         
@@ -108,7 +124,7 @@
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell){
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Gabriel" message:@"" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Gabriel" message:nil delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
                 [alertView show];
             }];
         }];

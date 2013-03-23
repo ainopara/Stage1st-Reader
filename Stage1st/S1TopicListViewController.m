@@ -20,6 +20,7 @@
 #import "S1Tracer.h"
 
 #import "ODRefreshControl.h"
+#import "AFNetworking.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -56,7 +57,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 #define _BAR_HEIGHT 44.0f
     
     [super viewDidLoad];
-    self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed.tracer"];
+    self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed_3_1.tracer"];
     self.tracer.identifyKey = @"topicID";
     self.tracer.timeStampKey = @"lastViewedDate";
     
@@ -84,7 +85,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    UIBarButtonItem *recentItem = [[UIBarButtonItem alloc] initWithTitle:@"最近浏览" style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
+    UIBarButtonItem *recentItem = [[UIBarButtonItem alloc] initWithTitle:@"最近" style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
     item.rightBarButtonItem = recentItem;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
@@ -122,7 +123,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [super didReceiveMemoryWarning];
     self.cache = nil;
-    self.threadsInfo = nil;
     // Dispose of any resources that can be recreated.
 }
 
@@ -165,7 +165,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
     S1SettingViewController *controller = [[S1SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:controller] animated:YES completion:nil];
+    UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
 
 - (void)recent:(id)sender
@@ -219,6 +220,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         if (self.refreshControl.refreshing) {
             [self.refreshControl endRefreshing];
         }
+    } else {
+        [self fetchTopicsForKeyFromServer:key scrollToTop:YES];
     }
 }
 
@@ -336,6 +339,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.scrollTabBar setKeys:[self keys]];
     self.tableView.hidden = YES;
+    self.topics = [NSArray array];
+    [self.tableView reloadData];
+    self.currentKey = nil;
+    self.cache = nil;
 }
 
 - (void)updateHTTPClient:(id)sender

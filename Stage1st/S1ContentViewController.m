@@ -19,6 +19,7 @@
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
+#import "AFNetworking.h"
 
 
 #define _REPLY_PER_PAGE 50
@@ -154,7 +155,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];
-    [[S1HTTPClient sharedClient] cancelAllHTTPOperationsWithMethod:@"GET" path:path];
+    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
     
     [self.topic setLastViewedPage:[NSString stringWithFormat:@"%d", _currentPage]];
     [self.tracer hasViewed:self.topic];
@@ -241,7 +242,7 @@
     //Reply
     if (0 == buttonIndex) {
         if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"]) {
-            [[[UIAlertView alloc] initWithTitle:@"请先获取登录状态" message:nil delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:@"请先获取登录状态" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
             return;
         }
         [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -270,12 +271,12 @@
     //Weibo
     if (1 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
-            [[[UIAlertView alloc] initWithTitle:@"需要6.0以上的系统才能使用" message:nil delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:@"需要6.0以上的系统才能使用" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
             return;
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://bbs.saraba1st.com/2b/read-htm-tid-%@.html", self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
@@ -344,25 +345,32 @@
         [self fetchContent];
     }];
     NSString *path = [NSString stringWithFormat:@"simple/?t%@_%d.html", self.topic.topicID, _currentPage];
-    [[S1HTTPClient sharedClient] getPath:path
-                              parameters:nil
-                                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                     NSMutableString *HTMLString = [[NSMutableString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                     if (HTMLString) {
-                                         NSString *string = [S1Parser contentsFromHTMLString:HTMLString withOffset:_currentPage];
-                                         [self.webView loadHTMLString:string baseURL:nil];
-                                     }
-                                     [HUD hideWithDelay:0.5];
-                                 }
-                                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                     NSLog(@"%@", error);
-                                     [HUD showRefreshButton];
-                                 }];
+    [self.HTTPClient getPath:path
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         NSLog(@"%@", operation.request.allHTTPHeaderFields);
+                         NSMutableString *HTMLString = [[NSMutableString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                         if (HTMLString) {
+                             NSString *string = [S1Parser contentsFromHTMLString:HTMLString withOffset:_currentPage];
+                             [self.webView loadHTMLString:string baseURL:nil];
+                         }
+                         [HUD hideWithDelay:0.5];
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         NSLog(@"%@", error);
+                         [HUD showRefreshButton];
+                     }];
 }
+
+- (void)replyWithText:(NSString *)text
+{
+    
+}
+
 
 - (void)replyWithReplyText:(NSString *)text
 {
-    NSString *suffix = @"\n\n——— 来自Stage1st Reader Evolution";
+    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution[/url]";
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
     NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
@@ -392,6 +400,7 @@
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                       }];
 }
+
 
 #pragma mark - Helpers
 

@@ -75,7 +75,12 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     if (rangeToReplace.location != NSNotFound) {
         NSString *path = nil;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+            NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+            if ([fontSizeKey isEqualToString:@"15px"]) {
+                path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+            } else {
+                path = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
+            }
         } else {
             path = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
         }

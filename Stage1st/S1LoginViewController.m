@@ -97,11 +97,6 @@
     }];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -116,6 +111,7 @@
     return _HTTPClient;
 }
 
+//Login from the standard web
 - (void)login
 {
     NSDictionary *param = @{
@@ -144,6 +140,36 @@
                                 [userDefault setValue:self.userIDField.text forKey:@"UserID"];
                                 [userDefault setValue:self.userPasswordField.text forKey:@"UserPassword"];
                                 
+                            } else {
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                                [alertView show];
+                            }
+                            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        }
+                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                            NSLog(@"%@", error);
+                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                            [alertView show];
+                            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        }];
+}
+
+// Login from the mobile web
+- (void)alternativelogin
+{
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[self HTTPClient] postPath:@"m/login.php"
+                     parameters:@{ @"pwuser":self.userIDField.text, @"pwpwd":self.userPasswordField.text, @"lgt":@"0" }
+                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                            NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                            NSLog(@"%@", result);
+                            NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
+                            if (result) {
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                                [alertView show];
+                                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+                                [userDefault setValue:self.userIDField.text forKey:@"UserID"];
+                                [userDefault setValue:self.userPasswordField.text forKey:@"UserPassword"];
                             } else {
                                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
                                 [alertView show];

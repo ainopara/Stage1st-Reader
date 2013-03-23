@@ -9,7 +9,7 @@
 #import "S1HTTPClient.h"
 #import "AFNetworking.h"
 
-static NSString * const baseURLString = @"http://220.196.42.172/2b/";
+static NSString * const baseURLString = @"http://bbs.saraba1st.com/2b/";
 
 @implementation S1HTTPClient 
 
