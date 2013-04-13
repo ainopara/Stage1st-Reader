@@ -261,7 +261,7 @@
             }
             else if (result == REComposeResultPosted) {
                 if (composeViewController.text.length > 0) {
-                    [self replyWithReplyText:composeViewController.text];
+                    [self replyWithText:composeViewController.text];
                     [composeViewController dismissViewControllerAnimated:YES completion:nil];
                 }
             }
@@ -364,43 +364,76 @@
 
 - (void)replyWithText:(NSString *)text
 {
-    
-}
-
-
-- (void)replyWithReplyText:(NSString *)text
-{
-    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution[/url]";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    NSString *timestamp = [[NSString stringWithFormat:@"%ld", (long)[[NSDate date] timeIntervalSince1970]] substringToIndex:10];
-    NSString *path = [NSString stringWithFormat:@"m/post.php?action=reply&tid=%@&tmp=%@", self.topic.topicID, timestamp];
-    
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationShrink;
-    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [self.HTTPClient postPath:path
-                   parameters:@{ @"fid":self.topic.fID, @"content":replyWithSuffix }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                          NSLog(@"Reply Response: %@", HTMLString);
 
-                          if (HTMLString.length > 0) {
-                              [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                              _needToScrollToBottom = YES;
-                              [self fetchContent];
-                          } else {
-                              [overlay postErrorMessage:@"回复很可能未成功" duration:2.5 animated:YES];
-                          }
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                      }
-                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          NSLog(@"%@", error);
-                          [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                      }];
+    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
+    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970]*1000)];
+    NSString *path = [NSString stringWithFormat:@"post.php?action=reply&fid=%@&tid=%@", self.topic.fID, self.topic.topicID];
+    __weak typeof(self) myself = self;
+    [self.HTTPClient getPath:path
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                         NSLog(@"%@", HTMLString);
+                         [myself findNecessaryTokens:HTMLString withContinuation:^(NSString *tokenVerify, NSString *tokenHexie) {
+                             NSString *path = [NSString stringWithFormat:@"post.php?fid=%@&nowtime=%@&verify=%@", myself.topic.fID, timestamp, tokenVerify];
+                             NSDictionary *params = @{@"magicname" : @"",
+                                                      @"magicid" : @"",
+                                                      @"verify" : tokenVerify,
+                                                      @"cyid" :	@"0",
+                                                      @"ajax" :	@"1",
+                                                      @"iscontinue" : @"0",
+                                                      @"atc_usesign" : @"1",
+                                                      @"atc_autourl" : @"1",
+                                                      @"atc_convert" : @"1",
+                                                      @"atc_money" : @"0",
+                                                      @"atc_credittype" : @"money",
+                                                      @"atc_rvrc" : @"0",
+                                                      @"atc_enhidetype" : @"credit",
+                                                      @"atc_title" : @"",
+                                                      @"atc_iconid" : @"0",
+                                                      @"atc_content" : replyWithSuffix,
+                                                      @"attachment_1" : @"",
+                                                      @"atc_desc1" : @"",
+                                                      @"att_special1" :	@"0",
+                                                      @"att_ctype1" : @"money",
+                                                      @"atc_needrvrc1" : @"0",
+                                                      @"step" : @"2",
+                                                      @"pid" : @"",
+                                                      @"action" : @"reply",
+                                                      @"fid" : myself.topic.fID,
+                                                      @"tid" : myself.topic.topicID,
+                                                      @"article" : @"",
+                                                      @"special" : @"0",
+                                                      @"_hexie" : tokenHexie,
+                                                      };
+                             NSURLRequest *request = [myself.HTTPClient multipartFormRequestWithMethod:@"POST" path:path parameters:params constructingBodyWithBlock:nil];
+                             AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+                             [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                 NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                                 NSLog(@"%@", HTMLString);
+                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                 [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                                 _needToScrollToBottom = YES;
+                                 [myself fetchContent];
+                             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                                 [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
+                             }];
+                             [op start];
+                         }];
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                         [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                         NSLog(@"%@", error);
+                     }];
+
+    
 }
-
 
 #pragma mark - Helpers
 
@@ -437,7 +470,23 @@
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return viewImage;
+}
 
+- (void)findNecessaryTokens:(NSString *)HTMLString withContinuation:(void (^)(NSString *tokenVerify, NSString *tokenHexie))continuation
+{
+    NSRegularExpression *re = nil;
+    NSString *pattern = nil;
+    pattern = @"name=\"verify\" value=\"([0-9a-zA-Z]+)\"";
+    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSString *tokenVerify = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    pattern = @"_hexie\\.value='([0-9a-zA-Z]+)'";
+    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSString *tokenHexie = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    if (continuation) {
+        continuation(tokenVerify, tokenHexie);
+    }
 }
 
 @end

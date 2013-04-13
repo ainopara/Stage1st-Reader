@@ -22,7 +22,7 @@ typedef enum {
 + (S1HUD *)showHUDInView:(UIView *)view
 {
     S1HUD *HUD = [[self alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
-    HUD.center = CGPointMake(CGRectGetMidX(view.bounds), CGRectGetMidY(view.bounds));
+    HUD.center = CGPointMake(roundf(CGRectGetMidX(view.bounds)), roundf(CGRectGetMidY(view.bounds)));
     HUD.alpha = 0.0;
     HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
     [view addSubview:HUD];

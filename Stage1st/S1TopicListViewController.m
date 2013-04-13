@@ -234,7 +234,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (self.cache[key]) {
         self.topics = self.cache[key];
         [self.tableView reloadData];
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         return;
     }
     [self fetchTopicsForKeyFromServer:key scrollToTop:YES];
@@ -246,12 +246,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
     NSString *path = [NSString stringWithFormat:@"simple/?f%@.html", self.threadsInfo[key]];
+    NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                         if (HTMLString) {
-                            NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": self.threadsInfo[self.currentKey]}];
+                            NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": fid}];
                             if (topics.count > 0) {
                                 self.topics = topics;
                                 self.cache[key] = topics;

@@ -72,10 +72,10 @@
     [background setFill];
     [rectanglePath fill];
     
-    CGRect roundRectangleRect;
-    CGRect textRect;
-    CGRect titleRect;
-    CGPoint titlePoint;
+    CGRect roundRectangleRect = CGRectZero;
+    CGRect textRect = CGRectZero;
+    CGRect titleRect = CGRectZero;
+    CGPoint titlePoint = CGPointZero;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         roundRectangleRect = CGRectMake(19, 18, 37, 19);
         textRect = CGRectMake(20, 20, 35, 18);
