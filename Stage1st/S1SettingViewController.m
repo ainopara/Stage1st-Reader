@@ -113,7 +113,8 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"版本", @"Version");
-                cell.detailTextLabel.text = @"3.1";
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]
+;
             }];
         }];
         
