@@ -17,7 +17,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self.contentView setBounds:self.bounds];
+        NSLog(@"Style: %f-%f-%f-%f",self.frame.size.height,self.frame.size.width,self.frame.origin.x,self.frame.origin.y);
         self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds];
         [self.contentView addSubview:self.drawingSubView];
     }

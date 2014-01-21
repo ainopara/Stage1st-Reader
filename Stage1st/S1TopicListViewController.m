@@ -55,6 +55,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidLoad
 {
 #define _BAR_HEIGHT 44.0f
+#define _UPPER_BAR_HEIGHT 64.0f
     
     [super viewDidLoad];
     self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed_3_1.tracer"];
@@ -63,9 +64,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     self.view.backgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
     
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-2*_BAR_HEIGHT) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
     self.tableView.autoresizesSubviews = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.tableView.rowHeight = 54.0f;
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorColor = [UIColor colorWithRed:0.82 green:0.85 blue:0.76 alpha:1.0];
@@ -78,7 +82,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];
-    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
+    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.navigationBar.tintColor = [UIColor colorWithWhite:0.15 alpha:1.0];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];

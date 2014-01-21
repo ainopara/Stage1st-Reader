@@ -15,7 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        NSLog(@"initWithFrame: %f-%f-%f-%f",frame.size.height,frame.size.width,frame.origin.x,frame.origin.y);
+        
         
     }
     return self;
@@ -44,7 +44,6 @@
 - (void)drawRect:(CGRect)rect
 {
     NSLog(@"drawRect called");
-    NSLog(@"%f-%f-%f-%f",rect.size.height,rect.size.width,rect.origin.x,rect.origin.y);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
