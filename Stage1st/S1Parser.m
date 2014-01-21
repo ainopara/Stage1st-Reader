@@ -12,7 +12,7 @@
 
 #define kNumberPerPage 50
 
-static NSString * const topicPattern = @"<li><a href=.*?t(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
+static NSString * const topicPattern = @"<li><a href=.*?tid-(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
 static NSString * const cssPattern = @"</style>";
 static NSString * const cleanupPattern = @"(?:<br />(<br />)?\\r\\n<center>.*?</center>)|(?:<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(?:src=\"http://[-.0-9a-zA-Z]+/2b/images/back\\.gif\")|(?:onload=\"if\\(this.offsetWidth>'600'\\)this.width='600';\")";
 static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";

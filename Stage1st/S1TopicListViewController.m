@@ -245,7 +245,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
-    NSString *path = [NSString stringWithFormat:@"simple/?f%@.html", self.threadsInfo[key]];
+    NSString *path = [NSString stringWithFormat:@"archiver/fid-%@.html", self.threadsInfo[key]];
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
                   parameters:nil

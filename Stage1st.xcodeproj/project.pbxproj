@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		C002D2BB16EC665D00A5414E /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = C002D2B916EC665D00A5414E /* Icon-72.png */; };
 		C002D2BC16EC665D00A5414E /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C002D2BA16EC665D00A5414E /* Icon-72@2x.png */; };
 		C01C820816FDB168003E6B91 /* Bar_item_highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = C01C820416FDB167003E6B91 /* Bar_item_highlighted.png */; };
@@ -101,6 +102,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
+		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		C002D2B916EC665D00A5414E /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/Icon-72.png"; sourceTree = "<group>"; };
 		C002D2BA16EC665D00A5414E /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "Resources/Icon-72@2x.png"; sourceTree = "<group>"; };
 		C01C820416FDB167003E6B91 /* Bar_item_highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Bar_item_highlighted.png; path = Resources/Bar_item_highlighted.png; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				C0AEAE8816F73C9800CB0E71 /* Deprecated */,
 				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
 				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
+				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
+				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -720,6 +725,7 @@
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
+				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPClient.m in Sources */,
 				C05286C916D3CE49000B0DBD /* AsyncCell.m in Sources */,
 				C05286CC16D3DE7D000B0DBD /* S1TopicCell.m in Sources */,

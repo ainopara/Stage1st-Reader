@@ -344,7 +344,7 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@_%d.html", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:@"archiver/tid-%@.html?page=%d", self.topic.topicID, _currentPage];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
