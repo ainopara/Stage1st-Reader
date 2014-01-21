@@ -15,8 +15,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        
-        
+        _selected = NO;
+        _highlighted = NO;
     }
     return self;
 }
@@ -30,13 +30,11 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     _selected = selected;
-    [self setNeedsDisplay];
 }
      
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     _highlighted = highlighted;
-    [self setNeedsDisplay];
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -133,6 +131,5 @@
     
     
 }
-
 
 @end

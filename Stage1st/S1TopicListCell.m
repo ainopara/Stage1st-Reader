@@ -17,8 +17,11 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        NSLog(@"Style: %f-%f-%f-%f",self.frame.size.height,self.frame.size.width,self.frame.origin.x,self.frame.origin.y);
-        self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds];
+        self.autoresizesSubviews = YES;
+        self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.contentView.autoresizesSubviews = YES;
+        self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds]; //This value will be replaced by setFrame function
         [self.contentView addSubview:self.drawingSubView];
     }
     return self;
@@ -33,9 +36,7 @@
 {
     [super setSelected:selected animated:animated];
     [self.drawingSubView setSelected:selected];
-    if (selected) {
-        NSLog(@"selected");
-    }
+    [self.drawingSubView setNeedsDisplay];
     // Configure the view for the selected state
 }
 
@@ -43,11 +44,12 @@
 {
     [super setHighlighted:highlighted animated:animated];
     [self.drawingSubView setHighlighted:highlighted];
-    if (highlighted) {
-        NSLog(@"highlighted");
-    }
+    [self.drawingSubView setNeedsDisplay];
 }
 
-
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self.drawingSubView setFrame:self.contentView.bounds];
+}
 
 @end
