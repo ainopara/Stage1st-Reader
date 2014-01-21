@@ -82,7 +82,7 @@
         textRect = CGRectMake(20, 20, 35, 18);
         titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
         CGSize actualSize = [titleContent sizeWithFont:[UIFont boldSystemFontOfSize:15.0f] constrainedToSize:titleRect.size];
-        if (actualSize.height < 38.0f) {
+        if (actualSize.height < 30.0f) {
             titleRect = CGRectMake(70, 16.5, self.bounds.size.width - 90, 19);
         }
         
