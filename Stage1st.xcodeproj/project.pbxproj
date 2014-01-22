@@ -37,9 +37,6 @@
 		C095874216CA8A36007E0119 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C095874016CA8A36007E0119 /* InfoPlist.strings */; };
 		C095874416CA8A36007E0119 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874316CA8A36007E0119 /* main.m */; };
 		C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874716CA8A36007E0119 /* S1AppDelegate.m */; };
-		C095874A16CA8A36007E0119 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C095874916CA8A36007E0119 /* Default.png */; };
-		C095874C16CA8A36007E0119 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C095874B16CA8A36007E0119 /* Default@2x.png */; };
-		C095874E16CA8A36007E0119 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C095874D16CA8A36007E0119 /* Default-568h@2x.png */; };
 		C095875716CA8A69007E0119 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095875616CA8A69007E0119 /* QuartzCore.framework */; };
 		C095876C16CA8CD4007E0119 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C095875A16CA8CD4007E0119 /* AFHTTPClient.m */; };
 		C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C095875C16CA8CD4007E0119 /* AFHTTPRequestOperation.m */; };
@@ -123,9 +120,6 @@
 		C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Prefix.pch"; sourceTree = "<group>"; };
 		C095874616CA8A36007E0119 /* S1AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = S1AppDelegate.h; sourceTree = "<group>"; };
 		C095874716CA8A36007E0119 /* S1AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = S1AppDelegate.m; sourceTree = "<group>"; };
-		C095874916CA8A36007E0119 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		C095874B16CA8A36007E0119 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		C095874D16CA8A36007E0119 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C095875616CA8A69007E0119 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C095875916CA8CD4007E0119 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		C095875A16CA8CD4007E0119 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
@@ -323,9 +317,6 @@
 				C095874016CA8A36007E0119 /* InfoPlist.strings */,
 				C095874316CA8A36007E0119 /* main.m */,
 				C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */,
-				C095874916CA8A36007E0119 /* Default.png */,
-				C095874B16CA8A36007E0119 /* Default@2x.png */,
-				C095874D16CA8A36007E0119 /* Default-568h@2x.png */,
 				C083351516E34DCF0035C1AA /* Threads.plist */,
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 			);
@@ -544,9 +535,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C095874216CA8A36007E0119 /* InfoPlist.strings in Resources */,
-				C095874A16CA8A36007E0119 /* Default.png in Resources */,
-				C095874C16CA8A36007E0119 /* Default@2x.png in Resources */,
-				C095874E16CA8A36007E0119 /* Default-568h@2x.png in Resources */,
 				C08DB46B16DE3794002B4A92 /* content.css in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
@@ -695,6 +683,8 @@
 		C095875216CA8A36007E0119 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ruiwei Bu (9L4ENBJ447)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
@@ -710,6 +700,8 @@
 		C095875316CA8A36007E0119 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ruiwei Bu (9L4ENBJ447)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
