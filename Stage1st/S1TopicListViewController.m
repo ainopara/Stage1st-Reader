@@ -12,7 +12,6 @@
 #import "S1SettingViewController.h"
 #import "S1HTTPClient.h"
 #import "S1Parser.h"
-#import "S1TopicCell.h"
 #import "S1TopicListCell.h"
 #import "S1HUD.h"
 #import "S1Topic.h"
