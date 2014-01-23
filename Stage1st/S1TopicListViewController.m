@@ -251,21 +251,18 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
-    NSString *path = [NSString stringWithFormat:@"archiver/fid-%@.html", self.threadsInfo[key]];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                        if (HTMLString) {
-                            NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": fid}];
-                            if (topics.count > 0) {
-                                self.topics = topics;
-                                self.cache[key] = topics;
-                                [self.tableView reloadData];
-                                if (toTop) {
-                                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                                }
+                        NSArray *topics = [S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}];
+                        if (topics.count > 0) {
+                            self.topics = topics;
+                            self.cache[key] = topics;
+                            [self.tableView reloadData];
+                            if (toTop) {
+                                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
                             }
                         }
                         if (self.refreshControl.refreshing) {

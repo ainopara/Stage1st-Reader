@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
+		862F51AC1891335A0038A289 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 862F51AB1891335A0038A289 /* libxml2.dylib */; };
+		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
+		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
+		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */ = {isa = PBXBuildFile; fileRef = C01C821016FDB5D2003E6B91 /* content_larger_font.css */; };
 		C0401DB316EB0F2000E52A9A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C083353416E4E7C40035C1AA /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -70,6 +74,13 @@
 
 /* Begin PBXFileReference section */
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
+		862F51AB1891335A0038A289 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
+		862F51B8189136000038A289 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Vendors/TFHpple/TFHpple.m; sourceTree = "<group>"; };
+		862F51B9189136000038A289 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHppleElement.h; path = Vendors/TFHpple/TFHppleElement.h; sourceTree = "<group>"; };
+		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
+		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
+		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
@@ -185,6 +196,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				862F51AC1891335A0038A289 /* libxml2.dylib in Frameworks */,
 				C0401DB316EB0F2000E52A9A /* Social.framework in Frameworks */,
 				C096CD3F16EADE0000D4FF7F /* MessageUI.framework in Frameworks */,
 				C05286CE16D3E7FD000B0DBD /* CoreText.framework in Frameworks */,
@@ -200,6 +212,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		862F51B61891359A0038A289 /* TFHpple */ = {
+			isa = PBXGroup;
+			children = (
+				862F51B7189136000038A289 /* TFHpple.h */,
+				862F51B8189136000038A289 /* TFHpple.m */,
+				862F51B9189136000038A289 /* TFHppleElement.h */,
+				862F51BA189136000038A289 /* TFHppleElement.m */,
+				862F51BB189136000038A289 /* XPathQuery.h */,
+				862F51BC189136000038A289 /* XPathQuery.m */,
+			);
+			name = TFHpple;
+			sourceTree = "<group>";
+		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +309,7 @@
 		C095873616CA8A36007E0119 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				862F51AB1891335A0038A289 /* libxml2.dylib */,
 				C096CD3E16EADE0000D4FF7F /* MessageUI.framework */,
 				C083353416E4E7C40035C1AA /* Social.framework */,
 				C05286CD16D3E7FD000B0DBD /* CoreText.framework */,
@@ -326,6 +352,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				862F51B61891359A0038A289 /* TFHpple */,
 				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
 				C096CD2D16EADD3300D4FF7F /* SVWebViewController */,
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
@@ -559,6 +586,7 @@
 				C095876C16CA8CD4007E0119 /* AFHTTPClient.m in Sources */,
 				C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */,
 				C095876E16CA8CD4007E0119 /* AFImageRequestOperation.m in Sources */,
+				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
 				C095877016CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				C095877216CA8CD4007E0119 /* AFURLConnectionOperation.m in Sources */,
 				C095877416CA8CD4007E0119 /* UIImageView+AFNetworking.m in Sources */,
@@ -569,6 +597,7 @@
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
 				C095879E16CB61FC007E0119 /* GSRow.m in Sources */,
+				862F51BD189136000038A289 /* TFHpple.m in Sources */,
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
@@ -589,6 +618,7 @@
 				C083353116E4E1550035C1AA /* REComposeSheetView.m in Sources */,
 				C083353316E4E1550035C1AA /* REComposeViewController.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
+				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C096CD3B16EADD3300D4FF7F /* SVModalWebViewController.m in Sources */,
 				C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */,
@@ -688,6 +718,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ruiwei Bu (9L4ENBJ447)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -705,6 +736,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Ruiwei Bu (9L4ENBJ447)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -9,6 +9,7 @@
 #import "S1Parser.h"
 #import "S1Topic.h"
 #import "GTMNSString+HTML.h"
+#import "TFHpple.h"
 
 #define kNumberPerPage 50
 
@@ -20,7 +21,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
 
 @implementation S1Parser
 
-+ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context;
++ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context
 {
     NSString *HTMLString = [rawString gtm_stringByUnescapingFromHTML];
     NSRegularExpression *re = [[NSRegularExpression alloc]
@@ -42,6 +43,37 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
                               [topics addObject:topic];
                           }
                       }];
+    return (NSArray *)topics;
+}
+
++ (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
+{
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
+    NSMutableArray *topics = [NSMutableArray array];
+    
+    NSLog(@"%d",[elements count]);
+    if ([elements count]) {
+        for (TFHppleElement *element in elements){
+            if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
+                continue;
+            }
+            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+            TFHppleElement *leftPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='s xst']"] firstObject];
+            NSString *content = [leftPart text];
+            NSString *href = [leftPart objectForKey:@"href"];
+            TFHppleElement *rightPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
+            NSString *replyCount = [rightPart text];
+            
+            S1Topic *topic = [[S1Topic alloc] init];
+            [topic setTopicID:[[href componentsSeparatedByString:@"-"] objectAtIndex:1]];
+            [topic setTitle:content];
+            [topic setReplyCount:replyCount];
+            [topic setFID:context[@"FID"]];
+            [topics addObject:topic];
+        }
+    }
+
     return (NSArray *)topics;
 }
 
