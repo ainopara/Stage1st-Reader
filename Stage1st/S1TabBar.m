@@ -132,9 +132,12 @@
         CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
         [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
         btn.showsTouchWhenHighlighted = NO;
+        /*
         [btn setBackgroundImage:[UIImage imageNamed:@"Item.png"] forState:UIControlStateNormal];
         [btn setBackgroundImage:[[UIImage imageNamed:@"Item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
         [btn setBackgroundImage:[[UIImage imageNamed:@"Item_selected.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
+         */
+        [btn setBackgroundColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]];
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitle:[obj description] forState:UIControlStateHighlighted];
         [btn setTitle:[obj description] forState:UIControlStateSelected];

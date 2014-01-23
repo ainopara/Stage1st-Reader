@@ -86,6 +86,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.navigationBar.tintColor = [UIColor colorWithWhite:0.15 alpha:1.0];
+    self.navigationBar.backgroundColor = [UIColor colorWithRed:0.628 green:0.611 blue:0.484 alpha:1.000];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];

@@ -6,9 +6,23 @@
       "filename" : "Navigation.png"
     },
     {
+      "resizing" : {
+        "mode" : "9-part",
+        "center" : {
+          "mode" : "fill",
+          "width" : 1,
+          "height" : 1
+        },
+        "capInsets" : {
+          "bottom" : 46,
+          "top" : 41,
+          "right" : 222,
+          "left" : 213
+        }
+      },
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "Navigation@2x.png"
+      "filename" : "Navigation@2x.png",
+      "scale" : "2x"
     }
   ],
   "info" : {

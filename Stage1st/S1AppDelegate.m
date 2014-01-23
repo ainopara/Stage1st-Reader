@@ -43,6 +43,7 @@
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
+    /*
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
         [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Navigation.png"] forToolbarPosition:UIToolbarPositionTop barMetrics:UIBarMetricsDefault];
@@ -56,6 +57,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];        
     }
+     */
 
     
     
