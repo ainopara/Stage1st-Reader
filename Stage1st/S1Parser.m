@@ -150,7 +150,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
             NSString *floorIndexMark = nil;
             if ([[floorIndexMarkNode childrenWithTagName:@"em"] count] != 0) {
-                floorIndexMark = [[[floorIndexMarkNode firstChildWithTagName:@"em"] text] stringByAppendingString:@"<sup>#</sup>"];
+                floorIndexMark = [@"#" stringByAppendingString:[[floorIndexMarkNode firstChildWithTagName:@"em"] text]];
             } else {
                 floorIndexMark = [floorIndexMarkNode text];
             }

@@ -75,6 +75,10 @@ button {
     display: none;
 }
 
+.quote {
+	border-left-style: solid;
+}
+
 blockquote {
 	margin: 0;
 	margin: 5px;

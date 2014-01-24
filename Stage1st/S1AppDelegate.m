@@ -43,21 +43,23 @@
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    /*
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-        [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Navigation.png"] forToolbarPosition:UIToolbarPositionTop barMetrics:UIBarMetricsDefault];
-        [[UINavigationBar appearance] setBackgroundImage:[[UIImage imageNamed:@"Navigation.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forBarMetrics:UIBarMetricsDefault];
+        /*[[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];*/
+        //[[UIToolbar appearance] setBackgroundColor:[UIColor colorWithRed:0.8196 green:0.8510 blue:0.7568 alpha:1.0f]];
+        [[UINavigationBar appearance] setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setBackgroundColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000]];
+        /*[[UINavigationBar appearance] setBackgroundImage:[[UIImage imageNamed:@"Navigation.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forBarMetrics:UIBarMetricsDefault];
         [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
         [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];*/
     }
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];        
     }
-     */
+    
 
     
     

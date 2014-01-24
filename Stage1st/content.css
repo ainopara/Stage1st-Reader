@@ -26,7 +26,6 @@ iframe {
 	border-radius: 0px;
 	word-break: break-all;
     border: none;
-    width: 94.2%;
 }
 
 .t_f {
@@ -75,7 +74,9 @@ button {
     display: none;
 }
 
-
+.quote {
+	border-left-style: solid;
+}
 
 blockquote {
 	margin: 0;

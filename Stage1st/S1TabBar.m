@@ -11,6 +11,11 @@
 #define _DEFAULT_WIDTH 80.0f
 #define _DEFAULT_WIDTH_IPAD 96.0f
 
+@interface S1TabBar()
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
++ (UIImage *)imageWithColor:(UIColor *)color;
+@end
+
 @implementation S1TabBar {
     NSMutableArray *_buttons;
     NSInteger _index;
@@ -132,12 +137,10 @@
         CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
         [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
         btn.showsTouchWhenHighlighted = NO;
-        /*
-        [btn setBackgroundImage:[UIImage imageNamed:@"Item.png"] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[[UIImage imageNamed:@"Item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[[UIImage imageNamed:@"Item_selected.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
-         */
-        [btn setBackgroundColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]];
+        
+        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
+        
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitle:[obj description] forState:UIControlStateHighlighted];
         [btn setTitle:[obj description] forState:UIControlStateSelected];
@@ -156,6 +159,26 @@
     }];
     
     self.contentSize = CGSizeMake(width, self.bounds.size.height);
+}
+
+
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size
+{
+    UIGraphicsBeginImageContext(size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextFillRect(context, (CGRect){.size = size});
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
++ (UIImage *)imageWithColor:(UIColor *)color
+{
+    return [self imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
 /*
