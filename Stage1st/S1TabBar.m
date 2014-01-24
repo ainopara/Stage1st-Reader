@@ -135,11 +135,11 @@
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
-        [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
+        [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
         [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] forState:UIControlStateSelected];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitle:[obj description] forState:UIControlStateHighlighted];
