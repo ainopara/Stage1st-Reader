@@ -122,5 +122,69 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     return (NSString *)HTMLString;
 }
 
++ (NSString *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
+{
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
+    NSString *finalString = [[NSString alloc] init];
+    
+    NSLog(@"%d",[elements count]);
+    if ([elements count]) {
+        for (TFHppleElement *element in elements){
+            if (![[element objectForKey:@"id"] hasPrefix:@"post_"]) {
+                continue;
+            }
+            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+            TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
+            NSString *author = [authorNode text];
+
+            TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
+            NSString *postTime = nil;
+            if (postTimeNode) {
+                postTime = [postTimeNode objectForKey:@"title"];
+            } else {
+                TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
+                postTime = [postTimeNode text];
+            }
+            
+            TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
+            NSString *floorIndexMark = nil;
+            if ([[floorIndexMarkNode childrenWithTagName:@"em"] count] != 0) {
+                floorIndexMark = [[[floorIndexMarkNode firstChildWithTagName:@"em"] text] stringByAppendingString:@"<sup>#</sup>"];
+            } else {
+                floorIndexMark = [floorIndexMarkNode text];
+            }
+            
+            TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
+            NSString *floorContent = [floorContentNode raw];
+            
+            NSBundle *bundle = [NSBundle mainBundle];
+            NSString *floorTemplatePath = [bundle pathForResource:@"FloorTemplate" ofType:@"html"];
+            NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
+            NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
+            NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, author, postTime, floorContent];
+            finalString = [finalString stringByAppendingString:output];
+        }
+    }
+
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *threadTemplatePath = [bundle pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
+    NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
+    
+    NSString *cssPath = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"15px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
+        }
+    } else {
+        cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
+    }
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
+    return threadPage;
+}
 
 @end

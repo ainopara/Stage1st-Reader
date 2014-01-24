@@ -41,7 +41,7 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    NSLog(@"drawRect called");
+    //NSLog(@"drawRect called");
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations

@@ -29,7 +29,7 @@ iframe {
     width: 94.2%;
 }
 
-.tpc_content {
+.t_f {
     color: #022c80;
     font-size: 17px;
     line-height: 150%;
@@ -75,11 +75,9 @@ button {
     display: none;
 }
 
-.quote {
-	display: none;
-}
 
-.blockquote3 {
+
+blockquote {
 	margin: 0;
 	margin: 5px;
 }

@@ -14,5 +14,6 @@
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
 
 + (NSString *)contentsFromHTMLString:(NSMutableString *)HTMLString withOffset:(NSInteger)offset;
++ (NSString *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
 
 @end

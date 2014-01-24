@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#define _URL_PATTERN @"http://bbs.saraba1st.com/2b/simple/?t%@.html"
 
 #import <Social/Social.h>
 #import "S1RootViewController.h"
@@ -344,16 +343,13 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"archiver/tid-%@.html?page=%d", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:@"thread-%@-%d-1.html", self.topic.topicID, _currentPage];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          NSLog(@"%@", operation.request.allHTTPHeaderFields);
-                         NSMutableString *HTMLString = [[NSMutableString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         if (HTMLString) {
-                             NSString *string = [S1Parser contentsFromHTMLString:HTMLString withOffset:_currentPage];
-                             [self.webView loadHTMLString:string baseURL:nil];
-                         }
+                         NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         [self.webView loadHTMLString:string baseURL:nil];
                          [HUD hideWithDelay:0.5];
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
