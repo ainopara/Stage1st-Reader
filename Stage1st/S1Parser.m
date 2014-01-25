@@ -10,6 +10,8 @@
 #import "S1Topic.h"
 #import "GTMNSString+HTML.h"
 #import "TFHpple.h"
+#import "DDXML.h"
+#import "DDXMLElementAdditions.h"
 
 #define kNumberPerPage 50
 
@@ -157,7 +159,24 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             
             TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
             NSString *floorContent = [floorContentNode raw];
-            
+            DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[floorContent dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
+            for (DDXMLElement *image in images) {
+                NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
+                NSLog(@"image Src:%@",imageSrc);
+                NSString *imageFile = [[image attributeForName:@"file"] stringValue];
+                NSLog(@"image File:%@",imageFile);
+                if (imageFile) {
+                    [image removeAttributeForName:@"src"];
+                    [image addAttributeWithName:@"src" stringValue:imageFile];
+                }
+                else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
+                    [image removeAttributeForName:@"src"];
+                    [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
+                }
+
+            }
+            floorContent = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
             NSBundle *bundle = [NSBundle mainBundle];
             NSString *floorTemplatePath = [bundle pathForResource:@"FloorTemplate" ofType:@"html"];
             NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];

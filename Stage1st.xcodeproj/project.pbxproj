@@ -12,6 +12,11 @@
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
+		8662DF26189363470060D513 /* DDXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF19189363470060D513 /* DDXMLElementAdditions.m */; };
+		8662DF27189363470060D513 /* NSString+DDXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF1C189363470060D513 /* NSString+DDXML.m */; };
+		8662DF28189363470060D513 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF1F189363470060D513 /* DDXMLDocument.m */; };
+		8662DF29189363470060D513 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF21189363470060D513 /* DDXMLElement.m */; };
+		8662DF2A189363470060D513 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF23189363470060D513 /* DDXMLNode.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
@@ -83,6 +88,18 @@
 		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
 		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
 		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
+		8662DF18189363470060D513 /* DDXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElementAdditions.h; sourceTree = "<group>"; };
+		8662DF19189363470060D513 /* DDXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElementAdditions.m; sourceTree = "<group>"; };
+		8662DF1B189363470060D513 /* NSString+DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DDXML.h"; sourceTree = "<group>"; };
+		8662DF1C189363470060D513 /* NSString+DDXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DDXML.m"; sourceTree = "<group>"; };
+		8662DF1D189363470060D513 /* DDXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXML.h; sourceTree = "<group>"; };
+		8662DF1E189363470060D513 /* DDXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLDocument.h; sourceTree = "<group>"; };
+		8662DF1F189363470060D513 /* DDXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLDocument.m; sourceTree = "<group>"; };
+		8662DF20189363470060D513 /* DDXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLElement.h; sourceTree = "<group>"; };
+		8662DF21189363470060D513 /* DDXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLElement.m; sourceTree = "<group>"; };
+		8662DF22189363470060D513 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
+		8662DF23189363470060D513 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
+		8662DF25189363470060D513 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
@@ -229,6 +246,50 @@
 			name = TFHpple;
 			sourceTree = "<group>";
 		};
+		8662DF16189363470060D513 /* KissXML */ = {
+			isa = PBXGroup;
+			children = (
+				8662DF17189363470060D513 /* Additions */,
+				8662DF1A189363470060D513 /* Categories */,
+				8662DF1D189363470060D513 /* DDXML.h */,
+				8662DF1E189363470060D513 /* DDXMLDocument.h */,
+				8662DF1F189363470060D513 /* DDXMLDocument.m */,
+				8662DF20189363470060D513 /* DDXMLElement.h */,
+				8662DF21189363470060D513 /* DDXMLElement.m */,
+				8662DF22189363470060D513 /* DDXMLNode.h */,
+				8662DF23189363470060D513 /* DDXMLNode.m */,
+				8662DF24189363470060D513 /* Private */,
+			);
+			name = KissXML;
+			path = Vendors/KissXML;
+			sourceTree = "<group>";
+		};
+		8662DF17189363470060D513 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				8662DF18189363470060D513 /* DDXMLElementAdditions.h */,
+				8662DF19189363470060D513 /* DDXMLElementAdditions.m */,
+			);
+			path = Additions;
+			sourceTree = "<group>";
+		};
+		8662DF1A189363470060D513 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				8662DF1B189363470060D513 /* NSString+DDXML.h */,
+				8662DF1C189363470060D513 /* NSString+DDXML.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		8662DF24189363470060D513 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				8662DF25189363470060D513 /* DDXMLPrivate.h */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -358,6 +419,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				8662DF16189363470060D513 /* KissXML */,
 				862F51B61891359A0038A289 /* TFHpple */,
 				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
 				C096CD2D16EADD3300D4FF7F /* SVWebViewController */,
@@ -595,10 +657,13 @@
 				C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */,
 				C095876E16CA8CD4007E0119 /* AFImageRequestOperation.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
+				8662DF26189363470060D513 /* DDXMLElementAdditions.m in Sources */,
 				C095877016CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				C095877216CA8CD4007E0119 /* AFURLConnectionOperation.m in Sources */,
 				C095877416CA8CD4007E0119 /* UIImageView+AFNetworking.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
+				8662DF2A189363470060D513 /* DDXMLNode.m in Sources */,
+				8662DF27189363470060D513 /* NSString+DDXML.m in Sources */,
 				C095878216CA8EAC007E0119 /* S1Reply.m in Sources */,
 				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
@@ -620,6 +685,7 @@
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
+				8662DF28189363470060D513 /* DDXMLDocument.m in Sources */,
 				C083352E16E4E1550035C1AA /* DEComposeRuledView.m in Sources */,
 				C083352F16E4E1550035C1AA /* DEComposeTextView.m in Sources */,
 				C083353016E4E1550035C1AA /* REComposeBackgroundView.m in Sources */,
@@ -627,6 +693,7 @@
 				C083353316E4E1550035C1AA /* REComposeViewController.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
+				8662DF29189363470060D513 /* DDXMLElement.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C096CD3B16EADD3300D4FF7F /* SVModalWebViewController.m in Sources */,
 				C096CD3D16EADD3300D4FF7F /* SVWebViewController.m in Sources */,
@@ -729,6 +796,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "0FA1D3AD-820C-4541-887F-0B1ED6648B2A";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -747,6 +815,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "0FA1D3AD-820C-4541-887F-0B1ED6648B2A";
 				TARGETED_DEVICE_FAMILY = "1,2";
