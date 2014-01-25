@@ -169,6 +169,8 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
                 if (imageFile) {
                     [image removeAttributeForName:@"src"];
                     [image addAttributeWithName:@"src" stringValue:imageFile];
+                    [image removeAttributeForName:@"width"];
+                    [image removeAttributeForName:@"height"];
                 }
                 else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
                     [image removeAttributeForName:@"src"];
@@ -177,6 +179,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
 
             }
             floorContent = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
+            floorContent = [floorContent stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
             NSBundle *bundle = [NSBundle mainBundle];
             NSString *floorTemplatePath = [bundle pathForResource:@"FloorTemplate" ofType:@"html"];
             NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
