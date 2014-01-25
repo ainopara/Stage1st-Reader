@@ -89,7 +89,10 @@ blockquote {
 	display: block;
     color: #aaa;
 }
-
+.attachment {
+    display: block;
+    border-top: #ccc 1px solid;
+}
 .smalltext {
     font-size: 12px;
 }

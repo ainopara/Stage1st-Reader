@@ -20,8 +20,36 @@ static NSString * const cssPattern = @"</style>";
 static NSString * const cleanupPattern = @"(?:<br />(<br />)?\\r\\n<center>.*?</center>)|(?:<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(?:src=\"http://[-.0-9a-zA-Z]+/2b/images/back\\.gif\")|(?:onload=\"if\\(this.offsetWidth>'600'\\)this.width='600';\")";
 static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";
 
+@interface S1Parser()
++(NSString *)processImagesInHTMLString:(NSString *)HTMLString;
+@end
 
 @implementation S1Parser
++(NSString *)processImagesInHTMLString:(NSString *)HTMLString
+{
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
+    for (DDXMLElement *image in images) {
+        NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
+        NSLog(@"image Src:%@",imageSrc);
+        NSString *imageFile = [[image attributeForName:@"file"] stringValue];
+        NSLog(@"image File:%@",imageFile);
+        if (imageFile) {
+            [image removeAttributeForName:@"src"];
+            [image addAttributeWithName:@"src" stringValue:imageFile];
+            [image removeAttributeForName:@"width"];
+            [image removeAttributeForName:@"height"];
+        }
+        else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
+            [image removeAttributeForName:@"src"];
+            [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
+        }
+        
+    }
+    HTMLString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
+    HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
+    return HTMLString;
+}
 
 + (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context
 {
@@ -161,38 +189,19 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             NSString *floorContent = [floorContentNode raw];
             
             
-            TFHppleElement *floorAttachmentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']"] firstObject];
-            if (floorAttachmentNode) {
-                floorContent = [floorContent stringByAppendingString:[floorAttachmentNode raw]];
+            NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
+            NSString *floorAttachment = @"";
+            if ([floorAttachmentArray count]) {
+                TFHppleElement *floorAttachmentNode  = [floorAttachmentArray firstObject];
+                floorAttachment = [NSString stringWithFormat:@"<tr class='attachment'><td>%@</td></tr>", [floorAttachmentNode raw]];
             }
-            floorContent = [NSString stringWithFormat:@"<div>%@</div>", floorContent];
             
-            DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[floorContent dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-            NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
-            for (DDXMLElement *image in images) {
-                NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
-                NSLog(@"image Src:%@",imageSrc);
-                NSString *imageFile = [[image attributeForName:@"file"] stringValue];
-                NSLog(@"image File:%@",imageFile);
-                if (imageFile) {
-                    [image removeAttributeForName:@"src"];
-                    [image addAttributeWithName:@"src" stringValue:imageFile];
-                    [image removeAttributeForName:@"width"];
-                    [image removeAttributeForName:@"height"];
-                }
-                else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
-                    [image removeAttributeForName:@"src"];
-                    [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
-                }
-
-            }
-            floorContent = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
-            floorContent = [floorContent stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
+            
             NSBundle *bundle = [NSBundle mainBundle];
             NSString *floorTemplatePath = [bundle pathForResource:@"FloorTemplate" ofType:@"html"];
             NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
             NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-            NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, author, postTime, floorContent];
+            NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, author, postTime, floorContent, floorAttachment];
             finalString = [finalString stringByAppendingString:output];
         }
     }
@@ -213,6 +222,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     } else {
         cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
     }
+    finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
     return threadPage;
 }
