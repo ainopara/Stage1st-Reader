@@ -159,6 +159,14 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             
             TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
             NSString *floorContent = [floorContentNode raw];
+            
+            
+            TFHppleElement *floorAttachmentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']"] firstObject];
+            if (floorAttachmentNode) {
+                floorContent = [floorContent stringByAppendingString:[floorAttachmentNode raw]];
+            }
+            floorContent = [NSString stringWithFormat:@"<div>%@</div>", floorContent];
+            
             DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[floorContent dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
             NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
             for (DDXMLElement *image in images) {
