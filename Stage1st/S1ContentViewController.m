@@ -72,7 +72,7 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    self.webView.backgroundColor = [UIColor colorWithWhite:0.20f alpha:1.0f];
+    self.webView.backgroundColor = [UIColor colorWithRed:0.96 green:0.97 blue:0.90 alpha:1.0];//[UIColor colorWithWhite:0.20f alpha:1.0f]
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
