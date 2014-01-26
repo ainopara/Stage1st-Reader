@@ -30,7 +30,7 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://220.196.42.172" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
