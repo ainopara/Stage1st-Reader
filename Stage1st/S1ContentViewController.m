@@ -290,7 +290,7 @@
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
         controller.modalPresentationStyle = UIModalPresentationPageSheet;
-        //[[controller view] setTintColor:[S1GlobalVariables color3]];
+        [[controller view] setTintColor:[S1GlobalVariables color3]];
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }
