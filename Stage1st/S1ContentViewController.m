@@ -19,6 +19,7 @@
 #import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
 #import "AFNetworking.h"
+#import "S1GlobalVariables.h"
 
 
 #define _REPLY_PER_PAGE 30
@@ -72,18 +73,18 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    self.webView.backgroundColor = [UIColor colorWithRed:0.96 green:0.97 blue:0.90 alpha:1.0];//[UIColor colorWithWhite:0.20f alpha:1.0f]
+    self.webView.backgroundColor = [S1GlobalVariables color5];//color6
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
     self.maskView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.maskView.backgroundColor = [UIColor colorWithRed:0.96 green:0.97 blue:0.90 alpha:1.0];
+    self.maskView.backgroundColor = [S1GlobalVariables color5];
     self.maskView.userInteractionEnabled = NO;
     [self.webView addSubview:self.maskView];
     
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, self.view.bounds.size.height-44.0f, self.view.bounds.size.width, 44.0f);
-    self.toolbar.tintColor = [UIColor colorWithWhite:0.15f alpha:1.0];
+    self.toolbar.tintColor = [S1GlobalVariables color3];
     self.toolbar.alpha = 1.0;
     
 
@@ -112,7 +113,7 @@
     
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
-    self.pageLabel.textColor = [UIColor colorWithWhite:0.15 alpha:1.0];
+    self.pageLabel.textColor = [S1GlobalVariables color3];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     [self updatePageLabel];
@@ -289,7 +290,7 @@
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
         controller.modalPresentationStyle = UIModalPresentationPageSheet;
-        //[[controller view] setTintColor:[UIColor colorWithWhite:0.15 alpha:1.0]];
+        //[[controller view] setTintColor:[S1GlobalVariables color3]];
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }

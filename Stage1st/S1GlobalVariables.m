@@ -13,11 +13,11 @@
 +(UIColor *)color2{return [UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000];}
 +(UIColor *)color3{return [UIColor colorWithWhite:0.15 alpha:1.0];}
 +(UIColor *)color4{return [UIColor colorWithRed:56.0f/255.0f green:84.0f/255.0f blue:135.0f/255.0f alpha:1.0f];}
-+(UIColor *)color5{return [UIColor colorWithRed:0.96 green:0.97 blue:0.90 alpha:1.0];}
++(UIColor *)color5{return [UIColor colorWithRed:0.96 green:0.97 blue:0.92 alpha:1.0];}
 +(UIColor *)color6{return [UIColor colorWithWhite:0.20f alpha:1.0f];}
-+(UIColor *)color7{return nil;}
-+(UIColor *)color8{return nil;}
-+(UIColor *)color9{return nil;}
++(UIColor *)color7{return [UIColor colorWithRed:0.813 green:0.827 blue:0.726 alpha:1.000];}
++(UIColor *)color8{return [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];}
++(UIColor *)color9{return [UIColor colorWithRed:0.628 green:0.611 blue:0.484 alpha:1.000];}
 +(UIColor *)color10{return nil;}
 +(UIColor *)color11{return nil;}
 +(UIColor *)color12{return nil;}

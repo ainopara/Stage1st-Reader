@@ -17,6 +17,7 @@
 #import "S1Topic.h"
 #import "S1TabBar.h"
 #import "S1Tracer.h"
+#import "S1GlobalVariables.h"
 
 #import "ODRefreshControl.h"
 #import "AFNetworking.h"
@@ -61,7 +62,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tracer.identifyKey = @"topicID";
     self.tracer.timeStampKey = @"lastViewedDate";
     
-    self.view.backgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    self.view.backgroundColor = [S1GlobalVariables color5];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
     self.tableView.autoresizesSubviews = YES;
@@ -73,22 +74,22 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.separatorColor = [UIColor colorWithRed:0.82 green:0.85 blue:0.76 alpha:1.0];
-    self.tableView.backgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    self.tableView.separatorColor = [S1GlobalVariables color1];
+    self.tableView.backgroundColor = [S1GlobalVariables color5];
     self.tableView.hidden = YES;
     [self.view addSubview:self.tableView];
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
+    self.refreshControl.tintColor = [S1GlobalVariables color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];
     self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //self.navigationBar.tintColor = [UIColor colorWithWhite:0.15 alpha:1.0];
-    //self.navigationBar.backgroundColor = [UIColor colorWithRed:0.628 green:0.611 blue:0.484 alpha:1.000];
+    //self.navigationBar.tintColor = [S1GlobalVariables color3];
+    //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
-    //[item.titleView setTintColor:[UIColor colorWithWhite:0.15 alpha:1.0]];
+    //[item.titleView setTintColor:[S1GlobalVariables color3]];
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;

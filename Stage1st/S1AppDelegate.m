@@ -47,7 +47,7 @@
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [[UIToolbar appearance] setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-        [[UIToolbar appearance] setBackgroundColor:[S1GlobalVariables color1]];//[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]
+        [[UIToolbar appearance] setBackgroundColor:[S1GlobalVariables color1]];//color2
         [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
         [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
         /*[[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];

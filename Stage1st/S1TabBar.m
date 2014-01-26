@@ -135,15 +135,15 @@
             CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
             [btn setFrame:rect];
             btn.showsTouchWhenHighlighted = NO;
-            //[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000] [UIColor colorWithRed:0.813 green:0.827 blue:0.726 alpha:1.000]
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000]] forState:UIControlStateNormal];
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateSelected];
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateHighlighted];
+            //color2 color7
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color2]] forState:UIControlStateSelected];
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color2]] forState:UIControlStateHighlighted];
             
             [btn setTitle:[obj description] forState:UIControlStateNormal];
             //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
             //[btn setTitle:[obj description] forState:UIControlStateSelected];
-            [btn setTitleColor:[UIColor colorWithWhite:0.15f alpha:1.0] forState:UIControlStateNormal];
+            [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
             btn.titleLabel.shadowColor = [UIColor blackColor];
             btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
             btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];

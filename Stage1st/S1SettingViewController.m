@@ -11,6 +11,7 @@
 #import "S1LoginViewController.h"
 #import "S1BaseURLViewController.h"
 #import "GSStaticTableViewBuilder.h"
+#import "S1GlobalVariables.h"
 
 @interface S1SettingViewController ()
 
@@ -22,7 +23,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //[self.view setTintColor:[UIColor colorWithWhite:0.15 alpha:1.0]];
+    //[self.view setTintColor:[S1GlobalVariables color3]];
     self.navigationItem.title = NSLocalizedString(@"设置", @"Setting");
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"返回", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
     self.navigationItem.leftBarButtonItem = cancelItem;

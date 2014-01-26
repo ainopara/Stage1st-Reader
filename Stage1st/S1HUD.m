@@ -8,6 +8,7 @@
 
 #import "S1HUD.h"
 #import "UIControl+BlockWrapper.h"
+#import "S1GlobalVariables.h"
 
 typedef enum {
     S1HUDStateShowText,
