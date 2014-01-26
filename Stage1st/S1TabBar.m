@@ -133,30 +133,33 @@
     }
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
-        [btn setFrame:rect];
-        btn.showsTouchWhenHighlighted = NO;
-        
-        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] forState:UIControlStateHighlighted];
-        
-        [btn setTitle:[obj description] forState:UIControlStateNormal];
-        [btn setTitle:[obj description] forState:UIControlStateHighlighted];
-        [btn setTitle:[obj description] forState:UIControlStateSelected];
-        btn.titleLabel.textColor = [UIColor whiteColor];
-        btn.titleLabel.shadowColor = [UIColor blackColor];
-        btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-        btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            btn.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+        if (width <(([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)?_DEFAULT_WIDTH*4:_DEFAULT_WIDTH_IPAD*8)) {
+            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+            CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
+            [btn setFrame:rect];
+            btn.showsTouchWhenHighlighted = NO;
+            //[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000] [UIColor colorWithRed:0.813 green:0.827 blue:0.726 alpha:1.000]
+            [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000]] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateSelected];
+            [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateHighlighted];
+            
+            [btn setTitle:[obj description] forState:UIControlStateNormal];
+            //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
+            //[btn setTitle:[obj description] forState:UIControlStateSelected];
+            [btn setTitleColor:[UIColor colorWithWhite:0.15f alpha:1.0] forState:UIControlStateNormal];
+            btn.titleLabel.shadowColor = [UIColor blackColor];
+            btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+            btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                btn.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+            }
+            [btn setTag:idx];
+            [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
+            [_buttons addObject:btn];
+            width += widthPerItem;
+            [self addSubview:btn];
         }
-        [btn setTag:idx];
-        [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_buttons addObject:btn];
-        width += widthPerItem;
-        [self addSubview:btn];
+        
     }];
     
     self.contentSize = CGSizeMake(width, self.bounds.size.height);
