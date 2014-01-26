@@ -140,6 +140,7 @@
         
         [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000]] forState:UIControlStateNormal];
         [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1TabBar imageWithColor:[UIColor colorWithRed:0.208 green:0.210 blue:0.183 alpha:1.000]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitle:[obj description] forState:UIControlStateHighlighted];

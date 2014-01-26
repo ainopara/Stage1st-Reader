@@ -83,7 +83,7 @@
     
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, self.view.bounds.size.height-44.0f, self.view.bounds.size.width, 44.0f);
-    self.toolbar.tintColor = [UIColor colorWithWhite:0.10f alpha:1.0];
+    self.toolbar.tintColor = [UIColor colorWithWhite:0.15f alpha:1.0];
     self.toolbar.alpha = 1.0;
     
 
@@ -112,7 +112,7 @@
     
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
-    self.pageLabel.textColor = [UIColor whiteColor];
+    self.pageLabel.textColor = [UIColor colorWithWhite:0.15 alpha:1.0];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     [self updatePageLabel];
