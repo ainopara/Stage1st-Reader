@@ -192,8 +192,15 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
             NSString *floorAttachment = @"";
             if ([floorAttachmentArray count]) {
-                TFHppleElement *floorAttachmentNode  = [floorAttachmentArray firstObject];
-                floorAttachment = [NSString stringWithFormat:@"<tr class='attachment'><td>%@</td></tr>", [floorAttachmentNode raw]];
+                NSString *imageAttachmentsString = @"";
+                for (TFHppleElement * floorAttachmentNode in floorAttachmentArray){
+                    NSString *imageString = [floorAttachmentNode raw];
+                    if ([floorAttachmentArray indexOfObject:floorAttachmentNode] != 0) {
+                        imageString = [@"<br /><br />" stringByAppendingString:imageString];
+                    }
+                    imageAttachmentsString = [imageAttachmentsString stringByAppendingString:imageString];
+                }
+                floorAttachment = [NSString stringWithFormat:@"<tr class='attachment'><td>%@</td></tr>", imageAttachmentsString];
             }
             
             
