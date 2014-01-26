@@ -9,6 +9,7 @@
 #import "S1LoginViewController.h"
 #import "S1HTTPClient.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "S1GlobalVariables.h"
 
 #define _DEFAULT_TEXT_FIELD_RECT (CGRect){{120.0f, 11.0f}, {170.0f, 21.0f}}
 
@@ -39,7 +40,7 @@
         
     self.userIDField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
     self.userIDField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserID"];
-    self.userIDField.textColor = [UIColor colorWithRed:56.0f/255.0f green:84.0f/255.0f blue:135.0f/255.0f alpha:1.0f];
+    self.userIDField.textColor = [S1GlobalVariables color4];
     self.userIDField.tag = 99;
     self.userIDField.placeholder = NSLocalizedString(@"用户名", @"User Id");
     self.userIDField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -48,7 +49,7 @@
     
     self.userPasswordField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
     self.userPasswordField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserPassword"];
-    self.userPasswordField.textColor = [UIColor colorWithRed:56.0f/255.0f green:84.0f/255.0f blue:135.0f/255.0f alpha:1.0f];
+    self.userPasswordField.textColor = [S1GlobalVariables color4];
     self.userPasswordField.tag = 100;
     self.userPasswordField.placeholder = NSLocalizedString(@"密码", @"Password");
     self.userPasswordField.delegate = self;

@@ -286,8 +286,10 @@
     }
     
     if (2 == buttonIndex) {
-        [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+        //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
+        controller.modalPresentationStyle = UIModalPresentationPageSheet;
+        //[[controller view] setTintColor:[UIColor colorWithWhite:0.15 alpha:1.0]];
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }
