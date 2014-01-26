@@ -21,7 +21,7 @@
 #import "AFNetworking.h"
 
 
-#define _REPLY_PER_PAGE 50
+#define _REPLY_PER_PAGE 30
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
 
