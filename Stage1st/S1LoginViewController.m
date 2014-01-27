@@ -116,24 +116,22 @@
 - (void)login
 {
     NSDictionary *param = @{
-                            @"lgt" : @"0",
-                            @"m" : @"bbs",
-                            @"step" : @"2",
-                            @"pwuser" : self.userIDField.text,
-                            @"pwpwd" : self.userPasswordField.text,
-                            @"jumpurl" : @"",
-                            @"forward" : @"",
-                            @"cktime" : @"31536000"                            
+                            @"fastloginfield" : @"username",
+                            @"username" : self.userIDField.text,
+                            @"password" : self.userPasswordField.text,
+                            @"handlekey" : @"ls",
+                            @"quickforward" : @"yes",
+                            @"cookietime" : @"2592000"
                             };
     
-    [[self HTTPClient] postPath:@"login.php?"
+    [[self HTTPClient] postPath:@"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1"
                      parameters:param
                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                             NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                             NSLog(@"Login Response: %@", result);
                             NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
                             
-                            NSRange successMsgRange = [result rangeOfString:@"顺利登录"];
+                            NSRange successMsgRange = [result rangeOfString:@"window.location.href"];
                             if (successMsgRange.location != NSNotFound) {
                                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
                                 [alertView show];

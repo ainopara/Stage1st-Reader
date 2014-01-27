@@ -367,7 +367,7 @@
     overlay.animation = MTStatusBarOverlayAnimationShrink;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
-    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    NSString *suffix = @"";//@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970]*1000)];
     NSString *path = [NSString stringWithFormat:@"post.php?action=reply&fid=%@&tid=%@", self.topic.fID, self.topic.topicID];
