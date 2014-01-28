@@ -16,4 +16,6 @@
 + (NSString *)contentsFromHTMLString:(NSMutableString *)HTMLString withOffset:(NSInteger)offset;
 + (NSString *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
 
++ (NSString *)formhashFromThreadString:(NSString *)HTMLString;
+
 @end

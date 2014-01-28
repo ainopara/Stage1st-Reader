@@ -873,7 +873,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "C401FE61-0D9F-49F1-A25B-B0B206240FDF";
@@ -892,7 +892,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				"OTHER_LDFLAGS[arch=*]" = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "C401FE61-0D9F-49F1-A25B-B0B206240FDF";

@@ -62,11 +62,17 @@
 - (void)viewDidLoad
 {
 #define _BAR_HEIGHT 44.0f
+#define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
     
-    self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
+    UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+    statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+    statusBackgroundView.userInteractionEnabled = NO;
+    [self.view addSubview:statusBackgroundView];
+    
+    self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
@@ -261,7 +267,7 @@
             }
             else if (result == REComposeResultPosted) {
                 if (composeViewController.text.length > 0) {
-                    [self replyWithText:composeViewController.text];
+                    [self replyWithTextInDiscuz:composeViewController.text];
                     [composeViewController dismissViewControllerAnimated:YES completion:nil];
                 }
             }
@@ -346,12 +352,13 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"thread-%@-%d-1.html", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          NSLog(@"%@", operation.request.allHTTPHeaderFields);
                          NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         [self.topic setFormhash:[S1Parser formhashFromThreadString:[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding]]];
                          [self.webView loadHTMLString:string baseURL:nil];
                          [HUD hideWithDelay:0.5];
                      }
@@ -361,7 +368,40 @@
                      }];
 }
 
-- (void)replyWithText:(NSString *)text
+- (void)replyWithTextInDiscuz:(NSString *)text
+{
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    overlay.animation = MTStatusBarOverlayAnimationShrink;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSString *suffix = @"";//@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
+    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
+    NSDictionary *params = @{@"message" : replyWithSuffix,
+                             @"posttime" : timestamp,
+                             @"formhash" : self.topic.formhash,
+                             @"usesig" :	@"1",
+                             @"subject" : @"",
+                             };
+    __weak typeof(self) myself = self;
+    [self.HTTPClient postPath:path
+                   parameters:params
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                          NSLog(@"%@", HTMLString);
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          //[overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                          _needToScrollToBottom = YES;
+                          [myself fetchContent];
+                      }
+                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
+                      }];
+
+}
+
+- (void)replyWithTextInPhpwind:(NSString *)text
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationShrink;

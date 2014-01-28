@@ -234,4 +234,16 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     return threadPage;
 }
 
+
++ (NSString *)formhashFromThreadString:(NSString *)HTMLString
+{
+    NSRegularExpression *re = nil;
+    NSString *pattern = nil;
+    pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
+    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    return formhash;
+}
+
 @end
