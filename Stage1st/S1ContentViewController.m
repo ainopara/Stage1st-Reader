@@ -282,7 +282,7 @@
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
@@ -294,7 +294,7 @@
     
     if (2 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
         controller.modalPresentationStyle = UIModalPresentationPageSheet;
         [[controller view] setTintColor:[S1GlobalVariables color3]];
         [self presentViewController:controller animated:YES completion:nil];        
