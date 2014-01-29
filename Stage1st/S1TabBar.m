@@ -7,7 +7,6 @@
 //
 
 #import "S1TabBar.h"
-#import "S1GlobalVariables.h"
 
 #define _DEFAULT_WIDTH 80.0f
 #define _DEFAULT_WIDTH_IPAD 96.0f

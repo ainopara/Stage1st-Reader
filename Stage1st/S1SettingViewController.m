@@ -11,7 +11,6 @@
 #import "S1LoginViewController.h"
 #import "S1BaseURLViewController.h"
 #import "GSStaticTableViewBuilder.h"
-#import "S1GlobalVariables.h"
 
 @interface S1SettingViewController ()
 

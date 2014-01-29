@@ -7,7 +7,6 @@
 //
 
 #import "S1BaseURLViewController.h"
-#import "S1GlobalVariables.h"
 
 #define _DEFAULT_TEXT_FIELD_RECT (CGRect){{120.0f, 11.0f}, {170.0f, 21.0f}}
 

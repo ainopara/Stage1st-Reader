@@ -10,7 +10,6 @@
 #import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
-#import "S1GlobalVariables.h"
 
 @implementation S1AppDelegate
 
