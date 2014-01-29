@@ -66,13 +66,18 @@
     
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
-    
-    UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-    statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-    statusBackgroundView.userInteractionEnabled = NO;
-    [self.view addSubview:statusBackgroundView];
-    
-    self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
+    NSLog(SYSTEM_VERSION_LESS_THAN(@"7")?@"6.1":@"7.0");
+    if (!SYSTEM_VERSION_LESS_THAN(@"7")) {
+        UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+        statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+        statusBackgroundView.userInteractionEnabled = NO;
+        [self.view addSubview:statusBackgroundView];
+        
+        self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
+    }else {
+        self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
+        
+    }
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;

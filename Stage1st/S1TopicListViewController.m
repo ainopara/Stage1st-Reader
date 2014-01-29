@@ -56,6 +56,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
 #define _BAR_HEIGHT 44.0f
 #define _UPPER_BAR_HEIGHT 64.0f
+#define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
     
     [super viewDidLoad];
     self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed_3_1.tracer"];
@@ -63,8 +65,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tracer.timeStampKey = @"lastViewedDate";
     
     self.view.backgroundColor = [S1GlobalVariables color5];
-    
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
+    NSLog(SYSTEM_VERSION_LESS_THAN(@"7")?@"6.1":@"7.0");
+    if (!SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
+    }
+    else {
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-2 * _BAR_HEIGHT) style:UITableViewStylePlain];
+    }
     self.tableView.autoresizesSubviews = YES;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
@@ -84,7 +91,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];
-    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
+    if (!SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
+    } else {
+        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
+
+    }
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     //self.navigationBar.tintColor = [S1GlobalVariables color3];
     //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
