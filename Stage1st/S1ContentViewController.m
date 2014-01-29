@@ -80,7 +80,11 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    self.webView.backgroundColor = [S1GlobalVariables color5];//color6
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.webView.backgroundColor = [S1GlobalVariables color6];
+    } else {
+        self.webView.backgroundColor = [S1GlobalVariables color5];
+    }
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
@@ -120,7 +124,11 @@
     
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
-    self.pageLabel.textColor = [S1GlobalVariables color3];
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.pageLabel.textColor = [UIColor whiteColor];
+    } else {
+        self.pageLabel.textColor = [S1GlobalVariables color3];
+    }
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     [self updatePageLabel];
@@ -296,8 +304,14 @@
     if (2 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
-        controller.modalPresentationStyle = UIModalPresentationPageSheet;
-        [[controller view] setTintColor:[S1GlobalVariables color3]];
+        
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            ;
+        } else {
+            controller.modalPresentationStyle = UIModalPresentationPageSheet;
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+        }
+        
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }

@@ -90,14 +90,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.navigationBar = [[UINavigationBar alloc] init];
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
+        self.navigationBar.tintColor = [S1GlobalVariables color3];
     } else {
         self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     }
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //self.navigationBar.tintColor = [S1GlobalVariables color3];
     //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
-    //[item.titleView setTintColor:[S1GlobalVariables color3]];
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;

@@ -43,20 +43,33 @@
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [[UIToolbar appearance] setBackgroundImage:[[UIImage alloc] init] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-        [[UIToolbar appearance] setBackgroundColor:[S1GlobalVariables color1]];//color2
-        [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
-        [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-        /*[[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-        [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];*/
-    }
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];        
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
+            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Navigation.png"] forToolbarPosition:UIToolbarPositionTop barMetrics:UIBarMetricsDefault];
+            [[UINavigationBar appearance] setBackgroundImage:[[UIImage imageNamed:@"Navigation.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forBarMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        }
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
+        }
+    } else {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
+            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
+            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
+        }
+        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
+            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
+            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
+        }
+
     }
     
 
