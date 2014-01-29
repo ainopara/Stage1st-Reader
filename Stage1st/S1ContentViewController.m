@@ -305,6 +305,10 @@
             return;
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
+        if (!controller) {
+            [[[UIAlertView alloc] initWithTitle:nil message:@"需要启用中文键盘才能使用" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            return;
+        }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
         [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
