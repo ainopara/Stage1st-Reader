@@ -9,7 +9,7 @@
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1LoginViewController.h"
-#import "S1BaseURLViewController.h"
+//#import "S1BaseURLViewController.h"
 #import "GSStaticTableViewBuilder.h"
 
 @interface S1SettingViewController ()
@@ -30,6 +30,7 @@
     __weak typeof(self) myself = self;
     
     [self addSection:^(GSSection *section) {
+        /* //This section no more needed.
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
                 cell.textLabel.text = NSLocalizedString(@"请求地址", @"URL");
@@ -42,6 +43,7 @@
                 [myself.navigationController pushViewController:controller animated:YES];
             }];
         }];
+        */
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"登录", @"Login");
