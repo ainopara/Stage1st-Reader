@@ -100,22 +100,37 @@
     
 
     UIButton *button = nil;
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
+        [button setShowsTouchWhenHighlighted:YES];
+    } else {
+        button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:[UIImage imageNamed:@"Back_iOS7.png"] forState:UIControlStateNormal];
+    }
     button.frame = CGRectMake(0, 0, 30, 30);
-    [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-    [button setShowsTouchWhenHighlighted:YES];
     [button setTag:99];
     UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
     backLongPressGR.minimumPressDuration = 0.5;
     [button addGestureRecognizer:backLongPressGR];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:button];    
     
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
+        [button setShowsTouchWhenHighlighted:YES];
+    } else {
+        button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:[UIImage imageNamed:@"Forward_iOS7.png"] forState:UIControlStateNormal];
+    }
     button.frame = CGRectMake(0, 0, 30, 30);
-    [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
-    [button setShowsTouchWhenHighlighted:YES];
     [button setTag:100];
     UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
     forwardLongPressGR.minimumPressDuration = 0.5;
