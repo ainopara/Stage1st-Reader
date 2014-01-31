@@ -278,28 +278,26 @@
         //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
         if (!self.replyController) {
             self.replyController = [[REComposeViewController alloc] init];
-        }
-        REComposeViewController *replyController = self.replyController;
-        replyController.title = NSLocalizedString(@"回复", @"Reply");
-        replyController.navigationItem.leftBarButtonItem.title = @"取消";
-        replyController.navigationItem.rightBarButtonItem.title = @"发送";
-        
-        
-        [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
-            if (result == REComposeResultCancelled) {
-                [composeViewController dismissViewControllerAnimated:YES completion:nil];
-            }
-            else if (result == REComposeResultPosted) {
-                if (composeViewController.text.length > 0) {
-                    [self replyWithTextInDiscuz:composeViewController.text];
+            REComposeViewController *replyController = self.replyController;
+            replyController.title = NSLocalizedString(@"回复", @"Reply");
+            replyController.navigationItem.leftBarButtonItem.title = @"取消";
+            replyController.navigationItem.rightBarButtonItem.title = @"发送";
+            
+            
+            [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
+                if (result == REComposeResultCancelled) {
                     [composeViewController dismissViewControllerAnimated:YES completion:nil];
                 }
-            }
-        }];
-        CGRect rect = replyController.view.frame;
-        CGRect rect1 = self.view.frame;
-        CGRect rect2 = replyController.view.frame;
-        [replyController presentFromViewController:self];
+                else if (result == REComposeResultPosted) {
+                    if (composeViewController.text.length > 0) {
+                        [self replyWithTextInDiscuz:composeViewController.text];
+                        [composeViewController dismissViewControllerAnimated:YES completion:nil];
+                    }
+                }
+            }];
+        
+        }
+        [self.replyController presentFromViewController:self];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
     //Weibo

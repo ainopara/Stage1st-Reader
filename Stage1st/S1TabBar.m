@@ -162,8 +162,8 @@
                 btn.showsTouchWhenHighlighted = NO;
                 //color2 color7
                 [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
-                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color2]] forState:UIControlStateSelected];
-                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color2]] forState:UIControlStateHighlighted];
+                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
+                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
                 
                 [btn setTitle:[obj description] forState:UIControlStateNormal];
                 //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
