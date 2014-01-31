@@ -90,9 +90,19 @@ typedef enum {
         if (detailViewStatus == DetailViewStatusTransformed) {
             self.detailViewController.view.transform = CGAffineTransformMakeTranslation(translation.x > 0 ? translation.x : 0, 0);
             self.masterViewController.view.transform = CGAffineTransformMakeTranslation(translation.x > 0 ? -_screenWidth/2 +translation.x/2 : -_screenWidth, 0);
+        } else {
+            self.masterViewController.view.layer.shouldRasterize = YES;
+            self.masterViewController.view.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+            if (fabsf(translation.x) > fabsf(translation.y)) {
+                if (translation.x > 0) {
+                    self.detailViewController.view.transform = CGAffineTransformMakeTranslation(translation.x, 0);
+                    self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-_screenWidth/2 + translation.x/2, 0);
+                    detailViewStatus = DetailViewStatusTransformed;
+                }
+            }
+
+            //[gestureRecognizer setTranslation:(CGPoint){0.0f, 0.0f} inView:self.detailViewController.view];
         }
-        else
-            [gestureRecognizer setTranslation:(CGPoint){0.0f, 0.0f} inView:self.detailViewController.view];
     }
     else {
         if (translation.x > _TRIGGER_THRESHOLD) {
