@@ -1,5 +1,5 @@
 //
-// REComposeSheetView.h
+// RECommonFunctions.m
 // REComposeViewController
 //
 // Copyright (c) 2013 Roman Efimov (https://github.com/romaonthego)
@@ -23,29 +23,22 @@
 // THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
-#import "DEComposeTextView.h"
+#import "RECommonFunctions.h"
 
-@protocol REComposeSheetViewDelegate;
-
-@interface REComposeSheetView : UIView {
-    UIImageView *_attachmentContainerView;
+BOOL REUIKitIsFlatMode()
+{
+    static BOOL isUIKitFlatMode = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (floor(NSFoundationVersionNumber) > 993.0) {
+            // If your app is running in legacy mode, tintColor will be nil - else it must be set to some color.
+            if (UIApplication.sharedApplication.keyWindow) {
+                isUIKitFlatMode = [UIApplication.sharedApplication.delegate.window performSelector:@selector(tintColor)] != nil;
+            } else {
+                // Possible that we're called early on (e.g. when used in a Storyboard). Adapt and use a temporary window.
+                isUIKitFlatMode = [[UIWindow new] performSelector:@selector(tintColor)] != nil;
+            }
+        }
+    });
+    return isUIKitFlatMode;
 }
-
-@property (readonly, nonatomic) UIView *attachmentView;
-@property (readonly, nonatomic) UIImageView *attachmentImageView;
-@property (weak, readwrite, nonatomic) UIViewController <REComposeSheetViewDelegate> *delegate;
-@property (readonly, nonatomic) UINavigationItem *navigationItem;
-@property (readonly, nonatomic) UINavigationBar *navigationBar;
-@property (readonly, nonatomic) UIView *textViewContainer;
-@property (readonly, nonatomic) DEComposeTextView *textView;
-@property (readonly, nonatomic) UIButton *attachmentViewButton;
-
-@end
-
-@protocol REComposeSheetViewDelegate <NSObject>
-
-- (void)cancelButtonPressed;
-- (void)postButtonPressed;
-
-@end

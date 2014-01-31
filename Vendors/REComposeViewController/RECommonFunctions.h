@@ -1,5 +1,5 @@
 //
-// REComposeSheetView.h
+// RECommonFunctions.h
 // REComposeViewController
 //
 // Copyright (c) 2013 Roman Efimov (https://github.com/romaonthego)
@@ -23,29 +23,9 @@
 // THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
-#import "DEComposeTextView.h"
+#import <Foundation/Foundation.h>
 
-@protocol REComposeSheetViewDelegate;
-
-@interface REComposeSheetView : UIView {
-    UIImageView *_attachmentContainerView;
-}
-
-@property (readonly, nonatomic) UIView *attachmentView;
-@property (readonly, nonatomic) UIImageView *attachmentImageView;
-@property (weak, readwrite, nonatomic) UIViewController <REComposeSheetViewDelegate> *delegate;
-@property (readonly, nonatomic) UINavigationItem *navigationItem;
-@property (readonly, nonatomic) UINavigationBar *navigationBar;
-@property (readonly, nonatomic) UIView *textViewContainer;
-@property (readonly, nonatomic) DEComposeTextView *textView;
-@property (readonly, nonatomic) UIButton *attachmentViewButton;
-
-@end
-
-@protocol REComposeSheetViewDelegate <NSObject>
-
-- (void)cancelButtonPressed;
-- (void)postButtonPressed;
-
-@end
+#ifndef REUIKitIsFlatModeFunction
+#define REUIKitIsFlatModeFunction
+BOOL REUIKitIsFlatMode();
+#endif

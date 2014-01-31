@@ -275,7 +275,7 @@
             [[[UIAlertView alloc] initWithTitle:nil message:@"请先获取登录状态" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
             return;
         }
-        [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
+        //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
         if (!self.replyController) {
             self.replyController = [[REComposeViewController alloc] init];
         }
@@ -296,7 +296,11 @@
                 }
             }
         }];
-        [self presentViewController:replyController animated:NO completion:nil];
+        CGRect rect = replyController.view.frame;
+        CGRect rect1 = self.view.frame;
+        CGRect rect2 = replyController.view.frame;
+        [replyController presentFromViewController:self];
+        //[self presentViewController:replyController animated:NO completion:nil];
     }
     //Weibo
     if (1 == buttonIndex) {

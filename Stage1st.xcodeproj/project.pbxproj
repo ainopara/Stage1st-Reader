@@ -31,6 +31,13 @@
 		8662DF28189363470060D513 /* DDXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF1F189363470060D513 /* DDXMLDocument.m */; };
 		8662DF29189363470060D513 /* DDXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF21189363470060D513 /* DDXMLElement.m */; };
 		8662DF2A189363470060D513 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 8662DF23189363470060D513 /* DDXMLNode.m */; };
+		867C7F5B1899420D00DF55E8 /* DEComposeRuledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */; };
+		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
+		867C7F5D1899420D00DF55E8 /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F531899420D00DF55E8 /* RECommonFunctions.m */; };
+		867C7F5E1899420D00DF55E8 /* REComposeBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F551899420D00DF55E8 /* REComposeBackgroundView.m */; };
+		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
+		867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 867C7F581899420D00DF55E8 /* REComposeViewController.bundle */; };
+		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
@@ -43,11 +50,6 @@
 		C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F716E22E1F0035C1AA /* S1TabBar.m */; };
 		C083351616E34DCF0035C1AA /* Threads.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083351516E34DCF0035C1AA /* Threads.plist */; };
 		C083351916E363870035C1AA /* S1Tracer.m in Sources */ = {isa = PBXBuildFile; fileRef = C083351816E363870035C1AA /* S1Tracer.m */; };
-		C083352E16E4E1550035C1AA /* DEComposeRuledView.m in Sources */ = {isa = PBXBuildFile; fileRef = C083352416E4E1550035C1AA /* DEComposeRuledView.m */; };
-		C083352F16E4E1550035C1AA /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C083352616E4E1550035C1AA /* DEComposeTextView.m */; };
-		C083353016E4E1550035C1AA /* REComposeBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = C083352816E4E1550035C1AA /* REComposeBackgroundView.m */; };
-		C083353116E4E1550035C1AA /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = C083352A16E4E1550035C1AA /* REComposeSheetView.m */; };
-		C083353316E4E1550035C1AA /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C083352D16E4E1550035C1AA /* REComposeViewController.m */; };
 		C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083353616E4FB220035C1AA /* InitialOrder.plist */; };
 		C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C083353916E503F60035C1AA /* S1LoginViewController.m */; };
 		C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C083353E16E647A80035C1AA /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -137,6 +139,19 @@
 		8662DF22189363470060D513 /* DDXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLNode.h; sourceTree = "<group>"; };
 		8662DF23189363470060D513 /* DDXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXMLNode.m; sourceTree = "<group>"; };
 		8662DF25189363470060D513 /* DDXMLPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXMLPrivate.h; sourceTree = "<group>"; };
+		867C7F4E1899420D00DF55E8 /* DEComposeRuledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeRuledView.h; sourceTree = "<group>"; };
+		867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeRuledView.m; sourceTree = "<group>"; };
+		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
+		867C7F511899420D00DF55E8 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
+		867C7F521899420D00DF55E8 /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
+		867C7F531899420D00DF55E8 /* RECommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RECommonFunctions.m; sourceTree = "<group>"; };
+		867C7F541899420D00DF55E8 /* REComposeBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeBackgroundView.h; sourceTree = "<group>"; };
+		867C7F551899420D00DF55E8 /* REComposeBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeBackgroundView.m; sourceTree = "<group>"; };
+		867C7F561899420D00DF55E8 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
+		867C7F571899420D00DF55E8 /* REComposeSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeSheetView.m; sourceTree = "<group>"; };
+		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
+		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
+		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
@@ -154,16 +169,6 @@
 		C083351516E34DCF0035C1AA /* Threads.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Threads.plist; sourceTree = "<group>"; };
 		C083351716E363870035C1AA /* S1Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Tracer.h; path = Stage1st/S1Tracer.h; sourceTree = "<group>"; };
 		C083351816E363870035C1AA /* S1Tracer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Tracer.m; path = Stage1st/S1Tracer.m; sourceTree = "<group>"; };
-		C083352316E4E1550035C1AA /* DEComposeRuledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeRuledView.h; sourceTree = "<group>"; };
-		C083352416E4E1550035C1AA /* DEComposeRuledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeRuledView.m; sourceTree = "<group>"; };
-		C083352516E4E1550035C1AA /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
-		C083352616E4E1550035C1AA /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
-		C083352716E4E1550035C1AA /* REComposeBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeBackgroundView.h; sourceTree = "<group>"; };
-		C083352816E4E1550035C1AA /* REComposeBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeBackgroundView.m; sourceTree = "<group>"; };
-		C083352916E4E1550035C1AA /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
-		C083352A16E4E1550035C1AA /* REComposeSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeSheetView.m; sourceTree = "<group>"; };
-		C083352C16E4E1550035C1AA /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
-		C083352D16E4E1550035C1AA /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
 		C083353416E4E7C40035C1AA /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		C083353616E4FB220035C1AA /* InitialOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InitialOrder.plist; sourceTree = "<group>"; };
 		C083353816E503F60035C1AA /* S1LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1LoginViewController.h; path = Stage1st/S1LoginViewController.h; sourceTree = "<group>"; };
@@ -366,6 +371,27 @@
 			path = Private;
 			sourceTree = "<group>";
 		};
+		867C7F4D1899420D00DF55E8 /* REComposeViewController */ = {
+			isa = PBXGroup;
+			children = (
+				867C7F4E1899420D00DF55E8 /* DEComposeRuledView.h */,
+				867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */,
+				867C7F501899420D00DF55E8 /* DEComposeTextView.h */,
+				867C7F511899420D00DF55E8 /* DEComposeTextView.m */,
+				867C7F521899420D00DF55E8 /* RECommonFunctions.h */,
+				867C7F531899420D00DF55E8 /* RECommonFunctions.m */,
+				867C7F541899420D00DF55E8 /* REComposeBackgroundView.h */,
+				867C7F551899420D00DF55E8 /* REComposeBackgroundView.m */,
+				867C7F561899420D00DF55E8 /* REComposeSheetView.h */,
+				867C7F571899420D00DF55E8 /* REComposeSheetView.m */,
+				867C7F581899420D00DF55E8 /* REComposeViewController.bundle */,
+				867C7F591899420D00DF55E8 /* REComposeViewController.h */,
+				867C7F5A1899420D00DF55E8 /* REComposeViewController.m */,
+			);
+			name = REComposeViewController;
+			path = Vendors/REComposeViewController;
+			sourceTree = "<group>";
+		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,24 +400,6 @@
 			);
 			name = ODRefreshControl;
 			path = Vendors/ODRefreshControl;
-			sourceTree = "<group>";
-		};
-		C083352216E4E1550035C1AA /* REComposeViewController */ = {
-			isa = PBXGroup;
-			children = (
-				C083352316E4E1550035C1AA /* DEComposeRuledView.h */,
-				C083352416E4E1550035C1AA /* DEComposeRuledView.m */,
-				C083352516E4E1550035C1AA /* DEComposeTextView.h */,
-				C083352616E4E1550035C1AA /* DEComposeTextView.m */,
-				C083352716E4E1550035C1AA /* REComposeBackgroundView.h */,
-				C083352816E4E1550035C1AA /* REComposeBackgroundView.m */,
-				C083352916E4E1550035C1AA /* REComposeSheetView.h */,
-				C083352A16E4E1550035C1AA /* REComposeSheetView.m */,
-				C083352C16E4E1550035C1AA /* REComposeViewController.h */,
-				C083352D16E4E1550035C1AA /* REComposeViewController.m */,
-			);
-			name = REComposeViewController;
-			path = Vendors/REComposeViewController;
 			sourceTree = "<group>";
 		};
 		C083353B16E647A70035C1AA /* GoogleToolbox */ = {
@@ -497,12 +505,12 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				86128EBF1894E5D400D0281A /* SVWebViewController */,
 				8662DF16189363470060D513 /* KissXML */,
 				862F51B61891359A0038A289 /* TFHpple */,
 				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
-				C083352216E4E1550035C1AA /* REComposeViewController */,
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
 				C095875816CA8CD4007E0119 /* AFNetworking */,
@@ -703,6 +711,7 @@
 				86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */,
 				86128EE11894E5D400D0281A /* SVWebViewControllerActivityChrome-iPad.png in Resources */,
 				86128EE21894E5D400D0281A /* SVWebViewControllerActivityChrome-iPad@2x.png in Resources */,
+				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				86128EDD1894E5D400D0281A /* SVWebViewController.strings in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
@@ -744,9 +753,11 @@
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				C095876C16CA8CD4007E0119 /* AFHTTPClient.m in Sources */,
 				C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */,
+				867C7F5E1899420D00DF55E8 /* REComposeBackgroundView.m in Sources */,
 				C095876E16CA8CD4007E0119 /* AFImageRequestOperation.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
 				8662DF26189363470060D513 /* DDXMLElementAdditions.m in Sources */,
+				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877016CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				C095877216CA8CD4007E0119 /* AFURLConnectionOperation.m in Sources */,
 				C095877416CA8CD4007E0119 /* UIImageView+AFNetworking.m in Sources */,
@@ -767,25 +778,24 @@
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				86128EE71894E5D400D0281A /* SVWebViewControllerActivitySafari.m in Sources */,
+				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
+				867C7F5D1899420D00DF55E8 /* RECommonFunctions.m in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPClient.m in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
+				867C7F5B1899420D00DF55E8 /* DEComposeRuledView.m in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8662DF28189363470060D513 /* DDXMLDocument.m in Sources */,
-				C083352E16E4E1550035C1AA /* DEComposeRuledView.m in Sources */,
-				C083352F16E4E1550035C1AA /* DEComposeTextView.m in Sources */,
-				C083353016E4E1550035C1AA /* REComposeBackgroundView.m in Sources */,
-				C083353116E4E1550035C1AA /* REComposeSheetView.m in Sources */,
-				C083353316E4E1550035C1AA /* REComposeViewController.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
+				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				8662DF29189363470060D513 /* DDXMLElement.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				86128EE91894E5D400D0281A /* SVWebViewControllerActivity.m in Sources */,
