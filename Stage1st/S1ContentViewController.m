@@ -184,7 +184,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];
+    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];//TODO: FIX ME.
     [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
     
     [self.topic setLastViewedPage:[NSString stringWithFormat:@"%d", _currentPage]];

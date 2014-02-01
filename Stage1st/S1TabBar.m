@@ -130,57 +130,53 @@
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            if (width <(([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)?_DEFAULT_WIDTH*4:_DEFAULT_WIDTH_IPAD*8)) {
-                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-                CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
-                [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
-                btn.showsTouchWhenHighlighted = NO;
-                [btn setBackgroundImage:[UIImage imageNamed:@"Item.png"] forState:UIControlStateNormal];
-                [btn setBackgroundImage:[[UIImage imageNamed:@"Item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
-                [btn setBackgroundImage:[[UIImage imageNamed:@"Item_selected.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
-                [btn setTitle:[obj description] forState:UIControlStateNormal];
-                [btn setTitle:[obj description] forState:UIControlStateHighlighted];
-                [btn setTitle:[obj description] forState:UIControlStateSelected];
-                btn.titleLabel.textColor = [UIColor whiteColor];
-                btn.titleLabel.shadowColor = [UIColor blackColor];
-                btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-                btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
-                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                    btn.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-                }
-                [btn setTag:idx];
-                [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-                [_buttons addObject:btn];
-                width += widthPerItem;
-                [self addSubview:btn];
+            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+            CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
+            [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
+            btn.showsTouchWhenHighlighted = NO;
+            [btn setBackgroundImage:[UIImage imageNamed:@"Item.png"] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[[UIImage imageNamed:@"Item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
+            [btn setBackgroundImage:[[UIImage imageNamed:@"Item_selected.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
+            [btn setTitle:[obj description] forState:UIControlStateNormal];
+            [btn setTitle:[obj description] forState:UIControlStateHighlighted];
+            [btn setTitle:[obj description] forState:UIControlStateSelected];
+            btn.titleLabel.textColor = [UIColor whiteColor];
+            btn.titleLabel.shadowColor = [UIColor blackColor];
+            btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+            btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                btn.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
             }
+            [btn setTag:idx];
+            [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
+            [_buttons addObject:btn];
+            width += widthPerItem;
+            [self addSubview:btn];
         } else {
-            if (width <(([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)?_DEFAULT_WIDTH*4:_DEFAULT_WIDTH_IPAD*8)) {
-                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-                CGRect rect = CGRectMake(width, 0.25, widthPerItem, self.bounds.size.height-0.25);
-                [btn setFrame:rect];
-                btn.showsTouchWhenHighlighted = NO;
-                //color2 color7
-                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
-                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
-                [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
-                
-                [btn setTitle:[obj description] forState:UIControlStateNormal];
-                //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
-                //[btn setTitle:[obj description] forState:UIControlStateSelected];
-                [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
-                //btn.titleLabel.shadowColor = [UIColor blackColor];
-                //btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-                btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
-                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                    btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
-                }
-                [btn setTag:idx];
-                [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-                [_buttons addObject:btn];
-                width += widthPerItem;
-                [self addSubview:btn];
+            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+            CGRect rect = CGRectMake(width, 0.25, widthPerItem, self.bounds.size.height-0.25);
+            [btn setFrame:rect];
+            btn.showsTouchWhenHighlighted = NO;
+            //color2 color7
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
+            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
+            
+            [btn setTitle:[obj description] forState:UIControlStateNormal];
+            //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
+            //[btn setTitle:[obj description] forState:UIControlStateSelected];
+            [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
+            //btn.titleLabel.shadowColor = [UIColor blackColor];
+            //btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+            btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
             }
+            [btn setTag:idx];
+            [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
+            [_buttons addObject:btn];
+            width += widthPerItem;
+            [self addSubview:btn];
             
 
         }
