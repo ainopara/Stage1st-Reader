@@ -1,0 +1,27 @@
+/* Localized versions of Info.plist keys */
+
+"ContentView_ActionSheet_Cancel" = "Cancel";
+"ContentView_ActionSheet_Reply" = "Reply";
+"ContentView_ActionSheet_Weibo" = "Sina Weibo";
+"ContentView_ActionSheet_OriginPage" = "Original Page";
+
+"ContentView_Reply_Title" = "Reply";
+"ContentView_Reply_Need_Login_Message" = "Need Login in Settings";
+"Message_OK" = "OK";
+
+"TopicListView_NavigationBar_Settings" = "Settings";
+"TopicListView_NavigationBar_Recent" = "Recent";
+
+"SettingView_NavigationBar_Title" = "Settings";
+"SettingView_NavigationBar_Back" = "Back";
+"SettingView_Login" = "Login";
+"SettingView_Not_Login_State_Mark" = "Not Login";
+"SettingView_Forum_Order_Custom" = "Forum Order";
+"SettingView_Font_Size" = "Font Size";
+"SettingView_Display_Image" = "Display Image";
+
+"SettingView_Version" = "Version";
+"SettingView_Developer" = "Developer";
+
+"REComposeSheetView_Cancel" = "Cancel";
+"REComposeSheetView_Post" = "Post";

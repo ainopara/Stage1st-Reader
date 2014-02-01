@@ -23,8 +23,8 @@
 {
     [super viewDidLoad];
     //[self.view setTintColor:[S1GlobalVariables color3]];
-    self.navigationItem.title = NSLocalizedString(@"设置", @"Setting");
-    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"返回", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
+    self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
+    UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"SettingView_NavigationBar_Back", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
     self.navigationItem.leftBarButtonItem = cancelItem;
     
     __weak typeof(self) myself = self;
@@ -46,12 +46,12 @@
         */
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"登录", @"Login");
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Login", @"Login");
                 NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"];
                 if (userID) {
                     cell.detailTextLabel.text = userID;
                 } else {
-                    cell.detailTextLabel.text = NSLocalizedString(@"未登录", @"Not Login");
+                    cell.detailTextLabel.text = NSLocalizedString(@"SettingView_Not_Login_State_Mark", @"Not Login");
                 }
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -63,13 +63,13 @@
         }];
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = @"板块自定义";
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Forum_Order_Custom", @"Forum Order");
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell) {
                 GSReorderableTableViewController *controller = [[GSReorderableTableViewController alloc] initWithKeys:[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"]];
-                controller.title = NSLocalizedString(@"板块自定义", @"Order");
+                controller.title = NSLocalizedString(@"SettingView_Forum_Order_Custom", @"Order");
                 [controller setCompletionHandler:^(NSArray *keys) {
                     [[NSUserDefaults standardUserDefaults] setValue:keys forKey:@"Order"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -81,14 +81,14 @@
         }];
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = @"字体大小";
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
                 cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell) {
                 GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
-                controller.title = NSLocalizedString(@"字体大小", @"Order");
+                controller.title = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
                 [controller setCompletionHandler:^(NSString *key) {
                     [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];                    
                 }];
@@ -97,7 +97,7 @@
         }];
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"显示图片", @"Display Image");
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Display_Image", @"Display Image");
                 if (!cell.accessoryView) {
                     UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
                     switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
@@ -115,7 +115,7 @@
     [self addSection:^(GSSection *section) {
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"版本", @"Version");
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Version", @"Version");
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]]
 ;
             }];
@@ -123,7 +123,7 @@
         
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"开发者", @"Developer");
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Developer", @"Developer");
                 cell.detailTextLabel.text = @"Gabriel";
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             }];

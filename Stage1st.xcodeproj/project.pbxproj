@@ -61,7 +61,7 @@
 		C095873816CA8A36007E0119 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095873716CA8A36007E0119 /* UIKit.framework */; };
 		C095873A16CA8A36007E0119 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095873916CA8A36007E0119 /* Foundation.framework */; };
 		C095873C16CA8A36007E0119 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095873B16CA8A36007E0119 /* CoreGraphics.framework */; };
-		C095874216CA8A36007E0119 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C095874016CA8A36007E0119 /* InfoPlist.strings */; };
+		C095874216CA8A36007E0119 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C095874016CA8A36007E0119 /* Localizable.strings */; };
 		C095874416CA8A36007E0119 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874316CA8A36007E0119 /* main.m */; };
 		C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874716CA8A36007E0119 /* S1AppDelegate.m */; };
 		C095875716CA8A69007E0119 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095875616CA8A69007E0119 /* QuartzCore.framework */; };
@@ -154,6 +154,7 @@
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
+		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
@@ -189,7 +190,7 @@
 		C095873916CA8A36007E0119 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C095873B16CA8A36007E0119 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		C095873F16CA8A36007E0119 /* Stage1st-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Stage1st-Info.plist"; sourceTree = "<group>"; };
-		C095874116CA8A36007E0119 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C095874116CA8A36007E0119 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C095874316CA8A36007E0119 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Prefix.pch"; sourceTree = "<group>"; };
 		C095874616CA8A36007E0119 /* S1AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = S1AppDelegate.h; sourceTree = "<group>"; };
@@ -493,7 +494,6 @@
 				C01C821016FDB5D2003E6B91 /* content_larger_font.css */,
 				C0B1919616F0A80F0053E0C5 /* content_ipad.css */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
-				C095874016CA8A36007E0119 /* InfoPlist.strings */,
 				C095874316CA8A36007E0119 /* main.m */,
 				C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */,
 				C083351516E34DCF0035C1AA /* Threads.plist */,
@@ -522,6 +522,7 @@
 			isa = PBXGroup;
 			children = (
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
+				C095874016CA8A36007E0119 /* Localizable.strings */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
 			);
 			name = Resources;
@@ -704,7 +705,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C095874216CA8A36007E0119 /* InfoPlist.strings in Resources */,
+				C095874216CA8A36007E0119 /* Localizable.strings in Resources */,
 				86128EE51894E5D400D0281A /* SVWebViewControllerActivitySafari-iPad.png in Resources */,
 				86128EE81894E5D400D0281A /* SVWebViewControllerActivitySafari@2x.png in Resources */,
 				C08DB46B16DE3794002B4A92 /* content.css in Resources */,
@@ -823,12 +824,14 @@
 			name = SVWebViewController.strings;
 			sourceTree = "<group>";
 		};
-		C095874016CA8A36007E0119 /* InfoPlist.strings */ = {
+		C095874016CA8A36007E0119 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C095874116CA8A36007E0119 /* en */,
+				86ADC88E189CC1BE0036D669 /* zh-Hans */,
 			);
-			name = InfoPlist.strings;
+			name = Localizable.strings;
+			path = Stage1st;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -1,0 +1,26 @@
+/* Localized versions of Info.plist keys */
+"ContentView_ActionSheet_Cancel" = "取消";
+"ContentView_ActionSheet_Reply" = "回复";
+"ContentView_ActionSheet_Weibo" = "分享到微博";
+"ContentView_ActionSheet_OriginPage" = "打开原网页";
+
+"ContentView_Reply_Title" = "回复";
+"ContentView_Reply_Need_Login_Message" = "请先获取登录状态";
+"Message_OK" = "完成";
+
+"TopicListView_NavigationBar_Settings" = "设置";
+"TopicListView_NavigationBar_Recent" = "最近";
+
+"SettingView_NavigationBar_Title" = "设置";
+"SettingView_NavigationBar_Back" = "返回";
+"SettingView_Login" = "登录";
+"SettingView_Not_Login_State_Mark" = "未登录";
+"SettingView_Forum_Order_Custom" = "板块自定义";
+"SettingView_Font_Size" = "字体大小";
+"SettingView_Display_Image" = "显示图片";
+
+"SettingView_Version" = "版本";
+"SettingView_Developer" = "开发者";
+
+"REComposeSheetView_Cancel" = "取消";
+"REComposeSheetView_Post" = "发送";

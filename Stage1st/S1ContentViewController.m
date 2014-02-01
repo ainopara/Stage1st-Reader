@@ -259,9 +259,9 @@
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"取消", @"Cancel")
+                                                    cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"回复", @"Reply"), NSLocalizedString(@"分享到微博", @"Weibo"), NSLocalizedString(@"打开原网页", @"Origin"), nil];
+                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showFromToolbar:self.toolbar];    
 }
@@ -272,16 +272,14 @@
     //Reply
     if (0 == buttonIndex) {
         if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"]) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"请先获取登录状态" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
-        //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
+        [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
         if (!self.replyController) {
             self.replyController = [[REComposeViewController alloc] init];
             REComposeViewController *replyController = self.replyController;
-            replyController.title = NSLocalizedString(@"回复", @"Reply");
-            replyController.navigationItem.leftBarButtonItem.title = @"取消";
-            replyController.navigationItem.rightBarButtonItem.title = @"发送";
+            replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
             
             
             [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
@@ -303,12 +301,12 @@
     //Weibo
     if (1 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"需要6.0以上的系统才能使用" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:@"需要6.0以上的系统才能使用" delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
         if (!controller) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"需要启用中文键盘才能使用" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:@"需要启用中文键盘才能使用" delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
