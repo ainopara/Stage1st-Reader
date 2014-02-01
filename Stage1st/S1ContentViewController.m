@@ -301,12 +301,12 @@
     //Weibo
     if (1 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"需要6.0以上的系统才能使用" delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
         if (!controller) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"需要启用中文键盘才能使用" delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
@@ -353,7 +353,7 @@
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"打开链接" message:request.URL.absoluteString delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"打开", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
     _urlToOpen = request.URL;
     [alertView show];
     return NO;

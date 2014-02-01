@@ -35,13 +35,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = NSLocalizedString(@"登录设置", @"Login");
+    self.navigationItem.title = NSLocalizedString(@"LoginView_Title", @"Login");
         
     self.userIDField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
     self.userIDField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserID"];
     self.userIDField.textColor = [S1GlobalVariables color4];
     self.userIDField.tag = 99;
-    self.userIDField.placeholder = NSLocalizedString(@"用户名", @"User Id");
+    self.userIDField.placeholder = NSLocalizedString(@"LoginView_ID", @"Id");
     self.userIDField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.userIDField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.userIDField.delegate = self;
@@ -50,14 +50,14 @@
     self.userPasswordField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserPassword"];
     self.userPasswordField.textColor = [S1GlobalVariables color4];
     self.userPasswordField.tag = 100;
-    self.userPasswordField.placeholder = NSLocalizedString(@"密码", @"Password");
+    self.userPasswordField.placeholder = NSLocalizedString(@"LoginView_Password", @"Password");
     self.userPasswordField.delegate = self;
     self.userPasswordField.secureTextEntry = YES;
     __weak typeof(self) myself = self;
     [self addSection:^(GSSection *section) {
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"用户名", @"ID");
+                cell.textLabel.text = NSLocalizedString(@"LoginView_User_ID", @"User ID");
                 if (cell.contentView.subviews.count < 2) {
                     CGRect toFrame = _DEFAULT_TEXT_FIELD_RECT;
                     toFrame.size.width = cell.contentView.bounds.size.width - toFrame.origin.x - 30.0f;
@@ -68,7 +68,7 @@
         }];
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"密码", @"Password");
+                cell.textLabel.text = NSLocalizedString(@"LoginView_Password", @"Password");
                 if (cell.contentView.subviews.count < 2) {
                     CGRect toFrame = _DEFAULT_TEXT_FIELD_RECT;
                     toFrame.size.width = cell.contentView.bounds.size.width - toFrame.origin.x - 30.0f;
@@ -82,7 +82,7 @@
     [self addSection:^(GSSection *section) {
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"获取登录状态", @"Get Login Status");
+                cell.textLabel.text = NSLocalizedString(@"LoginView_Get_Login_Status", @"Get Login Status");
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
@@ -132,21 +132,21 @@
                             
                             NSRange successMsgRange = [result rangeOfString:@"window.location.href"];
                             if (successMsgRange.location != NSNotFound) {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Success_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                                 [alertView show];
                                 NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
                                 [userDefault setValue:self.userIDField.text forKey:@"UserID"];
                                 [userDefault setValue:self.userPasswordField.text forKey:@"UserPassword"];
                                 
                             } else {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                                 [alertView show];
                             }
                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         }
                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                             NSLog(@"%@", error);
-                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
+                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                             [alertView show];
                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         }];

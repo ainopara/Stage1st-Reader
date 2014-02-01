@@ -1,11 +1,18 @@
 /* Localized versions of Info.plist keys */
+
 "ContentView_ActionSheet_Cancel" = "取消";
 "ContentView_ActionSheet_Reply" = "回复";
 "ContentView_ActionSheet_Weibo" = "分享到微博";
 "ContentView_ActionSheet_OriginPage" = "打开原网页";
 
+"ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
+"ContentView_WebView_Open_Link_Alert_Cancel" = "取消";
+"ContentView_WebView_Open_Link_Alert_Open" = "打开";
+
 "ContentView_Reply_Title" = "回复";
 "ContentView_Reply_Need_Login_Message" = "请先获取登录状态";
+"ContentView_Need_Weibo_Service_Support_Message" = "需要6.0以上的系统才能使用";
+"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "需要启用中文键盘才能使用";
 "Message_OK" = "完成";
 
 "TopicListView_NavigationBar_Settings" = "设置";
@@ -21,6 +28,14 @@
 
 "SettingView_Version" = "版本";
 "SettingView_Developer" = "开发者";
+
+"LoginView_Title" = "登录设置";
+"LoginView_User_ID" = "用户名";
+"LoginView_ID" = "用户名";
+"LoginView_Password" = "密码";
+"LoginView_Get_Login_Status" = "获取登录状态";
+"LoginView_Get_Login_Status_Success_Message" = "获取登录状态成功";
+"LoginView_Get_Login_Status_Failure_Message" = "获取登录状态未成功";
 
 "REComposeSheetView_Cancel" = "取消";
 "REComposeSheetView_Post" = "发送";
