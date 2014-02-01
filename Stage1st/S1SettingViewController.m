@@ -79,22 +79,24 @@
                 [myself.navigationController pushViewController:controller animated:YES];
             }];
         }];
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
-                cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }];
-            [row setEventHandlerBlock:^(UITableViewCell *cell) {
-                GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
-                controller.title = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
-                [controller setCompletionHandler:^(NSString *key) {
-                    [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];                    
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            [section addRow:^(GSRow *row) {
+                [row setConfigurationBlock:^(UITableViewCell *cell) {
+                    cell.textLabel.text = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
+                    cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+                    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }];
-                [myself.navigationController pushViewController:controller animated:YES];
+                [row setEventHandlerBlock:^(UITableViewCell *cell) {
+                    GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
+                    controller.title = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
+                    [controller setCompletionHandler:^(NSString *key) {
+                        [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];
+                    }];
+                    [myself.navigationController pushViewController:controller animated:YES];
+                }];
             }];
-        }];
+        }
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Display_Image", @"Display Image");
