@@ -154,6 +154,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
 
 + (NSString *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
+    NSLog(@"Begin Parsing.");
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
     NSString *finalString = [[NSString alloc] init];
@@ -231,6 +232,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     }
     finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
+    NSLog(@"Finish Parsing.");
     return threadPage;
 }
 
