@@ -161,6 +161,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     
     NSLog(@"%d",[elements count]);
     if ([elements count]) {
+        BOOL not_first_floor_flag = NO;
         for (TFHppleElement *element in elements){
             if (![[element objectForKey:@"id"] hasPrefix:@"post_"]) {
                 continue;
@@ -210,6 +211,11 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
             NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
             NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, author, postTime, floorContent, floorAttachment];
+            if (not_first_floor_flag) {
+                output = [@"<br />" stringByAppendingString:output];
+            } else {
+                not_first_floor_flag = YES;
+            }
             finalString = [finalString stringByAppendingString:output];
         }
     }
