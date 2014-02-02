@@ -340,6 +340,11 @@
     if (1 == buttonIndex) {
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            ;
+        } else {
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+        }
         [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
