@@ -36,7 +36,7 @@
     
     self.baseURLField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
     self.baseURLField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"];
-    self.baseURLField.textColor = [UIColor colorWithRed:56.0f/255.0f green:84.0f/255.0f blue:135.0f/255.0f alpha:1.0f];
+    self.baseURLField.textColor = [S1GlobalVariables color4];
     self.baseURLField.tag = 99;
     self.baseURLField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.baseURLField.autocorrectionType = UITextAutocorrectionTypeNo;

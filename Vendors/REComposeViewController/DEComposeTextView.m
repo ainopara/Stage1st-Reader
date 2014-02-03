@@ -18,10 +18,11 @@
 
 #import "DEComposeTextView.h"
 #import "DEComposeRuledView.h"
-
+#import "REComposeViewController.h"
 
 @interface DEComposeTextView ()
 
+@property (nonatomic, retain) UILabel *placeholderLabel;
 @property (nonatomic, retain) DEComposeRuledView *ruledView;
 @property (nonatomic, retain) UIButton *fromButton;
 @property (nonatomic, retain) UIButton *accountButton;
@@ -54,6 +55,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self textViewInit];
+        [self setPlaceholder:@""];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
     }
     
     return self;
@@ -65,6 +68,8 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         [self textViewInit];
+        [self setPlaceholder:@""];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
     }
     
     return self;
@@ -74,7 +79,6 @@
 - (void)textViewInit
 {   
     self.clipsToBounds = NO;
-    self.scrollsToTop = NO;
 
     _ruledView = [[DEComposeRuledView alloc] initWithFrame:[self ruledViewFrame]];
     _ruledView.lineColor = [UIColor colorWithWhite:0.5f alpha:0.15f];
@@ -83,6 +87,11 @@
     [self insertSubview:self.ruledView atIndex:0];
 }
 
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 #pragma mark - Superclass Overrides
 
@@ -214,6 +223,62 @@
 - (CGRect)fromButtonFrame
 {
     return self.fromButton.frame;
+}
+
+
+#pragma mark - Placeholder Text
+
+- (void)textChanged:(NSNotification *)notification
+{
+    if([[self placeholder] length] == 0)
+    {
+        return;
+    }
+	
+    if([[self text] length] == 0)
+    {
+        [[self viewWithTag:999] setAlpha:1];
+    }
+    else
+    {
+        [[self viewWithTag:999] setAlpha:0];
+    }
+}
+
+
+- (void)setText:(NSString *)text {
+    [super setText:text];
+    [self textChanged:nil];
+}
+
+
+- (void)drawRect:(CGRect)rect
+{
+    if ([[self placeholder] length] > 0) {
+        if (_placeholderLabel == nil )
+        {
+            _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(REUIKitIsFlatMode() ? 5 : 8, 8, self.bounds.size.width - 16,0)];
+            _placeholderLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _placeholderLabel.numberOfLines = 0;
+            _placeholderLabel.font = self.font;
+            _placeholderLabel.backgroundColor = [UIColor clearColor];
+            _placeholderLabel.textColor = [UIColor lightGrayColor];
+            _placeholderLabel.alpha = 0;
+            _placeholderLabel.tag = 999;
+            [self addSubview:_placeholderLabel];
+        }
+		
+        _placeholderLabel.text = self.placeholder;
+        [_placeholderLabel sizeToFit];
+        [self sendSubviewToBack:_placeholderLabel];
+    }
+	
+    if( [[self text] length] == 0 && [[self placeholder] length] > 0 )
+    {
+        [[self viewWithTag:999] setAlpha:1];
+    }
+	
+    [super drawRect:rect];
 }
 
 

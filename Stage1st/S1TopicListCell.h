@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @class S1Topic;
+@class S1TopicListCellSubView;
 
 @interface S1TopicListCell : UITableViewCell
 
 @property (nonatomic, strong) S1Topic *topic;
+@property S1TopicListCellSubView *drawingSubView;
 
 @end

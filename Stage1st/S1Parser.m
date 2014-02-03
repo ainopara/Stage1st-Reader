@@ -9,18 +9,49 @@
 #import "S1Parser.h"
 #import "S1Topic.h"
 #import "GTMNSString+HTML.h"
+#import "TFHpple.h"
+#import "DDXML.h"
+#import "DDXMLElementAdditions.h"
 
 #define kNumberPerPage 50
 
-static NSString * const topicPattern = @"<li><a href=.*?t(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
+static NSString * const topicPattern = @"<li><a href=.*?tid-(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
 static NSString * const cssPattern = @"</style>";
 static NSString * const cleanupPattern = @"(?:<br />(<br />)?\\r\\n<center>.*?</center>)|(?:<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(?:src=\"http://[-.0-9a-zA-Z]+/2b/images/back\\.gif\")|(?:onload=\"if\\(this.offsetWidth>'600'\\)this.width='600';\")";
 static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";
 
+@interface S1Parser()
++(NSString *)processImagesInHTMLString:(NSString *)HTMLString;
+@end
 
 @implementation S1Parser
++(NSString *)processImagesInHTMLString:(NSString *)HTMLString
+{
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
+    for (DDXMLElement *image in images) {
+        NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
+        NSLog(@"image Src:%@",imageSrc);
+        NSString *imageFile = [[image attributeForName:@"file"] stringValue];
+        NSLog(@"image File:%@",imageFile);
+        if (imageFile) {
+            [image removeAttributeForName:@"src"];
+            [image addAttributeWithName:@"src" stringValue:imageFile];
+            [image removeAttributeForName:@"width"];
+            [image removeAttributeForName:@"height"];
+        }
+        else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
+            [image removeAttributeForName:@"src"];
+            [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
+        }
+        
+    }
+    HTMLString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
+    HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
+    return HTMLString;
+}
 
-+ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context;
++ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context
 {
     NSString *HTMLString = [rawString gtm_stringByUnescapingFromHTML];
     NSRegularExpression *re = [[NSRegularExpression alloc]
@@ -42,6 +73,37 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
                               [topics addObject:topic];
                           }
                       }];
+    return (NSArray *)topics;
+}
+
++ (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
+{
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
+    NSMutableArray *topics = [NSMutableArray array];
+    
+    NSLog(@"%d",[elements count]);
+    if ([elements count]) {
+        for (TFHppleElement *element in elements){
+            if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
+                continue;
+            }
+            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+            TFHppleElement *leftPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='s xst']"] firstObject];
+            NSString *content = [leftPart text];
+            NSString *href = [leftPart objectForKey:@"href"];
+            TFHppleElement *rightPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
+            NSString *replyCount = [rightPart text];
+            
+            S1Topic *topic = [[S1Topic alloc] init];
+            [topic setTopicID:[[href componentsSeparatedByString:@"-"] objectAtIndex:1]];
+            [topic setTitle:content];
+            [topic setReplyCount:replyCount];
+            [topic setFID:context[@"FID"]];
+            [topics addObject:topic];
+        }
+    }
+
     return (NSArray *)topics;
 }
 
@@ -90,5 +152,106 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     return (NSString *)HTMLString;
 }
 
++ (NSString *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
+{
+    NSLog(@"Begin Parsing.");
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
+    NSString *finalString = [[NSString alloc] init];
+    
+    NSLog(@"%d",[elements count]);
+    if ([elements count]) {
+        BOOL not_first_floor_flag = NO;
+        for (TFHppleElement *element in elements){
+            if (![[element objectForKey:@"id"] hasPrefix:@"post_"]) {
+                continue;
+            }
+            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+            TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
+            NSString *author = [authorNode text];
+
+            TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
+            NSString *postTime = nil;
+            if (postTimeNode) {
+                postTime = [postTimeNode objectForKey:@"title"];
+            } else {
+                TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
+                postTime = [postTimeNode text];
+            }
+            
+            TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
+            NSString *floorIndexMark = nil;
+            if ([[floorIndexMarkNode childrenWithTagName:@"em"] count] != 0) {
+                floorIndexMark = [@"#" stringByAppendingString:[[floorIndexMarkNode firstChildWithTagName:@"em"] text]];
+            } else {
+                floorIndexMark = [floorIndexMarkNode text];
+            }
+            
+            TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
+            NSString *floorContent = [floorContentNode raw];
+            
+            
+            NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
+            NSString *floorAttachment = @"";
+            if ([floorAttachmentArray count]) {
+                NSString *imageAttachmentsString = @"";
+                for (TFHppleElement * floorAttachmentNode in floorAttachmentArray){
+                    NSString *imageString = [floorAttachmentNode raw];
+                    if ([floorAttachmentArray indexOfObject:floorAttachmentNode] != 0) {
+                        imageString = [@"<br /><br />" stringByAppendingString:imageString];
+                    }
+                    imageAttachmentsString = [imageAttachmentsString stringByAppendingString:imageString];
+                }
+                floorAttachment = [NSString stringWithFormat:@"<tr class='attachment'><td>%@</td></tr>", imageAttachmentsString];
+            }
+            
+            
+            NSBundle *bundle = [NSBundle mainBundle];
+            NSString *floorTemplatePath = [bundle pathForResource:@"FloorTemplate" ofType:@"html"];
+            NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
+            NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
+            NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, author, postTime, floorContent, floorAttachment];
+            if (not_first_floor_flag) {
+                output = [@"<br />" stringByAppendingString:output];
+            } else {
+                not_first_floor_flag = YES;
+            }
+            finalString = [finalString stringByAppendingString:output];
+        }
+    }
+
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *threadTemplatePath = [bundle pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
+    NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
+    
+    NSString *cssPath = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"15px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
+        }
+    } else {
+        cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
+    }
+    finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
+    NSLog(@"Finish Parsing.");
+    return threadPage;
+}
+
+
++ (NSString *)formhashFromThreadString:(NSString *)HTMLString
+{
+    NSRegularExpression *re = nil;
+    NSString *pattern = nil;
+    pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
+    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    return formhash;
+}
 
 @end

@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#define _URL_PATTERN @"http://bbs.saraba1st.com/2b/simple/?t%@.html"
 
 #import <Social/Social.h>
 #import "S1RootViewController.h"
@@ -22,8 +21,7 @@
 #import "AFNetworking.h"
 
 
-#define _REPLY_PER_PAGE 50
-#define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define _REPLY_PER_PAGE 30
 
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
@@ -62,49 +60,77 @@
 - (void)viewDidLoad
 {
 #define _BAR_HEIGHT 44.0f
+#define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
-    
-    self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
+    } else {
+        UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+        statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+        statusBackgroundView.userInteractionEnabled = NO;
+        [self.view addSubview:statusBackgroundView];
+                
+        self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
+    }
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    self.webView.backgroundColor = [UIColor colorWithWhite:0.20f alpha:1.0f];
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.webView.backgroundColor = [S1GlobalVariables color6];
+    } else {
+        self.webView.backgroundColor = [S1GlobalVariables color5];
+    }
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
     self.maskView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.maskView.backgroundColor = [UIColor colorWithRed:0.96 green:0.97 blue:0.90 alpha:1.0];
+    self.maskView.backgroundColor = [S1GlobalVariables color5];
     self.maskView.userInteractionEnabled = NO;
     [self.webView addSubview:self.maskView];
     
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, self.view.bounds.size.height-44.0f, self.view.bounds.size.width, 44.0f);
-    self.toolbar.tintColor = [UIColor colorWithWhite:0.10f alpha:1.0];
+    self.toolbar.tintColor = [S1GlobalVariables color3];
     self.toolbar.alpha = 1.0;
     
 
     UIButton *button = nil;
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
+        [button setShowsTouchWhenHighlighted:YES];
+    } else {
+        button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:[UIImage imageNamed:@"Back_iOS7.png"] forState:UIControlStateNormal];
+    }
     button.frame = CGRectMake(0, 0, 30, 30);
-    [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-    [button setShowsTouchWhenHighlighted:YES];
     [button setTag:99];
     UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
     backLongPressGR.minimumPressDuration = 0.5;
     [button addGestureRecognizer:backLongPressGR];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:button];    
     
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    
+    
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
+        [button setShowsTouchWhenHighlighted:YES];
+    } else {
+        button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:[UIImage imageNamed:@"Forward_iOS7.png"] forState:UIControlStateNormal];
+    }
     button.frame = CGRectMake(0, 0, 30, 30);
-    [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
-    [button setShowsTouchWhenHighlighted:YES];
     [button setTag:100];
     UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
     forwardLongPressGR.minimumPressDuration = 0.5;
@@ -113,7 +139,11 @@
     
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
-    self.pageLabel.textColor = [UIColor whiteColor];
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.pageLabel.textColor = [UIColor whiteColor];
+    } else {
+        self.pageLabel.textColor = [S1GlobalVariables color3];
+    }
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     [self updatePageLabel];
@@ -154,7 +184,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];
+    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];//TODO: FIX ME.
     [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
     
     [self.topic setLastViewedPage:[NSString stringWithFormat:@"%d", _currentPage]];
@@ -229,9 +259,9 @@
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"取消", @"Cancel")
+                                                    cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"回复", @"Reply"), NSLocalizedString(@"分享到微博", @"Weibo"), NSLocalizedString(@"打开原网页", @"Origin"), nil];
+                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showFromToolbar:self.toolbar];    
 }
@@ -242,41 +272,45 @@
     //Reply
     if (0 == buttonIndex) {
         if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"]) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"请先获取登录状态" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
         if (!self.replyController) {
             self.replyController = [[REComposeViewController alloc] init];
-        }
-        REComposeViewController *replyController = self.replyController;
-        replyController.title = NSLocalizedString(@"回复", @"Reply");
-        replyController.navigationItem.leftBarButtonItem.title = @"取消";
-        replyController.navigationItem.rightBarButtonItem.title = @"发送";
-        
-        
-        [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
-            if (result == REComposeResultCancelled) {
-                [composeViewController dismissViewControllerAnimated:YES completion:nil];
-            }
-            else if (result == REComposeResultPosted) {
-                if (composeViewController.text.length > 0) {
-                    [self replyWithText:composeViewController.text];
+            REComposeViewController *replyController = self.replyController;
+            replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
+            
+            
+            [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
+                if (result == REComposeResultCancelled) {
                     [composeViewController dismissViewControllerAnimated:YES completion:nil];
                 }
-            }
-        }];
-        [self presentViewController:replyController animated:NO completion:nil];
+                else if (result == REComposeResultPosted) {
+                    if (composeViewController.text.length > 0) {
+                        [self replyWithTextInDiscuz:composeViewController.text];
+                        [composeViewController dismissViewControllerAnimated:YES completion:nil];
+                    }
+                }
+            }];
+        
+        }
+        [self.replyController presentFromViewController:self];
+        //[self presentViewController:replyController animated:NO completion:nil];
     }
     //Weibo
     if (1 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
-            [[[UIAlertView alloc] initWithTitle:nil message:@"需要6.0以上的系统才能使用" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil] show];
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
         SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
+        if (!controller) {
+            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+            return;
+        }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
@@ -287,8 +321,16 @@
     }
     
     if (2 == buttonIndex) {
-        [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/read-htm-tid-%@.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
+        //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
+        
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            ;
+        } else {
+            controller.modalPresentationStyle = UIModalPresentationPageSheet;
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+        }
+        
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }
@@ -298,6 +340,11 @@
     if (1 == buttonIndex) {
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            ;
+        } else {
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+        }
         [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
@@ -311,7 +358,7 @@
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"打开链接" message:request.URL.absoluteString delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"打开", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
     _urlToOpen = request.URL;
     [alertView show];
     return NO;
@@ -344,16 +391,14 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@_%d.html", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          NSLog(@"%@", operation.request.allHTTPHeaderFields);
-                         NSMutableString *HTMLString = [[NSMutableString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         if (HTMLString) {
-                             NSString *string = [S1Parser contentsFromHTMLString:HTMLString withOffset:_currentPage];
-                             [self.webView loadHTMLString:string baseURL:nil];
-                         }
+                         NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         [self.topic setFormhash:[S1Parser formhashFromThreadString:[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding]]];
+                         [self.webView loadHTMLString:string baseURL:nil];
                          [HUD hideWithDelay:0.5];
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -362,13 +407,48 @@
                      }];
 }
 
-- (void)replyWithText:(NSString *)text
+- (void)replyWithTextInDiscuz:(NSString *)text
+{
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    overlay.animation = MTStatusBarOverlayAnimationShrink;
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
+    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
+    NSDictionary *params = @{@"message" : replyWithSuffix,
+                             @"posttime" : timestamp,
+                             @"formhash" : self.topic.formhash,
+                             @"usesig" :	@"1",
+                             @"subject" : @"",
+                             };
+    __weak typeof(self) myself = self;
+    [self.HTTPClient postPath:path
+                   parameters:params
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                          NSLog(@"%@", HTMLString);
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+                              [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                          }
+                          _needToScrollToBottom = YES;
+                          [myself fetchContent];
+                      }
+                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                          [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
+                      }];
+
+}
+
+- (void)replyWithTextInPhpwind:(NSString *)text
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationShrink;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 
-    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    NSString *suffix = @"";//@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970]*1000)];
     NSString *path = [NSString stringWithFormat:@"post.php?action=reply&fid=%@&tid=%@", self.topic.fID, self.topic.topicID];

@@ -12,7 +12,6 @@
 #import "S1SettingViewController.h"
 #import "S1HTTPClient.h"
 #import "S1Parser.h"
-#import "S1TopicCell.h"
 #import "S1TopicListCell.h"
 #import "S1HUD.h"
 #import "S1Topic.h"
@@ -55,37 +54,53 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidLoad
 {
 #define _BAR_HEIGHT 44.0f
+#define _UPPER_BAR_HEIGHT 64.0f
+
     
     [super viewDidLoad];
     self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed_3_1.tracer"];
     self.tracer.identifyKey = @"topicID";
     self.tracer.timeStampKey = @"lastViewedDate";
     
-    self.view.backgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    self.view.backgroundColor = [S1GlobalVariables color5];
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-2 * _BAR_HEIGHT) style:UITableViewStylePlain];
+    }
+    else {
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
+    }
+    self.tableView.autoresizesSubviews = YES;
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-2*_BAR_HEIGHT) style:UITableViewStylePlain];
-    self.tableView.autoresizesSubviews = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.tableView.rowHeight = 54.0f;
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.separatorColor = [UIColor colorWithRed:0.82 green:0.85 blue:0.76 alpha:1.0];
-    self.tableView.backgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    self.tableView.separatorColor = [S1GlobalVariables color1];
+    self.tableView.backgroundColor = [S1GlobalVariables color5];
     self.tableView.hidden = YES;
     [self.view addSubview:self.tableView];
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
+    self.refreshControl.tintColor = [S1GlobalVariables color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];
-    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
+        self.navigationBar.tintColor = [S1GlobalVariables color3];
+    } else {
+        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
+    }
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.navigationBar.tintColor = [UIColor colorWithWhite:0.15 alpha:1.0];
+    //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
     self.naviItem = item;
-    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    UIBarButtonItem *recentItem = [[UIBarButtonItem alloc] initWithTitle:@"最近" style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
+    UIBarButtonItem *recentItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Recent", "Recent") style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
     item.rightBarButtonItem = recentItem;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
@@ -245,21 +260,18 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
-    NSString *path = [NSString stringWithFormat:@"simple/?f%@.html", self.threadsInfo[key]];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                        if (HTMLString) {
-                            NSArray *topics = [S1Parser topicsFromHTMLString:HTMLString withContext:@{@"FID": fid}];
-                            if (topics.count > 0) {
-                                self.topics = topics;
-                                self.cache[key] = topics;
-                                [self.tableView reloadData];
-                                if (toTop) {
-                                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                                }
+                        NSArray *topics = [S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}];
+                        if (topics.count > 0) {
+                            self.topics = topics;
+                            self.cache[key] = topics;
+                            [self.tableView reloadData];
+                            if (toTop) {
+                                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
                             }
                         }
                         if (self.refreshControl.refreshing) {
@@ -292,6 +304,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     return [self.topics count];
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

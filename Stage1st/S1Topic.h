@@ -14,6 +14,8 @@
 @property (nonatomic, copy) NSString *topicID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *replyCount;
+//For Reply
+@property (nonatomic, copy) NSString *formhash;
 
 //For Tracing
 @property (nonatomic, copy) NSString *lastViewedPage;

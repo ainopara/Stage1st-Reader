@@ -2,7 +2,7 @@
 // REComposeSheetView.h
 // REComposeViewController
 //
-// Copyright (c) 2012 Roman Efimov (https://github.com/romaonthego)
+// Copyright (c) 2013 Roman Efimov (https://github.com/romaonthego)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,11 +34,12 @@
 
 @property (readonly, nonatomic) UIView *attachmentView;
 @property (readonly, nonatomic) UIImageView *attachmentImageView;
-@property (strong, readwrite, nonatomic) UIViewController <REComposeSheetViewDelegate> *delegate;
+@property (weak, readwrite, nonatomic) UIViewController <REComposeSheetViewDelegate> *delegate;
 @property (readonly, nonatomic) UINavigationItem *navigationItem;
 @property (readonly, nonatomic) UINavigationBar *navigationBar;
 @property (readonly, nonatomic) UIView *textViewContainer;
 @property (readonly, nonatomic) DEComposeTextView *textView;
+@property (readonly, nonatomic) UIButton *attachmentViewButton;
 
 @end
 

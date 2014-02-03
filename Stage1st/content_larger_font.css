@@ -22,14 +22,12 @@ iframe {
 }
 
 .i_table {
-    box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75), inset 1px 1px 0px 0px #fff;
+    border: #ccc 1px solid;
 	border-radius: 0px;
 	word-break: break-all;
-    border: none;
-    width: 94.2%;
 }
 
-.tpc_content {
+.t_f {
     color: #022c80;
     font-size: 17px;
     line-height: 150%;
@@ -76,10 +74,10 @@ button {
 }
 
 .quote {
-	display: none;
+	border-left-style: solid;
 }
 
-.blockquote3 {
+blockquote {
 	margin: 0;
 	margin: 5px;
 }
@@ -91,7 +89,10 @@ button {
 	display: block;
     color: #aaa;
 }
-
+.attachment {
+    display: block;
+    border-top: #ccc 1px solid;
+}
 .smalltext {
     font-size: 12px;
 }

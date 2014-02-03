@@ -53,7 +53,11 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
 
 - (id)initInScrollView:(UIScrollView *)scrollView activityIndicatorView:(UIView *)activity
 {
-    self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top), scrollView.frame.size.width, kTotalViewHeight)];
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top), scrollView.frame.size.width, kTotalViewHeight)];
+    } else {
+        self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top - 1), scrollView.frame.size.width, kTotalViewHeight)];
+    }
     
     if (self) {
         self.scrollView = scrollView;
@@ -85,10 +89,6 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         _shapeLayer.fillColor = [_tintColor CGColor];
         _shapeLayer.strokeColor = [[[UIColor darkGrayColor] colorWithAlphaComponent:0.5] CGColor];
         _shapeLayer.lineWidth = 0.5;
-        _shapeLayer.shadowColor = [[UIColor blackColor] CGColor];
-        _shapeLayer.shadowOffset = CGSizeMake(0, 0.5);
-        _shapeLayer.shadowOpacity = 0.2;
-        _shapeLayer.shadowRadius = 1.0;
         [self.layer addSublayer:_shapeLayer];
         
         _arrowLayer = [CAShapeLayer layer];
@@ -100,6 +100,15 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         _highlightLayer = [CAShapeLayer layer];
         _highlightLayer.fillColor = [[[UIColor whiteColor] colorWithAlphaComponent:0.2] CGColor];
         [_shapeLayer addSublayer:_highlightLayer];
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            _shapeLayer.shadowColor = [[UIColor blackColor] CGColor];
+            _shapeLayer.shadowOffset = CGSizeMake(0, 0.5);
+            _shapeLayer.shadowOpacity = 0.2;
+            _shapeLayer.shadowRadius = 1.0;
+        } else {
+            [self setBackgroundColor:[S1GlobalVariables color5]];
+        }
+        
     }
     return self;
 }

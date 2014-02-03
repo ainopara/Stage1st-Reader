@@ -15,7 +15,7 @@
 {
     NSString *URLString = [[request URL] absoluteString];
     NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-    NSString *prefix = [NSString stringWithFormat:@"%@/2b/images/post/smile", baseURLString];
+    NSString *prefix = [NSString stringWithFormat:@"%@/2b/static/image/smiley", baseURLString];
     if ([URLString hasPrefix:prefix]) {
         NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong"];
         NSRange range = [URLString rangeOfString:prefix];
