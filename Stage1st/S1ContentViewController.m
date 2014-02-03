@@ -429,7 +429,9 @@
                           NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                           NSLog(@"%@", HTMLString);
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          //[overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                          if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+                              [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                          }
                           _needToScrollToBottom = YES;
                           [myself fetchContent];
                       }
