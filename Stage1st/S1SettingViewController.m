@@ -126,11 +126,11 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Developer", @"Developer");
-                cell.detailTextLabel.text = @"Gabriel";
+                cell.detailTextLabel.text = @"Gabriel, ainopara";
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell){
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Gabriel" message:nil delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Gabriel & ainopara" message:nil delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
                 [alertView show];
             }];
         }];

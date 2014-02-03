@@ -10,20 +10,21 @@
 #import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
-#import "PDDebugger.h"
+//#import "PDDebugger.h"
 
 @implementation S1AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
+    /*
     PDDebugger *debugger = [PDDebugger defaultInstance];
     [debugger enableNetworkTrafficDebugging];
     [debugger enableViewHierarchyDebugging];
     [debugger forwardAllNetworkTraffic];
     [debugger enableCoreDataDebugging];
     [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
+     */
     //User Defaults;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
