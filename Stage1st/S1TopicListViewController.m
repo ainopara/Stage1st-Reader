@@ -114,6 +114,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHTTPClient:) name:@"S1BaseURLMayChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 #undef _BAR_HEIGHT
 }
 
@@ -291,6 +292,21 @@ static NSString * const cellIdentifier = @"TopicCell";
                      }];
 }
 
+#pragma mark - Orientation
+
+- (void)viewOrientationDidChanged:(NSNotification *)notification
+{
+    [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+}
+
+- (void)layoutWithOrientation:(UIInterfaceOrientation)interfaceOrientation width:(NSInteger)width height:(NSInteger)height
+{
+    #define _BAR_HEIGHT 44.0f
+    #define _UPPER_BAR_HEIGHT 64.0f
+    NSLog(@"Layout called.");
+    //[self.scrollTabBar setFrame:CGRectMake(0, self.view.bounds.size.height- _BAR_HEIGHT, self.view.bounds.size.width, _BAR_HEIGHT)];
+    
+}
 
 #pragma mark - UITableView
 
