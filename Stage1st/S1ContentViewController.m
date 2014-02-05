@@ -29,7 +29,7 @@
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *maskView;
-
+@property (nonatomic, strong) UIView *statusBackgroundView;
 @property (nonatomic, strong) UILabel *pageLabel;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -67,10 +67,10 @@
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
     } else {
-        UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-        statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-        statusBackgroundView.userInteractionEnabled = NO;
-        [self.view addSubview:statusBackgroundView];
+        self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+        self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+        self.statusBackgroundView.userInteractionEnabled = NO;
+        [self.view addSubview:self.statusBackgroundView];
                 
         self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     }
@@ -160,6 +160,12 @@
     [self.toolbar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, actionItem]];
     
     [self.view addSubview:self.toolbar];
+    self.view.autoresizesSubviews = YES;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.statusBackgroundView.autoresizesSubviews = YES;
+    self.statusBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.toolbar.autoresizesSubviews = YES;
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
 #undef _BAR_HEIGHT
     
     [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
