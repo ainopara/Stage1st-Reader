@@ -13,7 +13,7 @@
 #define _DEFAULT_WIDTH_IPAD_LANDSCAPE 128.0f
 
 @interface S1TabBar ()
-- (CGFloat) determineWidthPerItem;
+- (CGFloat) determineWidthPerItemAndUpdateLastRecognizedOrientation;
 @end
 
 @implementation S1TabBar {
@@ -212,7 +212,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         ;
     } else {
-        CGFloat widthPerItem = [self determineWidthPerItem];
+        CGFloat widthPerItem = [self determineWidthPerItemAndUpdateLastRecognizedOrientation];
         if (widthPerItem != 0) {
             NSInteger maxIndex = 0;
             NSArray * subviews = [self subviews];
@@ -240,7 +240,7 @@
     // Drawing code
 }
 */
-- (CGFloat) determineWidthPerItem
+- (CGFloat) determineWidthPerItemAndUpdateLastRecognizedOrientation
 {
     CGFloat widthPerItem = 0;
     NSInteger orientation = [[UIDevice currentDevice] orientation];

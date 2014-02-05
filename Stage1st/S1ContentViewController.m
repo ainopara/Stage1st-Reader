@@ -486,5 +486,11 @@
     return viewImage;
 }
 
+-(void)viewDidLayoutSubviews
+{
+    NSLog(@"layout called");
+    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
 
 @end
