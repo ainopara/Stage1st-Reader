@@ -10,6 +10,7 @@
 
 #define _DEFAULT_WIDTH 80.0f
 #define _DEFAULT_WIDTH_IPAD 96.0f
+#define _DEFAULT_WIDTH_IPAD_LANDSCAPE 128.0f
 
 
 @implementation S1TabBar {
@@ -66,7 +67,13 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         widthPerItem = _DEFAULT_WIDTH;
     } else {
-        widthPerItem = _DEFAULT_WIDTH_IPAD;
+        if ([[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortrait || [[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortraitUpsideDown) {
+            widthPerItem = _DEFAULT_WIDTH_IPAD;
+            NSLog(@"Decelerating Portrait");
+        } else {
+            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+            NSLog(@"Decelerating Landscape");
+        }
     }
     CGPoint offset = scrollView.contentOffset;
     CGFloat n = roundf(offset.x / widthPerItem);
@@ -84,7 +91,13 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         widthPerItem = _DEFAULT_WIDTH;
     } else {
-        widthPerItem = _DEFAULT_WIDTH_IPAD;
+        if ([[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortrait || [[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortraitUpsideDown) {
+            widthPerItem = _DEFAULT_WIDTH_IPAD;
+            NSLog(@"Dragging Portrait");
+        } else {
+            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+            NSLog(@"Dragging Landscape");
+        }
     }
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
@@ -125,7 +138,11 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
     } else {
-        widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
+        if ([[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortrait || [[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationPortraitUpsideDown) {
+            widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
+        } else {
+            widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD_LANDSCAPE : self.bounds.size.width/_keys.count);
+        }
     }
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -186,6 +203,38 @@
     self.contentSize = CGSizeMake(width, self.bounds.size.height);
 }
 
+- (void)updateButtonFrame
+{
+    NSArray * subviews = [self subviews];
+    CGFloat widthPerItem;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        //widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+    } else {
+        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationPortrait || [[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown) {
+            widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : 768.0f/_keys.count);
+            NSLog(@"Portrait");
+        } else {
+            widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD_LANDSCAPE : 1024.0f/_keys.count);
+            
+            NSLog(@"Landscape");
+        }
+        NSInteger maxIndex = 0;
+        for(id obj in subviews)
+        {
+            if ([obj isMemberOfClass:[UIButton class]]) {
+                UIButton *btn = (UIButton *)obj;
+                NSInteger idx = btn.tag;
+                CGRect rect = CGRectMake(widthPerItem * idx, 0.25, widthPerItem, self.bounds.size.height-0.25);
+                [btn setFrame:rect];
+                if (idx > maxIndex) {
+                    maxIndex = idx;
+                }
+            }
+        }
+        [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
+    }
+    
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

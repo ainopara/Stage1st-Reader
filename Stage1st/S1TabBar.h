@@ -14,6 +14,7 @@
 
 - (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys;
 - (void)deselectAll;
+- (void)updateButtonFrame;
 
 @property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
 
