@@ -956,7 +956,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"OTHER_LDFLAGS[arch=*]" = (
 					"-lxml2",
 					"-ObjC",
@@ -979,7 +979,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"OTHER_LDFLAGS[arch=*]" = (
 					"-lxml2",
 					"-ObjC",
