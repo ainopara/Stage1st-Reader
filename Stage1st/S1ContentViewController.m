@@ -301,6 +301,7 @@
             }];
         
         }
+        [self.replyController.view setFrame:self.view.bounds];
         [self.replyController presentFromViewController:self];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
