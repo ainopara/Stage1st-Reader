@@ -22,6 +22,7 @@
         self.contentView.autoresizesSubviews = YES;
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds]; //This value will be replaced by setFrame function
+        [self.drawingSubView setContentMode:UIViewContentModeRedraw];
         [self.contentView addSubview:self.drawingSubView];
     }
     return self;

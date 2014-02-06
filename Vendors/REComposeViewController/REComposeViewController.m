@@ -57,7 +57,11 @@
 - (void)loadView
 {
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-    self.view = [[UIView alloc] initWithFrame:keyWindow.bounds];
+    if (keyWindow.rootViewController) {
+        self.view = [[UIView alloc] initWithFrame:keyWindow.rootViewController.view.bounds];
+    } else {
+        self.view = [[UIView alloc] initWithFrame:keyWindow.bounds];
+    }
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 

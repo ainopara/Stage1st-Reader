@@ -29,7 +29,7 @@
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *maskView;
-
+@property (nonatomic, strong) UIView *statusBackgroundView;
 @property (nonatomic, strong) UILabel *pageLabel;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -67,10 +67,10 @@
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
     } else {
-        UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-        statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-        statusBackgroundView.userInteractionEnabled = NO;
-        [self.view addSubview:statusBackgroundView];
+        self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+        self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+        self.statusBackgroundView.userInteractionEnabled = NO;
+        [self.view addSubview:self.statusBackgroundView];
                 
         self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     }
@@ -160,6 +160,12 @@
     [self.toolbar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, actionItem]];
     
     [self.view addSubview:self.toolbar];
+    self.view.autoresizesSubviews = YES;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.statusBackgroundView.autoresizesSubviews = YES;
+    self.statusBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.toolbar.autoresizesSubviews = YES;
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
 #undef _BAR_HEIGHT
     
     [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
@@ -295,6 +301,7 @@
             }];
         
         }
+        [self.replyController.view setFrame:self.view.bounds];
         [self.replyController presentFromViewController:self];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
@@ -442,78 +449,6 @@
 
 }
 
-- (void)replyWithTextInPhpwind:(NSString *)text
-{
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationShrink;
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-
-    NSString *suffix = @"";//@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970]*1000)];
-    NSString *path = [NSString stringWithFormat:@"post.php?action=reply&fid=%@&tid=%@", self.topic.fID, self.topic.topicID];
-    __weak typeof(self) myself = self;
-    [self.HTTPClient getPath:path
-                  parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         NSLog(@"%@", HTMLString);
-                         [myself findNecessaryTokens:HTMLString withContinuation:^(NSString *tokenVerify, NSString *tokenHexie) {
-                             NSString *path = [NSString stringWithFormat:@"post.php?fid=%@&nowtime=%@&verify=%@", myself.topic.fID, timestamp, tokenVerify];
-                             NSDictionary *params = @{@"magicname" : @"",
-                                                      @"magicid" : @"",
-                                                      @"verify" : tokenVerify,
-                                                      @"cyid" :	@"0",
-                                                      @"ajax" :	@"1",
-                                                      @"iscontinue" : @"0",
-                                                      @"atc_usesign" : @"1",
-                                                      @"atc_autourl" : @"1",
-                                                      @"atc_convert" : @"1",
-                                                      @"atc_money" : @"0",
-                                                      @"atc_credittype" : @"money",
-                                                      @"atc_rvrc" : @"0",
-                                                      @"atc_enhidetype" : @"credit",
-                                                      @"atc_title" : @"",
-                                                      @"atc_iconid" : @"0",
-                                                      @"atc_content" : replyWithSuffix,
-                                                      @"attachment_1" : @"",
-                                                      @"atc_desc1" : @"",
-                                                      @"att_special1" :	@"0",
-                                                      @"att_ctype1" : @"money",
-                                                      @"atc_needrvrc1" : @"0",
-                                                      @"step" : @"2",
-                                                      @"pid" : @"",
-                                                      @"action" : @"reply",
-                                                      @"fid" : myself.topic.fID,
-                                                      @"tid" : myself.topic.topicID,
-                                                      @"article" : @"",
-                                                      @"special" : @"0",
-                                                      @"_hexie" : tokenHexie,
-                                                      };
-                             NSURLRequest *request = [myself.HTTPClient multipartFormRequestWithMethod:@"POST" path:path parameters:params constructingBodyWithBlock:nil];
-                             AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-                             [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                 NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                 NSLog(@"%@", HTMLString);
-                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                 [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                                 _needToScrollToBottom = YES;
-                                 [myself fetchContent];
-                             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                 [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
-                             }];
-                             [op start];
-                         }];
-                     }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                         [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                         NSLog(@"%@", error);
-                     }];
-
-    
-}
 
 #pragma mark - Helpers
 
@@ -552,21 +487,11 @@
     return viewImage;
 }
 
-- (void)findNecessaryTokens:(NSString *)HTMLString withContinuation:(void (^)(NSString *tokenVerify, NSString *tokenHexie))continuation
+-(void)viewDidLayoutSubviews
 {
-    NSRegularExpression *re = nil;
-    NSString *pattern = nil;
-    pattern = @"name=\"verify\" value=\"([0-9a-zA-Z]+)\"";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *tokenVerify = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    pattern = @"_hexie\\.value='([0-9a-zA-Z]+)'";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *tokenHexie = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    if (continuation) {
-        continuation(tokenVerify, tokenHexie);
-    }
+    NSLog(@"layout called");
+    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 @end

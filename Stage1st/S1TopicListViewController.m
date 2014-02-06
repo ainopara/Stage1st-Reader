@@ -110,10 +110,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.tabbarDelegate = self;
         
     [self.view addSubview:self.scrollTabBar];
-    
+
+    self.scrollTabBar.autoresizesSubviews = YES;
+    self.scrollTabBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    self.view.autoresizesSubviews = YES;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHTTPClient:) name:@"S1BaseURLMayChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 #undef _BAR_HEIGHT
 }
 
@@ -291,6 +296,12 @@ static NSString * const cellIdentifier = @"TopicCell";
                      }];
 }
 
+#pragma mark - Orientation
+
+- (void)viewOrientationDidChanged:(NSNotification *)notification
+{
+    [self.scrollTabBar updateButtonFrame];
+}
 
 #pragma mark - UITableView
 
