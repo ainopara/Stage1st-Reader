@@ -277,7 +277,7 @@
 //    NSLog(@"%d", buttonIndex);
     //Reply
     if (0 == buttonIndex) {
-        if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"]) {
+        if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
             [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }

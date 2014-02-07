@@ -47,9 +47,9 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Login", @"Login");
-                NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"];
-                if (userID) {
-                    cell.detailTextLabel.text = userID;
+                NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+                if (inLoginStateID) {
+                    cell.detailTextLabel.text = inLoginStateID;
                 } else {
                     cell.detailTextLabel.text = NSLocalizedString(@"SettingView_Not_Login_State_Mark", @"Not Login");
                 }

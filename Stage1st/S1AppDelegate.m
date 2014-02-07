@@ -18,6 +18,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
+    //Pony Debugger
     PDDebugger *debugger = [PDDebugger defaultInstance];
     [debugger enableNetworkTrafficDebugging];
     [debugger enableViewHierarchyDebugging];
@@ -32,16 +33,6 @@
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
-    NSArray *array0 =[array objectAtIndex:0];
-    NSArray *array1 =[array objectAtIndex:1];
-    if([array0 indexOfObject:@"内野"] == NSNotFound && [array1 indexOfObject:@"内野"]== NSNotFound) {
-        NSLog(@"Update Order List");
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
-        NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
     }
@@ -51,8 +42,20 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
     }
-    
-    
+    //Migrate to v3.4.0
+    NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
+    NSArray *array0 =[array firstObject];
+    NSArray *array1 =[array lastObject];
+    if([array0 indexOfObject:@"内野"] == NSNotFound && [array1 indexOfObject:@"内野"]== NSNotFound) {
+        NSLog(@"Update Order List");
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
+        NSArray *order = [NSArray arrayWithContentsOfFile:path];
+        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserID"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserPassword"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                          diskCapacity:10 * 1024 * 1024

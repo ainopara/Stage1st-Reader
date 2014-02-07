@@ -38,7 +38,7 @@
     self.navigationItem.title = NSLocalizedString(@"LoginView_Title", @"Login");
         
     self.userIDField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
-    self.userIDField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserID"];
+    self.userIDField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserIDCached"];
     self.userIDField.textColor = [S1GlobalVariables color4];
     self.userIDField.tag = 99;
     self.userIDField.placeholder = NSLocalizedString(@"LoginView_ID", @"Id");
@@ -47,7 +47,7 @@
     self.userIDField.delegate = self;
     
     self.userPasswordField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
-    self.userPasswordField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserPassword"];
+    self.userPasswordField.text = @"";
     self.userPasswordField.textColor = [S1GlobalVariables color4];
     self.userPasswordField.tag = 100;
     self.userPasswordField.placeholder = NSLocalizedString(@"LoginView_Password", @"Password");
@@ -130,15 +130,18 @@
                             NSLog(@"Login Response: %@", result);
                             NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
                             
-                            NSRange successMsgRange = [result rangeOfString:@"window.location.href"];
-                            if (successMsgRange.location != NSNotFound) {
+                            NSRange failureMsgRange = [result rangeOfString:@"window.location.href"];
+                            if (failureMsgRange.location != NSNotFound) {
+                                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+                                [userDefault setValue:self.userIDField.text forKey:@"InLoginStateID"];
+                                [userDefault setValue:self.userIDField.text forKey:@"UserIDCached"];
                                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Success_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                                 [alertView show];
-                                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-                                [userDefault setValue:self.userIDField.text forKey:@"UserID"];
-                                [userDefault setValue:self.userPasswordField.text forKey:@"UserPassword"];
-                                
                             } else {
+                                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+                                [userDefault setValue:nil forKey:@"InLoginStateID"];
+                                [userDefault setValue:self.userIDField.text forKey:@"UserIDCached"];
+                                [self clearCookiers];
                                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                                 [alertView show];
                             }
@@ -146,37 +149,11 @@
                         }
                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                             NSLog(@"%@", error);
+                            NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+                            [userDefault setValue:nil forKey:@"InLoginStateID"];
+                            [userDefault setValue:self.userIDField.text forKey:@"UserIDCached"];
+                            [self clearCookiers];
                             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
-                            [alertView show];
-                            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        }];
-}
-
-// Login from the mobile web
-- (void)alternativelogin
-{
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [[self HTTPClient] postPath:@"m/login.php"
-                     parameters:@{ @"pwuser":self.userIDField.text, @"pwpwd":self.userPasswordField.text, @"lgt":@"0" }
-                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                            NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                            NSLog(@"%@", result);
-                            NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
-                            if (result) {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
-                                [alertView show];
-                                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-                                [userDefault setValue:self.userIDField.text forKey:@"UserID"];
-                                [userDefault setValue:self.userPasswordField.text forKey:@"UserPassword"];
-                            } else {
-                                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
-                                [alertView show];
-                            }
-                            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        }
-                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                            NSLog(@"%@", error);
-                            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录" message:@"获取登录状态未成功" delegate:nil cancelButtonTitle:@"完成" otherButtonTitles:nil];
                             [alertView show];
                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         }];
