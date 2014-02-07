@@ -399,12 +399,20 @@
         [self fetchContent];
     }];
     NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    NSLog(@"Begin Fetch Content");
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         NSLog(@"%@", operation.request.allHTTPHeaderFields);
+                         //NSLog(@"%@", operation.request.allHTTPHeaderFields);
+                         NSLog(@"Finish Fetch Content");
                          NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
-                         [self.topic setFormhash:[S1Parser formhashFromThreadString:[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding]]];
+                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                         [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+                         //check login state
+                         if (![S1Parser checkLoginState:HTMLString])
+                         {
+                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
+                         }
                          [self.webView loadHTMLString:string baseURL:nil];
                          [HUD hideWithDelay:0.5];
                      }
@@ -489,7 +497,7 @@
 
 -(void)viewDidLayoutSubviews
 {
-    NSLog(@"layout called");
+    //NSLog(@"layout called");
     NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }

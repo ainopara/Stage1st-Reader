@@ -270,6 +270,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        //check login state
+                        NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                        if (![S1Parser checkLoginState:HTMLString])
+                        {
+                            [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
+                        }
+                        //parse topics
                         NSArray *topics = [S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}];
                         if (topics.count > 0) {
                             self.topics = topics;

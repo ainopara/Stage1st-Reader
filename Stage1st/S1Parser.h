@@ -15,4 +15,6 @@
 
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString;
 
++ (BOOL)checkLoginState:(NSString *)HTMLString;
+
 @end

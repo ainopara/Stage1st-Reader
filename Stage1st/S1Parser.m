@@ -25,9 +25,9 @@
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     for (DDXMLElement *image in images) {
         NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
-        NSLog(@"image Src:%@",imageSrc);
+        //NSLog(@"image Src:%@",imageSrc);
         NSString *imageFile = [[image attributeForName:@"file"] stringValue];
-        NSLog(@"image File:%@",imageFile);
+        //NSLog(@"image File:%@",imageFile);
         if (imageFile) {
             [image removeAttributeForName:@"src"];
             [image addAttributeWithName:@"src" stringValue:imageFile];
@@ -171,13 +171,24 @@
 
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString
 {
-    NSRegularExpression *re = nil;
-    NSString *pattern = nil;
-    pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
     NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
     return formhash;
 }
+
++ (BOOL)checkLoginState:(NSString *)HTMLString
+{
+    NSString *pattern = @"mod=logging&amp;action=logout";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSInteger num = [result numberOfRanges];
+    if (num == 0) {
+        return NO;
+    }
+    return YES;
+}
+
 
 @end
