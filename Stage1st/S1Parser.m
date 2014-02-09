@@ -81,6 +81,7 @@
 + (NSString *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
     NSLog(@"Begin Parsing.");
+    NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
     NSString *finalString = [[NSString alloc] init];
@@ -164,7 +165,8 @@
     }
     finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
-    NSLog(@"Finish Parsing.");
+    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     return threadPage;
 }
 

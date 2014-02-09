@@ -398,13 +398,16 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:/*@"thread-%@-%d-1.html"*/@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
     NSLog(@"Begin Fetch Content");
+    NSDate *start = [NSDate date];
+    
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          //NSLog(@"%@", operation.request.allHTTPHeaderFields);
-                         NSLog(@"Finish Fetch Content");
+                         NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+                         NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
                          NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                          [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
