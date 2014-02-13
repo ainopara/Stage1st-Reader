@@ -4,6 +4,8 @@
 "ContentView_ActionSheet_Reply" = "回复";
 "ContentView_ActionSheet_Weibo" = "分享到微博";
 "ContentView_ActionSheet_OriginPage" = "打开原网页";
+"ContentView_ActionSheet_Favorite" = "收藏";
+"ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
 
 "ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "取消";

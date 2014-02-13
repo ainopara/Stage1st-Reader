@@ -14,21 +14,13 @@
 NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
 @implementation S1Tracer {
-    NSString *_tracerName;
-    NSMutableDictionary *_tracerDictionary;
+
 }
 
-- (id)initWithTracerName:(NSString *)name
+- (id)init
 {
     self = [super init];
     if (!self) return nil;
-    
-    _tracerName = [name copy];
-    _tracerDictionary = [self tracerDictionaryFromPersistence];
-    
-    if (!_tracerDictionary) {
-        _tracerDictionary = [NSMutableDictionary dictionary];
-    }
     
     //SQLite database
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -93,14 +85,6 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     } else {
         [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
     }
-    /*
-    if ([topic.favorite boolValue] == YES) {
-        [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topicID, lastViewedDate];
-    } else {
-        if ([self topicIsFavorited:topicID]) {
-            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topicID];
-        }
-    }*/
     
     NSLog(@"Tracer has traced:%@", object);
 }
@@ -126,10 +110,12 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
 - (id)tracedTopic:(NSNumber *)topicID
 {
-    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page FROM threads WHERE topic_id = ?;",topicID];
+    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page,visit_count FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {
         S1Topic *topic = [[S1Topic alloc] init];
         [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
+        [topic setVisitCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]]];
+        [topic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:topic.topicID]]];
         return topic;
     } else {
         return nil;
@@ -141,29 +127,10 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 - (void)synchronize
 {
     [self purgeStaleItem];
-    NSLog(@"Write to Disk: %@", [self tracerPath]);
-    [NSKeyedArchiver archiveRootObject:_tracerDictionary toFile:[self tracerPath]];
-}
-
-
-- (NSMutableDictionary *)tracerDictionaryFromPersistence
-{
-    NSString *path = [self tracerPath];
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    NSMutableDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    return dict;    
-}
-
-
-- (NSString *)tracerPath
-{
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *tracerDirectory = [paths objectAtIndex:0];
-    return [tracerDirectory stringByAppendingPathComponent:_tracerName];
 }
 
 - (void)purgeStaleItem
-{
+{/*
     __block NSMutableArray *keysToRemove = [NSMutableArray array];
     [_tracerDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         NSDate *expireDate = [(NSDate *)[obj valueForKey:_timeStampKey] dateByAddingTimeInterval:kDefaultDuration];
@@ -173,7 +140,7 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
             [keysToRemove addObject:key];
         }
     }];
-    [_tracerDictionary removeObjectsForKeys:keysToRemove];
+    [_tracerDictionary removeObjectsForKeys:keysToRemove];*/
 }
 
 -(BOOL)topicIsFavorited:(NSNumber *)topic_id
@@ -185,6 +152,24 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
         return NO;
     }
 
+}
+
+-(void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state
+{
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
+    if ([historyResult next]) {
+        if (state) {
+            ;
+        } else {
+            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topic_id]; //topic_id in favorite table and state should be NO
+        }
+    } else {
+        if (state) {
+            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topic_id, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
+        } else {
+            ;
+        }
+    }
 }
 
 @end

@@ -267,7 +267,8 @@
                                                              delegate:self
                                                     cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
+                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"),
+                                  [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showFromToolbar:self.toolbar];    
 }
@@ -339,6 +340,10 @@
         }
         
         [self presentViewController:controller animated:YES completion:nil];        
+    }
+    
+    if (3 == buttonIndex) {
+        [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
     }
 }
 

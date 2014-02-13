@@ -58,7 +58,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     
     [super viewDidLoad];
-    self.tracer = [[S1Tracer alloc] initWithTracerName:@"RecentViewed_3_1.tracer"];
+    self.tracer = [[S1Tracer alloc] init];
     self.tracer.identifyKey = @"topicID";
     self.tracer.timeStampKey = @"lastViewedDate";
     
@@ -278,6 +278,15 @@ static NSString * const cellIdentifier = @"TopicCell";
                         }
                         //parse topics
                         NSArray *topics = [S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}];
+                        //append tracer message to topics
+                         for (S1Topic *topic in topics) {
+                             S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                             if (tempTopic) {
+                                 [topic setLastViewedPage:tempTopic.lastViewedPage];
+                                 [topic setVisitCount:tempTopic.visitCount];
+                                 [topic setFavorite:tempTopic.favorite];
+                             }
+                         }
                         if (topics.count > 0) {
                             self.topics = topics;
                             self.cache[key] = topics;
@@ -340,10 +349,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     S1ContentViewController *controller = [[S1ContentViewController alloc] init];
     S1Topic *topicToShow = self.topics[indexPath.row];
-    S1Topic *tracedTopic = [self.tracer tracedTopic:topicToShow.topicID];
-    if (tracedTopic) {
-        topicToShow.lastViewedPage = tracedTopic.lastViewedPage;
-    }
     [controller setTopic:topicToShow];
     [controller setTracer:self.tracer];
     [controller setHTTPClient:self.HTTPClient];

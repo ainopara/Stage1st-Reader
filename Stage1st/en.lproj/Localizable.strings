@@ -4,6 +4,8 @@
 "ContentView_ActionSheet_Reply" = "Reply";
 "ContentView_ActionSheet_Weibo" = "Sina Weibo";
 "ContentView_ActionSheet_OriginPage" = "Original Page";
+"ContentView_ActionSheet_Favorite" = "Favorite";
+"ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
 
 "ContentView_WebView_Open_Link_Alert_Title" = "Open Link";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "Cancel";

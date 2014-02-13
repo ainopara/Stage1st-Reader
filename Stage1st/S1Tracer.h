@@ -15,7 +15,7 @@
 @property (nonatomic, copy) NSString *timeStampKey;
 @property (nonatomic, strong) FMDatabase *db;
 
-- (id)initWithTracerName:(NSString *)name;
+- (id)init;
 
 - (void)hasViewed:(id)object;
 
@@ -24,5 +24,6 @@
 - (id)tracedTopic:(NSNumber *)key;
 
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
+-(void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
 @end
