@@ -7,6 +7,9 @@
 //
 
 #import "S1Tracer.h"
+#import "S1Topic.h"
+#import "FMDatabase.h"
+#import "FMDatabaseAdditions.h"
 
 NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
@@ -27,6 +30,19 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
         _tracerDictionary = [NSMutableDictionary dictionary];
     }
     
+    //SQLite database
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
+    _db = [FMDatabase databaseWithPath:dbPath];
+    if (![_db open]) {
+        NSLog(@"Could not open db.");
+        return nil;
+    }
+    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER,visit_count INTEGER);"];
+    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
+    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronize)
                                                  name:UIApplicationDidReceiveMemoryWarningNotification
                                                object:nil];
@@ -41,6 +57,8 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
 - (void)dealloc
 {
+    NSLog(@"Database closed.");//TODO:WHY NOT CALLED?
+    [_db close];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -52,24 +70,70 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 - (void)hasViewed:(id)object
 {
     [object setValue:[NSDate date] forKey:self.timeStampKey];
-    [_tracerDictionary setObject:object forKey:[object valueForKey:self.identifyKey]];
+    
+    S1Topic *topic = (S1Topic *)object;
+    NSNumber *topicID = topic.topicID;
+    NSString *title = topic.title;
+    NSNumber *replyCount = topic.replyCount;
+    NSNumber *fID = topic.fID;
+    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[topic.lastViewedDate timeIntervalSince1970]];
+    NSNumber *lastViewedPage = topic.lastViewedPage;
+    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
+    if ([result next]) {
+        NSNumber *visitCount = [[NSNumber alloc] initWithInt:[_db intForQuery:@"SELECT visit_count FROM threads WHERE topic_id = ?;", topicID] + 1];
+        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?,visit_count = ? WHERE topic_id = ?;",
+         title, replyCount, fID, lastViewedDate, lastViewedPage, visitCount, topicID];
+    } else {
+        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, visit_count) VALUES (?,?,?,?,?,?,?);",
+         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, [NSNumber numberWithInt:1]];
+    }
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
+    if ([historyResult next]) {
+        ;
+    } else {
+        [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
+    }
+    /*
+    if ([topic.favorite boolValue] == YES) {
+        [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topicID, lastViewedDate];
+    } else {
+        if ([self topicIsFavorited:topicID]) {
+            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topicID];
+        }
+    }*/
+    
     NSLog(@"Tracer has traced:%@", object);
 }
 
 - (NSArray *)recentViewedObjects
 {
-    NSArray *all = [_tracerDictionary allValues];
-    NSLog(@"%@", all);
-    return [[[all sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        NSDate *date1 = [obj1 valueForKey:self.timeStampKey];
-        NSDate *date2 = [obj2 valueForKey:self.timeStampKey];
-        return [date1 compare:date2];
-    }] reverseObjectEnumerator] allObjects];
+    NSMutableArray *historyTopics = [NSMutableArray array];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.visit_count FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC;"];
+    while ([historyResult next]) {
+        NSLog(@"%@", [historyResult stringForColumn:@"title"]);
+        S1Topic *historyTopic = [[S1Topic alloc] init];
+        [historyTopic setTopicID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"topic_id"]]];
+        [historyTopic setTitle:[historyResult stringForColumn:@"title"]];
+        [historyTopic setReplyCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"reply_count"]]];
+        [historyTopic setFID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"field_id"]]];
+        [historyTopic setLastViewedPage:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"last_visit_page"]]];
+        [historyTopic setVisitCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"visit_count"]]];
+        [historyTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:historyTopic.topicID]]];
+        [historyTopics addObject:historyTopic];
+    }
+    return historyTopics;
 }
 
-- (id)objectInRecentForKey:(NSString *)key
+- (id)tracedTopic:(NSNumber *)topicID
 {
-    return _tracerDictionary[key];
+    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page FROM threads WHERE topic_id = ?;",topicID];
+    if ([result next]) {
+        S1Topic *topic = [[S1Topic alloc] init];
+        [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
+        return topic;
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - Archiver
@@ -112,6 +176,15 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     [_tracerDictionary removeObjectsForKeys:keysToRemove];
 }
 
+-(BOOL)topicIsFavorited:(NSNumber *)topic_id
+{
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
+    if ([historyResult next]) {
+        return YES;
+    } else {
+        return NO;
+    }
 
+}
 
 @end

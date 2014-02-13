@@ -193,7 +193,7 @@
     NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];//TODO: FIX ME.
     [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
     
-    [self.topic setLastViewedPage:[NSString stringWithFormat:@"%d", _currentPage]];
+    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.tracer hasViewed:self.topic];
 }
 

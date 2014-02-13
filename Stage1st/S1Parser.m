@@ -66,10 +66,10 @@
             NSString *replyCount = [rightPart text];
             
             S1Topic *topic = [[S1Topic alloc] init];
-            [topic setTopicID:[[href componentsSeparatedByString:@"-"] objectAtIndex:1]];
+            [topic setTopicID:[NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]]];
             [topic setTitle:content];
-            [topic setReplyCount:replyCount];
-            [topic setFID:context[@"FID"]];
+            [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
+            [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
             [topics addObject:topic];
         }
     }

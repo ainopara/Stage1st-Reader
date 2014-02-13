@@ -340,7 +340,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     S1ContentViewController *controller = [[S1ContentViewController alloc] init];
     S1Topic *topicToShow = self.topics[indexPath.row];
-    S1Topic *tracedTopic = [self.tracer objectInRecentForKey:topicToShow.topicID];
+    S1Topic *tracedTopic = [self.tracer tracedTopic:topicToShow.topicID];
     if (tracedTopic) {
         topicToShow.lastViewedPage = tracedTopic.lastViewedPage;
     }
