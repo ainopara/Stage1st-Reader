@@ -27,6 +27,7 @@
 "SettingView_Forum_Order_Custom" = "板块自定义";
 "SettingView_Font_Size" = "字体大小";
 "SettingView_Display_Image" = "显示图片";
+"SettingView_Append_Suffix" = "添加回复小尾巴";
 
 "SettingView_Version" = "版本";
 "SettingView_Developer" = "开发者";

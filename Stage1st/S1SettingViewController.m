@@ -111,6 +111,20 @@
                 }
             }];
         }];
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell){
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Append_Suffix", @"Append Suffix");
+                if (!cell.accessoryView) {
+                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+                    [switcher addEventHandler:^(id sender, UIEvent *event) {
+                        UISwitch *s = sender;
+                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"AppendSuffix"];
+                    } forControlEvent:UIControlEventValueChanged];
+                    cell.accessoryView = switcher;
+                }
+            }];
+        }];
 
     }];
     

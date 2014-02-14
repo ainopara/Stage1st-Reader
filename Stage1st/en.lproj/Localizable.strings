@@ -27,6 +27,7 @@
 "SettingView_Forum_Order_Custom" = "Forum Order";
 "SettingView_Font_Size" = "Font Size";
 "SettingView_Display_Image" = "Display Image";
+"SettingView_Append_Suffix" = "Append Reply Suffix";
 
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";

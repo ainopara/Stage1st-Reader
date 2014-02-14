@@ -42,6 +42,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
+    }
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
