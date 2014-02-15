@@ -89,6 +89,14 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     NSLog(@"Tracer has traced:%@", object);
 }
 
+- (void)removeTopicFromHistory:(NSNumber *)topic_id
+{
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topic_id];
+    if ([historyResult next]) {
+        [_db executeUpdate:@"DELETE FROM history WHERE topic_id = ?;", topic_id];
+    }
+}
+
 - (NSArray *)recentViewedObjects
 {
     NSMutableArray *historyTopics = [NSMutableArray array];

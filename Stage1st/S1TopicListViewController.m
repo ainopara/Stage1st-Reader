@@ -33,7 +33,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) NSString *currentKey;
-@property (nonatomic, strong) NSArray *topics;
+@property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableDictionary *cache;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 @property (nonatomic, strong) S1HTTPClient *HTTPClient;
@@ -197,14 +197,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    self.topics = [self.tracer recentViewedObjects];
+    self.topics = [[self.tracer recentViewedObjects] mutableCopy];
     [self.tableView reloadData];
     if (self.topics && self.topics.count > 0) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
     
     [self.scrollTabBar deselectAll];
-    self.currentKey = @"";
+    self.currentKey = @"History";
 }
 
 - (void)refresh:(id)sender
@@ -288,7 +288,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                              }
                          }
                         if (topics.count > 0) {
-                            self.topics = topics;
+                            self.topics = [topics mutableCopy];
                             self.cache[key] = topics;
                             [self.tableView reloadData];
                             if (toTop) {
@@ -356,6 +356,31 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[self rootViewController] presentDetailViewController:controller];
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"])?YES:NO;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        //add code here for when you hit delete
+        if ([self.currentKey  isEqual: @"History"]) {
+            S1Topic *topic = self.topics[indexPath.row];
+            [self.tracer removeTopicFromHistory:topic.topicID];
+            [self.topics removeObjectAtIndex:indexPath.row];
+            [self.tableView reloadData];
+        }
+        if ([self.currentKey  isEqual: @"Favorite"]) {
+            S1Topic *topic = self.topics[indexPath.row];
+            [self.tracer setTopicFavoriteState:topic.topicID withState:NO];
+            [self.topics removeObjectAtIndex:indexPath.row];
+            [self.tableView reloadData];
+        }
+        
+    }
+}
+
 #pragma mark - Helpers
 
 - (S1RootViewController *)rootViewController
@@ -376,7 +401,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.scrollTabBar setKeys:[self keys]];
     self.tableView.hidden = YES;
-    self.topics = [NSArray array];
+    self.topics = [NSMutableArray array];
     [self.tableView reloadData];
     self.currentKey = nil;
     self.cache = nil;

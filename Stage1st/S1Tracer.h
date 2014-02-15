@@ -18,12 +18,13 @@
 - (id)init;
 
 - (void)hasViewed:(id)object;
+- (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
 - (NSArray *)recentViewedObjects;
 
 - (id)tracedTopic:(NSNumber *)key;
 
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
--(void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
+- (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
 @end
