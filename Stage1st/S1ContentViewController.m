@@ -267,8 +267,10 @@
                                                              delegate:self
                                                     cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"),
-                                  [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"), nil];
+                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
+                                  [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                  NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
+                                  NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showFromToolbar:self.toolbar];    
 }
@@ -306,8 +308,13 @@
         [self.replyController presentFromViewController:self];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
-    //Weibo
+    //Favorite
     if (1 == buttonIndex) {
+        [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+    }
+    
+    //Weibo
+    if (2 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
             [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
@@ -328,7 +335,7 @@
         }];
     }
     
-    if (2 == buttonIndex) {
+    if (3 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
         
@@ -339,11 +346,7 @@
             [[controller view] setTintColor:[S1GlobalVariables color3]];
         }
         
-        [self presentViewController:controller animated:YES completion:nil];        
-    }
-    
-    if (3 == buttonIndex) {
-        [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+        [self presentViewController:controller animated:YES completion:nil];
     }
 }
 
