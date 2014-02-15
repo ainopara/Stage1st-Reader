@@ -190,8 +190,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];//TODO: FIX ME.
-    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
+    [self cancelRequest];
     
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.tracer hasViewed:self.topic];
@@ -218,6 +217,7 @@
 
 - (void)back:(id)sender
 {
+    [self cancelRequest];
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -228,6 +228,7 @@
 
 - (void)forward:(id)sender
 {
+    [self cancelRequest];
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -246,6 +247,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage > 1) {
             _currentPage = 1;
+            [self cancelRequest];
             [self fetchContent];
         }
     }
@@ -256,6 +258,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
+            [self cancelRequest];
             [self fetchContent];
         }
     }
@@ -406,7 +409,7 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:/*@"thread-%@-%d-1.html"*/@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
     NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
     
@@ -429,7 +432,13 @@
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          NSLog(@"%@", error);
-                         [HUD showRefreshButton];
+                         if (error.code == -999) {
+                             NSLog(@"Code -999 may means user want to cancel this request.");
+                             [HUD hideWithDelay:0];
+                         } else {
+                             [HUD showRefreshButton];
+                         }
+                         
                      }];
 }
 
@@ -446,7 +455,7 @@
     NSDictionary *params = @{@"message" : replyWithSuffix,
                              @"posttime" : timestamp,
                              @"formhash" : self.topic.formhash,
-                             @"usesig" :	@"1",
+                             @"usesig" : @"1",
                              @"subject" : @"",
                              };
     __weak typeof(self) myself = self;
@@ -469,6 +478,11 @@
 
 }
 
+-(void) cancelRequest
+{
+    NSString *path = [NSString stringWithFormat:@"forum.php"];
+    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
+}
 
 #pragma mark - Helpers
 
