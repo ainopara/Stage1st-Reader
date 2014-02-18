@@ -27,4 +27,6 @@
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
 - (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
++ (void)migrateTracerToDatabase;
+
 @end

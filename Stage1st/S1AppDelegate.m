@@ -10,7 +10,8 @@
 #import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
-#import "PDDebugger.h"
+#import "S1Tracer.h"
+//#import "PDDebugger.h"
 
 @implementation S1AppDelegate
 
@@ -19,13 +20,14 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     //Pony Debugger
+    /*
     PDDebugger *debugger = [PDDebugger defaultInstance];
     [debugger enableNetworkTrafficDebugging];
     [debugger enableViewHierarchyDebugging];
     [debugger forwardAllNetworkTraffic];
     //[debugger enableCoreDataDebugging];
     [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
-    
+    */
     //User Defaults;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
@@ -45,6 +47,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
     }
+    //Migrate tracer to sql database
+    [S1Tracer migrateTracerToDatabase];
+    
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];

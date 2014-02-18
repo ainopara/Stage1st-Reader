@@ -180,4 +180,75 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     }
 }
 
++ (void)migrateTracerToDatabase
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *tracerPath = [documentDirectory stringByAppendingPathComponent:@"RecentViewed_3_1.tracer"];
+    NSFileManager *fm=[NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:tracerPath]) {
+        NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
+        FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
+        if (![db open]) {
+            NSLog(@"Could not open db.");
+            return;
+        }
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER,visit_count INTEGER);"];
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
+        [db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
+        
+        
+        NSData *data = [NSData dataWithContentsOfFile:tracerPath];
+        NSMutableDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        if (!dict) {
+            dict = [NSMutableDictionary dictionary];
+        }
+        for (id topic in [dict allValues]) {
+            if (![topic 	respondsToSelector:@selector(topicID)]) {
+                continue;
+            }
+            if (![topic 	respondsToSelector:@selector(title)]) {
+                continue;
+            }
+            if (![topic 	respondsToSelector:@selector(replyCount)]) {
+                continue;
+            }
+            if (![topic 	respondsToSelector:@selector(fID)]) {
+                continue;
+            }
+            if (![topic 	respondsToSelector:@selector(lastViewedDate)]) {
+                continue;
+            }
+            if (![topic 	respondsToSelector:@selector(lastViewedPage)]) {
+                continue;
+            }
+            NSLog(@"%@",[topic topicID]);
+            NSNumber *topicID = [topic topicID];
+            NSString *title = [topic title];
+            NSNumber *replyCount = [topic replyCount];
+            NSNumber *fID = [topic fID];
+            NSNumber *lastViewedDate = [NSNumber numberWithDouble:[[topic lastViewedDate] timeIntervalSince1970]];
+            NSNumber *lastViewedPage = [topic lastViewedPage];
+            FMResultSet *result = [db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
+            if ([result next]) {
+                ;
+            } else {
+                [db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, visit_count) VALUES (?,?,?,?,?,?,?);",
+                 topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, [NSNumber numberWithInt:1]];
+                NSLog(@"One Topic add to Database");
+            }
+            FMResultSet *historyResult = [db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
+            if ([historyResult next]) {
+                ;
+            } else {
+                [db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
+                NSLog(@"One Topic add to History");
+            }
+            
+        }
+        [db close];
+        [fm removeItemAtPath:tracerPath error:nil];
+    }
+}
+
 @end
