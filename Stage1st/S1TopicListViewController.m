@@ -175,7 +175,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     if (_HTTPClient) return _HTTPClient;
     NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[baseURLString stringByAppendingString:@"/2b/"]]];
+    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:baseURLString]];
     return _HTTPClient;
 }
 

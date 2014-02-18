@@ -328,7 +328,7 @@
             return;
         }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
@@ -340,7 +340,7 @@
     
     if (3 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-%d-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, _currentPage]];
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%d-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, _currentPage]];
         
         if (SYSTEM_VERSION_LESS_THAN(@"7")) {
             ;

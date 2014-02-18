@@ -39,7 +39,7 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
@@ -59,10 +59,13 @@
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserID"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserPassword"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024

@@ -36,7 +36,8 @@
         }
         else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
             [image removeAttributeForName:@"src"];
-            [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
+            NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
+            [image addAttributeWithName:@"src" stringValue:[baseURLString stringByAppendingString:imageSrc]];
         }
         
     }
