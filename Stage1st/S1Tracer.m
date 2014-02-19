@@ -116,6 +116,25 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     return historyTopics;
 }
 
+- (NSArray *)favoritedObjects
+{
+    NSMutableArray *historyTopics = [NSMutableArray array];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.visit_count FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY favorite.favorite_time DESC;"];
+    while ([historyResult next]) {
+        NSLog(@"%@", [historyResult stringForColumn:@"title"]);
+        S1Topic *historyTopic = [[S1Topic alloc] init];
+        [historyTopic setTopicID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"topic_id"]]];
+        [historyTopic setTitle:[historyResult stringForColumn:@"title"]];
+        [historyTopic setReplyCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"reply_count"]]];
+        [historyTopic setFID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"field_id"]]];
+        [historyTopic setLastViewedPage:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"last_visit_page"]]];
+        [historyTopic setVisitCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"visit_count"]]];
+        [historyTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:historyTopic.topicID]]];
+        [historyTopics addObject:historyTopic];
+    }
+    return historyTopics;
+}
+
 - (id)tracedTopic:(NSNumber *)topicID
 {
     FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page,visit_count FROM threads WHERE topic_id = ?;",topicID];

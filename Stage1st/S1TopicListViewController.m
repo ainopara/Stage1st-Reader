@@ -27,6 +27,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
+@property (nonatomic, strong) UIBarButtonItem *recentItem;
+@property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) S1TabBar *scrollTabBar;
@@ -100,8 +102,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    UIBarButtonItem *recentItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Recent", "Recent") style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
-    item.rightBarButtonItem = recentItem;
+    self.recentItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Recent", "Recent") style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
+    item.rightBarButtonItem = self.recentItem;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
     
@@ -191,20 +193,20 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)recent:(id)sender
 {
-    self.naviItem.title = @"Recent";
-    if (self.tableView.hidden == YES) {
-        self.tableView.hidden = NO;        
+    [self.naviItem setRightBarButtonItem:nil];
+    if (!self.segControl) {
+        self.segControl = [[UISegmentedControl alloc] initWithItems:@[@"History",@"Favorite"]]; //TODO:i18n
+        [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
+        [self.segControl setSelectedSegmentIndex:0];
+        [self presentHistory];
+    } else {
+        if (self.segControl.selectedSegmentIndex == 0) {
+            [self presentHistory];
+        } else {
+            [self presentFavorite];
+        }
     }
-    self.refreshControl.hidden = YES;
-    
-    self.topics = [[self.tracer recentViewedObjects] mutableCopy];
-    [self.tableView reloadData];
-    if (self.topics && self.topics.count > 0) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-    
-    [self.scrollTabBar deselectAll];
-    self.currentKey = @"History";
+    self.naviItem.titleView = self.segControl;
 }
 
 - (void)refresh:(id)sender
@@ -221,11 +223,64 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
+-(void)segSelected:(UISegmentedControl *)seg
+{
+    switch (seg.selectedSegmentIndex) {
+        case 0:
+            [self presentHistory];
+            break;
+            
+        case 1:
+            [self presentFavorite];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+
+- (void)presentHistory
+{
+    if (self.tableView.hidden == YES) {
+        self.tableView.hidden = NO;
+    }
+    self.refreshControl.hidden = YES;
+    
+    self.topics = [[self.tracer recentViewedObjects] mutableCopy];
+    [self.tableView reloadData];
+    if (self.topics && self.topics.count > 0) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
+    [self.scrollTabBar deselectAll];
+    self.currentKey = @"History";
+}
+
+- (void)presentFavorite
+{
+    if (self.tableView.hidden == YES) {
+        self.tableView.hidden = NO;
+    }
+    self.refreshControl.hidden = YES;
+    
+    self.topics = [[self.tracer favoritedObjects] mutableCopy];
+    [self.tableView reloadData];
+    if (self.topics && self.topics.count > 0) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
+    [self.scrollTabBar deselectAll];
+    self.currentKey = @"Favorite";
+}
+
 #pragma mark - Tab Bar Delegate
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
 {
+    self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
+    [self.naviItem setRightBarButtonItem:self.recentItem];
     
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;

@@ -21,6 +21,7 @@
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
 - (NSArray *)recentViewedObjects;
+- (NSArray *)favoritedObjects;
 
 - (id)tracedTopic:(NSNumber *)key;
 
