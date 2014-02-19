@@ -61,7 +61,7 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
 - (void)hasViewed:(id)object
 {
-    [object setValue:[NSDate date] forKey:self.timeStampKey];
+    [object setValue:[NSDate date] forKey:@"lastViewedDate"];
     
     S1Topic *topic = (S1Topic *)object;
     NSNumber *topicID = topic.topicID;

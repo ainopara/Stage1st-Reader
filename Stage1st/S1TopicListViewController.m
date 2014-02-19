@@ -61,8 +61,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     [super viewDidLoad];
     self.tracer = [[S1Tracer alloc] init];
-    self.tracer.identifyKey = @"topicID";
-    self.tracer.timeStampKey = @"lastViewedDate";
     
     self.view.backgroundColor = [S1GlobalVariables color5];
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
