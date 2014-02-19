@@ -27,7 +27,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
-@property (nonatomic, strong) UIBarButtonItem *recentItem;
+@property (nonatomic, strong) UIBarButtonItem *historyItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
@@ -100,8 +100,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    self.recentItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Recent", "Recent") style:UIBarButtonItemStyleBordered target:self action:@selector(recent:)];
-    item.rightBarButtonItem = self.recentItem;
+    self.historyItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_History", "History") style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
+    item.rightBarButtonItem = self.historyItem;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
     
@@ -189,7 +189,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
 
-- (void)recent:(id)sender
+- (void)history:(id)sender
 {
     [self.naviItem setRightBarButtonItem:nil];
     if (!self.segControl) {
@@ -245,7 +245,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    self.topics = [[self.tracer recentViewedObjects] mutableCopy];
+    self.topics = [[self.tracer historyObjects] mutableCopy];
     [self.tableView reloadData];
     if (self.topics && self.topics.count > 0) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -278,7 +278,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
-    [self.naviItem setRightBarButtonItem:self.recentItem];
+    [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;

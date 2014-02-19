@@ -18,7 +18,7 @@
 "Message_OK" = "OK";
 
 "TopicListView_NavigationBar_Settings" = "Settings";
-"TopicListView_NavigationBar_Recent" = "Recent";
+"TopicListView_NavigationBar_History" = "History";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";
@@ -27,7 +27,7 @@
 "SettingView_Forum_Order_Custom" = "Forum Order";
 "SettingView_Font_Size" = "Font Size";
 "SettingView_Display_Image" = "Display Image";
-"SettingView_Append_Suffix" = "Append Reply Suffix";
+"SettingView_Append_Suffix" = "Reply Suffix";
 
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";

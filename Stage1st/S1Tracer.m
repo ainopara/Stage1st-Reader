@@ -97,7 +97,7 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
     }
 }
 
-- (NSArray *)recentViewedObjects
+- (NSArray *)historyObjects
 {
     NSMutableArray *historyTopics = [NSMutableArray array];
     FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.visit_count FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC;"];
