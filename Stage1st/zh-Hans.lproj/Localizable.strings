@@ -19,6 +19,8 @@
 
 "TopicListView_NavigationBar_Settings" = "设置";
 "TopicListView_NavigationBar_History" = "历史";
+"TopicListView_SegmentControl_History" = "历史";
+"TopicListView_SegmentControl_Favorite" = "收藏";
 
 "SettingView_NavigationBar_Title" = "设置";
 "SettingView_NavigationBar_Back" = "返回";

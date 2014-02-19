@@ -193,7 +193,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.naviItem setRightBarButtonItem:nil];
     if (!self.segControl) {
-        self.segControl = [[UISegmentedControl alloc] initWithItems:@[@"History",@"Favorite"]]; //TODO:i18n
+        self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
         [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
         [self.segControl setSelectedSegmentIndex:0];
         [self presentHistory];
