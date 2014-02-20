@@ -36,7 +36,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSMutableArray *topics;
+@property (nonatomic, strong) NSNumber *topicPageNumber;
 @property (nonatomic, strong) NSMutableDictionary *cache;
+@property (nonatomic, strong) NSMutableDictionary *cachePageNumber;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 @property (nonatomic, strong) S1HTTPClient *HTTPClient;
 
@@ -215,7 +217,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     if (self.scrollTabBar.enabled) {
-        [self fetchTopicsForKeyFromServer:self.currentKey scrollToTop:NO];
+        [self fetchTopicsForKeyFromServer:self.currentKey withPage:1 scrollToTop:NO];
     } else {
         [self.refreshControl endRefreshing];
     }
@@ -294,7 +296,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             [self.refreshControl endRefreshing];
         }
     } else {
-        [self fetchTopicsForKeyFromServer:key scrollToTop:YES];
+        [self fetchTopicsForKeyFromServer:key withPage:1 scrollToTop:YES];
     }
 }
 
@@ -310,15 +312,20 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         return;
     }
-    [self fetchTopicsForKeyFromServer:key scrollToTop:YES];
+    [self fetchTopicsForKeyFromServer:key withPage:1 scrollToTop:YES];
 }
 
-- (void)fetchTopicsForKeyFromServer:(NSString *)key scrollToTop:(BOOL)toTop
+- (void)fetchTopicsForKeyFromServer:(NSString *)key withPage:(NSUInteger)page scrollToTop:(BOOL)toTop
 {
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
-    NSString *path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
+    NSString *path;
+    if (page == 1) {
+        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
+    } else {
+        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%d&mobile=no", self.threadsInfo[key], page];
+    }
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
                   parameters:nil
@@ -341,12 +348,26 @@ static NSString * const cellIdentifier = @"TopicCell";
                              }
                          }
                         if (topics.count > 0) {
-                            self.topics = [topics mutableCopy];
-                            self.cache[key] = topics;
-                            [self.tableView reloadData];
-                            if (toTop) {
-                                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                            if (page == 1) {
+                                self.topics = [topics mutableCopy];
+                                self.topicPageNumber = @1;
+                                self.cache[key] = topics;
+                                self.cachePageNumber[key] = self.topicPageNumber;
+                                [self.tableView reloadData];
+                                if (toTop) {
+                                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                                }
+                            } else {
+                                self.topics = [[self.topics arrayByAddingObjectsFromArray:topics] mutableCopy];
+                                self.topicPageNumber = [[NSNumber alloc] initWithInteger:page];
+                                self.cache[key] = self.topics;
+                                self.cachePageNumber[key] = self.topicPageNumber;
+                                [self.tableView reloadData];
+                                if (toTop) {
+                                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                                }
                             }
+                            
                         }
                         if (self.refreshControl.refreshing) {
                             [self.refreshControl endRefreshing];
@@ -434,6 +455,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *) cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        return;
+    }
+    if(indexPath.row == [self.topics count] - 1)
+    {
+        NSLog(@"Reach last topic, load more.");
+        [self fetchTopicsForKeyFromServer:self.currentKey withPage:[self.topicPageNumber integerValue] + 1 scrollToTop:NO];
+    }
+}
 #pragma mark - Helpers
 
 - (S1RootViewController *)rootViewController

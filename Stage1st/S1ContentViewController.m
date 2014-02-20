@@ -409,7 +409,12 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    NSString *path;
+    if (_currentPage == 1) {
+        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&mobile=no", self.topic.topicID];
+    } else {
+        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    }
     NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
     
