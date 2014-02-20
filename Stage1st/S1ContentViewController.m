@@ -427,6 +427,17 @@
                          NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                          [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+                         if (_currentPage == 1) {
+                             NSInteger parsedReplyCount =[S1Parser replyCountFromThreadString:HTMLString];
+                             if (parsedReplyCount != 0) {
+                                 [self.topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+                             }
+                         }
+                         NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
+                         if (parsedTotalPages != 0) {
+                             _totalPages = parsedTotalPages;
+                             [self updatePageLabel];
+                         }
                          //check login state
                          if (![S1Parser checkLoginState:HTMLString])
                          {
@@ -497,7 +508,7 @@
     _needToScrollToBottom = NO;
 }
 
-- (BOOL)atBottom;
+- (BOOL)atBottom
 {
     UIScrollView *scrollView = self.webView.scrollView;
     return (scrollView.contentOffset.y >= (scrollView.contentSize.height - self.webView.bounds.size.height));

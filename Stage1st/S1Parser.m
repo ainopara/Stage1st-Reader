@@ -181,6 +181,30 @@
     return formhash;
 }
 
++ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
+{
+    NSString *pattern = @"<span title=\"共 ([0-9]+) 页\">";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    if (result) {
+        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    } else {
+        return 0;
+    }
+}
+
++ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
+{
+    NSString *pattern = @"回复:</span> <span class=\"xi1\">([0-9]+)</span>";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    if (result) {
+        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    } else {
+        return 0;
+    }
+}
+
 + (BOOL)checkLoginState:(NSString *)HTMLString
 {
     NSString *pattern = @"mod=logging&amp;action=logout";

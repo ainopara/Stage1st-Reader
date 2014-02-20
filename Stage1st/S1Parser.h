@@ -14,6 +14,8 @@
 + (NSString *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
 
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString;
++ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
++ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString;
 
 + (BOOL)checkLoginState:(NSString *)HTMLString;
 
