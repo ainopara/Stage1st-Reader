@@ -39,7 +39,6 @@
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
 		867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 867C7F581899420D00DF55E8 /* REComposeViewController.bundle */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
-		868D8834189E828B00F90896 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 868D8833189E828B00F90896 /* libicucore.dylib */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		86AA78B018A79050005A3116 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
@@ -155,12 +154,6 @@
 		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
 		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
-		868D8833189E828B00F90896 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
-		868D8835189E829200F90896 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		868D8837189E829900F90896 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		868D8839189E829F00F90896 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		868D883D189E85D600F90896 /* libPods-Stage1st-PonyDebugger.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-Stage1st-PonyDebugger.a"; path = "Pods/build/Debug-iphoneos/libPods-Stage1st-PonyDebugger.a"; sourceTree = "<group>"; };
-		868D883E189E85D600F90896 /* libPods-Stage1st-SocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-Stage1st-SocketRocket.a"; path = "Pods/build/Debug-iphoneos/libPods-Stage1st-SocketRocket.a"; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		86AA78AF18A79050005A3116 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -262,7 +255,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				86AA78B018A79050005A3116 /* libsqlite3.dylib in Frameworks */,
-				868D8834189E828B00F90896 /* libicucore.dylib in Frameworks */,
 				862F51AC1891335A0038A289 /* libxml2.dylib in Frameworks */,
 				C0401DB316EB0F2000E52A9A /* Social.framework in Frameworks */,
 				C096CD3F16EADE0000D4FF7F /* MessageUI.framework in Frameworks */,
@@ -476,12 +468,6 @@
 			isa = PBXGroup;
 			children = (
 				86AA78AF18A79050005A3116 /* libsqlite3.dylib */,
-				868D883D189E85D600F90896 /* libPods-Stage1st-PonyDebugger.a */,
-				868D883E189E85D600F90896 /* libPods-Stage1st-SocketRocket.a */,
-				868D8839189E829F00F90896 /* Security.framework */,
-				868D8837189E829900F90896 /* CoreData.framework */,
-				868D8835189E829200F90896 /* CFNetwork.framework */,
-				868D8833189E828B00F90896 /* libicucore.dylib */,
 				862F51AB1891335A0038A289 /* libxml2.dylib */,
 				C096CD3E16EADE0000D4FF7F /* MessageUI.framework */,
 				C083353416E4E7C40035C1AA /* Social.framework */,
