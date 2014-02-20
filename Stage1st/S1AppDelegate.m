@@ -47,7 +47,7 @@
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
-    if([array0 indexOfObject:@"内野"] == NSNotFound && [array1 indexOfObject:@"内野"]== NSNotFound) {
+    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
         NSLog(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
