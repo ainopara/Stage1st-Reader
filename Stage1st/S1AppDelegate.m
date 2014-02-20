@@ -44,6 +44,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
+    }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
     }

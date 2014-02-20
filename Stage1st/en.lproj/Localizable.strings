@@ -30,6 +30,13 @@
 "SettingView_Font_Size" = "Font Size";
 "SettingView_Display_Image" = "Display Image";
 "SettingView_Append_Suffix" = "Reply Suffix";
+"SettingView_HistoryLimit" = "Keep History";
+
+"SettingView_HistoryLimit_3days" = "3 days";
+"SettingView_HistoryLimit_1week" = "1 week";
+"SettingView_HistoryLimit_2weeks" = "2 weeks";
+"SettingView_HistoryLimit_1month" = "1 month";
+"SettingView_HistoryLimit_Forever" = "Forever";
 
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";

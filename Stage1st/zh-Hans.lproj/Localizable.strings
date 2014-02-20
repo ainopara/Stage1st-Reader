@@ -30,6 +30,13 @@
 "SettingView_Font_Size" = "字体大小";
 "SettingView_Display_Image" = "显示图片";
 "SettingView_Append_Suffix" = "回复尾巴";
+"SettingView_HistoryLimit" = "保存历史记录";
+
+"SettingView_HistoryLimit_3days" = "3天";
+"SettingView_HistoryLimit_1week" = "1周";
+"SettingView_HistoryLimit_2weeks" = "2周";
+"SettingView_HistoryLimit_1month" = "1个月";
+"SettingView_HistoryLimit_Forever" = "永久";
 
 "SettingView_Version" = "版本";
 "SettingView_Developer" = "开发者";

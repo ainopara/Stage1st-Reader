@@ -44,4 +44,32 @@
     return [self imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
++ (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey
+{
+    if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_3days",@"")]){
+        return @259200;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1week",@"")]){
+        return @604800;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_2weeks",@"")]){
+        return @1209600;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1month",@"")]){
+        return @2592000;
+    }
+    return @-1;
+}
+
++ (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey
+{
+    if ([numberKey isEqualToNumber:@259200]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_3days",@"");
+    } else if ([numberKey isEqualToNumber:@604800]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_1week",@"");
+    } else if ([numberKey isEqualToNumber:@1209600]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_2weeks",@"");
+    } else if ([numberKey isEqualToNumber:@2592000]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_1month",@"");
+    }
+    return NSLocalizedString(@"SettingView_HistoryLimit_Forever",@"");
+}
+
 @end

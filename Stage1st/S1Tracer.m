@@ -11,7 +11,6 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 
-NSTimeInterval const kDefaultDuration = 259200; // 3 days
 
 @implementation S1Tracer {
 
@@ -159,17 +158,16 @@ NSTimeInterval const kDefaultDuration = 259200; // 3 days
 }
 
 - (void)purgeStaleItem
-{/*
-    __block NSMutableArray *keysToRemove = [NSMutableArray array];
-    [_tracerDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        NSDate *expireDate = [(NSDate *)[obj valueForKey:_timeStampKey] dateByAddingTimeInterval:kDefaultDuration];
-        NSDate *now = [NSDate date];
-        if ([[now earlierDate:expireDate] isEqualToDate:expireDate]) {
-            NSLog(@"Purge Item:%@", obj);
-            [keysToRemove addObject:key];
-        }
-    }];
-    [_tracerDictionary removeObjectsForKeys:keysToRemove];*/
+{
+    NSDate *now = [NSDate date];
+    NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
+    if (duration < 0) {
+        return;
+    }
+    NSTimeInterval dueDate = [now timeIntervalSince1970] - duration;
+    [_db executeUpdate:@"DELETE FROM history WHERE topic_id IN (SELECT history.topic_id FROM history INNER JOIN threads ON history.topic_id = threads.topic_id WHERE threads.last_visit_time < ?);",[[NSNumber alloc] initWithDouble:dueDate]];
+    [_db executeUpdate:@"DELETE FROM threads WHERE topic_id NOT IN (SELECT topic_id FROM history UNION SELECT topic_id FROM favorite);"];
+    
 }
 
 -(BOOL)topicIsFavorited:(NSNumber *)topic_id
