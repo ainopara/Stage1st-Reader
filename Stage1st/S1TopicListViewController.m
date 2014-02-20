@@ -196,6 +196,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.naviItem setRightBarButtonItem:nil];
     if (!self.segControl) {
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
+        [self.segControl setWidth:80 forSegmentAtIndex:0];
+        [self.segControl setWidth:80 forSegmentAtIndex:1];
+        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+            [self.segControl setSegmentedControlStyle:UISegmentedControlStyleBar];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                //TODO:fit iOS6 & iPhone
+            }
+        }
         [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
         [self.segControl setSelectedSegmentIndex:0];
         [self presentHistory];
