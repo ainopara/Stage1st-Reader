@@ -13,8 +13,8 @@
 #import "GSStaticTableViewBuilder.h"
 
 @interface S1SettingViewController ()
-
 @end
+
 
 @implementation S1SettingViewController
 
@@ -47,9 +47,9 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Login", @"Login");
-                NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"];
-                if (userID) {
-                    cell.detailTextLabel.text = userID;
+                NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+                if (inLoginStateID) {
+                    cell.detailTextLabel.text = inLoginStateID;
                 } else {
                     cell.detailTextLabel.text = NSLocalizedString(@"SettingView_Not_Login_State_Mark", @"Not Login");
                 }
@@ -111,6 +111,37 @@
                 }
             }];
         }];
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell) {
+                cell.textLabel.text = NSLocalizedString(@"SettingView_HistoryLimit", @"History Limit");
+                cell.detailTextLabel.text = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }];
+            [row setEventHandlerBlock:^(UITableViewCell *cell) {
+                NSString *selectedKey = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+                GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")] andSelectedKey:selectedKey];
+                controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
+                [controller setCompletionHandler:^(NSString *key) {
+                    [[NSUserDefaults standardUserDefaults] setValue:[S1GlobalVariables HistoryLimitString2Number:key] forKey:@"HistoryLimit"];
+                }];
+                [myself.navigationController pushViewController:controller animated:YES];
+            }];
+        }];
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell){
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Append_Suffix", @"Append Suffix");
+                if (!cell.accessoryView) {
+                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+                    [switcher addEventHandler:^(id sender, UIEvent *event) {
+                        UISwitch *s = sender;
+                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"AppendSuffix"];
+                    } forControlEvent:UIControlEventValueChanged];
+                    cell.accessoryView = switcher;
+                }
+            }];
+        }];
 
     }];
     
@@ -152,5 +183,8 @@
         
     }];
 }
+#pragma mark - convert
+
+
 
 @end

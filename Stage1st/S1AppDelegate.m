@@ -10,21 +10,14 @@
 #import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
-//#import "PDDebugger.h"
+#import "S1Tracer.h"
 
 @implementation S1AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    /*
-    PDDebugger *debugger = [PDDebugger defaultInstance];
-    [debugger enableNetworkTrafficDebugging];
-    [debugger enableViewHierarchyDebugging];
-    [debugger forwardAllNetworkTraffic];
-    [debugger enableCoreDataDebugging];
-    [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
-     */
+    
     //User Defaults;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
@@ -32,18 +25,41 @@
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
+    }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
+    }
+    //Migrate tracer to sql database
+    [S1Tracer migrateTracerToDatabase];
     
-    
+    //Migrate to v3.4.0
+    NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
+    NSArray *array0 =[array firstObject];
+    NSArray *array1 =[array lastObject];
+    if([array0 indexOfObject:@"内野"] == NSNotFound && [array1 indexOfObject:@"内野"]== NSNotFound) {
+        NSLog(@"Update Order List");
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
+        NSArray *order = [NSArray arrayWithContentsOfFile:path];
+        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserID"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserPassword"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+    }
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                          diskCapacity:10 * 1024 * 1024

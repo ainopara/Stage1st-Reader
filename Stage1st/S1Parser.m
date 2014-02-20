@@ -8,17 +8,11 @@
 
 #import "S1Parser.h"
 #import "S1Topic.h"
-#import "GTMNSString+HTML.h"
 #import "TFHpple.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 
 #define kNumberPerPage 50
-
-static NSString * const topicPattern = @"<li><a href=.*?tid-(\\d+).*?>(.*?)</a>.*?\\((\\d+)";
-static NSString * const cssPattern = @"</style>";
-static NSString * const cleanupPattern = @"(?:<br />(<br />)?\\r\\n<center>.*?</center>)|(?:<table cellspacing=\"1\" cellpadding=\"0\".*?</table>.*?</table>)|(?:src=\"http://[-.0-9a-zA-Z]+/2b/images/back\\.gif\")|(?:onload=\"if\\(this.offsetWidth>'600'\\)this.width='600';\")";
-static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"right\" class=\"smalltxt\"";
 
 @interface S1Parser()
 +(NSString *)processImagesInHTMLString:(NSString *)HTMLString;
@@ -31,9 +25,9 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     for (DDXMLElement *image in images) {
         NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
-        NSLog(@"image Src:%@",imageSrc);
+        //NSLog(@"image Src:%@",imageSrc);
         NSString *imageFile = [[image attributeForName:@"file"] stringValue];
-        NSLog(@"image File:%@",imageFile);
+        //NSLog(@"image File:%@",imageFile);
         if (imageFile) {
             [image removeAttributeForName:@"src"];
             [image addAttributeWithName:@"src" stringValue:imageFile];
@@ -42,7 +36,8 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
         }
         else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
             [image removeAttributeForName:@"src"];
-            [image addAttributeWithName:@"src" stringValue:[@"http://bbs.saraba1st.com/2b/" stringByAppendingString:imageSrc]];
+            NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
+            [image addAttributeWithName:@"src" stringValue:[baseURLString stringByAppendingString:imageSrc]];
         }
         
     }
@@ -51,30 +46,6 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     return HTMLString;
 }
 
-+ (NSArray *)topicsFromHTMLString:(NSString *)rawString withContext:(NSDictionary *)context
-{
-    NSString *HTMLString = [rawString gtm_stringByUnescapingFromHTML];
-    NSRegularExpression *re = [[NSRegularExpression alloc]
-                                    initWithPattern:topicPattern
-                                    options:NSRegularExpressionDotMatchesLineSeparators
-                                    error:nil];
-    NSMutableArray *topics = [NSMutableArray array];
-    
-    [re enumerateMatchesInString:HTMLString
-                         options:NSMatchingReportProgress
-                           range:NSMakeRange(0, [HTMLString length])
-                      usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                          if (result) {
-                              S1Topic *topic = [[S1Topic alloc] init];
-                              [topic setTopicID:[HTMLString substringWithRange:[result rangeAtIndex:1]]];
-                              [topic setTitle:[HTMLString substringWithRange:[result rangeAtIndex:2]]];
-                              [topic setReplyCount:[HTMLString substringWithRange:[result rangeAtIndex:3]]];
-                              [topic setFID:context[@"FID"]];
-                              [topics addObject:topic];
-                          }
-                      }];
-    return (NSArray *)topics;
-}
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
 {
@@ -82,7 +53,7 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
     NSMutableArray *topics = [NSMutableArray array];
     
-    NSLog(@"%d",[elements count]);
+    NSLog(@"Topic count: %d",[elements count]);
     if ([elements count]) {
         for (TFHppleElement *element in elements){
             if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
@@ -96,10 +67,10 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
             NSString *replyCount = [rightPart text];
             
             S1Topic *topic = [[S1Topic alloc] init];
-            [topic setTopicID:[[href componentsSeparatedByString:@"-"] objectAtIndex:1]];
+            [topic setTopicID:[NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]]];
             [topic setTitle:content];
-            [topic setReplyCount:replyCount];
-            [topic setFID:context[@"FID"]];
+            [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
+            [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
             [topics addObject:topic];
         }
     }
@@ -107,59 +78,16 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     return (NSArray *)topics;
 }
 
-+ (NSString *)contentsFromHTMLString:(NSMutableString *)HTMLString withOffset:(NSInteger)offset
-{
-    NSRegularExpression *re = nil;
-    //Add index
-    __block NSInteger index = kNumberPerPage * (offset - 1);
-    re = [[NSRegularExpression alloc] initWithPattern:indexPattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re enumerateMatchesInString:HTMLString
-                         options:NSMatchingReportProgress
-                           range:NSMakeRange(0, [HTMLString length])
-                      usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                          if (result) {
-                              NSRange range = [result rangeAtIndex:1];
-                              NSString *author = [HTMLString substringWithRange:range];
-                              NSString *stringAddedIndex = [NSString stringWithFormat:@"#%d %@", index, author];
-                              index += 1;
-                              [HTMLString replaceCharactersInRange:range withString:stringAddedIndex];
-                          }
-                      }];
-    
-    //Clean Up
-    re = [[NSRegularExpression alloc] initWithPattern:cleanupPattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, [HTMLString length]) withTemplate:@""];
-    
-
-    
-    //Add Customized CSS
-    NSRange rangeToReplace = [HTMLString rangeOfString:@"<!--css-->"];
-    if (rangeToReplace.location != NSNotFound) {
-        NSString *path = nil;
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-            if ([fontSizeKey isEqualToString:@"15px"]) {
-                path = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
-            } else {
-                path = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
-            }
-        } else {
-            path = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
-        }
-        NSString *stringToReplace = [NSString stringWithFormat:@"<link rel=\"stylesheet\" href=\"file://%@\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">", path];
-        [HTMLString replaceCharactersInRange:rangeToReplace withString:stringToReplace];
-    }
-    return (NSString *)HTMLString;
-}
 
 + (NSString *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
     NSLog(@"Begin Parsing.");
+    NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
     NSString *finalString = [[NSString alloc] init];
     
-    NSLog(@"%d",[elements count]);
+    NSLog(@"Floor count: %d",[elements count]);
     if ([elements count]) {
         BOOL not_first_floor_flag = NO;
         for (TFHppleElement *element in elements){
@@ -238,20 +166,56 @@ static NSString * const indexPattern = @"td><b>(.*?)</b></td>\\r\\n<td align=\"r
     }
     finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
-    NSLog(@"Finish Parsing.");
+    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     return threadPage;
 }
 
 
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString
 {
-    NSRegularExpression *re = nil;
-    NSString *pattern = nil;
-    pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
     NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
     return formhash;
 }
+
++ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
+{
+    NSString *pattern = @"<span title=\"共 ([0-9]+) 页\">";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    if (result) {
+        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    } else {
+        return 0;
+    }
+}
+
++ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
+{
+    NSString *pattern = @"回复:</span> <span class=\"xi1\">([0-9]+)</span>";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    if (result) {
+        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    } else {
+        return 0;
+    }
+}
+
++ (BOOL)checkLoginState:(NSString *)HTMLString
+{
+    NSString *pattern = @"mod=logging&amp;action=logout";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
+    NSInteger num = [result numberOfRanges];
+    if (num == 0) {
+        return NO;
+    }
+    return YES;
+}
+
 
 @end

@@ -10,15 +10,18 @@
 
 @interface S1Topic : NSObject <NSCoding>
 
-@property (nonatomic, copy) NSString *fID;
-@property (nonatomic, copy) NSString *topicID;
+@property (nonatomic, copy) NSNumber *fID;
+@property (nonatomic, copy) NSNumber *topicID;
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSString *replyCount;
+@property (nonatomic, copy) NSNumber *replyCount;
+
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
 
 //For Tracing
-@property (nonatomic, copy) NSString *lastViewedPage;
+@property (nonatomic, copy) NSNumber *lastViewedPage;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 
+@property (nonatomic, copy) NSNumber *visitCount;
+@property (nonatomic, copy) NSNumber *favorite;
 @end

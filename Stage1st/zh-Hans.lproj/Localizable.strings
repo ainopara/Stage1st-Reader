@@ -4,6 +4,8 @@
 "ContentView_ActionSheet_Reply" = "回复";
 "ContentView_ActionSheet_Weibo" = "分享到微博";
 "ContentView_ActionSheet_OriginPage" = "打开原网页";
+"ContentView_ActionSheet_Favorite" = "收藏";
+"ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
 
 "ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "取消";
@@ -16,7 +18,9 @@
 "Message_OK" = "完成";
 
 "TopicListView_NavigationBar_Settings" = "设置";
-"TopicListView_NavigationBar_Recent" = "最近";
+"TopicListView_NavigationBar_History" = "历史";
+"TopicListView_SegmentControl_History" = "历史";
+"TopicListView_SegmentControl_Favorite" = "收藏";
 
 "SettingView_NavigationBar_Title" = "设置";
 "SettingView_NavigationBar_Back" = "返回";
@@ -25,6 +29,14 @@
 "SettingView_Forum_Order_Custom" = "板块自定义";
 "SettingView_Font_Size" = "字体大小";
 "SettingView_Display_Image" = "显示图片";
+"SettingView_Append_Suffix" = "回复尾巴";
+"SettingView_HistoryLimit" = "保存历史记录";
+
+"SettingView_HistoryLimit_3days" = "3天";
+"SettingView_HistoryLimit_1week" = "1周";
+"SettingView_HistoryLimit_2weeks" = "2周";
+"SettingView_HistoryLimit_1month" = "1个月";
+"SettingView_HistoryLimit_Forever" = "永久";
 
 "SettingView_Version" = "版本";
 "SettingView_Developer" = "开发者";

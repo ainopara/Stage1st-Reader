@@ -28,4 +28,8 @@
 + (UIColor *)color15;
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
 + (UIImage *)imageWithColor:(UIColor *)color;
+
++ (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey;
++ (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey;
+
 @end

@@ -40,5 +40,25 @@
 	<string>124</string>
 	<key>魔兽世界</key>
 	<string>53</string>
+	<key>车</key>
+	<string>131</string>
+	<key>炉石传说</key>
+	<string>132</string>
+	<key>剑灵</key>
+	<string>133</string>
+	<key>热血魔兽</key>
+	<string>134</string>
+	<key>手游页游</key>
+	<string>135</string>
+	<key>模玩专区</key>
+	<string>136</string>
+	<key>激战2</key>
+	<string>60</string>
+	<key>动漫投票</key>
+	<string>83</string>
+	<key>怪物猎人</key>
+	<string>69</string>
+	<key>内野</key>
+	<string>27</string>
 </dict>
 </plist>

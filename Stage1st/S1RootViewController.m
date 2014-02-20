@@ -58,6 +58,7 @@ typedef enum {
 {
     [super viewDidLoad];
     self.panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(detailViewOrientationDidChanged:) name:@"S1ContentViewAutoLayoutedNotification" object:nil];
 	// Do any additional setup after loading the view.
 }
 
@@ -149,7 +150,7 @@ typedef enum {
     startFrame.origin.x += startFrame.size.width;
     [self.detailViewController.view setFrame:startFrame];
     [self.detailViewController.view addGestureRecognizer:self.panGR];
-    [self addShadowForView:self.detailViewController.view];
+    [self setShadowForView:self.detailViewController.view];
     [self addChildViewController:self.detailViewController];
     [self.view addSubview:self.detailViewController.view];
     [self.detailViewController didMoveToParentViewController:self];
@@ -172,9 +173,18 @@ typedef enum {
     return !(self.detailViewController == nil);
 }
 
+#pragma mark - Orientation
+
+- (void)detailViewOrientationDidChanged:(NSNotification *)notification
+{
+    if ([self presentingDetailViewController]) {
+        [self setShadowForView:self.detailViewController.view];
+    }
+}
+
 #pragma mark - Helpers
 
-- (void)addShadowForView:(UIView *)view
+- (void)setShadowForView:(UIView *)view
 {
     view.layer.shadowOpacity = 0.5;
     view.layer.shadowRadius = 5.0;

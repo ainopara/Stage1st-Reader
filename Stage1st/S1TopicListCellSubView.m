@@ -65,7 +65,7 @@
         CGFloat outerShadowBlurRadius = 1.6;
         
         //// Abstracted Attributes
-        NSString* textContent = self.topic.replyCount;
+        NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
         NSString* titleContent = self.topic.title;
         
         
@@ -145,7 +145,7 @@
         UIColor* replyTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
         
         //// Abstracted Attributes
-        NSString* textContent = self.topic.replyCount;
+        NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
         NSString* titleContent = self.topic.title;
         
         

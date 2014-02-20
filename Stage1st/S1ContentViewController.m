@@ -29,7 +29,7 @@
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *maskView;
-
+@property (nonatomic, strong) UIView *statusBackgroundView;
 @property (nonatomic, strong) UILabel *pageLabel;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -67,10 +67,10 @@
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
     } else {
-        UIView *statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-        statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-        statusBackgroundView.userInteractionEnabled = NO;
-        [self.view addSubview:statusBackgroundView];
+        self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+        self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+        self.statusBackgroundView.userInteractionEnabled = NO;
+        [self.view addSubview:self.statusBackgroundView];
                 
         self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     }
@@ -160,6 +160,12 @@
     [self.toolbar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, actionItem]];
     
     [self.view addSubview:self.toolbar];
+    self.view.autoresizesSubviews = YES;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.statusBackgroundView.autoresizesSubviews = YES;
+    self.statusBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.toolbar.autoresizesSubviews = YES;
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
 #undef _BAR_HEIGHT
     
     [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
@@ -184,10 +190,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSString *path = [NSString stringWithFormat:@"simple/?t%@.html", self.topic.topicID];//TODO: FIX ME.
-    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
+    [self cancelRequest];
     
-    [self.topic setLastViewedPage:[NSString stringWithFormat:@"%d", _currentPage]];
+    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.tracer hasViewed:self.topic];
 }
 
@@ -212,6 +217,7 @@
 
 - (void)back:(id)sender
 {
+    [self cancelRequest];
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -222,6 +228,7 @@
 
 - (void)forward:(id)sender
 {
+    [self cancelRequest];
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -240,6 +247,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage > 1) {
             _currentPage = 1;
+            [self cancelRequest];
             [self fetchContent];
         }
     }
@@ -250,6 +258,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
+            [self cancelRequest];
             [self fetchContent];
         }
     }
@@ -261,7 +270,10 @@
                                                              delegate:self
                                                     cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"), NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"), NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
+                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
+                                  [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                  NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
+                                  NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showFromToolbar:self.toolbar];    
 }
@@ -271,7 +283,7 @@
 //    NSLog(@"%d", buttonIndex);
     //Reply
     if (0 == buttonIndex) {
-        if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UserID"]) {
+        if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
             [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
         }
@@ -295,11 +307,17 @@
             }];
         
         }
+        [self.replyController.view setFrame:self.view.bounds];
         [self.replyController presentFromViewController:self];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
-    //Weibo
+    //Favorite
     if (1 == buttonIndex) {
+        [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+    }
+    
+    //Weibo
+    if (2 == buttonIndex) {
         if (!NSClassFromString(@"SLComposeViewController")) {
             [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
             return;
@@ -310,7 +328,7 @@
             return;
         }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
@@ -320,9 +338,9 @@
         }];
     }
     
-    if (2 == buttonIndex) {
+    if (3 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@/2b/thread-%@-1-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]];
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%d-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, _currentPage]];
         
         if (SYSTEM_VERSION_LESS_THAN(@"7")) {
             ;
@@ -331,7 +349,7 @@
             [[controller view] setTintColor:[S1GlobalVariables color3]];
         }
         
-        [self presentViewController:controller animated:YES completion:nil];        
+        [self presentViewController:controller animated:YES completion:nil];
     }
 }
 
@@ -391,19 +409,52 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    NSString *path;
+    if (_currentPage == 1) {
+        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&mobile=no", self.topic.topicID];
+    } else {
+        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+    }
+    NSLog(@"Begin Fetch Content");
+    NSDate *start = [NSDate date];
+    
     [self.HTTPClient getPath:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         NSLog(@"%@", operation.request.allHTTPHeaderFields);
+                         //NSLog(@"%@", operation.request.allHTTPHeaderFields);
+                         NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+                         NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
                          NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
-                         [self.topic setFormhash:[S1Parser formhashFromThreadString:[[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding]]];
+                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                         [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+                         if (_currentPage == 1) {
+                             NSInteger parsedReplyCount =[S1Parser replyCountFromThreadString:HTMLString];
+                             if (parsedReplyCount != 0) {
+                                 [self.topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+                             }
+                         }
+                         NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
+                         if (parsedTotalPages != 0) {
+                             _totalPages = parsedTotalPages;
+                             [self updatePageLabel];
+                         }
+                         //check login state
+                         if (![S1Parser checkLoginState:HTMLString])
+                         {
+                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
+                         }
                          [self.webView loadHTMLString:string baseURL:nil];
                          [HUD hideWithDelay:0.5];
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          NSLog(@"%@", error);
-                         [HUD showRefreshButton];
+                         if (error.code == -999) {
+                             NSLog(@"Code -999 may means user want to cancel this request.");
+                             [HUD hideWithDelay:0];
+                         } else {
+                             [HUD showRefreshButton];
+                         }
+                         
                      }];
 }
 
@@ -412,14 +463,15 @@
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationShrink;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    NSString *suffix = @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
+    BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+    NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
     NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
     NSDictionary *params = @{@"message" : replyWithSuffix,
                              @"posttime" : timestamp,
                              @"formhash" : self.topic.formhash,
-                             @"usesig" :	@"1",
+                             @"usesig" : @"1",
                              @"subject" : @"",
                              };
     __weak typeof(self) myself = self;
@@ -442,77 +494,10 @@
 
 }
 
-- (void)replyWithTextInPhpwind:(NSString *)text
+-(void) cancelRequest
 {
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationShrink;
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-
-    NSString *suffix = @"";//@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader Evolution For iOS[/url]";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970]*1000)];
-    NSString *path = [NSString stringWithFormat:@"post.php?action=reply&fid=%@&tid=%@", self.topic.fID, self.topic.topicID];
-    __weak typeof(self) myself = self;
-    [self.HTTPClient getPath:path
-                  parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         NSLog(@"%@", HTMLString);
-                         [myself findNecessaryTokens:HTMLString withContinuation:^(NSString *tokenVerify, NSString *tokenHexie) {
-                             NSString *path = [NSString stringWithFormat:@"post.php?fid=%@&nowtime=%@&verify=%@", myself.topic.fID, timestamp, tokenVerify];
-                             NSDictionary *params = @{@"magicname" : @"",
-                                                      @"magicid" : @"",
-                                                      @"verify" : tokenVerify,
-                                                      @"cyid" :	@"0",
-                                                      @"ajax" :	@"1",
-                                                      @"iscontinue" : @"0",
-                                                      @"atc_usesign" : @"1",
-                                                      @"atc_autourl" : @"1",
-                                                      @"atc_convert" : @"1",
-                                                      @"atc_money" : @"0",
-                                                      @"atc_credittype" : @"money",
-                                                      @"atc_rvrc" : @"0",
-                                                      @"atc_enhidetype" : @"credit",
-                                                      @"atc_title" : @"",
-                                                      @"atc_iconid" : @"0",
-                                                      @"atc_content" : replyWithSuffix,
-                                                      @"attachment_1" : @"",
-                                                      @"atc_desc1" : @"",
-                                                      @"att_special1" :	@"0",
-                                                      @"att_ctype1" : @"money",
-                                                      @"atc_needrvrc1" : @"0",
-                                                      @"step" : @"2",
-                                                      @"pid" : @"",
-                                                      @"action" : @"reply",
-                                                      @"fid" : myself.topic.fID,
-                                                      @"tid" : myself.topic.topicID,
-                                                      @"article" : @"",
-                                                      @"special" : @"0",
-                                                      @"_hexie" : tokenHexie,
-                                                      };
-                             NSURLRequest *request = [myself.HTTPClient multipartFormRequestWithMethod:@"POST" path:path parameters:params constructingBodyWithBlock:nil];
-                             AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-                             [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                 NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                                 NSLog(@"%@", HTMLString);
-                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                 [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                                 _needToScrollToBottom = YES;
-                                 [myself fetchContent];
-                             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                                 [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
-                             }];
-                             [op start];
-                         }];
-                     }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                         [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                         NSLog(@"%@", error);
-                     }];
-
-    
+    NSString *path = [NSString stringWithFormat:@"forum.php"];
+    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
 }
 
 #pragma mark - Helpers
@@ -523,7 +508,7 @@
     _needToScrollToBottom = NO;
 }
 
-- (BOOL)atBottom;
+- (BOOL)atBottom
 {
     UIScrollView *scrollView = self.webView.scrollView;
     return (scrollView.contentOffset.y >= (scrollView.contentSize.height - self.webView.bounds.size.height));
@@ -552,21 +537,11 @@
     return viewImage;
 }
 
-- (void)findNecessaryTokens:(NSString *)HTMLString withContinuation:(void (^)(NSString *tokenVerify, NSString *tokenHexie))continuation
+-(void)viewDidLayoutSubviews
 {
-    NSRegularExpression *re = nil;
-    NSString *pattern = nil;
-    pattern = @"name=\"verify\" value=\"([0-9a-zA-Z]+)\"";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *tokenVerify = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    pattern = @"_hexie\\.value='([0-9a-zA-Z]+)'";
-    re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *tokenHexie = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    if (continuation) {
-        continuation(tokenVerify, tokenHexie);
-    }
+    //NSLog(@"layout called");
+    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 @end

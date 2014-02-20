@@ -9,7 +9,6 @@
 #import "S1HTTPClient.h"
 #import "AFNetworking.h"
 
-static NSString * const baseURLString = @"http://bbs.saraba1st.com/2b/";
 
 @implementation S1HTTPClient 
 
@@ -18,7 +17,7 @@ static NSString * const baseURLString = @"http://bbs.saraba1st.com/2b/";
     static S1HTTPClient *httpClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        httpClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:baseURLString]];
+        httpClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
     });
     return httpClient;
 }

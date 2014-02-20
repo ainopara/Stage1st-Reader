@@ -1,13 +1,14 @@
 PODS:
-  - PonyDebugger (0.3.1):
-    - SocketRocket
-  - SocketRocket (0.3.1-beta2)
+  - FMDB (2.2):
+    - FMDB/standard
+  - FMDB/common (2.2)
+  - FMDB/standard (2.2):
+    - FMDB/common
 
 DEPENDENCIES:
-  - PonyDebugger (~> 0.3.1)
+  - FMDB (~> 2.2)
 
 SPEC CHECKSUMS:
-  PonyDebugger: d31607145d785b2315cd6f6a4ebaa378eb0c1340
-  SocketRocket: 7ac946bcce46287a791dfff3c1f8daa692821dae
+  FMDB: 97472cfacf0d9e445e915704fb43b4b142799c36
 
 COCOAPODS: 0.29.0

@@ -4,6 +4,8 @@
 "ContentView_ActionSheet_Reply" = "Reply";
 "ContentView_ActionSheet_Weibo" = "Sina Weibo";
 "ContentView_ActionSheet_OriginPage" = "Original Page";
+"ContentView_ActionSheet_Favorite" = "Favorite";
+"ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
 
 "ContentView_WebView_Open_Link_Alert_Title" = "Open Link";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "Cancel";
@@ -16,7 +18,9 @@
 "Message_OK" = "OK";
 
 "TopicListView_NavigationBar_Settings" = "Settings";
-"TopicListView_NavigationBar_Recent" = "Recent";
+"TopicListView_NavigationBar_History" = "History";
+"TopicListView_SegmentControl_History" = "History";
+"TopicListView_SegmentControl_Favorite" = "Favorite";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";
@@ -25,6 +29,14 @@
 "SettingView_Forum_Order_Custom" = "Forum Order";
 "SettingView_Font_Size" = "Font Size";
 "SettingView_Display_Image" = "Display Image";
+"SettingView_Append_Suffix" = "Reply Suffix";
+"SettingView_HistoryLimit" = "Keep History";
+
+"SettingView_HistoryLimit_3days" = "3 days";
+"SettingView_HistoryLimit_1week" = "1 week";
+"SettingView_HistoryLimit_2weeks" = "2 weeks";
+"SettingView_HistoryLimit_1month" = "1 month";
+"SettingView_HistoryLimit_Forever" = "Forever";
 
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";
