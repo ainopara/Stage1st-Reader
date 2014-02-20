@@ -11,7 +11,6 @@
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"
-//#import "PDDebugger.h"
 
 @implementation S1AppDelegate
 
@@ -19,15 +18,6 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    //Pony Debugger
-    /*
-    PDDebugger *debugger = [PDDebugger defaultInstance];
-    [debugger enableNetworkTrafficDebugging];
-    [debugger enableViewHierarchyDebugging];
-    [debugger forwardAllNetworkTraffic];
-    //[debugger enableCoreDataDebugging];
-    [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
-    */
     //User Defaults;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
