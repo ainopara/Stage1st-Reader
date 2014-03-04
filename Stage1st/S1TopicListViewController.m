@@ -28,6 +28,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) UIBarButtonItem *composeItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
@@ -103,8 +104,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    self.historyItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_History", "History") style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
-    item.rightBarButtonItem = self.historyItem;
+    self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
+    self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
+    
+    NSArray *actionButtonItems = @[self.historyItem, self.composeItem];
+    item.rightBarButtonItems = actionButtonItems;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
     
@@ -194,7 +198,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)history:(id)sender
 {
-    [self.naviItem setRightBarButtonItem:nil];
+    [self.naviItem setRightBarButtonItems:@[]];
     if (!self.segControl) {
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
         [self.segControl setWidth:80 forSegmentAtIndex:0];
@@ -289,7 +293,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
-    [self.naviItem setRightBarButtonItem:self.historyItem];
+    [self.naviItem setRightBarButtonItems:@[self.historyItem, self.composeItem]];
     
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;
