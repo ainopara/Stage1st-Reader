@@ -53,11 +53,7 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
 
 - (id)initInScrollView:(UIScrollView *)scrollView activityIndicatorView:(UIView *)activity
 {
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top), scrollView.frame.size.width, kTotalViewHeight)];
-    } else {
-        self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top - 1), scrollView.frame.size.width, kTotalViewHeight)];
-    }
+    self = [super initWithFrame:CGRectMake(0, -(kTotalViewHeight + scrollView.contentInset.top), scrollView.frame.size.width, kTotalViewHeight)];
     
     if (self) {
         self.scrollView = scrollView;
@@ -105,10 +101,7 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
             _shapeLayer.shadowOffset = CGSizeMake(0, 0.5);
             _shapeLayer.shadowOpacity = 0.2;
             _shapeLayer.shadowRadius = 1.0;
-        } else {
-            [self setBackgroundColor:[S1GlobalVariables color5]];
         }
-        
     }
     return self;
 }

@@ -80,6 +80,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.separatorColor = [S1GlobalVariables color1];
     self.tableView.backgroundColor = [S1GlobalVariables color5];
     self.tableView.hidden = YES;
