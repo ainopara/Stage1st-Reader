@@ -82,18 +82,10 @@
             [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
         }
     } else {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
-            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
-            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-        }
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
-            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
-            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-        }
-
+        [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
+        [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
+        [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
+        [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
     }
     
 
