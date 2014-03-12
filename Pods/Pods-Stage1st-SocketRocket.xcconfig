@@ -1,1 +1,0 @@
-PODS_STAGE_ST_SOCKETROCKET_OTHER_LDFLAGS = -licucore -framework CFNetwork -framework Security

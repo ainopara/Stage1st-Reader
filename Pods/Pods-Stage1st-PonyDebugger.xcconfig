@@ -1,1 +1,0 @@
-PODS_STAGE_ST_PONYDEBUGGER_OTHER_LDFLAGS = -framework CoreData -framework CoreGraphics
