@@ -3,5 +3,6 @@
 
 target "Stage1st" do
 pod 'FMDB', '~> 2.2'
+pod 'AFNetworking', '~> 2.2.0'
 end
 
