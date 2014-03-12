@@ -53,7 +53,7 @@
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
     NSMutableArray *topics = [NSMutableArray array];
     
-    NSLog(@"Topic count: %d",[elements count]);
+    NSLog(@"Topic count: %lu",(unsigned long)[elements count]);
     if ([elements count]) {
         for (TFHppleElement *element in elements){
             if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
@@ -87,7 +87,7 @@
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
     NSString *finalString = [[NSString alloc] init];
     
-    NSLog(@"Floor count: %d",[elements count]);
+    NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
     if ([elements count]) {
         BOOL not_first_floor_flag = NO;
         for (TFHppleElement *element in elements){

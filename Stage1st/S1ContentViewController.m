@@ -340,7 +340,7 @@
     
     if (3 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%d-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, _currentPage]];
+        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
         
         if (SYSTEM_VERSION_LESS_THAN(@"7")) {
             ;
@@ -413,7 +413,7 @@
     if (_currentPage == 1) {
         path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&mobile=no", self.topic.topicID];
     } else {
-        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%d&mobile=no", self.topic.topicID, _currentPage];
+        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%ld&mobile=no", self.topic.topicID, (long)_currentPage];
     }
     NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
@@ -516,7 +516,7 @@
 
 - (void)updatePageLabel
 {
-    self.pageLabel.text = [NSString stringWithFormat:@"%d/%d", _currentPage, _totalPages];
+    self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, (long)_totalPages];
 }
 
 - (S1RootViewController *)rootViewController

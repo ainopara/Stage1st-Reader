@@ -112,7 +112,7 @@
         [historyTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:historyTopic.topicID]]];
         [historyTopics addObject:historyTopic];
     }
-    NSLog(@"History count: %d",[historyTopics count]);
+    NSLog(@"History count: %lu",(unsigned long)[historyTopics count]);
     return historyTopics;
 }
 
@@ -132,7 +132,7 @@
         [favoriteTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:favoriteTopic.topicID]]];
         [favoriteTopics addObject:favoriteTopic];
     }
-    NSLog(@"Favorite count: %d",[favoriteTopics count]);
+    NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
     return favoriteTopics;
 }
 

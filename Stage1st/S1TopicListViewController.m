@@ -337,7 +337,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (page == 1) {
         path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
     } else {
-        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%d&mobile=no", self.threadsInfo[key], page];
+        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%lu&mobile=no", self.threadsInfo[key], (unsigned long)page];
     }
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient getPath:path
