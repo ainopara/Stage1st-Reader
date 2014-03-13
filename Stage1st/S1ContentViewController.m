@@ -418,7 +418,7 @@
     NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
     
-    [self.HTTPClient getPath:path
+    [self.HTTPClient GET:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          //NSLog(@"%@", operation.request.allHTTPHeaderFields);
@@ -475,7 +475,7 @@
                              @"subject" : @"",
                              };
     __weak typeof(self) myself = self;
-    [self.HTTPClient postPath:path
+    [self.HTTPClient POST:path
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                           NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -496,8 +496,7 @@
 
 -(void) cancelRequest
 {
-    NSString *path = [NSString stringWithFormat:@"forum.php"];
-    [self.HTTPClient cancelAllHTTPOperationsWithMethod:@"GET" path:path];
+    [self.HTTPClient.operationQueue cancelAllOperations];
 }
 
 #pragma mark - Helpers

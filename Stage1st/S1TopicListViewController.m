@@ -180,10 +180,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (S1HTTPClient *)HTTPClient
 {
-    if (_HTTPClient) return _HTTPClient;
-    NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:baseURLString]];
-    return _HTTPClient;
+    return [S1HTTPClient sharedClient];
 }
 
 #pragma mark - Item Actions
@@ -340,7 +337,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%lu&mobile=no", self.threadsInfo[key], (unsigned long)page];
     }
     NSString *fid = self.threadsInfo[key];
-    [self.HTTPClient getPath:path
+    [self.HTTPClient GET:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //check login state
@@ -390,7 +387,8 @@ static NSString * const cellIdentifier = @"TopicCell";
                          
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                        [HUD setText:@"Request Failed"];
+                         NSLog(@"%@", error);
+                         [HUD setText:@"Request Failed"];
                         [HUD hideWithDelay:0.3];
                         self.scrollTabBar.enabled = YES;
                         if (self.refreshControl.refreshing) {
@@ -505,9 +503,5 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.cache = nil;
 }
 
-- (void)updateHTTPClient:(id)sender
-{
-    self.HTTPClient = nil;
-}
 
 @end
