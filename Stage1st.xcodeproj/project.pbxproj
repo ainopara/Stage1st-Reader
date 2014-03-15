@@ -23,6 +23,7 @@
 		86128EE71894E5D400D0281A /* SVWebViewControllerActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 86128ED71894E5D400D0281A /* SVWebViewControllerActivitySafari.m */; };
 		86128EE81894E5D400D0281A /* SVWebViewControllerActivitySafari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 86128ED81894E5D400D0281A /* SVWebViewControllerActivitySafari@2x.png */; };
 		86128EE91894E5D400D0281A /* SVWebViewControllerActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 86128EDA1894E5D400D0281A /* SVWebViewControllerActivity.m */; };
+		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
 		862F51AC1891335A0038A289 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 862F51AB1891335A0038A289 /* libxml2.dylib */; };
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
@@ -117,6 +118,8 @@
 		86128EDA1894E5D400D0281A /* SVWebViewControllerActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewControllerActivity.m; sourceTree = "<group>"; };
 		86128EDB1894E5D400D0281A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
 		86128EDC1894E5D400D0281A /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
+		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
+		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
 		862F51AB1891335A0038A289 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
 		862F51B8189136000038A289 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Vendors/TFHpple/TFHpple.m; sourceTree = "<group>"; };
@@ -538,6 +541,8 @@
 				C08A440D16DA775F003BF44C /* Networking */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
+				862CECE318D34611006CA29F /* S1Floor.h */,
+				862CECE418D34611006CA29F /* S1Floor.m */,
 				C095878016CA8EAC007E0119 /* S1Reply.h */,
 				C095878116CA8EAC007E0119 /* S1Reply.m */,
 				C05286C116D3428E000B0DBD /* S1Parser.h */,
@@ -765,6 +770,7 @@
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				8662DF2A189363470060D513 /* DDXMLNode.m in Sources */,
 				8662DF27189363470060D513 /* NSString+DDXML.m in Sources */,
+				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878216CA8EAC007E0119 /* S1Reply.m in Sources */,
 				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,

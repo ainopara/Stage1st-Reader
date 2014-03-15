@@ -424,7 +424,8 @@
                          //NSLog(@"%@", operation.request.allHTTPHeaderFields);
                          NSTimeInterval timeInterval = [start timeIntervalSinceNow];
                          NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
-                         NSString *string = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         NSString *string = [S1Parser generateContentPage:floorList];
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                          [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
                          if (_currentPage == 1) {

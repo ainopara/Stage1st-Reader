@@ -11,7 +11,8 @@
 @interface S1Parser : NSObject
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
-+ (NSString *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
++ (NSArray *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
++ (NSString *)generateContentPage:(NSArray *)floorList;
 
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString;
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
