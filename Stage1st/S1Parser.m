@@ -152,7 +152,7 @@
         //process indexmark
         NSString *floorIndexMark = topicFloor.indexMark;
         if ([floorList indexOfObject:topicFloor] != 0) {
-            floorIndexMark = [@"# " stringByAppendingString:topicFloor.indexMark];
+            floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
         }
         //process time
         NSString *floorPostTime = topicFloor.postTime;
@@ -175,7 +175,7 @@
         NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-        NSString *output = [NSString stringWithFormat:floorTemplate, topicFloor.indexMark, topicFloor.author, floorPostTime, topicFloor.indexMark, topicFloor.content, floorAttachment];
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, topicFloor.indexMark, topicFloor.content, floorAttachment];
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
