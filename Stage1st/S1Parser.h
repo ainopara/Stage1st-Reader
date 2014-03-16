@@ -18,6 +18,8 @@
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString;
 
++ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString;
+
 + (BOOL)checkLoginState:(NSString *)HTMLString;
 
 @end

@@ -10,6 +10,7 @@
 
 @interface S1Floor : NSObject
 
+@property (nonatomic, copy) NSNumber *floorID;
 @property (nonatomic, copy) NSString *indexMark;
 @property (nonatomic, copy) NSString *author;
 @property (nonatomic, copy) NSString *postTime;

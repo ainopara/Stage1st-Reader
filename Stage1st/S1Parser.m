@@ -47,7 +47,7 @@
     return HTMLString;
 }
 
-
+#pragma mark - Basic Parsing and Page Generating
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
 {
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
@@ -120,9 +120,11 @@
                 [floor setIndexMark: [[floorIndexMarkNode text] stringByReplacingOccurrencesOfString:@"\r\n" withString:@""]];
             }
             
-            //parse content
+            //parse content & floorID
             TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
             [floor setContent: [floorContentNode raw]];
+            NSString *floorIDString = [[floorContentNode objectForKey:@"id"] stringByReplacingOccurrencesOfString:@"postmessage_" withString:@""];
+            [floor setFloorID:[NSNumber numberWithInteger: [floorIDString integerValue]]];
             
             //parse attachment
             NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
@@ -202,7 +204,7 @@
     return threadPage;
 }
 
-
+#pragma mark - Pick Information
 + (NSString *)formhashFromThreadString:(NSString *)HTMLString
 {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
@@ -236,6 +238,25 @@
     }
 }
 
++ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString
+{
+    NSMutableDictionary *infoDict = [[NSMutableDictionary alloc] init];
+    [infoDict setObject:@NO forKey:@"requestSuccess"];
+    
+    NSString *pattern = @"<input[^>]*name=\"([^>\"]*)\"[^>]*value=\"([^>\"]*)\"";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSArray *results = [re matchesInString:ResponseString options:NSMatchingReportProgress range:NSMakeRange(0, ResponseString.length)];
+    if ([results count]) {
+        [infoDict setObject:@YES forKey:@"requestSuccess"];
+    }
+    for (NSTextCheckingResult *result in results) {
+        NSString *key = [ResponseString substringWithRange:[result rangeAtIndex:1]];
+        NSString *value = [ResponseString substringWithRange:[result rangeAtIndex:2]];
+        [infoDict setObject:value forKey:key];
+    }
+    return infoDict;
+}
+#pragma mark - Checking
 + (BOOL)checkLoginState:(NSString *)HTMLString
 {
     NSString *pattern = @"mod=logging&amp;action=logout";

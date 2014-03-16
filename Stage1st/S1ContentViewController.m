@@ -452,7 +452,7 @@
                      }];
 }
 
-- (void)replyWithTextInDiscuz:(NSString *)text
+- (void)replyWithTextInDiscuz:(NSString *)text withPath:(NSString *)path andParams:(NSMutableDictionary *)params
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationShrink;
@@ -460,14 +460,7 @@
     BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
-    NSDictionary *params = @{@"message" : replyWithSuffix,
-                             @"posttime" : timestamp,
-                             @"formhash" : self.topic.formhash,
-                             @"usesig" : @"1",
-                             @"subject" : @"",
-                             };
+    [params setObject:replyWithSuffix forKey:@"message"];
     __weak typeof(self) myself = self;
     [self.HTTPClient POST:path
                    parameters:params
@@ -486,6 +479,31 @@
                           [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
                       }];
 
+}
+
+-(void)replySepecificFloor:(S1Floor *)topicFloor withText:(NSString *)text
+{
+    NSString *pathTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&repquote=%@&extra=&page=%ld&infloat=yes&handlekey=reply&inajax=1&ajaxtarget=fwin_content_reply";
+    NSString *path = [NSString stringWithFormat:pathTemplate, self.topic.fID, self.topic.topicID, topicFloor.floorID, (long)_currentPage];
+    
+    
+    [self.HTTPClient GET:path parameters:nil
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                     NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
+                     if ([params[@"requestSuccess"]  isEqual: @YES]) {
+                         [params removeObjectForKey:@"requestSuccess"];
+                         [params setObject:@"true" forKey:@"replysubmit"];
+                         NSString *postPathTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%ld&tid=%@&replysubmit=yes&inajax=1";
+                         NSString *postPath = [NSString stringWithFormat:postPathTemplate, self.topic.fID, (long)_currentPage, self.topic.topicID];
+                         [self replyWithTextInDiscuz:text withPath:postPath andParams:params];
+                     } else {
+                         NSLog(@"fail to fetch reply info!");
+                     }
+
+                 }
+                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                 }];
 }
 
 -(void) cancelRequest
@@ -565,7 +583,18 @@
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         } else if (result == REComposeResultPosted) {
             if (composeViewController.text.length > 0) {
-                [self replyWithTextInDiscuz:composeViewController.text];
+                if (topicFloor) {
+                    [self replySepecificFloor:topicFloor withText:composeViewController.text];
+                } else {
+                    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
+                    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
+                    NSMutableDictionary *params = [@{@"posttime" : timestamp,
+                                                     @"formhash" : self.topic.formhash,
+                                                     @"usesig" : @"1",
+                                                     @"subject" : @"",
+                                                     } mutableCopy];
+                    [self replyWithTextInDiscuz:composeViewController.text withPath:path andParams:params];
+                }
                 [composeViewController dismissViewControllerAnimated:YES completion:nil];
             }
         }
