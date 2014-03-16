@@ -147,19 +147,24 @@
 + (NSString *)generateContentPage:(NSArray *)floorList
 {
     NSString *finalString = [[NSString alloc] init];
-    for (S1Floor *floor in floorList) {
+    for (S1Floor *topicFloor in floorList) {
 
-        
         //process indexmark
-        
+        NSString *floorIndexMark = topicFloor.indexMark;
+        if ([floorList indexOfObject:topicFloor] != 0) {
+            floorIndexMark = [@"# " stringByAppendingString:topicFloor.indexMark];
+        }
         //process time
-        
+        NSString *floorPostTime = topicFloor.postTime;
+        if ([floorPostTime hasPrefix:@"发表于 "]) {
+            floorPostTime = [floorPostTime stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
+        }
         //process attachment
         NSString *floorAttachment = @"";
-        if (floor.imageAttachmentList) {
-            for (NSString *imageURLString in floor.imageAttachmentList) {
+        if (topicFloor.imageAttachmentList) {
+            for (NSString *imageURLString in topicFloor.imageAttachmentList) {
                 NSString *processedImageURLString = [[NSString alloc] initWithString:imageURLString];
-                if ([floor.imageAttachmentList indexOfObject:imageURLString] != 0) {
+                if ([topicFloor.imageAttachmentList indexOfObject:imageURLString] != 0) {
                     processedImageURLString = [@"<br /><br />" stringByAppendingString:imageURLString];
                 }
                 floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
@@ -170,8 +175,8 @@
         NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-        NSString *output = [NSString stringWithFormat:floorTemplate, floor.indexMark, floor.author, floor.postTime, floor.indexMark, floor.content, floorAttachment];
-        if ([floorList indexOfObject:floor] != 0) {
+        NSString *output = [NSString stringWithFormat:floorTemplate, topicFloor.indexMark, topicFloor.author, floorPostTime, topicFloor.indexMark, topicFloor.content, floorAttachment];
+        if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
         finalString = [finalString stringByAppendingString:output];

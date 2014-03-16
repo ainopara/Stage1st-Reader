@@ -12,6 +12,7 @@
 #import "S1ContentViewController.h"
 #import "S1HTTPClient.h"
 #import "S1Topic.h"
+#import "S1Floor.h"
 #import "S1Parser.h"
 #import "S1Tracer.h"
 #import "S1HUD.h"
@@ -283,32 +284,7 @@
 //    NSLog(@"%d", buttonIndex);
     //Reply
     if (0 == buttonIndex) {
-        if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
-            return;
-        }
-        [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
-        if (!self.replyController) {
-            self.replyController = [[REComposeViewController alloc] init];
-            REComposeViewController *replyController = self.replyController;
-            replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
-            
-            
-            [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
-                if (result == REComposeResultCancelled) {
-                    [composeViewController dismissViewControllerAnimated:YES completion:nil];
-                }
-                else if (result == REComposeResultPosted) {
-                    if (composeViewController.text.length > 0) {
-                        [self replyWithTextInDiscuz:composeViewController.text];
-                        [composeViewController dismissViewControllerAnimated:YES completion:nil];
-                    }
-                }
-            }];
-        
-        }
-        [self.replyController.view setFrame:self.view.bounds];
-        [self.replyController presentFromViewController:self];
+        [self presentReplyViewWithAppendText:@"" reply:nil];
         //[self presentViewController:replyController animated:NO completion:nil];
     }
     //Favorite
@@ -373,9 +349,25 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    //load
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
+    //reply
+    if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
+        if ([request.URL.path isEqualToString:@"/reply"]) {
+            for (S1Floor * topicFloor in _topicFloors) {
+                NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                if ([decodedQuery isEqualToString:topicFloor.indexMark]) {
+                    NSLog(@"%@", topicFloor.author);
+                    [self presentReplyViewWithAppendText:nil reply:topicFloor];
+                    return NO;
+                }
+            }
+        }
+        return NO;
+    }
+    //open link
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
     _urlToOpen = request.URL;
     [alertView show];
@@ -425,6 +417,7 @@
                          NSTimeInterval timeInterval = [start timeIntervalSinceNow];
                          NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
                          NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
+                         _topicFloors = floorList;
                          NSString *string = [S1Parser generateContentPage:floorList];
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                          [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
@@ -537,11 +530,49 @@
     return viewImage;
 }
 
--(void)viewDidLayoutSubviews
+- (void)viewDidLayoutSubviews
 {
     //NSLog(@"layout called");
     NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
+- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
+{
+    //check in login state.
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+        [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+        return;
+    }
+    
+    [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
+    
+    NSString *replyDraft;
+    if (self.replyController) {
+        replyDraft = [self.replyController.text stringByAppendingString:text? text : @""];
+    } else {
+        replyDraft = text? text : @"";
+    }
+    
+    self.replyController = [[REComposeViewController alloc] init];
+    REComposeViewController *replyController = self.replyController;
+    replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
+    if (topicFloor) {
+        replyController.title = [@"@" stringByAppendingString:topicFloor.author];
+    }
+    [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
+        if (result == REComposeResultCancelled) {
+            [composeViewController dismissViewControllerAnimated:YES completion:nil];
+        } else if (result == REComposeResultPosted) {
+            if (composeViewController.text.length > 0) {
+                [self replyWithTextInDiscuz:composeViewController.text];
+                [composeViewController dismissViewControllerAnimated:YES completion:nil];
+            }
+        }
+    }];
+    
+    [self.replyController setText:[self.replyController.text stringByAppendingString:replyDraft]];
+    [self.replyController.view setFrame:self.view.bounds];
+    [self.replyController presentFromViewController:self];
+}
 @end
