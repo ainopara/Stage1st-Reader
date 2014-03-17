@@ -472,6 +472,7 @@
                               [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                           }
                           _needToScrollToBottom = YES;
+                          [myself.replyController setText:@""];
                           [myself fetchContent];
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
