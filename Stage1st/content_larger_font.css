@@ -87,12 +87,16 @@ blockquote {
     font-size: 12px;
 	background-color: #f6f7eb;
 	border-bottom: #ccc 1px solid;
-	display: block;
+	/*display: block;*/
     color: #aaa;
 }
-.attachment {
+.container{
     display: block;
-    border-top: #ccc 1px solid;
+	border-top: #ccc 1px solid;
+}
+.attachment {
+    /*display: block;*/
+    /*border-top: #ccc 1px solid;*/
 }
 .smalltext {
     font-size: 12px;

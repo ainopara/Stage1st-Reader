@@ -171,7 +171,6 @@
                 }
                 floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
             }
-            floorAttachment = [NSString stringWithFormat:@"<tr class='attachment'><td>%@</td></tr>", floorAttachment];
         }
         
         NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
