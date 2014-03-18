@@ -87,16 +87,22 @@ blockquote {
     font-size: 12px;
 	background-color: #f6f7eb;
 	border-bottom: #ccc 1px solid;
-	/*display: block;*/
     color: #aaa;
 }
-.container{
-    display: block;
-	border-top: #ccc 1px solid;
+.head div {
+    padding: 3px;
+    float: left;
+}
+.reply {
+    float:initial !important;
+    text-align:right;
+}
+.reply a{
+    color: #aaa;
 }
 .attachment {
-    /*display: block;*/
-    /*border-top: #ccc 1px solid;*/
+    border-top: #ccc 1px solid;
+    padding: 3px;
 }
 .smalltext {
     font-size: 12px;
