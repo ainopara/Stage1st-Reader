@@ -92,9 +92,11 @@ blockquote {
 .head div {
     padding: 3px;
     float: left;
+    position: relative;
+    display: inline-block;
 }
 .reply {
-    float:initial !important;
+    float:right !important;
     text-align:right;
 }
 .reply a{
@@ -110,4 +112,5 @@ blockquote {
 }
 .smalltext {
     font-size: 12px;
+    float: initial !important;
 }

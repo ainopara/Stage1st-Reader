@@ -177,7 +177,11 @@
         NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, topicFloor.indexMark, topicFloor.content, floorAttachment];
+        NSString *replyLinkString = @"";
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+            replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
+        }
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
