@@ -105,6 +105,9 @@ blockquote {
     border-top: #ccc 1px solid;
     padding: 3px;
 }
+.attachment img{
+    display: block;
+}
 .smalltext {
     font-size: 12px;
 }
