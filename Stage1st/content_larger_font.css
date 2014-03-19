@@ -99,6 +99,7 @@ blockquote {
 }
 .reply a{
     color: #aaa;
+    text-decoration: none;
 }
 .attachment {
     border-top: #ccc 1px solid;
