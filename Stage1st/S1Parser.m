@@ -16,11 +16,12 @@
 #define kNumberPerPage 50
 
 @interface S1Parser()
-+(NSString *)processImagesInHTMLString:(NSString *)HTMLString;
++ (NSString *)processImagesInHTMLString:(NSString *)HTMLString;
++ (NSString *)translateDateTimeString:(NSString *)dateTimeString;
 @end
 
 @implementation S1Parser
-+(NSString *)processImagesInHTMLString:(NSString *)HTMLString
++ (NSString *)processImagesInHTMLString:(NSString *)HTMLString
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
@@ -45,6 +46,52 @@
     HTMLString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
     HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
     return HTMLString;
+}
+
++ (NSString *)translateDateTimeString:(NSString *)dateTimeString
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-M-d HH:mm:ss"];
+    NSDate *date = [formatter dateFromString:dateTimeString];
+    NSTimeInterval interval = -[date timeIntervalSinceNow];
+    if (interval<60) {
+        return @"刚刚";
+    }
+    if (interval<3600) {
+        [formatter setDateFormat:@"m分钟前"];
+        return [formatter stringFromDate:date];
+    }
+    if (interval <3600*2) {
+        return @"1小时前";
+    }
+    if (interval <3600*3) {
+        return @"2小时前";
+    }
+    if (interval <3600*4) {
+        return @"3小时前";
+    }
+    
+    [formatter setDateFormat:@"d"];
+    if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+        [formatter setDateFormat:@"HH:mm"];
+        return [formatter stringFromDate:date];
+    }
+    if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:-3600*24]]]) {
+        [formatter setDateFormat:@"昨天HH:mm"];
+        return [formatter stringFromDate:date];
+    }
+    if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:-3600*24*2]]]) {
+        [formatter setDateFormat:@"前天HH:mm"];
+        return [formatter stringFromDate:date];
+    }
+    
+    [formatter setDateFormat:@"yyyy"];
+    if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+        [formatter setDateFormat:@"MM-dd HH:mm"];
+        return [formatter stringFromDate:date];
+    }
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    return [formatter stringFromDate:date];
 }
 
 #pragma mark - Basic Parsing and Page Generating
@@ -161,6 +208,7 @@
         if ([floorPostTime hasPrefix:@"发表于 "]) {
             floorPostTime = [floorPostTime stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
         }
+        floorPostTime = [[self translateDateTimeString:floorPostTime] stringByAppendingString:[@" | "  stringByAppendingString: floorPostTime]];
         //process attachment
         NSString *floorAttachment = @"";
         if (topicFloor.imageAttachmentList) {
