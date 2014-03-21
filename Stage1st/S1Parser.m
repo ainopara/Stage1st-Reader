@@ -58,8 +58,8 @@
         return @"刚刚";
     }
     if (interval<3600) {
-        [formatter setDateFormat:@"m分钟前"];
-        return [formatter stringFromDate:date];
+        NSNumber *minutes = [[NSNumber alloc] initWithInt: (int)interval/60];
+        return [NSString stringWithFormat: @"%@分钟前", minutes];
     }
     if (interval <3600*2) {
         return @"1小时前";
@@ -87,10 +87,10 @@
     
     [formatter setDateFormat:@"yyyy"];
     if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
-        [formatter setDateFormat:@"MM-dd HH:mm"];
+        [formatter setDateFormat:@"M-d HH:mm"];
         return [formatter stringFromDate:date];
     }
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    [formatter setDateFormat:@"yyyy-M-d HH:mm"];
     return [formatter stringFromDate:date];
 }
 
@@ -208,7 +208,7 @@
         if ([floorPostTime hasPrefix:@"发表于 "]) {
             floorPostTime = [floorPostTime stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
         }
-        floorPostTime = [[self translateDateTimeString:floorPostTime] stringByAppendingString:[@" | "  stringByAppendingString: floorPostTime]];
+        floorPostTime = [self translateDateTimeString:floorPostTime];
         //process attachment
         NSString *floorAttachment = @"";
         if (topicFloor.imageAttachmentList) {
