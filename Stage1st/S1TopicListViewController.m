@@ -388,8 +388,12 @@ static NSString * const cellIdentifier = @"TopicCell";
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          NSLog(@"%@", error);
-                         [HUD setText:@"Request Failed"];
-                        [HUD hideWithDelay:0.3];
+                         if (error.code == -999) {
+                             NSLog(@"Code -999 may means user want to cancel this request.");
+                         } else {
+                            [HUD setText:@"Request Failed"];
+                            [HUD hideWithDelay:0.3];
+                         }
                         self.scrollTabBar.enabled = YES;
                         if (self.refreshControl.refreshing) {
                             [self.refreshControl endRefreshing];
