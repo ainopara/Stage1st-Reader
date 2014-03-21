@@ -200,7 +200,7 @@
 
         //process indexmark
         NSString *floorIndexMark = topicFloor.indexMark;
-        if ([floorList indexOfObject:topicFloor] != 0) {
+        if (![floorIndexMark isEqualToString:@"楼主"]) {
             floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
         }
         //process time
