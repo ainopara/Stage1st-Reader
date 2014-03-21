@@ -528,7 +528,7 @@
 
 - (void)updatePageLabel
 {
-    self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, (long)_totalPages];
+    self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
 }
 
 - (S1RootViewController *)rootViewController
