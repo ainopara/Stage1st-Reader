@@ -304,7 +304,7 @@
             return;
         }
         [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-1-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID]]];
+        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
         [controller addImage:[self screenShot]];
         
         __weak SLComposeViewController *weakController = controller;
