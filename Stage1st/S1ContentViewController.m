@@ -486,7 +486,7 @@
     NSString *pathTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&repquote=%@&extra=&page=%ld&infloat=yes&handlekey=reply&inajax=1&ajaxtarget=fwin_content_reply";
     NSString *path = [NSString stringWithFormat:pathTemplate, self.topic.fID, self.topic.topicID, topicFloor.floorID, (long)_currentPage];
     
-    
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     [self.HTTPClient GET:path parameters:nil
                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                      NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -499,10 +499,13 @@
                          [self replyWithTextInDiscuz:text withPath:postPath andParams:params];
                      } else {
                          NSLog(@"fail to fetch reply info!");
+                         [overlay postErrorMessage:@"引用信息无效" duration:2.5 animated:YES];
                      }
 
                  }
                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     NSLog(@"fail to fetch reply info!");
+                     [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
                  }];
 }
 
