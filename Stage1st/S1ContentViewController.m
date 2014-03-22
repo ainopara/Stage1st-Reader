@@ -456,9 +456,7 @@
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationNone;
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        [overlay postMessage:@"回复发送中" animated:YES];
-    }
+    [overlay postMessage:@"回复发送中" animated:YES];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";
@@ -471,9 +469,7 @@
                           NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                           NSLog(@"%@", HTMLString);
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-                              [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                          }
+                          [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                           _needToScrollToBottom = YES;
                           [myself.replyController setText:@""];
                           [myself fetchContent];
