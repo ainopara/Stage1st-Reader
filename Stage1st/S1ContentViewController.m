@@ -542,7 +542,7 @@
 
 - (UIImage *)screenShot
 {
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+    if (IS_RETINA) {
         UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
     } else {
         UIGraphicsBeginImageContext(self.view.bounds.size);
@@ -550,6 +550,17 @@
     [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    //clip
+    if (!SYSTEM_VERSION_LESS_THAN(@"7")) {
+        CGImageRef imageRef = nil;
+        if (IS_RETINA) {
+            imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 40.0, viewImage.size.width * 2, viewImage.size.height * 2 - 40.0));
+        } else {
+            imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0, viewImage.size.width, viewImage.size.height - 20.0));
+        }
+        viewImage = [UIImage imageWithCGImage:imageRef];
+        CGImageRelease(imageRef);
+    }
     return viewImage;
 }
 
