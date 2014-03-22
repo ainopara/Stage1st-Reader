@@ -41,6 +41,13 @@
             NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
             [image addAttributeWithName:@"src" stringValue:[baseURLString stringByAppendingString:imageSrc]];
         }
+        //clean image's attribute
+        [image removeAttributeForName:@"onmouseover"];
+        [image removeAttributeForName:@"onclick"];
+        [image removeAttributeForName:@"file"];
+        [image removeAttributeForName:@"id"];
+        [image removeAttributeForName:@"lazyloadthumb"];
+        [image removeAttributeForName:@"border"];
         
     }
     HTMLString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
