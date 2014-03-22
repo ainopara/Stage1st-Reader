@@ -106,9 +106,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
     self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
-    self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(test:)];
+    //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(test:)];
     
-    NSArray *actionButtonItems = @[self.historyItem, self.composeItem];
+    NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
     item.rightBarButtonItems = actionButtonItems;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
@@ -193,13 +193,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
+/*
 - (void)test:(id)sender
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     overlay.animation = MTStatusBarOverlayAnimationNone;
     [overlay postMessage:@"testing" duration:2.0 animated:YES];
     [overlay postImmediateFinishMessage:@"测试数据测试数据!" duration:5.0 animated:YES];
-}
+}*/
 - (void)history:(id)sender
 {
     [self.naviItem setRightBarButtonItems:@[]];
@@ -297,7 +298,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
-    [self.naviItem setRightBarButtonItems:@[self.historyItem, self.composeItem]];
+    [self.naviItem setRightBarButtonItems:@[self.historyItem/*, self.composeItem*/]];
     
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;
