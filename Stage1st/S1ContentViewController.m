@@ -455,7 +455,10 @@
 - (void)replyWithTextInDiscuz:(NSString *)text withPath:(NSString *)path andParams:(NSMutableDictionary *)params
 {
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationShrink;
+    overlay.animation = MTStatusBarOverlayAnimationNone;
+    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        [overlay postMessage:@"回复发送中" animated:YES];
+    }
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";

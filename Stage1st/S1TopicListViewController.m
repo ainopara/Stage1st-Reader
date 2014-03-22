@@ -20,6 +20,7 @@
 
 #import "ODRefreshControl.h"
 #import "AFNetworking.h"
+#import "MTStatusBarOverlay.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -105,7 +106,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
     self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
-    self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
+    self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(test:)];
     
     NSArray *actionButtonItems = @[self.historyItem, self.composeItem];
     item.rightBarButtonItems = actionButtonItems;
@@ -192,7 +193,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
-
+- (void)test:(id)sender
+{
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    overlay.animation = MTStatusBarOverlayAnimationNone;
+    [overlay postMessage:@"testing" duration:2.0 animated:YES];
+    [overlay postImmediateFinishMessage:@"测试数据测试数据!" duration:5.0 animated:YES];
+}
 - (void)history:(id)sender
 {
     [self.naviItem setRightBarButtonItems:@[]];
