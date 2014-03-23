@@ -476,7 +476,12 @@
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
+                          if (error.code == -999) {
+                              NSLog(@"Code -999 may means user want to cancel this request.");
+                              [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                          } else {
+                              [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
+                          }
                       }];
 
 }
@@ -505,7 +510,12 @@
                  }
                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                      NSLog(@"fail to fetch reply info!");
-                     [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
+                     if (error.code == -999) {
+                         NSLog(@"Code -999 may means user want to cancel this request.");
+                         [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                     } else {
+                         [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
+                     }
                  }];
 }
 
