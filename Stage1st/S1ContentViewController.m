@@ -139,10 +139,12 @@
     UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-    self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
+
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
+        self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
         self.pageLabel.textColor = [UIColor whiteColor];
     } else {
+        self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
         self.pageLabel.textColor = [S1GlobalVariables color3];
     }
     self.pageLabel.backgroundColor = [UIColor clearColor];
