@@ -40,6 +40,7 @@
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
 		867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 867C7F581899420D00DF55E8 /* REComposeViewController.bundle */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
+		868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */ = {isa = PBXBuildFile; fileRef = 868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		86AA78B018A79050005A3116 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
@@ -151,6 +152,7 @@
 		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
 		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
+		868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_19px_font.css; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		86AA78AF18A79050005A3116 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -486,6 +488,7 @@
 				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
 				C08DB46A16DE3794002B4A92 /* content.css */,
 				C01C821016FDB5D2003E6B91 /* content_larger_font.css */,
+				868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */,
 				C0B1919616F0A80F0053E0C5 /* content_ipad.css */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				C095874316CA8A36007E0119 /* main.m */,
@@ -691,6 +694,7 @@
 				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				86128EDD1894E5D400D0281A /* SVWebViewController.strings in Resources */,
+				868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
 				86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */,

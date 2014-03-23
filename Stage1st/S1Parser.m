@@ -252,8 +252,10 @@
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"15px"]) {
             cssPath = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
-        } else {
+        } else if ([fontSizeKey isEqualToString:@"17px"]){
             cssPath = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px_font" ofType:@"css"];
         }
     } else {
         cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
