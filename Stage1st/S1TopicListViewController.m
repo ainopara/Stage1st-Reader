@@ -20,6 +20,7 @@
 
 #import "ODRefreshControl.h"
 #import "AFNetworking.h"
+#import "MTStatusBarOverlay.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -28,6 +29,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) UIBarButtonItem *composeItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
@@ -80,6 +82,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.separatorColor = [S1GlobalVariables color1];
     self.tableView.backgroundColor = [S1GlobalVariables color5];
     self.tableView.hidden = YES;
@@ -102,8 +105,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem = item;
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
-    self.historyItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_History", "History") style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
-    item.rightBarButtonItem = self.historyItem;
+    self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
+    //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(test:)];
+    
+    NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
+    item.rightBarButtonItems = actionButtonItems;
     [self.navigationBar pushNavigationItem:item animated:NO];
     [self.view addSubview:self.navigationBar];
     
@@ -175,10 +181,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (S1HTTPClient *)HTTPClient
 {
-    if (_HTTPClient) return _HTTPClient;
-    NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:baseURLString]];
-    return _HTTPClient;
+    return [S1HTTPClient sharedClient];
 }
 
 #pragma mark - Item Actions
@@ -190,10 +193,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
-
+/*
+- (void)test:(id)sender
+{
+    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    overlay.animation = MTStatusBarOverlayAnimationNone;
+    [overlay postMessage:@"testing" duration:2.0 animated:YES];
+    [overlay postImmediateFinishMessage:@"测试数据测试数据!" duration:5.0 animated:YES];
+}*/
 - (void)history:(id)sender
 {
-    [self.naviItem setRightBarButtonItem:nil];
+    [self.naviItem setRightBarButtonItems:@[]];
     if (!self.segControl) {
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
         [self.segControl setWidth:80 forSegmentAtIndex:0];
@@ -288,7 +298,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
-    [self.naviItem setRightBarButtonItem:self.historyItem];
+    [self.naviItem setRightBarButtonItems:@[self.historyItem/*, self.composeItem*/]];
     
     if (self.tableView.hidden) {
         self.tableView.hidden = NO;
@@ -332,10 +342,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (page == 1) {
         path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
     } else {
-        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%d&mobile=no", self.threadsInfo[key], page];
+        path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%lu&mobile=no", self.threadsInfo[key], (unsigned long)page];
     }
     NSString *fid = self.threadsInfo[key];
-    [self.HTTPClient getPath:path
+    [self.HTTPClient GET:path
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //check login state
@@ -385,8 +395,13 @@ static NSString * const cellIdentifier = @"TopicCell";
                          
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                        [HUD setText:@"Request Failed"];
-                        [HUD hideWithDelay:0.3];
+                         NSLog(@"%@", error);
+                         if (error.code == -999) {
+                             NSLog(@"Code -999 may means user want to cancel this request.");
+                         } else {
+                            [HUD setText:@"Request Failed"];
+                            [HUD hideWithDelay:0.3];
+                         }
                         self.scrollTabBar.enabled = YES;
                         if (self.refreshControl.refreshing) {
                             [self.refreshControl endRefreshing];
@@ -500,9 +515,5 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.cache = nil;
 }
 
-- (void)updateHTTPClient:(id)sender
-{
-    self.HTTPClient = nil;
-}
 
 @end

@@ -23,6 +23,7 @@
 		86128EE71894E5D400D0281A /* SVWebViewControllerActivitySafari.m in Sources */ = {isa = PBXBuildFile; fileRef = 86128ED71894E5D400D0281A /* SVWebViewControllerActivitySafari.m */; };
 		86128EE81894E5D400D0281A /* SVWebViewControllerActivitySafari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 86128ED81894E5D400D0281A /* SVWebViewControllerActivitySafari@2x.png */; };
 		86128EE91894E5D400D0281A /* SVWebViewControllerActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 86128EDA1894E5D400D0281A /* SVWebViewControllerActivity.m */; };
+		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
 		862F51AC1891335A0038A289 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 862F51AB1891335A0038A289 /* libxml2.dylib */; };
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
@@ -39,6 +40,7 @@
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
 		867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 867C7F581899420D00DF55E8 /* REComposeViewController.bundle */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
+		868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */ = {isa = PBXBuildFile; fileRef = 868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		86AA78B018A79050005A3116 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
@@ -67,12 +69,6 @@
 		C095874416CA8A36007E0119 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874316CA8A36007E0119 /* main.m */; };
 		C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874716CA8A36007E0119 /* S1AppDelegate.m */; };
 		C095875716CA8A69007E0119 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095875616CA8A69007E0119 /* QuartzCore.framework */; };
-		C095876C16CA8CD4007E0119 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C095875A16CA8CD4007E0119 /* AFHTTPClient.m */; };
-		C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C095875C16CA8CD4007E0119 /* AFHTTPRequestOperation.m */; };
-		C095876E16CA8CD4007E0119 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C095875E16CA8CD4007E0119 /* AFImageRequestOperation.m */; };
-		C095877016CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C095876216CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m */; };
-		C095877216CA8CD4007E0119 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C095876716CA8CD4007E0119 /* AFURLConnectionOperation.m */; };
-		C095877416CA8CD4007E0119 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = C095876B16CA8CD4007E0119 /* UIImageView+AFNetworking.m */; };
 		C095877616CA8D0F007E0119 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095877516CA8D0F007E0119 /* MobileCoreServices.framework */; };
 		C095877816CA8D19007E0119 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095877716CA8D19007E0119 /* SystemConfiguration.framework */; };
 		C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = C095877E16CA8E7E007E0119 /* S1Topic.m */; };
@@ -122,6 +118,8 @@
 		86128EDA1894E5D400D0281A /* SVWebViewControllerActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewControllerActivity.m; sourceTree = "<group>"; };
 		86128EDB1894E5D400D0281A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
 		86128EDC1894E5D400D0281A /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/SVWebViewController.strings"; sourceTree = "<group>"; };
+		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
+		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
 		862F51AB1891335A0038A289 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
 		862F51B8189136000038A289 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Vendors/TFHpple/TFHpple.m; sourceTree = "<group>"; };
@@ -154,6 +152,7 @@
 		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
 		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
+		868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_19px_font.css; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		86AA78AF18A79050005A3116 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -200,19 +199,6 @@
 		C095874616CA8A36007E0119 /* S1AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = S1AppDelegate.h; sourceTree = "<group>"; };
 		C095874716CA8A36007E0119 /* S1AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = S1AppDelegate.m; sourceTree = "<group>"; };
 		C095875616CA8A69007E0119 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		C095875916CA8CD4007E0119 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
-		C095875A16CA8CD4007E0119 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
-		C095875B16CA8CD4007E0119 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
-		C095875C16CA8CD4007E0119 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
-		C095875D16CA8CD4007E0119 /* AFImageRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFImageRequestOperation.h; sourceTree = "<group>"; };
-		C095875E16CA8CD4007E0119 /* AFImageRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFImageRequestOperation.m; sourceTree = "<group>"; };
-		C095876116CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
-		C095876216CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
-		C095876316CA8CD4007E0119 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
-		C095876616CA8CD4007E0119 /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLConnectionOperation.h; sourceTree = "<group>"; };
-		C095876716CA8CD4007E0119 /* AFURLConnectionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLConnectionOperation.m; sourceTree = "<group>"; };
-		C095876A16CA8CD4007E0119 /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
-		C095876B16CA8CD4007E0119 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		C095877516CA8D0F007E0119 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		C095877716CA8D19007E0119 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C095877D16CA8E7E007E0119 /* S1Topic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Topic.h; path = Stage1st/S1Topic.h; sourceTree = "<group>"; };
@@ -502,6 +488,7 @@
 				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
 				C08DB46A16DE3794002B4A92 /* content.css */,
 				C01C821016FDB5D2003E6B91 /* content_larger_font.css */,
+				868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */,
 				C0B1919616F0A80F0053E0C5 /* content_ipad.css */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				C095874316CA8A36007E0119 /* main.m */,
@@ -523,7 +510,6 @@
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
-				C095875816CA8CD4007E0119 /* AFNetworking */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -536,27 +522,6 @@
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		C095875816CA8CD4007E0119 /* AFNetworking */ = {
-			isa = PBXGroup;
-			children = (
-				C095875916CA8CD4007E0119 /* AFHTTPClient.h */,
-				C095875A16CA8CD4007E0119 /* AFHTTPClient.m */,
-				C095875B16CA8CD4007E0119 /* AFHTTPRequestOperation.h */,
-				C095875C16CA8CD4007E0119 /* AFHTTPRequestOperation.m */,
-				C095875D16CA8CD4007E0119 /* AFImageRequestOperation.h */,
-				C095875E16CA8CD4007E0119 /* AFImageRequestOperation.m */,
-				C095876116CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.h */,
-				C095876216CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m */,
-				C095876316CA8CD4007E0119 /* AFNetworking.h */,
-				C095876616CA8CD4007E0119 /* AFURLConnectionOperation.h */,
-				C095876716CA8CD4007E0119 /* AFURLConnectionOperation.m */,
-				C095876A16CA8CD4007E0119 /* UIImageView+AFNetworking.h */,
-				C095876B16CA8CD4007E0119 /* UIImageView+AFNetworking.m */,
-			);
-			name = AFNetworking;
-			path = Vendors/AFNetworking;
 			sourceTree = "<group>";
 		};
 		C095877916CA8D90007E0119 /* Classes */ = {
@@ -575,6 +540,8 @@
 				C08A440D16DA775F003BF44C /* Networking */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
+				862CECE318D34611006CA29F /* S1Floor.h */,
+				862CECE418D34611006CA29F /* S1Floor.m */,
 				C095878016CA8EAC007E0119 /* S1Reply.h */,
 				C095878116CA8EAC007E0119 /* S1Reply.m */,
 				C05286C116D3428E000B0DBD /* S1Parser.h */,
@@ -727,6 +694,7 @@
 				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				86128EDD1894E5D400D0281A /* SVWebViewController.strings in Resources */,
+				868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
 				86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */,
@@ -794,20 +762,15 @@
 			files = (
 				C095874416CA8A36007E0119 /* main.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
-				C095876C16CA8CD4007E0119 /* AFHTTPClient.m in Sources */,
-				C095876D16CA8CD4007E0119 /* AFHTTPRequestOperation.m in Sources */,
 				867C7F5E1899420D00DF55E8 /* REComposeBackgroundView.m in Sources */,
-				C095876E16CA8CD4007E0119 /* AFImageRequestOperation.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
 				8662DF26189363470060D513 /* DDXMLElementAdditions.m in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
-				C095877016CA8CD4007E0119 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				C095877216CA8CD4007E0119 /* AFURLConnectionOperation.m in Sources */,
-				C095877416CA8CD4007E0119 /* UIImageView+AFNetworking.m in Sources */,
 				86128EDE1894E5D400D0281A /* SVModalWebViewController.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				8662DF2A189363470060D513 /* DDXMLNode.m in Sources */,
 				8662DF27189363470060D513 /* NSString+DDXML.m in Sources */,
+				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878216CA8EAC007E0119 /* S1Reply.m in Sources */,
 				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
@@ -942,6 +905,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Huan Tang (P5HC5452A2)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
@@ -965,6 +932,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Huan Tang (P5HC5452A2)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";

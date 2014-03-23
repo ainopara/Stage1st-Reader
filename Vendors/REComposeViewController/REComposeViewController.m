@@ -80,6 +80,9 @@
     
     _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 202)];
     _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    if (REUIKitIsFlatMode()) {
+        _containerView.alpha = 0;
+    }
     _backView = [[UIView alloc] initWithFrame:CGRectMake(4, 0, self.currentWidth - 8, 202)];
     _backView.layer.cornerRadius = _cornerRadius;
 
@@ -121,7 +124,6 @@
     
     if (REUIKitIsFlatMode()) {
         [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-        self.containerView.alpha = 0;
         [self.sheetView.textView becomeFirstResponder];
     } else {
         [UIView animateWithDuration:0.4 animations:^{
@@ -222,7 +224,7 @@
     _sheetView.attachmentView.frame = attachmentViewFrame;
     
     CGRect textViewFrame = _sheetView.textView.frame;
-    textViewFrame.size.width = !_hasAttachment ? _sheetView.frame.size.width : _sheetView.frame.size.width - 84;
+    textViewFrame.size.width = !_hasAttachment ? _sheetView.textViewContainer.frame.size.width : _sheetView.textViewContainer.frame.size.width - 84;
     textViewFrame.size.width -= REUIKitIsFlatMode() ? 14 : 0;
     _sheetView.textView.scrollIndicatorInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, _hasAttachment ? -85 : 0);
     textViewFrame.size.height = _sheetView.frame.size.height - _sheetView.navigationBar.frame.size.height - 3;

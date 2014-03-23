@@ -105,10 +105,7 @@
 
 - (S1HTTPClient *)HTTPClient
 {
-    if (_HTTPClient) return _HTTPClient;
-    NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-    _HTTPClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:baseURLString]];
-    return _HTTPClient;
+    return [S1HTTPClient sharedClient];
 }
 
 //Login from the standard web
@@ -123,7 +120,7 @@
                             @"cookietime" : @"2592000"
                             };
     
-    [[self HTTPClient] postPath:@"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1"
+    [[self HTTPClient] POST:@"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1"
                      parameters:param
                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                             NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];

@@ -18,16 +18,9 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         httpClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
+        httpClient.responseSerializer = [AFHTTPResponseSerializer serializer];
     });
     return httpClient;
-}
-
-- (id)initWithBaseURL:(NSURL *)url
-{
-    self = [super initWithBaseURL:url];
-    if (!self) return nil;
-    [self registerHTTPOperationClass:[AFHTTPRequestOperation class]];
-    return self;
 }
 
 @end

@@ -88,7 +88,7 @@
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }];
                 [row setEventHandlerBlock:^(UITableViewCell *cell) {
-                    GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
+                    GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[@"15px", @"17px", @"19px"] andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
                     controller.title = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
                     [controller setCompletionHandler:^(NSString *key) {
                         [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];

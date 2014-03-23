@@ -22,16 +22,24 @@
         NSString *suffix = [URLString substringFromIndex:range.location + range.length];
         NSString *fullPath = [NSString stringWithFormat:@"%@%@", localPath, suffix];
         NSData *imageData = [NSData dataWithContentsOfFile:fullPath];
-        NSURLResponse *response =
-        [[NSURLResponse alloc] initWithURL:request.URL
-                                  MIMEType:@"image/png"
-                     expectedContentLength:[imageData length]
-                          textEncodingName:nil];
         
-        NSCachedURLResponse *cachedResponse =
-        [[NSCachedURLResponse alloc] initWithResponse:response
-                                                 data:imageData];
-        return cachedResponse;
+        if (imageData) {
+            NSURLResponse *response =
+            [[NSURLResponse alloc] initWithURL:request.URL
+                                      MIMEType:@"image/png"
+                         expectedContentLength:[imageData length]
+                              textEncodingName:nil];
+            NSCachedURLResponse *cachedResponse =
+            [[NSCachedURLResponse alloc] initWithResponse:response
+                                                     data:imageData];
+            return cachedResponse;
+        } else {
+            NSLog(@"smiley not cached: %@", URLString);
+            return [super cachedResponseForRequest:request];
+        }
+        
+        
+        
     }
     else if ([URLString hasPrefix:baseURLString]) {
         return [super cachedResponseForRequest:request];

@@ -202,12 +202,6 @@
             [titleContent drawAtPoint:titlePoint forWidth:self.bounds.size.width-120.0f withFont:[UIFont systemFontOfSize:18.0] fontSize:17.0 lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignCenters];
         }
         
-        
-        [decorateLineColor set];
-        CGContextSetLineWidth(context, 2.0);
-        CGContextMoveToPoint(context, 0, 0);
-        CGContextAddLineToPoint(context, rect.size.width, 0);
-        CGContextStrokePath(context);
     }
     
     

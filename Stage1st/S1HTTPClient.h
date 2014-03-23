@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import "AFHTTPClient.h"
+#import "AFHTTPRequestOperationManager.h"
 
-@interface S1HTTPClient : AFHTTPClient
+@interface S1HTTPClient : AFHTTPRequestOperationManager
 
-- (id)initWithBaseURL:(NSURL *)url;
++ (S1HTTPClient *)sharedClient;
 
 @end

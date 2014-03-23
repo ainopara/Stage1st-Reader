@@ -47,7 +47,7 @@
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
-    if([array0 indexOfObject:@"内野"] == NSNotFound && [array1 indexOfObject:@"内野"]== NSNotFound) {
+    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
         NSLog(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
@@ -82,18 +82,10 @@
             [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
         }
     } else {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
-            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
-            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-        }
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            [[UIToolbar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];//color2
-            [[UINavigationBar appearance] setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forBarMetrics:UIBarMetricsDefault];
-            [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-        }
-
+        [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
+        [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
+        [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
+        [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
     }
     
 
