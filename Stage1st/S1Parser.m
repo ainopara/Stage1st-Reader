@@ -78,7 +78,7 @@
         return @"3小时前";
     }
     
-    [formatter setDateFormat:@"d"];
+    [formatter setDateFormat:@"yyyy-M-d"];
     if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
         [formatter setDateFormat:@"HH:mm"];
         return [formatter stringFromDate:date];
