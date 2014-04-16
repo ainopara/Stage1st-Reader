@@ -137,10 +137,8 @@
         UIColor* fill = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
         UIColor* stroke = [UIColor colorWithRed: 0.757 green: 0.749 blue: 0.698 alpha: 1];
         UIColor* background = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
-        UIColor* decorateLineColor = [UIColor colorWithWhite:0.98 alpha:1.0];
         if (self.selected || self.highlighted) {
             background = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
-            decorateLineColor = [UIColor clearColor];
         }
         UIColor* replyTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
         
