@@ -42,6 +42,7 @@
     NSInteger _totalPages;
     
     BOOL _needToScrollToBottom;
+    BOOL _needToLoadLastPosition;
     NSURL *_urlToOpen;
 }
 
@@ -54,6 +55,7 @@
         [_webView loadHTMLString:@"<html><body style=\"background-color:#f6f7e7;\"></body></html>" baseURL:nil];
         _currentPage = 1;
         _needToScrollToBottom = NO;
+        _needToLoadLastPosition = YES;
     }
     return self;
 }
@@ -196,6 +198,7 @@
     [self cancelRequest];
     
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
+    [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
     [self.tracer hasViewed:self.topic];
 }
 
@@ -221,6 +224,7 @@
 - (void)back:(id)sender
 {
     [self cancelRequest];
+    _needToLoadLastPosition = NO;
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -232,6 +236,7 @@
 - (void)forward:(id)sender
 {
     [self cancelRequest];
+    _needToLoadLastPosition = NO;
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -247,6 +252,7 @@
 
 - (void)backLongPressed:(UIGestureRecognizer *)gr
 {
+    _needToLoadLastPosition = NO;
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage > 1) {
             _currentPage = 1;
@@ -258,6 +264,7 @@
 
 - (void)forwardLongPressed:(UIGestureRecognizer *)gr
 {
+    _needToLoadLastPosition = NO;
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
@@ -380,9 +387,13 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    if (_needToLoadLastPosition) {
+        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
+    }
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
     }
+    
 }
 
 #pragma mark - UIScrollView Delegate

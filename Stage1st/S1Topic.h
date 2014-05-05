@@ -20,6 +20,7 @@
 
 //For Tracing
 @property (nonatomic, copy) NSNumber *lastViewedPage;
+@property (nonatomic, copy) NSNumber *lastViewedPosition;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 
 @property (nonatomic, copy) NSNumber *visitCount;
