@@ -60,6 +60,8 @@
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
+    //Migrate to v3.6.0
+    [S1Tracer upgradeDatabase];
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                          diskCapacity:10 * 1024 * 1024

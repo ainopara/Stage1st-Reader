@@ -30,7 +30,7 @@
         NSLog(@"Could not open db.");
         return nil;
     }
-    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER,visit_count INTEGER);"];
+    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position, visit_count INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
     
@@ -69,14 +69,15 @@
     NSNumber *fID = topic.fID;
     NSNumber *lastViewedDate = [NSNumber numberWithDouble:[topic.lastViewedDate timeIntervalSince1970]];
     NSNumber *lastViewedPage = topic.lastViewedPage;
+    NSNumber *lastViewedPosition = topic.lastViewedPosition;
     FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
     if ([result next]) {
         NSNumber *visitCount = [[NSNumber alloc] initWithInt:[_db intForQuery:@"SELECT visit_count FROM threads WHERE topic_id = ?;", topicID] + 1];
-        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?,visit_count = ? WHERE topic_id = ?;",
-         title, replyCount, fID, lastViewedDate, lastViewedPage, visitCount, topicID];
+        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?, last_viewed_position = ?,visit_count = ? WHERE topic_id = ?;",
+         title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount, topicID];
     } else {
-        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, visit_count) VALUES (?,?,?,?,?,?,?);",
-         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, [NSNumber numberWithInt:1]];
+        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, visit_count) VALUES (?,?,?,?,?,?,?,?);",
+         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, [NSNumber numberWithInt:1]];
     }
     FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
     if ([historyResult next]) {
@@ -99,7 +100,7 @@
 - (NSArray *)historyObjects
 {
     NSMutableArray *historyTopics = [NSMutableArray array];
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.visit_count FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC;"];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC;"];
     while ([historyResult next]) {
         //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
         S1Topic *historyTopic = [[S1Topic alloc] init];
@@ -108,6 +109,7 @@
         [historyTopic setReplyCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"reply_count"]]];
         [historyTopic setFID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"field_id"]]];
         [historyTopic setLastViewedPage:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"last_visit_page"]]];
+        [historyTopic setLastViewedPosition:[NSNumber numberWithFloat:[historyResult doubleForColumn:@"last_viewed_position"]]];
         [historyTopic setVisitCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"visit_count"]]];
         [historyTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:historyTopic.topicID]]];
         [historyTopics addObject:historyTopic];
@@ -119,7 +121,7 @@
 - (NSArray *)favoritedObjects
 {
     NSMutableArray *favoriteTopics = [NSMutableArray array];
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.visit_count FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY favorite.favorite_time DESC;"];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY favorite.favorite_time DESC;"];
     while ([historyResult next]) {
         //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
         S1Topic *favoriteTopic = [[S1Topic alloc] init];
@@ -128,6 +130,7 @@
         [favoriteTopic setReplyCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"reply_count"]]];
         [favoriteTopic setFID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"field_id"]]];
         [favoriteTopic setLastViewedPage:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"last_visit_page"]]];
+        [favoriteTopic setLastViewedPosition:[NSNumber numberWithFloat:[historyResult doubleForColumn:@"last_viewed_position"]]];
         [favoriteTopic setVisitCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"visit_count"]]];
         [favoriteTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:favoriteTopic.topicID]]];
         [favoriteTopics addObject:favoriteTopic];
@@ -138,10 +141,11 @@
 
 - (id)tracedTopic:(NSNumber *)topicID
 {
-    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page,visit_count FROM threads WHERE topic_id = ?;",topicID];
+    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page, last_viewed_position, visit_count FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {
         S1Topic *topic = [[S1Topic alloc] init];
         [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
+        [topic setLastViewedPosition:[NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]]];
         [topic setVisitCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]]];
         [topic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:topic.topicID]]];
         return topic;
@@ -268,6 +272,26 @@
         [db close];
         [fm removeItemAtPath:tracerPath error:nil];
     }
+}
+
++ (void)upgradeDatabase
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
+    FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
+    if (![db open]) {
+        NSLog(@"Could not open db.");
+        return;
+    }
+    FMResultSet *result = [db executeQuery:@"SELECT last_viewed_position FROM threads;"];
+    if (result) {
+        ;
+    } else {
+        NSLog(@"Database does not have last_viewed_position column.");
+        [db executeUpdate:@"ALTER TABLE threads ADD COLUMN last_viewed_position float;"];
+    }
+    [db close];
 }
 
 @end
