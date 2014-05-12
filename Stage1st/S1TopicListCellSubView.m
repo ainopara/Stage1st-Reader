@@ -130,18 +130,21 @@
         CGContextAddLineToPoint(context, rect.size.width, 0);
         CGContextStrokePath(context);
 
-    } else {
+    } else { // iOS7.0 and above
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         //// Color Declarations
         UIColor* fill = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
         UIColor* stroke = [UIColor colorWithRed: 0.757 green: 0.749 blue: 0.698 alpha: 1];
+        UIColor* strokeOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
+        UIColor* strokeOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
         UIColor* background = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
         if (self.selected || self.highlighted) {
             background = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
         }
         UIColor* replyTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
-        
+        UIColor* replyTextColorOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
+        UIColor* replyTextColorOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
         //// Abstracted Attributes
         NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
         NSString* titleContent = self.topic.title;
@@ -179,14 +182,26 @@
         [fill setFill];
         [roundedRectanglePath fill];
         CGContextRestoreGState(context);
-        
-        [stroke setStroke];
+        if ([self.topic.favorite  isEqual: @1]) {
+            [strokeOfFavoriteThread setStroke];
+        } else if (self.topic.lastViewedPosition) {
+            [strokeOfHistoryThread setStroke];
+        } else {
+            [stroke setStroke];
+        }
         roundedRectanglePath.lineWidth = 0.8;
         [roundedRectanglePath stroke];
         
         
         //// Text Drawing
-        [replyTextColor setFill];
+        if ([self.topic.favorite  isEqual: @1]) {
+            [replyTextColorOfFavoriteThread setFill];
+        } else if (self.topic.lastViewedPosition) {
+            [replyTextColorOfHistoryThread setFill];
+        } else {
+            [replyTextColor setFill];
+        }
+        //[replyTextColor setFill];
         [textContent drawInRect: textRect withFont: [UIFont systemFontOfSize:12.0f] lineBreakMode: NSLineBreakByClipping alignment: NSTextAlignmentCenter];
         
         //// Title Drawing

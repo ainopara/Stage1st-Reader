@@ -147,7 +147,7 @@
         [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
         [topic setLastViewedPosition:[NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]]];
         [topic setVisitCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]]];
-        [topic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:topic.topicID]]];
+        [topic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:topicID]]];
         return topic;
     } else {
         return nil;

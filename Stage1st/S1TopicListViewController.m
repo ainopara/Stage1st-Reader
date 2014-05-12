@@ -361,8 +361,10 @@ static NSString * const cellIdentifier = @"TopicCell";
                              S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
                              if (tempTopic) {
                                  [topic setLastViewedPage:tempTopic.lastViewedPage];
+                                 [topic setLastViewedPosition:tempTopic.lastViewedPosition];
                                  [topic setVisitCount:tempTopic.visitCount];
                                  [topic setFavorite:tempTopic.favorite];
+                                 NSLog(@"%@,%@:%@", topic.title, tempTopic.lastViewedPosition, tempTopic.favorite);
                              }
                          }
                         if (topics.count > 0) {
