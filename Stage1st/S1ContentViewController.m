@@ -388,7 +388,9 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     if (_needToLoadLastPosition) {
-        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
+        if (self.topic.lastViewedPosition != 0) {
+            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
+        }
     }
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
