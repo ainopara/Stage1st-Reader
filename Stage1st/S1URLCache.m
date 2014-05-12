@@ -45,7 +45,8 @@
     else { // when request pictures from other websites
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
             NSMutableURLRequest * newRequest = [request mutableCopy];
-            [newRequest addValue:@"Referer" forHTTPHeaderField:@"http://bbs.saraba1st.com/2b/thread-1003768-1-2.html"];
+            [newRequest addValue:@"http://bbs.saraba1st.com/2b/forum.php" forHTTPHeaderField:@"Referer"];
+            NSLog(@"%@", [newRequest allHTTPHeaderFields]);
             return [super cachedResponseForRequest:newRequest];
         }
         else {
