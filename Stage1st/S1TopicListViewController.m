@@ -345,8 +345,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&page=%lu&mobile=no", self.threadsInfo[key], (unsigned long)page];
     }
     NSString *fid = self.threadsInfo[key];
-    [self.HTTPClient GET:path
-                  parameters:nil
+    [self.HTTPClient GET:path parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                         //check login state
                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -355,21 +354,32 @@ static NSString * const cellIdentifier = @"TopicCell";
                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                         }
                         //parse topics
-                        NSArray *topics = [S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}];
-                        //append tracer message to topics
-                         for (S1Topic *topic in topics) {
-                             S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
-                             if (tempTopic) {
-                                 [topic setLastViewedPage:tempTopic.lastViewedPage];
-                                 [topic setLastViewedPosition:tempTopic.lastViewedPosition];
-                                 [topic setVisitCount:tempTopic.visitCount];
-                                 [topic setFavorite:tempTopic.favorite];
-                                 NSLog(@"%@,%@:%@", topic.title, tempTopic.lastViewedPosition, tempTopic.favorite);
-                             }
-                         }
+                        NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}] mutableCopy];
+                        for (S1Topic *topic in topics) {
+                            //append tracer message to topics
+                            S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                            if (tempTopic) {
+                                [topic setLastViewedPage:tempTopic.lastViewedPage];
+                                [topic setLastViewedPosition:tempTopic.lastViewedPosition];
+                                [topic setVisitCount:tempTopic.visitCount];
+                                [topic setFavorite:tempTopic.favorite];
+                                NSLog(@"%@,%@:%@", topic.title, tempTopic.lastViewedPosition, tempTopic.favorite);
+                            }
+                            NSLog(@"%lu",(unsigned long)[self.topics count]);
+                            // remove duplicate topics
+                            if (page > 1) {
+                                for (S1Topic *compareTopic in self.topics) {
+                                    if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
+                                        [self.topics removeObject:compareTopic];
+                                        break;
+                                    }
+                                }
+                            }
+                            NSLog(@"%lu",(unsigned long)[self.topics count]);
+                        }
                         if (topics.count > 0) {
                             if (page == 1) {
-                                self.topics = [topics mutableCopy];
+                                self.topics = topics;
                                 self.topicPageNumber = @1;
                                 self.cache[key] = topics;
                                 self.cachePageNumber[key] = self.topicPageNumber;
