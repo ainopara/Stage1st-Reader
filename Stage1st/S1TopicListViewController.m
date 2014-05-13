@@ -363,19 +363,19 @@ static NSString * const cellIdentifier = @"TopicCell";
                                 [topic setLastViewedPosition:tempTopic.lastViewedPosition];
                                 [topic setVisitCount:tempTopic.visitCount];
                                 [topic setFavorite:tempTopic.favorite];
-                                NSLog(@"%@,%@:%@", topic.title, tempTopic.lastViewedPosition, tempTopic.favorite);
+                                NSLog(@"Traced: %@", topic.title);
+                                NSLog(@"Position & Favorite: %@:%@",tempTopic.lastViewedPosition, tempTopic.favorite);
                             }
-                            NSLog(@"%lu",(unsigned long)[self.topics count]);
                             // remove duplicate topics
                             if (page > 1) {
                                 for (S1Topic *compareTopic in self.topics) {
                                     if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
+                                        NSLog(@"Remove duplicate topic: %@", topic.title);
                                         [self.topics removeObject:compareTopic];
                                         break;
                                     }
                                 }
                             }
-                            NSLog(@"%lu",(unsigned long)[self.topics count]);
                         }
                         if (topics.count > 0) {
                             if (page == 1) {
