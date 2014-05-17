@@ -143,8 +143,8 @@
             background = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
         }
         UIColor* replyTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
-        UIColor* replyTextColorOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
-        UIColor* replyTextColorOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
+        UIColor* replyTextColorOfHistoryThread = [UIColor colorWithRed:0.000 green:0.475 blue:1.000 alpha:1.000];
+        UIColor* replyTextColorOfFavoriteThread = [UIColor colorWithRed:0.961 green:0.651 blue:0.137 alpha:1.000];
         //// Abstracted Attributes
         NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
         NSString* titleContent = self.topic.title;
