@@ -20,6 +20,9 @@
 "TopicListView_NavigationBar_Settings" = "Settings";
 "TopicListView_SegmentControl_History" = "History";
 "TopicListView_SegmentControl_Favorite" = "Favorite";
+"TopicListView_ListHeader_Style" = "EEEE, MMMM d, yyyy";
+"TopicListView_ListHeader_Short_Style" = "MMMM d";
+"TopicListView_ListHeader_Today" = " (Today)";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";

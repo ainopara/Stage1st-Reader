@@ -38,6 +38,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSMutableArray *topics;
+@property (nonatomic, strong) NSMutableArray *topicHeaderTitles;
 @property (nonatomic, strong) NSNumber *topicPageNumber;
 @property (nonatomic, strong) NSMutableDictionary *cache;
 @property (nonatomic, strong) NSMutableDictionary *cachePageNumber;
@@ -270,36 +271,76 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)presentHistory
 {
+    self.currentKey = @"History";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
     }
     self.refreshControl.hidden = YES;
     
-    self.topics = [[self.tracer historyObjects] mutableCopy];
+    NSArray *topics = [self.tracer historyObjects];
+    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
+    NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+    for (S1Topic *topic in topics) {
+        NSString *topicTitle = [formatter stringFromDate:topic.lastViewedDate];
+        if ([[formatter stringFromDate:topic.lastViewedDate] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+            topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
+        }
+        if ([topicHeaderTitles containsObject:topicTitle]) {
+            [[processedTopics objectAtIndex:[topicHeaderTitles indexOfObject:topicTitle]] addObject:topic];
+        } else {
+            [topicHeaderTitles addObject:topicTitle];
+            [processedTopics addObject:[[NSMutableArray alloc] initWithObjects:topic, nil]];
+        }
+    }
+    self.topics = processedTopics;
+    self.topicHeaderTitles = topicHeaderTitles;
+    
     [self.tableView reloadData];
     if (self.topics && self.topics.count > 0) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
     
     [self.scrollTabBar deselectAll];
-    self.currentKey = @"History";
+    
 }
 
 - (void)presentFavorite
 {
+    self.currentKey = @"Favorite";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
     }
     self.refreshControl.hidden = YES;
     
-    self.topics = [[self.tracer favoritedObjects] mutableCopy];
+    NSArray *topics = [self.tracer favoritedObjects];
+    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
+    NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+    for (S1Topic *topic in topics) {
+        NSString *topicTitle = [formatter stringFromDate:topic.favoriteDate];
+        if ([[formatter stringFromDate:topic.favoriteDate] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+            topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
+        }
+        if ([topicHeaderTitles containsObject:topicTitle]) {
+            [[processedTopics objectAtIndex:[topicHeaderTitles indexOfObject:topicTitle]] addObject:topic];
+        } else {
+            [topicHeaderTitles addObject:topicTitle];
+            [processedTopics addObject:[[NSMutableArray alloc] initWithObjects:topic, nil]];
+        }
+    }
+    self.topics = processedTopics;
+    self.topicHeaderTitles = topicHeaderTitles;
+    
     [self.tableView reloadData];
     if (self.topics && self.topics.count > 0) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
     
     [self.scrollTabBar deselectAll];
-    self.currentKey = @"Favorite";
+    
 }
 
 #pragma mark - Tab Bar Delegate
@@ -443,11 +484,19 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+        return [self.topicHeaderTitles count];
+    }
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+        return [[self.topics objectAtIndex:section] count];
+    }
+    
     return [self.topics count];
 }
 
@@ -459,6 +508,11 @@ static NSString * const cellIdentifier = @"TopicCell";
         cell = [[S1TopicListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+        [cell setTopic:[[self.topics objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]];
+        return cell;
+    }
     [cell setTopic:self.topics[indexPath.row]];
     return cell;
 }
@@ -467,7 +521,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     S1ContentViewController *controller = [[S1ContentViewController alloc] init];
-    S1Topic *topicToShow = self.topics[indexPath.row];
+    S1Topic *topicToShow = nil;
+    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+        topicToShow = [[self.topics objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    } else {
+        topicToShow = self.topics[indexPath.row];
+    }
+    
     [controller setTopic:topicToShow];
     [controller setTracer:self.tracer];
     [controller setHTTPClient:self.HTTPClient];
@@ -511,6 +571,33 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self fetchTopicsForKeyFromServer:self.currentKey withPage:[self.topicPageNumber integerValue] + 1 scrollToTop:NO];
     }
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+        [view setBackgroundColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:0.300]];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 320, 20)];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.topicHeaderTitles objectAtIndex:section]];
+        
+        [labelTitle addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:12.0] range:NSMakeRange(0, [labelTitle length])];
+        [labelTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0.220 green:0.329 blue:0.529 alpha:1.000] range:NSMakeRange(0, [labelTitle length])];
+        [label setAttributedText:labelTitle];
+        
+        //label.backgroundColor = [UIColor clearColor];
+        [view addSubview:label];
+        
+        return view;
+    }
+    
+    return nil;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        return 20;
+    }
+    return 0;
+}
+
 #pragma mark - Helpers
 
 - (S1RootViewController *)rootViewController

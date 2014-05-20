@@ -14,6 +14,7 @@
 @property (nonatomic, copy) NSNumber *topicID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSNumber *replyCount;
+@property (nonatomic, copy) NSDate *lastReplyDate;
 
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
@@ -22,6 +23,7 @@
 @property (nonatomic, copy) NSNumber *lastViewedPage;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
 @property (nonatomic, copy) NSDate *lastViewedDate;
+@property (nonatomic, copy) NSDate *favoriteDate;
 
 @property (nonatomic, copy) NSNumber *visitCount;
 @property (nonatomic, copy) NSNumber *favorite;
