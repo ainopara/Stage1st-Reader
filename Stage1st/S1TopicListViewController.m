@@ -108,14 +108,14 @@ static NSString * const cellIdentifier = @"TopicCell";
         UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
         item.leftBarButtonItem = settingItem;
     } else {
-        UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings_iOS7.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+        UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
         item.leftBarButtonItem = settingItem;
     }
     
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
     } else {
-        self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"History&Favorite_iOS7.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
+        self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
     }
     //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(test:)];
     
