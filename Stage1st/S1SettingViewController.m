@@ -157,7 +157,7 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Developer", @"Developer");
-                cell.detailTextLabel.text = @"Gabriel, ainopara";
+                cell.detailTextLabel.text = @"Gabriel & ainopara";
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell){
