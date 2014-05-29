@@ -583,7 +583,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [labelTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0.220 green:0.329 blue:0.529 alpha:1.000] range:NSMakeRange(0, [labelTitle length])];
         [label setAttributedText:labelTitle];
         
-        //label.backgroundColor = [UIColor clearColor];
+        label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
         
         return view;
