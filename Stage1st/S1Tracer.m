@@ -58,11 +58,10 @@
                                                     name:UIApplicationWillTerminateNotification object:nil];
 }
 
-- (void)hasViewed:(id)object
+- (void)hasViewed:(S1Topic *)topic
 {
-    [object setValue:[NSDate date] forKey:@"lastViewedDate"];
+    [topic setValue:[NSDate date] forKey:@"lastViewedDate"];
     
-    S1Topic *topic = (S1Topic *)object;
     NSNumber *topicID = topic.topicID;
     NSString *title = topic.title;
     NSNumber *replyCount = topic.replyCount;
@@ -86,7 +85,7 @@
         [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
     }
     
-    NSLog(@"Tracer has traced:%@", object);
+    NSLog(@"Tracer has traced:%@", topic);
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topic_id

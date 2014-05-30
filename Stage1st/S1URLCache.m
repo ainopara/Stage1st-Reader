@@ -46,7 +46,7 @@
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
             NSMutableURLRequest * newRequest = [request mutableCopy];
             [newRequest addValue:@"http://bbs.saraba1st.com/2b/forum.php" forHTTPHeaderField:@"Referer"];
-            NSLog(@"%@", [newRequest allHTTPHeaderFields]);
+            // NSLog(@"%@", [newRequest allHTTPHeaderFields]);
             return [super cachedResponseForRequest:newRequest];
         }
         else {

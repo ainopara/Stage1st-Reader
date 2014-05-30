@@ -43,6 +43,7 @@
     
     BOOL _needToScrollToBottom;
     BOOL _needToLoadLastPosition;
+    BOOL _finishLoading;
     NSURL *_urlToOpen;
 }
 
@@ -56,6 +57,7 @@
         _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPosition = YES;
+        _finishLoading = NO;
     }
     return self;
 }
@@ -67,6 +69,7 @@
     
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
+    
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
     } else {
@@ -77,6 +80,7 @@
                 
         self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     }
+    
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
@@ -104,7 +108,7 @@
 
     UIButton *button = nil;
     
-    
+    //Backward Button
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
@@ -123,7 +127,7 @@
     
     
     
-    
+    //Forward Button
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
         button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
@@ -140,6 +144,7 @@
     [button addGestureRecognizer:forwardLongPressGR];
     UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     
+    //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
 
     if (SYSTEM_VERSION_LESS_THAN(@"7")) {
@@ -172,6 +177,7 @@
     self.toolbar.autoresizesSubviews = YES;
     self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
 #undef _BAR_HEIGHT
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
     [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
@@ -197,8 +203,12 @@
 {
     [self cancelRequest];
     
+    if (_finishLoading) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
+    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
+    }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
     [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
     [self.tracer hasViewed:self.topic];
     
@@ -457,6 +467,7 @@
                              [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                          }
                          [self.webView loadHTMLString:string baseURL:nil];
+                         _finishLoading = YES;
                          [HUD hideWithDelay:0.5];
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -651,4 +662,17 @@
     [self.replyController.view setFrame:self.view.bounds];
     [self.replyController presentFromViewController:self];
 }
+
+- (void)saveTopicViewedState:(id)sender
+{
+    if (_finishLoading) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
+    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
+    }
+    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
+    [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
+    [self.tracer hasViewed:self.topic];
+}
+
 @end
