@@ -199,7 +199,11 @@
     
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
+    [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
     [self.tracer hasViewed:self.topic];
+    
+    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)didReceiveMemoryWarning

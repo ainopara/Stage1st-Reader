@@ -136,7 +136,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateHTTPClient:) name:@"S1BaseURLMayChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 #undef _BAR_HEIGHT
 }
@@ -168,7 +168,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1UserMayReorderedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1BaseURLMayChangedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1ContentViewWillDisappearNotification" object:nil];
 }
 
 #pragma mark - Getters and Setters
@@ -623,6 +623,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.currentKey = nil;
     self.cache = nil;
 }
-
-
+- (void)reloadTableData:(id)sender
+{
+    [self.tableView reloadData];
+}
 @end

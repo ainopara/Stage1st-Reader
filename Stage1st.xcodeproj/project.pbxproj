@@ -84,7 +84,6 @@
 		C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879C16CB61FC007E0119 /* UIControl+BlockWrapper.m */; };
 		C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C09587A516CB623E007E0119 /* S1SettingViewController.m */; };
 		C096CD3F16EADE0000D4FF7F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C096CD3E16EADE0000D4FF7F /* MessageUI.framework */; };
-		C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */; };
 		C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */; };
 		C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */ = {isa = PBXBuildFile; fileRef = C0B1919616F0A80F0053E0C5 /* content_ipad.css */; };
 /* End PBXBuildFile section */
@@ -227,8 +226,6 @@
 		C09587A416CB623E007E0119 /* S1SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1SettingViewController.h; path = Stage1st/S1SettingViewController.h; sourceTree = "<group>"; };
 		C09587A516CB623E007E0119 /* S1SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1SettingViewController.m; path = Stage1st/S1SettingViewController.m; sourceTree = "<group>"; };
 		C096CD3E16EADE0000D4FF7F /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		C0AEAE7F16F5F88D00CB0E71 /* S1BaseURLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1BaseURLViewController.h; path = Stage1st/S1BaseURLViewController.h; sourceTree = "<group>"; };
-		C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1BaseURLViewController.m; path = Stage1st/S1BaseURLViewController.m; sourceTree = "<group>"; };
 		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
 		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTStatusBarOverlay.m; sourceTree = "<group>"; };
 		C0B1919616F0A80F0053E0C5 /* content_ipad.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad.css; sourceTree = "<group>"; };
@@ -606,8 +603,6 @@
 				C09587A516CB623E007E0119 /* S1SettingViewController.m */,
 				C083353816E503F60035C1AA /* S1LoginViewController.h */,
 				C083353916E503F60035C1AA /* S1LoginViewController.m */,
-				C0AEAE7F16F5F88D00CB0E71 /* S1BaseURLViewController.h */,
-				C0AEAE8016F5F88D00CB0E71 /* S1BaseURLViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -791,7 +786,6 @@
 				8662DF29189363470060D513 /* DDXMLElement.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				86128EE91894E5D400D0281A /* SVWebViewControllerActivity.m in Sources */,
-				C0AEAE8116F5F88D00CB0E71 /* S1BaseURLViewController.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
 				86128EE31894E5D400D0281A /* SVWebViewControllerActivityChrome.m in Sources */,
 			);
