@@ -20,6 +20,7 @@
 #import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
 #import "AFNetworking.h"
+#import "ActionSheetStringPicker.h"
 
 
 #define _REPLY_PER_PAGE 30
@@ -29,8 +30,8 @@
 
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) UIView *maskView;
-@property (nonatomic, strong) UIView *statusBackgroundView;
+@property (nonatomic, strong) UIView *maskView; //for iOS6
+@property (nonatomic, strong) UIView *statusBackgroundView; //for iOS7 and above
 @property (nonatomic, strong) UILabel *pageLabel;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -156,6 +157,9 @@
     }
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
+    self.pageLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
+    [self.pageLabel addGestureRecognizer:pickPageGR];
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -286,6 +290,25 @@
             [self fetchContent];
         }
     }
+}
+
+- (void)pickPage:(id)sender
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (NSInteger i = 0; i < _totalPages; i++) {
+        [array addObject:[NSString stringWithFormat:@"第 %d 页", i + 1]];
+    }
+    [ActionSheetStringPicker showPickerWithTitle:@""
+                                            rows:array
+                                initialSelection:_currentPage - 1
+                                       doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                           _currentPage = selectedIndex + 1;
+                                           [self cancelRequest];
+                                           [self fetchContent];
+                                       }
+                                     cancelBlock:nil
+                                          origin:self.pageLabel];
+
 }
 
 - (void)action:(id)sender

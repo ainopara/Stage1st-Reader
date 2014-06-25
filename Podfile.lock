@@ -1,4 +1,5 @@
 PODS:
+  - ActionSheetPicker (1.0.6)
   - AFNetworking (2.2.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
@@ -25,11 +26,13 @@ PODS:
     - FMDB/common
 
 DEPENDENCIES:
+  - ActionSheetPicker (~> 1.0.5)
   - AFNetworking (~> 2.2.0)
   - FMDB (~> 2.2)
 
 SPEC CHECKSUMS:
-  AFNetworking: ae513199cca79e9d7af2708ccabe2ed075550c42
-  FMDB: 8b6b69b1164e3007d7f4b3b3719e667602ec247e
+  ActionSheetPicker: fbb79dc269ec7279f22db1c603c8a822618bbbeb
+  AFNetworking: 47947303319594706f48a55185ea95a95159ab94
+  FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
 
 COCOAPODS: 0.32.1
