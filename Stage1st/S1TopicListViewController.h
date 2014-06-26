@@ -10,4 +10,6 @@
 
 @interface S1TopicListViewController : UIViewController
 
+- (void)handlePasteboardString:(NSString *)URL;
+
 @end

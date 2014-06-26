@@ -46,6 +46,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSMutableDictionary *cacheContentOffset;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 
+@property (nonatomic, strong) S1Topic *clipboardTopic;
+
 @end
 
 @implementation S1TopicListViewController {
@@ -568,4 +570,32 @@ static NSString * const cellIdentifier = @"TopicCell";
         [contentViewController setDataCenter:self.dataCenter];
     }
 }
+
+- (void)handlePasteboardString:(NSString *)URL
+{
+    if (!URL) {
+        return;
+    }
+    NSString *pattern = @"(tid=|thread-)([0-9]+)";;
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:URL options:NSMatchingReportProgress range:NSMakeRange(0, URL.length)];
+    if (result) {
+        self.clipboardTopic = [[S1Topic alloc] init];
+        NSString *topicID = [URL substringWithRange:[result rangeAtIndex:2]];
+        NSLog(@"%@", topicID);
+        [self.clipboardTopic setTopicID:[NSNumber numberWithInteger:[topicID integerValue]]];
+        [self.clipboardTopic setReplyCount:@0];
+        [self.clipboardTopic setLastViewedPage:@1];
+        [self.clipboardTopic setVisitCount:@0];
+        [self.clipboardTopic setFavorite:[NSNumber numberWithBool:NO]];
+        S1ContentViewController *controller = [[S1ContentViewController alloc] init];
+        [controller setTopic:self.clipboardTopic];
+        [controller setTracer:self.tracer];
+        [controller setHTTPClient:self.HTTPClient];
+        
+        [[self rootViewController] presentDetailViewController:controller];
+    }
+    
+}
+
 @end
