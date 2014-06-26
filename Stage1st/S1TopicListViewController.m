@@ -545,15 +545,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //add code here for when you hit delete
         if ([self.currentKey  isEqual: @"History"]) {
-            S1Topic *topic = self.topics[indexPath.row];
+            S1Topic *topic = self.topics[indexPath.section][indexPath.row];
             [self.tracer removeTopicFromHistory:topic.topicID];
-            [self.topics removeObjectAtIndex:indexPath.row];
+            [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
             [self.tableView reloadData];
         }
         if ([self.currentKey  isEqual: @"Favorite"]) {
-            S1Topic *topic = self.topics[indexPath.row];
+            S1Topic *topic = self.topics[indexPath.section][indexPath.row];
             [self.tracer setTopicFavoriteState:topic.topicID withState:NO];
-            [self.topics removeObjectAtIndex:indexPath.row];
+            [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
             [self.tableView reloadData];
         }
         
