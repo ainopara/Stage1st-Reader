@@ -576,12 +576,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!URL) {
         return;
     }
-    NSString *pattern = @"(tid=|thread-)([0-9]+)";;
+    NSString *pattern = @"bbs\\.saraba1st\\.com.*(?:tid=|thread-)([0-9]{1,8})";;
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:URL options:NSMatchingReportProgress range:NSMakeRange(0, URL.length)];
     if (result) {
         self.clipboardTopic = [[S1Topic alloc] init];
-        NSString *topicID = [URL substringWithRange:[result rangeAtIndex:2]];
+        NSString *topicID = [URL substringWithRange:[result rangeAtIndex:1]];
         NSLog(@"%@", topicID);
         [self.clipboardTopic setTopicID:[NSNumber numberWithInteger:[topicID integerValue]]];
         [self.clipboardTopic setReplyCount:@0];
