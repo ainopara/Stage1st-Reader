@@ -42,6 +42,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSNumber *topicPageNumber;
 @property (nonatomic, strong) NSMutableDictionary *cache;
 @property (nonatomic, strong) NSMutableDictionary *cachePageNumber;
+@property (nonatomic, strong) NSMutableDictionary *cacheContentOffset;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 @property (nonatomic, strong) S1HTTPClient *HTTPClient;
 
@@ -162,6 +163,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [super didReceiveMemoryWarning];
     self.cache = nil;
+    self.cachePageNumber = nil;
+    self.cacheContentOffset = nil;
     // Dispose of any resources that can be recreated.
 }
 
@@ -188,6 +191,23 @@ static NSString * const cellIdentifier = @"TopicCell";
         return _cache;
     _cache = [NSMutableDictionary dictionary];
     return _cache;
+}
+- (NSMutableDictionary *)cachePageNumber
+{
+    if(_cachePageNumber) {
+        return _cachePageNumber;
+    }
+    _cachePageNumber = [NSMutableDictionary dictionary];
+    return _cachePageNumber;
+}
+
+- (NSMutableDictionary *)cacheContentOffset
+{
+    if(_cacheContentOffset) {
+        return _cacheContentOffset;
+    }
+    _cacheContentOffset = [NSMutableDictionary dictionary];
+    return _cacheContentOffset;
 }
 
 - (S1HTTPClient *)HTTPClient
@@ -271,6 +291,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)presentHistory
 {
+    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        self.cache[self.currentKey] = self.topics;
+        self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+        self.cachePageNumber[self.currentKey] = self.topicPageNumber;
+    }
     self.currentKey = @"History";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
@@ -308,6 +333,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)presentFavorite
 {
+    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        self.cache[self.currentKey] = self.topics;
+        self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+        self.cachePageNumber[self.currentKey] = self.topicPageNumber;
+    }
     self.currentKey = @"Favorite";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
@@ -359,6 +389,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     if (![self.currentKey isEqualToString:key]) {
+        if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+            self.cache[self.currentKey] = self.topics;
+            self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+            self.cachePageNumber[self.currentKey] = self.topicPageNumber;
+        }
         self.currentKey = key;
         [self fetchTopicsForKey:key];
         if (self.refreshControl.refreshing) {
@@ -377,8 +412,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     if (self.cache[key]) {
         self.topics = self.cache[key];
+        if (self.cachePageNumber[key]) {
+            self.topicPageNumber = self.cachePageNumber[key];
+        }
         [self.tableView reloadData];
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        if (self.cacheContentOffset[key]) {
+            [self.tableView setContentOffset:[self.cacheContentOffset[key] CGPointValue] animated:NO];
+        } else {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        }
         return;
     }
     [self fetchTopicsForKeyFromServer:key withPage:1 scrollToTop:YES];
@@ -435,8 +477,6 @@ static NSString * const cellIdentifier = @"TopicCell";
                             if (page == 1) {
                                 self.topics = topics;
                                 self.topicPageNumber = @1;
-                                self.cache[key] = topics;
-                                self.cachePageNumber[key] = self.topicPageNumber;
                                 [self.tableView reloadData];
                                 if (toTop) {
                                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -444,8 +484,6 @@ static NSString * const cellIdentifier = @"TopicCell";
                             } else {
                                 self.topics = [[self.topics arrayByAddingObjectsFromArray:topics] mutableCopy];
                                 self.topicPageNumber = [[NSNumber alloc] initWithInteger:page];
-                                self.cache[key] = self.topics;
-                                self.cachePageNumber[key] = self.topicPageNumber;
                                 [self.tableView reloadData];
                                 if (toTop) {
                                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
@@ -629,6 +667,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView reloadData];
     self.currentKey = nil;
     self.cache = nil;
+    self.cachePageNumber = nil;
+    self.cacheContentOffset = nil;
 }
 - (void)reloadTableData:(id)sender
 {
