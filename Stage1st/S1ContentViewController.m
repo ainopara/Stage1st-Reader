@@ -325,6 +325,8 @@
     [actionSheet showFromToolbar:self.toolbar];    
 }
 
+#pragma mark - UIActionSheet Delegate
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 //    NSLog(@"%d", buttonIndex);
@@ -374,6 +376,8 @@
         [self presentViewController:controller animated:YES completion:nil];
     }
 }
+
+#pragma mark - UIAlertView Delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {

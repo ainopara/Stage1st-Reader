@@ -140,7 +140,7 @@
     return favoriteTopics;
 }
 
-- (id)tracedTopic:(NSNumber *)topicID
+- (S1Topic *)tracedTopic:(NSNumber *)topicID
 {
     FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page, last_viewed_position, visit_count FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {
