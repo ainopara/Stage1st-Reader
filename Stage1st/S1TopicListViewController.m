@@ -387,8 +387,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)fetchTopicsForKeyFromServer:(NSString *)key withPage:(NSUInteger)page scrollToTop:(BOOL)toTop
 {
     self.scrollTabBar.enabled = NO;
-    S1HUD *HUD = [S1HUD showHUDInView:self.view];
-    [HUD showActivityIndicator];
+    S1HUD *HUD = nil;
+    if (page == 1) {
+        HUD = [S1HUD showHUDInView:self.view];
+        [HUD showActivityIndicator];
+    }
     NSString *path;
     if (page == 1) {
         path = [NSString stringWithFormat:@"forum.php?mod=forumdisplay&fid=%@&mobile=no", self.threadsInfo[key]];
@@ -453,7 +456,9 @@ static NSString * const cellIdentifier = @"TopicCell";
                         if (self.refreshControl.refreshing) {
                             [self.refreshControl endRefreshing];
                         }
-                        [HUD hideWithDelay:0.3];
+                         if (page == 1) {
+                            [HUD hideWithDelay:0.3];
+                         }
                         self.scrollTabBar.enabled = YES;
                          
                      }
@@ -462,8 +467,10 @@ static NSString * const cellIdentifier = @"TopicCell";
                          if (error.code == -999) {
                              NSLog(@"Code -999 may means user want to cancel this request.");
                          } else {
-                            [HUD setText:@"Request Failed"];
-                            [HUD hideWithDelay:0.3];
+                             if(page == 1) {
+                                 [HUD setText:@"Request Failed"];
+                                 [HUD hideWithDelay:0.3];
+                             }
                          }
                         self.scrollTabBar.enabled = YES;
                         if (self.refreshControl.refreshing) {
@@ -565,7 +572,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         return;
     }
-    if(indexPath.row == [self.topics count] - 1)
+    if(indexPath.row == [self.topics count] - 5)
     {
         NSLog(@"Reach last topic, load more.");
         [self fetchTopicsForKeyFromServer:self.currentKey withPage:[self.topicPageNumber integerValue] + 1 scrollToTop:NO];
