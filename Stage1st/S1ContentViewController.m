@@ -205,19 +205,25 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self cancelRequest];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self cancelRequest];
+        
+        if (_finishLoading) {
+            [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
+        } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+            [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
+        }
+        [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
+        [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
+        [self.tracer hasViewed:self.topic];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+        });
+        
+    });
     
-    if (_finishLoading) {
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
-    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
-    }
-    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
-    [self.tracer hasViewed:self.topic];
-    
-    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)didReceiveMemoryWarning
@@ -296,7 +302,7 @@
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSInteger i = 0; i < _totalPages; i++) {
-        [array addObject:[NSString stringWithFormat:@"第 %d 页", i + 1]];
+        [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
     }
     [ActionSheetStringPicker showPickerWithTitle:@""
                                             rows:array
@@ -466,8 +472,7 @@
     NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
     
-    [self.HTTPClient GET:path
-                  parameters:nil
+    [self.HTTPClient GET:path parameters:nil
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          //NSLog(@"%@", operation.request.allHTTPHeaderFields);
                          NSTimeInterval timeInterval = [start timeIntervalSinceNow];
@@ -495,17 +500,20 @@
                          }
                          [self.webView loadHTMLString:string baseURL:nil];
                          _finishLoading = YES;
-                         [HUD hideWithDelay:0.5];
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [HUD hideWithDelay:0.5];
+                         });
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          NSLog(@"%@", error);
-                         if (error.code == -999) {
-                             NSLog(@"Code -999 may means user want to cancel this request.");
-                             [HUD hideWithDelay:0];
-                         } else {
-                             [HUD showRefreshButton];
-                         }
-                         
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             if (error.code == -999) {
+                                 NSLog(@"Code -999 may means user want to cancel this request.");
+                                 [HUD hideWithDelay:0];
+                             } else {
+                                 [HUD showRefreshButton];
+                             }
+                         });
                      }];
 }
 
@@ -520,18 +528,20 @@
     NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     [params setObject:replyWithSuffix forKey:@"message"];
     __weak typeof(self) myself = self;
-    [self.HTTPClient POST:path
-                   parameters:params
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                          NSLog(@"%@", HTMLString);
+    [self.HTTPClient POST:path parameters:params
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                      NSLog(@"%@", HTMLString);
+                      dispatch_async(dispatch_get_main_queue(), ^{
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                           [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                           _needToScrollToBottom = YES;
                           [myself.replyController setText:@""];
                           [myself fetchContent];
-                      }
-                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      });
+                  }
+                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                      dispatch_async(dispatch_get_main_queue(), ^{
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                           if (error.code == -999) {
                               NSLog(@"Code -999 may means user want to cancel this request.");
@@ -539,7 +549,8 @@
                           } else {
                               [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
                           }
-                      }];
+                      });
+                  }];
 
 }
 
@@ -561,18 +572,22 @@
                          [self replyWithTextInDiscuz:text withPath:postPath andParams:params];
                      } else {
                          NSLog(@"fail to fetch reply info!");
-                         [overlay postErrorMessage:@"引用信息无效" duration:2.5 animated:YES];
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [overlay postErrorMessage:@"引用信息无效" duration:2.5 animated:YES];
+                         });
                      }
 
                  }
                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                      NSLog(@"fail to fetch reply info!");
-                     if (error.code == -999) {
-                         NSLog(@"Code -999 may means user want to cancel this request.");
-                         [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                     } else {
-                         [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
-                     }
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         if (error.code == -999) {
+                             NSLog(@"Code -999 may means user want to cancel this request.");
+                             [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                         } else {
+                             [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
+                         }
+                     });
                  }];
 }
 
