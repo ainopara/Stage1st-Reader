@@ -446,7 +446,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient GET:path parameters:nil
-                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                 success:^(NSURLSessionDataTask *operation, id responseObject) {
                      //check login state
                      NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                      if (![S1Parser checkLoginState:HTMLString]) {
@@ -505,7 +505,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                      
                      
                  }
-                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                 failure:^(NSURLSessionDataTask *operation, NSError *error) {
                      NSLog(@"%@", error);
                      dispatch_async(dispatch_get_main_queue(), ^{
                          if (error.code == -999) {

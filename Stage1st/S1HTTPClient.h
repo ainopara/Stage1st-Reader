@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import "AFHTTPRequestOperationManager.h"
+#import "AFHTTPSessionManager.h"
 
-@interface S1HTTPClient : AFHTTPRequestOperationManager
+@interface S1HTTPClient : AFHTTPSessionManager
 
 + (S1HTTPClient *)sharedClient;
 

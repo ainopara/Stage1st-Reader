@@ -473,7 +473,7 @@
     NSDate *start = [NSDate date];
     
     [self.HTTPClient GET:path parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     success:^(NSURLSessionDataTask *operation, id responseObject) {
                          //NSLog(@"%@", operation.request.allHTTPHeaderFields);
                          NSTimeInterval timeInterval = [start timeIntervalSinceNow];
                          NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
@@ -504,7 +504,7 @@
                              [HUD hideWithDelay:0.5];
                          });
                      }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     failure:^(NSURLSessionDataTask *operation, NSError *error) {
                          NSLog(@"%@", error);
                          dispatch_async(dispatch_get_main_queue(), ^{
                              if (error.code == -999) {
@@ -529,7 +529,7 @@
     [params setObject:replyWithSuffix forKey:@"message"];
     __weak typeof(self) myself = self;
     [self.HTTPClient POST:path parameters:params
-                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                  success:^(NSURLSessionDataTask *operation, id responseObject) {
                       NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                       NSLog(@"%@", HTMLString);
                       dispatch_async(dispatch_get_main_queue(), ^{
@@ -540,7 +540,7 @@
                           [myself fetchContent];
                       });
                   }
-                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  failure:^(NSURLSessionDataTask *operation, NSError *error) {
                       dispatch_async(dispatch_get_main_queue(), ^{
                           [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                           if (error.code == -999) {
@@ -561,7 +561,7 @@
     
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
     [self.HTTPClient GET:path parameters:nil
-                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                 success:^(NSURLSessionDataTask *operation, id responseObject) {
                      NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                      NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
                      if ([params[@"requestSuccess"]  isEqual: @YES]) {
@@ -578,7 +578,7 @@
                      }
 
                  }
-                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                 failure:^(NSURLSessionDataTask *operation, NSError *error) {
                      NSLog(@"fail to fetch reply info!");
                      dispatch_async(dispatch_get_main_queue(), ^{
                          if (error.code == -999) {

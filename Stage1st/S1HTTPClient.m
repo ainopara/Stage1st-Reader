@@ -22,7 +22,7 @@
     });
     return httpClient;
 }
-
+/*
 - (AFHTTPRequestOperation *)GET:(NSString *)URLString
                      parameters:(id)parameters
                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
@@ -35,5 +35,5 @@
     
     return operation;
 }
-
+*/
 @end
