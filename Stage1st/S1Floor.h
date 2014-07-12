@@ -13,6 +13,7 @@
 @property (nonatomic, copy) NSNumber *floorID;
 @property (nonatomic, copy) NSString *indexMark;
 @property (nonatomic, copy) NSString *author;
+@property (nonatomic, copy) NSNumber *authorID;
 @property (nonatomic, copy) NSString *postTime;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, copy) NSArray *imageAttachmentList;

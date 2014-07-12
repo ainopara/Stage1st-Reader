@@ -13,7 +13,9 @@
 @property (nonatomic, copy) NSNumber *fID;
 @property (nonatomic, copy) NSNumber *topicID;
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSNumber *authorUserID;
 @property (nonatomic, copy) NSNumber *replyCount;
+@property (nonatomic, copy) NSNumber *totalPageCount;
 @property (nonatomic, copy) NSDate *lastReplyDate;
 
 //For Reply
