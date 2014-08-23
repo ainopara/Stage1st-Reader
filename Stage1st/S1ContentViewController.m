@@ -501,7 +501,7 @@
                          [self.webView loadHTMLString:string baseURL:nil];
                          _finishLoading = YES;
                          dispatch_async(dispatch_get_main_queue(), ^{
-                             [HUD hideWithDelay:0.5];
+                             [HUD hideWithDelay:0.3];
                          });
                      }
                      failure:^(NSURLSessionDataTask *operation, NSError *error) {

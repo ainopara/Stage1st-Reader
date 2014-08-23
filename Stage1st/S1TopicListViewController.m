@@ -447,63 +447,68 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSString *fid = self.threadsInfo[key];
     [self.HTTPClient GET:path parameters:nil
                  success:^(NSURLSessionDataTask *operation, id responseObject) {
-                     //check login state
-                     NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                     if (![S1Parser checkLoginState:HTMLString]) {
-                         [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
-                     }
-                     //parse topics
-                     NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}] mutableCopy];
-                     for (S1Topic *topic in topics) {
-                         //append tracer message to topics
-                         S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
-                         if (tempTopic) {
-                             [topic setLastViewedPage:tempTopic.lastViewedPage];
-                             [topic setLastViewedPosition:tempTopic.lastViewedPosition];
-                             [topic setVisitCount:tempTopic.visitCount];
-                             [topic setFavorite:tempTopic.favorite];
-                             NSLog(@"Traced: %@", topic.title);
-                             NSLog(@"Position & Favorite: %@:%@",tempTopic.lastViewedPosition, tempTopic.favorite);
+                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                         //check login state
+                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                         if (![S1Parser checkLoginState:HTMLString]) {
+                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                          }
-                         // remove duplicate topics
-                         if (page > 1) {
-                             for (S1Topic *compareTopic in self.topics) {
-                                 if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
-                                     NSLog(@"Remove duplicate topic: %@", topic.title);
-                                     [self.topics removeObject:compareTopic];
-                                     break;
+                         //parse topics
+                         NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}] mutableCopy];
+                         for (S1Topic *topic in topics) {
+                             //append tracer message to topics
+                             S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                             if (tempTopic) {
+                                 [topic setLastViewedPage:tempTopic.lastViewedPage];
+                                 [topic setLastViewedPosition:tempTopic.lastViewedPosition];
+                                 [topic setVisitCount:tempTopic.visitCount];
+                                 [topic setFavorite:tempTopic.favorite];
+                                 NSLog(@"Traced: %@", topic.title);
+                                 NSLog(@"Position & Favorite: %@:%@",tempTopic.lastViewedPosition, tempTopic.favorite);
+                             }
+                             // remove duplicate topics
+                             if (page > 1) {
+                                 for (S1Topic *compareTopic in self.topics) {
+                                     if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
+                                         NSLog(@"Remove duplicate topic: %@", topic.title);
+                                         [self.topics removeObject:compareTopic];
+                                         break;
+                                     }
                                  }
                              }
                          }
-                     }
-                     if (topics.count > 0) {
-                         if (page == 1) {
-                             self.topics = topics;
-                             self.topicPageNumber = @1;
-                         } else {
-                             self.topics = [[self.topics arrayByAddingObjectsFromArray:topics] mutableCopy];
-                             self.topicPageNumber = [[NSNumber alloc] initWithInteger:page];
-                         }
-                     }
-                     dispatch_async(dispatch_get_main_queue(), ^{
                          if (topics.count > 0) {
-                             [self.tableView reloadData];
-                             if (toTop) {
-                                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                             if (page == 1) {
+                                 self.topics = topics;
+                                 self.topicPageNumber = @1;
+                             } else {
+                                 self.topics = [[self.topics arrayByAddingObjectsFromArray:topics] mutableCopy];
+                                 self.topicPageNumber = [[NSNumber alloc] initWithInteger:page];
                              }
-                             
+                         } else {
+                             if(page == 1) {
+                                 self.topics = [[NSMutableArray alloc] init];
+                                 self.topicPageNumber = @1;
+                             }
                          }
-                         if (self.refreshControl.refreshing) {
-                             [self.refreshControl endRefreshing];
-                         }
-                         if (page == 1) {
-                             [HUD hideWithDelay:0.3];
-                         }
-                         self.scrollTabBar.enabled = YES;
-                         _loadingFlag = NO;
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             if (topics.count > 0) {
+                                 [self.tableView reloadData];
+                                 if (toTop) {
+                                     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                                 }
+                                 
+                             }
+                             if (self.refreshControl.refreshing) {
+                                 [self.refreshControl endRefreshing];
+                             }
+                             if (page == 1) {
+                                 [HUD hideWithDelay:0.3];
+                             }
+                             self.scrollTabBar.enabled = YES;
+                             _loadingFlag = NO;
+                         });
                      });
-                     
-                     
                  }
                  failure:^(NSURLSessionDataTask *operation, NSError *error) {
                      NSLog(@"%@", error);
