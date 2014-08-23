@@ -30,7 +30,7 @@
         NSLog(@"Could not open db.");
         return nil;
     }
-    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position, visit_count INTEGER);"];
+    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position FLOAT, visit_count INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
     
@@ -280,19 +280,23 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDirectory = [paths objectAtIndex:0];
     NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
-    FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
-    if (![db open]) {
-        NSLog(@"Could not open db.");
-        return;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:dbPath]) {
+        FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
+        if (![db open]) {
+            NSLog(@"Could not open db.");
+            return;
+        }
+        FMResultSet *result = [db executeQuery:@"SELECT last_viewed_position FROM threads;"];
+        if (result) {
+            ;
+        } else {
+            NSLog(@"Database does not have last_viewed_position column.");
+            [db executeUpdate:@"ALTER TABLE threads ADD COLUMN last_viewed_position FLOAT;"];
+        }
+        [db close];
     }
-    FMResultSet *result = [db executeQuery:@"SELECT last_viewed_position FROM threads;"];
-    if (result) {
-        ;
-    } else {
-        NSLog(@"Database does not have last_viewed_position column.");
-        [db executeUpdate:@"ALTER TABLE threads ADD COLUMN last_viewed_position float;"];
-    }
-    [db close];
+    
 }
 
 @end
