@@ -380,13 +380,8 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 		//[self addGestureRecognizer:downGestureRecognizer];
         
 		// Images used as background when status bar style is Default
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            defaultStatusBarImage_ = [UIImage imageWithData:MTStatusBarBackgroundImageData(NO)];
-            defaultStatusBarImageShrinked_ = [UIImage imageWithData:MTStatusBarBackgroundImageData(YES)];
-        } else {
-            defaultStatusBarImage_ = [S1GlobalVariables imageWithColor:[S1GlobalVariables color8]];
-            defaultStatusBarImageShrinked_ = [S1GlobalVariables imageWithColor:[S1GlobalVariables color8]];
-        }
+        defaultStatusBarImage_ = [S1GlobalVariables imageWithColor:[S1GlobalVariables color8]];
+        defaultStatusBarImageShrinked_ = [S1GlobalVariables imageWithColor:[S1GlobalVariables color8]];
 		
         
 		// Background-Image of the Content View
@@ -421,11 +416,7 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 		statusLabel1_ = [[UILabel alloc] initWithFrame:CGRectMake(30.f, 0.f, backgroundView_.frame.size.width - 60.f,backgroundView_.frame.size.height-1.f)];
 		statusLabel1_.backgroundColor = [UIColor clearColor];
 		statusLabel1_.shadowOffset = CGSizeMake(0.f, 1.f);
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            statusLabel1_.font = [UIFont boldSystemFontOfSize:kStatusLabelSize];
-        } else {
-            statusLabel1_.font = [UIFont systemFontOfSize:kStatusLabelSize];
-        }
+        statusLabel1_.font = [UIFont systemFontOfSize:kStatusLabelSize];
 		statusLabel1_.textAlignment = NSTextAlignmentCenter;
 		statusLabel1_.numberOfLines = 1;
 		statusLabel1_.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -436,11 +427,8 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 		statusLabel2_ = [[UILabel alloc] initWithFrame:CGRectMake(30.f, backgroundView_.frame.size.height,backgroundView_.frame.size.width - 60.f , backgroundView_.frame.size.height-1.f)];
 		statusLabel2_.shadowOffset = CGSizeMake(0.f, 1.f);
 		statusLabel2_.backgroundColor = [UIColor clearColor];
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            statusLabel2_.font = [UIFont boldSystemFontOfSize:kStatusLabelSize];
-        } else {
-            statusLabel2_.font = [UIFont systemFontOfSize:kStatusLabelSize];
-        }
+
+        statusLabel2_.font = [UIFont systemFontOfSize:kStatusLabelSize];
 		statusLabel2_.textAlignment = NSTextAlignmentCenter;
 		statusLabel2_.numberOfLines = 1;
 		statusLabel2_.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -1193,29 +1181,12 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 - (void)setStatusBarBackgroundForStyle:(UIStatusBarStyle)style {
 	// gray status bar?
 	// on iPad the Default Status Bar Style is black too
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        if (style == UIStatusBarStyleDefault && !IsIPad && !IsIPhoneEmulationMode) {
-            // choose image depending on size
-            if (self.shrinked) {
-                self.statusBarBackgroundImageView.image = [self.defaultStatusBarImageShrinked stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
-            } else {
-                self.statusBarBackgroundImageView.image = [self.defaultStatusBarImage stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
-            }
-            statusBarBackgroundImageView_.backgroundColor = [UIColor clearColor];
-        }
-        // black status bar? -> no image
-        else {
-            self.statusBarBackgroundImageView.image = nil;
-            statusBarBackgroundImageView_.backgroundColor = [UIColor blackColor];
-        }
+    if (self.shrinked) {
+        self.statusBarBackgroundImageView.image = [self.defaultStatusBarImageShrinked stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
     } else {
-        if (self.shrinked) {
-            self.statusBarBackgroundImageView.image = [self.defaultStatusBarImageShrinked stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
-        } else {
-            self.statusBarBackgroundImageView.image = [self.defaultStatusBarImage stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
-        }
-        statusBarBackgroundImageView_.backgroundColor = [UIColor clearColor];
+        self.statusBarBackgroundImageView.image = [self.defaultStatusBarImage stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
     }
+    statusBarBackgroundImageView_.backgroundColor = [UIColor clearColor];
 	
 }
 
@@ -1226,72 +1197,35 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 		// set color of labels depending on messageType
         switch(messageType) {
             case MTMessageTypeFinish:
-                if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-                    self.statusLabel1.textColor = kLightThemeFinishedMessageTextColor;
-                    self.statusLabel2.textColor = kLightThemeFinishedMessageTextColor;
-                    self.finishedLabel.textColor = kLightThemeFinishedMessageTextColor;
-                    self.statusLabel1.shadowColor = kLightThemeFinishedMessageShadowColor;
-                    self.statusLabel2.shadowColor = kLightThemeFinishedMessageShadowColor;
-                    self.finishedLabel.shadowColor = kLightThemeFinishedMessageShadowColor;
-                } else {
-                    self.statusLabel1.textColor = kiOS7FinishedMessageTextColor;
-                    self.statusLabel2.textColor = kiOS7FinishedMessageTextColor;
-                    self.finishedLabel.textColor = kiOS7FinishedMessageTextColor;
-                    self.statusLabel1.shadowColor = kiOS7FinishedMessageShadowColor;
-                    self.statusLabel2.shadowColor = kiOS7FinishedMessageShadowColor;
-                    self.finishedLabel.shadowColor = kiOS7FinishedMessageShadowColor;
-                }
-                
+                self.statusLabel1.textColor = kiOS7FinishedMessageTextColor;
+                self.statusLabel2.textColor = kiOS7FinishedMessageTextColor;
+                self.finishedLabel.textColor = kiOS7FinishedMessageTextColor;
+                self.statusLabel1.shadowColor = kiOS7FinishedMessageShadowColor;
+                self.statusLabel2.shadowColor = kiOS7FinishedMessageShadowColor;
+                self.finishedLabel.shadowColor = kiOS7FinishedMessageShadowColor;
                 break;
             case MTMessageTypeError:
-                if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-                    self.statusLabel1.textColor = kLightThemeErrorMessageTextColor;
-                    self.statusLabel2.textColor = kLightThemeErrorMessageTextColor;
-                    self.finishedLabel.textColor = kLightThemeErrorMessageTextColor;
-                    self.statusLabel1.shadowColor = kLightThemeErrorMessageShadowColor;
-                    self.statusLabel2.shadowColor = kLightThemeErrorMessageShadowColor;
-                    self.finishedLabel.shadowColor = kLightThemeErrorMessageShadowColor;
-                } else {
-                    self.statusLabel1.textColor = kiOS7ErrorMessageTextColor;
-                    self.statusLabel2.textColor = kiOS7ErrorMessageTextColor;
-                    self.finishedLabel.textColor = kiOS7ErrorMessageTextColor;
-                    self.statusLabel1.shadowColor = kiOS7ErrorMessageShadowColor;
-                    self.statusLabel2.shadowColor = kiOS7ErrorMessageShadowColor;
-                    self.finishedLabel.shadowColor = kiOS7ErrorMessageShadowColor;
-                }
+                self.statusLabel1.textColor = kiOS7ErrorMessageTextColor;
+                self.statusLabel2.textColor = kiOS7ErrorMessageTextColor;
+                self.finishedLabel.textColor = kiOS7ErrorMessageTextColor;
+                self.statusLabel1.shadowColor = kiOS7ErrorMessageShadowColor;
+                self.statusLabel2.shadowColor = kiOS7ErrorMessageShadowColor;
+                self.finishedLabel.shadowColor = kiOS7ErrorMessageShadowColor;
                 break;
             default:
-                if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-                    self.statusLabel1.textColor = kLightThemeTextColor;
-                    self.statusLabel2.textColor = kLightThemeTextColor;
-                    self.finishedLabel.textColor = kLightThemeTextColor;
-                    self.statusLabel1.shadowColor = kLightThemeShadowColor;
-                    self.statusLabel2.shadowColor = kLightThemeShadowColor;
-                    self.finishedLabel.shadowColor = kLightThemeShadowColor;
-                } else {
-                    self.statusLabel1.textColor = kiOS7TextColor;
-                    self.statusLabel2.textColor = kiOS7TextColor;
-                    self.finishedLabel.textColor = kiOS7TextColor;
-                    self.statusLabel1.shadowColor = kiOS7ShadowColor;
-                    self.statusLabel2.shadowColor = kiOS7ShadowColor;
-                    self.finishedLabel.shadowColor = kiOS7ShadowColor;
-                }
+                self.statusLabel1.textColor = kiOS7TextColor;
+                self.statusLabel2.textColor = kiOS7TextColor;
+                self.finishedLabel.textColor = kiOS7TextColor;
+                self.statusLabel1.shadowColor = kiOS7ShadowColor;
+                self.statusLabel2.shadowColor = kiOS7ShadowColor;
+                self.finishedLabel.shadowColor = kiOS7ShadowColor;
                 break;
         }
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            self.activityIndicator.activityIndicatorViewStyle = kLightThemeActivityIndicatorViewStyle;
-        } else {
-            self.activityIndicator.activityIndicatorViewStyle = kiOS7ActivityIndicatorViewStyle;
-        }
+        self.activityIndicator.activityIndicatorViewStyle = kiOS7ActivityIndicatorViewStyle;
 		
         
         if ([self.activityIndicator respondsToSelector:@selector(setColor:)]) {
-            if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-                [self.activityIndicator setColor:kLightThemeTextColor];
-            } else {
-                [self.activityIndicator setColor:kiOS7TextColor];
-
-            }
+            [self.activityIndicator setColor:kiOS7TextColor];
         }
         
 		self.detailView.backgroundColor = kLightThemeDetailViewBackgroundColor;
@@ -1303,52 +1237,28 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
         self.progressView.image = [self.defaultStatusBarImageShrinked stretchableImageWithLeftCapWidth:2.0f topCapHeight:0.0f];
 	} else {
 		// set color of labels depending on messageType
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            switch(messageType) {
-                case MTMessageTypeFinish:
-                    self.statusLabel1.textColor = kDarkThemeFinishedMessageTextColor;
-                    self.statusLabel2.textColor = kDarkThemeFinishedMessageTextColor;
-                    self.finishedLabel.textColor = kDarkThemeFinishedMessageTextColor;
-                    break;
-                case MTMessageTypeError:
-                    self.statusLabel1.textColor = kDarkThemeErrorMessageTextColor;
-                    self.statusLabel2.textColor = kDarkThemeErrorMessageTextColor;
-                    self.finishedLabel.textColor = kDarkThemeErrorMessageTextColor;
-                    break;
-                default:
-                    self.statusLabel1.textColor = kDarkThemeTextColor;
-                    self.statusLabel2.textColor = kDarkThemeTextColor;
-                    self.finishedLabel.textColor = kDarkThemeTextColor;
-                    break;
-            }
-        } else {
-            switch(messageType) {
-                case MTMessageTypeFinish:
-                    self.statusLabel1.textColor = kiOS7FinishedMessageTextColor;
-                    self.statusLabel2.textColor = kiOS7FinishedMessageTextColor;
-                    self.finishedLabel.textColor = kiOS7FinishedMessageTextColor;
-                    break;
-                case MTMessageTypeError:
-                    self.statusLabel1.textColor = kiOS7ErrorMessageTextColor;
-                    self.statusLabel2.textColor = kiOS7ErrorMessageTextColor;
-                    self.finishedLabel.textColor = kiOS7ErrorMessageTextColor;
-                    break;
-                default:
-                    self.statusLabel1.textColor = kiOS7TextColor;
-                    self.statusLabel2.textColor = kiOS7TextColor;
-                    self.finishedLabel.textColor = kiOS7TextColor;
-                    break;
-            }
+        switch(messageType) {
+            case MTMessageTypeFinish:
+                self.statusLabel1.textColor = kiOS7FinishedMessageTextColor;
+                self.statusLabel2.textColor = kiOS7FinishedMessageTextColor;
+                self.finishedLabel.textColor = kiOS7FinishedMessageTextColor;
+                break;
+            case MTMessageTypeError:
+                self.statusLabel1.textColor = kiOS7ErrorMessageTextColor;
+                self.statusLabel2.textColor = kiOS7ErrorMessageTextColor;
+                self.finishedLabel.textColor = kiOS7ErrorMessageTextColor;
+                break;
+            default:
+                self.statusLabel1.textColor = kiOS7TextColor;
+                self.statusLabel2.textColor = kiOS7TextColor;
+                self.finishedLabel.textColor = kiOS7TextColor;
+                break;
         }
         
         self.statusLabel1.shadowColor = nil;
         self.statusLabel2.shadowColor = nil;
         self.finishedLabel.shadowColor = nil;
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            self.activityIndicator.activityIndicatorViewStyle = kDarkThemeActivityIndicatorViewStyle;
-        } else {
-            self.activityIndicator.activityIndicatorViewStyle = kiOS7ActivityIndicatorViewStyle;
-        }
+        self.activityIndicator.activityIndicatorViewStyle = kiOS7ActivityIndicatorViewStyle;
 		
         
         if ([self.activityIndicator respondsToSelector:@selector(setColor:)]) {

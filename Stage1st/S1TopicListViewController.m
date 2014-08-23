@@ -72,12 +72,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tracer = [[S1Tracer alloc] init];
     
     self.view.backgroundColor = [S1GlobalVariables color5];
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-2 * _BAR_HEIGHT) style:UITableViewStylePlain];
-    }
-    else {
-        self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
-    }
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
     self.tableView.autoresizesSubviews = YES;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
@@ -98,29 +93,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _BAR_HEIGHT);
-        self.navigationBar.tintColor = [S1GlobalVariables color3];
-    } else {
-        self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
-    }
+    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
     self.naviItem = item;
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"TopicListView_NavigationBar_Settings", "Settings") style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
-        item.leftBarButtonItem = settingItem;
-    } else {
-        UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
-        item.leftBarButtonItem = settingItem;
-    }
+    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+    item.leftBarButtonItem = settingItem;
     
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.historyItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(history:)];
-    } else {
-        self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
-    }
+    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
     //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(test:)];
     
     NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
@@ -242,12 +223,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
         [self.segControl setWidth:80 forSegmentAtIndex:0];
         [self.segControl setWidth:80 forSegmentAtIndex:1];
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            [self.segControl setSegmentedControlStyle:UISegmentedControlStyleBar];
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                //TODO:fit iOS6 & iPhone
-            }
-        }
         [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
         [self.segControl setSelectedSegmentIndex:0];
         [self presentHistory];
