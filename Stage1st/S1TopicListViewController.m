@@ -521,6 +521,10 @@ static NSString * const cellIdentifier = @"TopicCell";
                                  [HUD hideWithDelay:0.3];
                              }
                          }
+                         if (page == 1) {
+                             self.topics = [[NSMutableArray alloc] init];
+                             self.topicPageNumber = @1;
+                         }
                          self.scrollTabBar.enabled = YES;
                          if (self.refreshControl.refreshing) {
                              [self.refreshControl endRefreshing];
