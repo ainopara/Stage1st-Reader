@@ -96,12 +96,6 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         _highlightLayer = [CAShapeLayer layer];
         _highlightLayer.fillColor = [[[UIColor whiteColor] colorWithAlphaComponent:0.2] CGColor];
         [_shapeLayer addSublayer:_highlightLayer];
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            _shapeLayer.shadowColor = [[UIColor blackColor] CGColor];
-            _shapeLayer.shadowOffset = CGSizeMake(0, 0.5);
-            _shapeLayer.shadowOpacity = 0.2;
-            _shapeLayer.shadowRadius = 1.0;
-        }
     }
     return self;
 }

@@ -71,16 +71,12 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
     
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.webView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT);
-    } else {
-        self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-        self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-        self.statusBackgroundView.userInteractionEnabled = NO;
-        [self.view addSubview:self.statusBackgroundView];
+    self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
+    self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
+    self.statusBackgroundView.userInteractionEnabled = NO;
+    [self.view addSubview:self.statusBackgroundView];
                 
-        self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
-    }
+    self.webView.frame = CGRectMake(0, _STATUS_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height - _BAR_HEIGHT - _STATUS_BAR_HEIGHT);
     
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.webView.delegate = self;
@@ -88,11 +84,7 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.webView.backgroundColor = [S1GlobalVariables color6];
-    } else {
-        self.webView.backgroundColor = [S1GlobalVariables color5];
-    }
+    self.webView.backgroundColor = [S1GlobalVariables color5];
     [self.view addSubview:self.webView];
     
     self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
@@ -110,14 +102,9 @@
     UIButton *button = nil;
     
     //Backward Button
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [button setImage:[UIImage imageNamed:@"Back.png"] forState:UIControlStateNormal];
-        [button setShowsTouchWhenHighlighted:YES];
-    } else {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button setImage:[UIImage imageNamed:@"Back_iOS7.png"] forState:UIControlStateNormal];
-    }
+
+    button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setImage:[UIImage imageNamed:@"Back_iOS7.png"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 30, 30);
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
@@ -129,14 +116,8 @@
     
     
     //Forward Button
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [button setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
-        [button setShowsTouchWhenHighlighted:YES];
-    } else {
-        button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button setImage:[UIImage imageNamed:@"Forward_iOS7.png"] forState:UIControlStateNormal];
-    }
+    button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setImage:[UIImage imageNamed:@"Forward_iOS7.png"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 30, 30);
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:100];
@@ -147,14 +128,8 @@
     
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        self.pageLabel.font = [UIFont boldSystemFontOfSize:13.0f];
-        self.pageLabel.textColor = [UIColor whiteColor];
-    } else {
-        self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-        self.pageLabel.textColor = [S1GlobalVariables color3];
-    }
+    self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
+    self.pageLabel.textColor = [S1GlobalVariables color3];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     self.pageLabel.userInteractionEnabled = YES;
@@ -371,14 +346,8 @@
     if (3 == buttonIndex) {
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
-        
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            ;
-        } else {
-            controller.modalPresentationStyle = UIModalPresentationPageSheet;
-            [[controller view] setTintColor:[S1GlobalVariables color3]];
-        }
-        
+        controller.modalPresentationStyle = UIModalPresentationPageSheet;
+        [[controller view] setTintColor:[S1GlobalVariables color3]];
         [self presentViewController:controller animated:YES completion:nil];
     }
 }
@@ -390,11 +359,7 @@
     if (1 == buttonIndex) {
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            ;
-        } else {
-            [[controller view] setTintColor:[S1GlobalVariables color3]];
-        }
+        [[controller view] setTintColor:[S1GlobalVariables color3]];
         [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
@@ -635,16 +600,14 @@
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     //clip
-    if (!SYSTEM_VERSION_LESS_THAN(@"7")) {
-        CGImageRef imageRef = nil;
-        if (IS_RETINA) {
-            imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 40.0, viewImage.size.width * 2, viewImage.size.height * 2 - 40.0));
-        } else {
-            imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0, viewImage.size.width, viewImage.size.height - 20.0));
-        }
-        viewImage = [UIImage imageWithCGImage:imageRef];
-        CGImageRelease(imageRef);
+    CGImageRef imageRef = nil;
+    if (IS_RETINA) {
+        imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 40.0, viewImage.size.width * 2, viewImage.size.height * 2 - 40.0));
+    } else {
+        imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0, viewImage.size.width, viewImage.size.height - 20.0));
     }
+    viewImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
     return viewImage;
 }
 
