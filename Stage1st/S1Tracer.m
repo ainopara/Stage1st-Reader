@@ -228,22 +228,22 @@
             dict = [NSMutableDictionary dictionary];
         }
         for (id topic in [dict allValues]) {
-            if (![topic 	respondsToSelector:@selector(topicID)]) {
+            if (![topic respondsToSelector:@selector(topicID)]) {
                 continue;
             }
-            if (![topic 	respondsToSelector:@selector(title)]) {
+            if (![topic respondsToSelector:@selector(title)]) {
                 continue;
             }
-            if (![topic 	respondsToSelector:@selector(replyCount)]) {
+            if (![topic respondsToSelector:@selector(replyCount)]) {
                 continue;
             }
-            if (![topic 	respondsToSelector:@selector(fID)]) {
+            if (![topic respondsToSelector:@selector(fID)]) {
                 continue;
             }
-            if (![topic 	respondsToSelector:@selector(lastViewedDate)]) {
+            if (![topic respondsToSelector:@selector(lastViewedDate)]) {
                 continue;
             }
-            if (![topic 	respondsToSelector:@selector(lastViewedPage)]) {
+            if (![topic respondsToSelector:@selector(lastViewedPage)]) {
                 continue;
             }
             NSLog(@"%@",[topic topicID]);
