@@ -30,7 +30,6 @@
 
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) UIView *maskView; //for iOS6
 @property (nonatomic, strong) UIView *statusBackgroundView; //for iOS7 and above
 @property (nonatomic, strong) UILabel *pageLabel;
 
@@ -86,12 +85,6 @@
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.backgroundColor = [S1GlobalVariables color5];
     [self.view addSubview:self.webView];
-    
-    self.maskView = [[UIView alloc] initWithFrame:self.webView.bounds];
-    self.maskView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.maskView.backgroundColor = [S1GlobalVariables color5];
-    self.maskView.userInteractionEnabled = NO;
-    [self.webView addSubview:self.maskView];
     
     self.toolbar = [[UIToolbar alloc] init];
     self.toolbar.frame = CGRectMake(0, self.view.bounds.size.height-44.0f, self.view.bounds.size.width, 44.0f);
@@ -158,14 +151,7 @@
 #undef _BAR_HEIGHT
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
-    [UIView animateWithDuration:0.15 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         self.maskView.alpha = 0.0;
-                     }
-                     completion:^(BOOL finished) {
-                         [self.maskView removeFromSuperview];
-                         [self fetchContent];
-                     }];
+    [self fetchContent];
 }
 
 - (void)viewWillAppear:(BOOL)animated
