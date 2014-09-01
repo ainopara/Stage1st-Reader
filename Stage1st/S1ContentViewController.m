@@ -21,6 +21,8 @@
 #import "MTStatusBarOverlay.h"
 #import "AFNetworking.h"
 #import "ActionSheetStringPicker.h"
+#import "JTSSimpleImageDownloader.h"
+#import "JTSImageViewController.h"
 
 
 #define _REPLY_PER_PAGE 30
@@ -368,9 +370,25 @@
                 if ([decodedQuery isEqualToString:topicFloor.indexMark]) {
                     NSLog(@"%@", topicFloor.author);
                     [self presentReplyViewWithAppendText:nil reply:topicFloor];
-                    return NO;
                 }
             }
+        }
+        if ([request.URL.path hasPrefix:@"/present-image:"]) {
+            NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
+            NSLog(@"%@", imageURL);
+            [JTSSimpleImageDownloader downloadImageForURL:[[NSURL alloc] initWithString:imageURL] canonicalURL:[[NSURL alloc] initWithString:imageURL] completion:^(UIImage *image) {
+                JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
+                imageInfo.image = image;
+                imageInfo.referenceRect = self.webView.frame;
+                imageInfo.referenceView = self.webView;
+                JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
+                                                       initWithImageInfo:imageInfo
+                                                       mode:JTSImageViewControllerMode_Image
+                                                       backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
+                
+                // Present the view controller.
+                [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
+            }];
         }
         return NO;
     }

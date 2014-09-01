@@ -41,6 +41,19 @@
             NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
             [image addAttributeWithName:@"src" stringValue:[baseURLString stringByAppendingString:imageSrc]];
         }
+        if ([[image attributeForName:@"src"] stringValue]) {
+            if (![imageSrc hasPrefix:@"static/image/smiley"]) {
+                DDXMLElement *linkElement = image;
+                DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
+                [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
+                NSString *linkString = [@"/present-image:" stringByAppendingString:[[image attributeForName:@"src"] stringValue]];
+                [linkElement addAttributeWithName:@"href" stringValue:linkString];
+                [linkElement addChild:imageElement];
+                [linkElement removeAttributeForName:@"src"];
+                [linkElement setName:@"a"];
+            }
+        }
+        
         //clean image's attribute
         [image removeAttributeForName:@"onmouseover"];
         [image removeAttributeForName:@"onclick"];
