@@ -26,9 +26,9 @@ PODS:
     - FMDB/common
 
 DEPENDENCIES:
-  - ActionSheetPicker (~> 1.0.5)
-  - AFNetworking (~> 2.2.0)
-  - FMDB (~> 2.2)
+  - ActionSheetPicker
+  - AFNetworking
+  - FMDB
 
 SPEC CHECKSUMS:
   ActionSheetPicker: fbb79dc269ec7279f22db1c603c8a822618bbbeb

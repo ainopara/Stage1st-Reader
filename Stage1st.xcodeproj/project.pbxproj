@@ -45,6 +45,12 @@
 		86AA78B018A79050005A3116 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
+		86E361F019B21C4400685860 /* JTSAnimatedGIFUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361E519B21C4400685860 /* JTSAnimatedGIFUtility.m */; };
+		86E361F119B21C4400685860 /* JTSImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361E719B21C4400685860 /* JTSImageInfo.m */; };
+		86E361F219B21C4400685860 /* JTSImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361E919B21C4400685860 /* JTSImageViewController.m */; };
+		86E361F319B21C4400685860 /* JTSSimpleImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361EB19B21C4400685860 /* JTSSimpleImageDownloader.m */; };
+		86E361F419B21C4400685860 /* UIApplication+JTSImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361ED19B21C4400685860 /* UIApplication+JTSImageViewController.m */; };
+		86E361F519B21C4400685860 /* UIImage+JTSImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E361EF19B21C4400685860 /* UIImage+JTSImageEffects.m */; };
 		C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */ = {isa = PBXBuildFile; fileRef = C01C821016FDB5D2003E6B91 /* content_larger_font.css */; };
 		C0401DB316EB0F2000E52A9A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C083353416E4E7C40035C1AA /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
@@ -157,6 +163,18 @@
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
+		86E361E419B21C4400685860 /* JTSAnimatedGIFUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JTSAnimatedGIFUtility.h; path = Vendors/JTSImageViewController/JTSAnimatedGIFUtility.h; sourceTree = "<group>"; };
+		86E361E519B21C4400685860 /* JTSAnimatedGIFUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JTSAnimatedGIFUtility.m; path = Vendors/JTSImageViewController/JTSAnimatedGIFUtility.m; sourceTree = "<group>"; };
+		86E361E619B21C4400685860 /* JTSImageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JTSImageInfo.h; path = Vendors/JTSImageViewController/JTSImageInfo.h; sourceTree = "<group>"; };
+		86E361E719B21C4400685860 /* JTSImageInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JTSImageInfo.m; path = Vendors/JTSImageViewController/JTSImageInfo.m; sourceTree = "<group>"; };
+		86E361E819B21C4400685860 /* JTSImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JTSImageViewController.h; path = Vendors/JTSImageViewController/JTSImageViewController.h; sourceTree = "<group>"; };
+		86E361E919B21C4400685860 /* JTSImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JTSImageViewController.m; path = Vendors/JTSImageViewController/JTSImageViewController.m; sourceTree = "<group>"; };
+		86E361EA19B21C4400685860 /* JTSSimpleImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JTSSimpleImageDownloader.h; path = Vendors/JTSImageViewController/JTSSimpleImageDownloader.h; sourceTree = "<group>"; };
+		86E361EB19B21C4400685860 /* JTSSimpleImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JTSSimpleImageDownloader.m; path = Vendors/JTSImageViewController/JTSSimpleImageDownloader.m; sourceTree = "<group>"; };
+		86E361EC19B21C4400685860 /* UIApplication+JTSImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIApplication+JTSImageViewController.h"; path = "Vendors/JTSImageViewController/UIApplication+JTSImageViewController.h"; sourceTree = "<group>"; };
+		86E361ED19B21C4400685860 /* UIApplication+JTSImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIApplication+JTSImageViewController.m"; path = "Vendors/JTSImageViewController/UIApplication+JTSImageViewController.m"; sourceTree = "<group>"; };
+		86E361EE19B21C4400685860 /* UIImage+JTSImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+JTSImageEffects.h"; path = "Vendors/JTSImageViewController/UIImage+JTSImageEffects.h"; sourceTree = "<group>"; };
+		86E361EF19B21C4400685860 /* UIImage+JTSImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+JTSImageEffects.m"; path = "Vendors/JTSImageViewController/UIImage+JTSImageEffects.m"; sourceTree = "<group>"; };
 		9BB0A26615C5458DA622DC80 /* Pods-Stage1st.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.xcconfig"; path = "Pods/Pods-Stage1st.xcconfig"; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
@@ -380,6 +398,25 @@
 			path = Vendors/REComposeViewController;
 			sourceTree = "<group>";
 		};
+		86E361E319B1FCE200685860 /* JTSImageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				86E361E419B21C4400685860 /* JTSAnimatedGIFUtility.h */,
+				86E361E519B21C4400685860 /* JTSAnimatedGIFUtility.m */,
+				86E361E619B21C4400685860 /* JTSImageInfo.h */,
+				86E361E719B21C4400685860 /* JTSImageInfo.m */,
+				86E361E819B21C4400685860 /* JTSImageViewController.h */,
+				86E361E919B21C4400685860 /* JTSImageViewController.m */,
+				86E361EA19B21C4400685860 /* JTSSimpleImageDownloader.h */,
+				86E361EB19B21C4400685860 /* JTSSimpleImageDownloader.m */,
+				86E361EC19B21C4400685860 /* UIApplication+JTSImageViewController.h */,
+				86E361ED19B21C4400685860 /* UIApplication+JTSImageViewController.m */,
+				86E361EE19B21C4400685860 /* UIImage+JTSImageEffects.h */,
+				86E361EF19B21C4400685860 /* UIImage+JTSImageEffects.m */,
+			);
+			name = JTSImageViewController;
+			sourceTree = "<group>";
+		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -496,6 +533,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				86E361E319B1FCE200685860 /* JTSImageViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				86128EBF1894E5D400D0281A /* SVWebViewController */,
 				8662DF16189363470060D513 /* KissXML */,
@@ -740,14 +778,17 @@
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				867C7F5E1899420D00DF55E8 /* REComposeBackgroundView.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
+				86E361F519B21C4400685860 /* UIImage+JTSImageEffects.m in Sources */,
 				8662DF26189363470060D513 /* DDXMLElementAdditions.m in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				86128EDE1894E5D400D0281A /* SVModalWebViewController.m in Sources */,
+				86E361F019B21C4400685860 /* JTSAnimatedGIFUtility.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				8662DF2A189363470060D513 /* DDXMLNode.m in Sources */,
 				8662DF27189363470060D513 /* NSString+DDXML.m in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
+				86E361F219B21C4400685860 /* JTSImageViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
@@ -776,11 +817,14 @@
 				8662DF28189363470060D513 /* DDXMLDocument.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
+				86E361F119B21C4400685860 /* JTSImageInfo.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				8662DF29189363470060D513 /* DDXMLElement.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				86128EE91894E5D400D0281A /* SVWebViewControllerActivity.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
+				86E361F319B21C4400685860 /* JTSSimpleImageDownloader.m in Sources */,
+				86E361F419B21C4400685860 /* UIApplication+JTSImageViewController.m in Sources */,
 				86128EE31894E5D400D0281A /* SVWebViewControllerActivityChrome.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -878,6 +922,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Huan Tang (P5HC5452A2)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -905,6 +950,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Huan Tang (P5HC5452A2)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
