@@ -216,7 +216,7 @@
         _currentPage -= 1;
         [self fetchContent];
     } else {
-        [[self rootViewController] dismissDetailViewController];
+        [[self rootViewController] dismissDetailViewController:0.3];
     }
 }
 

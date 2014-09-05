@@ -13,7 +13,7 @@
 - (id)initWithMasterViewController:(UIViewController *)controller;
 
 - (void)presentDetailViewController:(UIViewController *)controller;
-- (void)dismissDetailViewController;
+- (void)dismissDetailViewController:(NSTimeInterval)inTime;
 
 - (BOOL)presentingDetailViewController;
 

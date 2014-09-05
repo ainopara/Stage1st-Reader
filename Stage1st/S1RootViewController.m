@@ -9,6 +9,7 @@
 #import "S1RootViewController.h"
 
 #define _TRIGGER_THRESHOLD 60.0f
+#define _TRIGGER_VELOCITY_THRESHOLD 500.0f
 
 typedef enum {
     S1RootViewControllerStatusMasterViewDisplayed,
@@ -106,8 +107,10 @@ typedef enum {
         }
     }
     else {
-        if (translation.x > _TRIGGER_THRESHOLD) {
-            [self dismissDetailViewController];
+        CGFloat velocityX = [gestureRecognizer velocityInView:self.detailViewController.view].x;
+        NSLog(@"%f, %f",translation.x, velocityX);
+        if (translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) {
+            [self dismissDetailViewController:(_screenWidth - translation.x) / fabsf(velocityX)];
         } else {
             [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.detailViewController.view.transform = CGAffineTransformIdentity;
@@ -119,11 +122,11 @@ typedef enum {
     }
 }
 
-- (void)dismissDetailViewController
+- (void)dismissDetailViewController:(NSTimeInterval)inTime
 {
     [self.detailViewController willMoveToParentViewController:nil];
     [self.masterViewController viewWillAppear:NO];
-    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+    [UIView animateWithDuration:inTime < 0.3 ? inTime : 0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          CGRect endFrame = self.view.bounds;
                          endFrame.origin.x = endFrame.size.width;
