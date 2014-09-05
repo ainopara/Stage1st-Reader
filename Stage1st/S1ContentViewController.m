@@ -55,7 +55,6 @@
     if (self) {
         // Custom initialization
         _webView = [[UIWebView alloc] init];
-        [_webView loadHTMLString:@"<html><body style=\"background-color:#f6f7e7;\"></body></html>" baseURL:nil];
         _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPosition = YES;
@@ -85,6 +84,7 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    self.webView.opaque = NO;
     self.webView.backgroundColor = [S1GlobalVariables color5];
     [self.view addSubview:self.webView];
     
