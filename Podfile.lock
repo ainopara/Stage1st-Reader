@@ -1,5 +1,5 @@
 PODS:
-  - ActionSheetPicker (1.0.6)
+  - ActionSheetPicker-3.0 (1.1.10)
   - AFNetworking (2.2.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
@@ -24,15 +24,21 @@ PODS:
   - FMDB/common (2.3)
   - FMDB/standard (2.3):
     - FMDB/common
+  - JTSImageViewController (1.3)
+  - KissXML (5.0)
 
 DEPENDENCIES:
-  - ActionSheetPicker
+  - ActionSheetPicker-3.0
   - AFNetworking
   - FMDB
+  - JTSImageViewController
+  - KissXML
 
 SPEC CHECKSUMS:
-  ActionSheetPicker: fbb79dc269ec7279f22db1c603c8a822618bbbeb
+  ActionSheetPicker-3.0: bd085918c9d6d5a07eee337f209e67858a6f5605
   AFNetworking: 47947303319594706f48a55185ea95a95159ab94
   FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
+  JTSImageViewController: 3951f79d2643c79b57f3961dd030bd328771a27d
+  KissXML: e537c38b18ede903ee6de45953a9bd86c131ebe9
 
 COCOAPODS: 0.33.1
