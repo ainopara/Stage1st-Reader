@@ -21,31 +21,29 @@
     NSInteger _index;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _keys = keys;
+        _index = -1;
+        _enabled = YES;
+        _buttons = [NSMutableArray arrayWithCapacity:keys.count];
+        self.backgroundColor = [S1GlobalVariables color3];
+        self.canCancelContentTouches = YES;
+        self.bounces = NO;
+        self.showsHorizontalScrollIndicator = NO;
+        self.scrollsToTop = NO;
+        self.delegate = self;
+        self.lastRecognizedOrientation = UIDeviceOrientationPortrait;
+        //self.decelerationRate = UIScrollViewDecelerationRateFast;
+        [self addItems];
     }
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys
-{
-    self = [super initWithFrame:frame];
-    if (!self) return nil;    
-    _keys = keys;
-    _index = -1;
-    _enabled = YES;
-    _buttons = [NSMutableArray arrayWithCapacity:keys.count];
-    self.backgroundColor = [S1GlobalVariables color3];
-    self.bounces = NO;
-    self.showsHorizontalScrollIndicator = NO;
-    self.scrollsToTop = NO;
-    self.delegate = self;
-    self.lastRecognizedOrientation = UIDeviceOrientationPortrait;
-//    self.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self addItems];
-    return self;
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
+    return YES;
 }
 
 - (void)setKeys:(NSArray *)keys
