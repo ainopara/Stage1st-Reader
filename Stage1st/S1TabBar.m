@@ -19,6 +19,7 @@
 @implementation S1TabBar {
     NSMutableArray *_buttons;
     NSInteger _index;
+    CGFloat _lastContentOffset;
 }
 
 - (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys
@@ -62,52 +63,77 @@
         [self addItems];
     }
 }
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    _lastContentOffset = scrollView.contentOffset.x;
+    NSLog(@"Begin Dragging:%f", _lastContentOffset);
+}
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    _lastContentOffset = scrollView.contentOffset.x;
+    NSLog(@"Begin Decelerating:%f", _lastContentOffset);
+}
+
+- (CGFloat)getWidthPerItem {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return _DEFAULT_WIDTH;
+    } else {
+        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            NSLog(@"Decelerating Portrait");
+            return _DEFAULT_WIDTH_IPAD;
+            
+        } else {
+            NSLog(@"Decelerating Landscape");
+            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+        }
+    }
+}
+
+- (CGFloat)decideOffset:(CGPoint)offset {
+    CGFloat widthPerItem = [self getWidthPerItem];
+    float maxOffset = _keys.count * _DEFAULT_WIDTH - self.bounds.size.width;
+
+    if (_lastContentOffset == 0 && offset.x == 0) {
+        offset.x = 0.0;
+        return offset.x;
+    }
+    if (offset.x < _lastContentOffset) {
+        CGFloat n = floorf(offset.x / widthPerItem);
+        if (fmodf(offset.x, widthPerItem) < widthPerItem / 2) {
+            offset.x = n * widthPerItem;
+        } else {
+            offset.x = (n + 1) * widthPerItem;
+        }
+    } else {
+        float offsetFix = _DEFAULT_WIDTH - fmodf(maxOffset, _DEFAULT_WIDTH);
+        CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
+        if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
+            offset.x = n*widthPerItem - offsetFix;
+        } else {
+            offset.x = (n+1)*widthPerItem - offsetFix;
+        }
+    }
+    
+    offset.x = offset.x > maxOffset ? maxOffset : offset.x;
+    offset.x = offset.x < 0 ? 0.0 : offset.x;
+    return offset.x;
+}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    CGFloat widthPerItem;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = _DEFAULT_WIDTH;
-    } else {
-        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
-            widthPerItem = _DEFAULT_WIDTH_IPAD;
-            NSLog(@"Decelerating Portrait");
-        } else {
-            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-            NSLog(@"Decelerating Landscape");
-        }
-    }
     CGPoint offset = scrollView.contentOffset;
-    CGFloat n = roundf(offset.x / widthPerItem);
-    if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
-        offset.x = n*widthPerItem;
-    else
-        offset.x = (n+1)*widthPerItem;
+    NSLog(@"End Decelerating:%f", offset.x);
+    offset.x = [self decideOffset:offset];
+    NSLog(@"Target Decelerating:%f", offset.x);
     [scrollView setContentOffset:offset animated:YES];
     return;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    CGFloat widthPerItem;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = _DEFAULT_WIDTH;
-    } else {
-        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
-            widthPerItem = _DEFAULT_WIDTH_IPAD;
-            NSLog(@"Dragging Portrait");
-        } else {
-            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-            NSLog(@"Dragging Landscape");
-        }
-    }
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
-        CGFloat n = roundf(offset.x / widthPerItem);
-        if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
-            offset.x = n*widthPerItem;
-        else
-            offset.x = (n+1)*widthPerItem;
+        NSLog(@"End Dragging:%f", offset.x);
+        offset.x = [self decideOffset:offset];
+        NSLog(@"Target Dragging:%f", offset.x);
         [scrollView setContentOffset:offset animated:YES];
     }
     return;
@@ -138,7 +164,7 @@
 
     CGFloat widthPerItem;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+        widthPerItem = (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
     } else {
         if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
             widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
@@ -149,7 +175,7 @@
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.25, widthPerItem, self.bounds.size.height-0.25);
+        CGRect rect = CGRectMake(width, 0.25, ceilf(widthPerItem), self.bounds.size.height-0.25);
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         //color2 color7
