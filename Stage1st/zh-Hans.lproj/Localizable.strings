@@ -7,6 +7,9 @@
 "ContentView_ActionSheet_Favorite" = "收藏";
 "ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
 
+"ImageViewer_ActionSheet_Save" = "保存图像";
+"ImageViewer_ActionSheet_CopyURL" = "复制图像地址";
+
 "ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "取消";
 "ContentView_WebView_Open_Link_Alert_Open" = "打开";

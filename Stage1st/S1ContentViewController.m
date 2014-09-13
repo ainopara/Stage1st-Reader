@@ -28,12 +28,13 @@
 #define _REPLY_PER_PAGE 30
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate>
 
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *statusBackgroundView; //for iOS7 and above
 @property (nonatomic, strong) UILabel *pageLabel;
+@property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
 
@@ -264,8 +265,8 @@
 - (void)pickPage:(id)sender
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (NSInteger i = 0; i < _totalPages; i++) {
-        [array addObject:[NSString stringWithFormat:@"第 %d 页", i + 1]];
+    for (long i = 0; i < _totalPages; i++) {
+        [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
     }
     [ActionSheetStringPicker showPickerWithTitle:@""
                                             rows:array
@@ -299,45 +300,59 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 //    NSLog(@"%d", buttonIndex);
-    //Reply
-    if (0 == buttonIndex) {
-        [self presentReplyViewWithAppendText:@"" reply:nil];
-        //[self presentViewController:replyController animated:NO completion:nil];
-    }
-    //Favorite
-    if (1 == buttonIndex) {
-        [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
-    }
-    
-    //Weibo
-    if (2 == buttonIndex) {
-        if (!NSClassFromString(@"SLComposeViewController")) {
-            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
-            return;
+    if (self.imageViewer) {
+        if (0 == buttonIndex) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                UIImageWriteToSavedPhotosAlbum(self.imageViewer.image, nil, nil, nil);
+            });
         }
-        SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
-        if (!controller) {
-            [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
-            return;
+        //Favorite
+        if (1 == buttonIndex) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = self.imageViewer.imageInfo.imageURL.absoluteString;
         }
-        [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-        [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
-        [controller addImage:[self screenShot]];
+    } else {
+        //Reply
+        if (0 == buttonIndex) {
+            [self presentReplyViewWithAppendText:@"" reply:nil];
+            //[self presentViewController:replyController animated:NO completion:nil];
+        }
+        //Favorite
+        if (1 == buttonIndex) {
+            [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+        }
         
-        __weak SLComposeViewController *weakController = controller;
-        [self presentViewController:controller animated:YES completion:nil];
-        [controller setCompletionHandler:^(SLComposeViewControllerResult result){
-            [weakController dismissViewControllerAnimated:YES completion:nil];
-        }];
+        //Weibo
+        if (2 == buttonIndex) {
+            if (!NSClassFromString(@"SLComposeViewController")) {
+                [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+                return;
+            }
+            SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
+            if (!controller) {
+                [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+                return;
+            }
+            [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
+            [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
+            [controller addImage:[self screenShot]];
+            
+            __weak SLComposeViewController *weakController = controller;
+            [self presentViewController:controller animated:YES completion:nil];
+            [controller setCompletionHandler:^(SLComposeViewControllerResult result){
+                [weakController dismissViewControllerAnimated:YES completion:nil];
+            }];
+        }
+        
+        if (3 == buttonIndex) {
+            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+            controller.modalPresentationStyle = UIModalPresentationPageSheet;
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
     }
     
-    if (3 == buttonIndex) {
-        //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
-        controller.modalPresentationStyle = UIModalPresentationPageSheet;
-        [[controller view] setTintColor:[S1GlobalVariables color3]];
-        [self presentViewController:controller animated:YES completion:nil];
-    }
 }
 
 #pragma mark - UIAlertView Delegate
@@ -376,19 +391,16 @@
         if ([request.URL.path hasPrefix:@"/present-image:"]) {
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
             NSLog(@"%@", imageURL);
-            [JTSSimpleImageDownloader downloadImageForURL:[[NSURL alloc] initWithString:imageURL] canonicalURL:[[NSURL alloc] initWithString:imageURL] completion:^(UIImage *image) {
-                JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
-                imageInfo.image = image;
-                imageInfo.referenceRect = self.webView.frame;
-                imageInfo.referenceView = self.webView;
-                JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
-                                                       initWithImageInfo:imageInfo
-                                                       mode:JTSImageViewControllerMode_Image
-                                                       backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
-                
-                // Present the view controller.
-                [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
-            }];
+            JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
+            imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
+            imageInfo.referenceRect = self.webView.frame;
+            imageInfo.referenceView = self.webView;
+            JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
+                                                   initWithImageInfo:imageInfo
+                                                   mode:JTSImageViewControllerMode_Image
+                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
+            [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
+            [imageViewer setInteractionsDelegate:self];
         }
         return NO;
     }
@@ -414,6 +426,17 @@
     
 }
 
+#pragma mark - JTSImageViewController Interactions Delegate
+- (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer {
+    self.imageViewer = imageViewer;
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save"),NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL"), nil];
+    //actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [actionSheet showInView:imageViewer.view];
+}
 #pragma mark - UIScrollView Delegate
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView

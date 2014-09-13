@@ -7,6 +7,9 @@
 "ContentView_ActionSheet_Favorite" = "Favorite";
 "ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
 
+"ImageViewer_ActionSheet_Save" = "Save Image";
+"ImageViewer_ActionSheet_CopyURL" = "Copy Image URL";
+
 "ContentView_WebView_Open_Link_Alert_Title" = "Open Link";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "Cancel";
 "ContentView_WebView_Open_Link_Alert_Open" = "Open";
