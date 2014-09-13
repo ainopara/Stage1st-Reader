@@ -265,7 +265,7 @@
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSInteger i = 0; i < _totalPages; i++) {
-        [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
+        [array addObject:[NSString stringWithFormat:@"第 %d 页", i + 1]];
     }
     [ActionSheetStringPicker showPickerWithTitle:@""
                                             rows:array

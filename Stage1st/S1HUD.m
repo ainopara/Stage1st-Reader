@@ -142,8 +142,12 @@ typedef enum {
         UIFont *textFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:13.0f];
         CGFloat fontHeight = [textFont lineHeight];
         CGRect textRect = CGRectMake(8.0, floorf((frame.size.height-fontHeight)/2), frame.size.width-2*8.0, fontHeight);
-        [textColor setFill];
-        [hUDTextContent drawInRect:textRect withFont:textFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:NSTextAlignmentCenter];
+        NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+        replyCountParagraphStyle.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
+        [hUDTextContent drawInRect:textRect withAttributes:@{NSFontAttributeName: textFont,
+                                                             NSParagraphStyleAttributeName: replyCountParagraphStyle,
+                                                             NSForegroundColorAttributeName: textColor}];
     }
     
     //// Cleanup

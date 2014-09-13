@@ -44,17 +44,20 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
-    UIColor* fill = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
-    UIColor* stroke = [UIColor colorWithRed: 0.757 green: 0.749 blue: 0.698 alpha: 1];
-    UIColor* strokeOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
-    UIColor* strokeOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
-    UIColor* background = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    UIColor* cellBackgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
     if (self.selected || self.highlighted) {
-        background = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
+        cellBackgroundColor = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
     }
-    UIColor* replyTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
-    UIColor* replyTextColorOfHistoryThread = [UIColor colorWithRed:0.000 green:0.475 blue:1.000 alpha:1.000];
-    UIColor* replyTextColorOfFavoriteThread = [UIColor colorWithRed:0.961 green:0.651 blue:0.137 alpha:1.000];
+    UIColor* replyCountRectFillColor = [UIColor clearColor];
+    UIColor* replyCountRectStrokeColor = [UIColor colorWithRed: 0.757 green: 0.749 blue: 0.698 alpha: 1];
+    UIColor* replyCountRectStrokeColorOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
+    UIColor* replyCountRectStrokeColorOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
+    
+    UIColor* replyCountTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
+    UIColor* replyCountTextColorOfHistoryThread = [UIColor colorWithRed:0.000 green:0.475 blue:1.000 alpha:1.000];
+    UIColor* replyCountTextColorOfFavoriteThread = [UIColor colorWithRed:0.961 green:0.651 blue:0.137 alpha:1.000];
+    
+    UIColor* titleColor = [UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:1.0];
     //// Abstracted Attributes
     NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
     NSString* titleContent = self.topic.title;
@@ -62,7 +65,7 @@
     
     //// Rectangle Drawing
     UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:self.bounds];
-    [background setFill];
+    [cellBackgroundColor setFill];
     [rectanglePath fill];
     
     CGRect roundRectangleRect = CGRectZero;
@@ -73,8 +76,12 @@
         roundRectangleRect = CGRectMake(19, 18, 37, 19);
         textRect = CGRectMake(20, 20, 35, 18);
         titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
-        CGSize actualSize = [titleContent sizeWithFont:[UIFont boldSystemFontOfSize:15.0f] constrainedToSize:titleRect.size];
-        if (actualSize.height < 30.0f) {
+        
+        NSMutableParagraphStyle *testParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+        testParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        testParagraphStyle.alignment = NSTextAlignmentLeft;
+        CGRect actualRect = [titleContent boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+        if (actualRect.size.height < 30.0f) {
             titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
         }
         
@@ -89,40 +96,47 @@
     //// Rounded Rectangle Drawing
     UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect:roundRectangleRect cornerRadius:2];
     CGContextSaveGState(context);
-    [fill setFill];
+    [replyCountRectFillColor setFill];
     [roundedRectanglePath fill];
     CGContextRestoreGState(context);
     if ([self.topic.favorite  isEqual: @1]) {
-        [strokeOfFavoriteThread setStroke];
+        [replyCountRectStrokeColorOfFavoriteThread setStroke];
     } else if (self.topic.lastViewedPosition) {
-        [strokeOfHistoryThread setStroke];
+        [replyCountRectStrokeColorOfHistoryThread setStroke];
     } else {
-        [stroke setStroke];
+        [replyCountRectStrokeColor setStroke];
     }
     roundedRectanglePath.lineWidth = 0.8;
     [roundedRectanglePath stroke];
     
     
     //// Text Drawing
+    UIColor *replyCountFinalColor = nil;
     if ([self.topic.favorite  isEqual: @1]) {
-        [replyTextColorOfFavoriteThread setFill];
+        replyCountFinalColor = replyCountTextColorOfFavoriteThread;
     } else if (self.topic.lastViewedPosition) {
-        [replyTextColorOfHistoryThread setFill];
+        replyCountFinalColor = replyCountTextColorOfHistoryThread;
     } else {
-        [replyTextColor setFill];
+        replyCountFinalColor = replyCountTextColor;
     }
-    //[replyTextColor setFill];
-    [textContent drawInRect: textRect withFont: [UIFont systemFontOfSize:12.0f] lineBreakMode: NSLineBreakByClipping alignment: NSTextAlignmentCenter];
-    
+    NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+    replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
+    [textContent drawInRect:textRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
+                                                      NSParagraphStyleAttributeName: replyCountParagraphStyle,
+                                                      NSForegroundColorAttributeName: replyCountFinalColor}];
     //// Title Drawing
-    [[UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:1.0] setFill];
-    
-    
+    NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    titleParagraphStyle.alignment = NSTextAlignmentLeft;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [titleContent drawInRect: titleRect withFont:[UIFont systemFontOfSize:15.0f] lineBreakMode: NSLineBreakByTruncatingTail alignment: NSTextAlignmentLeft];
-    }
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [titleContent drawAtPoint:titlePoint forWidth:self.bounds.size.width-120.0f withFont:[UIFont systemFontOfSize:18.0] fontSize:17.0 lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+        [titleContent drawInRect:titleRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f],
+                                                          NSParagraphStyleAttributeName: titleParagraphStyle,
+                                                          NSForegroundColorAttributeName: titleColor}];
+    } else {
+        [titleContent drawAtPoint:titlePoint withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
+                                                            NSParagraphStyleAttributeName: titleParagraphStyle,
+                                                            NSForegroundColorAttributeName: titleColor}];
     }
 }
 
