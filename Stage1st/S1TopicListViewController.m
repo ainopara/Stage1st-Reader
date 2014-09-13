@@ -98,10 +98,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
     UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
     self.naviItem = item;
-    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
     
-    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
+    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
     //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(test:)];
     
     NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
