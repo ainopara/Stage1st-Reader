@@ -29,6 +29,7 @@
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
+		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		867C7F5B1899420D00DF55E8 /* DEComposeRuledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
 		867C7F5D1899420D00DF55E8 /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F531899420D00DF55E8 /* RECommonFunctions.m */; };
@@ -111,6 +112,7 @@
 		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
 		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
 		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
+		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		867C7F4E1899420D00DF55E8 /* DEComposeRuledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeRuledView.h; sourceTree = "<group>"; };
 		867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeRuledView.m; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 		C095872B16CA8A36007E0119 = {
 			isa = PBXGroup;
 			children = (
+				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				C095877916CA8D90007E0119 /* Classes */,
@@ -593,6 +596,7 @@
 				860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */,
 				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
 				86128EE41894E5D400D0281A /* SVWebViewControllerActivityChrome@2x.png in Resources */,
+				864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */,
 				86128EE61894E5D400D0281A /* SVWebViewControllerActivitySafari-iPad@2x.png in Resources */,
 				C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */,
 			);
