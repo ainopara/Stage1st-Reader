@@ -142,9 +142,10 @@
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID
 {
-    FMResultSet *result = [_db executeQuery:@"SELECT last_visit_page, last_viewed_position, visit_count FROM threads WHERE topic_id = ?;",topicID];
+    FMResultSet *result = [_db executeQuery:@"SELECT reply_count, last_visit_page, last_viewed_position, visit_count FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {
         S1Topic *topic = [[S1Topic alloc] init];
+        [topic setReplyCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]]];
         [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
         [topic setLastViewedPosition:[NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]]];
         [topic setVisitCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]]];

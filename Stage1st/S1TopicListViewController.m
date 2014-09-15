@@ -434,6 +434,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                              //append tracer message to topics
                              S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
                              if (tempTopic) {
+                                 [topic setLastReplyCount:tempTopic.replyCount];
                                  [topic setLastViewedPage:tempTopic.lastViewedPage];
                                  [topic setLastViewedPosition:tempTopic.lastViewedPosition];
                                  [topic setVisitCount:tempTopic.visitCount];

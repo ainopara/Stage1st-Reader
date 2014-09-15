@@ -60,6 +60,8 @@
     UIColor* titleColor = [UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:1.0];
     //// Abstracted Attributes
     NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
+    
+    
     NSString* titleContent = self.topic.title;
     
     
@@ -125,6 +127,21 @@
     [textContent drawInRect:textRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
                                                       NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                       NSForegroundColorAttributeName: replyCountFinalColor}];
+    
+    if (self.topic.lastReplyCount) {
+        NSNumber *replyCountChanged = @([self.topic.replyCount longLongValue] - [self.topic.lastReplyCount longLongValue]);
+        if (replyCountChanged > 0) {
+            NSString* replyChangeContent = [NSString stringWithFormat:@"+%@", replyCountChanged];
+            NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+            replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+            replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
+            [replyChangeContent drawInRect:CGRectMake(20, 38, 35, 16) withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                                                                                      NSParagraphStyleAttributeName: replyCountParagraphStyle,
+                                                                                      NSForegroundColorAttributeName: replyCountFinalColor}];
+        }
+        
+    }
+    
     //// Title Drawing
     NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
