@@ -461,7 +461,7 @@
     } else {
         path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%ld&mobile=no", self.topic.topicID, (long)_currentPage];
     }
-    NSLog(@"Begin Fetch Content");
+    // NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
     
     [self.HTTPClient GET:path parameters:nil
@@ -497,15 +497,13 @@
                          });
                      }
                      failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                         NSLog(@"%@", error);
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             if (error.code == -999) {
-                                 NSLog(@"Code -999 may means user want to cancel this request.");
-                                 [HUD hideWithDelay:0];
-                             } else {
-                                 [HUD showRefreshButton];
-                             }
-                         });
+                         if (error.code == -999) {
+                             NSLog(@"request cancelled.");
+                             [HUD hideWithDelay:0];
+                         } else {
+                             NSLog(@"%@", error);
+                             [HUD showRefreshButton];
+                         }
                      }];
 }
 
@@ -585,7 +583,13 @@
 
 -(void) cancelRequest
 {
-    [self.HTTPClient.operationQueue cancelAllOperations];
+    [[self.HTTPClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
+        for (NSURLSessionDataTask* task in downloadTasks) {
+            [task cancel];
+        }
+    }];
+    
 }
 
 #pragma mark - Helpers

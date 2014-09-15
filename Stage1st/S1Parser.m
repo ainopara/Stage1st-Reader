@@ -149,13 +149,13 @@
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
-    NSLog(@"Begin Parsing.");
+    // NSLog(@"Begin Parsing.");
     NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
 
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
-    NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
+    // NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
     
     if ([elements count]) {
 
@@ -208,7 +208,7 @@
     }
 
     NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-    NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
+    // NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     
     return floorList;
 }
