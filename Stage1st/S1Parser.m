@@ -131,14 +131,19 @@
             TFHppleElement *leftPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='s xst']"] firstObject];
             NSString *content = [leftPart text];
             NSString *href = [leftPart objectForKey:@"href"];
-            TFHppleElement *rightPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
+            TFHppleElement *rightPart = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
             NSString *replyCount = [rightPart text];
+            TFHppleElement *authorPart = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='by'][1]/cite/a"] firstObject];
+            NSString *authorName = [authorPart text];
+            NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
             
             S1Topic *topic = [[S1Topic alloc] init];
             [topic setTopicID:[NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]]];
             [topic setTitle:content];
             [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
             [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
+            [topic setAuthorUserID:[NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
+            [topic setAuthorUserName:authorName];
             [topics addObject:topic];
         }
     }
@@ -169,6 +174,7 @@
             //parse author
             TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
             [floor setAuthor: [authorNode text]];
+            [floor setAuthorID:[NSNumber numberWithInteger:[[[[authorNode objectForKey:@"href"] componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
             
             //parse post time
             TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
@@ -213,7 +219,7 @@
     return floorList;
 }
 
-+ (NSString *)generateContentPage:(NSArray *)floorList
++ (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic
 {
     NSString *finalString = [[NSString alloc] init];
     for (S1Floor *topicFloor in floorList) {
@@ -222,6 +228,11 @@
         NSString *floorIndexMark = topicFloor.indexMark;
         if (![floorIndexMark isEqualToString:@"楼主"]) {
             floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
+        }
+        //process author
+        NSString *floorAuthor = topicFloor.author;
+        if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
+            floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
         }
         //process time
         NSString *floorPostTime = topicFloor.postTime;
@@ -249,7 +260,7 @@
         if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
             replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
         }
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }

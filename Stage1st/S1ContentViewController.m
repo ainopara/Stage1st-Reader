@@ -471,7 +471,7 @@
                          NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
                          NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
                          _topicFloors = floorList;
-                         NSString *string = [S1Parser generateContentPage:floorList];
+                         NSString *string = [S1Parser generateContentPage:floorList withTopic:self.topic];
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                          [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
                          if (_currentPage == 1) {
