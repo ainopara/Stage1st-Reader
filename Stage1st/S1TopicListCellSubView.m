@@ -130,7 +130,7 @@
     
     if (self.topic.lastReplyCount) {
         NSNumber *replyCountChanged = @([self.topic.replyCount longLongValue] - [self.topic.lastReplyCount longLongValue]);
-        if (replyCountChanged > 0) {
+        if ([replyCountChanged longLongValue] > 0) {
             NSString* replyChangeContent = [NSString stringWithFormat:@"+%@", replyCountChanged];
             NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
             replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
