@@ -486,10 +486,8 @@
                              [self updatePageLabel];
                          }
                          //check login state
-                         if (![S1Parser checkLoginState:HTMLString])
-                         {
-                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
-                         }
+                         [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+                         
                          [self.webView loadHTMLString:string baseURL:nil];
                          _finishLoading = YES;
                          dispatch_async(dispatch_get_main_queue(), ^{

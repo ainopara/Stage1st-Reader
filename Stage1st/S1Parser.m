@@ -342,16 +342,13 @@
     return infoDict;
 }
 #pragma mark - Checking
-+ (BOOL)checkLoginState:(NSString *)HTMLString
++ (NSString *)loginUserName:(NSString *)HTMLString
 {
-    NSString *pattern = @"mod=logging&amp;action=logout";
+    NSString *pattern = @"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSInteger num = [result numberOfRanges];
-    if (num == 0) {
-        return NO;
-    }
-    return YES;
+    NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    return [username isEqualToString:@""]?nil:username;
 }
 
 

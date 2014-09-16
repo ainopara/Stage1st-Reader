@@ -425,9 +425,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                          //check login state
                          NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         if (![S1Parser checkLoginState:HTMLString]) {
-                             [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
-                         }
+                         [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
                          //parse topics
                          NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": fid}] mutableCopy];
                          for (S1Topic *topic in topics) {

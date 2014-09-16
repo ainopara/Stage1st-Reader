@@ -21,6 +21,6 @@
 
 + (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 
-+ (BOOL)checkLoginState:(NSString *)HTMLString;
++ (NSString *)loginUserName:(NSString *)HTMLString;
 
 @end
