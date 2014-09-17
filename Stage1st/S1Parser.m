@@ -155,7 +155,7 @@
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
     // NSLog(@"Begin Parsing.");
-    NSDate *start = [NSDate date];
+    // NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
 
@@ -213,7 +213,7 @@
         }
     }
 
-    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
     // NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     
     return floorList;
