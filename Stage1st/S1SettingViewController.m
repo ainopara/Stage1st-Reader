@@ -142,6 +142,22 @@
                 }
             }];
         }];
+        /*
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell){
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Favorite_Order", @"Record Order By Visit Time");
+                if (!cell.accessoryView) {
+                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+                    [switcher addEventHandler:^(id sender, UIEvent *event) {
+                        UISwitch *s = sender;
+                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+                    } forControlEvent:UIControlEventValueChanged];
+                    cell.accessoryView = switcher;
+                }
+            }];
+        }];
+        */
 
     }];
     

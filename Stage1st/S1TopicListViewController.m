@@ -322,14 +322,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    NSArray *topics = [self.tracer favoritedObjects];
+    //bool favoriteTopicShouldOrderByLastVisitDate = [[NSUserDefaults standardUserDefaults] boolForKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+    BOOL favoriteTopicShouldOrderByLastVisitDate = YES;
+    NSArray *topics = [self.tracer favoritedObjects:(favoriteTopicShouldOrderByLastVisitDate ? S1TopicOrderByLastVisitDate : S1TopicOrderByFavoriteSetDate)];
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
     NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
     for (S1Topic *topic in topics) {
-        NSString *topicTitle = [formatter stringFromDate:topic.favoriteDate];
-        if ([[formatter stringFromDate:topic.favoriteDate] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+        NSDate *date = favoriteTopicShouldOrderByLastVisitDate ? topic.lastViewedDate : topic.favoriteDate;
+        NSString *topicTitle = [formatter stringFromDate:date];
+        if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
             topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
         }
         if ([topicHeaderTitles containsObject:topicTitle]) {

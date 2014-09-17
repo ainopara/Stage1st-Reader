@@ -40,6 +40,11 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
     }
+    /*
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FavoriteTopicShouldOrderByLastVisitDate"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+    }
+    */
     //Migrate tracer to sql database
     [S1Tracer migrateTracerToDatabase];
     

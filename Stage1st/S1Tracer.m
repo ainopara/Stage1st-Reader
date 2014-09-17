@@ -118,10 +118,16 @@
     return historyTopics;
 }
 
-- (NSArray *)favoritedObjects
+- (NSArray *)favoritedObjects:(S1TopicOrderType)order
 {
     NSMutableArray *favoriteTopics = [NSMutableArray array];
-    FMResultSet *favoriteResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, favorite.favorite_time FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY favorite.favorite_time DESC;"];
+    NSString *queryString = @"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, favorite.favorite_time, threads.last_visit_time FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY ";
+    if (order == S1TopicOrderByFavoriteSetDate) {
+        queryString = [queryString stringByAppendingString:@"favorite.favorite_time DESC;"];
+    } else {
+        queryString = [queryString stringByAppendingString:@"threads.last_visit_time DESC;"];
+    }
+    FMResultSet *favoriteResult = [_db executeQuery:queryString];
     while ([favoriteResult next]) {
         //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
         S1Topic *favoriteTopic = [[S1Topic alloc] init];
@@ -131,6 +137,7 @@
         [favoriteTopic setFID:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"field_id"]]];
         [favoriteTopic setLastViewedPage:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"last_visit_page"]]];
         [favoriteTopic setLastViewedPosition:[NSNumber numberWithFloat:[favoriteResult doubleForColumn:@"last_viewed_position"]]];
+        [favoriteTopic setLastViewedDate:[[NSDate alloc] initWithTimeIntervalSince1970: [favoriteResult doubleForColumn:@"last_visit_time"]]];
         [favoriteTopic setVisitCount:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"visit_count"]]];
         [favoriteTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:favoriteTopic.topicID]]];
         [favoriteTopic setFavoriteDate:[[NSDate alloc] initWithTimeIntervalSince1970: [favoriteResult doubleForColumn:@"favorite_time"]]];
