@@ -675,7 +675,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
 }
 
-- (void)updateTabbar:(id)sender
+- (void)updateTabbar:(NSNotification *)notification
 {
     [self.scrollTabBar setKeys:[self keys]];
     self.tableView.hidden = YES;
@@ -686,7 +686,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.cachePageNumber = nil;
     self.cacheContentOffset = nil;
 }
-- (void)reloadTableData:(id)sender
+- (void)reloadTableData:(NSNotification *)notification
 {
     [self.tableView reloadData];
 }

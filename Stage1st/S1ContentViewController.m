@@ -179,6 +179,7 @@
         }
         [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
         [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
+        [self.topic setLastReplyCount:self.topic.replyCount];
         [self.tracer hasViewed:self.topic];
         
         dispatch_async(dispatch_get_main_queue(), ^{
