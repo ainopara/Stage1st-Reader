@@ -100,7 +100,7 @@
     //Backward Button
 
     button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:[UIImage imageNamed:@"Back_iOS7.png"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 30, 30);
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
@@ -113,7 +113,7 @@
     
     //Forward Button
     button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:[UIImage imageNamed:@"Forward_iOS7.png"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 30, 30);
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:100];
