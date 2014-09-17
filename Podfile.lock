@@ -1,5 +1,5 @@
 PODS:
-  - ActionSheetPicker-3.0 (1.1.11)
+  - ActionSheetPicker-3.0 (1.1.12)
   - AFNetworking (2.4.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
@@ -43,7 +43,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/skywinder/ActionSheetPicker-3.0.git
 
 SPEC CHECKSUMS:
-  ActionSheetPicker-3.0: 8f2f83d2ea75d358e7952ba7e4f0ea44b1511628
+  ActionSheetPicker-3.0: 6c9c0f28292d25beccd5de3ee47d198dd2f73773
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
   JTSImageViewController: 3951f79d2643c79b57f3961dd030bd328771a27d
