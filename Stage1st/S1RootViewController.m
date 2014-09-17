@@ -109,10 +109,10 @@ typedef enum {
     else {
         CGFloat velocityX = [gestureRecognizer velocityInView:self.detailViewController.view].x;
         NSLog(@"%f, %f",translation.x, velocityX);
-        if (translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) {
-            [self dismissDetailViewController:(_screenWidth - translation.x) / fabsf(velocityX)];
+        if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX > 0) {
+            [self dismissDetailViewController:fmin((_screenWidth - translation.x) / fabsf(velocityX), 0.3)];
         } else {
-            [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [UIView animateWithDuration:fmin((translation.x / fabsf(velocityX)), 0.4) delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.detailViewController.view.transform = CGAffineTransformIdentity;
                 self.masterViewController.view.transform = CGAffineTransformMakeTranslation(-_screenWidth/2, 0);
             } completion:nil];
@@ -126,7 +126,7 @@ typedef enum {
 {
     [self.detailViewController willMoveToParentViewController:nil];
     [self.masterViewController viewWillAppear:NO];
-    [UIView animateWithDuration:inTime < 0.3 ? inTime : 0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
+    [UIView animateWithDuration:inTime delay:0.0 options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          CGRect endFrame = self.view.bounds;
                          endFrame.origin.x = endFrame.size.width;
