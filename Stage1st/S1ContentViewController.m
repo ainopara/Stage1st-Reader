@@ -346,9 +346,9 @@
         }
         
         if (3 == buttonIndex) {
-            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+            [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
-            controller.modalPresentationStyle = UIModalPresentationPageSheet;
+            //controller.modalPresentationStyle = UIModalPresentationPageSheet;
             [[controller view] setTintColor:[S1GlobalVariables color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }
