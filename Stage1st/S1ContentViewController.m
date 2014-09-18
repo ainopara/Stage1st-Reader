@@ -293,7 +293,7 @@
                                   NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
                                   NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [actionSheet showFromToolbar:self.toolbar];    
+    [actionSheet showInView:self.view];
 }
 
 #pragma mark - UIActionSheet Delegate
