@@ -34,6 +34,7 @@
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIView *statusBackgroundView; //for iOS7 and above
 @property (nonatomic, strong) UILabel *pageLabel;
+@property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -137,12 +138,12 @@
     labelItem.width = 80;
     
     
-    UIBarButtonItem *actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
+    self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixItem.width = 36.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    [self.toolbar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, actionItem]];
+    [self.toolbar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, self.actionBarButtonItem]];
     
     [self.view addSubview:self.toolbar];
     self.view.autoresizesSubviews = YES;
@@ -284,16 +285,61 @@
 
 - (void)action:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
-                                  [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
-                                  NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
-                                  NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
-    actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [actionSheet showInView:self.view];
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
+                                      [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                      NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
+                                      NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
+        actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+        [actionSheet showInView:self.view];
+    } else {
+        UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self presentReplyViewWithAppendText:@"" reply:nil];
+        }];
+        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+        }];
+        UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            if (!NSClassFromString(@"SLComposeViewController")) {
+                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
+                return;
+            }
+            SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
+            if (!controller) {
+                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"")];
+                return;
+            }
+            [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
+            [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
+            [controller addImage:[self screenShot]];
+            
+            __weak SLComposeViewController *weakController = controller;
+            [self presentViewController:controller animated:YES completion:nil];
+            [controller setCompletionHandler:^(SLComposeViewControllerResult result){
+                [weakController dismissViewControllerAnimated:YES completion:nil];
+            }];
+        }];
+        UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+            [controller.view setTintColor:[S1GlobalVariables color3]];
+            [self presentViewController:controller animated:YES completion:nil];
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
+        [moreActionSheet addAction:replyAction];
+        [moreActionSheet addAction:favoriteAction];
+        [moreActionSheet addAction:weiboAction];
+        [moreActionSheet addAction:originPageAction];
+        [moreActionSheet addAction:cancelAction];
+        [moreActionSheet.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
+        [self presentViewController:moreActionSheet animated:YES completion:nil];
+    }
+    
 }
 
 #pragma mark - UIActionSheet Delegate
@@ -346,20 +392,10 @@
         }
         
         if (3 == buttonIndex) {
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && !SYSTEM_VERSION_LESS_THAN(@"8")) {
-                NSLog(@"special");
-                [self dismissViewControllerAnimated:NO completion:^(void){
-                    NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
-                    SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-                    [controller.view setTintColor:[S1GlobalVariables color3]];
-                    [self presentViewController:controller animated:YES completion:nil];
-                }];
-            } else {
-                NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
-                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-                [controller.view setTintColor:[S1GlobalVariables color3]];
-                [self presentViewController:controller animated:YES completion:nil];
-            }
+            NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+            [controller.view setTintColor:[S1GlobalVariables color3]];
+            [self presentViewController:controller animated:YES completion:nil];
         }
     }
     
@@ -451,15 +487,35 @@
 }
 
 #pragma mark - JTSImageViewController Interactions Delegate
-- (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer {
+- (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     self.imageViewer = imageViewer;
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save"),NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL"), nil];
-    //actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [actionSheet showInView:imageViewer.view];
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save"),NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL"), nil];
+        [actionSheet showInView:imageViewer.view];
+    } else {
+        UIAlertController *imageActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                UIImageWriteToSavedPhotosAlbum(self.imageViewer.image, nil, nil, nil);
+            });
+        }];
+        UIAlertAction *copyURLAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = self.imageViewer.imageInfo.imageURL.absoluteString;
+        }];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
+        [imageActionSheet addAction:saveAction];
+        [imageActionSheet addAction:copyURLAction];
+        [imageActionSheet addAction:cancelAction];
+        [imageActionSheet.popoverPresentationController setSourceView:imageViewer.view];
+        [imageActionSheet.popoverPresentationController setSourceRect:rect];
+        [imageViewer presentViewController:imageActionSheet animated:YES completion:nil];
+    }
+    
 }
 #pragma mark - UIScrollView Delegate
 
