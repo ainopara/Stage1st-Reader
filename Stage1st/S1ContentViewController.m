@@ -346,11 +346,20 @@
         }
         
         if (3 == buttonIndex) {
-            [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
-            //controller.modalPresentationStyle = UIModalPresentationPageSheet;
-            [[controller view] setTintColor:[S1GlobalVariables color3]];
-            [self presentViewController:controller animated:YES completion:nil];
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad && !SYSTEM_VERSION_LESS_THAN(@"8")) {
+                NSLog(@"special");
+                [self dismissViewControllerAnimated:NO completion:^(void){
+                    NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+                    SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+                    [controller.view setTintColor:[S1GlobalVariables color3]];
+                    [self presentViewController:controller animated:YES completion:nil];
+                }];
+            } else {
+                NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+                [controller.view setTintColor:[S1GlobalVariables color3]];
+                [self presentViewController:controller animated:YES completion:nil];
+            }
         }
     }
     
