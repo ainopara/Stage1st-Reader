@@ -326,12 +326,12 @@
         //Weibo
         if (2 == buttonIndex) {
             if (!NSClassFromString(@"SLComposeViewController")) {
-                [[[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
                 return;
             }
             SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
             if (!controller) {
-                [[[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"")];
                 return;
             }
             [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
@@ -406,12 +406,26 @@
         return NO;
     }
     //open link
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
-    _urlToOpen = request.URL;
-    [alertView show];
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
+        _urlToOpen = request.URL;
+        [alertView show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+        UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            _urlToOpen = request.URL;
+            NSLog(@"%@", _urlToOpen);
+            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
+            [[controller view] setTintColor:[S1GlobalVariables color3]];
+            [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+            [self presentViewController:controller animated:YES completion:nil];
+        }];
+        [alert addAction:cancelAction];
+        [alert addAction:continueAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
     return NO;
-//    NSLog(@"Request: %@", request.URL.absoluteString);
-//    return YES;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -652,7 +666,7 @@
 {
     //check in login state.
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-        [[[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+        [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
     }
     
@@ -710,4 +724,15 @@
     [self.tracer hasViewed:self.topic];
 }
 
+- (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
+{
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"OK") otherButtonTitles:nil] show];
+    } else {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
 @end
