@@ -85,6 +85,7 @@
     self.window.rootViewController = rootVC;
     
     [self.window makeKeyAndVisible];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     return YES;
 }
 
