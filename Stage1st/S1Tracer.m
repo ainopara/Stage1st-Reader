@@ -99,7 +99,7 @@
 - (NSArray *)historyObjects
 {
     NSMutableArray *historyTopics = [NSMutableArray array];
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, threads.last_visit_time FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC;"];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, threads.last_visit_time FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC LIMIT 500;"];
     while ([historyResult next]) {
         //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
         S1Topic *historyTopic = [[S1Topic alloc] init];
