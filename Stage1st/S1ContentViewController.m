@@ -628,6 +628,7 @@
     NSString *path = [NSString stringWithFormat:pathTemplate, self.topic.fID, self.topic.topicID, topicFloor.floorID, (long)_currentPage];
     
     MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+    [overlay postMessage:@"正在获取引用信息" animated:YES];
     [self.HTTPClient GET:path parameters:nil
                  success:^(NSURLSessionDataTask *operation, id responseObject) {
                      NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
