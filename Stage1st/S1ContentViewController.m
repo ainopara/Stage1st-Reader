@@ -666,6 +666,9 @@
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];
         }
+        for (NSURLSessionDataTask* task in dataTasks) {
+            [task cancel];
+        }
     }];
     
 }
