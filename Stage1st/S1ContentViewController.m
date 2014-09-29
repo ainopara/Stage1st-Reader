@@ -48,6 +48,8 @@
     BOOL _needToScrollToBottom;
     BOOL _needToLoadLastPosition;
     BOOL _finishLoading;
+    BOOL _presentingImageViewer;
+    BOOL _presentingWebViewer;
     NSURL *_urlToOpen;
 }
 
@@ -61,6 +63,8 @@
         _needToScrollToBottom = NO;
         _needToLoadLastPosition = YES;
         _finishLoading = NO;
+        _presentingImageViewer = NO;
+        _presentingWebViewer = NO;
     }
     return self;
 }
@@ -160,7 +164,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
+    _presentingImageViewer = NO;
+    _presentingWebViewer = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -170,6 +175,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    if (_presentingImageViewer || _presentingWebViewer) {
+        return;
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
         
@@ -325,6 +333,7 @@
             }];
         }];
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
             [controller.view setTintColor:[S1GlobalVariables color3]];
@@ -392,6 +401,7 @@
         }
         
         if (3 == buttonIndex) {
+            _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
             [controller.view setTintColor:[S1GlobalVariables color3]];
@@ -406,6 +416,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (1 == buttonIndex) {
+        _presentingWebViewer = YES;
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
         [[controller view] setTintColor:[S1GlobalVariables color3]];
@@ -431,10 +442,11 @@
                 if ([decodedQuery isEqualToString:topicFloor.indexMark]) {
                     NSLog(@"%@", topicFloor.author);
                     [self presentReplyViewWithAppendText:nil reply:topicFloor];
+                    break;
                 }
             }
-        }
-        if ([request.URL.path hasPrefix:@"/present-image:"]) {
+        } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
+            _presentingImageViewer = YES;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
             NSLog(@"%@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
@@ -459,6 +471,7 @@
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
         UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            _presentingWebViewer = YES;
             _urlToOpen = request.URL;
             NSLog(@"%@", _urlToOpen);
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
