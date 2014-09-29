@@ -678,13 +678,20 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)updateTabbar:(NSNotification *)notification
 {
     [self.scrollTabBar setKeys:[self keys]];
-    self.tableView.hidden = YES;
-    self.topics = [NSMutableArray array];
-    [self.tableView reloadData];
-    self.currentKey = nil;
-    self.cache = nil;
-    self.cachePageNumber = nil;
-    self.cacheContentOffset = nil;
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        self.cache = nil;
+        self.cachePageNumber = nil;
+        self.cacheContentOffset = nil;
+    } else {
+        self.tableView.hidden = YES;
+        self.topics = [NSMutableArray array];
+        self.currentKey = nil;
+        self.cache = nil;
+        self.cachePageNumber = nil;
+        self.cacheContentOffset = nil;
+        [self.tableView reloadData];
+    }
+    
 }
 - (void)reloadTableData:(NSNotification *)notification
 {
