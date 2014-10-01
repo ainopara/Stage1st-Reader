@@ -13,7 +13,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[Topic] ID:%@, TimeStamp:%@", self.topicID, self.lastViewedDate];
+    return [NSString stringWithFormat:@"[Topic] ID:%@, Page & Position:%@ %@", self.topicID, self.lastViewedPage, self.lastViewedPosition];
 }
 
 

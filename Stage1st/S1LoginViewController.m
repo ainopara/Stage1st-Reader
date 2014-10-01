@@ -122,7 +122,7 @@
     
     [[self HTTPClient] POST:@"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1"
                      parameters:param
-                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        success:^(NSURLSessionDataTask *operation, id responseObject) {
                             NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                             NSLog(@"Login Response: %@", result);
                             NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
@@ -144,7 +144,7 @@
                             }
                             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         }
-                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        failure:^(NSURLSessionDataTask *operation, NSError *error) {
                             NSLog(@"%@", error);
                             NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
                             [userDefault setValue:nil forKey:@"InLoginStateID"];

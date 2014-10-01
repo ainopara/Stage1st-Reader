@@ -7,6 +7,9 @@
 "ContentView_ActionSheet_Favorite" = "收藏";
 "ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
 
+"ImageViewer_ActionSheet_Save" = "保存图像";
+"ImageViewer_ActionSheet_CopyURL" = "复制图像地址";
+
 "ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "取消";
 "ContentView_WebView_Open_Link_Alert_Open" = "打开";
@@ -20,6 +23,9 @@
 "TopicListView_NavigationBar_Settings" = "设置";
 "TopicListView_SegmentControl_History" = "历史";
 "TopicListView_SegmentControl_Favorite" = "收藏";
+"TopicListView_ListHeader_Style" = "yyyy年M月d日";
+"TopicListView_ListHeader_Short_Style" = "M月d日";
+"TopicListView_ListHeader_Today" = "（今天）";
 
 "SettingView_NavigationBar_Title" = "设置";
 "SettingView_NavigationBar_Back" = "返回";
@@ -30,6 +36,7 @@
 "SettingView_Display_Image" = "显示图片";
 "SettingView_Append_Suffix" = "回复尾巴";
 "SettingView_HistoryLimit" = "保存历史记录";
+/*"SettingView_Favorite_Order" = "最后访问时间排序";*/
 
 "SettingView_HistoryLimit_3days" = "3天";
 "SettingView_HistoryLimit_1week" = "1周";

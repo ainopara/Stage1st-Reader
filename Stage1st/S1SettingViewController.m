@@ -142,6 +142,22 @@
                 }
             }];
         }];
+        /*
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell){
+                cell.textLabel.text = NSLocalizedString(@"SettingView_Favorite_Order", @"Record Order By Visit Time");
+                if (!cell.accessoryView) {
+                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+                    [switcher addEventHandler:^(id sender, UIEvent *event) {
+                        UISwitch *s = sender;
+                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+                    } forControlEvent:UIControlEventValueChanged];
+                    cell.accessoryView = switcher;
+                }
+            }];
+        }];
+        */
 
     }];
     
@@ -157,7 +173,7 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Developer", @"Developer");
-                cell.detailTextLabel.text = @"Gabriel, ainopara";
+                cell.detailTextLabel.text = @"Gabriel & ainopara";
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell){
@@ -174,6 +190,23 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark - Orientation
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+    return [super supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return UIInterfaceOrientationPortrait;
+    }
+    return [super preferredInterfaceOrientationForPresentation];
+}
 
 #pragma mark - 
 
@@ -183,8 +216,5 @@
         
     }];
 }
-#pragma mark - convert
-
-
 
 @end

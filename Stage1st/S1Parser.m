@@ -41,6 +41,19 @@
             NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
             [image addAttributeWithName:@"src" stringValue:[baseURLString stringByAppendingString:imageSrc]];
         }
+        if ([[image attributeForName:@"src"] stringValue]) {
+            if (![imageSrc hasPrefix:@"static/image/smiley"]) {
+                DDXMLElement *linkElement = image;
+                DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
+                [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
+                NSString *linkString = [@"/present-image:" stringByAppendingString:[[image attributeForName:@"src"] stringValue]];
+                [linkElement addAttributeWithName:@"href" stringValue:linkString];
+                [linkElement addChild:imageElement];
+                [linkElement removeAttributeForName:@"src"];
+                [linkElement setName:@"a"];
+            }
+        }
+        
         //clean image's attribute
         [image removeAttributeForName:@"onmouseover"];
         [image removeAttributeForName:@"onclick"];
@@ -118,14 +131,19 @@
             TFHppleElement *leftPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='s xst']"] firstObject];
             NSString *content = [leftPart text];
             NSString *href = [leftPart objectForKey:@"href"];
-            TFHppleElement *rightPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
+            TFHppleElement *rightPart = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
             NSString *replyCount = [rightPart text];
+            TFHppleElement *authorPart = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='by'][1]/cite/a"] firstObject];
+            NSString *authorName = [authorPart text];
+            NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
             
             S1Topic *topic = [[S1Topic alloc] init];
             [topic setTopicID:[NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]]];
             [topic setTitle:content];
             [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
             [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
+            [topic setAuthorUserID:[NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
+            [topic setAuthorUserName:authorName];
             [topics addObject:topic];
         }
     }
@@ -136,13 +154,13 @@
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
 {
-    NSLog(@"Begin Parsing.");
-    NSDate *start = [NSDate date];
+    // NSLog(@"Begin Parsing.");
+    // NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
 
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
-    NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
+    // NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
     
     if ([elements count]) {
 
@@ -156,6 +174,7 @@
             //parse author
             TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
             [floor setAuthor: [authorNode text]];
+            [floor setAuthorID:[NSNumber numberWithInteger:[[[[authorNode objectForKey:@"href"] componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
             
             //parse post time
             TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
@@ -194,13 +213,13 @@
         }
     }
 
-    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-    NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
+    // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    // NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     
     return floorList;
 }
 
-+ (NSString *)generateContentPage:(NSArray *)floorList
++ (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic
 {
     NSString *finalString = [[NSString alloc] init];
     for (S1Floor *topicFloor in floorList) {
@@ -209,6 +228,11 @@
         NSString *floorIndexMark = topicFloor.indexMark;
         if (![floorIndexMark isEqualToString:@"楼主"]) {
             floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
+        }
+        //process author
+        NSString *floorAuthor = topicFloor.author;
+        if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
+            floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
         }
         //process time
         NSString *floorPostTime = topicFloor.postTime;
@@ -236,7 +260,7 @@
         if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
             replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
         }
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
@@ -318,16 +342,13 @@
     return infoDict;
 }
 #pragma mark - Checking
-+ (BOOL)checkLoginState:(NSString *)HTMLString
++ (NSString *)loginUserName:(NSString *)HTMLString
 {
-    NSString *pattern = @"mod=logging&amp;action=logout";
+    NSString *pattern = @"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSInteger num = [result numberOfRanges];
-    if (num == 0) {
-        return NO;
-    }
-    return YES;
+    NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    return [username isEqualToString:@""]?nil:username;
 }
 
 

@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 @class FMDatabase;
+@class S1Topic;
+typedef enum {
+    S1TopicOrderByFavoriteSetDate,
+    S1TopicOrderByLastVisitDate
+} S1TopicOrderType;
 
 @interface S1Tracer : NSObject
 
@@ -15,17 +20,18 @@
 
 - (id)init;
 
-- (void)hasViewed:(id)object;
+- (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
 - (NSArray *)historyObjects;
-- (NSArray *)favoritedObjects;
+- (NSArray *)favoritedObjects:(S1TopicOrderType)order;
 
-- (id)tracedTopic:(NSNumber *)key;
+- (S1Topic *)tracedTopic:(NSNumber *)key;
 
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
 - (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
 + (void)migrateTracerToDatabase;
++ (void)upgradeDatabase;
 
 @end

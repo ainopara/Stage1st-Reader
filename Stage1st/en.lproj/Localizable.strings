@@ -7,6 +7,9 @@
 "ContentView_ActionSheet_Favorite" = "Favorite";
 "ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
 
+"ImageViewer_ActionSheet_Save" = "Save Image";
+"ImageViewer_ActionSheet_CopyURL" = "Copy Image URL";
+
 "ContentView_WebView_Open_Link_Alert_Title" = "Open Link";
 "ContentView_WebView_Open_Link_Alert_Cancel" = "Cancel";
 "ContentView_WebView_Open_Link_Alert_Open" = "Open";
@@ -20,6 +23,9 @@
 "TopicListView_NavigationBar_Settings" = "Settings";
 "TopicListView_SegmentControl_History" = "History";
 "TopicListView_SegmentControl_Favorite" = "Favorite";
+"TopicListView_ListHeader_Style" = "EEEE, MMMM d, yyyy";
+"TopicListView_ListHeader_Short_Style" = "MMMM d";
+"TopicListView_ListHeader_Today" = " (Today)";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";
@@ -30,6 +36,7 @@
 "SettingView_Display_Image" = "Display Image";
 "SettingView_Append_Suffix" = "Reply Suffix";
 "SettingView_HistoryLimit" = "Keep History";
+/*"SettingView_Favorite_Order" = "Record Sort By Last Visit Date";*/
 
 "SettingView_HistoryLimit_3days" = "3 days";
 "SettingView_HistoryLimit_1week" = "1 week";

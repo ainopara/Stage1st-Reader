@@ -19,33 +19,32 @@
 @implementation S1TabBar {
     NSMutableArray *_buttons;
     NSInteger _index;
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-    }
-    return self;
+    CGFloat _lastContentOffset;
 }
 
 - (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys
 {
     self = [super initWithFrame:frame];
-    if (!self) return nil;    
-    _keys = keys;
-    _index = -1;
-    _enabled = YES;
-    _buttons = [NSMutableArray arrayWithCapacity:keys.count];
-    self.backgroundColor = [S1GlobalVariables color3];
-    self.bounces = NO;
-    self.showsHorizontalScrollIndicator = NO;
-    self.scrollsToTop = NO;
-    self.delegate = self;
-    self.lastRecognizedOrientation = UIDeviceOrientationPortrait;
-//    self.decelerationRate = UIScrollViewDecelerationRateFast;
-    [self addItems];
+    if (self) {
+        _keys = keys;
+        _index = -1;
+        _enabled = YES;
+        _buttons = [NSMutableArray arrayWithCapacity:keys.count];
+        self.backgroundColor = [S1GlobalVariables color3];
+        self.canCancelContentTouches = YES;
+        self.bounces = NO;
+        self.showsHorizontalScrollIndicator = NO;
+        self.scrollsToTop = NO;
+        self.delegate = self;
+        self.lastRecognizedOrientation = UIDeviceOrientationPortrait;
+        //self.decelerationRate = UIScrollViewDecelerationRateFast;
+        [self addItems];
+    }
     return self;
+}
+
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view {
+    return YES;
 }
 
 - (void)setKeys:(NSArray *)keys
@@ -64,52 +63,77 @@
         [self addItems];
     }
 }
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    _lastContentOffset = scrollView.contentOffset.x;
+    NSLog(@"Begin Dragging:%f", _lastContentOffset);
+}
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    _lastContentOffset = scrollView.contentOffset.x;
+    NSLog(@"Begin Decelerating:%f", _lastContentOffset);
+}
+
+- (CGFloat)getWidthPerItem {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return _DEFAULT_WIDTH;
+    } else {
+        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            NSLog(@"Decelerating Portrait");
+            return _DEFAULT_WIDTH_IPAD;
+            
+        } else {
+            NSLog(@"Decelerating Landscape");
+            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+        }
+    }
+}
+
+- (CGFloat)decideOffset:(CGPoint)offset {
+    CGFloat widthPerItem = [self getWidthPerItem];
+    float maxOffset = _keys.count * _DEFAULT_WIDTH - self.bounds.size.width;
+
+    if (_lastContentOffset == 0 && offset.x == 0) {
+        offset.x = 0.0;
+        return offset.x;
+    }
+    if (offset.x < _lastContentOffset) {
+        CGFloat n = floorf(offset.x / widthPerItem);
+        if (fmodf(offset.x, widthPerItem) < widthPerItem / 2) {
+            offset.x = n * widthPerItem;
+        } else {
+            offset.x = (n + 1) * widthPerItem;
+        }
+    } else {
+        float offsetFix = _DEFAULT_WIDTH - fmodf(maxOffset, _DEFAULT_WIDTH);
+        CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
+        if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
+            offset.x = n*widthPerItem - offsetFix;
+        } else {
+            offset.x = (n+1)*widthPerItem - offsetFix;
+        }
+    }
+    
+    offset.x = offset.x > maxOffset ? maxOffset : offset.x;
+    offset.x = offset.x < 0 ? 0.0 : offset.x;
+    return offset.x;
+}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    CGFloat widthPerItem;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = _DEFAULT_WIDTH;
-    } else {
-        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
-            widthPerItem = _DEFAULT_WIDTH_IPAD;
-            NSLog(@"Decelerating Portrait");
-        } else {
-            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-            NSLog(@"Decelerating Landscape");
-        }
-    }
     CGPoint offset = scrollView.contentOffset;
-    CGFloat n = roundf(offset.x / widthPerItem);
-    if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
-        offset.x = n*widthPerItem;
-    else
-        offset.x = (n+1)*widthPerItem;
+    NSLog(@"End Decelerating:%f", offset.x);
+    offset.x = [self decideOffset:offset];
+    NSLog(@"Target Decelerating:%f", offset.x);
     [scrollView setContentOffset:offset animated:YES];
     return;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    CGFloat widthPerItem;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = _DEFAULT_WIDTH;
-    } else {
-        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
-            widthPerItem = _DEFAULT_WIDTH_IPAD;
-            NSLog(@"Dragging Portrait");
-        } else {
-            widthPerItem = _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-            NSLog(@"Dragging Landscape");
-        }
-    }
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
-        CGFloat n = roundf(offset.x / widthPerItem);
-        if ((offset.x - n*widthPerItem) < ((n+1)*widthPerItem -offset.x))
-            offset.x = n*widthPerItem;
-        else
-            offset.x = (n+1)*widthPerItem;
+        NSLog(@"End Dragging:%f", offset.x);
+        offset.x = [self decideOffset:offset];
+        NSLog(@"Target Dragging:%f", offset.x);
         [scrollView setContentOffset:offset animated:YES];
     }
     return;
@@ -140,7 +164,7 @@
 
     CGFloat widthPerItem;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = (_keys.count >= 4 ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+        widthPerItem = (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
     } else {
         if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
             widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
@@ -150,57 +174,26 @@
     }
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-            CGRect rect = CGRectMake(width, 0, widthPerItem, self.bounds.size.height);
-            [btn setFrame:CGRectInset(rect, 1.0, 2.0)];
-            btn.showsTouchWhenHighlighted = NO;
-            [btn setBackgroundImage:[UIImage imageNamed:@"Item.png"] forState:UIControlStateNormal];
-            [btn setBackgroundImage:[[UIImage imageNamed:@"Item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateHighlighted];
-            [btn setBackgroundImage:[[UIImage imageNamed:@"Item_selected.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 15, 5, 15)] forState:UIControlStateSelected];
-            [btn setTitle:[obj description] forState:UIControlStateNormal];
-            [btn setTitle:[obj description] forState:UIControlStateHighlighted];
-            [btn setTitle:[obj description] forState:UIControlStateSelected];
-            btn.titleLabel.textColor = [UIColor whiteColor];
-            btn.titleLabel.shadowColor = [UIColor blackColor];
-            btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-            btn.titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                btn.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-            }
-            [btn setTag:idx];
-            [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-            [_buttons addObject:btn];
-            width += widthPerItem;
-            [self addSubview:btn];
-        } else {
-            UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-            CGRect rect = CGRectMake(width, 0.25, widthPerItem, self.bounds.size.height-0.25);
-            [btn setFrame:rect];
-            btn.showsTouchWhenHighlighted = NO;
-            //color2 color7
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
-            [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
-            
-            [btn setTitle:[obj description] forState:UIControlStateNormal];
-            //[btn setTitle:[obj description] forState:UIControlStateHighlighted];
-            //[btn setTitle:[obj description] forState:UIControlStateSelected];
-            [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
-            //btn.titleLabel.shadowColor = [UIColor blackColor];
-            //btn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-            btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
-            }
-            [btn setTag:idx];
-            [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-            [_buttons addObject:btn];
-            width += widthPerItem;
-            [self addSubview:btn];
-            
-
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        CGRect rect = CGRectMake(width, 0.25, ceilf(widthPerItem), self.bounds.size.height-0.25);
+        [btn setFrame:rect];
+        btn.showsTouchWhenHighlighted = NO;
+        //color2 color7
+        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
+        
+        [btn setTitle:[obj description] forState:UIControlStateNormal];
+        [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
         }
+        [btn setTag:idx];
+        [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
+        [_buttons addObject:btn];
+        width += widthPerItem;
+        [self addSubview:btn];
         
     }];
     
@@ -222,7 +215,7 @@
                     UIButton *btn = (UIButton *)obj;
                     NSInteger idx = btn.tag;
                     CGRect rect = CGRectMake(widthPerItem * idx, 0.25, widthPerItem, self.bounds.size.height-0.25);
-                    [btn setFrame:SYSTEM_VERSION_LESS_THAN(@"7")?CGRectInset(rect, 1.0, 2.0):rect];
+                    [btn setFrame:rect];
                     if (idx > maxIndex) {
                         maxIndex = idx;
                     }

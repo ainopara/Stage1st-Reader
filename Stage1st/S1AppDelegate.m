@@ -32,7 +32,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"15px" forKey:@"FontSize"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
@@ -40,6 +40,11 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
     }
+    /*
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FavoriteTopicShouldOrderByLastVisitDate"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+    }
+    */
     //Migrate tracer to sql database
     [S1Tracer migrateTracerToDatabase];
     
@@ -60,6 +65,8 @@
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
+    //Migrate to v3.6.0
+    [S1Tracer upgradeDatabase];
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                          diskCapacity:10 * 1024 * 1024
@@ -67,30 +74,11 @@
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    if (SYSTEM_VERSION_LESS_THAN(@"7")) {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Navigation.png"] forToolbarPosition:UIToolbarPositionTop barMetrics:UIBarMetricsDefault];
-            [[UINavigationBar appearance] setBackgroundImage:[[UIImage imageNamed:@"Navigation.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forBarMetrics:UIBarMetricsDefault];
-            [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [[UIBarButtonItem appearance] setBackgroundImage:[[UIImage imageNamed:@"Bar_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-            [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[[UIImage imageNamed:@"Back_button_item_highlighted.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 14, 0, 7)] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-        }
-        
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            [[UIToolbar appearance] setBackgroundImage:[UIImage imageNamed:@"Toolbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
-        }
-    } else {
-        [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
-        [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
-        [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
-        [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-    }
-    
+    [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
+    [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
+    [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
+    [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
 
-    
-    
     self.window.backgroundColor = [UIColor blackColor];
     S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
     S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];

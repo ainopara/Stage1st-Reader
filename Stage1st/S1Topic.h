@@ -13,14 +13,21 @@
 @property (nonatomic, copy) NSNumber *fID;
 @property (nonatomic, copy) NSNumber *topicID;
 @property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSNumber *authorUserID;
+@property (nonatomic, copy) NSString *authorUserName;
 @property (nonatomic, copy) NSNumber *replyCount;
+@property (nonatomic, copy) NSNumber *lastReplyCount;
+@property (nonatomic, copy) NSNumber *totalPageCount;
+@property (nonatomic, copy) NSDate *lastReplyDate;
 
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
 
 //For Tracing
 @property (nonatomic, copy) NSNumber *lastViewedPage;
+@property (nonatomic, copy) NSNumber *lastViewedPosition;
 @property (nonatomic, copy) NSDate *lastViewedDate;
+@property (nonatomic, copy) NSDate *favoriteDate;
 
 @property (nonatomic, copy) NSNumber *visitCount;
 @property (nonatomic, copy) NSNumber *favorite;
