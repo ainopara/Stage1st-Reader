@@ -501,6 +501,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                          if (page == 1) {
                              self.topics = [[NSMutableArray alloc] init];
                              self.topicPageNumber = @1;
+                             [self.tableView reloadData];
                          }
                          self.scrollTabBar.enabled = YES;
                          if (self.refreshControl.refreshing) {
