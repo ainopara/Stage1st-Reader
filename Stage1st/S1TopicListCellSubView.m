@@ -128,19 +128,22 @@
                                                       NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                       NSForegroundColorAttributeName: replyCountFinalColor}];
     
-    if (self.topic.lastReplyCount) {
-        NSNumber *replyCountChanged = @([self.topic.replyCount longLongValue] - [self.topic.lastReplyCount longLongValue]);
-        if ([replyCountChanged longLongValue] > 0) {
-            NSString* replyChangeContent = [NSString stringWithFormat:@"+%@", replyCountChanged];
-            NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-            replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
-            replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-            [replyChangeContent drawInRect:CGRectMake(20, 38, 35, 16) withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
-                                                                                      NSParagraphStyleAttributeName: replyCountParagraphStyle,
-                                                                                      NSForegroundColorAttributeName: replyCountFinalColor}];
+    // Draw Reply Increment Text
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"]) {
+        if (self.topic.lastReplyCount) {
+            NSNumber *replyCountChanged = @([self.topic.replyCount longLongValue] - [self.topic.lastReplyCount longLongValue]);
+            if ([replyCountChanged longLongValue] > 0) {
+                NSString* replyChangeContent = [NSString stringWithFormat:@"+%@", replyCountChanged];
+                NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+                replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
+                replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
+                [replyChangeContent drawInRect:CGRectMake(20, 38, 35, 16) withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                                                                                           NSParagraphStyleAttributeName: replyCountParagraphStyle,
+                                                                                           NSForegroundColorAttributeName: replyCountFinalColor}];
+            }
         }
-        
     }
+    
     
     //// Title Drawing
     NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];

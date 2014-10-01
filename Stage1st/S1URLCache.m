@@ -16,6 +16,7 @@
     NSString *URLString = [[request URL] absoluteString];
     NSString *baseURLString = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
     NSString *prefix = [NSString stringWithFormat:@"%@static/image/smiley", baseURLString];
+    NSString *placeholder = @"stage1streader-placeholder.png";
     
     if ([URLString hasPrefix:prefix]) { // when request mahjong
         NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong"];
@@ -38,30 +39,20 @@
             NSLog(@"smiley not cached: %@", URLString);
             return [super cachedResponseForRequest:request];
         }
-    }
-    else if ([URLString hasPrefix:baseURLString]) { // when request webpages or attachments
+    } else if ([URLString hasSuffix:placeholder]) {
+        UIImage *image = [UIImage imageNamed:@"Placeholder"];
+        NSData *imageData = UIImagePNGRepresentation(image);
+        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:request.URL MIMEType:@"image/png" expectedContentLength:[imageData length] textEncodingName:nil];
+        
+        NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:imageData];
+        return cachedResponse;
+    } else if ([URLString hasPrefix:baseURLString]) { // when request webpages or attachments
         return [super cachedResponseForRequest:request];
-    }
-    else { // when request pictures from other websites
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
-            NSMutableURLRequest * newRequest = [request mutableCopy];
-            [newRequest addValue:@"http://bbs.saraba1st.com/2b/forum.php" forHTTPHeaderField:@"Referer"];
-            // NSLog(@"%@", [newRequest allHTTPHeaderFields]);
-            return [super cachedResponseForRequest:newRequest];
-        }
-        else {
-            NSData *imageData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Placeholder" ofType:@"png"]];
-            NSURLResponse *response =
-            [[NSURLResponse alloc] initWithURL:request.URL
-                                      MIMEType:@"image/png"
-                         expectedContentLength:[imageData length]
-                              textEncodingName:nil];
-            
-            NSCachedURLResponse *cachedResponse =
-            [[NSCachedURLResponse alloc] initWithResponse:response
-                                                     data:imageData];
-            return cachedResponse;
-        }
+    } else { // when request pictures from other websites
+        NSMutableURLRequest * newRequest = [request mutableCopy];
+        [newRequest addValue:@"http://bbs.saraba1st.com/2b/forum.php" forHTTPHeaderField:@"Referer"];
+        // NSLog(@"%@", [newRequest allHTTPHeaderFields]);
+        return [super cachedResponseForRequest:newRequest];
     }
 }
 

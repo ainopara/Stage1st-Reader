@@ -238,17 +238,6 @@
 			name = Networking;
 			sourceTree = "<group>";
 		};
-		C08DB46216DE2E52002B4A92 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
-				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
-				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
-				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
-			);
-			name = Cells;
-			sourceTree = "<group>";
-		};
 		C095872B16CA8A36007E0119 = {
 			isa = PBXGroup;
 			children = (
@@ -363,7 +352,10 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C08DB46216DE2E52002B4A92 /* Cells */,
+				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
+				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
+				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
+				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,

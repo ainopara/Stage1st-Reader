@@ -36,6 +36,7 @@
 "SettingView_Display_Image" = "显示图片";
 "SettingView_Append_Suffix" = "回复尾巴";
 "SettingView_HistoryLimit" = "保存历史记录";
+"SettingView_ReplyIncrement" = "显示回复数增量";
 /*"SettingView_Favorite_Order" = "最后访问时间排序";*/
 
 "SettingView_HistoryLimit_3days" = "3天";

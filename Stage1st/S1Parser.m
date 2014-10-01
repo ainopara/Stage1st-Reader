@@ -45,7 +45,12 @@
             if (![imageSrc hasPrefix:@"static/image/smiley"]) {
                 DDXMLElement *linkElement = image;
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
-                [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
+                    [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
+                } else {
+                    NSString *placeholderURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"stage1streader-placeholder.png"];
+                    [imageElement addAttributeWithName:@"src" stringValue:placeholderURL];
+                }
                 NSString *linkString = [@"/present-image:" stringByAppendingString:[[image attributeForName:@"src"] stringValue]];
                 [linkElement addAttributeWithName:@"href" stringValue:linkString];
                 [linkElement addChild:imageElement];

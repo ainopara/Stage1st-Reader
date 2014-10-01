@@ -40,6 +40,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
+    }
     /*
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FavoriteTopicShouldOrderByLastVisitDate"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
@@ -65,7 +68,7 @@
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
-    //Migrate to v3.6.0
+    //Migrate to v3.6
     [S1Tracer upgradeDatabase];
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
@@ -85,6 +88,7 @@
     self.window.rootViewController = rootVC;
     
     [self.window makeKeyAndVisible];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     return YES;
 }
 

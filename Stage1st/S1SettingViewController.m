@@ -142,6 +142,20 @@
                 }
             }];
         }];
+        [section addRow:^(GSRow *row) {
+            [row setConfigurationBlock:^(UITableViewCell *cell){
+                cell.textLabel.text = NSLocalizedString(@"SettingView_ReplyIncrement", @"Show Reply Increment");
+                if (!cell.accessoryView) {
+                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
+                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
+                    [switcher addEventHandler:^(id sender, UIEvent *event) {
+                        UISwitch *s = sender;
+                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"ReplyIncrement"];
+                    } forControlEvent:UIControlEventValueChanged];
+                    cell.accessoryView = switcher;
+                }
+            }];
+        }];
         /*
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
