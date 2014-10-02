@@ -498,7 +498,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                                  [HUD hideWithDelay:0.3];
                              }
                          }
-                         if (page == 1) {
+                         if (![key isEqualToString:self.currentKey]) {
                              self.topics = [[NSMutableArray alloc] init];
                              self.topicPageNumber = @1;
                              [self.tableView reloadData];
