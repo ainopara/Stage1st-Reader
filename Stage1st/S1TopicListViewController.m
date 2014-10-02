@@ -270,6 +270,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)presentHistory
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        [self cancelRequest];
         self.cache[self.currentKey] = self.topics;
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         self.cachePageNumber[self.currentKey] = self.topicPageNumber;
@@ -312,6 +313,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)presentFavorite
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        [self cancelRequest];
         self.cache[self.currentKey] = self.topics;
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         self.cachePageNumber[self.currentKey] = self.topicPageNumber;
@@ -694,6 +696,21 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
 }
+
+-(void) cancelRequest
+{
+    [[self.HTTPClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
+        for (NSURLSessionDataTask* task in downloadTasks) {
+            [task cancel];
+        }
+        for (NSURLSessionDataTask* task in dataTasks) {
+            [task cancel];
+        }
+    }];
+    
+}
+
 - (void)reloadTableData:(NSNotification *)notification
 {
     [self.tableView reloadData];
