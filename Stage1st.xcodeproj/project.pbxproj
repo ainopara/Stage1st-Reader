@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5B593522E3734E14A32C7776 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D156A107F0694E36B647AD5F /* libPods-Stage1st.a */; };
 		860223521895051400A3E66E /* S1GlobalVariables.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1GlobalVariables.m */; };
+		86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */; };
 		860A581619B9FB6600F5B271 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
@@ -64,6 +65,7 @@
 /* Begin PBXFileReference section */
 		860223501895051400A3E66E /* S1GlobalVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1GlobalVariables.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1GlobalVariables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1GlobalVariables.m; sourceTree = "<group>"; };
+		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "jquery-2.1.1.min.js"; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
 		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 				C01C821016FDB5D2003E6B91 /* content_larger_font.css */,
 				868C6A1F18DE88A200BDBDD9 /* content_19px_font.css */,
 				C0B1919616F0A80F0053E0C5 /* content_ipad.css */,
+				86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				C095874316CA8A36007E0119 /* main.m */,
 				C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */,
@@ -482,18 +485,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				C095874216CA8A36007E0119 /* Localizable.strings in Resources */,
-				C08DB46B16DE3794002B4A92 /* content.css in Resources */,
-				86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */,
-				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
+				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
+				86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */,
+				86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */,
+				C08DB46B16DE3794002B4A92 /* content.css in Resources */,
+				C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */,
 				868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */,
+				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
+				86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
-				86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */,
 				860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */,
-				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
 				864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */,
-				C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

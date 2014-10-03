@@ -434,8 +434,9 @@
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
-    //reply
+    
     if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
+        //reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
             for (S1Floor * topicFloor in _topicFloors) {
                 NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -445,19 +446,21 @@
                     break;
                 }
             }
+        // present image
         } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;
+            NSString *imageID = request.URL.fragment;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
             NSLog(@"%@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
-            imageInfo.referenceRect = self.webView.frame;
+            imageInfo.referenceRect = [self positionOfElementWithId:imageID];
             imageInfo.referenceView = self.webView;
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
                                                    backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
-            [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
+            [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
         }
         return NO;
@@ -817,4 +820,12 @@
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
+
+- (CGRect)positionOfElementWithId:(NSString *)elementID {
+    NSString *js = @"function f(){ var r = document.getElementById('%@').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();";
+    NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:js, elementID]];
+    CGRect rect = CGRectFromString(result);
+    return rect;
+}
+
 @end

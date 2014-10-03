@@ -25,6 +25,7 @@
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
+    NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
         NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
         //NSLog(@"image Src:%@",imageSrc);
@@ -45,13 +46,15 @@
             if (![imageSrc hasPrefix:@"static/image/smiley"]) {
                 DDXMLElement *linkElement = image;
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
+                [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"img%ld", (long)imageCount]];
+                imageCount += 1;
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
                     [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
                 } else {
                     NSString *placeholderURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"stage1streader-placeholder.png"];
                     [imageElement addAttributeWithName:@"src" stringValue:placeholderURL];
                 }
-                NSString *linkString = [@"/present-image:" stringByAppendingString:[[image attributeForName:@"src"] stringValue]];
+                NSString *linkString = [NSString stringWithFormat:@"/present-image:%@#%@", [[image attributeForName:@"src"] stringValue], [[imageElement attributeForName:@"id"] stringValue]];
                 [linkElement addAttributeWithName:@"href" stringValue:linkString];
                 [linkElement addChild:imageElement];
                 [linkElement removeAttributeForName:@"src"];
@@ -289,8 +292,9 @@
     } else {
         cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
     }
+    NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
     finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, finalString];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, jqueryPath, finalString];
     return threadPage;
 }
 
