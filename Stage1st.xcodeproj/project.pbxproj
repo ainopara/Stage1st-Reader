@@ -10,6 +10,9 @@
 		5B593522E3734E14A32C7776 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D156A107F0694E36B647AD5F /* libPods-Stage1st.a */; };
 		860223521895051400A3E66E /* S1GlobalVariables.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1GlobalVariables.m */; };
 		86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */; };
+		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
+		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
+		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
 		860A581619B9FB6600F5B271 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 86AA78AF18A79050005A3116 /* libsqlite3.dylib */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
@@ -66,6 +69,12 @@
 		860223501895051400A3E66E /* S1GlobalVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1GlobalVariables.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1GlobalVariables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1GlobalVariables.m; sourceTree = "<group>"; };
 		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "jquery-2.1.1.min.js"; sourceTree = "<group>"; };
+		86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewModel.h; path = Stage1st/S1TopicListViewModel.h; sourceTree = "<group>"; };
+		86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListViewModel.m; path = Stage1st/S1TopicListViewModel.m; sourceTree = "<group>"; };
+		86040B7E19DE3A74004BF2BC /* S1DataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DataCenter.h; path = Stage1st/S1DataCenter.h; sourceTree = "<group>"; };
+		86040B7F19DE3A74004BF2BC /* S1DataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DataCenter.m; path = Stage1st/S1DataCenter.m; sourceTree = "<group>"; };
+		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
+		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
 		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
@@ -174,6 +183,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		86040B7A19DE3313004BF2BC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */,
+				86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */,
+			);
+			name = ViewModel;
+			sourceTree = "<group>";
+		};
 		862F51B61891359A0038A289 /* TFHpple */ = {
 			isa = PBXGroup;
 			children = (
@@ -331,6 +349,7 @@
 			children = (
 				C095877A16CA8DB0007E0119 /* Model */,
 				C095877B16CA8DBE007E0119 /* View */,
+				86040B7A19DE3313004BF2BC /* ViewModel */,
 				C095877C16CA8DC4007E0119 /* Controller */,
 			);
 			name = Classes;
@@ -348,6 +367,10 @@
 				C05286C216D3428E000B0DBD /* S1Parser.m */,
 				C083351716E363870035C1AA /* S1Tracer.h */,
 				C083351816E363870035C1AA /* S1Tracer.m */,
+				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
+				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
+				86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */,
+				86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -542,6 +565,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C095874416CA8A36007E0119 /* main.m in Sources */,
+				86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				867C7F5E1899420D00DF55E8 /* REComposeBackgroundView.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
@@ -550,9 +574,11 @@
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
+				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
 				C095879E16CB61FC007E0119 /* GSRow.m in Sources */,
+				86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */,
 				860223521895051400A3E66E /* S1GlobalVariables.m in Sources */,
 				862F51BD189136000038A289 /* TFHpple.m in Sources */,
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
