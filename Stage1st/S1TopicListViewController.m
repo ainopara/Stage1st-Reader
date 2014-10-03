@@ -37,6 +37,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) NSString *currentKey;
+@property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableArray *topicHeaderTitles;
 @property (nonatomic, strong) NSNumber *topicPageNumber;
@@ -58,6 +59,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (self) {
         // Custom initialization
         _loadingFlag = NO;
+        self.previousKey = @"";
     }
     return self;
 }
@@ -275,6 +277,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         self.cachePageNumber[self.currentKey] = self.topicPageNumber;
     }
+    self.previousKey = self.currentKey;
     self.currentKey = @"History";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
@@ -318,6 +321,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         self.cachePageNumber[self.currentKey] = self.topicPageNumber;
     }
+    self.previousKey = self.currentKey;
     self.currentKey = @"Favorite";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
@@ -377,12 +381,14 @@ static NSString * const cellIdentifier = @"TopicCell";
             self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
             self.cachePageNumber[self.currentKey] = self.topicPageNumber;
         }
+        self.previousKey = self.currentKey;
         self.currentKey = key;
         [self fetchTopicsForKey:key];
         if (self.refreshControl.refreshing) {
             [self.refreshControl endRefreshing];
         }
     } else {
+        self.previousKey = self.currentKey;
         [self fetchTopicsForKeyFromServer:key withPage:1 scrollToTop:YES];
     }
 }
@@ -500,7 +506,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                                  [HUD hideWithDelay:0.3];
                              }
                          }
-                         if (![key isEqualToString:self.currentKey]) {
+                         if (page == 1 && ![key isEqualToString:self.previousKey]) {
                              self.topics = [[NSMutableArray alloc] init];
                              self.topicPageNumber = @1;
                              [self.tableView reloadData];
@@ -688,6 +694,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else {
         self.tableView.hidden = YES;
         self.topics = [NSMutableArray array];
+        self.previousKey = @"";
         self.currentKey = nil;
         self.cache = nil;
         self.cachePageNumber = nil;
