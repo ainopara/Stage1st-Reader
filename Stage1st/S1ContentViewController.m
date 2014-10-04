@@ -15,6 +15,7 @@
 #import "S1Floor.h"
 #import "S1Parser.h"
 #import "S1Tracer.h"
+#import "S1DataCenter.h"
 #import "S1HUD.h"
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
@@ -40,7 +41,7 @@
 @property (nonatomic, strong) REComposeViewController *replyController;
 
 @property (nonatomic, strong) S1HTTPClient *HTTPClient;
-
+@property (nonatomic, strong) S1Tracer *tracer;
 @end
 
 @implementation S1ContentViewController {
@@ -79,6 +80,7 @@
 #define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
+    self.tracer = self.dataCenter.tracer;
     self.view.backgroundColor = [UIColor blackColor];
     
     self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];

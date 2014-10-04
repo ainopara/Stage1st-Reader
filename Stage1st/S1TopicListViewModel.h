@@ -8,11 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    S1TopicListHistory,
+    S1TopicListFavorite
+} S1InternalTopicListType;
+
 @class S1DataCenter;
 
 @interface S1TopicListViewModel : NSObject
 - (id)initWithDataCenter:(S1DataCenter *)dataCenter;
-- (void)topicListForKey:(NSString *)key finish:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
-
+- (void)topicListForKey:(NSString *)key shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)key;
 
 @end

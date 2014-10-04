@@ -10,14 +10,12 @@
 #import "S1ContentViewController.h"
 #import "S1RootViewController.h"
 #import "S1SettingViewController.h"
-#import "S1HTTPClient.h"
-#import "S1Parser.h"
 #import "S1TopicListCell.h"
 #import "S1HUD.h"
 #import "S1Topic.h"
 #import "S1TabBar.h"
-#import "S1Tracer.h"
 #import "S1DataCenter.h"
+#import "S1TopicListViewModel.h"
 
 #import "ODRefreshControl.h"
 #import "AFNetworking.h"
@@ -36,13 +34,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) S1TabBar *scrollTabBar;
 
-@property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) S1DataCenter *dataCenter;
+@property (nonatomic, strong) S1TopicListViewModel *viewModel;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableArray *topicHeaderTitles;
-@property (nonatomic, strong) NSNumber *topicPageNumber;
 @property (nonatomic, strong) NSMutableDictionary *cacheContentOffset;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 
@@ -70,8 +67,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     
     [super viewDidLoad];
-    self.tracer = [[S1Tracer alloc] init];
     self.dataCenter = [[S1DataCenter alloc] init];
+    self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [S1GlobalVariables color5];
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
@@ -121,6 +118,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.scrollTabBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     self.view.autoresizesSubviews = YES;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
@@ -148,7 +146,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    self.cacheContentOffset = nil;
     // Dispose of any resources that can be recreated.
 }
 
@@ -204,12 +201,12 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.segControl setWidth:80 forSegmentAtIndex:1];
         [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
         [self.segControl setSelectedSegmentIndex:0];
-        [self presentHistory];
+        [self presentInternalListForType:S1TopicListHistory];
     } else {
         if (self.segControl.selectedSegmentIndex == 0) {
-            [self presentHistory];
+            [self presentInternalListForType:S1TopicListHistory];
         } else {
-            [self presentFavorite];
+            [self presentInternalListForType:S1TopicListFavorite];
         }
     }
     self.naviItem.titleView = self.segControl;
@@ -233,11 +230,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     switch (seg.selectedSegmentIndex) {
         case 0:
-            [self presentHistory];
+            [self presentInternalListForType:S1TopicListHistory];
             break;
             
         case 1:
-            [self presentFavorite];
+            [self presentInternalListForType:S1TopicListFavorite];
             break;
             
         default:
@@ -246,82 +243,22 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 
-- (void)presentHistory
+- (void)presentInternalListForType:(S1InternalTopicListType)type
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
         [self cancelRequest];
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
     }
     self.previousKey = self.currentKey;
-    self.currentKey = @"History";
+    self.currentKey = type == S1TopicListHistory ? @"History":@"Favorite";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
     }
     self.refreshControl.hidden = YES;
     
-    NSArray *topics = [self.tracer historyObjects];
-    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
-    NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
-    for (S1Topic *topic in topics) {
-        NSString *topicTitle = [formatter stringFromDate:topic.lastViewedDate];
-        if ([[formatter stringFromDate:topic.lastViewedDate] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
-            topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
-        }
-        if ([topicHeaderTitles containsObject:topicTitle]) {
-            [[processedTopics objectAtIndex:[topicHeaderTitles indexOfObject:topicTitle]] addObject:topic];
-        } else {
-            [topicHeaderTitles addObject:topicTitle];
-            [processedTopics addObject:[[NSMutableArray alloc] initWithObjects:topic, nil]];
-        }
-    }
-    self.topics = processedTopics;
-    self.topicHeaderTitles = topicHeaderTitles;
-    
-    [self.tableView reloadData];
-    if (self.topics && self.topics.count > 0) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-    
-    [self.scrollTabBar deselectAll];
-    
-}
-
-- (void)presentFavorite
-{
-    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-        [self cancelRequest];
-        self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-    }
-    self.previousKey = self.currentKey;
-    self.currentKey = @"Favorite";
-    if (self.tableView.hidden == YES) {
-        self.tableView.hidden = NO;
-    }
-    self.refreshControl.hidden = YES;
-    
-    BOOL favoriteTopicShouldOrderByLastVisitDate = YES;
-    NSArray *topics = [self.tracer favoritedObjects:(favoriteTopicShouldOrderByLastVisitDate ? S1TopicOrderByLastVisitDate : S1TopicOrderByFavoriteSetDate)];
-    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
-    NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
-    for (S1Topic *topic in topics) {
-        NSDate *date = favoriteTopicShouldOrderByLastVisitDate ? topic.lastViewedDate : topic.favoriteDate;
-        NSString *topicTitle = [formatter stringFromDate:date];
-        if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
-            topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
-        }
-        if ([topicHeaderTitles containsObject:topicTitle]) {
-            [[processedTopics objectAtIndex:[topicHeaderTitles indexOfObject:topicTitle]] addObject:topic];
-        } else {
-            [topicHeaderTitles addObject:topicTitle];
-            [processedTopics addObject:[[NSMutableArray alloc] initWithObjects:topic, nil]];
-        }
-    }
-    self.topics = processedTopics;
-    self.topicHeaderTitles = topicHeaderTitles;
+    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type];
+    self.topics = [result valueForKey:@"topics"];
+    self.topicHeaderTitles = [result valueForKey:@"headers"];
     
     [self.tableView reloadData];
     if (self.topics && self.topics.count > 0) {
@@ -367,7 +304,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     
-    [self.dataCenter topicsForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
+    [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
         if (topicList.count > 0) {
             if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
@@ -503,7 +440,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     [controller setTopic:topicToShow];
-    [controller setTracer:self.tracer];
+    [controller setDataCenter:self.dataCenter];
     
     [[self rootViewController] presentDetailViewController:controller];
 }
@@ -519,13 +456,13 @@ static NSString * const cellIdentifier = @"TopicCell";
         //add code here for when you hit delete
         if ([self.currentKey  isEqual: @"History"]) {
             S1Topic *topic = self.topics[indexPath.section][indexPath.row];
-            [self.tracer removeTopicFromHistory:topic.topicID];
+            [self.dataCenter removeTopicFromHistory:topic.topicID];
             [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
             [self.tableView reloadData];
         }
         if ([self.currentKey  isEqual: @"Favorite"]) {
             S1Topic *topic = self.topics[indexPath.section][indexPath.row];
-            [self.tracer setTopicFavoriteState:topic.topicID withState:NO];
+            [self.dataCenter setTopicFavoriteState:topic.topicID withState:NO];
             [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
             [self.tableView reloadData];
         }

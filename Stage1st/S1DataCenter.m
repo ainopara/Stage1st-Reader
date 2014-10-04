@@ -15,7 +15,7 @@
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) S1NetworkManager *networkManager;
-@property (strong, nonatomic) S1Tracer *tracer;
+
 @property (strong, nonatomic) NSMutableDictionary *cache;
 @property (strong, nonatomic) NSMutableDictionary *cachePageNumber;
 
@@ -119,14 +119,31 @@
     }];
 }
 
--(void)cancelRequest {
+
+#pragma mark - Network
+
+- (void)cancelRequest {
     [self.networkManager cancelRequest];
 }
 
-- (NSMutableArray *)historyTopics {
-    return [[NSMutableArray alloc] init];
+
+#pragma mark - Database
+
+- (NSArray *)historyTopics {
+    return [[self.tracer historyObjects] mutableCopy];
 }
-- (NSMutableArray *)favoriteTopics {
-    return [[NSMutableArray alloc] init];
+
+- (void)removeTopicFromHistory:(NSNumber *)topicID {
+    [self.tracer removeTopicFromHistory:topicID];
 }
+
+
+- (NSArray *)favoriteTopics {
+    return [self.tracer favoritedObjects:S1TopicOrderByLastVisitDate];
+}
+
+- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
+    [self.tracer setTopicFavoriteState:topicID withState:state];
+}
+
 @end
