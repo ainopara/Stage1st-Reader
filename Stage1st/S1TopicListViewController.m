@@ -103,7 +103,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
     item.leftBarButtonItem = settingItem;
     
-    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(history:)];
+    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
     //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(test:)];
     
     NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
@@ -195,7 +195,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [overlay postMessage:@"testing" duration:2.0 animated:YES];
     [overlay postImmediateFinishMessage:@"测试数据测试数据!" duration:5.0 animated:YES];
 }*/
-- (void)history:(id)sender
+- (void)archive:(id)sender
 {
     [self.naviItem setRightBarButtonItems:@[]];
     if (!self.segControl) {
