@@ -43,11 +43,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableArray *topicHeaderTitles;
 @property (nonatomic, strong) NSNumber *topicPageNumber;
-@property (nonatomic, strong) NSMutableDictionary *cache;
-@property (nonatomic, strong) NSMutableDictionary *cachePageNumber;
 @property (nonatomic, strong) NSMutableDictionary *cacheContentOffset;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
-@property (nonatomic, strong) S1HTTPClient *HTTPClient;
 
 @end
 
@@ -151,8 +148,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    self.cache = nil;
-    self.cachePageNumber = nil;
     self.cacheContentOffset = nil;
     // Dispose of any resources that can be recreated.
 }
@@ -174,22 +169,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _threadsInfo;
 }
 
-- (NSMutableDictionary *)cache
-{
-    if (_cache)
-        return _cache;
-    _cache = [NSMutableDictionary dictionary];
-    return _cache;
-}
-- (NSMutableDictionary *)cachePageNumber
-{
-    if(_cachePageNumber) {
-        return _cachePageNumber;
-    }
-    _cachePageNumber = [NSMutableDictionary dictionary];
-    return _cachePageNumber;
-}
-
 - (NSMutableDictionary *)cacheContentOffset
 {
     if(_cacheContentOffset) {
@@ -197,11 +176,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     _cacheContentOffset = [NSMutableDictionary dictionary];
     return _cacheContentOffset;
-}
-
-- (S1HTTPClient *)HTTPClient
-{
-    return [S1HTTPClient sharedClient];
 }
 
 #pragma mark - Item Actions
@@ -276,9 +250,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
         [self cancelRequest];
-        self.cache[self.currentKey] = self.topics;
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-        self.cachePageNumber[self.currentKey] = self.topicPageNumber;
     }
     self.previousKey = self.currentKey;
     self.currentKey = @"History";
@@ -320,9 +292,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
         [self cancelRequest];
-        self.cache[self.currentKey] = self.topics;
         self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-        self.cachePageNumber[self.currentKey] = self.topicPageNumber;
     }
     self.previousKey = self.currentKey;
     self.currentKey = @"Favorite";
@@ -331,7 +301,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    //bool favoriteTopicShouldOrderByLastVisitDate = [[NSUserDefaults standardUserDefaults] boolForKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
     BOOL favoriteTopicShouldOrderByLastVisitDate = YES;
     NSArray *topics = [self.tracer favoritedObjects:(favoriteTopicShouldOrderByLastVisitDate ? S1TopicOrderByLastVisitDate : S1TopicOrderByFavoriteSetDate)];
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
@@ -535,7 +504,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     [controller setTopic:topicToShow];
     [controller setTracer:self.tracer];
-    [controller setHTTPClient:self.HTTPClient];
     
     [[self rootViewController] presentDetailViewController:controller];
 }
@@ -631,16 +599,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.scrollTabBar setKeys:[self keys]];
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
-        self.cache = nil;
-        self.cachePageNumber = nil;
         self.cacheContentOffset = nil;
     } else {
         self.tableView.hidden = YES;
         self.topics = [NSMutableArray array];
         self.previousKey = @"";
         self.currentKey = nil;
-        self.cache = nil;
-        self.cachePageNumber = nil;
         self.cacheContentOffset = nil;
         [self.tableView reloadData];
     }
@@ -649,15 +613,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 -(void) cancelRequest
 {
-    [[self.HTTPClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
-        for (NSURLSessionDataTask* task in downloadTasks) {
-            [task cancel];
-        }
-        for (NSURLSessionDataTask* task in dataTasks) {
-            [task cancel];
-        }
-    }];
+    [self.dataCenter cancelRequest];
     
 }
 

@@ -9,7 +9,17 @@
 #import <Foundation/Foundation.h>
 
 @interface S1DataCenter : NSObject
+
+//For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 - (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+
+- (NSMutableArray *)historyTopics;
+- (NSMutableArray *)favoriteTopics;
+
+//
+
+//About Network
+- (void)cancelRequest;
 @end

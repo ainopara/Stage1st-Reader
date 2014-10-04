@@ -119,4 +119,14 @@
     }];
 }
 
+-(void)cancelRequest {
+    [self.networkManager cancelRequest];
+}
+
+- (NSMutableArray *)historyTopics {
+    return [[NSMutableArray alloc] init];
+}
+- (NSMutableArray *)favoriteTopics {
+    return [[NSMutableArray alloc] init];
+}
 @end

@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface S1TopicListViewModel : NSObject
+@class S1DataCenter;
 
+@interface S1TopicListViewModel : NSObject
+- (id)initWithDataCenter:(S1DataCenter *)dataCenter;
 - (void)topicListForKey:(NSString *)key finish:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
 

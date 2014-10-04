@@ -15,7 +15,7 @@
 @property (nonatomic, strong) S1Topic *topic;
 @property (nonatomic, strong) NSArray *topicFloors;
 @property (nonatomic, strong) S1Tracer *tracer;
-@property (nonatomic, strong) S1HTTPClient *HTTPClient;
+
 
 
 @end

@@ -39,6 +39,8 @@
 
 @property (nonatomic, strong) REComposeViewController *replyController;
 
+@property (nonatomic, strong) S1HTTPClient *HTTPClient;
+
 @end
 
 @implementation S1ContentViewController {
@@ -59,6 +61,8 @@
     if (self) {
         // Custom initialization
         _webView = [[UIWebView alloc] init];
+        _HTTPClient = [S1HTTPClient sharedClient];
+        
         _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPosition = YES;
@@ -166,6 +170,7 @@
 {
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
+    [UIApplication sharedApplication].statusBarHidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -459,7 +464,8 @@
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
+                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_Dimmed];
+            [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
         }
