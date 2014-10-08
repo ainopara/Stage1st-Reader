@@ -37,6 +37,20 @@
     }
 }
 
+- (void)requestTopicContentForID:(NSNumber *)topicID
+                      withPage:(NSUInteger)page
+                       success:(void (^)(NSURLSessionDataTask *, id))success
+                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"forum.php";
+    if (page == 1) {
+        NSDictionary *params = @{@"mod": @"viewthread", @"mobile": @"no", @"tid": topicID};
+        [self.client GET:url parameters:params success:success failure:failure];
+    } else {
+        NSDictionary *params = @{@"mod": @"viewthread", @"mobile": @"no", @"tid": topicID, @"page": [NSNumber numberWithUnsignedInteger:page]};
+        [self.client GET:url parameters:params success:success failure:failure];
+    }
+}
+
 -(void) cancelRequest
 {
     [[self.client session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {

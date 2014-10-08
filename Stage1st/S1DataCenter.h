@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class S1Tracer;
+@class S1Topic;
 @interface S1DataCenter : NSObject
 
 @property (strong, nonatomic) S1Tracer *tracer;
@@ -19,6 +20,10 @@
 
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
+//For Content View Controller
+- (void)floorsForTopicID:(NSNumber *)topicID withPage:(NSUInteger)page success:(void (^)(NSArray *floorList, S1Topic *topicInfo))success failure:(void (^)(NSError *error))failure;
+
+
 - (NSArray *)historyTopics;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 
@@ -28,4 +33,5 @@
 //About Network
 - (void)cancelRequest;
 
+- (void)clearTopicListCache;
 @end

@@ -31,4 +31,6 @@
 
 @property (nonatomic, copy) NSNumber *visitCount;
 @property (nonatomic, copy) NSNumber *favorite;
+
+- (void)updateWithTopic:(S1Topic *)topic;
 @end

@@ -9,10 +9,17 @@
 #import <Foundation/Foundation.h>
 
 @interface S1NetworkManager : NSObject
+
 - (void)requestTopicListForKey:(NSString *)key
                       withPage:(NSUInteger)page
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+- (void)requestTopicContentForID:(NSNumber *)topicID
+                      withPage:(NSUInteger)page
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 - (void)cancelRequest;
 
 @end

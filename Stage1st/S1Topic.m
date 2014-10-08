@@ -42,4 +42,23 @@
     return self;
 }
 
+#pragma mark - Update
+
+- (void)updateWithTopic:(S1Topic *)topic {
+    if (topic.formhash != nil) {
+        self.formhash = topic.formhash;
+    }
+    if (topic.title != nil) {
+        self.title = topic.title;
+    }
+    if (topic.replyCount != nil) {
+        self.replyCount = topic.replyCount;
+    }
+    if (topic.formhash != nil) {
+        self.formhash = topic.formhash;
+    }
+    if (topic.totalPageCount != nil) {
+        self.totalPageCount = topic.totalPageCount;
+    }
+}
 @end
