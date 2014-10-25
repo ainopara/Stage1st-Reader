@@ -10,6 +10,7 @@
 #import <Social/Social.h>
 #import "S1RootViewController.h"
 #import "S1ContentViewController.h"
+#import "S1ContentViewModel.h"
 #import "S1HTTPClient.h"
 #import "S1Topic.h"
 #import "S1Floor.h"
@@ -42,6 +43,7 @@
 
 @property (nonatomic, strong) S1HTTPClient *HTTPClient;
 @property (nonatomic, strong) S1Tracer *tracer;
+@property (nonatomic, strong) S1ContentViewModel *viewModel;
 @end
 
 @implementation S1ContentViewController {
@@ -81,6 +83,8 @@
     
     [super viewDidLoad];
     self.tracer = self.dataCenter.tracer;
+    self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
+    
     self.view.backgroundColor = [UIColor blackColor];
     
     self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
@@ -559,54 +563,27 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path;
-    if (_currentPage == 1) {
-        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&mobile=no", self.topic.topicID];
-    } else {
-        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%ld&mobile=no", self.topic.topicID, (long)_currentPage];
-    }
+    
     // NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
-    
-    [self.HTTPClient GET:path parameters:nil
-                     success:^(NSURLSessionDataTask *operation, id responseObject) {
-                         //NSLog(@"%@", operation.request.allHTTPHeaderFields);
-                         NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-                         NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
-                         NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
-                         _topicFloors = floorList;
-                         NSString *string = [S1Parser generateContentPage:floorList withTopic:self.topic];
-                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
-                         if (_currentPage == 1) {
-                             NSInteger parsedReplyCount =[S1Parser replyCountFromThreadString:HTMLString];
-                             if (parsedReplyCount != 0) {
-                                 [self.topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
-                             }
-                         }
-                         NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
-                         if (parsedTotalPages != 0) {
-                             _totalPages = parsedTotalPages;
-                             [self updatePageLabel];
-                         }
-                         //check login state
-                         [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-                         
-                         [self.webView loadHTMLString:string baseURL:nil];
-                         _finishLoading = YES;
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [HUD hideWithDelay:0.3];
-                         });
-                     }
-                     failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                         if (error.code == -999) {
-                             NSLog(@"request cancelled.");
-                             [HUD hideWithDelay:0];
-                         } else {
-                             NSLog(@"%@", error);
-                             [HUD showRefreshButton];
-                         }
-                     }];
+    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
+        NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+        NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
+        [self updatePageLabel];
+        [self.webView loadHTMLString:contents baseURL:nil];
+        _finishLoading = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [HUD hideWithDelay:0.3];
+        });
+    } failure:^(NSError *error) {
+        if (error.code == -999) {
+            NSLog(@"request cancelled.");
+            [HUD hideWithDelay:0];
+        } else {
+            NSLog(@"%@", error);
+            [HUD showRefreshButton];
+        }
+    }];
 }
 
 - (void)replyWithTextInDiscuz:(NSString *)text withPath:(NSString *)path andParams:(NSMutableDictionary *)params
@@ -686,15 +663,7 @@
 
 -(void) cancelRequest
 {
-    [[self.HTTPClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
-        for (NSURLSessionDataTask* task in downloadTasks) {
-            [task cancel];
-        }
-        for (NSURLSessionDataTask* task in dataTasks) {
-            [task cancel];
-        }
-    }];
+    [self.dataCenter cancelRequest];
     
 }
 

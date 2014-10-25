@@ -122,9 +122,8 @@
 
 #pragma mark - Network (Content)
 
-- (void)floorsForTopicID:(NSNumber *)topicID withPage:(NSUInteger)page success:(void (^)(NSArray *, S1Topic *))success failure:(void (^)(NSError *))failure {
-    [self.networkManager requestTopicContentForID:topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-        S1Topic *topic = [[S1Topic alloc] init];
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+    [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
         NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:page];
         
         // get formhash
@@ -148,7 +147,7 @@
         //check login state
         [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
         
-        success(floorList, topic);
+        success(floorList);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
