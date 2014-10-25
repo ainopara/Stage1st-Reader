@@ -65,11 +65,11 @@
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.x;
-    NSLog(@"Begin Dragging:%f", _lastContentOffset);
+    // NSLog(@"Begin Dragging:%f", _lastContentOffset);
 }
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.x;
-    NSLog(@"Begin Decelerating:%f", _lastContentOffset);
+    // NSLog(@"Begin Decelerating:%f", _lastContentOffset);
 }
 
 - (CGFloat)getWidthPerItem {
@@ -120,9 +120,9 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     CGPoint offset = scrollView.contentOffset;
-    NSLog(@"End Decelerating:%f", offset.x);
+    // NSLog(@"End Decelerating:%f", offset.x);
     offset.x = [self decideOffset:offset];
-    NSLog(@"Target Decelerating:%f", offset.x);
+    // NSLog(@"Target Decelerating:%f", offset.x);
     [scrollView setContentOffset:offset animated:YES];
     return;
 }
@@ -131,9 +131,9 @@
 {
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
-        NSLog(@"End Dragging:%f", offset.x);
+        // NSLog(@"End Dragging:%f", offset.x);
         offset.x = [self decideOffset:offset];
-        NSLog(@"Target Dragging:%f", offset.x);
+        // NSLog(@"Target Dragging:%f", offset.x);
         [scrollView setContentOffset:offset animated:YES];
     }
     return;
