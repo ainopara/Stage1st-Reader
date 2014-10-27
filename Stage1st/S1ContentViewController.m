@@ -449,13 +449,11 @@
     if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
         //reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
-            for (S1Floor * topicFloor in _topicFloors) {
-                NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                if ([decodedQuery isEqualToString:topicFloor.indexMark]) {
-                    NSLog(@"%@", topicFloor.author);
-                    [self presentReplyViewWithAppendText:nil reply:topicFloor];
-                    break;
-                }
+            NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            S1Floor *floor = [self.topic.floors valueForKey:decodedQuery];
+            if (floor != nil) {
+                NSLog(@"%@", floor.author);
+                [self presentReplyViewWithAppendText:nil reply:floor];
             }
         // present image
         } else if ([request.URL.path hasPrefix:@"/present-image:"]) {

@@ -32,6 +32,18 @@
 
 - (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
     [self.dataCenter floorsForTopic:topic withPage:page success:^(NSArray *floorList) {
+        //Set Floors
+        NSMutableDictionary *floors;
+        if(topic.floors != nil) {
+            floors = [[NSMutableDictionary alloc] initWithDictionary:topic.floors];
+        } else {
+            floors = [[NSMutableDictionary alloc] init];
+        }
+        for (S1Floor *floor in floorList) {
+            [floors setValue:floor forKey:floor.indexMark];
+        }
+        topic.floors = floors;
+        
         NSString *string = [S1Parser generateContentPage:floorList withTopic:topic];
         success(string);
     } failure:^(NSError *error) {

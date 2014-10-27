@@ -20,6 +20,8 @@
 @property (nonatomic, copy) NSNumber *totalPageCount;
 @property (nonatomic, copy) NSDate *lastReplyDate;
 
+@property (nonatomic, copy) NSMutableDictionary *floors;
+
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
 

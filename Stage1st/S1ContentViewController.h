@@ -13,7 +13,6 @@
 @interface S1ContentViewController : UIViewController
 
 @property (nonatomic, strong) S1Topic *topic;
-@property (nonatomic, strong) NSArray *topicFloors;
 @property (nonatomic, strong) S1DataCenter *dataCenter;
 
 
