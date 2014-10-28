@@ -8,13 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class S1Topic, S1Floor, S1DataCenter, S1HTTPClient;
+@class S1Topic, S1DataCenter;
 
 @interface S1ContentViewController : UIViewController
 
 @property (nonatomic, strong) S1Topic *topic;
+
 @property (nonatomic, strong) S1DataCenter *dataCenter;
-
-
 
 @end
