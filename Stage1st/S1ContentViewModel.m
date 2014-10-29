@@ -31,7 +31,7 @@
 }
 
 - (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
-    [self.dataCenter floorsForTopic:topic withPage:page success:^(NSArray *floorList) {
+    [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList) {
         //Set Floors
         NSMutableDictionary *floors;
         if(topic.floors != nil) {

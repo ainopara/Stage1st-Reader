@@ -11,10 +11,8 @@
 #import "S1RootViewController.h"
 #import "S1ContentViewController.h"
 #import "S1ContentViewModel.h"
-#import "S1HTTPClient.h"
 #import "S1Topic.h"
 #import "S1Floor.h"
-#import "S1Parser.h"
 #import "S1Tracer.h"
 #import "S1DataCenter.h"
 #import "S1HUD.h"
@@ -38,7 +36,6 @@
 
 @property (nonatomic, strong) REComposeViewController *replyController;
 
-@property (nonatomic, strong) S1HTTPClient *HTTPClient;
 @property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 @end
@@ -61,7 +58,6 @@
     if (self) {
         // Custom initialization
         _webView = [[UIWebView alloc] init];
-        _HTTPClient = [S1HTTPClient sharedClient];
         
         _currentPage = 1;
         _needToScrollToBottom = NO;
@@ -174,6 +170,7 @@
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
     [UIApplication sharedApplication].statusBarHidden = NO;
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -190,7 +187,7 @@
         });
         
     });
-    
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -574,85 +571,6 @@
     }];
 }
 
-- (void)replyWithTextInDiscuz:(NSString *)text withPath:(NSString *)path andParams:(NSMutableDictionary *)params
-{
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationNone;
-    [overlay postMessage:@"回复发送中" animated:YES];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
-    NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    [params setObject:replyWithSuffix forKey:@"message"];
-    __weak typeof(self) myself = self;
-    [self.HTTPClient POST:path parameters:params
-                  success:^(NSURLSessionDataTask *operation, id responseObject) {
-                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                      NSLog(@"%@", HTMLString);
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                          if (_currentPage == _totalPages) {
-                              _needToScrollToBottom = YES;
-                          } else {
-                              _needToScrollToBottom = NO;
-                          }
-                          [myself.replyController setText:@""];
-                          [myself fetchContent];
-                      });
-                  }
-                  failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          if (error.code == -999) {
-                              NSLog(@"Code -999 may means user want to cancel this request.");
-                              [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                          } else {
-                              [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
-                          }
-                      });
-                  }];
-
-}
-
--(void)replySepecificFloor:(S1Floor *)topicFloor withText:(NSString *)text
-{
-    NSString *pathTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&repquote=%@&extra=&page=%ld&infloat=yes&handlekey=reply&inajax=1&ajaxtarget=fwin_content_reply";
-    NSString *path = [NSString stringWithFormat:pathTemplate, self.topic.fID, self.topic.topicID, topicFloor.floorID, (long)_currentPage];
-    
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    [overlay postMessage:@"正在获取引用信息" animated:YES];
-    [self.HTTPClient GET:path parameters:nil
-                 success:^(NSURLSessionDataTask *operation, id responseObject) {
-                     NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                     NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
-                     if ([params[@"requestSuccess"]  isEqual: @YES]) {
-                         [params removeObjectForKey:@"requestSuccess"];
-                         [params setObject:@"true" forKey:@"replysubmit"];
-                         NSString *postPathTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%ld&tid=%@&replysubmit=yes&inajax=1";
-                         NSString *postPath = [NSString stringWithFormat:postPathTemplate, self.topic.fID, (long)_currentPage, self.topic.topicID];
-                         [self replyWithTextInDiscuz:text withPath:postPath andParams:params];
-                     } else {
-                         NSLog(@"fail to fetch reply info!");
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [overlay postErrorMessage:@"引用信息无效" duration:2.5 animated:YES];
-                         });
-                     }
-
-                 }
-                 failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                     NSLog(@"fail to fetch reply info!");
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         if (error.code == -999) {
-                             NSLog(@"Code -999 may means user want to cancel this request.");
-                             [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                         } else {
-                             [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
-                         }
-                     });
-                 }];
-}
-
 -(void) cancelRequest
 {
     [self.dataCenter cancelRequest];
@@ -688,17 +606,49 @@
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         } else if (result == REComposeResultPosted) {
             if (composeViewController.text.length > 0) {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+                [overlay postMessage:@"回复发送中" animated:YES];
                 if (topicFloor) {
-                    [self replySepecificFloor:topicFloor withText:composeViewController.text];
+                    [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [self.replyController setText:@""];
+                        if (_currentPage == _totalPages) {
+                            _needToScrollToBottom = YES;
+                            [self fetchContent];
+                        } else {
+                            _needToScrollToBottom = NO;
+                        }
+                    } failure:^(NSError *error) {
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        if (error.code == -999) {
+                            NSLog(@"Code -999 may means user want to cancel this request.");
+                            [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                        } else {
+                            [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                        }
+                    }];
                 } else {
-                    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-                    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
-                    NSMutableDictionary *params = [@{@"posttime" : timestamp,
-                                                     @"formhash" : self.topic.formhash,
-                                                     @"usesig" : @"1",
-                                                     @"subject" : @"",
-                                                     } mutableCopy];
-                    [self replyWithTextInDiscuz:composeViewController.text withPath:path andParams:params];
+                    [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [self.replyController setText:@""];
+                        if (_currentPage == _totalPages) {
+                            _needToScrollToBottom = YES;
+                            [self fetchContent];
+                        } else {
+                            _needToScrollToBottom = NO;
+                        }
+                    } failure:^(NSError *error) {
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        if (error.code == -999) {
+                            NSLog(@"Code -999 may means user want to cancel this request.");
+                            [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                        } else {
+                            [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                        }
+                    }];
                 }
                 [composeViewController dismissViewControllerAnimated:YES completion:nil];
             }

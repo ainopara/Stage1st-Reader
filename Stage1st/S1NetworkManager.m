@@ -24,31 +24,83 @@
 }
 
 - (void)requestTopicListForKey:(NSString *)keyID
-                      withPage:(NSUInteger)page
+                      withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *, id))success
                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *url = @"forum.php";
-    if (page == 1) {
-        NSDictionary *params = @{@"mod": @"forumdisplay", @"mobile": @"no", @"fid": keyID};
+    if ([page isEqualToNumber:@1]) {
+        NSDictionary *params = @{@"mod": @"forumdisplay",
+                                 @"mobile": @"no",
+                                 @"fid": keyID};
         [self.client GET:url parameters:params success:success failure:failure];
     } else {
-        NSDictionary *params = @{@"mod": @"forumdisplay", @"mobile": @"no", @"fid": keyID, @"page": [NSNumber numberWithUnsignedInteger:page]};
+        NSDictionary *params = @{@"mod": @"forumdisplay",
+                                 @"mobile": @"no",
+                                 @"fid": keyID,
+                                 @"page": page};
         [self.client GET:url parameters:params success:success failure:failure];
     }
 }
 
 - (void)requestTopicContentForID:(NSNumber *)topicID
-                      withPage:(NSUInteger)page
+                      withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *, id))success
                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *url = @"forum.php";
-    if (page == 1) {
-        NSDictionary *params = @{@"mod": @"viewthread", @"mobile": @"no", @"tid": topicID};
+    if ([page isEqualToNumber: @1]) {
+        NSDictionary *params = @{@"mod": @"viewthread",
+                                 @"mobile": @"no",
+                                 @"tid": topicID};
         [self.client GET:url parameters:params success:success failure:failure];
     } else {
-        NSDictionary *params = @{@"mod": @"viewthread", @"mobile": @"no", @"tid": topicID, @"page": [NSNumber numberWithUnsignedInteger:page]};
+        NSDictionary *params = @{@"mod": @"viewthread",
+                                 @"mobile": @"no",
+                                 @"tid": topicID,
+                                 @"page": page};
         [self.client GET:url parameters:params success:success failure:failure];
     }
+}
+
+- (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
+                                       withPage:(NSNumber *)page
+                                        floorID:(NSNumber *)floorID
+                                        fieldID:(NSNumber *)fieldID
+                                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"forum.php";
+    NSDictionary *params = @{@"mod": @"post",
+                             @"action": @"reply",
+                             @"fid": fieldID,
+                             @"tid": topicID,
+                             @"repquote": floorID,
+                             @"extra": @"",
+                             @"page": page,
+                             @"infloat": @"yes",
+                             @"handlekey": @"reply",
+                             @"inajax": @1,
+                             @"ajaxtarget": @"fwin_content_reply"};
+    [self.client GET:url parameters:params success:success failure:failure];
+}
+
+- (void)postReplyForTopicID:(NSNumber *)topicID
+                   withPage:(NSNumber *)page
+                    fieldID:(NSNumber *)fieldID
+                  andParams:(NSDictionary *)params
+                    success:(void (^)(NSURLSessionDataTask *, id))success
+                    failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *urlTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%@&tid=%@&replysubmit=yes&inajax=1";
+    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, page, topicID];
+    [self.client POST:url parameters:params success:success failure:failure];
+}
+
+- (void)postReplyForTopicID:(NSNumber *)topicID
+                    fieldID:(NSNumber *)fieldID
+                  andParams:(NSDictionary *)params
+                    success:(void (^)(NSURLSessionDataTask *, id))success
+                    failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *urlTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1";
+    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, topicID];
+    [self.client POST:url parameters:params success:success failure:failure];
 }
 
 -(void) cancelRequest

@@ -11,6 +11,7 @@
 #import "S1Topic.h"
 #import "S1Tracer.h"
 #import "S1Parser.h"
+#import "S1Floor.h"
 
 @interface S1DataCenter ()
 
@@ -40,7 +41,7 @@
 
 - (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     if (refresh || self.topicListCache[keyID] == nil) {
-        [self fetchTopicsForKeyFromServer:keyID withPage:1 success:^(NSArray *topicList) {
+        [self fetchTopicsForKeyFromServer:keyID withPage:@1 success:^(NSArray *topicList) {
             success(topicList);
         } failure:^(NSError *error) {
             failure(error);
@@ -54,14 +55,14 @@
     if (self.topicListCachePageNumber[keyID] == nil) { return; }
     NSNumber *currentPageNumber = self.topicListCachePageNumber[keyID];
     NSNumber *nextPageNumber = [NSNumber numberWithInteger:[currentPageNumber integerValue] + 1];
-    [self fetchTopicsForKeyFromServer:keyID withPage:[nextPageNumber unsignedIntegerValue] success:^(NSArray *topicList) {
+    [self fetchTopicsForKeyFromServer:keyID withPage:nextPageNumber success:^(NSArray *topicList) {
         success(topicList);
     } failure:^(NSError *error) {
         failure(error);
     }];
 }
 
-- (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSUInteger)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
+- (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
     [self.networkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
@@ -85,7 +86,7 @@
                 }
                 
                 // remove duplicate topics
-                if (page > 1) {
+                if ([page integerValue] > 1) {
                     for (S1Topic *compareTopic in self.topicListCache[keyID]) {
                         if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
                             NSLog(@"Remove duplicate topic: %@", topic.title);
@@ -98,15 +99,15 @@
             }
             
             if (topics.count > 0) {
-                if (page == 1) {
+                if ([page isEqualToNumber:@1]) {
                     self.topicListCache[keyID] = topics;
                     self.topicListCachePageNumber[keyID] = @1;
                 } else {
                     self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
-                    self.topicListCachePageNumber[keyID] = [[NSNumber alloc] initWithInteger:page];
+                    self.topicListCachePageNumber[keyID] = page;
                 }
             } else {
-                if(page == 1) {
+                if([page isEqualToNumber:@1]) {
                     self.topicListCache[keyID] = [[NSMutableArray alloc] init];
                     self.topicListCachePageNumber[keyID] = @1;
                 }
@@ -122,16 +123,16 @@
 
 #pragma mark - Network (Content)
 
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:page];
+        NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:[page integerValue]];
         
         // get formhash
         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
         
         //set reply count
-        if (page == 1) {
+        if ([page isEqualToNumber:@1]) {
             NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
             if (parsedReplyCount != 0) {
                 [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
@@ -154,6 +155,48 @@
     }];
 }
 
+- (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
+    [self.networkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID fieldID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
+        if ([params[@"requestSuccess"]  isEqual: @YES]) {
+            [params removeObjectForKey:@"requestSuccess"];
+            [params setObject:@"true" forKey:@"replysubmit"];
+            BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+            NSString *suffix = appendSuffix ? @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]" : @"";
+            NSString *replyWithSuffix = [text stringByAppendingString:suffix];
+            [params setObject:replyWithSuffix forKey:@"message"];
+            [self.networkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
+                success();
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                failure(error);
+            }];
+        } else {
+            NSError *error = [[NSError alloc] init];
+            failure(error);
+        }
+        
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
+}
+
+- (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *))failure {
+    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
+    BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+    NSString *suffix = appendSuffix ? @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]" : @"";
+    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
+    NSDictionary *params = @{@"posttime":timestamp,
+                             @"formhash":topic.formhash,
+                             @"usesig":@"1",
+                             @"subject":@"",
+                             @"message":replyWithSuffix};
+    [self.networkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        success();
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
+}
 
 - (void)cancelRequest {
     [self.networkManager cancelRequest];
