@@ -181,6 +181,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
         [self saveTopicViewedState:nil];
+        self.topic.floors = [[NSMutableDictionary alloc] init];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -601,52 +602,48 @@
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
     }
+    __weak typeof(self) myself = self; //Is it necessary to avoid memory leak?
     [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
         if (result == REComposeResultCancelled) {
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         } else if (result == REComposeResultPosted) {
             if (composeViewController.text.length > 0) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-                [overlay postMessage:@"回复发送中" animated:YES];
+                [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
                 if (topicFloor) {
                     [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        [self.replyController setText:@""];
+                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [myself.replyController setText:@""];
                         if (_currentPage == _totalPages) {
                             _needToScrollToBottom = YES;
-                            [self fetchContent];
-                        } else {
-                            _needToScrollToBottom = NO;
+                            [myself fetchContent];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         if (error.code == -999) {
                             NSLog(@"Code -999 may means user want to cancel this request.");
-                            [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                         } else {
-                            [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                         }
                     }];
                 } else {
                     [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        [self.replyController setText:@""];
+                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [myself.replyController setText:@""];
                         if (_currentPage == _totalPages) {
                             _needToScrollToBottom = YES;
-                            [self fetchContent];
-                        } else {
-                            _needToScrollToBottom = NO;
+                            [myself fetchContent];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         if (error.code == -999) {
                             NSLog(@"Code -999 may means user want to cancel this request.");
-                            [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                         } else {
-                            [overlay postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                         }
                     }];
                 }
