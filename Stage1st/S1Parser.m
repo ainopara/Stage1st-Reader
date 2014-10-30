@@ -28,9 +28,7 @@
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
         NSString *imageSrc = [[image attributeForName:@"src"] stringValue];
-        //NSLog(@"image Src:%@",imageSrc);
         NSString *imageFile = [[image attributeForName:@"file"] stringValue];
-        //NSLog(@"image File:%@",imageFile);
         if (imageFile) {
             [image removeAttributeForName:@"src"];
             [image addAttributeWithName:@"src" stringValue:imageFile];
@@ -220,9 +218,6 @@
             [floorList addObject:floor];
         }
     }
-
-    // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-    // NSLog(@"Finish Parsing time elapsed:%f",-timeInterval);
     
     return floorList;
 }
@@ -350,7 +345,9 @@
     }
     return infoDict;
 }
+
 #pragma mark - Checking
+
 + (NSString *)loginUserName:(NSString *)HTMLString
 {
     NSString *pattern = @"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>";

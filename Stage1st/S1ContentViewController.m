@@ -10,11 +10,11 @@
 #import <Social/Social.h>
 #import "S1RootViewController.h"
 #import "S1ContentViewController.h"
-#import "S1HTTPClient.h"
+#import "S1ContentViewModel.h"
 #import "S1Topic.h"
 #import "S1Floor.h"
-#import "S1Parser.h"
 #import "S1Tracer.h"
+#import "S1DataCenter.h"
 #import "S1HUD.h"
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
@@ -23,9 +23,6 @@
 #import "ActionSheetStringPicker.h"
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
-
-
-#define _REPLY_PER_PAGE 30
 
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate>
@@ -39,6 +36,8 @@
 
 @property (nonatomic, strong) REComposeViewController *replyController;
 
+@property (nonatomic, strong) S1Tracer *tracer;
+@property (nonatomic, strong) S1ContentViewModel *viewModel;
 @end
 
 @implementation S1ContentViewController {
@@ -50,7 +49,7 @@
     BOOL _finishLoading;
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
-    NSURL *_urlToOpen;
+    NSURL *_urlToOpen; // iOS7 Only
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -59,6 +58,7 @@
     if (self) {
         // Custom initialization
         _webView = [[UIWebView alloc] init];
+        
         _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPosition = YES;
@@ -75,6 +75,9 @@
 #define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
+    self.tracer = self.dataCenter.tracer;
+    self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
+    
     self.view.backgroundColor = [UIColor blackColor];
     
     self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
@@ -166,11 +169,8 @@
 {
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-//    [self.webView.scrollView setScrollsToTop:YES];
+    [UIApplication sharedApplication].statusBarHidden = NO;
+    [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -180,24 +180,15 @@
     }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
-        
-        if (_finishLoading) {
-            [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
-        } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
-            [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
-        }
-        [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-        [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
-        [self.topic setLastReplyCount:self.topic.replyCount];
-        [self.tracer hasViewed:self.topic];
-        
+        [self saveTopicViewedState:nil];
+        self.topic.floors = [[NSMutableDictionary alloc] init];
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         });
         
     });
-    
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -210,6 +201,8 @@
 
 - (void)setTopic:(S1Topic *)topic
 {
+    // Used to estimate total page number
+    #define _REPLY_PER_PAGE 30
     _topic = topic;
     _totalPages = ([topic.replyCount integerValue] / _REPLY_PER_PAGE) + 1;
     if (topic.lastViewedPage) {
@@ -242,8 +235,8 @@
         if (![self atBottom]) {
             [self scrollToButtomAnimated:YES];
         } else {
-            [self fetchContent];
             _needToScrollToBottom = YES;
+            [self fetchContent];
         }
     }
 }
@@ -275,7 +268,7 @@
 - (void)pickPage:(id)sender
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (long i = 0; i < _totalPages; i++) {
+    for (long i = 0; i < (_currentPage > _totalPages ? _currentPage : _totalPages); i++) {
         [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
     }
     [ActionSheetStringPicker showPickerWithTitle:@""
@@ -306,12 +299,15 @@
         [actionSheet showInView:self.view];
     } else {
         UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        // Reply Action
         UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self presentReplyViewWithAppendText:@"" reply:nil];
         }];
+        // Favorite Action
         UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
         }];
+        // Weibo Action
         UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             if (!NSClassFromString(@"SLComposeViewController")) {
                 [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
@@ -332,6 +328,7 @@
                 [weakController dismissViewControllerAnimated:YES completion:nil];
             }];
         }];
+        // Origin Page Action
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
@@ -339,7 +336,9 @@
             [controller.view setTintColor:[S1GlobalVariables color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }];
+        // Cancel Action
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
+        
         [moreActionSheet addAction:replyAction];
         [moreActionSheet addAction:favoriteAction];
         [moreActionSheet addAction:weiboAction];
@@ -351,34 +350,34 @@
     
 }
 
-#pragma mark - UIActionSheet Delegate
+#pragma mark - UIActionSheet Delegate (iOS7 Only)
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 //    NSLog(@"%d", buttonIndex);
     if (self.imageViewer) {
+        // Save Image
         if (0 == buttonIndex) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 UIImageWriteToSavedPhotosAlbum(self.imageViewer.image, nil, nil, nil);
             });
         }
-        //Favorite
+        // Copy URL
         if (1 == buttonIndex) {
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = self.imageViewer.imageInfo.imageURL.absoluteString;
         }
     } else {
-        //Reply
+        // Reply
         if (0 == buttonIndex) {
             [self presentReplyViewWithAppendText:@"" reply:nil];
-            //[self presentViewController:replyController animated:NO completion:nil];
         }
-        //Favorite
+        // Favorite
         if (1 == buttonIndex) {
             [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
         }
         
-        //Weibo
+        // Weibo
         if (2 == buttonIndex) {
             if (!NSClassFromString(@"SLComposeViewController")) {
                 [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
@@ -400,6 +399,7 @@
             }];
         }
         
+        // Origin Page
         if (3 == buttonIndex) {
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
@@ -411,7 +411,7 @@
     
 }
 
-#pragma mark - UIAlertView Delegate
+#pragma mark - UIAlertView Delegate (iOS7 Only)
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -430,23 +430,21 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    //load
+    // Load
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
     
     if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
-        //reply
+        // Reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
-            for (S1Floor * topicFloor in _topicFloors) {
-                NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                if ([decodedQuery isEqualToString:topicFloor.indexMark]) {
-                    NSLog(@"%@", topicFloor.author);
-                    [self presentReplyViewWithAppendText:nil reply:topicFloor];
-                    break;
-                }
+            NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            S1Floor *floor = [self.topic.floors valueForKey:decodedQuery];
+            if (floor != nil) {
+                NSLog(@"%@", floor.author);
+                [self presentReplyViewWithAppendText:@"" reply:floor];
             }
-        // present image
+        // Present image
         } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;
             NSString *imageID = request.URL.fragment;
@@ -459,13 +457,14 @@
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_ScaledDimmedBlurred];
+                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_Dimmed];
+            [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
         }
         return NO;
     }
-    //open link
+    // Open link
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
         _urlToOpen = request.URL;
@@ -475,9 +474,8 @@
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
         UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             _presentingWebViewer = YES;
-            _urlToOpen = request.URL;
-            NSLog(@"%@", _urlToOpen);
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
+            NSLog(@"%@", request.URL);
+            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
             [[controller view] setTintColor:[S1GlobalVariables color3]];
             [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:controller animated:YES completion:nil];
@@ -551,143 +549,112 @@
         [aHUD hideWithDelay:0.0];
         [self fetchContent];
     }];
-    NSString *path;
-    if (_currentPage == 1) {
-        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&mobile=no", self.topic.topicID];
-    } else {
-        path = [NSString stringWithFormat:@"forum.php?mod=viewthread&tid=%@&page=%ld&mobile=no", self.topic.topicID, (long)_currentPage];
-    }
+    
     // NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
-    
-    [self.HTTPClient GET:path parameters:nil
-                     success:^(NSURLSessionDataTask *operation, id responseObject) {
-                         //NSLog(@"%@", operation.request.allHTTPHeaderFields);
-                         NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-                         NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
-                         NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:_currentPage];
-                         _topicFloors = floorList;
-                         NSString *string = [S1Parser generateContentPage:floorList withTopic:self.topic];
-                         NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                         [self.topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
-                         if (_currentPage == 1) {
-                             NSInteger parsedReplyCount =[S1Parser replyCountFromThreadString:HTMLString];
-                             if (parsedReplyCount != 0) {
-                                 [self.topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
-                             }
-                         }
-                         NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
-                         if (parsedTotalPages != 0) {
-                             _totalPages = parsedTotalPages;
-                             [self updatePageLabel];
-                         }
-                         //check login state
-                         [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-                         
-                         [self.webView loadHTMLString:string baseURL:nil];
-                         _finishLoading = YES;
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [HUD hideWithDelay:0.3];
-                         });
-                     }
-                     failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                         if (error.code == -999) {
-                             NSLog(@"request cancelled.");
-                             [HUD hideWithDelay:0];
-                         } else {
-                             NSLog(@"%@", error);
-                             [HUD showRefreshButton];
-                         }
-                     }];
-}
-
-- (void)replyWithTextInDiscuz:(NSString *)text withPath:(NSString *)path andParams:(NSMutableDictionary *)params
-{
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationNone;
-    [overlay postMessage:@"回复发送中" animated:YES];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
-    NSString *suffix = appendSuffix?@"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]":@"";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-    [params setObject:replyWithSuffix forKey:@"message"];
-    __weak typeof(self) myself = self;
-    [self.HTTPClient POST:path parameters:params
-                  success:^(NSURLSessionDataTask *operation, id responseObject) {
-                      NSString *HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                      NSLog(@"%@", HTMLString);
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          [overlay postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                          _needToScrollToBottom = YES;
-                          [myself.replyController setText:@""];
-                          [myself fetchContent];
-                      });
-                  }
-                  failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                          if (error.code == -999) {
-                              NSLog(@"Code -999 may means user want to cancel this request.");
-                              [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                          } else {
-                              [overlay postErrorMessage:@"回复可能未成功" duration:2.5 animated:YES];
-                          }
-                      });
-                  }];
-
-}
-
--(void)replySepecificFloor:(S1Floor *)topicFloor withText:(NSString *)text
-{
-    NSString *pathTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&repquote=%@&extra=&page=%ld&infloat=yes&handlekey=reply&inajax=1&ajaxtarget=fwin_content_reply";
-    NSString *path = [NSString stringWithFormat:pathTemplate, self.topic.fID, self.topic.topicID, topicFloor.floorID, (long)_currentPage];
-    
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    [overlay postMessage:@"正在获取引用信息" animated:YES];
-    [self.HTTPClient GET:path parameters:nil
-                 success:^(NSURLSessionDataTask *operation, id responseObject) {
-                     NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                     NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
-                     if ([params[@"requestSuccess"]  isEqual: @YES]) {
-                         [params removeObjectForKey:@"requestSuccess"];
-                         [params setObject:@"true" forKey:@"replysubmit"];
-                         NSString *postPathTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%ld&tid=%@&replysubmit=yes&inajax=1";
-                         NSString *postPath = [NSString stringWithFormat:postPathTemplate, self.topic.fID, (long)_currentPage, self.topic.topicID];
-                         [self replyWithTextInDiscuz:text withPath:postPath andParams:params];
-                     } else {
-                         NSLog(@"fail to fetch reply info!");
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [overlay postErrorMessage:@"引用信息无效" duration:2.5 animated:YES];
-                         });
-                     }
-
-                 }
-                 failure:^(NSURLSessionDataTask *operation, NSError *error) {
-                     NSLog(@"fail to fetch reply info!");
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         if (error.code == -999) {
-                             NSLog(@"Code -999 may means user want to cancel this request.");
-                             [overlay postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                         } else {
-                             [overlay postErrorMessage:@"网络连接失败" duration:2.5 animated:YES];
-                         }
-                     });
-                 }];
+    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
+        NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+        NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
+        [self updatePageLabel];
+        [self.webView loadHTMLString:contents baseURL:nil];
+        _finishLoading = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [HUD hideWithDelay:0.3];
+        });
+    } failure:^(NSError *error) {
+        if (error.code == -999) {
+            NSLog(@"request cancelled.");
+            [HUD hideWithDelay:0.3];
+        } else {
+            NSLog(@"%@", error);
+            [HUD showRefreshButton];
+        }
+    }];
 }
 
 -(void) cancelRequest
 {
-    [[self.HTTPClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
-        for (NSURLSessionDataTask* task in downloadTasks) {
-            [task cancel];
-        }
-        for (NSURLSessionDataTask* task in dataTasks) {
-            [task cancel];
+    [self.dataCenter cancelRequest];
+    
+}
+
+#pragma mark - Reply
+- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
+{
+    //check in login state.
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+        [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
+        return;
+    }
+    
+    [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
+    
+    NSString *replyDraft;
+    if (self.replyController) {
+        replyDraft = [self.replyController.text stringByAppendingString:text? text : @""];
+    } else {
+        replyDraft = text? text : @"";
+    }
+    
+    self.replyController = [[REComposeViewController alloc] init];
+    REComposeViewController *replyController = self.replyController;
+    replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
+    if (topicFloor) {
+        replyController.title = [@"@" stringByAppendingString:topicFloor.author];
+    }
+    __weak typeof(self) myself = self; //Is it necessary to avoid memory leak?
+    [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
+        if (result == REComposeResultCancelled) {
+            [composeViewController dismissViewControllerAnimated:YES completion:nil];
+        } else if (result == REComposeResultPosted) {
+            if (composeViewController.text.length > 0) {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
+                if (topicFloor) {
+                    [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [myself.replyController setText:@""];
+                        if (_currentPage == _totalPages) {
+                            _needToScrollToBottom = YES;
+                            [myself fetchContent];
+                        }
+                    } failure:^(NSError *error) {
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        if (error.code == -999) {
+                            NSLog(@"Code -999 may means user want to cancel this request.");
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                        } else {
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                        }
+                    }];
+                } else {
+                    [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                        [myself.replyController setText:@""];
+                        if (_currentPage == _totalPages) {
+                            _needToScrollToBottom = YES;
+                            [myself fetchContent];
+                        }
+                    } failure:^(NSError *error) {
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        if (error.code == -999) {
+                            NSLog(@"Code -999 may means user want to cancel this request.");
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                        } else {
+                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                        }
+                    }];
+                }
+                [composeViewController dismissViewControllerAnimated:YES completion:nil];
+            }
         }
     }];
     
+    [self.replyController setText:[self.replyController.text stringByAppendingString:replyDraft]];
+    [self.replyController.view setFrame:self.view.bounds];
+    [self.replyController presentFromViewController:self];
 }
 
 #pragma mark - Helpers
@@ -747,56 +714,6 @@
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
-- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
-{
-    //check in login state.
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-        [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
-        return;
-    }
-    
-    [self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
-    
-    NSString *replyDraft;
-    if (self.replyController) {
-        replyDraft = [self.replyController.text stringByAppendingString:text? text : @""];
-    } else {
-        replyDraft = text? text : @"";
-    }
-    
-    self.replyController = [[REComposeViewController alloc] init];
-    REComposeViewController *replyController = self.replyController;
-    replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
-    if (topicFloor) {
-        replyController.title = [@"@" stringByAppendingString:topicFloor.author];
-    }
-    [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
-        if (result == REComposeResultCancelled) {
-            [composeViewController dismissViewControllerAnimated:YES completion:nil];
-        } else if (result == REComposeResultPosted) {
-            if (composeViewController.text.length > 0) {
-                if (topicFloor) {
-                    [self replySepecificFloor:topicFloor withText:composeViewController.text];
-                } else {
-                    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-                    NSString *path = [NSString stringWithFormat:@"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1", self.topic.fID, self.topic.topicID];
-                    NSMutableDictionary *params = [@{@"posttime" : timestamp,
-                                                     @"formhash" : self.topic.formhash,
-                                                     @"usesig" : @"1",
-                                                     @"subject" : @"",
-                                                     } mutableCopy];
-                    [self replyWithTextInDiscuz:composeViewController.text withPath:path andParams:params];
-                }
-                [composeViewController dismissViewControllerAnimated:YES completion:nil];
-            }
-        }
-    }];
-    
-    [self.replyController setText:[self.replyController.text stringByAppendingString:replyDraft]];
-    [self.replyController.view setFrame:self.view.bounds];
-    [self.replyController presentFromViewController:self];
-}
-
 - (void)saveTopicViewedState:(id)sender
 {
     if (_finishLoading) {
@@ -806,8 +723,8 @@
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
-    [self.tracer hasViewed:self.topic];
-}
+    [self.topic setLastReplyCount:self.topic.replyCount];
+    [self.tracer hasViewed:self.topic];}
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
 {
