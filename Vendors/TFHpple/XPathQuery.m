@@ -40,7 +40,10 @@ NSDictionary *DictionaryForNode(xmlNodePtr currentNode, NSMutableDictionary *par
                 [parentResult setObject:[currentNodeContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] forKey:@"nodeContent"];
                 return nil;
             }
-            [resultForNode setObject:currentNodeContent forKey:@"nodeContent"];
+            if (currentNodeContent != nil)
+            {
+                [resultForNode setObject:currentNodeContent forKey:@"nodeContent"];
+            }
 //            NSLog(@"content: %@",currentNodeContent);
             return resultForNode;
 
@@ -112,8 +115,10 @@ NSDictionary *DictionaryForNode(xmlNodePtr currentNode, NSMutableDictionary *par
   xmlNodeDump(buffer, currentNode->doc, currentNode, 0, 0);
 
   NSString *rawContent = [NSString stringWithCString:(const char *)buffer->content encoding:NSUTF8StringEncoding];
-  [resultForNode setObject:rawContent forKey:@"raw"];
-
+  if (rawContent != nil)
+  {
+      [resultForNode setObject:rawContent forKey:@"raw"];
+  }
     xmlBufferFree(buffer);
     
   return resultForNode;
@@ -124,6 +129,12 @@ NSArray *PerformXPathQuery(xmlDocPtr doc, NSString *query)
   xmlXPathContextPtr xpathCtx;
   xmlXPathObjectPtr xpathObj;
 
+  /* Make sure that passed query is non-nil and is NSString object */
+  if (query == nil || ![query isKindOfClass:[NSString class]]) 
+  {
+    return nil;
+  }
+  
   /* Create xpath evaluation context */
   xpathCtx = xmlXPathNewContext(doc);
   if(xpathCtx == NULL)
