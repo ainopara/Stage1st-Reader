@@ -199,6 +199,10 @@
                 [floor setIndexMark: [[floorIndexMarkNode text] stringByReplacingOccurrencesOfString:@"\r\n" withString:@""]];
             }
             
+            //parse poll
+            TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
+            [floor setPoll: [floorPollNode raw]];
+
             //parse content & floorID
             TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
             [floor setContent: [floorContentNode raw]];
@@ -263,7 +267,12 @@
         if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
             replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
         }
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, topicFloor.content, floorAttachment];
+        NSString *pollContentString = @"";
+        if (topicFloor.poll != nil) {
+            pollContentString = [NSString stringWithFormat:@"<div class=\"s1-poll\">%@</div>",topicFloor.poll];
+        }
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, replyLinkString, pollContentString, topicFloor.content, floorAttachment];
+
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
