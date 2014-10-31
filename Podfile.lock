@@ -1,5 +1,5 @@
 PODS:
-  - ActionSheetPicker-3.0 (1.1.18)
+  - ActionSheetPicker-3.0 (1.2.0)
   - AFNetworking (2.4.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
@@ -46,11 +46,11 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 SPEC CHECKSUMS:
-  ActionSheetPicker-3.0: feb7d7809f91ec3a4de13cb97c639a617c8b2871
+  ActionSheetPicker-3.0: e261c5b5cf47e4b4efa8cb3d186be30d4b145b76
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   FMDB: 0b2fa25e5264ef177973c0cb8c02c711107979aa
   JTSImageViewController: 52488d3a04e5b161d3fa56f10e888a27564f3e05
   KissXML: e537c38b18ede903ee6de45953a9bd86c131ebe9
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.34.4

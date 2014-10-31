@@ -78,6 +78,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.release.xcconfig"; sourceTree = "<group>"; };
+		0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		860223501895051400A3E66E /* S1GlobalVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1GlobalVariables.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1GlobalVariables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1GlobalVariables.m; sourceTree = "<group>"; };
 		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "jquery-2.1.1.min.js"; sourceTree = "<group>"; };
@@ -123,7 +125,6 @@
 		86BC46D81A02A4F000B3E887 /* Stage1st_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Stage1st_Tests.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
-		9BB0A26615C5458DA622DC80 /* Pods-Stage1st.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.xcconfig"; path = "Pods/Pods-Stage1st.xcconfig"; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
@@ -207,6 +208,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0936791410C2D98DE94CA2AD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */,
+				0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		86040B7A19DE3313004BF2BC /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,7 +314,6 @@
 		C095872B16CA8A36007E0119 = {
 			isa = PBXGroup;
 			children = (
-				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				C095877916CA8D90007E0119 /* Classes */,
@@ -312,7 +321,7 @@
 				86BC46D51A02A4F000B3E887 /* Stage1st Tests */,
 				C095873616CA8A36007E0119 /* Frameworks */,
 				C095873516CA8A36007E0119 /* Products */,
-				9BB0A26615C5458DA622DC80 /* Pods-Stage1st.xcconfig */,
+				0936791410C2D98DE94CA2AD /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -382,6 +391,7 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
@@ -616,7 +626,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-Stage1st-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F515F879F9444AD48B7C0E01 /* Check Pods Manifest.lock */ = {
@@ -835,7 +845,7 @@
 		};
 		C095875216CA8A36007E0119 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BB0A26615C5458DA622DC80 /* Pods-Stage1st.xcconfig */;
+			baseConfigurationReference = 0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -847,10 +857,6 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				"OTHER_LDFLAGS[arch=*]" = (
-					"-lxml2",
-					"-ObjC",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "C401FE61-0D9F-49F1-A25B-B0B206240FDF";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -860,7 +866,7 @@
 		};
 		C095875316CA8A36007E0119 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BB0A26615C5458DA622DC80 /* Pods-Stage1st.xcconfig */;
+			baseConfigurationReference = 0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -872,10 +878,6 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "\"${SDK_DIR}\"/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				"OTHER_LDFLAGS[arch=*]" = (
-					"-lxml2",
-					"-ObjC",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "C401FE61-0D9F-49F1-A25B-B0B206240FDF";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -893,6 +895,7 @@
 				86BC46DD1A02A4F000B3E887 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C095872F16CA8A36007E0119 /* Build configuration list for PBXProject "Stage1st" */ = {
 			isa = XCConfigurationList;
