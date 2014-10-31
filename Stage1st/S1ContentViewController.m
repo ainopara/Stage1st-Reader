@@ -457,7 +457,7 @@
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundStyle_Dimmed];
+                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_None];
             [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
@@ -467,14 +467,14 @@
     //Image URL opened in image Viewer (TODO: Not Be Tested)
     if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
         _presentingImageViewer = YES;
-        NSString *imageURL = request.URL.path;
+        NSString *imageURL = request.URL.absoluteString;
         NSLog(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                initWithImageInfo:imageInfo
                                                mode:JTSImageViewControllerMode_Image
-                                               backgroundStyle:JTSImageViewControllerBackgroundStyle_Dimmed];
+                                               backgroundStyle:JTSImageViewControllerBackgroundOption_None];
         [UIApplication sharedApplication].statusBarHidden = YES;
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
