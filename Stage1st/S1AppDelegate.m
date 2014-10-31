@@ -43,11 +43,7 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }
-    /*
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FavoriteTopicShouldOrderByLastVisitDate"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
-    }
-    */
+
     //Migrate tracer to sql database
     [S1Tracer migrateTracerToDatabase];
     

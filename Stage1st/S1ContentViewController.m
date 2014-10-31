@@ -181,7 +181,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
         [self saveTopicViewedState:nil];
-        self.topic.floors = [[NSMutableDictionary alloc] init];
+        self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -464,6 +464,22 @@
         }
         return NO;
     }
+    //Image URL opened in image Viewer (TODO: Not Be Tested)
+    if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
+        _presentingImageViewer = YES;
+        NSString *imageURL = request.URL.path;
+        NSLog(@"%@", imageURL);
+        JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
+        imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
+        JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
+                                               initWithImageInfo:imageInfo
+                                               mode:JTSImageViewControllerMode_Image
+                                               backgroundStyle:JTSImageViewControllerBackgroundStyle_Dimmed];
+        [UIApplication sharedApplication].statusBarHidden = YES;
+        [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
+        [imageViewer setInteractionsDelegate:self];
+        return NO;
+    }
     // Open link
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
@@ -610,14 +626,16 @@
             if (composeViewController.text.length > 0) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
+                __strong typeof(self) strongMyself = myself;
                 if (topicFloor) {
                     [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        [myself.replyController setText:@""];
-                        if (_currentPage == _totalPages) {
-                            _needToScrollToBottom = YES;
-                            [myself fetchContent];
+                        
+                        [strongMyself.replyController setText:@""];
+                        if (strongMyself->_currentPage == strongMyself->_totalPages) {
+                            strongMyself->_needToScrollToBottom = YES;
+                            [strongMyself fetchContent];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -632,10 +650,10 @@
                     [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        [myself.replyController setText:@""];
-                        if (_currentPage == _totalPages) {
-                            _needToScrollToBottom = YES;
-                            [myself fetchContent];
+                        [strongMyself.replyController setText:@""];
+                        if (strongMyself->_currentPage == strongMyself->_totalPages) {
+                            strongMyself->_needToScrollToBottom = YES;
+                            [strongMyself fetchContent];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
