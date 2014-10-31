@@ -55,6 +55,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (self) {
         // Custom initialization
         _loadingFlag = NO;
+        self.currentKey = @"";
         self.previousKey = @"";
     }
     return self;
@@ -323,6 +324,16 @@ static NSString * const cellIdentifier = @"TopicCell";
                 // TODO: which to use?
             }
             
+        } else {
+            if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+                self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+            }
+            self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
+            self.currentKey = key;
+            if (![key isEqualToString:self.previousKey]) {
+                self.topics = [[NSMutableArray alloc] init];
+                [self.tableView reloadData];
+            }
         }
         //hud hide
         if (refresh || ![self.dataCenter hasCacheForKey:key]) {
@@ -542,7 +553,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.tableView.hidden = YES;
         self.topics = [NSMutableArray array];
         self.previousKey = @"";
-        self.currentKey = nil;
+        self.currentKey = @"";
         self.cacheContentOffset = nil;
         [self.tableView reloadData];
     }
