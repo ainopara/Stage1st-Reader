@@ -7,12 +7,16 @@
 //
 
 #import "S1SettingViewController.h"
-#import "S1TopicListViewController.h"
-#import "S1LoginViewController.h"
-//#import "S1BaseURLViewController.h"
-#import "GSStaticTableViewBuilder.h"
 
 @interface S1SettingViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
+@property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
+@property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *keepHistoryDetail;
+@property (weak, nonatomic) IBOutlet UISwitch *replySuffixSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *versionDetail;
+
 @end
 
 
@@ -22,28 +26,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    if (inLoginStateID) {
+        self.usernameDetail.text = inLoginStateID;
+    }
+    
+    self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+    
+    self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
+    
+    self.keepHistoryDetail.text = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+    
+    self.replySuffixSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
+    
+    self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
+    
+    self.versionDetail.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    
+    
     //[self.view setTintColor:[S1GlobalVariables color3]];
+    /*
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"SettingView_NavigationBar_Back", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
     self.navigationItem.leftBarButtonItem = cancelItem;
-    
-    __weak typeof(self) myself = self;
-    
-    [self addSection:^(GSSection *section) {
-        /* //This section no more needed.
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"请求地址", @"URL");
-                cell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"];
-                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }];
-            [row setEventHandlerBlock:^(UITableViewCell *cell) {
-                S1BaseURLViewController *controller = [[S1BaseURLViewController alloc] initWithStyle:UITableViewStyleGrouped];
-                [myself.navigationController pushViewController:controller animated:YES];
-            }];
-        }];
-        */
+    */
+    //__weak typeof(self) myself = self;
+    /*
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell){
                 cell.textLabel.text = NSLocalizedString(@"SettingView_Login", @"Login");
@@ -156,22 +165,7 @@
                 }
             }];
         }];
-        /*
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"SettingView_Favorite_Order", @"Record Order By Visit Time");
-                if (!cell.accessoryView) {
-                    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
-                    switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
-                    [switcher addEventHandler:^(id sender, UIEvent *event) {
-                        UISwitch *s = sender;
-                        [[NSUserDefaults standardUserDefaults] setBool:s.on forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
-                    } forControlEvent:UIControlEventValueChanged];
-                    cell.accessoryView = switcher;
-                }
-            }];
-        }];
-        */
+     
 
     }];
     
@@ -196,15 +190,10 @@
             }];
         }];
     }];
-    
+*/
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-#pragma mark - Orientation
+#pragma mark - Orientation 
+//TODO: Not work at all
 
 - (NSUInteger)supportedInterfaceOrientations
 {
@@ -221,14 +210,27 @@
     }
     return [super preferredInterfaceOrientationForPresentation];
 }
-
-#pragma mark - 
-
-- (void)cancel:(id)sender
-{
+#pragma mark -
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+#pragma mark -
+- (IBAction)back:(id)sender {
     [self dismissViewControllerAnimated:YES completion:^{
         
     }];
+}
+
+- (IBAction)switchDisplayImage:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"Display"];
+}
+
+- (IBAction)switchReplySuffix:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"AppendSuffix"];
+}
+
+- (IBAction)switchReplyIncrement:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ReplyIncrement"];
 }
 
 @end

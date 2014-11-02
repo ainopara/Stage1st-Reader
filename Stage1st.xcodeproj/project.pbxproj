@@ -32,6 +32,7 @@
 		86BC46D91A02A4F000B3E887 /* Stage1st_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC46D81A02A4F000B3E887 /* Stage1st_Tests.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
+		86F40D8B1A05DA6700365FD7 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86F40D8D1A05DA6700365FD7 /* Settings.storyboard */; };
 		C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */ = {isa = PBXBuildFile; fileRef = C01C821016FDB5D2003E6B91 /* content_larger_font.css */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
 		C05286C616D3B881000B0DBD /* S1HTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPClient.m */; };
@@ -121,6 +122,7 @@
 		86BC46D81A02A4F000B3E887 /* Stage1st_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Stage1st_Tests.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
+		86F40D8C1A05DA6700365FD7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
@@ -383,6 +385,7 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				86F40D8D1A05DA6700365FD7 /* Settings.storyboard */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
@@ -595,6 +598,7 @@
 				C01C821116FDB5D2003E6B91 /* content_larger_font.css in Resources */,
 				868C6A2018DE88A200BDBDD9 /* content_19px_font.css in Resources */,
 				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
+				86F40D8B1A05DA6700365FD7 /* Settings.storyboard in Resources */,
 				86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
@@ -705,6 +709,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		86F40D8D1A05DA6700365FD7 /* Settings.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				86F40D8C1A05DA6700365FD7 /* en */,
+			);
+			name = Settings.storyboard;
+			path = Stage1st;
+			sourceTree = "<group>";
+		};
 		C095874016CA8A36007E0119 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

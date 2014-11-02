@@ -182,8 +182,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)settings:(id)sender
 {
     [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-    S1SettingViewController *controller = [[S1SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
+    //S1SettingViewController *controller = [[S1SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    //UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
+    NSString * storyboardName = @"Settings";
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+    UIViewController * controllerToPresent = [storyboard instantiateViewControllerWithIdentifier:@"SettingsNavigation"];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
 /*
