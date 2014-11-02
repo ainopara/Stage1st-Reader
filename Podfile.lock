@@ -1,4 +1,5 @@
 PODS:
+  - 1PasswordExtension (1.0.9)
   - ActionSheetPicker-3.0 (1.2.0)
   - AFNetworking (2.4.1):
     - AFNetworking/NSURLConnection
@@ -31,6 +32,7 @@ PODS:
   - SVWebViewController (1.0)
 
 DEPENDENCIES:
+  - 1PasswordExtension (~> 1.0.0)
   - ActionSheetPicker-3.0
   - AFNetworking (~> 2.4.1)
   - FMDB (~> 2.3)
@@ -46,6 +48,7 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 SPEC CHECKSUMS:
+  1PasswordExtension: 40e5bfe30487e9c11b92dc81f4cb3e47abdf5a58
   ActionSheetPicker-3.0: e261c5b5cf47e4b4efa8cb3d186be30d4b145b76
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   FMDB: 0b2fa25e5264ef177973c0cb8c02c711107979aa

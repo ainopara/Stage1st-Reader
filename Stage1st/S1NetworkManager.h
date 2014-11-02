@@ -42,6 +42,11 @@
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
++ (void)postLoginForUsername:(NSString *)username
+                 andPassword:(NSString *)password
+                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 - (void)cancelRequest;
 
 @end

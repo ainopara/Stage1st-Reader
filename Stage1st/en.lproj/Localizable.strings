@@ -49,8 +49,7 @@
 "SettingView_Developer" = "Developer";
 
 "LoginView_Title" = "Login";
-"LoginView_User_ID" = "User ID";
-"LoginView_ID" = "ID";
+"LoginView_Username" = "Username";
 "LoginView_Password" = "Password";
 "LoginView_Get_Login_Status" = "Get Login Status";
 "LoginView_Get_Login_Status_Success_Message" = "Getting Login Status Succeed";

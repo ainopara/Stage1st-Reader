@@ -49,8 +49,7 @@
 "SettingView_Developer" = "开发者";
 
 "LoginView_Title" = "登录设置";
-"LoginView_User_ID" = "用户名";
-"LoginView_ID" = "用户名";
+"LoginView_Username" = "用户名";
 "LoginView_Password" = "密码";
 "LoginView_Get_Login_Status" = "获取登录状态";
 "LoginView_Get_Login_Status_Success_Message" = "获取登录状态成功";

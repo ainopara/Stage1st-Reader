@@ -103,6 +103,20 @@
     [self.client POST:url parameters:params success:success failure:failure];
 }
 
++ (void)postLoginForUsername:(NSString *)username
+                 andPassword:(NSString *)password
+                     success:(void (^)(NSURLSessionDataTask *, id))success
+                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
+    NSDictionary *params = @{@"fastloginfield" : @"username",
+                            @"username" : username,
+                            @"password" : password,
+                            @"handlekey" : @"ls",
+                            @"quickforward" : @"yes",
+                            @"cookietime" : @"2592000"};
+    [[S1HTTPClient sharedClient] POST:url parameters:params success:success failure:failure];
+}
+
 -(void) cancelRequest
 {
     [[self.client session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
