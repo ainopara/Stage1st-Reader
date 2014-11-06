@@ -137,7 +137,11 @@
                 NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
                 replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
                 replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-                [replyChangeContent drawInRect:CGRectMake(20, 38, 35, 16) withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                CGRect rect = CGRectMake(20, 38, 35, 16);
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                    rect = CGRectMake(20 + 10, 38, 35, 16);
+                }
+                [replyChangeContent drawInRect:rect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
                                                                                            NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                                                            NSForegroundColorAttributeName: replyCountFinalColor}];
             }
