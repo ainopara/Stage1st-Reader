@@ -95,28 +95,21 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.navigationBar = [[UINavigationBar alloc] init];
     self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
     self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //self.navigationBar.backgroundColor = [S1GlobalVariables color9];
-    UINavigationItem *item = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
-    self.naviItem = item;
+
+    self.naviItem = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
     UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
-    item.leftBarButtonItem = settingItem;
-    
     self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
-    //self.composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(test:)];
-    
-    NSArray *actionButtonItems = @[self.historyItem/*, self.composeItem*/];
-    item.rightBarButtonItems = actionButtonItems;
-    [self.navigationBar pushNavigationItem:item animated:NO];
+    self.naviItem.leftBarButtonItem = settingItem;
+    self.naviItem.rightBarButtonItem = self.historyItem;
+    [self.navigationBar pushNavigationItem:self.naviItem animated:NO];
     [self.view addSubview:self.navigationBar];
-    
     
     self.scrollTabBar = [[S1TabBar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height-_BAR_HEIGHT, self.view.bounds.size.width, _BAR_HEIGHT) andKeys:[self keys]];
     self.scrollTabBar.tabbarDelegate = self;
-        
-    [self.view addSubview:self.scrollTabBar];
-
     self.scrollTabBar.autoresizesSubviews = YES;
     self.scrollTabBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:self.scrollTabBar];
+    
     self.view.autoresizesSubviews = YES;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
@@ -124,7 +117,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-#undef _BAR_HEIGHT
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -280,7 +272,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
-    [self.naviItem setRightBarButtonItems:@[self.historyItem/*, self.composeItem*/]];
+    [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.tableView.hidden) { self.tableView.hidden = NO; }
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
