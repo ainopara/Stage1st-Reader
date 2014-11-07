@@ -95,6 +95,17 @@
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.opaque = NO;
     self.webView.backgroundColor = [S1GlobalVariables color5];
+    //title label
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    titleLabel.numberOfLines = 0;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    titleLabel.text = self.topic.title;
+    titleLabel.textColor = [S1GlobalVariables color3];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    [self.webView.scrollView insertSubview:titleLabel atIndex:0];
+    
     [self.view addSubview:self.webView];
     
     self.toolbar = [[UIToolbar alloc] init];
