@@ -125,7 +125,9 @@
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ReorderForumViewController.m; path = Stage1st/S1ReorderForumViewController.m; sourceTree = "<group>"; };
-		86FC62241A06000D0018DD2E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Stage1st/en.lproj/Settings.storyboard; sourceTree = "<group>"; };
+		86E5C2731A0CDE68006D8D6A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
+		86E5C2751A0CDEAB006D8D6A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Settings.strings; sourceTree = "<group>"; };
+		86E5C2771A0CDEAD006D8D6A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		C01C821016FDB5D2003E6B91 /* content_larger_font.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_larger_font.css; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
@@ -563,13 +565,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				da,
-				"es-ES",
-				es,
 				"zh-Hans",
-				"zh-Hant",
-				fr,
-				ja,
+				Base,
 			);
 			mainGroup = C095872B16CA8A36007E0119;
 			productRefGroup = C095873516CA8A36007E0119 /* Products */;
@@ -718,7 +715,9 @@
 		86FC62231A06000D0018DD2E /* Settings.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				86FC62241A06000D0018DD2E /* en */,
+				86E5C2731A0CDE68006D8D6A /* Base */,
+				86E5C2751A0CDEAB006D8D6A /* en */,
+				86E5C2771A0CDEAD006D8D6A /* zh-Hans */,
 			);
 			name = Settings.storyboard;
 			sourceTree = "<group>";
@@ -822,7 +821,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -846,7 +845,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

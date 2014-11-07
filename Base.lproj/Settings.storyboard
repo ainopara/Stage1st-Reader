@@ -80,7 +80,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="N6W-M7-qBW" kind="show" id="Z8X-aZ-Fif"/>
+                                            <segue destination="N6W-M7-qBW" kind="show" identifier="Font Size Segue" id="Z8X-aZ-Fif"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="4BH-CE-wm8">
@@ -130,7 +130,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="bUe-CX-CDP" kind="show" id="aW6-S8-VQt"/>
+                                            <segue destination="bUe-CX-CDP" kind="show" identifier="Keep History Segue" id="aW6-S8-VQt"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hog-I5-cpx">
@@ -349,7 +349,6 @@
         <!--Forum Order-->
         <scene sceneID="Kz2-0v-joz">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EF1-lH-RXY" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController title="Forum Order" id="6R3-p1-NMf" customClass="S1ReorderForumViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="fPr-jH-GOT">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
@@ -378,6 +377,7 @@
                         </connections>
                     </tableView>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EF1-lH-RXY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1863" y="730"/>
         </scene>

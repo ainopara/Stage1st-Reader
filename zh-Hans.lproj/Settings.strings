@@ -1,0 +1,87 @@
+
+/* Class = "IBUILabel"; text = "Display Image"; ObjectID = "4y5-0D-ImP"; */
+"4y5-0D-ImP.text" = "Display Image";
+
+/* Class = "IBUILabel"; text = "Forum Order"; ObjectID = "5Jp-Vj-4R0"; */
+"5Jp-Vj-4R0.text" = "Forum Order";
+
+/* Class = "IBUITableViewController"; title = "Forum Order"; ObjectID = "6R3-p1-NMf"; */
+"6R3-p1-NMf.title" = "Forum Order";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "8dV-mn-myv"; */
+"8dV-mn-myv.text" = "Detail";
+
+/* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "8hF-SF-9fr"; */
+"8hF-SF-9fr.placeholder" = "Username";
+
+/* Class = "IBUILabel"; text = "Font Size"; ObjectID = "8vS-vt-Air"; */
+"8vS-vt-Air.text" = "Font Size";
+
+/* Class = "IBUIBarButtonItem"; title = "Back"; ObjectID = "CV4-G8-ASX"; */
+"CV4-G8-ASX.title" = "Back";
+
+/* Class = "IBUILabel"; text = "Font Size"; ObjectID = "CtM-qh-yKj"; */
+"CtM-qh-yKj.text" = "Font Size";
+
+/* Class = "IBUILabel"; text = "Keep History"; ObjectID = "DX9-1Q-Yua"; */
+"DX9-1Q-Yua.text" = "Keep History";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "E8b-PX-rjK"; */
+"E8b-PX-rjK.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "19px"; ObjectID = "KZj-ag-Id8"; */
+"KZj-ag-Id8.text" = "19px";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "MDi-8t-5qr"; */
+"MDi-8t-5qr.text" = "Detail";
+
+/* Class = "IBUITableViewController"; title = "Font Size"; ObjectID = "N6W-M7-qBW"; */
+"N6W-M7-qBW.title" = "Font Size";
+
+/* Class = "IBUIViewController"; title = "Login"; ObjectID = "Rga-Ra-1eA"; */
+"Rga-Ra-1eA.title" = "Login";
+
+/* Class = "IBUILabel"; text = "Gabriel & ainopara"; ObjectID = "SWl-nG-F4S"; */
+"SWl-nG-F4S.text" = "Gabriel & ainopara";
+
+/* Class = "IBUILabel"; text = "Reply Suffix"; ObjectID = "VG4-xI-j52"; */
+"VG4-xI-j52.text" = "Reply Suffix";
+
+/* Class = "IBUITableViewController"; title = "Settings"; ObjectID = "Z9I-YZ-q2k"; */
+"Z9I-YZ-q2k.title" = "Settings";
+
+/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "a7E-Z0-WQq"; */
+"a7E-Z0-WQq.placeholder" = "Password";
+
+/* Class = "IBUILabel"; text = "Show Reply Increment"; ObjectID = "afJ-hF-0oG"; */
+"afJ-hF-0oG.text" = "Show Reply Increment";
+
+/* Class = "IBUITableViewController"; title = "Keep History"; ObjectID = "bUe-CX-CDP"; */
+"bUe-CX-CDP.title" = "Keep History";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "con-mD-8cX"; */
+"con-mD-8cX.text" = "Title";
+
+/* Class = "IBUILabel"; text = "Not Login"; ObjectID = "nZs-MV-DJo"; */
+"nZs-MV-DJo.text" = "Not Login";
+
+/* Class = "IBUILabel"; text = "Login"; ObjectID = "ng5-KU-SG1"; */
+"ng5-KU-SG1.text" = "Login";
+
+/* Class = "IBUILabel"; text = "Version"; ObjectID = "pea-Ap-wK5"; */
+"pea-Ap-wK5.text" = "Version";
+
+/* Class = "IBUIButton"; normalTitle = "Login"; ObjectID = "swq-PA-Vhc"; */
+"swq-PA-Vhc.normalTitle" = "Login";
+
+/* Class = "IBUINavigationItem"; title = "Settings"; ObjectID = "u6Z-FP-JaY"; */
+"u6Z-FP-JaY.title" = "Settings";
+
+/* Class = "IBUILabel"; text = "17px"; ObjectID = "uhr-uz-vWh"; */
+"uhr-uz-vWh.text" = "17px";
+
+/* Class = "IBUILabel"; text = "15px"; ObjectID = "wbI-fP-Zu9"; */
+"wbI-fP-Zu9.text" = "15px";
+
+/* Class = "IBUILabel"; text = "Developers"; ObjectID = "yBw-Qf-dtH"; */
+"yBw-Qf-dtH.text" = "Developers";
