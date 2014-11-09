@@ -12,4 +12,6 @@
 
 + (S1HTTPClient *)sharedClient;
 
++ (S1HTTPClient *)sharedJSONClient;
+
 @end

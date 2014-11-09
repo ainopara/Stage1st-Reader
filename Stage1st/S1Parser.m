@@ -69,9 +69,12 @@
         [image removeAttributeForName:@"border"];
         
     }
-    HTMLString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
-    HTMLString = [HTMLString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
-    return HTMLString;
+    NSString *processedString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
+    if (processedString) {
+        return [processedString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
+    } else {
+        return HTMLString;
+    }
 }
 
 + (NSString *)translateDateTimeString:(NSString *)dateTimeString
@@ -297,9 +300,8 @@
         cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
     }
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    finalString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"<div>%@</div>", finalString]];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, jqueryPath, finalString];
-    return threadPage;
+    return [[S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"%@", threadPage]] stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" withString:@""];
 }
 
 #pragma mark - Pick Information

@@ -22,6 +22,11 @@
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
+- (void)requestTopicContentAPIForID:(NSNumber *)topicID
+                           withPage:(NSNumber *)page
+                            success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                            failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 - (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID

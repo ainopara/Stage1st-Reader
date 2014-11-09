@@ -61,6 +61,22 @@
     }
 }
 
+- (void)requestTopicContentAPIForID:(NSNumber *)topicID
+                        withPage:(NSNumber *)page
+                         success:(void (^)(NSURLSessionDataTask *, id))success
+                         failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/index.php";
+    NSDictionary *params = @{@"module": @"viewthread",
+                             @"version": @1,
+                             @"ppp": @30,
+                             @"submodule": @"checkpost",
+                             @"mobile": @"no",
+                             @"tid": topicID,
+                             @"page": page};
+    [[S1HTTPClient sharedJSONClient] GET:url parameters:params success:success failure:failure];
+}
+
+
 - (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID

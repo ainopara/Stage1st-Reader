@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *replySuffixSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
+@property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 
 @end
 
@@ -41,6 +42,7 @@
     self.replySuffixSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     
     self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
+    self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     
     self.versionDetail.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
     
@@ -231,6 +233,9 @@
 
 - (IBAction)switchReplyIncrement:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ReplyIncrement"];
+}
+- (IBAction)switchUseAPI:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"UseAPI"];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

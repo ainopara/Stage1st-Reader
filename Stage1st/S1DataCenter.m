@@ -124,35 +124,56 @@
 #pragma mark - Network (Content)
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:[page integerValue]];
-        
-        // get formhash
-        NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
-        
-        //set reply count
-        if ([page isEqualToNumber:@1]) {
-            NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
-            if (parsedReplyCount != 0) {
-                [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+        [self.networkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSDictionary *responseDict = responseObject;
+            NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
+            NSMutableArray *floorList = [[NSMutableArray alloc] init];
+            for (NSDictionary *rawFloor in rawFloorList) {
+                S1Floor *floor = [[S1Floor alloc] init];
+                floor.floorID = rawFloor[@"pid"];
+                floor.author = rawFloor[@"author"];
+                floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
+                floor.indexMark = rawFloor[@"number"];
+                floor.content = [NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">&#13;\n%@</td>", floor.floorID, rawFloor[@"message"]];
+                [floorList addObject:floor];
             }
-        }
-        
-        // update total page
-        NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
-        if (parsedTotalPages != 0) {
-            [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
-        }
-        
-        //check login state
-        [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-        
-        success(floorList);
-        
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        failure(error);
-    }];
+            success(floorList);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            failure(error);
+        }];
+    } else {
+        [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:[page integerValue]];
+            
+            // get formhash
+            NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+            
+            //set reply count
+            if ([page isEqualToNumber:@1]) {
+                NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
+                if (parsedReplyCount != 0) {
+                    [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+                }
+            }
+            
+            // update total page
+            NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
+            if (parsedTotalPages != 0) {
+                [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
+            }
+            
+            //check login state
+            [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+            
+            success(floorList);
+            
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            failure(error);
+        }];
+    }
+    
 }
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {

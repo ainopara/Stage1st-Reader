@@ -23,4 +23,16 @@
     return httpClient;
 }
 
++ (S1HTTPClient *)sharedJSONClient
+{
+    static S1HTTPClient *httpClient = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        httpClient = [[S1HTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
+        httpClient.responseSerializer = [AFJSONResponseSerializer serializer];
+        httpClient.responseSerializer.acceptableContentTypes = [httpClient.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    });
+    return httpClient;
+}
+
 @end
