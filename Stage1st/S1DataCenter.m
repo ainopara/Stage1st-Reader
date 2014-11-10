@@ -126,25 +126,14 @@
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [self.networkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSDictionary *responseDict = responseObject;
-            NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
-            NSMutableArray *floorList = [[NSMutableArray alloc] init];
-            for (NSDictionary *rawFloor in rawFloorList) {
-                S1Floor *floor = [[S1Floor alloc] init];
-                floor.floorID = rawFloor[@"pid"];
-                floor.author = rawFloor[@"author"];
-                floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
-                floor.indexMark = rawFloor[@"number"];
-                floor.content = [NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">&#13;\n%@</td>", floor.floorID, rawFloor[@"message"]];
-                [floorList addObject:floor];
-            }
+            NSArray *floorList = [S1Parser contentsFromAPI:responseObject];
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
         }];
     } else {
         [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:[page integerValue]];
+            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             // get formhash
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];

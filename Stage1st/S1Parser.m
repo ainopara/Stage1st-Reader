@@ -23,7 +23,7 @@
 @implementation S1Parser
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString
 {
-    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:1 error:nil];
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
@@ -32,8 +32,7 @@
         if (imageFile) {
             [image removeAttributeForName:@"src"];
             [image addAttributeWithName:@"src" stringValue:imageFile];
-            [image removeAttributeForName:@"width"];
-            [image removeAttributeForName:@"height"];
+            
         }
         else if (imageSrc && (![imageSrc hasPrefix:@"http"])) {
             [image removeAttributeForName:@"src"];
@@ -60,19 +59,22 @@
             }
         }
         
-        //clean image's attribute
+        //clean image's attribute (if it is not a mahjong face, it is the linkElement)
         [image removeAttributeForName:@"onmouseover"];
         [image removeAttributeForName:@"onclick"];
         [image removeAttributeForName:@"file"];
         [image removeAttributeForName:@"id"];
         [image removeAttributeForName:@"lazyloadthumb"];
         [image removeAttributeForName:@"border"];
+        [image removeAttributeForName:@"width"];
+        [image removeAttributeForName:@"height"];
         
     }
     NSString *processedString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
     if (processedString) {
         return [processedString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
     } else {
+        NSLog(@"Report Fail to modify image");
         return HTMLString;
     }
 }
@@ -123,6 +125,17 @@
     return [formatter stringFromDate:date];
 }
 
++ (NSString *)preprocessAPIcontent:(NSString *)content {
+    NSMutableString *mutableContent = [content mutableCopy];
+    NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p><a href";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote><a href"];
+    NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>\\[attach\\][\\d]*\\[/attach\\]";
+    re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
+    return mutableContent;
+}
+
 #pragma mark - Basic Parsing and Page Generating
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
 {
@@ -161,7 +174,7 @@
 }
 
 
-+ (NSArray *) contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset
++ (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
     // NSLog(@"Begin Parsing.");
     // NSDate *start = [NSDate date];
@@ -229,27 +242,60 @@
     return floorList;
 }
 
++ (NSArray *)contentsFromAPI:(NSDictionary *)responseDict {
+    NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
+    NSMutableArray *floorList = [[NSMutableArray alloc] init];
+    for (NSDictionary *rawFloor in rawFloorList) {
+        S1Floor *floor = [[S1Floor alloc] init];
+        floor.floorID = rawFloor[@"pid"];
+        floor.author = rawFloor[@"author"];
+        floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
+        floor.indexMark = rawFloor[@"number"];
+        floor.content = [NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]];
+        floor.content = [S1Parser preprocessAPIcontent:floor.content];
+        [floorList addObject:floor];
+    }
+    return floorList;
+}
+
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic
 {
     NSString *finalString = [[NSString alloc] init];
     for (S1Floor *topicFloor in floorList) {
-
         //process indexmark
         NSString *floorIndexMark = topicFloor.indexMark;
         if (![floorIndexMark isEqualToString:@"楼主"]) {
             floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
         }
+        
         //process author
         NSString *floorAuthor = topicFloor.author;
         if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
             floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
         }
+        
         //process time
         NSString *floorPostTime = topicFloor.postTime;
         if ([floorPostTime hasPrefix:@"发表于 "]) {
             floorPostTime = [floorPostTime stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
         }
         floorPostTime = [self translateDateTimeString:floorPostTime];
+        
+        //process reply Button
+        NSString *replyLinkString = @"";
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+            replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
+        }
+        
+        //process poll
+        NSString *pollContentString = @"";
+        if (topicFloor.poll != nil) {
+            pollContentString = [NSString stringWithFormat:@"<div class=\"s1-poll\">%@</div>",topicFloor.poll];
+        }
+        
+        //process content
+        NSString *contentString = [[S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"%@", topicFloor.content]]  stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" withString:@""];
+        
         //process attachment
         NSString *floorAttachment = @"";
         if (topicFloor.imageAttachmentList) {
@@ -263,19 +309,13 @@
             floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
         }
         
+        //generate page
         NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-        NSString *replyLinkString = @"";
-        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-            replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>" ,topicFloor.indexMark];
-        }
-        NSString *pollContentString = @"";
-        if (topicFloor.poll != nil) {
-            pollContentString = [NSString stringWithFormat:@"<div class=\"s1-poll\">%@</div>",topicFloor.poll];
-        }
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, topicFloor.author, floorPostTime, replyLinkString, pollContentString, topicFloor.content, floorAttachment];
-
+        
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, pollContentString, contentString, floorAttachment];
+        
         if ([floorList indexOfObject:topicFloor] != 0) {
             output = [@"<br />" stringByAppendingString:output];
         }
@@ -285,23 +325,24 @@
     NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
     NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
     NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
-    
+    //CSS
+    NSString *baseCSS = [[NSBundle mainBundle] pathForResource:@"content_base" ofType:@"css"];
     NSString *cssPath = nil;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"15px"]) {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content" ofType:@"css"];
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_15px" ofType:@"css"];
         } else if ([fontSizeKey isEqualToString:@"17px"]){
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_larger_font" ofType:@"css"];
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_17px" ofType:@"css"];
         } else {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px_font" ofType:@"css"];
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
         }
     } else {
         cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
     }
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, cssPath, jqueryPath, finalString];
-    return [[S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"%@", threadPage]] stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" withString:@""];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
+    return threadPage;
 }
 
 #pragma mark - Pick Information
