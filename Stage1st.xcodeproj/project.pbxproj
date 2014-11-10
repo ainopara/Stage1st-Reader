@@ -863,10 +863,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"${SDK_DIR}",
-					/usr/include/libxml2,
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -887,10 +884,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"${SDK_DIR}",
-					/usr/include/libxml2,
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
