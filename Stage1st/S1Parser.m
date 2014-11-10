@@ -125,9 +125,9 @@
 
 + (NSString *)preprocessAPIcontent:(NSString *)content {
     NSMutableString *mutableContent = [content mutableCopy];
-    NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p><a href";
+    NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p>";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote><a href"];
+    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote>"];
     NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>\\[attach\\][\\d]*\\[/attach\\]";
     re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
