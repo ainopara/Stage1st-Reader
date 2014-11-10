@@ -226,7 +226,6 @@
 - (void)back:(id)sender
 {
     [self cancelRequest];
-    _needToLoadLastPosition = NO;
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -238,7 +237,6 @@
 - (void)forward:(id)sender
 {
     [self cancelRequest];
-    _needToLoadLastPosition = NO;
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -254,7 +252,6 @@
 
 - (void)backLongPressed:(UIGestureRecognizer *)gr
 {
-    _needToLoadLastPosition = NO;
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage > 1) {
             _currentPage = 1;
@@ -266,7 +263,6 @@
 
 - (void)forwardLongPressed:(UIGestureRecognizer *)gr
 {
-    _needToLoadLastPosition = NO;
     if (gr.state == UIGestureRecognizerStateBegan) {
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
@@ -520,6 +516,7 @@
         if (self.topic.lastViewedPosition != 0) {
             [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
         }
+        _needToLoadLastPosition = NO;
     }
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
@@ -579,11 +576,13 @@
     
     // NSLog(@"Begin Fetch Content");
     NSDate *start = [NSDate date];
+    __weak typeof(self) weakMe = self;
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
         NSTimeInterval timeInterval = [start timeIntervalSinceNow];
         NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
-        [self updatePageLabel];
-        [self.webView loadHTMLString:contents baseURL:nil];
+        __strong typeof(self) strongMe = weakMe;
+        [strongMe updatePageLabel];
+        [strongMe.webView loadHTMLString:contents baseURL:nil];
         _finishLoading = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [HUD hideWithDelay:0.3];
@@ -629,7 +628,7 @@
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
     }
-    __weak typeof(self) myself = self; //Is it necessary to avoid memory leak?
+    __weak typeof(self) myself = self;
     [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
         if (result == REComposeResultCancelled) {
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
@@ -702,6 +701,9 @@
 
 - (void)updatePageLabel
 {
+    if (self.topic.totalPageCount) {
+        _totalPages = [self.topic.totalPageCount integerValue];
+    }
     self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
 }
 

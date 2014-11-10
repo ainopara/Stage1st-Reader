@@ -17,7 +17,7 @@
 
 @interface S1Parser()
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString;
-+ (NSString *)translateDateTimeString:(NSString *)dateTimeString;
++ (NSString *)translateDateTimeString:(NSDate *)dateTime;
 @end
 
 @implementation S1Parser
@@ -79,11 +79,9 @@
     }
 }
 
-+ (NSString *)translateDateTimeString:(NSString *)dateTimeString
++ (NSString *)translateDateTimeString:(NSDate *)date
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-M-d HH:mm:ss"];
-    NSDate *date = [formatter dateFromString:dateTimeString];
     NSTimeInterval interval = -[date timeIntervalSinceNow];
     if (interval<60) {
         return @"刚刚";
@@ -200,12 +198,20 @@
             
             //parse post time
             TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
+            NSString *dateTimeString;
             if (postTimeNode) {
-                [floor setPostTime: [postTimeNode objectForKey:@"title"]];
+                dateTimeString = [postTimeNode objectForKey:@"title"];
             } else {
-                TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
-                [floor setPostTime: [postTimeNode text]];
+                postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
+                dateTimeString  = [postTimeNode text];
             }
+            if ([dateTimeString hasPrefix:@"发表于 "]) {
+                dateTimeString = [dateTimeString stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
+            }
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-M-d HH:mm:ss"];
+            NSDate *date = [formatter dateFromString:dateTimeString];
+            [floor setPostTime:date];
             
             //parse index mark
             TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
@@ -251,8 +257,8 @@
         floor.author = rawFloor[@"author"];
         floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
         floor.indexMark = rawFloor[@"number"];
-        floor.content = [NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]];
-        floor.content = [S1Parser preprocessAPIcontent:floor.content];
+        floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
+        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]]];
         [floorList addObject:floor];
     }
     return floorList;
@@ -275,11 +281,7 @@
         }
         
         //process time
-        NSString *floorPostTime = topicFloor.postTime;
-        if ([floorPostTime hasPrefix:@"发表于 "]) {
-            floorPostTime = [floorPostTime stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
-        }
-        floorPostTime = [self translateDateTimeString:floorPostTime];
+        NSString *floorPostTime = [self translateDateTimeString:topicFloor.postTime];
         
         //process reply Button
         NSString *replyLinkString = @"";

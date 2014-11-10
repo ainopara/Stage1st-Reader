@@ -14,7 +14,7 @@
 @property (nonatomic, copy) NSString *indexMark;
 @property (nonatomic, copy) NSString *author;
 @property (nonatomic, copy) NSNumber *authorID;
-@property (nonatomic, copy) NSString *postTime;
+@property (nonatomic, copy) NSDate *postTime;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, copy) NSString *poll;
 @property (nonatomic, copy) NSArray *imageAttachmentList;

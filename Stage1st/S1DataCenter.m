@@ -126,15 +126,20 @@
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [self.networkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSArray *floorList = [S1Parser contentsFromAPI:responseObject];
+            NSDictionary *responseDict = responseObject;
+            //Update Topic
+            topic.formhash = responseDict[@"Variables"][@"formhash"];
+            topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
+            double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
+            topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
+            
+            NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
         }];
     } else {
         [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
-            
             // get formhash
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
@@ -156,6 +161,7 @@
             //check login state
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
             
+            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             success(floorList);
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
