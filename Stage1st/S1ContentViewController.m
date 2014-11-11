@@ -574,12 +574,11 @@
         [self fetchContent];
     }];
     
-    // NSLog(@"Begin Fetch Content");
-    NSDate *start = [NSDate date];
+    // NSDate *start = [NSDate date];
     __weak typeof(self) weakMe = self;
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
-        NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-        NSLog(@"Finish Fetch Content time elapsed:%f",-timeInterval);
+        // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+        // NSLog(@"Finish Load:%f",-timeInterval);
         __strong typeof(self) strongMe = weakMe;
         [strongMe updatePageLabel];
         [strongMe.webView loadHTMLString:contents baseURL:nil];

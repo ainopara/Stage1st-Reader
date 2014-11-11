@@ -124,8 +124,11 @@
 #pragma mark - Network (Content)
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+    NSDate *start = [NSDate date];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [self.networkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+            NSLog(@"Finish Fetch:%f",-timeInterval);
             NSDictionary *responseDict = responseObject;
             //Update Topic
             topic.formhash = responseDict[@"Variables"][@"formhash"];
@@ -140,6 +143,8 @@
         }];
     } else {
         [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+            NSLog(@"Finish Fetch:%f",-timeInterval);
             // get formhash
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];

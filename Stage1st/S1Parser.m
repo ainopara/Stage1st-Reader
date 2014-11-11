@@ -23,7 +23,7 @@
 @implementation S1Parser
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString
 {
-    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:1 error:nil];
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
@@ -71,6 +71,7 @@
         
     }
     NSString *processedString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
+    processedString = [processedString substringWithRange:NSMakeRange(183,[processedString length]-183-17)];
     if (processedString) {
         return [processedString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
     } else {
@@ -259,6 +260,15 @@
         floor.indexMark = rawFloor[@"number"];
         floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
         floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]]];
+        if ([rawFloor valueForKey:@"attachments"]!= nil) {
+            NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
+            for (NSNumber *attachmentKey in [rawFloor[@"attachments"] allKeys]) {
+                NSString *imageURL = [rawFloor[@"attachments"][attachmentKey][@"url"] stringByAppendingString:rawFloor[@"attachments"][attachmentKey][@"attachment"]];
+                NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
+                [imageAttachmentList addObject:imageNode];
+            }
+            floor.imageAttachmentList = imageAttachmentList;
+        }
         [floorList addObject:floor];
     }
     return floorList;
@@ -296,7 +306,7 @@
         }
         
         //process content
-        NSString *contentString = [[S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"%@", topicFloor.content]]  stringByReplacingOccurrencesOfString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" withString:@""];
+        NSString *contentString = [S1Parser processImagesInHTMLString:[NSString stringWithFormat:@"%@", topicFloor.content]];
         
         //process attachment
         NSString *floorAttachment = @"";
@@ -309,6 +319,7 @@
                 floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
             }
             floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
+            floorAttachment = [S1Parser processImagesInHTMLString:floorAttachment];
         }
         
         //generate page
