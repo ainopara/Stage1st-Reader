@@ -43,6 +43,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"UseAPI"];
+    }
 
     //Migrate tracer to sql database
     [S1Tracer migrateTracerToDatabase];

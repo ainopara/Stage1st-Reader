@@ -15,9 +15,8 @@
 
 @interface S1DataCenter ()
 
-@property (strong, nonatomic) S1NetworkManager *networkManager;
-
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
+
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
 @end
@@ -26,7 +25,6 @@
 
 -(instancetype)init {
     self = [super init];
-    self.networkManager = [[S1NetworkManager alloc] init];
     self.tracer = [[S1Tracer alloc] init];
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
@@ -63,7 +61,7 @@
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
-    [self.networkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             //check login state
@@ -124,39 +122,60 @@
 #pragma mark - Network (Content)
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    [self.networkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject withOffset:[page integerValue]];
-        
-        // get formhash
-        NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
-        
-        //set reply count
-        if ([page isEqualToNumber:@1]) {
-            NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
-            if (parsedReplyCount != 0) {
-                [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+    NSDate *start = [NSDate date];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+        [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+            NSLog(@"Finish Fetch:%f",-timeInterval);
+            NSDictionary *responseDict = responseObject;
+            //Update Topic
+            topic.formhash = responseDict[@"Variables"][@"formhash"];
+            topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
+            double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
+            topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
+            
+            NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+            success(floorList);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            failure(error);
+        }];
+    } else {
+        [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+            NSLog(@"Finish Fetch:%f",-timeInterval);
+            // get formhash
+            NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+            
+            //set reply count
+            if ([page isEqualToNumber:@1]) {
+                NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
+                if (parsedReplyCount != 0) {
+                    [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+                }
             }
-        }
-        
-        // update total page
-        NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
-        if (parsedTotalPages != 0) {
-            [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
-        }
-        
-        //check login state
-        [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-        
-        success(floorList);
-        
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        failure(error);
-    }];
+            
+            // update total page
+            NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
+            if (parsedTotalPages != 0) {
+                [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
+            }
+            
+            //check login state
+            [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+            
+            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
+            success(floorList);
+            
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            failure(error);
+        }];
+    }
+    
 }
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
-    [self.networkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID fieldID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID fieldID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
         if ([params[@"requestSuccess"]  isEqual: @YES]) {
@@ -166,7 +185,7 @@
             NSString *suffix = appendSuffix ? @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader For iOS[/url]" : @"";
             NSString *replyWithSuffix = [text stringByAppendingString:suffix];
             [params setObject:replyWithSuffix forKey:@"message"];
-            [self.networkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
+            [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
                 success();
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 failure(error);
@@ -191,7 +210,7 @@
                              @"usesig":@"1",
                              @"subject":@"",
                              @"message":replyWithSuffix};
-    [self.networkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
         success();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
@@ -199,7 +218,7 @@
 }
 
 - (void)cancelRequest {
-    [self.networkManager cancelRequest];
+    [S1NetworkManager cancelRequest];
 }
 
 

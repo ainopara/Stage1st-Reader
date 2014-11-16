@@ -12,31 +12,36 @@
 
 @interface S1NetworkManager : NSObject
 
-- (void)requestTopicListForKey:(NSString *)key
++ (void)requestTopicListForKey:(NSString *)key
                       withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
-- (void)requestTopicContentForID:(NSNumber *)topicID
++ (void)requestTopicContentForID:(NSNumber *)topicID
                       withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
-- (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
++ (void)requestTopicContentAPIForID:(NSNumber *)topicID
+                           withPage:(NSNumber *)page
+                            success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                            failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
++ (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID
                                         fieldID:(NSNumber *)fieldID
                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 // Reply Specific Floor.
-- (void)postReplyForTopicID:(NSNumber *)topicID
++ (void)postReplyForTopicID:(NSNumber *)topicID
                    withPage:(NSNumber *)page
                     fieldID:(NSNumber *)fieldID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 // Reply Topic.
-- (void)postReplyForTopicID:(NSNumber *)topicID
++ (void)postReplyForTopicID:(NSNumber *)topicID
                     fieldID:(NSNumber *)fieldID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -47,6 +52,6 @@
                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
-- (void)cancelRequest;
++ (void)cancelRequest;
 
 @end

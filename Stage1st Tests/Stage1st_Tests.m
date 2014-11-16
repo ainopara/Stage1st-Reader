@@ -40,7 +40,7 @@
     NSNumber *page = @1;
     [self measureBlock:^{
         // Put the code you want to measure the time of here.
-        [S1Parser contentsFromHTMLData:self.data withOffset:1];
+        [S1Parser contentsFromHTMLData:self.data];
         
         // get formhash
         NSString* HTMLString = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
@@ -62,7 +62,7 @@
 }
 
 - (void)testPerformanceContentGenerate {
-    NSArray *floorList = [S1Parser contentsFromHTMLData:self.data withOffset:1];
+    NSArray *floorList = [S1Parser contentsFromHTMLData:self.data];
     
     [self measureBlock:^{
         // Put the code you want to measure the time of here.

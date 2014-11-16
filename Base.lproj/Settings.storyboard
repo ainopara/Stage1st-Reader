@@ -185,6 +185,32 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="OSm-vW-8QY">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="OSm-vW-8QY" id="E4y-b5-0p3">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BuD-0p-Vi4">
+                                                    <rect key="frame" x="531" y="7" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="switchUseAPI:" destination="Z9I-YZ-q2k" eventType="valueChanged" id="p1a-28-os6"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use API" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AMT-Bb-S6D">
+                                                    <rect key="frame" x="15" y="12" width="59" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="BuD-0p-Vi4" firstAttribute="top" secondItem="E4y-b5-0p3" secondAttribute="topMargin" constant="-1" id="Ued-zQ-C3U"/>
+                                                <constraint firstItem="BuD-0p-Vi4" firstAttribute="trailing" secondItem="E4y-b5-0p3" secondAttribute="trailingMargin" constant="-12" id="nWV-vG-a4H"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="BuD-0p-Vi4" secondAttribute="bottom" constant="-2" id="ntw-oC-AzC"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection id="e4M-E1-pBD">
@@ -251,6 +277,7 @@
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>
                         <outlet property="replyIncrementSwitch" destination="NjD-eD-vbp" id="wZo-Jv-odG"/>
                         <outlet property="replySuffixSwitch" destination="NQ1-VC-bTp" id="mCi-Qq-X3v"/>
+                        <outlet property="useAPISwitch" destination="BuD-0p-Vi4" id="2d8-oP-fWN"/>
                         <outlet property="usernameDetail" destination="nZs-MV-DJo" id="0ph-I0-JDx"/>
                         <outlet property="versionDetail" destination="8dV-mn-myv" id="Azo-55-gVa"/>
                     </connections>
