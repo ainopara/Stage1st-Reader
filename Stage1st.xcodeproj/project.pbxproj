@@ -14,6 +14,7 @@
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
+		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
@@ -32,6 +33,8 @@
 		867EECAE1A104D8E00E0DE6F /* content_19px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECAA1A104D8E00E0DE6F /* content_19px.css */; };
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
+		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
+		869CAF141A18839900EB2BF4 /* S1Animator.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF131A18839900EB2BF4 /* S1Animator.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
@@ -80,6 +83,7 @@
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
+		861512FF1A0E7B1200BAC814 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Stage1st/Main.storyboard; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
 		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
 		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
@@ -110,6 +114,10 @@
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
+		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
+		869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationControllerDelegate.m; path = Stage1st/NavigationControllerDelegate.m; sourceTree = "<group>"; };
+		869CAF121A18839900EB2BF4 /* S1Animator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Animator.h; path = Stage1st/S1Animator.h; sourceTree = "<group>"; };
+		869CAF131A18839900EB2BF4 /* S1Animator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Animator.m; path = Stage1st/S1Animator.m; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
@@ -353,8 +361,9 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				86FC62231A06000D0018DD2E /* Settings.storyboard */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
+				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
+				86FC62231A06000D0018DD2E /* Settings.storyboard */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
@@ -404,6 +413,8 @@
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
+				869CAF121A18839900EB2BF4 /* S1Animator.h */,
+				869CAF131A18839900EB2BF4 /* S1Animator.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -418,6 +429,8 @@
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
 				C095878916CA993A007E0119 /* S1ContentViewController.h */,
 				C095878A16CA993A007E0119 /* S1ContentViewController.m */,
+				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
+				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -536,6 +549,7 @@
 				867EECAE1A104D8E00E0DE6F /* content_19px.css in Resources */,
 				C0B1919716F0A80F0053E0C5 /* content_ipad.css in Resources */,
 				86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */,
+				861513001A0E7B1200BAC814 /* Main.storyboard in Resources */,
 				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
 			);
@@ -601,6 +615,8 @@
 				862F51BD189136000038A289 /* TFHpple.m in Sources */,
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
+				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
+				869CAF141A18839900EB2BF4 /* S1Animator.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,

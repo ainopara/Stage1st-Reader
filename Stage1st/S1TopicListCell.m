@@ -29,8 +29,21 @@
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds]; //This value will be replaced by setFrame function
+        [self.drawingSubView setContentMode:UIViewContentModeRedraw];
+        [self.contentView addSubview:self.drawingSubView];
+        self.backgroundColor = [S1GlobalVariables color5];
+    }
+    return self;
+}
+
 - (void)setTopic:(S1Topic *)topic
 {
+    _topic = topic;
     [self.drawingSubView setTopic:topic];
 }
 

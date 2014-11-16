@@ -16,8 +16,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
     //User Defaults;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
@@ -81,12 +79,6 @@
     [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
     [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
 
-    self.window.backgroundColor = [UIColor blackColor];
-    S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
-    S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];
-    self.window.rootViewController = rootVC;
-    
-    [self.window makeKeyAndVisible];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     return YES;
 }

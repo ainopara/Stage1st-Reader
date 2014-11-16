@@ -22,14 +22,12 @@
     CGFloat _lastContentOffset;
 }
 
-- (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithCoder:coder];
     if (self) {
-        _keys = keys;
         _index = -1;
         _enabled = YES;
-        _buttons = [NSMutableArray arrayWithCapacity:keys.count];
         self.backgroundColor = [S1GlobalVariables color3];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
@@ -38,7 +36,6 @@
         self.delegate = self;
         self.lastRecognizedOrientation = UIDeviceOrientationPortrait;
         //self.decelerationRate = UIScrollViewDecelerationRateFast;
-        [self addItems];
     }
     return self;
 }
@@ -52,7 +49,6 @@
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [(UIView *)obj removeFromSuperview];
     }];
-    [self setContentSize:CGSizeMake(0.0f, 0.0f)];
     _keys = keys;
     _index = -1;
     if (_keys.count == 0) {
@@ -65,13 +61,14 @@
 }
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.x;
-    // NSLog(@"Begin Dragging:%f", _lastContentOffset);
 }
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.x;
-    // NSLog(@"Begin Decelerating:%f", _lastContentOffset);
 }
-
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView
+{
+    [aScrollView setContentOffset: CGPointMake(aScrollView.contentOffset.x, 0.0f)];
+}
 - (CGFloat)getWidthPerItem {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return _DEFAULT_WIDTH;
@@ -120,9 +117,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     CGPoint offset = scrollView.contentOffset;
-    // NSLog(@"End Decelerating:%f", offset.x);
     offset.x = [self decideOffset:offset];
-    // NSLog(@"Target Decelerating:%f", offset.x);
     [scrollView setContentOffset:offset animated:YES];
     return;
 }
@@ -131,9 +126,7 @@
 {
     if (!decelerate) {
         CGPoint offset = scrollView.contentOffset;
-        // NSLog(@"End Dragging:%f", offset.x);
         offset.x = [self decideOffset:offset];
-        // NSLog(@"Target Dragging:%f", offset.x);
         [scrollView setContentOffset:offset animated:YES];
     }
     return;

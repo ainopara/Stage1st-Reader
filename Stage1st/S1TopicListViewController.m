@@ -23,16 +23,20 @@
 
 static NSString * const cellIdentifier = @"TopicCell";
 
-@interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, S1TabBarDelegate>
+#define _BAR_HEIGHT 44.0f
+#define _UPPER_BAR_HEIGHT 64.0f
+#define _SEARCH_BAR_HEIGHT 40.0f
 
+@interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, S1TabBarDelegate>
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
-@property (nonatomic, strong) UIBarButtonItem *composeItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
-@property (nonatomic, strong) UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
-@property (nonatomic, strong) S1TabBar *scrollTabBar;
+@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) NSMutableArray *searchResults; // Filtered search results
+@property (weak, nonatomic) IBOutlet S1TabBar *scrollTabBar;
 
 @property (nonatomic, strong) S1DataCenter *dataCenter;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
@@ -49,44 +53,48 @@ static NSString * const cellIdentifier = @"TopicCell";
     BOOL _loadingFlag;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithCoder:coder];
     if (self) {
-        // Custom initialization
         _loadingFlag = NO;
         self.currentKey = @"";
         self.previousKey = @"";
     }
     return self;
 }
-
 - (void)viewDidLoad
 {
-#define _BAR_HEIGHT 44.0f
-#define _UPPER_BAR_HEIGHT 64.0f
-
-    
     [super viewDidLoad];
     self.dataCenter = [[S1DataCenter alloc] init];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [S1GlobalVariables color5];
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _UPPER_BAR_HEIGHT, self.view.bounds.size.width, self.view.bounds.size.height-_BAR_HEIGHT-_UPPER_BAR_HEIGHT) style:UITableViewStylePlain];
-    self.tableView.autoresizesSubviews = YES;
-    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
     self.tableView.rowHeight = 54.0f;
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
-    }
+    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.separatorColor = [S1GlobalVariables color1];
     self.tableView.backgroundColor = [S1GlobalVariables color5];
+    if (self.tableView.backgroundView) {
+        self.tableView.backgroundView.backgroundColor = [S1GlobalVariables color5];
+    }
     self.tableView.hidden = YES;
-    [self.view addSubview:self.tableView];
+    
+    //Search or Filter
+    UITableViewController *searchResultsController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+    searchResultsController.tableView.dataSource = self;
+    searchResultsController.tableView.delegate = self;
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsController];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,self.searchController.searchBar.frame.origin.y, self.searchController.searchBar.frame.size.width-60, _SEARCH_BAR_HEIGHT);
+    self.searchController.searchBar.tintColor = [S1GlobalVariables color4];
+    self.searchController.searchBar.barTintColor = [S1GlobalVariables color5];
+    [self.searchController.searchBar subviews];
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
     self.refreshControl.tintColor = [S1GlobalVariables color8];
@@ -104,14 +112,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.navigationBar pushNavigationItem:self.naviItem animated:NO];
     [self.view addSubview:self.navigationBar];
     
-    self.scrollTabBar = [[S1TabBar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height-_BAR_HEIGHT, self.view.bounds.size.width, _BAR_HEIGHT) andKeys:[self keys]];
+    self.scrollTabBar.keys = [self keys];
     self.scrollTabBar.tabbarDelegate = self;
-    self.scrollTabBar.autoresizesSubviews = YES;
-    self.scrollTabBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    [self.view addSubview:self.scrollTabBar];
-    
-    self.view.autoresizesSubviews = YES;
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
@@ -122,10 +124,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if (![[self rootViewController] presentingDetailViewController]) {
-        [self.tableView setUserInteractionEnabled:YES];
-        [self.tableView setScrollsToTop:YES];
-    }
+
+    [self.tableView setUserInteractionEnabled:YES];
+    [self.tableView setScrollsToTop:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -173,22 +174,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)settings:(id)sender
 {
-    [self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-    //S1SettingViewController *controller = [[S1SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    //UINavigationController *controllerToPresent = [[UINavigationController alloc] initWithRootViewController:controller];
+    //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
     NSString * storyboardName = @"Settings";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
     UIViewController * controllerToPresent = [storyboard instantiateViewControllerWithIdentifier:@"SettingsNavigation"];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
-/*
-- (void)test:(id)sender
-{
-    MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
-    overlay.animation = MTStatusBarOverlayAnimationNone;
-    [overlay postMessage:@"testing" duration:2.0 animated:YES];
-    [overlay postImmediateFinishMessage:@"测试数据测试数据!" duration:5.0 animated:YES];
-}*/
+
 - (void)archive:(id)sender
 {
     [self.naviItem setRightBarButtonItems:@[]];
@@ -314,9 +306,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             if (self.cacheContentOffset[key] && !scrollToTop) {
                 [self.tableView setContentOffset:[self.cacheContentOffset[key] CGPointValue] animated:NO];
             } else {
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-            //  [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                // TODO: which to use?
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
             
         } else {
@@ -397,7 +387,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [super preferredInterfaceOrientationForPresentation];
 }
 
-#pragma mark - UITableView
+#pragma mark - UITableView Delegate and Data Source
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -430,14 +420,16 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
         [cell setTopic:[[self.topics objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]];
         return cell;
+    } else {
+        [cell setTopic:self.topics[indexPath.row]];
+        return cell;
     }
-    [cell setTopic:self.topics[indexPath.row]];
-    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    /*
     S1ContentViewController *controller = [[S1ContentViewController alloc] init];
     S1Topic *topicToShow = nil;
     if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
@@ -448,8 +440,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     [controller setTopic:topicToShow];
     [controller setDataCenter:self.dataCenter];
-    
-    [[self rootViewController] presentDetailViewController:controller];
+    */
+    //[[self navigationController] presentViewController:controller animated:YES completion:nil];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -523,16 +515,25 @@ static NSString * const cellIdentifier = @"TopicCell";
     return 0;
 }
 
-#pragma mark - Helpers
+#pragma mark - UISearchResultsUpdating
 
-- (S1RootViewController *)rootViewController
-{
-    UIViewController *controller = [self parentViewController];
-    while (![controller isKindOfClass:[S1RootViewController class]] || !controller) {
-        controller = [controller parentViewController];
+-(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    
+    NSString *searchString = [self.searchController.searchBar text];
+    NSLog(@"%@", searchString);
+    NSString *scope = nil;
+    /*
+    NSInteger selectedScopeButtonIndex = [self.searchController.searchBar selectedScopeButtonIndex];
+    if (selectedScopeButtonIndex > 0) {
+        scope = [[TPSProduct deviceTypeNames] objectAtIndex:(selectedScopeButtonIndex - 1)];
     }
-    return (S1RootViewController *)controller;
+    
+    [self updateFilteredContentForProductName:searchString type:scope];
+    */
+    [((UITableViewController *)self.searchController.searchResultsController).tableView reloadData];
 }
+
+#pragma mark - Helpers
 
 - (NSArray *)keys
 {
@@ -564,5 +565,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)reloadTableData:(NSNotification *)notification
 {
     [self.tableView reloadData];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"Show Content"]) {
+        S1TopicListCell *cell = sender;
+        S1ContentViewController *contentViewController = segue.destinationViewController;
+        
+        [contentViewController setTopic:cell.topic];
+        [contentViewController setDataCenter:self.dataCenter];
+    }
 }
 @end
