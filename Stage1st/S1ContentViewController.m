@@ -184,9 +184,15 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSLog(@"View will disappear");
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
     if (_presentingImageViewer || _presentingWebViewer) {
         return;
     }
+    NSLog(@"View did disappear");
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
         [self saveTopicViewedState:nil];
@@ -195,10 +201,8 @@
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         });
-        
     });
-    [super viewWillDisappear:animated];
-    self.navigationController.hidesBarsOnSwipe = NO;
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning

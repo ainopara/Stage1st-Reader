@@ -413,6 +413,8 @@
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
+				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
+				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 				869CAF121A18839900EB2BF4 /* S1Animator.h */,
 				869CAF131A18839900EB2BF4 /* S1Animator.m */,
 			);
@@ -429,8 +431,6 @@
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
 				C095878916CA993A007E0119 /* S1ContentViewController.h */,
 				C095878A16CA993A007E0119 /* S1ContentViewController.m */,
-				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
-				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

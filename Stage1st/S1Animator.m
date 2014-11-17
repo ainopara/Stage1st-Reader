@@ -24,15 +24,21 @@
     
     [[transitionContext containerView] insertSubview:toViewController.view belowSubview:fromViewController.view];
     
+    fromViewController.view.layer.shadowOpacity = 0.5;
+    fromViewController.view.layer.shadowRadius = 5.0;
+    fromViewController.view.layer.shadowOffset = CGSizeMake(-3.0, 0.0);
+    fromViewController.view.layer.shadowPath = [[UIBezierPath bezierPathWithRoundedRect:fromViewController.view.bounds cornerRadius:3.0f] CGPath];
+    
     toViewController.view.transform = CGAffineTransformMakeTranslation(-screenWidth/2, 0);
     
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromViewController.view.transform = CGAffineTransformMakeTranslation(screenWidth, 0);
         toViewController.view.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
+        NSLog(@"finished: %d,canceled: %d",finished, [transitionContext transitionWasCancelled]);
         fromViewController.view.transform = CGAffineTransformIdentity;
+        toViewController.view.transform = CGAffineTransformIdentity;
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-        
     }];
 }
 
