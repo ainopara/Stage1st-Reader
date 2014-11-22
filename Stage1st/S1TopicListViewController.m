@@ -261,7 +261,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.text = @"";
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
-    if (self.tableView.hidden) { self.tableView.hidden = NO; }
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
     
     if (![self.currentKey isEqualToString:key]) {
@@ -298,6 +297,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             self.currentKey = key;
             self.topics = [topicList mutableCopy];
             [self.tableView reloadData];
+            if (self.tableView.hidden) { self.tableView.hidden = NO; }
             if (self.cacheContentOffset[key] && !scrollToTop) {
                 [self.tableView setContentOffset:[self.cacheContentOffset[key] CGPointValue] animated:NO];
             } else {
