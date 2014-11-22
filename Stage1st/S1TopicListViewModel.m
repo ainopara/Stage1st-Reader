@@ -38,12 +38,12 @@
     }];
 }
 
-- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)type {
+- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)type withSearchWord:(NSString *)searchWord {
     NSArray *topics;
     if (type == S1TopicListHistory) {
-        topics = [self.dataCenter historyTopics];
+        topics = [self.dataCenter historyTopicsWithSearchWord:searchWord];
     } else if (type == S1TopicListFavorite) {
-        topics = [self.dataCenter favoriteTopics];
+        topics = [self.dataCenter favoriteTopicsWithSearchWord:searchWord];
     } else {
         return @{@"headers": @[@[]], @"topics":@[@[]]};
     }

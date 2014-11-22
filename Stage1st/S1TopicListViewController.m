@@ -8,7 +8,6 @@
 
 #import "S1TopicListViewController.h"
 #import "S1ContentViewController.h"
-#import "S1RootViewController.h"
 #import "S1SettingViewController.h"
 #import "S1TopicListCell.h"
 #import "S1HUD.h"
@@ -27,14 +26,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 #define _UPPER_BAR_HEIGHT 64.0f
 #define _SEARCH_BAR_HEIGHT 40.0f
 
-@interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, S1TabBarDelegate>
+@interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, S1TabBarDelegate>
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
-@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) NSMutableArray *searchResults; // Filtered search results
 @property (weak, nonatomic) IBOutlet S1TabBar *scrollTabBar;
 
@@ -84,16 +83,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tableView.hidden = YES;
     
     //Search or Filter
-    UITableViewController *searchResultsController = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-    searchResultsController.tableView.dataSource = self;
-    searchResultsController.tableView.delegate = self;
-    self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsController];
-    self.searchController.searchResultsUpdater = self;
-    self.searchController.searchBar.frame = CGRectMake(self.searchController.searchBar.frame.origin.x,self.searchController.searchBar.frame.origin.y, self.searchController.searchBar.frame.size.width-60, _SEARCH_BAR_HEIGHT);
-    self.searchController.searchBar.tintColor = [S1GlobalVariables color4];
-    self.searchController.searchBar.barTintColor = [S1GlobalVariables color5];
-    [self.searchController.searchBar subviews];
-    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
+    self.searchBar.delegate = self;
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    self.tableView.tableHeaderView = self.searchBar;
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
@@ -217,6 +210,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 -(void)segSelected:(UISegmentedControl *)seg
 {
+    self.searchBar.text = @"";
     switch (seg.selectedSegmentIndex) {
         case 0:
             [self presentInternalListForType:S1TopicListHistory];
@@ -245,7 +239,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type];
+    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@""];
     self.topics = [result valueForKey:@"topics"];
     self.topicHeaderTitles = [result valueForKey:@"headers"];
     
@@ -264,6 +258,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
+    self.searchBar.text = @"";
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.tableView.hidden) { self.tableView.hidden = NO; }
@@ -429,19 +424,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    /*
-    S1ContentViewController *controller = [[S1ContentViewController alloc] init];
-    S1Topic *topicToShow = nil;
-    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
-        topicToShow = [[self.topics objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    } else {
-        topicToShow = self.topics[indexPath.row];
-    }
-    
-    [controller setTopic:topicToShow];
-    [controller setDataCenter:self.dataCenter];
-    */
-    //[[self navigationController] presentViewController:controller animated:YES completion:nil];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -515,22 +497,37 @@ static NSString * const cellIdentifier = @"TopicCell";
     return 0;
 }
 
-#pragma mark - UISearchResultsUpdating
+#pragma mark - UISearchBarDelegate
 
--(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    
-    NSString *searchString = [self.searchController.searchBar text];
-    NSLog(@"%@", searchString);
-    NSString *scope = nil;
-    /*
-    NSInteger selectedScopeButtonIndex = [self.searchController.searchBar selectedScopeButtonIndex];
-    if (selectedScopeButtonIndex > 0) {
-        scope = [[TPSProduct deviceTypeNames] objectAtIndex:(selectedScopeButtonIndex - 1)];
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if ([self.currentKey isEqual: @"History"]) {
+        NSDictionary *result = [self.viewModel internalTopicsInfoFor:S1TopicListHistory withSearchWord:searchText];
+        self.topics = [result valueForKey:@"topics"];
+        self.topicHeaderTitles = [result valueForKey:@"headers"];
+        
+        [self.tableView reloadData];
+        if (self.topics && self.topics.count > 0) {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        }
     }
-    
-    [self updateFilteredContentForProductName:searchString type:scope];
-    */
-    [((UITableViewController *)self.searchController.searchResultsController).tableView reloadData];
+    if ([self.currentKey isEqual: @"Favorite"]) {
+        NSDictionary *result = [self.viewModel internalTopicsInfoFor:S1TopicListFavorite withSearchWord:searchText];
+        self.topics = [result valueForKey:@"topics"];
+        self.topicHeaderTitles = [result valueForKey:@"headers"];
+        
+        [self.tableView reloadData];
+        if (self.topics && self.topics.count > 0) {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        }
+    }
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self.searchBar resignFirstResponder];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self.searchBar resignFirstResponder];
 }
 
 #pragma mark - Helpers

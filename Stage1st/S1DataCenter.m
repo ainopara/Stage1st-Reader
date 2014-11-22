@@ -224,12 +224,12 @@
 
 #pragma mark - Database
 
-- (NSMutableArray *)historyTopics {
-    return [self.tracer historyObjectsWithSearchWord:@""];
+- (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord {
+    return [self.tracer historyObjectsWithSearchWord:searchWord];
 }
 
-- (NSMutableArray *)favoriteTopics {
-    return [self.tracer favoritedObjects:S1TopicOrderByLastVisitDate];
+- (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {
+    return [self.tracer favoritedObjectsWithSearchWord:searchWord];
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {

@@ -129,16 +129,23 @@
     return historyTopics;
 }
 
-- (NSMutableArray *)favoritedObjects:(S1TopicOrderType)order
+- (NSMutableArray *)favoritedObjectsWithSearchWord:(NSString *)searchWord
 {
+    NSString *sqlSearchWord;
+    if (searchWord == nil || [searchWord isEqualToString:@""]) {
+        sqlSearchWord = @"%%";
+    } else {
+        sqlSearchWord = [NSString stringWithFormat:@"%%%@%%", searchWord];
+    }
+    
     NSMutableArray *favoriteTopics = [NSMutableArray array];
-    NSString *queryString = @"SELECT * FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY ";
-    if (order == S1TopicOrderByFavoriteSetDate) {
+    NSString *queryString = @"SELECT * FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id WHERE title like ? ORDER BY ";
+    if (NO) {
         queryString = [queryString stringByAppendingString:@"favorite.favorite_time DESC;"];
     } else {
         queryString = [queryString stringByAppendingString:@"threads.last_visit_time DESC;"];
     }
-    FMResultSet *favoriteResult = [_db executeQuery:queryString];
+    FMResultSet *favoriteResult = [_db executeQuery:queryString, sqlSearchWord];
     while ([favoriteResult next]) {
         [favoriteTopics addObject:[self topicFromQueryResult:favoriteResult]];
     }
