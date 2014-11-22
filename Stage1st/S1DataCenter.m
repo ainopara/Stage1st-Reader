@@ -224,17 +224,16 @@
 
 #pragma mark - Database
 
-- (NSArray *)historyTopics {
-    return [[self.tracer historyObjects] mutableCopy];
+- (NSMutableArray *)historyTopics {
+    return [self.tracer historyObjectsWithSearchWord:@""];
+}
+
+- (NSMutableArray *)favoriteTopics {
+    return [self.tracer favoritedObjects:S1TopicOrderByLastVisitDate];
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
     [self.tracer removeTopicFromHistory:topicID];
-}
-
-
-- (NSArray *)favoriteTopics {
-    return [self.tracer favoritedObjects:S1TopicOrderByLastVisitDate];
 }
 
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {

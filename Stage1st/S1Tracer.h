@@ -23,8 +23,8 @@ typedef enum {
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
-- (NSArray *)historyObjects;
-- (NSArray *)favoritedObjects:(S1TopicOrderType)order;
+- (NSMutableArray *)historyObjectsWithSearchWord:(NSString *)searchWord;
+- (NSMutableArray *)favoritedObjects:(S1TopicOrderType)order;
 
 - (S1Topic *)tracedTopic:(NSNumber *)key;
 

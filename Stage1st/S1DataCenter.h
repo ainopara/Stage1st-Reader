@@ -29,10 +29,10 @@
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 //
-- (NSArray *)historyTopics;
+- (NSMutableArray *)historyTopics;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 
-- (NSArray *)favoriteTopics;
+- (NSMutableArray *)favoriteTopics;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
 //About Network

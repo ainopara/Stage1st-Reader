@@ -7,7 +7,8 @@
 //
 
 #import "NavigationControllerDelegate.h"
-#import "S1Animator.h"
+#import "S1PopAnimator.h"
+#import "S1PushAnimator.h"
 
 #define _TRIGGER_THRESHOLD 60.0f
 #define _TRIGGER_VELOCITY_THRESHOLD 500.0f
@@ -15,8 +16,10 @@
 @interface NavigationControllerDelegate ()
 
 @property (weak, nonatomic) IBOutlet UINavigationController *navigationController;
-@property (strong, nonatomic) S1Animator* animator;
-@property (strong, nonatomic) UIPercentDrivenInteractiveTransition* interactionController;
+@property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *popAnimator;
+@property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *pushAnimator;
+@property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
+@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
 
 @end
 
@@ -25,10 +28,11 @@
 
 - (void)awakeFromNib
 {
-    UIPanGestureRecognizer* panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    [self.navigationController.view addGestureRecognizer:panRecognizer];
+    self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [self.navigationController.view addGestureRecognizer:self.panRecognizer];
     
-    self.animator = [S1Animator new];
+    self.popAnimator = [S1PopAnimator new];
+    self.pushAnimator = [S1PushAnimator new];
 }
 
 - (void)pan:(UIPanGestureRecognizer*)recognizer
@@ -39,6 +43,7 @@
         //NSLog(@"Begin, x: %f, y: %f", translation.x, translation.y);
         if (translation.x >= translation.y && self.navigationController.viewControllers.count > 1) {
             self.interactionController = [UIPercentDrivenInteractiveTransition new];
+            self.interactionController.completionCurve = UIViewAnimationCurveLinear;
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
@@ -56,6 +61,9 @@
             self.interactionController.completionSpeed = 0.3 / fmin((screenWidth - fmin(translation.x, 0)) / fabsf(velocityX), 0.3);
             NSLog(@"%f", self.interactionController.completionSpeed);
             [self.interactionController finishInteractiveTransition];
+            if (self.navigationController.viewControllers.count == 1) {
+                self.panRecognizer.enabled = NO;
+            }
         } else {
             self.interactionController.completionSpeed = 0.3 / fmin(fabsf(translation.x / velocityX), 0.4);
             NSLog(@"%f", self.interactionController.completionSpeed);
@@ -72,7 +80,12 @@
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     if (operation == UINavigationControllerOperationPop) {
-        return self.animator;
+        return self.popAnimator;
+    } else if (operation == UINavigationControllerOperationPush) {
+        if (self.navigationController.viewControllers.count > 1) {
+            self.panRecognizer.enabled = YES;
+        }
+        return self.pushAnimator;
     }
     return nil;
 }

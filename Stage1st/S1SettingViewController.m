@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
+@property (weak, nonatomic) IBOutlet UILabel *cacheUsageDetail;
 
 @end
 
@@ -45,6 +46,7 @@
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     
     self.versionDetail.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    self.cacheUsageDetail.text = [NSString stringWithFormat:@"%.2f MB", [NSURLCache sharedURLCache].currentDiskUsage / (1024.0 * 1024.0)];
     
     
     //[self.view setTintColor:[S1GlobalVariables color3]];

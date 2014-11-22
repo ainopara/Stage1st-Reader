@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface S1Animator : NSObject <UIViewControllerAnimatedTransitioning>
+@interface S1PopAnimator : NSObject <UIViewControllerAnimatedTransitioning>
 
 @end
