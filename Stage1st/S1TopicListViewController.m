@@ -85,8 +85,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     //Search or Filter
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
     self.searchBar.delegate = self;
-    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    //self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    self.searchBar.tintColor = [S1GlobalVariables color4];
+    self.searchBar.barTintColor = [S1GlobalVariables color5];
+    //[self.searchBar setSearchFieldBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
     self.tableView.tableHeaderView = self.searchBar;
+    
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
@@ -111,7 +115,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -357,14 +360,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 #pragma mark - Orientation
-
-- (void)viewOrientationDidChanged:(NSNotification *)notification
-{
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return;
-    }
-    [self.scrollTabBar updateButtonFrame];
-}
 
 - (NSUInteger)supportedInterfaceOrientations
 {

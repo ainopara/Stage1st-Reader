@@ -20,7 +20,6 @@
 
 @property (nonatomic, strong) NSArray *keys;
 @property (nonatomic, assign) BOOL enabled;
-@property (nonatomic, assign) NSInteger lastRecognizedOrientation;
 
 @end
 
