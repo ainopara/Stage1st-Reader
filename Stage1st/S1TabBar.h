@@ -14,7 +14,6 @@
 @interface S1TabBar : UIScrollView <UIScrollViewDelegate>
 
 - (void)deselectAll;
-- (void)updateButtonFrame;
 
 @property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
 

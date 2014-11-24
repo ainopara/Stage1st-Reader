@@ -7,7 +7,6 @@
 //
 
 #import "S1AppDelegate.h"
-#import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"

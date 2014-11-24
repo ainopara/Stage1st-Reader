@@ -70,7 +70,7 @@
         <!--Content View Controller-->
         <scene sceneID="RzG-Fa-bNd">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="2TD-41-MRx" customClass="S1ContentViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Content" automaticallyAdjustsScrollViewInsets="NO" id="2TD-41-MRx" customClass="S1ContentViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ICo-tY-83d"/>
                         <viewControllerLayoutGuide type="bottom" id="sgX-gl-SYq"/>

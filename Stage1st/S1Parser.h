@@ -24,4 +24,6 @@
 
 + (NSString *)loginUserName:(NSString *)HTMLString;
 
++ (NSNumber *)extractTopicIDFromLink:(NSString *)URLString;
+
 @end

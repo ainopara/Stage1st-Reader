@@ -12,6 +12,7 @@
 #import "S1ContentViewModel.h"
 #import "S1Topic.h"
 #import "S1Floor.h"
+#import "S1Parser.h"
 #import "S1Tracer.h"
 #import "S1DataCenter.h"
 #import "S1HUD.h"
@@ -28,9 +29,9 @@
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) UIView *statusBackgroundView; //for iOS7 and above
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) REComposeViewController *replyController;
@@ -48,10 +49,11 @@
     BOOL _finishLoading;
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
+    BOOL _presentingContentViewController;
     NSURL *_urlToOpen; // iOS7 Only
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil // not used
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -62,6 +64,7 @@
         _finishLoading = NO;
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
+        _presentingContentViewController = NO;
     }
     return self;
 }
@@ -77,6 +80,7 @@
         _finishLoading = NO;
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
+        _presentingContentViewController = NO;
     }
     return self;
 }
@@ -89,13 +93,7 @@
     self.tracer = self.dataCenter.tracer;
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    
     self.view.backgroundColor = [S1GlobalVariables color5];
-    
-    self.statusBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _STATUS_BAR_HEIGHT)];
-    self.statusBackgroundView.backgroundColor = [S1GlobalVariables color5];
-    self.statusBackgroundView.userInteractionEnabled = NO;
-    [self.view addSubview:self.statusBackgroundView];
     
     //web view
     self.webView.delegate = self;
@@ -107,15 +105,15 @@
     self.webView.backgroundColor = [S1GlobalVariables color5];
     
     //title label
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-    titleLabel.numberOfLines = 0;
-    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel.text = self.topic.title;
-    titleLabel.textColor = [S1GlobalVariables color3];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    self.titleLabel.numberOfLines = 0;
+    self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.titleLabel.text = self.topic.title;
+    self.titleLabel.textColor = [S1GlobalVariables color3];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
-    [self.webView.scrollView insertSubview:titleLabel atIndex:0];
+    [self.webView.scrollView insertSubview:self.titleLabel atIndex:0];
 
     UIButton *button = nil;
     
@@ -166,30 +164,32 @@
     
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, self.actionBarButtonItem]];
     
-    self.statusBackgroundView.autoresizesSubviews = YES;
-    self.statusBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
     [self fetchContent];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
+    
     [UIApplication sharedApplication].statusBarHidden = NO;
     
     [super viewWillAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
+    _presentingContentViewController = NO;
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
     NSLog(@"View will disappear");
     [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    if (_presentingImageViewer || _presentingWebViewer) {
+    if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
     NSLog(@"View did disappear");
@@ -490,6 +490,19 @@
         [imageViewer setInteractionsDelegate:self];
         return NO;
     }
+    
+    // Open S1 topic
+    NSNumber *topicID = [S1Parser extractTopicIDFromLink:request.URL.absoluteString];
+    if (topicID != nil) {
+        _presentingContentViewController = YES;
+        S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+        S1Topic *topic = [[S1Topic alloc] init];
+        topic.topicID = topicID;
+        [contentViewController setTopic:topic];
+        [contentViewController setDataCenter:self.dataCenter];
+        [[self navigationController] pushViewController:contentViewController animated:YES];
+        return NO;
+    }
     // Open link
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
@@ -585,6 +598,7 @@
         __strong typeof(self) strongMe = weakMe;
         [strongMe updatePageLabel];
         [strongMe.webView loadHTMLString:contents baseURL:nil];
+        strongMe.titleLabel.text = self.topic.title;
         _finishLoading = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [HUD hideWithDelay:0.3];
@@ -720,22 +734,10 @@
     UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     //clip
-    CGImageRef imageRef = nil;
-    if (IS_RETINA) {
-        imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 40.0, viewImage.size.width * 2, viewImage.size.height * 2 - 40.0));
-    } else {
-        imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0, viewImage.size.width, viewImage.size.height - 20.0));
-    }
-    viewImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
+    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
     CGImageRelease(imageRef);
     return viewImage;
-}
-
-- (void)viewDidLayoutSubviews
-{
-    //NSLog(@"layout called");
-    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewAutoLayoutedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 - (void)saveTopicViewedState:(id)sender

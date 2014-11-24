@@ -57,7 +57,6 @@
 		C095874416CA8A36007E0119 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874316CA8A36007E0119 /* main.m */; };
 		C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C095874716CA8A36007E0119 /* S1AppDelegate.m */; };
 		C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = C095877E16CA8E7E007E0119 /* S1Topic.m */; };
-		C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095878416CA98EE007E0119 /* S1RootViewController.m */; };
 		C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095878A16CA993A007E0119 /* S1ContentViewController.m */; };
 		C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095878D16CA9959007E0119 /* S1TopicListViewController.m */; };
 		C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879116CB61FC007E0119 /* GSReorderableTableViewController.m */; };
@@ -162,8 +161,6 @@
 		C095874716CA8A36007E0119 /* S1AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = S1AppDelegate.m; sourceTree = "<group>"; };
 		C095877D16CA8E7E007E0119 /* S1Topic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Topic.h; path = Stage1st/S1Topic.h; sourceTree = "<group>"; };
 		C095877E16CA8E7E007E0119 /* S1Topic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Topic.m; path = Stage1st/S1Topic.m; sourceTree = "<group>"; };
-		C095878316CA98EE007E0119 /* S1RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1RootViewController.h; path = Stage1st/S1RootViewController.h; sourceTree = "<group>"; };
-		C095878416CA98EE007E0119 /* S1RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1RootViewController.m; path = Stage1st/S1RootViewController.m; sourceTree = "<group>"; };
 		C095878916CA993A007E0119 /* S1ContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewController.h; path = Stage1st/S1ContentViewController.h; sourceTree = "<group>"; };
 		C095878A16CA993A007E0119 /* S1ContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewController.m; path = Stage1st/S1ContentViewController.m; sourceTree = "<group>"; };
 		C095878C16CA9959007E0119 /* S1TopicListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewController.h; path = Stage1st/S1TopicListViewController.h; sourceTree = "<group>"; };
@@ -430,8 +427,6 @@
 			isa = PBXGroup;
 			children = (
 				C09587A316CB6218007E0119 /* Settings */,
-				C095878316CA98EE007E0119 /* S1RootViewController.h */,
-				C095878416CA98EE007E0119 /* S1RootViewController.m */,
 				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
 				C095878916CA993A007E0119 /* S1ContentViewController.h */,
@@ -609,7 +604,6 @@
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
-				C095878516CA98EE007E0119 /* S1RootViewController.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,

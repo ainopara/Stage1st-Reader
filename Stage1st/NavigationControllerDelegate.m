@@ -71,7 +71,7 @@
         }
         self.interactionController = nil;
     } else {
-        NSLog(@"Other Interaction Event:%ld", recognizer.state);
+        //NSLog(@"Other Interaction Event:%d", recognizer.state);
         [self.interactionController cancelInteractiveTransition];
         self.interactionController = nil;
     }

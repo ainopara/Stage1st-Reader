@@ -129,6 +129,9 @@
             NSLog(@"Finish Fetch:%f",-timeInterval);
             NSDictionary *responseDict = responseObject;
             //Update Topic
+            topic.title = responseDict[@"Variables"][@"thread"][@"subject"];
+            topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];
+            topic.authorUserName = responseDict[@"Variables"][@"thread"][@"author"];
             topic.formhash = responseDict[@"Variables"][@"formhash"];
             topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
             double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
