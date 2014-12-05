@@ -41,7 +41,7 @@
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86FC62251A06000D0018DD2E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86FC62231A06000D0018DD2E /* Settings.storyboard */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
-		C05286C616D3B881000B0DBD /* S1HTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPClient.m */; };
+		C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */; };
 		C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F416E2245B0035C1AA /* ODRefreshControl.m */; };
 		C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F716E22E1F0035C1AA /* S1TabBar.m */; };
 		C083351616E34DCF0035C1AA /* Threads.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083351516E34DCF0035C1AA /* Threads.plist */; };
@@ -130,8 +130,8 @@
 		86E5C2771A0CDEAD006D8D6A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
-		C05286C416D3B881000B0DBD /* S1HTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1HTTPClient.h; path = Stage1st/S1HTTPClient.h; sourceTree = "<group>"; };
-		C05286C516D3B881000B0DBD /* S1HTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1HTTPClient.m; path = Stage1st/S1HTTPClient.m; sourceTree = "<group>"; };
+		C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1HTTPSessionManager.h; path = Stage1st/S1HTTPSessionManager.h; sourceTree = "<group>"; };
+		C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1HTTPSessionManager.m; path = Stage1st/S1HTTPSessionManager.m; sourceTree = "<group>"; };
 		C08334F316E2245B0035C1AA /* ODRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODRefreshControl.h; sourceTree = "<group>"; };
 		C08334F416E2245B0035C1AA /* ODRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODRefreshControl.m; sourceTree = "<group>"; };
 		C08334F616E22E1F0035C1AA /* S1TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TabBar.h; path = Stage1st/S1TabBar.h; sourceTree = "<group>"; };
@@ -276,8 +276,8 @@
 		C08A440D16DA775F003BF44C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				C05286C416D3B881000B0DBD /* S1HTTPClient.h */,
-				C05286C516D3B881000B0DBD /* S1HTTPClient.m */,
+				C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */,
+				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
 				C08A440E16DA779E003BF44C /* S1URLCache.h */,
 				C08A440F16DA779E003BF44C /* S1URLCache.m */,
 			);
@@ -624,7 +624,7 @@
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				867C7F5D1899420D00DF55E8 /* RECommonFunctions.m in Sources */,
-				C05286C616D3B881000B0DBD /* S1HTTPClient.m in Sources */,
+				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,

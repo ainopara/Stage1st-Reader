@@ -22,10 +22,20 @@
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
+//API
++ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                              failureBlock:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
++ (void)requestTopicListAPIForKey:(NSString *)key
+                      withPage:(NSNumber *)page
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 + (void)requestTopicContentAPIForID:(NSNumber *)topicID
                            withPage:(NSNumber *)page
                             success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                             failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page

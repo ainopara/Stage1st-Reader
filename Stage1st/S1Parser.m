@@ -13,7 +13,6 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 
-#define kNumberPerPage 50
 
 @interface S1Parser()
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString;
@@ -172,6 +171,22 @@
     return (NSArray *)topics;
 }
 
++ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict {
+    NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
+    NSMutableArray *topics = [[NSMutableArray alloc] init];
+    for (NSDictionary *rawTopic in rawTopicList) {
+        S1Topic *topic = [[S1Topic alloc] init];
+        topic.topicID = [NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]];
+        topic.title = rawTopic[@"subject"];
+        topic.replyCount = [NSNumber numberWithInteger:[rawTopic[@"replies"] integerValue]];
+        topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
+        topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
+        topic.authorUserName = rawTopic[@"author"];
+        
+        [topics addObject:topic];
+    }
+    return topics;
+}
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
