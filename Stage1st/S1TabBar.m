@@ -20,6 +20,7 @@
     NSMutableArray *_buttons;
     NSInteger _index;
     CGFloat _lastContentOffset;
+    CGFloat _lastFrameWidth;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -27,6 +28,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         _index = -1;
+        _lastFrameWidth = 0;
         _enabled = YES;
         self.backgroundColor = [S1GlobalVariables color3];
         self.canCancelContentTouches = YES;
@@ -91,7 +93,7 @@
         
     }];
     
-    self.contentSize = CGSizeMake(width, self.bounds.size.height);
+    //self.contentSize = CGSizeMake(width, self.bounds.size.height);
 }
 
 #pragma mark - Scroll View Delegate
@@ -155,24 +157,26 @@
 #pragma mark - Layout
 
 - (void)layoutSubviews {
+    if (self.frame.size.width == _lastFrameWidth) {
+        return;
+    }
     NSLog(@"Tabbar layout for width:%.1f", self.frame.size.width);
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        CGFloat widthPerItem = [self determineWidthPerItem];
-        NSInteger maxIndex = 0;
-        NSArray * subviews = [self subviews];
-        for(id obj in subviews) {
-            if ([obj isMemberOfClass:[UIButton class]]) {
-                UIButton *btn = (UIButton *)obj;
-                NSInteger index = btn.tag;
-                CGRect rect = CGRectMake(widthPerItem * index, 0.25, widthPerItem, self.bounds.size.height-0.25);
-                [btn setFrame:rect];
-                if (index > maxIndex) {
-                    maxIndex = index;
-                }
+    CGFloat widthPerItem = [self determineWidthPerItem];
+    NSInteger maxIndex = 0;
+    NSArray * subviews = [self subviews];
+    for(id obj in subviews) {
+        if ([obj isMemberOfClass:[UIButton class]]) {
+            UIButton *btn = (UIButton *)obj;
+            NSInteger index = btn.tag;
+            CGRect rect = CGRectMake(widthPerItem * index, 0.25, widthPerItem, self.bounds.size.height-0.25);
+            [btn setFrame:rect];
+            if (index > maxIndex) {
+                maxIndex = index;
             }
         }
-        [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
     }
+    [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
+    _lastFrameWidth = self.frame.size.width;
     
 }
 
@@ -222,13 +226,17 @@
 
 - (CGFloat) determineWidthPerItem
 {
-    CGFloat screenWidth = self.bounds.size.width;
-    if (_keys.count < 8) {
-        return screenWidth/_keys.count;
-    } else if (screenWidth <= 768.0f) {
-        return _DEFAULT_WIDTH_IPAD;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        CGFloat screenWidth = self.bounds.size.width;
+        if (_keys.count < 8) {
+            return screenWidth/_keys.count;
+        } else if (screenWidth <= 768.0f) {
+            return _DEFAULT_WIDTH_IPAD;
+        } else {
+            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+        }
     } else {
-        return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+        return (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
     }
 }
 
