@@ -12,6 +12,7 @@
 @interface S1Parser : NSObject
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
++ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
 + (NSArray *)contentsFromHTMLData:(NSData *)rawData;
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
@@ -23,5 +24,7 @@
 + (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 
 + (NSString *)loginUserName:(NSString *)HTMLString;
+
++ (NSNumber *)extractTopicIDFromLink:(NSString *)URLString;
 
 @end

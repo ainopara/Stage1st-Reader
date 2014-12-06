@@ -13,7 +13,6 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 
-#define kNumberPerPage 50
 
 @interface S1Parser()
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString;
@@ -172,6 +171,22 @@
     return (NSArray *)topics;
 }
 
++ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict {
+    NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
+    NSMutableArray *topics = [[NSMutableArray alloc] init];
+    for (NSDictionary *rawTopic in rawTopicList) {
+        S1Topic *topic = [[S1Topic alloc] init];
+        topic.topicID = [NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]];
+        topic.title = rawTopic[@"subject"];
+        topic.replyCount = [NSNumber numberWithInteger:[rawTopic[@"replies"] integerValue]];
+        topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
+        topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
+        topic.authorUserName = rawTopic[@"author"];
+        
+        [topics addObject:topic];
+    }
+    return topics;
+}
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
@@ -420,6 +435,24 @@
     NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
     NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
     return [username isEqualToString:@""]?nil:username;
+}
+
++ (NSNumber *)extractTopicIDFromLink:(NSString *)URLString
+{
+    NSString *pattern1 = [[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"] stringByAppendingString:@"thread-([0-9]+)-[0-9]+-[0-9]+\\.html"];
+    NSRegularExpression *re1 = [[NSRegularExpression alloc] initWithPattern:pattern1 options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result1 = [re1 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
+    NSString *topicIDString = [URLString substringWithRange:[result1 rangeAtIndex:1]];
+    if ([topicIDString isEqualToString:@""]) {
+        NSString *pattern2 = [[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"] stringByAppendingString:@"forum\\.php\\?mod=viewthread&tid=([0-9]+)"];
+        NSRegularExpression *re2 = [[NSRegularExpression alloc] initWithPattern:pattern2 options:NSRegularExpressionAnchorsMatchLines error:nil];
+        NSTextCheckingResult *result2 = [re2 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
+        topicIDString = [URLString substringWithRange:[result2 rangeAtIndex:1]];
+    }
+    if ([topicIDString isEqualToString:@""]) {
+        return nil;
+    }
+    return [NSNumber numberWithInteger:[topicIDString integerValue]];
 }
 
 

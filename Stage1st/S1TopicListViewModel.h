@@ -21,7 +21,7 @@ typedef enum {
 
 - (void)topicListForKey:(NSString *)key shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
-- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)key;
+- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)key withSearchWord:(NSString *)searchWord;
 
 
 

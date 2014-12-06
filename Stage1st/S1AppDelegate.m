@@ -7,7 +7,6 @@
 //
 
 #import "S1AppDelegate.h"
-#import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"
@@ -16,9 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    //User Defaults;
+    //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
@@ -69,10 +66,9 @@
     }
     //Migrate to v3.6
     [S1Tracer upgradeDatabase];
+    
     //URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
-                                                         diskCapacity:10 * 1024 * 1024
-                                                             diskPath:nil];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:10 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
@@ -81,12 +77,6 @@
     [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
     [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
 
-    self.window.backgroundColor = [UIColor blackColor];
-    S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
-    S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];
-    self.window.rootViewController = rootVC;
-    
-    [self.window makeKeyAndVisible];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     return YES;
 }
@@ -101,6 +91,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

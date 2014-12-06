@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class FMDatabase;
 @class S1Topic;
+
 typedef enum {
     S1TopicOrderByFavoriteSetDate,
     S1TopicOrderByLastVisitDate
@@ -23,8 +24,8 @@ typedef enum {
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
-- (NSArray *)historyObjects;
-- (NSArray *)favoritedObjects:(S1TopicOrderType)order;
+- (NSMutableArray *)historyObjectsWithSearchWord:(NSString *)searchWord;
+- (NSMutableArray *)favoritedObjectsWithSearchWord:(NSString *)searchWord;
 
 - (S1Topic *)tracedTopic:(NSNumber *)key;
 

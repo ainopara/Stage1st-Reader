@@ -7,7 +7,7 @@
 //
 
 #import "S1NetworkManager.h"
-#import "S1HTTPClient.h"
+#import "S1HTTPSessionManager.h"
 
 @interface S1NetworkManager ()
 
@@ -29,13 +29,13 @@
         NSDictionary *params = @{@"mod": @"forumdisplay",
                                  @"mobile": @"no",
                                  @"fid": keyID};
-        [[S1HTTPClient sharedClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
     } else {
         NSDictionary *params = @{@"mod": @"forumdisplay",
                                  @"mobile": @"no",
                                  @"fid": keyID,
                                  @"page": page};
-        [[S1HTTPClient sharedClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
     }
 }
 
@@ -48,14 +48,40 @@
         NSDictionary *params = @{@"mod": @"viewthread",
                                  @"mobile": @"no",
                                  @"tid": topicID};
-        [[S1HTTPClient sharedClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
     } else {
         NSDictionary *params = @{@"mod": @"viewthread",
                                  @"mobile": @"no",
                                  @"tid": topicID,
                                  @"page": page};
-        [[S1HTTPClient sharedClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
     }
+}
+#pragma mark - API
+
++ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *, id))success
+                              failureBlock:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/";
+    NSDictionary *params = @{@"module": @"login"};
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    
+}
+
++ (void)requestTopicListAPIForKey:(NSString *)keyID
+                      withPage:(NSNumber *)page
+                       success:(void (^)(NSURLSessionDataTask *, id))success
+                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/index.php";
+    NSDictionary *params = @{@"module": @"forumdisplay",
+                             @"version": @1,
+                             @"tpp": @50,
+                             @"submodule": @"checkpost",
+                             @"mobile": @"no",
+                             @"fid": keyID,
+                             @"page": page,
+                             @"orderby": @"dblastpost"};
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+
 }
 
 + (void)requestTopicContentAPIForID:(NSNumber *)topicID
@@ -70,9 +96,10 @@
                              @"mobile": @"no",
                              @"tid": topicID,
                              @"page": page};
-    [[S1HTTPClient sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
 }
 
+#pragma mark - Reply
 
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
@@ -92,7 +119,7 @@
                              @"handlekey": @"reply",
                              @"inajax": @1,
                              @"ajaxtarget": @"fwin_content_reply"};
-    [[S1HTTPClient sharedClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
@@ -103,7 +130,7 @@
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%@&tid=%@&replysubmit=yes&inajax=1";
     NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, page, topicID];
-    [[S1HTTPClient sharedClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
@@ -113,8 +140,10 @@
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1";
     NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, topicID];
-    [[S1HTTPClient sharedClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
+
+#pragma mark - Login
 
 + (void)postLoginForUsername:(NSString *)username
                  andPassword:(NSString *)password
@@ -127,12 +156,12 @@
                             @"handlekey" : @"ls",
                             @"quickforward" : @"yes",
                             @"cookietime" : @"2592000"};
-    [[S1HTTPClient sharedClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
 + (void) cancelRequest
 {
-    [[[S1HTTPClient sharedClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+    [[[S1HTTPSessionManager sharedHTTPClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];
@@ -142,7 +171,7 @@
         }
     }];
     
-    [[[S1HTTPClient sharedJSONClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+    [[[S1HTTPSessionManager sharedJSONClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];

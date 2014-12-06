@@ -10,20 +10,18 @@
 
 @protocol S1TabBarDelegate;
 
+
 @interface S1TabBar : UIScrollView <UIScrollViewDelegate>
 
-- (id)initWithFrame:(CGRect)frame andKeys:(NSArray *)keys;
 - (void)deselectAll;
-- (void)updateButtonFrame;
 
 @property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
 
 @property (nonatomic, strong) NSArray *keys;
 @property (nonatomic, assign) BOOL enabled;
 
-@property NSInteger lastRecognizedOrientation;
-
 @end
+
 
 @protocol S1TabBarDelegate <NSObject>
 

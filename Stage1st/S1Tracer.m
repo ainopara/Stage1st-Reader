@@ -22,10 +22,11 @@
     if (!self) return nil;
     
     //SQLite database
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectory = [paths objectAtIndex:0];
-    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
-    _db = [FMDatabase databaseWithPath:dbPath];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *databaseURL = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    NSString *databasePath = [databaseURL.path stringByAppendingPathComponent:@"Stage1stReader.db"];
+    
+    _db = [FMDatabase databaseWithPath:databasePath];
     if (![_db open]) {
         NSLog(@"Could not open db.");
         return nil;
@@ -96,52 +97,57 @@
     }
 }
 
-- (NSArray *)historyObjects
+- (S1Topic *)topicFromQueryResult:(FMResultSet *)result {
+    S1Topic *topic = [[S1Topic alloc] init];
+    topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
+    topic.title = [result stringForColumn:@"title"];
+    topic.replyCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]];
+    topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
+    topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
+    topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
+    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
+    topic.favorite = [NSNumber numberWithBool:[self topicIsFavorited:topic.topicID]];
+    topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
+    return topic;
+}
+
+- (NSMutableArray *)historyObjectsWithSearchWord:(NSString *)searchWord
 {
+    NSString *sqlSearchWord;
+    if (searchWord == nil || [searchWord isEqualToString:@""]) {
+        sqlSearchWord = @"%%";
+    } else {
+        sqlSearchWord = [NSString stringWithFormat:@"%%%@%%", searchWord];
+    }
+    
     NSMutableArray *historyTopics = [NSMutableArray array];
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, threads.last_visit_time FROM history INNER JOIN threads ON history.topic_id = threads.topic_id ORDER BY threads.last_visit_time DESC LIMIT 500;"];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM (history INNER JOIN threads ON history.topic_id = threads.topic_id) WHERE title like ? ORDER BY threads.last_visit_time DESC LIMIT 1500;", sqlSearchWord];
     while ([historyResult next]) {
-        //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
-        S1Topic *historyTopic = [[S1Topic alloc] init];
-        [historyTopic setTopicID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"topic_id"]]];
-        [historyTopic setTitle:[historyResult stringForColumn:@"title"]];
-        [historyTopic setReplyCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"reply_count"]]];
-        [historyTopic setFID:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"field_id"]]];
-        [historyTopic setLastViewedPage:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"last_visit_page"]]];
-        [historyTopic setLastViewedPosition:[NSNumber numberWithFloat:[historyResult doubleForColumn:@"last_viewed_position"]]];
-        [historyTopic setVisitCount:[NSNumber numberWithLongLong:[historyResult longLongIntForColumn:@"visit_count"]]];
-        [historyTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:historyTopic.topicID]]];
-        [historyTopic setLastViewedDate:[[NSDate alloc] initWithTimeIntervalSince1970: [historyResult doubleForColumn:@"last_visit_time"]]];
-        [historyTopics addObject:historyTopic];
+        [historyTopics addObject:[self topicFromQueryResult:historyResult]];
     }
     NSLog(@"History count: %lu",(unsigned long)[historyTopics count]);
     return historyTopics;
 }
 
-- (NSArray *)favoritedObjects:(S1TopicOrderType)order
+- (NSMutableArray *)favoritedObjectsWithSearchWord:(NSString *)searchWord
 {
+    NSString *sqlSearchWord;
+    if (searchWord == nil || [searchWord isEqualToString:@""]) {
+        sqlSearchWord = @"%%";
+    } else {
+        sqlSearchWord = [NSString stringWithFormat:@"%%%@%%", searchWord];
+    }
+    
     NSMutableArray *favoriteTopics = [NSMutableArray array];
-    NSString *queryString = @"SELECT threads.topic_id, threads.title, threads.reply_count, threads.field_id, threads.last_visit_page, threads.last_viewed_position, threads.visit_count, favorite.favorite_time, threads.last_visit_time FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id ORDER BY ";
-    if (order == S1TopicOrderByFavoriteSetDate) {
+    NSString *queryString = @"SELECT * FROM favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id WHERE title like ? ORDER BY ";
+    if (NO) {
         queryString = [queryString stringByAppendingString:@"favorite.favorite_time DESC;"];
     } else {
         queryString = [queryString stringByAppendingString:@"threads.last_visit_time DESC;"];
     }
-    FMResultSet *favoriteResult = [_db executeQuery:queryString];
+    FMResultSet *favoriteResult = [_db executeQuery:queryString, sqlSearchWord];
     while ([favoriteResult next]) {
-        //NSLog(@"%@", [historyResult stringForColumn:@"title"]);
-        S1Topic *favoriteTopic = [[S1Topic alloc] init];
-        [favoriteTopic setTopicID:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"topic_id"]]];
-        [favoriteTopic setTitle:[favoriteResult stringForColumn:@"title"]];
-        [favoriteTopic setReplyCount:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"reply_count"]]];
-        [favoriteTopic setFID:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"field_id"]]];
-        [favoriteTopic setLastViewedPage:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"last_visit_page"]]];
-        [favoriteTopic setLastViewedPosition:[NSNumber numberWithFloat:[favoriteResult doubleForColumn:@"last_viewed_position"]]];
-        [favoriteTopic setLastViewedDate:[[NSDate alloc] initWithTimeIntervalSince1970: [favoriteResult doubleForColumn:@"last_visit_time"]]];
-        [favoriteTopic setVisitCount:[NSNumber numberWithLongLong:[favoriteResult longLongIntForColumn:@"visit_count"]]];
-        [favoriteTopic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:favoriteTopic.topicID]]];
-        [favoriteTopic setFavoriteDate:[[NSDate alloc] initWithTimeIntervalSince1970: [favoriteResult doubleForColumn:@"favorite_time"]]];
-        [favoriteTopics addObject:favoriteTopic];
+        [favoriteTopics addObject:[self topicFromQueryResult:favoriteResult]];
     }
     NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
     return favoriteTopics;
@@ -149,15 +155,9 @@
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID
 {
-    FMResultSet *result = [_db executeQuery:@"SELECT reply_count, last_visit_page, last_viewed_position, visit_count FROM threads WHERE topic_id = ?;",topicID];
+    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {
-        S1Topic *topic = [[S1Topic alloc] init];
-        [topic setReplyCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]]];
-        [topic setLastViewedPage:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]]];
-        [topic setLastViewedPosition:[NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]]];
-        [topic setVisitCount:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]]];
-        [topic setFavorite:[NSNumber numberWithBool:[self topicIsFavorited:topicID]]];
-        return topic;
+        return [self topicFromQueryResult:result];
     } else {
         return nil;
     }
@@ -211,7 +211,7 @@
         }
     }
 }
-
+#pragma mark - Upgrade
 + (void)migrateTracerToDatabase
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
