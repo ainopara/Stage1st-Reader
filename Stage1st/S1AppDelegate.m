@@ -43,9 +43,6 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"UseAPI"];
     }
-
-    //Migrate tracer to sql database
-    [S1Tracer migrateTracerToDatabase];
     
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];

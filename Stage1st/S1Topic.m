@@ -45,13 +45,18 @@
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {
+    if (self.topicID == nil && topic.topicID != nil) {
+        self.topicID = topic.topicID;
+    }
     if (self.title == nil && topic.title != nil) {
         self.title = topic.title;
     }
     if (self.replyCount == nil && topic.replyCount != nil) {
         self.replyCount = topic.replyCount;
     }
-    
+    if (self.fID == nil && topic.fID != nil) {
+        self.fID = topic.fID;
+    }
     self.lastReplyCount = topic.replyCount;
     self.lastViewedPage = topic.lastViewedPage;
     self.lastViewedPosition = topic.lastViewedPosition;

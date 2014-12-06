@@ -61,52 +61,50 @@
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) { // TODO: use weak self.
         [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSDictionary *responseDict = responseObject;
-            NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
-            
-            for (S1Topic *topic in topics) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSDictionary *responseDict = responseObject;
+                NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
                 
-                //append tracer message to topics
-                S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
-                if (tempTopic) {
-                    [topic setLastReplyCount:tempTopic.replyCount];
-                    [topic setLastViewedPage:tempTopic.lastViewedPage];
-                    [topic setLastViewedPosition:tempTopic.lastViewedPosition];
-                    [topic setVisitCount:tempTopic.visitCount];
-                    [topic setFavorite:tempTopic.favorite];
-                }
-                
-                // remove duplicate topics
-                if ([page integerValue] > 1) {
-                    for (S1Topic *compareTopic in self.topicListCache[keyID]) {
-                        if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
-                            NSLog(@"Remove duplicate topic: %@", topic.title);
-                            [self.topicListCache[keyID] removeObject:compareTopic];
-                            break;
+                for (S1Topic *topic in topics) {
+                    
+                    //append tracer message to topics
+                    S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                    if (tempTopic) {
+                        [topic addDataFromTracedTopic:tempTopic];
+                    }
+                    
+                    // remove duplicate topics
+                    if ([page integerValue] > 1) {
+                        for (S1Topic *compareTopic in self.topicListCache[keyID]) {
+                            if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
+                                NSLog(@"Remove duplicate topic: %@", topic.title);
+                                [self.topicListCache[keyID] removeObject:compareTopic];
+                                break;
+                            }
                         }
                     }
+                    
                 }
                 
-            }
-            
-            if (topics.count > 0) {
-                if ([page isEqualToNumber:@1]) {
-                    self.topicListCache[keyID] = topics;
-                    self.topicListCachePageNumber[keyID] = @1;
+                if (topics.count > 0) {
+                    if ([page isEqualToNumber:@1]) {
+                        self.topicListCache[keyID] = topics;
+                        self.topicListCachePageNumber[keyID] = @1;
+                    } else {
+                        self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
+                        self.topicListCachePageNumber[keyID] = page;
+                    }
                 } else {
-                    self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
-                    self.topicListCachePageNumber[keyID] = page;
+                    if([page isEqualToNumber:@1]) {
+                        self.topicListCache[keyID] = [[NSMutableArray alloc] init];
+                        self.topicListCachePageNumber[keyID] = @1;
+                    }
                 }
-            } else {
-                if([page isEqualToNumber:@1]) {
-                    self.topicListCache[keyID] = [[NSMutableArray alloc] init];
-                    self.topicListCachePageNumber[keyID] = @1;
-                }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(self.topicListCache[keyID]);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    success(self.topicListCache[keyID]);
+                });
             });
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -123,15 +121,10 @@
                 NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": keyID}] mutableCopy];
                 
                 for (S1Topic *topic in topics) {
-                    
                     //append tracer message to topics
                     S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
                     if (tempTopic) {
-                        [topic setLastReplyCount:tempTopic.replyCount];
-                        [topic setLastViewedPage:tempTopic.lastViewedPage];
-                        [topic setLastViewedPosition:tempTopic.lastViewedPosition];
-                        [topic setVisitCount:tempTopic.visitCount];
-                        [topic setFavorite:tempTopic.favorite];
+                        [topic addDataFromTracedTopic:tempTopic];
                     }
                     
                     // remove duplicate topics
@@ -280,11 +273,21 @@
 #pragma mark - Database
 
 - (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord {
-    return [self.tracer historyObjectsWithSearchWord:searchWord];
+    NSMutableArray *topics = [self.tracer historyObjects];
+    //filter process
+    //TODO: 
+    return topics;
 }
 
 - (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {
-    return [self.tracer favoritedObjectsWithSearchWord:searchWord];
+    NSMutableArray *topics = [self.tracer favoritedObjects];
+    //filter process
+    
+    return topics;
+}
+
+- (void)hasViewed:(S1Topic *)topic {
+    [self.tracer hasViewed:topic];
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
@@ -295,10 +298,14 @@
     [self.tracer setTopicFavoriteState:topicID withState:state];
 }
 
-- (S1Topic *)tracedTopic:(NSNumber *)key {
-    return [self.tracer tracedTopic:key];
+- (BOOL)topicIsFavorited:(NSNumber *)topicID {
+    return [self.tracer topicIsFavorited:topicID];
 }
 
+- (S1Topic *)tracedTopic:(NSNumber *)topicID {
+    return [self.tracer tracedTopic:topicID];
+}
+#pragma mark - Cache
 - (void)clearTopicListCache {
     //self.topicListCache = [[NSMutableDictionary alloc] init];
     //self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];

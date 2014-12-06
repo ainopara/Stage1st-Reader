@@ -24,15 +24,14 @@ typedef enum {
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
-- (NSMutableArray *)historyObjectsWithSearchWord:(NSString *)searchWord;
-- (NSMutableArray *)favoritedObjectsWithSearchWord:(NSString *)searchWord;
+- (NSMutableArray *)historyObjects;
+- (NSMutableArray *)favoritedObjects;
 
 - (S1Topic *)tracedTopic:(NSNumber *)key;
 
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
 - (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
-+ (void)migrateTracerToDatabase;
 + (void)upgradeDatabase;
 
 @end

@@ -30,12 +30,14 @@
 
 //Database
 - (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord;
+- (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 
 - (NSMutableArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord;
+- (BOOL)topicIsFavorited:(NSNumber *)topicID;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
-- (S1Topic *)tracedTopic:(NSNumber *)key;
+- (S1Topic *)tracedTopic:(NSNumber *)topicID;
 
 //About Network
 - (void)cancelRequest;

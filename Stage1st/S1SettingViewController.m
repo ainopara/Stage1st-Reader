@@ -197,7 +197,7 @@
 */
 }
 #pragma mark - Orientation 
-//TODO: Not work at all
+//TODO: Not work at all answer: set it to navigation controller
 
 - (NSUInteger)supportedInterfaceOrientations
 {

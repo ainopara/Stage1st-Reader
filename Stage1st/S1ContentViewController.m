@@ -13,7 +13,6 @@
 #import "S1Topic.h"
 #import "S1Floor.h"
 #import "S1Parser.h"
-#import "S1Tracer.h"
 #import "S1DataCenter.h"
 #import "S1HUD.h"
 #import "REComposeViewController.h"
@@ -36,7 +35,6 @@
 
 @property (nonatomic, strong) REComposeViewController *replyController;
 
-@property (nonatomic, strong) S1Tracer *tracer;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 @end
 
@@ -90,7 +88,6 @@
 #define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
-    self.tracer = self.dataCenter.tracer;
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [S1GlobalVariables color5];
@@ -302,7 +299,7 @@
                                                         cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
-                                      [self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                      [self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
                                       NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
                                       NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
         actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
@@ -314,8 +311,8 @@
             [self presentReplyViewWithAppendText:@"" reply:nil];
         }];
         // Favorite Action
-        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.tracer topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
         }];
         // Weibo Action
         UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -384,7 +381,7 @@
         }
         // Favorite
         if (1 == buttonIndex) {
-            [self.tracer setTopicFavoriteState:self.topic.topicID withState:(![self.tracer topicIsFavorited:self.topic.topicID])];
+            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
         }
         
         // Weibo
@@ -748,9 +745,9 @@
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    [self.topic setFavorite:[NSNumber numberWithBool:[self.tracer topicIsFavorited:self.topic.topicID]]];
+    [self.topic setFavorite:[NSNumber numberWithBool:[self.dataCenter topicIsFavorited:self.topic.topicID]]];
     [self.topic setLastReplyCount:self.topic.replyCount];
-    [self.tracer hasViewed:self.topic];}
+    [self.dataCenter hasViewed:self.topic];}
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
 {
