@@ -28,12 +28,14 @@
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
-//
+//Database
 - (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 
 - (NSMutableArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
+
+- (S1Topic *)tracedTopic:(NSNumber *)key;
 
 //About Network
 - (void)cancelRequest;

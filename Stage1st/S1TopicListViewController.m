@@ -576,24 +576,21 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!URL) {
         return;
     }
-    NSString *pattern = @"bbs\\.saraba1st\\.com.*(?:tid=|thread-)([0-9]{1,8})";;
+    NSString *pattern = @"bbs\\.saraba1st\\.com.*(?:tid=|thread-)([0-9]+)";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:URL options:NSMatchingReportProgress range:NSMakeRange(0, URL.length)];
     if (result) {
-        self.clipboardTopic = [[S1Topic alloc] init];
-        NSString *topicID = [URL substringWithRange:[result rangeAtIndex:1]];
-        NSLog(@"%@", topicID);
-        [self.clipboardTopic setTopicID:[NSNumber numberWithInteger:[topicID integerValue]]];
-        [self.clipboardTopic setReplyCount:@0];
-        [self.clipboardTopic setLastViewedPage:@1];
-        [self.clipboardTopic setVisitCount:@0];
-        [self.clipboardTopic setFavorite:[NSNumber numberWithBool:NO]];
-        S1ContentViewController *controller = [[S1ContentViewController alloc] init];
-        [controller setTopic:self.clipboardTopic];
-        [controller setTracer:self.tracer];
-        [controller setHTTPClient:self.HTTPClient];
+        S1Topic *clipboardTopic = [[S1Topic alloc] init];
+        NSString *topicIDString = [URL substringWithRange:[result rangeAtIndex:1]];
+        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+        NSLog(@"Open Clipboard topic ID: %@", topicID);
+        clipboardTopic.topicID = topicID;
+        [clipboardTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:topicID]];
+        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] init];
+        [contentViewController setTopic:self.clipboardTopic];
+        [contentViewController setDataCenter:self.dataCenter];
         
-        [[self rootViewController] presentDetailViewController:controller];
+        [self.navigationController pushViewController:contentViewController animated:YES];
     }
     
 }

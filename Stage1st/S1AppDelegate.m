@@ -78,7 +78,7 @@
     [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
 
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
+    //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
     
     return YES;
 }

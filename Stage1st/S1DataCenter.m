@@ -295,6 +295,10 @@
     [self.tracer setTopicFavoriteState:topicID withState:state];
 }
 
+- (S1Topic *)tracedTopic:(NSNumber *)key {
+    return [self.tracer tracedTopic:key];
+}
+
 - (void)clearTopicListCache {
     //self.topicListCache = [[NSMutableDictionary alloc] init];
     //self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];

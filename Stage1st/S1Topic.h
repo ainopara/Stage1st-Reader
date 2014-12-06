@@ -9,14 +9,21 @@
 #import <Foundation/Foundation.h>
 
 @interface S1Topic : NSObject <NSCoding>
-
-@property (nonatomic, copy) NSNumber *fID;
+//Basic
 @property (nonatomic, copy) NSNumber *topicID;
+//To show in list
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSNumber *authorUserID;
-@property (nonatomic, copy) NSString *authorUserName;
 @property (nonatomic, copy) NSNumber *replyCount;
+
 @property (nonatomic, copy) NSNumber *lastReplyCount;
+//To satisfy content demand
+@property (nonatomic, copy) NSNumber *authorUserID;
+
+
+//For Search
+@property (nonatomic, copy) NSNumber *fID;
+@property (nonatomic, copy) NSString *authorUserName;
+
 @property (nonatomic, copy) NSNumber *totalPageCount;
 @property (nonatomic, copy) NSDate *lastReplyDate;
 
@@ -34,5 +41,5 @@
 @property (nonatomic, copy) NSNumber *visitCount;
 @property (nonatomic, copy) NSNumber *favorite;
 
-- (void)updateWithTopic:(S1Topic *)topic;
+- (void)addDataFromTracedTopic:(S1Topic *)topic;
 @end

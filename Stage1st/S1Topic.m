@@ -44,21 +44,18 @@
 
 #pragma mark - Update
 
-- (void)updateWithTopic:(S1Topic *)topic {
-    if (topic.formhash != nil) {
-        self.formhash = topic.formhash;
-    }
-    if (topic.title != nil) {
+- (void)addDataFromTracedTopic:(S1Topic *)topic {
+    if (self.title == nil && topic.title != nil) {
         self.title = topic.title;
     }
-    if (topic.replyCount != nil) {
+    if (self.replyCount == nil && topic.replyCount != nil) {
         self.replyCount = topic.replyCount;
     }
-    if (topic.formhash != nil) {
-        self.formhash = topic.formhash;
-    }
-    if (topic.totalPageCount != nil) {
-        self.totalPageCount = topic.totalPageCount;
-    }
+    
+    self.lastReplyCount = topic.replyCount;
+    self.lastViewedPage = topic.lastViewedPage;
+    self.lastViewedPosition = topic.lastViewedPosition;
+    self.visitCount = topic.visitCount;
+    self.favorite = topic.favorite;
 }
 @end
