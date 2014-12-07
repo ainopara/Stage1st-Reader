@@ -506,18 +506,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark - UISearchBar Delegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if ([self.currentKey isEqual: @"History"]) {
-        NSDictionary *result = [self.viewModel internalTopicsInfoFor:S1TopicListHistory withSearchWord:searchText];
-        self.topics = [result valueForKey:@"topics"];
-        self.topicHeaderTitles = [result valueForKey:@"headers"];
-        
-        [self.tableView reloadData];
-        if (self.topics && self.topics.count > 0) {
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-        }
-    }
-    if ([self.currentKey isEqual: @"Favorite"]) {
-        NSDictionary *result = [self.viewModel internalTopicsInfoFor:S1TopicListFavorite withSearchWord:searchText];
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        NSDictionary *result = [self.viewModel internalTopicsInfoFor:[self.currentKey isEqual: @"History"]?S1TopicListHistory:S1TopicListFavorite withSearchWord:searchText];
         self.topics = [result valueForKey:@"topics"];
         self.topicHeaderTitles = [result valueForKey:@"headers"];
         
