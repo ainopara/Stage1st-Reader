@@ -91,6 +91,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.tintColor = [S1GlobalVariables color4];
     self.searchBar.barTintColor = [S1GlobalVariables color5];
     //[self.searchBar setSearchFieldBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+    UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
+    gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
+    [self.searchBar addGestureRecognizer:gestureRecognizer];
     self.tableView.tableHeaderView = self.searchBar;
     
     //self.definesPresentationContext = YES;
@@ -500,7 +503,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return 0;
 }
 
-#pragma mark - UISearchBarDelegate
+#pragma mark - UISearchBar Delegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"]) {
@@ -533,6 +536,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.searchBar resignFirstResponder];
 }
 
+- (void)clearSearchBarText:(UISwipeGestureRecognizer *)gestureRecognizer {
+    self.searchBar.text = @"";
+    [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
+}
 #pragma mark - Helpers
 
 - (NSArray *)keys
