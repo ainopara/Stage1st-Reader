@@ -66,7 +66,9 @@
     titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     titleParagraphStyle.alignment = NSTextAlignmentLeft;
     NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
-    [titleContent addAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0.876 green:0.532 blue:0.263 alpha:1.000]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+    if (self.topic.highlight != nil && (![self.topic.highlight isEqualToString:@""])) {
+        [titleContent addAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0.876 green:0.532 blue:0.263 alpha:1.000]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+    }
     
     
     //// Rectangle Drawing
