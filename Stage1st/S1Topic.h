@@ -18,6 +18,7 @@
 @property (nonatomic, copy) NSNumber *favorite;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
+@property (nonatomic, copy) NSString *highlight;
 //To generate content page
 @property (nonatomic, copy) NSNumber *authorUserID;
 

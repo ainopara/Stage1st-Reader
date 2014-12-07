@@ -5,7 +5,7 @@
 //  Created by hanza on 14-1-21.
 //  Copyright (c) 2014年 Renaissance. All rights reserved.
 //
-
+@import CoreText;
 #import "S1TopicListCellSubView.h"
 #import "S1Topic.h"
 @implementation S1TopicListCellSubView
@@ -61,8 +61,12 @@
     //// Abstracted Attributes
     NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
     
-    
-    NSString* titleContent = self.topic.title;
+    //Init Attribute Title
+    NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    titleParagraphStyle.alignment = NSTextAlignmentLeft;
+    NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
+    [titleContent addAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0.876 green:0.532 blue:0.263 alpha:1.000]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
     
     
     //// Rectangle Drawing
@@ -82,7 +86,7 @@
         NSMutableParagraphStyle *testParagraphStyle = [[NSMutableParagraphStyle alloc] init];
         testParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         testParagraphStyle.alignment = NSTextAlignmentLeft;
-        CGRect actualRect = [titleContent boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+        CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
         if (actualRect.size.height < 30.0f) {
             titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
         }
@@ -112,7 +116,7 @@
     [roundedRectanglePath stroke];
     
     
-    //// Text Drawing
+    //// Reply Count Text Drawing
     UIColor *replyCountFinalColor = nil;
     if ([self.topic.favorite  isEqual: @1]) {
         replyCountFinalColor = replyCountTextColorOfFavoriteThread;
@@ -150,17 +154,13 @@
     
     
     //// Title Drawing
-    NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    titleParagraphStyle.alignment = NSTextAlignmentLeft;
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [titleContent drawInRect:titleRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f],
-                                                          NSParagraphStyleAttributeName: titleParagraphStyle,
-                                                          NSForegroundColorAttributeName: titleColor}];
+        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:15.0f] range:NSMakeRange(0, titleContent.length)];
+        [titleContent drawInRect:titleRect];
     } else {
-        [titleContent drawAtPoint:titlePoint withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
-                                                            NSParagraphStyleAttributeName: titleParagraphStyle,
-                                                            NSForegroundColorAttributeName: titleColor}];
+        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:17.0f] range:NSMakeRange(0, titleContent.length)];
+        [titleContent drawAtPoint:titlePoint];
     }
 }
 

@@ -12,14 +12,19 @@
 #import "S1Tracer.h"
 #import "S1Parser.h"
 #import "S1Floor.h"
+#import "IMQuickSearch.h"
 
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
-
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
+@property (strong, nonatomic) IMQuickSearch *historySearch;
+@property (strong, nonatomic) IMQuickSearch *favoriteSearch;
+@property (strong, nonatomic) NSSortDescriptor *sortDescriptor;
+
 @end
+
 
 @implementation S1DataCenter
 
@@ -28,6 +33,19 @@
     self.tracer = [[S1Tracer alloc] init];
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
+    self.shouldReloadFavoriteCache = YES;
+    self.shouldReloadHistoryCache = YES;
+    self.sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
+        if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
+            return (NSComparisonResult)NSOrderedDescending;
+        }
+        
+        if ([obj1 timeIntervalSince1970] < [obj2 timeIntervalSince1970]) {
+            return (NSComparisonResult)NSOrderedAscending;
+        }
+        return (NSComparisonResult)NSOrderedSame;
+    }];
+    
     return self;
 }
 
@@ -273,17 +291,34 @@
 #pragma mark - Database
 
 - (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord {
-    NSMutableArray *topics = [self.tracer historyObjects];
+    
     //filter process
-    //TODO: 
-    return topics;
+    if (self.shouldReloadHistoryCache) {
+        NSMutableArray *topics = [self.tracer historyObjects];
+        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
+        self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
+        self.shouldReloadHistoryCache = NO;
+    }
+    
+    NSMutableArray *result = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
+    
+    [result sortUsingDescriptors:@[self.sortDescriptor]];
+    return result;
 }
 
 - (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {
-    NSMutableArray *topics = [self.tracer favoritedObjects];
-    //filter process
     
-    return topics;
+    //filter process
+    if (self.shouldReloadFavoriteCache) {
+        NSMutableArray *topics = [self.tracer favoritedObjects];
+        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
+        self.favoriteSearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
+        self.shouldReloadFavoriteCache = NO;
+    }
+    NSMutableArray *result = [[self.favoriteSearch filteredObjectsWithValue:searchWord] mutableCopy];
+    
+    [result sortUsingDescriptors:@[self.sortDescriptor]];
+    return result;
 }
 
 - (void)hasViewed:(S1Topic *)topic {

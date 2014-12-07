@@ -52,6 +52,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
     for (S1Topic *topic in topics) {
+        topic.highlight = searchWord;
         NSDate *date = topic.lastViewedDate;
         NSString *topicTitle = [formatter stringFromDate:date];
         if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {

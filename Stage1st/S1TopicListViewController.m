@@ -244,6 +244,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
+    if (type == S1TopicListHistory) {
+        self.dataCenter.shouldReloadHistoryCache = YES;
+    } else if (type == S1TopicListFavorite) {
+        self.dataCenter.shouldReloadFavoriteCache = YES;
+    }
+    
     NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@""];
     self.topics = [result valueForKey:@"topics"];
     self.topicHeaderTitles = [result valueForKey:@"headers"];

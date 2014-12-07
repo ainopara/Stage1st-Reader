@@ -27,6 +27,7 @@ PODS:
   - FMDB/common (2.4)
   - FMDB/standard (2.4):
     - FMDB/common
+  - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.4)
   - KissXML (5.0)
   - SVWebViewController (1.0)
@@ -36,6 +37,7 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking (~> 2.4.1)
   - FMDB (~> 2.3)
+  - IMQuickSearch
   - JTSImageViewController
   - KissXML (~> 5.0)
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
@@ -49,6 +51,7 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: e261c5b5cf47e4b4efa8cb3d186be30d4b145b76
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   FMDB: 0b2fa25e5264ef177973c0cb8c02c711107979aa
+  IMQuickSearch: b032f2916aebf84ef84dd44ff022218498319906
   JTSImageViewController: 9fe6402194b7679f0e28d0c1002d6164301fc34a
   KissXML: e537c38b18ede903ee6de45953a9bd86c131ebe9
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca

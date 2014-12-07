@@ -13,7 +13,8 @@
 @interface S1DataCenter : NSObject
 
 @property (strong, nonatomic) S1Tracer *tracer;
-
+@property (assign, nonatomic) BOOL shouldReloadHistoryCache;
+@property (assign, nonatomic) BOOL shouldReloadFavoriteCache;
 //For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 
