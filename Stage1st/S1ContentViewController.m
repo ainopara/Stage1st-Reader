@@ -85,7 +85,7 @@
 
 - (void)viewDidLoad
 {
-#define _STATUS_BAR_HEIGHT 20.0f
+//#define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
@@ -189,10 +189,10 @@
         return;
     }
     NSLog(@"Content View did disappear");
+    [self cancelRequest];
+    [self saveTopicViewedState:nil];
+    self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self cancelRequest];
-        [self saveTopicViewedState:nil];
-        self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
@@ -364,8 +364,9 @@
     if (self.imageViewer) {
         // Save Image
         if (0 == buttonIndex) {
+            UIImage *imageToSave = self.imageViewer.image;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                UIImageWriteToSavedPhotosAlbum(self.imageViewer.image, nil, nil, nil);
+                UIImageWriteToSavedPhotosAlbum(imageToSave, nil, nil, nil);
             });
         }
         // Copy URL
@@ -548,9 +549,11 @@
         [actionSheet showInView:imageViewer.view];
     } else {
         UIAlertController *imageActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        __weak typeof(self) myself = self;
         UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            __strong typeof(self) strongMyself = myself;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                UIImageWriteToSavedPhotosAlbum(self.imageViewer.image, nil, nil, nil);
+                UIImageWriteToSavedPhotosAlbum(strongMyself.imageViewer.image, nil, nil, nil);
             });
         }];
         UIAlertAction *copyURLAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {

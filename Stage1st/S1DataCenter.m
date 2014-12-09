@@ -80,26 +80,28 @@
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) { // TODO: use weak self.
+    __weak typeof(self) myself = self;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __strong typeof(self) strongMyself = myself;
                 NSDictionary *responseDict = responseObject;
                 NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
                 
                 for (S1Topic *topic in topics) {
                     
                     //append tracer message to topics
-                    S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                    S1Topic *tempTopic = [strongMyself.tracer tracedTopic:topic.topicID];
                     if (tempTopic) {
                         [topic addDataFromTracedTopic:tempTopic];
                     }
                     
                     // remove duplicate topics
                     if ([page integerValue] > 1) {
-                        for (S1Topic *compareTopic in self.topicListCache[keyID]) {
+                        for (S1Topic *compareTopic in strongMyself.topicListCache[keyID]) {
                             if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
                                 NSLog(@"Remove duplicate topic: %@", topic.title);
-                                [self.topicListCache[keyID] removeObject:compareTopic];
+                                [strongMyself.topicListCache[keyID] removeObject:compareTopic];
                                 break;
                             }
                         }
@@ -109,20 +111,20 @@
                 
                 if (topics.count > 0) {
                     if ([page isEqualToNumber:@1]) {
-                        self.topicListCache[keyID] = topics;
-                        self.topicListCachePageNumber[keyID] = @1;
+                        strongMyself.topicListCache[keyID] = topics;
+                        strongMyself.topicListCachePageNumber[keyID] = @1;
                     } else {
-                        self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
-                        self.topicListCachePageNumber[keyID] = page;
+                        strongMyself.topicListCache[keyID] = [[strongMyself.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
+                        strongMyself.topicListCachePageNumber[keyID] = page;
                     }
                 } else {
                     if([page isEqualToNumber:@1]) {
-                        self.topicListCache[keyID] = [[NSMutableArray alloc] init];
-                        self.topicListCachePageNumber[keyID] = @1;
+                        strongMyself.topicListCache[keyID] = [[NSMutableArray alloc] init];
+                        strongMyself.topicListCachePageNumber[keyID] = @1;
                     }
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    success(self.topicListCache[keyID]);
+                    success(strongMyself.topicListCache[keyID]);
                 });
             });
             
@@ -132,6 +134,7 @@
     } else {
         [S1NetworkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __strong typeof(self) strongMyself = myself;
                 //check login state
                 NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                 [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
@@ -141,17 +144,17 @@
                 
                 for (S1Topic *topic in topics) {
                     //append tracer message to topics
-                    S1Topic *tempTopic = [self.tracer tracedTopic:topic.topicID];
+                    S1Topic *tempTopic = [strongMyself.tracer tracedTopic:topic.topicID];
                     if (tempTopic) {
                         [topic addDataFromTracedTopic:tempTopic];
                     }
                     
                     // remove duplicate topics
                     if ([page integerValue] > 1) {
-                        for (S1Topic *compareTopic in self.topicListCache[keyID]) {
+                        for (S1Topic *compareTopic in strongMyself.topicListCache[keyID]) {
                             if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
                                 NSLog(@"Remove duplicate topic: %@", topic.title);
-                                [self.topicListCache[keyID] removeObject:compareTopic];
+                                [strongMyself.topicListCache[keyID] removeObject:compareTopic];
                                 break;
                             }
                         }
@@ -161,20 +164,20 @@
                 
                 if (topics.count > 0) {
                     if ([page isEqualToNumber:@1]) {
-                        self.topicListCache[keyID] = topics;
-                        self.topicListCachePageNumber[keyID] = @1;
+                        strongMyself.topicListCache[keyID] = topics;
+                        strongMyself.topicListCachePageNumber[keyID] = @1;
                     } else {
-                        self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
-                        self.topicListCachePageNumber[keyID] = page;
+                        strongMyself.topicListCache[keyID] = [[strongMyself.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
+                        strongMyself.topicListCachePageNumber[keyID] = page;
                     }
                 } else {
                     if([page isEqualToNumber:@1]) {
-                        self.topicListCache[keyID] = [[NSMutableArray alloc] init];
-                        self.topicListCachePageNumber[keyID] = @1;
+                        strongMyself.topicListCache[keyID] = [[NSMutableArray alloc] init];
+                        strongMyself.topicListCachePageNumber[keyID] = @1;
                     }
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    success(self.topicListCache[keyID]);
+                    success(strongMyself.topicListCache[keyID]);
                 });
             });
         } failure:^(NSURLSessionDataTask *task, NSError *error) {

@@ -255,12 +255,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else if (type == S1TopicListFavorite) {
         self.dataCenter.shouldReloadFavoriteCache = YES;
     }
-    
+    __weak typeof(self) myself = self;
     NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@"" andLeftCallback:^(NSDictionary *fullResult) {
-        self.topics = [fullResult valueForKey:@"topics"];
-        self.topicHeaderTitles = [fullResult valueForKey:@"headers"];
+        __strong typeof(self) strongMyself = myself;
+        strongMyself.topics = [fullResult valueForKey:@"topics"];
+        strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            [strongMyself.tableView reloadData];
         });
     }];
     self.topics = [result valueForKey:@"topics"];
@@ -516,12 +517,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        __weak typeof(self) myself = self;
         NSDictionary *result = [self.viewModel internalTopicsInfoFor:[self.currentKey isEqual: @"History"]?S1TopicListHistory:S1TopicListFavorite withSearchWord:searchText andLeftCallback:^(NSDictionary *fullResult) {
-            self.topics = [fullResult valueForKey:@"topics"];
-            self.topicHeaderTitles = [fullResult valueForKey:@"headers"];
-            
+            __strong typeof(self) strongMyself = myself;
+            strongMyself.topics = [fullResult valueForKey:@"topics"];
+            strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+                [strongMyself.tableView reloadData];
             });
         }];
         self.topics = [result valueForKey:@"topics"];
