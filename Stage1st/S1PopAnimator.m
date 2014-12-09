@@ -35,7 +35,6 @@
         fromViewController.view.transform = CGAffineTransformMakeTranslation(screenWidth, 0);
         toViewController.view.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
-        NSLog(@"finished: %d,canceled: %d",finished, [transitionContext transitionWasCancelled]);
         fromViewController.view.transform = CGAffineTransformIdentity;
         toViewController.view.transform = CGAffineTransformIdentity;
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];

@@ -181,7 +181,6 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    NSLog(@"View will disappear");
     [super viewWillDisappear:animated];
 }
 
@@ -189,7 +188,7 @@
     if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
-    NSLog(@"View did disappear");
+    NSLog(@"Content View did disappear");
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self cancelRequest];
         [self saveTopicViewedState:nil];
