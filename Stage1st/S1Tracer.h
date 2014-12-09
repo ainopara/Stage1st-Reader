@@ -24,7 +24,7 @@ typedef enum {
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topic_id;
 
-- (NSMutableArray *)historyObjects;
+- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler;
 - (NSMutableArray *)favoritedObjects;
 
 - (S1Topic *)tracedTopic:(NSNumber *)key;

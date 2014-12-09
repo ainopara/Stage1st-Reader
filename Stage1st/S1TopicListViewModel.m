@@ -38,15 +38,22 @@
     }];
 }
 
-- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)type withSearchWord:(NSString *)searchWord {
+- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)type withSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSDictionary *))leftTopicsHandler {
     NSArray *topics;
     if (type == S1TopicListHistory) {
-        topics = [self.dataCenter historyTopicsWithSearchWord:searchWord];
+        topics = [self.dataCenter historyTopicsWithSearchWord:searchWord andLeftCallback:^(NSArray *fullTopics) {
+            leftTopicsHandler([S1TopicListViewModel processTopicHeader:fullTopics withSearchWord:searchWord]);
+        }];
     } else if (type == S1TopicListFavorite) {
         topics = [self.dataCenter favoriteTopicsWithSearchWord:searchWord];
     } else {
         return @{@"headers": @[@[]], @"topics":@[@[]]};
     }
+    return [S1TopicListViewModel processTopicHeader:topics withSearchWord:searchWord];
+    
+}
+
++ (NSDictionary *)processTopicHeader:(NSArray *)topics withSearchWord:(NSString *)searchWord {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
     NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

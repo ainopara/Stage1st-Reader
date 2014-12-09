@@ -184,6 +184,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)archive:(id)sender
 {
+    NSDate *start = [NSDate date];
     [self.naviItem setRightBarButtonItems:@[]];
     if (!self.segControl) {
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
@@ -200,6 +201,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
     }
     self.naviItem.titleView = self.segControl;
+    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    NSLog(@"Finish present:%f",-timeInterval);
 }
 
 - (void)refresh:(id)sender
@@ -253,7 +256,13 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.dataCenter.shouldReloadFavoriteCache = YES;
     }
     
-    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@""];
+    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@"" andLeftCallback:^(NSDictionary *fullResult) {
+        self.topics = [fullResult valueForKey:@"topics"];
+        self.topicHeaderTitles = [fullResult valueForKey:@"headers"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
     self.topics = [result valueForKey:@"topics"];
     self.topicHeaderTitles = [result valueForKey:@"headers"];
     
@@ -507,7 +516,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
-        NSDictionary *result = [self.viewModel internalTopicsInfoFor:[self.currentKey isEqual: @"History"]?S1TopicListHistory:S1TopicListFavorite withSearchWord:searchText];
+        NSDictionary *result = [self.viewModel internalTopicsInfoFor:[self.currentKey isEqual: @"History"]?S1TopicListHistory:S1TopicListFavorite withSearchWord:searchText andLeftCallback:^(NSDictionary *fullResult) {
+            self.topics = [fullResult valueForKey:@"topics"];
+            self.topicHeaderTitles = [fullResult valueForKey:@"headers"];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
         self.topics = [result valueForKey:@"topics"];
         self.topicHeaderTitles = [result valueForKey:@"headers"];
         

@@ -30,7 +30,7 @@
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 //Database
-- (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord;
+- (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler;
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 

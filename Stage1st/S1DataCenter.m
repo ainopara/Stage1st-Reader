@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
+@property (strong, nonatomic) NSArray *cachedHistoryTopics;
 @property (strong, nonatomic) IMQuickSearch *historySearch;
 @property (strong, nonatomic) IMQuickSearch *favoriteSearch;
 @property (strong, nonatomic) NSSortDescriptor *sortDescriptor;
@@ -290,20 +291,39 @@
 
 #pragma mark - Database
 
-- (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord {
-    
+- (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler {
     //filter process
-    if (self.shouldReloadHistoryCache) {
-        NSMutableArray *topics = [self.tracer historyObjects];
-        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
+    if (self.shouldReloadHistoryCache || self.historySearch == nil) {
+        self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
+            //update search filter
+            NSArray *fullTopics = [self.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
+            IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
+            self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
+            self.cachedHistoryTopics = fullTopics;
+            //return full data.
+            if ([searchWord isEqualToString:@""]) {
+                leftTopicsHandler(fullTopics);
+            } else {
+                NSMutableArray *fullResult = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
+                [fullResult sortUsingDescriptors:@[self.sortDescriptor]];
+                leftTopicsHandler(fullResult);
+            }
+            
+        }];
+        //set search filter
+        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:self.cachedHistoryTopics keys:@[@"title"]];
         self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
         self.shouldReloadHistoryCache = NO;
     }
-    
-    NSMutableArray *result = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-    
-    [result sortUsingDescriptors:@[self.sortDescriptor]];
-    return result;
+    //return parital data
+    if ([searchWord isEqualToString:@""]) {
+        return self.cachedHistoryTopics;
+    } else {
+        NSMutableArray *result = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
+        
+        [result sortUsingDescriptors:@[self.sortDescriptor]];
+        return result;
+    }
 }
 
 - (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {

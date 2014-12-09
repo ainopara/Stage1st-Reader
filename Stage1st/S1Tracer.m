@@ -109,13 +109,32 @@
     return topic;
 }
 
-- (NSMutableArray *)historyObjects
+- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler
 {
+    NSDate *start = [NSDate date];
     NSMutableArray *historyTopics = [NSMutableArray array];
     FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM (history INNER JOIN threads ON history.topic_id = threads.topic_id) ORDER BY threads.last_visit_time DESC;"];
+    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+    NSLog(@"Finish query:%f",-timeInterval);
+    NSInteger count = 0;
     while ([historyResult next]) {
         [historyTopics addObject:[self topicFromQueryResult:historyResult]];
+        count += 1;
+        if (count == 100) {
+            break;
+        }
     }
+    timeInterval = [start timeIntervalSinceNow];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSMutableArray *historyTopicsLeft = [NSMutableArray array];
+        while ([historyResult next]) {
+            [historyTopicsLeft addObject:[self topicFromQueryResult:historyResult]];
+        }
+        NSLog(@"History Left count: %lu",(unsigned long)[historyTopicsLeft count]);
+        
+        leftTopicsHandler(historyTopicsLeft);
+    });
+    NSLog(@"Finish transfer:%f",-timeInterval);
     NSLog(@"History count: %lu",(unsigned long)[historyTopics count]);
     return historyTopics;
 }
