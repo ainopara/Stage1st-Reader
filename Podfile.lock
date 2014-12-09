@@ -2,12 +2,12 @@ PODS:
   - 1PasswordExtension (1.0.9)
   - ActionSheetPicker-3.0 (1.2.0)
   - AFNetworking (2.4.1):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-    - AFNetworking/UIKit
+    - AFNetworking/NSURLConnection (= 2.4.1)
+    - AFNetworking/NSURLSession (= 2.4.1)
+    - AFNetworking/Reachability (= 2.4.1)
+    - AFNetworking/Security (= 2.4.1)
+    - AFNetworking/Serialization (= 2.4.1)
+    - AFNetworking/UIKit (= 2.4.1)
   - AFNetworking/NSURLConnection (2.4.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
@@ -23,13 +23,14 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - FMDB (2.4):
-    - FMDB/standard
+    - FMDB/standard (= 2.4)
   - FMDB/common (2.4)
   - FMDB/standard (2.4):
     - FMDB/common
   - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.4)
   - KissXML (5.0)
+  - pop (1.0.7)
   - SVWebViewController (1.0)
 
 DEPENDENCIES:
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - IMQuickSearch
   - JTSImageViewController
   - KissXML (~> 5.0)
+  - pop
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
 EXTERNAL SOURCES:
@@ -54,6 +56,7 @@ SPEC CHECKSUMS:
   IMQuickSearch: b032f2916aebf84ef84dd44ff022218498319906
   JTSImageViewController: 9fe6402194b7679f0e28d0c1002d6164301fc34a
   KissXML: e537c38b18ede903ee6de45953a9bd86c131ebe9
+  pop: 2f14a1ea61339767af9e66741b418c831b3844df
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca
 
-COCOAPODS: 0.34.4
+COCOAPODS: 0.35.0
