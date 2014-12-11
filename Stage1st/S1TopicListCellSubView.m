@@ -5,26 +5,18 @@
 //  Created by hanza on 14-1-21.
 //  Copyright (c) 2014年 Renaissance. All rights reserved.
 //
-@import CoreText;
+
 #import "S1TopicListCellSubView.h"
 #import "S1Topic.h"
 @implementation S1TopicListCellSubView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
     if (self) {
-        // Initialization code
         _selected = NO;
         _highlighted = NO;
     }
     return self;
-}
-
-- (void)setTopic:(S1Topic *)topic
-{
-    _topic = topic;
-    [self setNeedsDisplay];
 }
      
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

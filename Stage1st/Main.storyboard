@@ -32,8 +32,21 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4eD-eu-0hs" id="bdT-vm-xdj">
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="hIV-MS-iAu" customClass="S1TopicListCellSubView">
+                                                    <rect key="frame" x="0.0" y="0.5" width="600" height="43.5"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hIV-MS-iAu" firstAttribute="top" secondItem="bdT-vm-xdj" secondAttribute="top" id="076-Id-zjl"/>
+                                                <constraint firstAttribute="bottom" secondItem="hIV-MS-iAu" secondAttribute="bottom" id="344-tt-fv0"/>
+                                                <constraint firstAttribute="trailing" secondItem="hIV-MS-iAu" secondAttribute="trailing" id="U6B-yR-nxU"/>
+                                                <constraint firstItem="hIV-MS-iAu" firstAttribute="leading" secondItem="bdT-vm-xdj" secondAttribute="leading" id="wbF-ql-cE1"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="drawingSubview" destination="hIV-MS-iAu" id="YMO-OM-OwT"/>
                                             <segue destination="2TD-41-MRx" kind="show" identifier="Show Content" id="BLm-fy-yOl"/>
                                         </connections>
                                     </tableViewCell>
