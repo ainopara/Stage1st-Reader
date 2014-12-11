@@ -40,24 +40,19 @@
     UIView* view = self.navigationController.view;
     CGPoint translation = [recognizer translationInView:view];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        //NSLog(@"Begin, x: %f, y: %f", translation.x, translation.y);
-        if (translation.x >= translation.y && self.navigationController.viewControllers.count > 1) {
-            self.interactionController = [UIPercentDrivenInteractiveTransition new];
-            self.interactionController.completionCurve = UIViewAnimationCurveLinear;
-            [self.navigationController popViewControllerAnimated:YES];
-        }
+        self.interactionController = [UIPercentDrivenInteractiveTransition new];
+        self.interactionController.completionCurve = UIViewAnimationCurveLinear;
+        [self.navigationController popViewControllerAnimated:YES];
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / screenWidth : 0];
-        // NSLog(@"Changed：%f%%", 100 * translation.x / screenWidth);
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        //NSLog(@"End");
         CGFloat velocityX = [recognizer velocityInView:view].x;
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
-        if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX >= 0) {
+        if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX >= -100) {
             self.interactionController.completionSpeed = 0.24 / fmin((screenWidth - fmin(translation.x, 0)) / fabsf(velocityX), 0.24);
             NSLog(@"Finish Speed: %f", self.interactionController.completionSpeed);
             [self.interactionController finishInteractiveTransition];
