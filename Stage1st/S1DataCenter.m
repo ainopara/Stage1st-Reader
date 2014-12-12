@@ -213,9 +213,14 @@
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             NSTimeInterval timeInterval = [start timeIntervalSinceNow];
             NSLog(@"Finish Fetch:%f",-timeInterval);
+            //update title
+            NSString *title = [S1Parser extractTopicTitle:responseObject];
+            if (title != nil) {
+                topic.title = title;
+            }
             // get formhash
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            [topic setFormhash:[S1Parser formhashFromThreadString:HTMLString]];
+            [topic setFormhash:[S1Parser formhashFromPage:HTMLString]];
             
             //set reply count
             if ([page isEqualToNumber:@1]) {

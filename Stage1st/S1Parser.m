@@ -383,7 +383,7 @@
 }
 
 #pragma mark - Pick Information
-+ (NSString *)formhashFromThreadString:(NSString *)HTMLString
++ (NSString *)formhashFromPage:(NSString *)HTMLString
 {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
@@ -464,5 +464,13 @@
     return [NSNumber numberWithInteger:[topicIDString integerValue]];
 }
 
-
++ (NSString *)extractTopicTitle:(NSData *)rawData {
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//span[@id='thread_subject']"] firstObject];
+    if (element) {
+        return [element text];
+    }
+    return nil;
+    
+}
 @end

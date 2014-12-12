@@ -17,7 +17,7 @@
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
 
-+ (NSString *)formhashFromThreadString:(NSString *)HTMLString;
++ (NSString *)formhashFromPage:(NSString *)HTMLString;
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString;
 
@@ -26,5 +26,6 @@
 + (NSString *)loginUserName:(NSString *)HTMLString;
 
 + (NSNumber *)extractTopicIDFromLink:(NSString *)URLString;
++ (NSString *)extractTopicTitle:(NSData *)rawData;
 
 @end
