@@ -286,14 +286,19 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
-    
-    if (![self.currentKey isEqualToString:key]) {
-        NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
-        [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
-    } else { //press the key that selected currently
-        NSLog(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+    if (NO) {
+        if (![self.currentKey isEqualToString:key]) {
+            NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
+        } else { //press the key that selected currently
+            NSLog(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
+        }
+    } else {
+        //Force refresh
         [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
     }
+
 }
 
 
