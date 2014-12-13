@@ -600,7 +600,11 @@
         strongMe.titleLabel.text = self.topic.title;
         _finishLoading = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [HUD hideWithDelay:0.3];
+            if (strongMe.topic.message == nil || [strongMe.topic.message isEqualToString:@""]) {
+                [HUD hideWithDelay:0.3];
+            } else {
+                [HUD setText:strongMe.topic.message withWidthMultiplier:3];
+            }
         });
     } failure:^(NSError *error) {
         if (error.code == -999) {

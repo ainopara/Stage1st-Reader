@@ -252,7 +252,7 @@
             topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
             double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
             topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
-            
+            topic.message = responseDict[@"Message"][@"messagestr"];
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -267,6 +267,10 @@
             if (title != nil) {
                 topic.title = title;
             }
+            
+            //pick message
+            topic.message = [S1Parser extractMessage:responseObject];
+            
             // get formhash
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             [topic setFormhash:[S1Parser formhashFromPage:HTMLString]];

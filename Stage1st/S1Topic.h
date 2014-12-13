@@ -36,5 +36,7 @@
 @property (nonatomic, copy) NSNumber *lastViewedPage;
 @property (nonatomic, copy) NSMutableDictionary *floors;
 
+@property (nonatomic, copy) NSString *message;
+
 - (void)addDataFromTracedTopic:(S1Topic *)topic;
 @end

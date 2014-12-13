@@ -44,11 +44,11 @@ typedef enum {
     return self;
 }
 
-- (void)setText:(NSString *)text
+- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n
 {
     _text = text;
     [self removeSubviews];
-    self.bounds = CGRectMake(0, 0, 120, 60);
+    self.bounds = CGRectMake(0, 0, 120 * n, 60);
     _state = S1HUDStateShowText;
     [self setNeedsDisplay];
 }

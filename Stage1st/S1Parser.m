@@ -499,7 +499,7 @@
     NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
     return [username isEqualToString:@""]?nil:username;
 }
-
+#pragma mark - Extract Data
 + (NSNumber *)extractTopicIDFromLink:(NSString *)URLString
 {
     NSString *pattern1 = [[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"] stringByAppendingString:@"thread-([0-9]+)-[0-9]+-[0-9]+\\.html"];
@@ -527,4 +527,15 @@
     return nil;
     
 }
+
++ (NSString *)extractMessage:(NSData *)rawData {
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//div[@id='messagetext']/p"] firstObject];
+    if (element) {
+        return [element text];
+    }
+    return nil;
+    
+}
+
 @end

@@ -30,5 +30,6 @@
 
 + (NSNumber *)extractTopicIDFromLink:(NSString *)URLString;
 + (NSString *)extractTopicTitle:(NSData *)rawData;
++ (NSString *)extractMessage:(NSData *)rawData;
 
 @end

@@ -19,6 +19,7 @@
 - (void)showActivityIndicator;
 - (void)showRefreshButton;
 
+- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n;
 - (void)hideWithDelay:(NSTimeInterval)delay;
 
 @end

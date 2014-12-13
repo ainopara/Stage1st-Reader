@@ -371,7 +371,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 NSLog(@"Code -999 may means user want to cancel this request.");
                 [HUD hideWithDelay:0];
             } else {
-                [HUD setText:@"Request Failed"];
+                [HUD setText:@"Request Failed" withWidthMultiplier:1];
                 [HUD hideWithDelay:0.3];
             }
         }
