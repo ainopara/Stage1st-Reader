@@ -168,7 +168,7 @@
         if ([obj isMemberOfClass:[UIButton class]]) {
             UIButton *btn = (UIButton *)obj;
             NSInteger index = btn.tag;
-            CGRect rect = CGRectMake(widthPerItem * index, 0.25, widthPerItem, self.bounds.size.height-0.25);
+            CGRect rect = CGRectMake(widthPerItem * index, 0.25, ceilf(widthPerItem), self.bounds.size.height-0.25);
             [btn setFrame:rect];
             if (index > maxIndex) {
                 maxIndex = index;
