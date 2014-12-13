@@ -214,6 +214,18 @@ static NSString * const TFHppleTextNodeName            = @"text";
     return self.firstTextChild.content;
 }
 
+- (NSString *) recursionText {
+    if ([self isTextNode]) {
+        return self.content;
+    }
+    NSString *textString = @"";
+    for (TFHppleElement* child in self.children)
+    {
+        textString = [textString stringByAppendingString:child.recursionText];
+    }
+    return textString;
+}
+
 // Returns all elements at xPath.
 - (NSArray *) searchWithXPathQuery:(NSString *)xPathOrCSS
 {

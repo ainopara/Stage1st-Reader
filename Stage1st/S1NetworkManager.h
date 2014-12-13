@@ -56,9 +56,15 @@
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
+// Login
 + (void)postLoginForUsername:(NSString *)username
                  andPassword:(NSString *)password
+                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+// Search
++ (void)postSearchForKeyword:(NSString *)keyword
+                 andFormhash:(NSString *)formhash
                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 

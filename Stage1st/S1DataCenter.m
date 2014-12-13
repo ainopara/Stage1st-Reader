@@ -17,6 +17,7 @@
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
+@property (strong, nonatomic) NSString *formhash;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
 @property (strong, nonatomic) NSArray *cachedHistoryTopics;
@@ -86,7 +87,22 @@
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 __strong typeof(self) strongMyself = myself;
                 NSDictionary *responseDict = responseObject;
+                
+                //check login state
+                NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
+                if ([loginUsername isEqualToString:@""]) {
+                    loginUsername = nil;
+                }
+                [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+                
+                //pick formhash
+                NSString *formhash = responseDict[@"Variables"][@"formhash"];
+                if (formhash != nil) {
+                    strongMyself.formhash = formhash;
+                }
+                //get topics
                 NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
+                
                 
                 for (S1Topic *topic in topics) {
                     
@@ -135,12 +151,20 @@
         [S1NetworkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 __strong typeof(self) strongMyself = myself;
-                //check login state
                 NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                
+                //check login state
                 [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+                
+                //pick formhash
+                NSString *formhash = [S1Parser formhashFromPage:HTMLString];
+                if (formhash != nil) {
+                    strongMyself.formhash = formhash;
+                }
                 
                 //parse topics
                 NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": keyID}] mutableCopy];
+                
                 
                 for (S1Topic *topic in topics) {
                     //append tracer message to topics
@@ -184,6 +208,19 @@
             failure(error);
         }];
     }
+}
+
+- (BOOL)canMakeSearchRequest {
+    return self.formhash == nil ? NO : YES;
+}
+
+- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+    [S1NetworkManager postSearchForKeyword:keyword andFormhash:self.formhash success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSArray *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
+        success(topics);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
 }
 
 #pragma mark - Network (Content)

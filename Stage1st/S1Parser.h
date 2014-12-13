@@ -15,6 +15,9 @@
 + (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
 + (NSArray *)contentsFromHTMLData:(NSData *)rawData;
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
+
++ (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
+
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
 
 + (NSString *)formhashFromPage:(NSString *)HTMLString;

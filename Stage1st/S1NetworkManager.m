@@ -159,6 +159,24 @@
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
+#pragma mark - Search
+
++ (void)postSearchForKeyword:(NSString *)keyword
+                 andFormhash:(NSString *)formhash
+                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"search.php?searchsubmit=yes";
+    NSDictionary *params = @{@"mod" : @"forum",
+                             @"formhash" : formhash,
+                             @"srchtype" : @"title",
+                             @"srhfid" : @"",
+                             @"srhlocality" : @"forum::index",
+                             @"srchtxt" : keyword,
+                             @"searchsubmit" : @"true"};
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+}
+
+
 + (void) cancelRequest
 {
     [[[S1HTTPSessionManager sharedHTTPClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {

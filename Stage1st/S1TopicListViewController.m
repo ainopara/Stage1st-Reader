@@ -542,7 +542,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self.searchBar resignFirstResponder];
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        [self.searchBar resignFirstResponder];
+    } else {
+        [self.dataCenter searchTopicsForKeyword:searchBar.text success:^(NSArray *topicList) {
+            NSLog(@"%@",topicList);
+        } failure:^(NSError *error) {
+            ;
+        }];
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

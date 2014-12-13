@@ -22,6 +22,10 @@
 
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
+- (BOOL)canMakeSearchRequest;
+
+- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+
 //For Content View Controller
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *floorList))success failure:(void (^)(NSError *error))failure;
 

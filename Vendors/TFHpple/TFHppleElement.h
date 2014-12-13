@@ -96,6 +96,8 @@
 // Convenience method which can be used instead of firstTextChild.content
 - (NSString *) text;
 
+- (NSString *) recursionText;
+
 // Returns elements searched with xpath
 - (NSArray *) searchWithXPathQuery:(NSString *)xPathOrCSS;
 
