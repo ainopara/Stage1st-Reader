@@ -382,6 +382,9 @@
         //process content
         NSString *contentString = [S1Parser processImagesInHTMLString:topicFloor.content];
         contentString = [S1Parser stripTails:contentString];
+        if (contentString == nil) {
+            contentString = @"<td class=\"t_f\"><div class=\"s1-alert\">提示：作者被禁止或删除 内容自动屏蔽</div></td>";
+        }
         
         //process attachment
         NSString *floorAttachment = @"";

@@ -125,6 +125,12 @@ blockquote {
     color: #022c80;
     border-bottom: #ccc 1px solid;
 }
+.s1-alert {
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+    color: #aaa;
+}
 div.pbg {
     height: 3px;
     border-bottom: 1px solid;
