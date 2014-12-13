@@ -215,8 +215,20 @@
 }
 
 - (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+    __weak typeof(self) myself = self;
     [S1NetworkManager postSearchForKeyword:keyword andFormhash:self.formhash success:^(NSURLSessionDataTask *task, id responseObject) {
         NSArray *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
+        __strong typeof(self) strongMyself = myself;
+        
+        for (S1Topic *topic in topics) {
+            //append tracer message to topics
+            S1Topic *tempTopic = [strongMyself.tracer tracedTopic:topic.topicID];
+            if (tempTopic) {
+                [topic addDataFromTracedTopic:tempTopic];
+            }
+            topic.highlight = keyword;
+        }
+        
         success(topics);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
