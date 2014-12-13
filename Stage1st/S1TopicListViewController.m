@@ -315,7 +315,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [HUD showActivityIndicator];
     }
     
-    
+    //TODO weak self
     [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
         if (topicList.count > 0) {
@@ -353,6 +353,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         if (self.refreshControl.refreshing) {
             [self.refreshControl endRefreshing];
         }
+        
+        [self.searchBar setHidden: ([self.dataCenter canMakeSearchRequest] == NO)];
         _loadingFlag = NO;
     } failure:^(NSError *error) {
         //reload data
@@ -483,12 +485,16 @@ static NSString * const cellIdentifier = @"TopicCell";
     if(indexPath.row == [self.topics count] - 15)
     {
         NSLog(@"Reach last topic, load more.");
-        [self.dataCenter loadNextPageForKey:self.threadsInfo[self.currentKey] success:^(NSArray *topicList) {
-            self.topics = [topicList mutableCopy];
-            [self.tableView reloadData];
-        } failure:^(NSError *error) {
-            NSLog(@"fail to load more...");
-        }];
+        if ([self.currentKey isEqual: @"Search"]) {
+            ;
+        } else {
+            [self.dataCenter loadNextPageForKey:self.threadsInfo[self.currentKey] success:^(NSArray *topicList) {
+                self.topics = [topicList mutableCopy];
+                [self.tableView reloadData];
+            } failure:^(NSError *error) {
+                NSLog(@"fail to load more...");
+            }];
+        }
     }
 }
 
@@ -544,11 +550,44 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         [self.searchBar resignFirstResponder];
-    } else {
+    } else { // search topics
+        [self.searchBar resignFirstResponder];
+        _loadingFlag = YES;
+        self.scrollTabBar.enabled = NO;
+        S1HUD *HUD;
+        HUD = [S1HUD showHUDInView:self.view];
+        [HUD showActivityIndicator];
+        if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+            [self cancelRequest];
+            self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+        }
+        self.previousKey = self.currentKey;
+        self.currentKey = @"Search";
+        self.refreshControl.hidden = YES;
+        
         [self.dataCenter searchTopicsForKeyword:searchBar.text success:^(NSArray *topicList) {
-            NSLog(@"%@",topicList);
+            self.topics = [topicList mutableCopy];
+            [self.tableView reloadData];
+            if (self.topics && self.topics.count > 0) {
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            }
+            [self.scrollTabBar deselectAll];
+            self.scrollTabBar.enabled = YES;
+            [HUD hideWithDelay:0.3];
+            _loadingFlag = NO;
         } failure:^(NSError *error) {
-            ;
+            if (error.code == -999) {
+                NSLog(@"Code -999 may means user want to cancel this request.");
+                [HUD hideWithDelay:0];
+            } else {
+                [HUD setText:@"Request Failed" withWidthMultiplier:1];
+                [HUD hideWithDelay:0.3];
+            }
+            self.scrollTabBar.enabled = YES;
+            if (self.refreshControl.refreshing) {
+                [self.refreshControl endRefreshing];
+            }
+            _loadingFlag = NO;
         }];
     }
 }
