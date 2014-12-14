@@ -90,7 +90,7 @@
     [super viewDidLoad];
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [S1GlobalVariables color5];
+    self.view.backgroundColor = [S1Global color5];
     
     //web view
     self.webView.delegate = self;
@@ -99,14 +99,14 @@
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.opaque = NO;
-    self.webView.backgroundColor = [S1GlobalVariables color5];
+    self.webView.backgroundColor = [S1Global color5];
     
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.text = self.topic.title;
-    self.titleLabel.textColor = [S1GlobalVariables color3];
+    self.titleLabel.textColor = [S1Global color3];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -142,7 +142,7 @@
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-    self.pageLabel.textColor = [S1GlobalVariables color3];
+    self.pageLabel.textColor = [S1Global color3];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     self.pageLabel.userInteractionEnabled = YES;
@@ -339,7 +339,7 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1GlobalVariables color3]];
+            [controller.view setTintColor:[S1Global color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }];
         // Cancel Action
@@ -411,7 +411,7 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1GlobalVariables color3]];
+            [controller.view setTintColor:[S1Global color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }
     }
@@ -426,7 +426,7 @@
         _presentingWebViewer = YES;
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
-        [[controller view] setTintColor:[S1GlobalVariables color3]];
+        [[controller view] setTintColor:[S1Global color3]];
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
@@ -512,7 +512,7 @@
             _presentingWebViewer = YES;
             NSLog(@"%@", request.URL);
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[S1GlobalVariables color3]];
+            [[controller view] setTintColor:[S1Global color3]];
             //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:controller animated:YES completion:nil];
         }];

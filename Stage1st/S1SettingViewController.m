@@ -38,7 +38,7 @@
     
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
     
-    self.keepHistoryDetail.text = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+    self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     
     self.replySuffixSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     
@@ -49,7 +49,7 @@
     self.cacheUsageDetail.text = [NSString stringWithFormat:@"%.2f MB", [NSURLCache sharedURLCache].currentDiskUsage / (1024.0 * 1024.0)];
     
     
-    //[self.view setTintColor:[S1GlobalVariables color3]];
+    //[self.view setTintColor:[S1Global color3]];
     /*
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
     UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"SettingView_NavigationBar_Back", @"Back") style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
@@ -127,16 +127,16 @@
         [section addRow:^(GSRow *row) {
             [row setConfigurationBlock:^(UITableViewCell *cell) {
                 cell.textLabel.text = NSLocalizedString(@"SettingView_HistoryLimit", @"History Limit");
-                cell.detailTextLabel.text = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+                cell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
                 cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }];
             [row setEventHandlerBlock:^(UITableViewCell *cell) {
-                NSString *selectedKey = [S1GlobalVariables HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+                NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
                 GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:@[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")] andSelectedKey:selectedKey];
                 controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
                 [controller setCompletionHandler:^(NSString *key) {
-                    [[NSUserDefaults standardUserDefaults] setValue:[S1GlobalVariables HistoryLimitString2Number:key] forKey:@"HistoryLimit"];
+                    [[NSUserDefaults standardUserDefaults] setValue:[S1Global HistoryLimitString2Number:key] forKey:@"HistoryLimit"];
                 }];
                 [myself.navigationController pushViewController:controller animated:YES];
             }];

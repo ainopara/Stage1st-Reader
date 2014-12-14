@@ -6,9 +6,8 @@
 //  Copyright (c) 2014年 Renaissance. All rights reserved.
 //
 
-#import "S1GlobalVariables.h"
-//[S1GlobalVariables color]
-@implementation S1GlobalVariables
+#import "S1Global.h"
+@implementation S1Global
 +(UIColor *)color1{return [UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000];}
 +(UIColor *)color2{return [UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000];}
 +(UIColor *)color3{return [UIColor colorWithWhite:0.15 alpha:1.0];}

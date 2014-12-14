@@ -11,7 +11,7 @@
 #define IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
-@interface S1GlobalVariables : NSObject
+@interface S1Global : NSObject
 + (UIColor *)color1;
 + (UIColor *)color2;
 + (UIColor *)color3;

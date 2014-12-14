@@ -70,17 +70,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.dataCenter = [[S1DataCenter alloc] init];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [S1GlobalVariables color5];
+    self.view.backgroundColor = [S1Global color5];
     
     self.tableView.rowHeight = 54.0f;
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    self.tableView.separatorColor = [S1GlobalVariables color1];
-    self.tableView.backgroundColor = [S1GlobalVariables color5];
+    self.tableView.separatorColor = [S1Global color1];
+    self.tableView.backgroundColor = [S1Global color5];
     if (self.tableView.backgroundView) {
-        self.tableView.backgroundView.backgroundColor = [S1GlobalVariables color5];
+        self.tableView.backgroundView.backgroundColor = [S1Global color5];
     }
     self.tableView.hidden = YES;
     
@@ -88,9 +88,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
     self.searchBar.delegate = self;
     //self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-    self.searchBar.tintColor = [S1GlobalVariables color4];
-    self.searchBar.barTintColor = [S1GlobalVariables color5];
-    //[self.searchBar setSearchFieldBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+    self.searchBar.tintColor = [S1Global color4];
+    self.searchBar.barTintColor = [S1Global color5];
+    //[self.searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[S1Global color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
     UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
     gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
     [self.searchBar addGestureRecognizer:gestureRecognizer];
@@ -99,7 +99,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [S1GlobalVariables color8];
+    self.refreshControl.tintColor = [S1Global color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.navigationBar = [[UINavigationBar alloc] init];

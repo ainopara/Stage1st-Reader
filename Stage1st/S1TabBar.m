@@ -30,7 +30,7 @@
         _index = -1;
         _lastFrameWidth = 0;
         _enabled = YES;
-        self.backgroundColor = [S1GlobalVariables color3];
+        self.backgroundColor = [S1Global color3];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
         self.showsHorizontalScrollIndicator = NO;
@@ -75,12 +75,12 @@
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         //color2 color7
-        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color1]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1GlobalVariables imageWithColor:[S1GlobalVariables color10]] forState:UIControlStateHighlighted];
+        [btn setBackgroundImage:[S1Global imageWithColor:[S1Global color1]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[S1Global color10]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[S1Global color10]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
-        [btn setTitleColor:[S1GlobalVariables color3] forState:UIControlStateNormal];
+        [btn setTitleColor:[S1Global color3] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             btn.titleLabel.font = [UIFont systemFontOfSize:15.0];

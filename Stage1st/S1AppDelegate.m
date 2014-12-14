@@ -69,10 +69,10 @@
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
-    [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
-    [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
-    [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
+    [[UIToolbar appearance] setBarTintColor:[S1Global color1]];//color2
+    [[UIToolbar appearance] setTintColor:[S1Global color3]];
+    [[UINavigationBar appearance] setBarTintColor:[S1Global color1]];
+    [[UINavigationBar appearance] setTintColor:[S1Global color3]];
 
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
