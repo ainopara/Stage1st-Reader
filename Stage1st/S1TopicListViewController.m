@@ -500,15 +500,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
         [view setBackgroundColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:0.300]];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 320, 20)];
-        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.topicHeaderTitles objectAtIndex:section]];
         
-        [labelTitle addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:12.0] range:NSMakeRange(0, [labelTitle length])];
-        [labelTitle addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithRed:0.220 green:0.329 blue:0.529 alpha:1.000] range:NSMakeRange(0, [labelTitle length])];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 20)];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.topicHeaderTitles objectAtIndex:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [S1Global color4]}];
         [label setAttributedText:labelTitle];
-        
         label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
         
