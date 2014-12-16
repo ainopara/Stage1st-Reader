@@ -17,6 +17,7 @@
 @property (nonatomic, copy) NSDate *postTime;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, copy) NSString *poll;
+@property (nonatomic, copy) NSString *message;
 @property (nonatomic, copy) NSArray *imageAttachmentList;
 
 @end

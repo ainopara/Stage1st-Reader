@@ -188,7 +188,7 @@
     if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
-    NSLog(@"Content View did disappear");
+    //NSLog(@"Content View did disappear");
     [self cancelRequest];
     [self saveTopicViewedState:nil];
     self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
@@ -225,6 +225,7 @@
 - (void)back:(id)sender
 {
     [self cancelRequest];
+    _needToLoadLastPosition = NO;
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -236,6 +237,7 @@
 - (void)forward:(id)sender
 {
     [self cancelRequest];
+    _needToLoadLastPosition = NO;
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -255,6 +257,7 @@
         if (_currentPage > 1) {
             _currentPage = 1;
             [self cancelRequest];
+            _needToLoadLastPosition = NO;
             [self fetchContent];
         }
     }
@@ -266,6 +269,7 @@
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
             [self cancelRequest];
+            _needToLoadLastPosition = NO;
             [self fetchContent];
         }
     }
@@ -584,26 +588,28 @@
     [self updatePageLabel];
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
     [HUD showActivityIndicator];
+    __weak typeof(self) weakSelf = self;
     [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
+        __strong typeof(self) strongSelf = weakSelf;
         [aHUD hideWithDelay:0.0];
-        [self fetchContent];
+        [strongSelf fetchContent];
     }];
     
     // NSDate *start = [NSDate date];
-    __weak typeof(self) weakMe = self;
+    
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
         // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
         // NSLog(@"Finish Load:%f",-timeInterval);
-        __strong typeof(self) strongMe = weakMe;
-        [strongMe updatePageLabel];
-        [strongMe.webView loadHTMLString:contents baseURL:nil];
-        strongMe.titleLabel.text = self.topic.title;
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf updatePageLabel];
+        [strongSelf.webView loadHTMLString:contents baseURL:nil];
+        strongSelf.titleLabel.text = self.topic.title;
         _finishLoading = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (strongMe.topic.message == nil || [strongMe.topic.message isEqualToString:@""]) {
+            if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
                 [HUD hideWithDelay:0.3];
             } else {
-                [HUD setText:strongMe.topic.message withWidthMultiplier:3];
+                [HUD setText:strongSelf.topic.message withWidthMultiplier:3];
             }
         });
     } failure:^(NSError *error) {

@@ -144,7 +144,7 @@
     return favoriteTopics;
 }
 
-- (S1Topic *)tracedTopic:(NSNumber *)topicID
+- (S1Topic *)tracedTopicByID:(NSNumber *)topicID
 {
     FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;",topicID];
     if ([result next]) {

@@ -184,8 +184,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)archive:(id)sender
 {
-    NSDate *start = [NSDate date];
     [self.naviItem setRightBarButtonItems:@[]];
+    [self cancelRequest];
     if (!self.segControl) {
         self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
         [self.segControl setWidth:80 forSegmentAtIndex:0];
@@ -201,8 +201,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
     }
     self.naviItem.titleView = self.segControl;
-    NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-    NSLog(@"Finish present:%f",-timeInterval);
 }
 
 - (void)refresh:(id)sender
@@ -315,7 +313,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [HUD showActivityIndicator];
     }
     
-    //TODO weak self
+    //TODO: weak self
     [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
         if (topicList.count > 0) {

@@ -15,11 +15,10 @@
 
 
 @interface S1Parser()
-+ (NSString *)processImagesInHTMLString:(NSString *)HTMLString;
-+ (NSString *)translateDateTimeString:(NSDate *)dateTime;
 @end
 
 @implementation S1Parser
+# pragma mark - Process Data
 + (NSString *)processImagesInHTMLString:(NSString *)HTMLString
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
@@ -145,7 +144,7 @@
     return mutableContent;
 }
 
-#pragma mark - Basic Parsing and Page Generating
+#pragma mark - Page Parsing
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
 {
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
@@ -198,6 +197,54 @@
     }
     return topics;
 }
+
++ (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData {
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
+    NSMutableArray *topics = [NSMutableArray array];
+    
+    NSLog(@"Topic count: %lu",(unsigned long)[elements count]);
+    for (TFHppleElement *element in elements){
+        TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+        NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
+        
+        TFHppleElement *titlePart = [links firstObject];
+        NSString *titleString = [titlePart recursionText];
+        
+        NSString *URLString = [titlePart objectForKey:@"href"];
+        NSString *pattern = @".*tid=([0-9]+).*";
+        NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+        NSTextCheckingResult *result = [re firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
+        NSString *topicIDString = [URLString substringWithRange:[result rangeAtIndex:1]];
+        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+        
+        TFHppleElement *authorPart = [links objectAtIndex:1];
+        NSString *authorName = [authorPart text];
+        NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
+        NSNumber *authorUserID = [NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]];
+        
+        TFHppleElement *fidPart = [links objectAtIndex:2];
+        NSString *fidHref = [fidPart objectForKey:@"href"];
+        NSNumber *fid = [NSNumber numberWithInteger:[[[fidHref componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]];
+        
+        TFHppleElement *replyCountPart = [[xpathParserForRow searchWithXPathQuery:@"//p[@class='xg1']"] firstObject];
+        NSString *replyCountString = [[[replyCountPart text] componentsSeparatedByString:@" "] firstObject];
+        NSNumber *replyCount = [NSNumber numberWithInteger:[replyCountString integerValue]];
+        
+        
+        S1Topic *topic = [[S1Topic alloc] init];
+        [topic setTopicID:topicID];
+        [topic setTitle:titleString];
+        [topic setReplyCount:replyCount];
+        [topic setFID:fid];
+        [topic setAuthorUserID:authorUserID];
+        [topic setAuthorUserName:authorName];
+        [topics addObject:topic];
+    }
+    return topics;
+    
+}
+
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
@@ -275,52 +322,6 @@
     return floorList;
 }
 
-+ (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData {
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
-    NSMutableArray *topics = [NSMutableArray array];
-    
-    NSLog(@"Topic count: %lu",(unsigned long)[elements count]);
-    for (TFHppleElement *element in elements){
-        TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
-        NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
-        
-        TFHppleElement *titlePart = [links firstObject];
-        NSString *titleString = [titlePart recursionText];
-        
-        NSString *URLString = [titlePart objectForKey:@"href"];
-        NSString *pattern = @".*tid=([0-9]+).*";
-        NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-        NSTextCheckingResult *result = [re firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-        NSString *topicIDString = [URLString substringWithRange:[result rangeAtIndex:1]];
-        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
-        
-        TFHppleElement *authorPart = [links objectAtIndex:1];
-        NSString *authorName = [authorPart text];
-        NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
-        NSNumber *authorUserID = [NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]];
-        
-        TFHppleElement *fidPart = [links objectAtIndex:2];
-        NSString *fidHref = [fidPart objectForKey:@"href"];
-        NSNumber *fid = [NSNumber numberWithInteger:[[[fidHref componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]];
-        
-        TFHppleElement *replyCountPart = [[xpathParserForRow searchWithXPathQuery:@"//p[@class='xg1']"] firstObject];
-        NSString *replyCountString = [[[replyCountPart text] componentsSeparatedByString:@" "] firstObject];
-        NSNumber *replyCount = [NSNumber numberWithInteger:[replyCountString integerValue]];
-        
-        
-        S1Topic *topic = [[S1Topic alloc] init];
-        [topic setTopicID:topicID];
-        [topic setTitle:titleString];
-        [topic setReplyCount:replyCount];
-        [topic setFID:fid];
-        [topic setAuthorUserID:authorUserID];
-        [topic setAuthorUserName:authorName];
-        [topics addObject:topic];
-    }
-    return topics;
-    
-}
 
 
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict {
@@ -348,6 +349,10 @@
     return floorList;
 }
 
+
+
+
+#pragma mark - Page Generating
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic
 {
     NSString *finalString = [[NSString alloc] init];
@@ -365,7 +370,7 @@
         }
         
         //process time
-        NSString *floorPostTime = [self translateDateTimeString:topicFloor.postTime];
+        NSString *floorPostTime = [S1Parser translateDateTimeString:topicFloor.postTime];
         
         //process reply Button
         NSString *replyLinkString = @"";
@@ -437,6 +442,53 @@
 }
 
 #pragma mark - Pick Information
+
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData andPage:(NSNumber *)page{
+    S1Topic *topic = [[S1Topic alloc] init];
+    //update title
+    NSString *title = [S1Parser topicTitleFromPage:rawData];
+    if (title != nil) {
+        topic.title = title;
+    }
+    
+    //pick message
+    topic.message = [S1Parser messageFromPage:rawData];
+    
+    // get formhash
+    NSString* HTMLString = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
+    [topic setFormhash:[S1Parser formhashFromPage:HTMLString]];
+    
+    //set reply count
+    if ([page isEqualToNumber:@1]) {
+        NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
+        if (parsedReplyCount != 0) {
+            [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
+        }
+    }
+    
+    // update total page
+    NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
+    if (parsedTotalPages != 0) {
+        [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
+    }
+    return topic;
+}
+
++ (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict {
+    S1Topic *topic = [[S1Topic alloc] init];
+    //Update Topic
+    topic.title = responseDict[@"Variables"][@"thread"][@"subject"];
+    topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];
+    topic.authorUserName = responseDict[@"Variables"][@"thread"][@"author"];
+    topic.formhash = responseDict[@"Variables"][@"formhash"];
+    topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
+    double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
+    topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
+    topic.message = responseDict[@"Message"][@"messagestr"];
+    return topic;
+}
+
+
 + (NSString *)formhashFromPage:(NSString *)HTMLString
 {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
@@ -489,6 +541,26 @@
     return infoDict;
 }
 
++ (NSString *)topicTitleFromPage:(NSData *)rawData {
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//span[@id='thread_subject']"] firstObject];
+    if (element) {
+        return [element text];
+    }
+    return nil;
+    
+}
+
++ (NSString *)messageFromPage:(NSData *)rawData {
+    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//div[@id='messagetext']/p"] firstObject];
+    if (element) {
+        return [element text];
+    }
+    return nil;
+    
+}
+
 #pragma mark - Checking
 
 + (NSString *)loginUserName:(NSString *)HTMLString
@@ -518,24 +590,6 @@
     return [NSNumber numberWithInteger:[topicIDString integerValue]];
 }
 
-+ (NSString *)extractTopicTitle:(NSData *)rawData {
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//span[@id='thread_subject']"] firstObject];
-    if (element) {
-        return [element text];
-    }
-    return nil;
-    
-}
 
-+ (NSString *)extractMessage:(NSData *)rawData {
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//div[@id='messagetext']/p"] firstObject];
-    if (element) {
-        return [element text];
-    }
-    return nil;
-    
-}
 
 @end

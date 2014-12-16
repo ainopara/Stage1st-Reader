@@ -63,4 +63,29 @@
     self.visitCount = topic.visitCount;
     self.favorite = topic.favorite;
 }
+
+- (void)updateFromTopic:(S1Topic *)topic {
+    if (topic.title != nil) {
+        self.title = topic.title;
+    }
+    if (topic.replyCount != nil) {
+        self.replyCount = topic.replyCount;
+    }
+    if (topic.totalPageCount != nil) {
+        self.totalPageCount = topic.totalPageCount;
+    }
+    if (topic.authorUserID != nil) {
+        self.authorUserID = topic.authorUserID;
+    }
+    if (topic.authorUserName != nil) {
+        self.authorUserName = topic.authorUserName;
+    }
+    if (topic.formhash != nil) {
+        self.formhash = topic.formhash;
+    }
+    if (topic.message != nil) {
+        self.message = topic.message;
+    }
+}
+
 @end

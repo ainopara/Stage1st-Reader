@@ -22,12 +22,11 @@
 //To generate content page
 @property (nonatomic, copy) NSNumber *authorUserID;
 
-//For Search
-@property (nonatomic, copy) NSNumber *fID;
-@property (nonatomic, copy) NSString *authorUserName;
 //Used to update page count in content view
 @property (nonatomic, copy) NSNumber *totalPageCount;
 //Not Used
+@property (nonatomic, copy) NSNumber *fID;
+@property (nonatomic, copy) NSString *authorUserName;
 @property (nonatomic, copy) NSNumber *visitCount;
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
@@ -39,4 +38,5 @@
 @property (nonatomic, copy) NSString *message;
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic;
+- (void)updateFromTopic:(S1Topic *)topic;
 @end

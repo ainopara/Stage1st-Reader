@@ -48,4 +48,6 @@
 - (void)cancelRequest;
 
 - (void)clearTopicListCache;
+
+- (void)clearContentPageCache;
 @end
