@@ -491,6 +491,7 @@
 				C095873116CA8A36007E0119 /* Frameworks */,
 				C095873216CA8A36007E0119 /* Resources */,
 				5ADE05C1571C4EE3A1FB1506 /* Copy Pods Resources */,
+				869C80141A41D78900D5E218 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -572,6 +573,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		869C80141A41D78900D5E218 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "REV=`git rev-list develop | wc -l | awk '{print $1}'`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion ${REV}\" \"${TARGET_BUILD_DIR}\"/${INFOPLIST_PATH}";
 		};
 		F515F879F9444AD48B7C0E01 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

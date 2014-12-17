@@ -45,7 +45,7 @@
     self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     
-    self.versionDetail.text = [NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
     self.cacheUsageDetail.text = [NSString stringWithFormat:@"%.2f MB", [NSURLCache sharedURLCache].currentDiskUsage / (1024.0 * 1024.0)];
     
     
