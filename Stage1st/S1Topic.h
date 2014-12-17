@@ -39,4 +39,5 @@
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic;
 - (void)updateFromTopic:(S1Topic *)topic;
+- (BOOL)absorbTopic:(S1Topic *)topic;
 @end

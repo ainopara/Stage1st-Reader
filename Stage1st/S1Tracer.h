@@ -32,6 +32,8 @@ typedef enum {
 - (BOOL)topicIsFavorited:(NSNumber *)topic_id;
 - (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
+- (BOOL)syncWithDatabasePath:(NSString *)databasePath;
+
 + (void)upgradeDatabase;
 
 @end

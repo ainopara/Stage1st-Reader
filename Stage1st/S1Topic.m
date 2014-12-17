@@ -88,4 +88,21 @@
     }
 }
 
+- (BOOL)absorbTopic:(S1Topic *)topic {
+    if ([topic.topicID isEqualToNumber:self.topicID]) {
+        if ([topic.lastViewedDate timeIntervalSince1970] > [self.lastViewedDate timeIntervalSince1970]) {
+            self.title = topic.title;
+            self.replyCount = topic.replyCount;
+            self.fID = topic.fID;
+            self.lastViewedDate = topic.lastViewedDate;
+            self.lastViewedPage = topic.lastViewedPage;
+            self.lastViewedPosition = topic.lastViewedPosition;
+            self.visitCount = [self.visitCount integerValue] > [topic.visitCount integerValue] ? self.visitCount : topic.visitCount;
+            return YES;
+        }
+    }
+    return NO;
+    
+}
+
 @end
