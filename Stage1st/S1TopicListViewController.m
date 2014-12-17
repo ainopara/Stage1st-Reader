@@ -355,33 +355,45 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.searchBar setHidden: ([self.dataCenter canMakeSearchRequest] == NO)];
         _loadingFlag = NO;
     } failure:^(NSError *error) {
-        //reload data
-        if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-            self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-        }
-        self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
-        self.currentKey = key;
-        if (![key isEqualToString:self.previousKey]) {
-            self.topics = [[NSMutableArray alloc] init];
-            [self.tableView reloadData];
-        }
-        //hud hide
-        if (refresh || ![self.dataCenter hasCacheForKey:key]) {
-            if (error.code == -999) {
-                NSLog(@"Code -999 may means user want to cancel this request.");
-                [HUD hideWithDelay:0];
-            } else {
-                [HUD setText:@"Request Failed" withWidthMultiplier:1];
-                [HUD hideWithDelay:0.3];
+        if (error.code == -999) {
+            NSLog(@"Code -999 may means user want to cancel this request.");
+            [HUD hideWithDelay:0];
+            //others
+            self.scrollTabBar.enabled = YES;
+            if (self.refreshControl.refreshing) {
+                [self.refreshControl endRefreshing];
             }
+            _loadingFlag = NO;
+        } else {
+            //reload data
+            if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+                self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+            }
+            self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
+            self.currentKey = key;
+            if (![key isEqualToString:self.previousKey]) {
+                self.topics = [[NSMutableArray alloc] init];
+                [self.tableView reloadData];
+            }
+            //hud hide
+            if (refresh || ![self.dataCenter hasCacheForKey:key]) {
+                if (error.code == -999) {
+                    NSLog(@"Code -999 may means user want to cancel this request.");
+                    [HUD hideWithDelay:0];
+                } else {
+                    [HUD setText:@"Request Failed" withWidthMultiplier:1];
+                    [HUD hideWithDelay:0.3];
+                }
+            }
+            
+            //others
+            self.scrollTabBar.enabled = YES;
+            if (self.refreshControl.refreshing) {
+                [self.refreshControl endRefreshing];
+            }
+            _loadingFlag = NO;
         }
         
-        //others
-        self.scrollTabBar.enabled = YES;
-        if (self.refreshControl.refreshing) {
-            [self.refreshControl endRefreshing];
-        }
-        _loadingFlag = NO;
     }];
 }
 
