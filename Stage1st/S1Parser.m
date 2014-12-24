@@ -12,6 +12,7 @@
 #import "TFHpple.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
+#import "GTMNSString+HTML.h"
 
 
 @interface S1Parser()
@@ -187,7 +188,7 @@
     for (NSDictionary *rawTopic in rawTopicList) {
         S1Topic *topic = [[S1Topic alloc] init];
         topic.topicID = [NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]];
-        topic.title = rawTopic[@"subject"];
+        topic.title = [(NSString *)rawTopic[@"subject"] gtm_stringByUnescapingFromHTML];
         topic.replyCount = [NSNumber numberWithInteger:[rawTopic[@"replies"] integerValue]];
         topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
         topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
@@ -477,7 +478,7 @@
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict {
     S1Topic *topic = [[S1Topic alloc] init];
     //Update Topic
-    topic.title = responseDict[@"Variables"][@"thread"][@"subject"];
+    topic.title = [(NSString *)responseDict[@"Variables"][@"thread"][@"subject"] gtm_stringByUnescapingFromHTML];
     topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];
     topic.authorUserName = responseDict[@"Variables"][@"thread"][@"author"];
     topic.formhash = responseDict[@"Variables"][@"formhash"];
