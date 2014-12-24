@@ -48,7 +48,7 @@ typedef enum {
 {
     _text = text;
     [self removeSubviews];
-    self.bounds = CGRectMake(0, 0, 120 * n, 60);
+    self.bounds = CGRectMake(0, 0, 60 * n, 60);
     _state = S1HUDStateShowText;
     [self setNeedsDisplay];
 }

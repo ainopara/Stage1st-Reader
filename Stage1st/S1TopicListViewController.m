@@ -381,7 +381,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                     NSLog(@"Code -999 may means user want to cancel this request.");
                     [HUD hideWithDelay:0];
                 } else {
-                    [HUD setText:@"Request Failed" withWidthMultiplier:1];
+                    [HUD setText:@"Request Failed" withWidthMultiplier:2];
                     [HUD hideWithDelay:0.3];
                 }
             }
@@ -587,7 +587,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 NSLog(@"Code -999 may means user want to cancel this request.");
                 [HUD hideWithDelay:0];
             } else {
-                [HUD setText:@"Request Failed" withWidthMultiplier:1];
+                [HUD setText:@"Request Failed" withWidthMultiplier:2];
                 [HUD hideWithDelay:0.3];
             }
             self.scrollTabBar.enabled = YES;

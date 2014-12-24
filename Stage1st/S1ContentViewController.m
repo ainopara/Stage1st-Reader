@@ -609,7 +609,7 @@
             if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
                 [HUD hideWithDelay:0.3];
             } else {
-                [HUD setText:strongSelf.topic.message withWidthMultiplier:3];
+                [HUD setText:strongSelf.topic.message withWidthMultiplier:5];
             }
         });
     } failure:^(NSError *error) {
