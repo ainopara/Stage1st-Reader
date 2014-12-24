@@ -83,7 +83,7 @@
         return nil;
     }
     NSMutableString *mutableContent = [content mutableCopy];
-    NSString *tailPattern = @"(\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|    —— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*(<br ?/><a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?";
+    NSString *tailPattern = @"((\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|    —— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*)?(<br ?/><a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:tailPattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@""];
     return mutableContent;
