@@ -211,22 +211,16 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="aUI-B0-MIH" detailTextLabel="2BC-Ge-ZfK" style="IBUITableViewCellStyleValue1" id="8fl-Iu-Ie1">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="aUI-B0-MIH" style="IBUITableViewCellStyleDefault" id="8fl-Iu-Ie1">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8fl-Iu-Ie1" id="sha-qR-nvq">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aUI-B0-MIH">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Import / Export" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aUI-B0-MIH">
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2BC-Ge-ZfK">
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -293,7 +287,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="cacheUsageDetail" destination="2BC-Ge-ZfK" id="9rO-Px-aAV"/>
                         <outlet property="displayImageSwitch" destination="bCf-k2-mDk" id="Jg2-0m-1dg"/>
                         <outlet property="fontSizeDetail" destination="MDi-8t-5qr" id="Lgf-wT-G5d"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>

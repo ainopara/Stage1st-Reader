@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSNumber *replyCount;
 @property (nonatomic, copy) NSNumber *lastReplyCount;
 @property (nonatomic, copy) NSNumber *favorite;
+@property (nonatomic, copy) NSNumber *history;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
 @property (nonatomic, copy) NSString *highlight;

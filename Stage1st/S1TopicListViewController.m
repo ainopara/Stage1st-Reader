@@ -675,4 +675,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     
 }
 
+- (void)handleDatabaseImport:(NSURL *)databaseURL {
+    [self.dataCenter handleDatabaseImport:databaseURL];
+}
 @end

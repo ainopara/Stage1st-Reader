@@ -7,6 +7,8 @@
 //
 
 #import "S1SettingViewController.h"
+#import "S1TopicListViewController.h"
+#import "S1DatabaseManageViewController.h"
 
 @interface S1SettingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
@@ -17,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
-@property (weak, nonatomic) IBOutlet UILabel *cacheUsageDetail;
+
 
 @end
 
@@ -46,7 +48,7 @@
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     
     self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
-    self.cacheUsageDetail.text = [NSString stringWithFormat:@"%.2f MB", [NSURLCache sharedURLCache].currentDiskUsage / (1024.0 * 1024.0)];
+
     
     
     //[self.view setTintColor:[S1Global color3]];
@@ -216,6 +218,11 @@
 }
 #pragma mark -
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"%@", indexPath);
+    if (indexPath.section == 0 && indexPath.row == 8) {
+        S1DatabaseManageViewController *databaseManageViewController = [[S1DatabaseManageViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        [self.navigationController pushViewController:databaseManageViewController animated:YES];
+    }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 #pragma mark -

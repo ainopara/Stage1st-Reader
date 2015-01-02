@@ -109,4 +109,22 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    NSLog(@"%@ from %@", url, sourceApplication);
+    
+    //Open Specific Topic Case
+    
+    //Import Database Case
+    if ([[url absoluteString] hasSuffix:@".s1db"]) {
+        id rootvc = [(UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController] topViewController];
+        if ([rootvc isKindOfClass:[S1TopicListViewController class]]) {
+            S1TopicListViewController *tlvc = rootvc;
+            [tlvc handleDatabaseImport:url];
+        }
+    }
+    
+    
+    return YES;
+}
+
 @end

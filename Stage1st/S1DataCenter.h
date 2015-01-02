@@ -44,6 +44,8 @@
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID;
 
+- (void)handleDatabaseImport:(NSURL *)databaseURL;
+
 //About Network
 - (void)cancelRequest;
 

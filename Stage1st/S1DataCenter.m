@@ -336,6 +336,10 @@
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
     return [self.tracer tracedTopicByID:topicID];
 }
+
+- (void)handleDatabaseImport:(NSURL *)databaseURL {
+    [self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
+}
 #pragma mark - Cache
 - (void)clearTopicListCache {
     //self.topicListCache = [[NSMutableDictionary alloc] init];

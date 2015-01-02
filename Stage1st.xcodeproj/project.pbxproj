@@ -20,6 +20,7 @@
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
+		864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		867C7F5B1899420D00DF55E8 /* DEComposeRuledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
@@ -36,6 +37,7 @@
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
 		869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF131A18839900EB2BF4 /* S1PopAnimator.m */; };
+		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
@@ -94,6 +96,8 @@
 		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
 		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
 		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
+		864B128A1A4F9C4200247F72 /* S1DatabaseListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseListCell.h; path = Stage1st/S1DatabaseListCell.h; sourceTree = "<group>"; };
+		864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseListCell.m; path = Stage1st/S1DatabaseListCell.m; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		867C7F4E1899420D00DF55E8 /* DEComposeRuledView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeRuledView.h; sourceTree = "<group>"; };
 		867C7F4F1899420D00DF55E8 /* DEComposeRuledView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeRuledView.m; sourceTree = "<group>"; };
@@ -121,6 +125,8 @@
 		869CAF121A18839900EB2BF4 /* S1PopAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PopAnimator.h; path = Stage1st/S1PopAnimator.h; sourceTree = "<group>"; };
 		869CAF131A18839900EB2BF4 /* S1PopAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PopAnimator.m; path = Stage1st/S1PopAnimator.m; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseManageViewController.h; path = Stage1st/S1DatabaseManageViewController.h; sourceTree = "<group>"; };
+		86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseManageViewController.m; path = Stage1st/S1DatabaseManageViewController.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
@@ -229,6 +235,32 @@
 				862F51BC189136000038A289 /* XPathQuery.m */,
 			);
 			name = TFHpple;
+			sourceTree = "<group>";
+		};
+		864B128D1A4FC4E000247F72 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
+				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
+				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
+				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
+				864B128A1A4F9C4200247F72 /* S1DatabaseListCell.h */,
+				864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		864B128E1A4FC4EF00247F72 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
+				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
+				869CAF121A18839900EB2BF4 /* S1PopAnimator.h */,
+				869CAF131A18839900EB2BF4 /* S1PopAnimator.m */,
+				8627EAAF1A204EF80063617C /* S1PushAnimator.h */,
+				8627EAB01A204EF80063617C /* S1PushAnimator.m */,
+			);
+			name = Animation;
 			sourceTree = "<group>";
 		};
 		867C7F4D1899420D00DF55E8 /* REComposeViewController */ = {
@@ -405,20 +437,12 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
-				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
-				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
-				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
+				864B128E1A4FC4EF00247F72 /* Animation */,
+				864B128D1A4FC4E000247F72 /* Cells */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
-				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
-				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
-				869CAF121A18839900EB2BF4 /* S1PopAnimator.h */,
-				869CAF131A18839900EB2BF4 /* S1PopAnimator.m */,
-				8627EAAF1A204EF80063617C /* S1PushAnimator.h */,
-				8627EAB01A204EF80063617C /* S1PushAnimator.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -465,6 +489,8 @@
 				C083353916E503F60035C1AA /* S1LoginViewController.m */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
+				86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */,
+				86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -629,6 +655,7 @@
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
+				86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */,
 				869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
@@ -647,6 +674,7 @@
 				867C7F5B1899420D00DF55E8 /* DEComposeRuledView.m in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
+				864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
