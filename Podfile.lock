@@ -30,6 +30,7 @@ PODS:
   - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.4)
   - KissXML (5.0)
+  - KMCGeigerCounter (0.2.0)
   - pop (1.0.7)
   - SVWebViewController (1.0)
 
@@ -41,6 +42,7 @@ DEPENDENCIES:
   - IMQuickSearch
   - JTSImageViewController
   - KissXML (~> 5.0)
+  - KMCGeigerCounter
   - pop
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
@@ -56,6 +58,7 @@ SPEC CHECKSUMS:
   IMQuickSearch: b032f2916aebf84ef84dd44ff022218498319906
   JTSImageViewController: 9fe6402194b7679f0e28d0c1002d6164301fc34a
   KissXML: e537c38b18ede903ee6de45953a9bd86c131ebe9
+  KMCGeigerCounter: 52e8f442f82e7750870d6b48e05f68086bbe0d8c
   pop: 2f14a1ea61339767af9e66741b418c831b3844df
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca
 

@@ -10,6 +10,7 @@
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"
+#import "KMCGeigerCounter.h"
 
 @implementation S1AppDelegate
 
@@ -76,7 +77,7 @@
 
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
-    
+    //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
     return YES;
 }
 

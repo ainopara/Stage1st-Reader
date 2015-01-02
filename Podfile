@@ -11,5 +11,6 @@ target "Stage1st" do
     pod '1PasswordExtension', '~> 1.0.0'
     pod 'IMQuickSearch'
     pod 'pop'
+    pod 'KMCGeigerCounter'
 end
 
