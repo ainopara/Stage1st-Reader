@@ -193,8 +193,18 @@
         topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
         topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
         topic.authorUserName = rawTopic[@"author"];
-        
-        [topics addObject:topic];
+        BOOL isStickThread = NO;
+        for (NSInteger i = [rawTopicList indexOfObject:rawTopic]; i< rawTopicList.count; i++) {
+            NSDictionary *theTopic = [rawTopicList objectAtIndex:i];
+            if ([rawTopic[@"dblastpost"] integerValue] < [theTopic[@"dblastpost"] integerValue]) {
+                isStickThread = YES;
+                //NSLog(@"remove stick subject:%@", topic.title);
+                break;
+            }
+        }
+        if (isStickThread == NO) {
+            [topics addObject:topic];
+        }
     }
     return topics;
 }
