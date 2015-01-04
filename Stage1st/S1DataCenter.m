@@ -351,6 +351,7 @@
 }
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
+    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
     for (S1Topic *topic in topics) {
         
         //append tracer message to topics
@@ -358,26 +359,31 @@
         if (tempTopic) {
             [topic addDataFromTracedTopic:tempTopic];
         }
-        
+        BOOL topicIsDuplicated = NO;
         // remove duplicate topics
         if ([page integerValue] > 1) {
             for (S1Topic *compareTopic in self.topicListCache[keyID]) {
                 if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
                     NSLog(@"Remove duplicate topic: %@", topic.title);
-                    [self.topicListCache[keyID] removeObject:compareTopic];
+                    NSInteger index = [self.topicListCache[keyID] indexOfObject:compareTopic];
+                    [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:topic];
+                    topicIsDuplicated = YES;
                     break;
                 }
             }
+        }
+        if (!topicIsDuplicated) {
+            [processedTopics addObject:topic];
         }
         
     }
     
     if (topics.count > 0) {
         if ([page isEqualToNumber:@1]) {
-            self.topicListCache[keyID] = topics;
+            self.topicListCache[keyID] = processedTopics;
             self.topicListCachePageNumber[keyID] = @1;
         } else {
-            self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:topics] mutableCopy];
+            self.topicListCache[keyID] = [[self.topicListCache[keyID] arrayByAddingObjectsFromArray:processedTopics] mutableCopy];
             self.topicListCachePageNumber[keyID] = page;
         }
     } else {
