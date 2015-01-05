@@ -92,8 +92,8 @@
         [self addSubview:btn];
         
     }];
-    
-    //self.contentSize = CGSizeMake(width, self.bounds.size.height);
+    //update content size when user change keys in settings.
+    self.contentSize = CGSizeMake(width, self.bounds.size.height);
 }
 
 #pragma mark - Scroll View Delegate
