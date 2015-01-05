@@ -330,6 +330,10 @@ static NSString * const cellIdentifier = @"TopicCell";
             } else {
                 [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
             }
+            //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+            if (self.tableView.contentOffset.y < 0) {
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            }
             
         } else {
             if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
