@@ -134,14 +134,31 @@
     return [formatter stringFromDate:date];
 }
 
-+ (NSString *)preprocessAPIcontent:(NSString *)content {
++ (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
     NSMutableString *mutableContent = [content mutableCopy];
     NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p>";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote>"];
-    NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>(\\[attach\\][\\d]*\\[/attach\\])?";
+    NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>";
     re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
+    NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
+    re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        if (result != nil && attachments != nil) {
+            NSRange range = [result rangeAtIndex:1];
+            NSString *attachmentID = [mutableContent substringWithRange:range];
+            for (NSNumber *attachmentKey in [attachments allKeys]) {
+                if ([attachmentKey integerValue] == [attachmentID integerValue]) {
+                    NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
+                    NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
+                    [mutableContent replaceCharactersInRange:[result rangeAtIndex:0] withString:imageNode];
+                    [attachments removeObjectForKey:attachmentKey];
+                    break;
+                }
+            }
+        }
+    }];
     return mutableContent;
 }
 
@@ -340,16 +357,20 @@
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
     for (NSDictionary *rawFloor in rawFloorList) {
         S1Floor *floor = [[S1Floor alloc] init];
+        NSMutableDictionary *attachments = nil;
+        if ([rawFloor valueForKey:@"attachments"]!= nil) {
+            attachments = [rawFloor[@"attachments"] mutableCopy];
+        }
         floor.floorID = rawFloor[@"pid"];
         floor.author = rawFloor[@"author"];
         floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
         floor.indexMark = rawFloor[@"number"];
         floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
-        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]]];
-        if ([rawFloor valueForKey:@"attachments"]!= nil) {
+        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]] withAttachments:attachments];
+        if (attachments != nil && [attachments count] > 0) {
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
-            for (NSNumber *attachmentKey in [rawFloor[@"attachments"] allKeys]) {
-                NSString *imageURL = [rawFloor[@"attachments"][attachmentKey][@"url"] stringByAppendingString:rawFloor[@"attachments"][attachmentKey][@"attachment"]];
+            for (NSNumber *attachmentKey in [attachments allKeys]) {
+                NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
                 NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
                 [imageAttachmentList addObject:imageNode];
             }
