@@ -35,9 +35,6 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AppendSuffix"];
-    }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }

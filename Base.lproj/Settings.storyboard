@@ -133,32 +133,6 @@
                                             <segue destination="bUe-CX-CDP" kind="show" identifier="Keep History Segue" id="aW6-S8-VQt"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="hog-I5-cpx">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hog-I5-cpx" id="Od3-Fo-v3w">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NQ1-VC-bTp">
-                                                    <rect key="frame" x="531" y="7" width="51" height="31"/>
-                                                    <connections>
-                                                        <action selector="switchReplySuffix:" destination="Z9I-YZ-q2k" eventType="valueChanged" id="5yh-I7-5MO"/>
-                                                    </connections>
-                                                </switch>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Reply Suffix" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VG4-xI-j52">
-                                                    <rect key="frame" x="15" y="12" width="87" height="20"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="NQ1-VC-bTp" firstAttribute="trailing" secondItem="Od3-Fo-v3w" secondAttribute="trailingMargin" constant="-12" id="G8H-0h-rou"/>
-                                                <constraint firstItem="NQ1-VC-bTp" firstAttribute="top" secondItem="Od3-Fo-v3w" secondAttribute="topMargin" constant="-1" id="aAr-55-jo2"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="NQ1-VC-bTp" secondAttribute="bottom" constant="-2" id="hAk-wK-A7i"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="Ycc-ze-Cji">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
@@ -291,7 +265,6 @@
                         <outlet property="fontSizeDetail" destination="MDi-8t-5qr" id="Lgf-wT-G5d"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>
                         <outlet property="replyIncrementSwitch" destination="NjD-eD-vbp" id="wZo-Jv-odG"/>
-                        <outlet property="replySuffixSwitch" destination="NQ1-VC-bTp" id="mCi-Qq-X3v"/>
                         <outlet property="useAPISwitch" destination="BuD-0p-Vi4" id="2d8-oP-fWN"/>
                         <outlet property="usernameDetail" destination="nZs-MV-DJo" id="0ph-I0-JDx"/>
                         <outlet property="versionDetail" destination="8dV-mn-myv" id="Azo-55-gVa"/>

@@ -223,10 +223,7 @@
         if ([params[@"requestSuccess"]  isEqual: @YES]) {
             [params removeObjectForKey:@"requestSuccess"];
             [params setObject:@"true" forKey:@"replysubmit"];
-            BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
-            NSString *suffix = appendSuffix ? @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader[/url]" : @"";
-            NSString *replyWithSuffix = [text stringByAppendingString:suffix];
-            [params setObject:replyWithSuffix forKey:@"message"];
+            [params setObject:text forKey:@"message"];
             [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
                 success();
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -244,14 +241,11 @@
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *))failure {
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-    BOOL appendSuffix = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
-    NSString *suffix = appendSuffix ? @"\n\n——— 来自[url=http://itunes.apple.com/us/app/stage1st-reader/id509916119?mt=8]Stage1st Reader[/url]" : @"";
-    NSString *replyWithSuffix = [text stringByAppendingString:suffix];
     NSDictionary *params = @{@"posttime":timestamp,
                              @"formhash":topic.formhash,
                              @"usesig":@"1",
                              @"subject":@"",
-                             @"message":replyWithSuffix};
+                             @"message":text};
     [S1NetworkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
         success();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {

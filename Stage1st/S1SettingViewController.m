@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *keepHistoryDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *replySuffixSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
@@ -41,8 +40,6 @@
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
     
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-    
-    self.replySuffixSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppendSuffix"];
     
     self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
@@ -234,10 +231,6 @@
 
 - (IBAction)switchDisplayImage:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"Display"];
-}
-
-- (IBAction)switchReplySuffix:(UISwitch *)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"AppendSuffix"];
 }
 
 - (IBAction)switchReplyIncrement:(UISwitch *)sender {
