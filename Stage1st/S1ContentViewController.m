@@ -316,6 +316,9 @@
         // Favorite Action
         UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+            S1HUD *HUD = [S1HUD showHUDInView:self.view];
+            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD hideWithDelay:0.3];
         }];
         // Weibo Action
         UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -386,6 +389,9 @@
         // Favorite
         if (1 == buttonIndex) {
             [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+            S1HUD *HUD = [S1HUD showHUDInView:self.view];
+            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD hideWithDelay:0.3];
         }
         
         // Weibo
