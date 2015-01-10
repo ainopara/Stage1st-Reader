@@ -136,12 +136,19 @@
 
 + (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
     NSMutableString *mutableContent = [content mutableCopy];
+    //process message
+    NSString *preprocessMessagePattern = @"提示: <em>(.*?)</em>";
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessMessagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<div class=\"s1-alert\">$1</div>"];
+    //process quote string
     NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote>"];
+    //process imgwidth issue
     NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>";
     re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
+    //process embeded image attachments
     NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
     re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
@@ -159,6 +166,7 @@
             }
         }
     }];
+    
     return mutableContent;
 }
 
@@ -367,6 +375,7 @@
         floor.indexMark = rawFloor[@"number"];
         floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
         floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]] withAttachments:attachments];
+        //process attachments left.
         if (attachments != nil && [attachments count] > 0) {
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
             for (NSNumber *attachmentKey in [attachments allKeys]) {
