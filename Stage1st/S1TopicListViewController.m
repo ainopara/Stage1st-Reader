@@ -147,6 +147,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)dealloc
 {
+    NSLog(@"Topic List View Dealloced.");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1ContentViewWillDisappearNotification" object:nil];
 }

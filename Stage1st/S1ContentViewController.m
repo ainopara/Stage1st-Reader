@@ -33,7 +33,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
-@property (nonatomic, strong) REComposeViewController *replyController;
+@property (nonatomic, strong) NSString *replyDraft;
 
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 @end
@@ -201,6 +201,9 @@
     [super viewDidDisappear:animated];
 }
 
+- (void)dealloc {
+    NSLog(@"Content View Dealloced: %@", self.topic.title);
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -647,14 +650,13 @@
     //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
     
     NSString *replyDraft;
-    if (self.replyController) {
-        replyDraft = [self.replyController.text stringByAppendingString:text? text : @""];
+    if (self.replyDraft) {
+        replyDraft = [self.replyDraft stringByAppendingString:text? text : @""];
     } else {
         replyDraft = text? text : @"";
     }
     
-    self.replyController = [[REComposeViewController alloc] init];
-    REComposeViewController *replyController = self.replyController;
+    REComposeViewController *replyController = [[REComposeViewController alloc] init];
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
@@ -673,7 +675,7 @@
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                         
-                        [strongMyself.replyController setText:@""];
+                        strongMyself.replyDraft = @"";
                         if (strongMyself->_currentPage == strongMyself->_totalPages) {
                             strongMyself->_needToScrollToBottom = YES;
                             [strongMyself fetchContent];
@@ -691,7 +693,7 @@
                     [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                         [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        [strongMyself.replyController setText:@""];
+                        strongMyself.replyDraft = @"";
                         if (strongMyself->_currentPage == strongMyself->_totalPages) {
                             strongMyself->_needToScrollToBottom = YES;
                             [strongMyself fetchContent];
@@ -711,9 +713,9 @@
         }
     }];
     
-    [self.replyController setText:[self.replyController.text stringByAppendingString:replyDraft]];
-    [self.replyController.view setFrame:self.view.bounds];
-    [self.replyController presentFromViewController:self];
+    [replyController setText:[replyController.text stringByAppendingString:replyDraft]];
+    [replyController.view setFrame:self.view.bounds];
+    [replyController presentFromViewController:self];
 }
 
 #pragma mark - Helpers
