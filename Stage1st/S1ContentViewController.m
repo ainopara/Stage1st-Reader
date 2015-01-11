@@ -105,8 +105,9 @@
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.text = self.topic.title;
-    self.titleLabel.textColor = [S1Global color3];
+    self.titleLabel.textColor = [S1Global color4];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
