@@ -16,7 +16,6 @@
 
 "ContentView_Reply_Title" = "回复";
 "ContentView_Reply_Need_Login_Message" = "请先获取登录状态";
-"ContentView_Need_Weibo_Service_Support_Message" = "需要6.0以上的系统才能使用";
 "ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "需要启用中文键盘才能使用";
 "Message_OK" = "完成";
 
@@ -26,6 +25,7 @@
 "TopicListView_ListHeader_Style" = "yyyy年M月d日";
 "TopicListView_ListHeader_Short_Style" = "M月d日";
 "TopicListView_ListHeader_Today" = "（今天）";
+"TopicListView_SearchBar_Hint" = "搜索";
 
 "SettingView_NavigationBar_Title" = "设置";
 "SettingView_NavigationBar_Back" = "返回";

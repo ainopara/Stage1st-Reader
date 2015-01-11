@@ -16,7 +16,6 @@
 
 "ContentView_Reply_Title" = "Reply";
 "ContentView_Reply_Need_Login_Message" = "Please Login in Settings";
-"ContentView_Need_Weibo_Service_Support_Message" = "Need iOS6.0 and more to support this service";
 "ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "Need Chinese keyboard to open sina weibo service";
 "Message_OK" = "OK";
 
@@ -26,6 +25,7 @@
 "TopicListView_ListHeader_Style" = "EEEE, MMMM d, yyyy";
 "TopicListView_ListHeader_Short_Style" = "MMMM d";
 "TopicListView_ListHeader_Today" = " (Today)";
+"TopicListView_SearchBar_Hint" = "Search";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";

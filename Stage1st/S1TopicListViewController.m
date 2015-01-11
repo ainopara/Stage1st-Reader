@@ -90,6 +90,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     //self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
     self.searchBar.tintColor = [S1Global color4];
     self.searchBar.barTintColor = [S1Global color5];
+    self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
     //[self.searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[S1Global color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
     UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
     gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
