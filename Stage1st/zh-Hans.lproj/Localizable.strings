@@ -6,6 +6,7 @@
 "ContentView_ActionSheet_OriginPage" = "打开原网页";
 "ContentView_ActionSheet_Favorite" = "收藏";
 "ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
+"ContentView_ActionSheet_CopyLink" = "复制链接";
 
 "ImageViewer_ActionSheet_Save" = "保存图像";
 "ImageViewer_ActionSheet_CopyURL" = "复制图像地址";

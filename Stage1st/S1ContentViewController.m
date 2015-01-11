@@ -308,6 +308,7 @@
                                                         otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
                                       [self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
                                       NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
+                                      NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link"),
                                       NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
         actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
         [actionSheet showInView:self.view];
@@ -345,6 +346,14 @@
                 [weakController dismissViewControllerAnimated:YES completion:nil];
             }];
         }];
+        // Copy Link
+        UIAlertAction *copyLinkAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+            S1HUD *HUD = [S1HUD showHUDInView:self.view];
+            [HUD setText:NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link") withWidthMultiplier:2];
+            [HUD hideWithDelay:0.3];
+        }];
         // Origin Page Action
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             _presentingWebViewer = YES;
@@ -359,6 +368,7 @@
         [moreActionSheet addAction:replyAction];
         [moreActionSheet addAction:favoriteAction];
         [moreActionSheet addAction:weiboAction];
+        [moreActionSheet addAction:copyLinkAction];
         [moreActionSheet addAction:originPageAction];
         [moreActionSheet addAction:cancelAction];
         [moreActionSheet.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
@@ -419,9 +429,16 @@
                 [weakController dismissViewControllerAnimated:YES completion:nil];
             }];
         }
-        
-        // Origin Page
+        // Copy Link
         if (3 == buttonIndex) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+            S1HUD *HUD = [S1HUD showHUDInView:self.view];
+            [HUD setText:NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link") withWidthMultiplier:2];
+            [HUD hideWithDelay:0.3];
+        }
+        // Origin Page
+        if (4 == buttonIndex) {
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
@@ -485,7 +502,7 @@
         }
         return NO;
     }
-    //Image URL opened in image Viewer (TODO: Not Be Tested)
+    //Image URL opened in image Viewer
     if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
         _presentingImageViewer = YES;
         NSString *imageURL = request.URL.absoluteString;

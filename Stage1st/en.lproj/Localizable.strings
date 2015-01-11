@@ -6,6 +6,7 @@
 "ContentView_ActionSheet_OriginPage" = "Original Page";
 "ContentView_ActionSheet_Favorite" = "Favorite";
 "ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
+"ContentView_ActionSheet_CopyLink" = "Copy Link";
 
 "ImageViewer_ActionSheet_Save" = "Save Image";
 "ImageViewer_ActionSheet_CopyURL" = "Copy Image URL";
