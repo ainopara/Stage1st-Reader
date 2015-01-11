@@ -49,7 +49,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"Database closed.");//TODO:WHY NOT CALLED?
+    NSLog(@"Database closed.");
     [_db close];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
@@ -250,7 +250,7 @@
     }
     [_db commit];
     [syncDatabase close];
-    NSLog(@"%ld", (long)counter);
+    NSLog(@"%ld Items Updated.", (long)counter);
     return YES;
     
 }

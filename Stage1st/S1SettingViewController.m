@@ -196,7 +196,6 @@
 */
 }
 #pragma mark - Orientation 
-//TODO: Not work at all answer: set it to navigation controller
 
 - (NSUInteger)supportedInterfaceOrientations
 {
@@ -216,7 +215,7 @@
 #pragma mark -
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"%@", indexPath);
-    if (indexPath.section == 0 && indexPath.row == 8) {
+    if (indexPath.section == 0 && indexPath.row == 7) {
         S1DatabaseManageViewController *databaseManageViewController = [[S1DatabaseManageViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [self.navigationController pushViewController:databaseManageViewController animated:YES];
     }

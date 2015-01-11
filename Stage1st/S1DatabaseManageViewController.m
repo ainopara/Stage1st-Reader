@@ -184,6 +184,7 @@
 - (void)mergeDatabaseGesture:(UILongPressGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         NSLog(@"begin merge event");
+        //TODO: finish it!
     }
 }
 - (void)shareDatabaseAtPath:(NSURL *)databasePath inRect:(CGRect)rect
