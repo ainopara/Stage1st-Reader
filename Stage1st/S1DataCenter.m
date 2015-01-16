@@ -20,6 +20,8 @@
 @property (strong, nonatomic) NSString *formhash;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
+@property (strong, nonatomic) NSMutableDictionary *floorCache;
+
 @property (strong, nonatomic) NSArray *cachedHistoryTopics;
 @property (strong, nonatomic) IMQuickSearch *historySearch;
 @property (strong, nonatomic) IMQuickSearch *favoriteSearch;
@@ -35,6 +37,7 @@
     self.tracer = [[S1Tracer alloc] init];
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
+    self.floorCache = [NSMutableDictionary dictionary];
     self.shouldReloadFavoriteCache = YES;
     self.shouldReloadHistoryCache = YES;
     self.sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
@@ -170,8 +173,78 @@
 }
 
 #pragma mark - Network (Content)
-
+- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    return [self.floorCache valueForKey:key] != nil;
+}
+- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self
+    NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    if ((shouldUpdate == NO) && ([self.floorCache valueForKey:key] != nil)) {
+        NSLog(@"Precache:%@-%@ cancel.", topic.topicID, page);
+        return;
+    }
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+        [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            
+            //Update Topic
+            NSDictionary *responseDict = responseObject;
+            [topic updateFromTopic:[S1Parser topicInfoFromAPI:responseDict]];
+            
+            //Check Login State
+            NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
+            if ([loginUsername isEqualToString:@""]) {
+                loginUsername = nil;
+            }
+            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+            //get floors
+            NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+            //update floor cache
+            if ([self.floorCache valueForKey:key] != nil) {
+                [self.floorCache removeObjectForKey:key];
+            }
+            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"pre cache failed.");
+        }];
+    } else {
+        [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+            
+            //Update Topic
+            [topic updateFromTopic:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
+            
+            //check login state
+            NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+            //get floors
+            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
+            //update floor cache
+            if ([self.floorCache valueForKey:key] != nil) {
+                [self.floorCache removeObjectForKey:key];
+            }
+            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            NSLog(@"pre cache failed.");
+        }];
+    }
+}
+- (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    if ([self.floorCache valueForKey:key] != nil) {
+        [self.floorCache removeObjectForKey:key];
+    }
+}
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+    // Use Cache Result
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    NSArray *floorList = [self.floorCache objectForKey:key];
+    if (floorList) {
+        success(floorList);
+        return;
+    }
+    
     NSDate *start = [NSDate date];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -190,6 +263,13 @@
             [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+            
+            //update floor cache
+            if ([self.floorCache valueForKey:key] != nil) {
+                [self.floorCache removeObjectForKey:key];
+            }
+            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
@@ -207,6 +287,13 @@
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
+            
+            //update floor cache
+            if ([self.floorCache valueForKey:key] != nil) {
+                [self.floorCache removeObjectForKey:key];
+            }
+            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            
             success(floorList);
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -341,7 +428,7 @@
 }
 
 - (void)clearContentPageCache {
-    
+    self.floorCache = [NSMutableDictionary dictionary];
 }
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {

@@ -27,6 +27,10 @@
 - (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
 //For Content View Controller
+- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate;
+- (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *floorList))success failure:(void (^)(NSError *error))failure;
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;

@@ -250,7 +250,7 @@
             [self scrollToButtomAnimated:YES];
         } else {
             _needToScrollToBottom = YES;
-            [self fetchContent];
+            [self fetchContentAndPrecacheNextPage:YES];
         }
     }
 }
@@ -283,7 +283,11 @@
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (long i = 0; i < (_currentPage > _totalPages ? _currentPage : _totalPages); i++) {
-        [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
+        if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithLong:i + 1]]) {
+            [array addObject:[NSString stringWithFormat:@"第 %ld 页✓", i + 1]];
+        } else {
+            [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
+        }
     }
     [ActionSheetStringPicker showPickerWithTitle:@""
                                             rows:array
@@ -609,8 +613,10 @@
 }
 
 #pragma mark - Networking
-
-- (void)fetchContent
+- (void)fetchContent {
+    [self fetchContentAndPrecacheNextPage:NO];
+}
+- (void)fetchContentAndPrecacheNextPage:(BOOL)shouldUpdate
 {
     [self updatePageLabel];
     S1HUD *HUD = [S1HUD showHUDInView:self.view];
@@ -621,7 +627,10 @@
         [aHUD hideWithDelay:0.0];
         [strongSelf fetchContent];
     }];
-    
+    //remove cache for last page
+    if (shouldUpdate) {
+        [self.dataCenter removePrecachedFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]];
+    }
     // NSDate *start = [NSDate date];
     
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
@@ -632,6 +641,12 @@
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
         strongSelf.titleLabel.text = self.topic.title;
         _finishLoading = YES;
+        // prepare next page
+        if (_currentPage < _totalPages) {
+            NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:_currentPage + 1];
+            [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
+        }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
                 [HUD hideWithDelay:0.3];
