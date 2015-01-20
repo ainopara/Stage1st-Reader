@@ -650,11 +650,12 @@
         // prepare next page
         if (_currentPage < _totalPages) {
             NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:_currentPage + 1];
-            [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
             [strongSelf.dataCenter setFinishHandlerForTopic:strongSelf.topic withPage:cachePage andHandler:^(NSArray *floorList) {
                 __strong typeof(self) strongSelf = weakSelf;
                 [strongSelf updatePageLabel];
             }];
+            [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
+            
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{

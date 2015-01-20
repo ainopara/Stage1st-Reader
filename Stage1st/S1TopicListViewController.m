@@ -143,6 +143,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [super didReceiveMemoryWarning];
     [self.dataCenter clearTopicListCache];
+    [self.dataCenter clearContentPageCache];
     // Dispose of any resources that can be recreated.
 }
 
