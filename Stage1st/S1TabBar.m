@@ -8,7 +8,8 @@
 
 #import "S1TabBar.h"
 
-#define _DEFAULT_WIDTH 80.0f
+#define _DEFAULT_WIDTH_IPHONE 80.0f
+#define _DEFAULT_WIDTH_IPHONE_LANDSCAPE 96.0f
 #define _DEFAULT_WIDTH_IPAD 96.0f
 #define _DEFAULT_WIDTH_IPAD_LANDSCAPE 128.0f
 
@@ -74,7 +75,14 @@
 
 - (CGFloat)getWidthPerItem {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return _DEFAULT_WIDTH;
+        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            NSLog(@"Decelerating Portrait");
+            return _DEFAULT_WIDTH_IPHONE;
+            
+        } else {
+            NSLog(@"Decelerating Landscape");
+            return _DEFAULT_WIDTH_IPHONE_LANDSCAPE;
+        }
     } else {
         if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
             NSLog(@"Decelerating Portrait");
@@ -89,7 +97,7 @@
 
 - (CGFloat)decideOffset:(CGPoint)offset {
     CGFloat widthPerItem = [self getWidthPerItem];
-    float maxOffset = _keys.count * _DEFAULT_WIDTH - self.bounds.size.width;
+    float maxOffset = _keys.count * _DEFAULT_WIDTH_IPHONE - self.bounds.size.width;
 
     if (_lastContentOffset == 0 && offset.x == 0) {
         offset.x = 0.0;
@@ -103,7 +111,7 @@
             offset.x = (n + 1) * widthPerItem;
         }
     } else {
-        float offsetFix = _DEFAULT_WIDTH - fmodf(maxOffset, _DEFAULT_WIDTH);
+        float offsetFix = _DEFAULT_WIDTH_IPHONE - fmodf(maxOffset, _DEFAULT_WIDTH_IPHONE);
         CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
         if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
             offset.x = n*widthPerItem - offsetFix;
@@ -164,7 +172,13 @@
 
     CGFloat widthPerItem;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+        CGFloat defaultWidth;
+        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            defaultWidth = _DEFAULT_WIDTH_IPHONE;
+        } else {
+            defaultWidth = _DEFAULT_WIDTH_IPHONE_LANDSCAPE;
+        }
+        widthPerItem = (_keys.count * defaultWidth >= self.bounds.size.width ? defaultWidth : self.bounds.size.width/_keys.count);
     } else {
         if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
             widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
