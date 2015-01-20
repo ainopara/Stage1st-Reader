@@ -28,8 +28,13 @@
 
 //For Content View Controller
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate;
+
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+
+- (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler;
+
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *floorList))success failure:(void (^)(NSError *error))failure;
 

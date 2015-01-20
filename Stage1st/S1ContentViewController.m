@@ -36,6 +36,9 @@
 @property (nonatomic, strong) NSString *replyDraft;
 
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
+
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *forwardButton;
 @end
 
 @implementation S1ContentViewController {
@@ -126,7 +129,7 @@
     backLongPressGR.minimumPressDuration = 0.5;
     [button addGestureRecognizer:backLongPressGR];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:button];    
-    
+    self.backButton = button;
     
     
     //Forward Button
@@ -139,6 +142,7 @@
     forwardLongPressGR.minimumPressDuration = 0.5;
     [button addGestureRecognizer:forwardLongPressGR];
     UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.forwardButton = button;
     
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
@@ -613,9 +617,11 @@
 }
 
 #pragma mark - Networking
+
 - (void)fetchContent {
     [self fetchContentAndPrecacheNextPage:NO];
 }
+
 - (void)fetchContentAndPrecacheNextPage:(BOOL)shouldUpdate
 {
     [self updatePageLabel];
@@ -645,6 +651,10 @@
         if (_currentPage < _totalPages) {
             NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:_currentPage + 1];
             [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
+            [strongSelf.dataCenter setFinishHandlerForTopic:strongSelf.topic withPage:cachePage andHandler:^(NSArray *floorList) {
+                __strong typeof(self) strongSelf = weakSelf;
+                [strongSelf updatePageLabel];
+            }];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -711,7 +721,7 @@
                         strongMyself.replyDraft = @"";
                         if (strongMyself->_currentPage == strongMyself->_totalPages) {
                             strongMyself->_needToScrollToBottom = YES;
-                            [strongMyself fetchContent];
+                            [strongMyself fetchContentAndPrecacheNextPage:YES];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -729,7 +739,7 @@
                         strongMyself.replyDraft = @"";
                         if (strongMyself->_currentPage == strongMyself->_totalPages) {
                             strongMyself->_needToScrollToBottom = YES;
-                            [strongMyself fetchContent];
+                            [strongMyself fetchContentAndPrecacheNextPage:YES];
                         }
                     } failure:^(NSError *error) {
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -767,10 +777,23 @@
 
 - (void)updatePageLabel
 {
+    //update page label
     if (self.topic.totalPageCount) {
         _totalPages = [self.topic.totalPageCount integerValue];
     }
     self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
+    //update forward button
+    if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
+        [self.forwardButton setImage:[UIImage imageNamed:@"Forward-Cached"] forState:UIControlStateNormal];
+    } else {
+        [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    }
+    //update back button
+    if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage - 1)]) {
+        [self.backButton setImage:[UIImage imageNamed:@"Back-Cached"] forState:UIControlStateNormal];
+    } else {
+        [self.backButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
+    }
 }
 
 - (UIImage *)screenShot

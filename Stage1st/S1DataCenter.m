@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
 @property (strong, nonatomic) NSMutableDictionary *floorCache;
+@property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
 
 @property (strong, nonatomic) NSArray *cachedHistoryTopics;
 @property (strong, nonatomic) IMQuickSearch *historySearch;
@@ -38,6 +39,7 @@
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     self.floorCache = [NSMutableDictionary dictionary];
+    self.cacheFinishHandlers = [NSMutableDictionary dictionary];
     self.shouldReloadFavoriteCache = YES;
     self.shouldReloadHistoryCache = YES;
     self.sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
@@ -172,7 +174,7 @@
     }];
 }
 
-#pragma mark - Network (Content)
+#pragma mark - Network (Content Cache)
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     return [self.floorCache valueForKey:key] != nil;
@@ -204,6 +206,11 @@
                 [self.floorCache removeObjectForKey:key];
             }
             [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            //call finish block if exist
+            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+            if (handler != nil) {
+                handler(floorList);
+            }
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"pre cache failed.");
@@ -224,6 +231,11 @@
                 [self.floorCache removeObjectForKey:key];
             }
             [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            //call finish block if exist
+            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+            if (handler != nil) {
+                handler(floorList);
+            }
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             NSLog(@"pre cache failed.");
@@ -236,6 +248,13 @@
         [self.floorCache removeObjectForKey:key];
     }
 }
+
+- (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    [self.cacheFinishHandlers setValue:handler forKey:key];
+}
+
+#pragma mark - Network (Content)
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     // Use Cache Result
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
