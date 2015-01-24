@@ -426,7 +426,7 @@
         }
         
         //process content
-        NSString *contentString = [S1Parser processImagesInHTMLString:topicFloor.content];
+        NSString *contentString = topicFloor.content;
         contentString = [S1Parser stripTails:contentString];
         if (contentString == nil) {
             contentString = @"<td class=\"t_f\"><div class=\"s1-alert\">提示：作者被禁止或删除 内容自动屏蔽</div></td>";
@@ -443,7 +443,6 @@
                 floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
             }
             floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
-            floorAttachment = [S1Parser processImagesInHTMLString:floorAttachment];
         }
         
         //generate page
@@ -458,7 +457,7 @@
         }
         finalString = [finalString stringByAppendingString:output];
     }
-    
+    finalString = [S1Parser processImagesInHTMLString:finalString];
     NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
     NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
     NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];

@@ -25,6 +25,16 @@
 
 @implementation S1SettingViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    if (inLoginStateID) {
+        self.usernameDetail.text = inLoginStateID;
+    }
+    
+    self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+    
+    self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+}
 
 - (void)viewDidLoad
 {
