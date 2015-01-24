@@ -250,17 +250,12 @@
     
     CGFloat widthPerItem = 0;
     NSInteger orientation = [UIApplication sharedApplication].statusBarOrientation;
-    if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
-        widthPerItem = (_keys.count * defaultWidth >= narrow ? defaultWidth : narrow/_keys.count);
-        NSLog(@"Portrait");
-        self.lastRecognizedOrientation = orientation;
-    } else if(orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
         widthPerItem = (_keys.count * defaultWidthLandscape >= wide ? defaultWidthLandscape : wide/_keys.count);
-        NSLog(@"Landscape");
-        self.lastRecognizedOrientation = orientation;
     } else {
-        NSLog(@"Other Orientation");
+        widthPerItem = (_keys.count * defaultWidth >= narrow ? defaultWidth : narrow/_keys.count);
     }
+    self.lastRecognizedOrientation = orientation;
     return widthPerItem;
 }
 @end
