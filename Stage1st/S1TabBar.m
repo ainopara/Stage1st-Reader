@@ -8,7 +8,8 @@
 
 #import "S1TabBar.h"
 
-#define _DEFAULT_WIDTH 80.0f
+#define _DEFAULT_WIDTH_IPHONE 80.0f
+#define _DEFAULT_WIDTH_IPHONE_LANDSCAPE 96.0f
 #define _DEFAULT_WIDTH_IPAD 96.0f
 #define _DEFAULT_WIDTH_IPAD_LANDSCAPE 128.0f
 
@@ -72,44 +73,43 @@
     NSLog(@"Begin Decelerating:%f", _lastContentOffset);
 }
 
-- (CGFloat)getWidthPerItem {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return _DEFAULT_WIDTH;
-    } else {
-        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
-            NSLog(@"Decelerating Portrait");
-            return _DEFAULT_WIDTH_IPAD;
-            
-        } else {
-            NSLog(@"Decelerating Landscape");
-            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-        }
-    }
-}
+//- (CGFloat)getWidthPerItem {
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+//        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+//            NSLog(@"Decelerating Portrait");
+//            return _DEFAULT_WIDTH_IPHONE;
+//            
+//        } else {
+//            NSLog(@"Decelerating Landscape");
+//            return _DEFAULT_WIDTH_IPHONE_LANDSCAPE;
+//        }
+//    } else {
+//        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+//            NSLog(@"Decelerating Portrait");
+//            return _DEFAULT_WIDTH_IPAD;
+//            
+//        } else {
+//            NSLog(@"Decelerating Landscape");
+//            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+//        }
+//    }
+//}
 
 - (CGFloat)decideOffset:(CGPoint)offset {
-    CGFloat widthPerItem = [self getWidthPerItem];
-    float maxOffset = _keys.count * _DEFAULT_WIDTH - self.bounds.size.width;
+    CGFloat widthPerItem = [self determineWidthPerItemAndUpdateLastRecognizedOrientation];
+    float maxOffset = _keys.count * widthPerItem - self.bounds.size.width;
 
     if (_lastContentOffset == 0 && offset.x == 0) {
         offset.x = 0.0;
         return offset.x;
     }
-    if (offset.x < _lastContentOffset) {
-        CGFloat n = floorf(offset.x / widthPerItem);
-        if (fmodf(offset.x, widthPerItem) < widthPerItem / 2) {
-            offset.x = n * widthPerItem;
-        } else {
-            offset.x = (n + 1) * widthPerItem;
-        }
+    CGFloat n = floorf(offset.x / widthPerItem);
+    if (fmodf(offset.x, widthPerItem) > widthPerItem / 2) {
+        offset.x = (n + 1) * widthPerItem;
+    } else if (offset.x > _lastContentOffset && (n + 0.5) * widthPerItem > maxOffset ) {
+        offset.x = maxOffset;
     } else {
-        float offsetFix = _DEFAULT_WIDTH - fmodf(maxOffset, _DEFAULT_WIDTH);
-        CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
-        if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
-            offset.x = n*widthPerItem - offsetFix;
-        } else {
-            offset.x = (n+1)*widthPerItem - offsetFix;
-        }
+        offset.x = n * widthPerItem;
     }
     
     offset.x = offset.x > maxOffset ? maxOffset : offset.x;
@@ -164,7 +164,13 @@
 
     CGFloat widthPerItem;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
+        CGFloat defaultWidth;
+        if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
+            defaultWidth = _DEFAULT_WIDTH_IPHONE;
+        } else {
+            defaultWidth = _DEFAULT_WIDTH_IPHONE_LANDSCAPE;
+        }
+        widthPerItem = (_keys.count * defaultWidth >= self.bounds.size.width ? defaultWidth : self.bounds.size.width/_keys.count);
     } else {
         if (self.lastRecognizedOrientation == UIDeviceOrientationPortrait || self.lastRecognizedOrientation == UIDeviceOrientationPortraitUpsideDown) {
             widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count);
@@ -202,9 +208,9 @@
 
 - (void)updateButtonFrame
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        ;
-    } else {
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+//        ;
+//    } else {
         CGFloat widthPerItem = [self determineWidthPerItemAndUpdateLastRecognizedOrientation];
         if (widthPerItem != 0) {
             NSInteger maxIndex = 0;
@@ -223,7 +229,7 @@
             }
             [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
         }
-    }
+//    }
 }
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -235,19 +241,21 @@
 */
 - (CGFloat) determineWidthPerItemAndUpdateLastRecognizedOrientation
 {
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat narrow = screenSize.width > screenSize.height ? screenSize.height : screenSize.width;
+    CGFloat wide = screenSize.width < screenSize.height ? screenSize.height : screenSize.width;
+    
+    CGFloat defaultWidth = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? _DEFAULT_WIDTH_IPHONE : _DEFAULT_WIDTH_IPAD;
+    CGFloat defaultWidthLandscape = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? _DEFAULT_WIDTH_IPHONE_LANDSCAPE : _DEFAULT_WIDTH_IPAD_LANDSCAPE;
+    
     CGFloat widthPerItem = 0;
-    NSInteger orientation = [[UIDevice currentDevice] orientation];
-    if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
-        widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : 768.0f/_keys.count);
-        NSLog(@"Portrait");
-        self.lastRecognizedOrientation = orientation;
-    } else if(orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-        widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD_LANDSCAPE : 1024.0f/_keys.count);
-        NSLog(@"Landscape");
-        self.lastRecognizedOrientation = orientation;
+    NSInteger orientation = [UIApplication sharedApplication].statusBarOrientation;
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
+        widthPerItem = (_keys.count * defaultWidthLandscape >= wide ? defaultWidthLandscape : wide/_keys.count);
     } else {
-        NSLog(@"Other Orientation");
+        widthPerItem = (_keys.count * defaultWidth >= narrow ? defaultWidth : narrow/_keys.count);
     }
+    self.lastRecognizedOrientation = orientation;
     return widthPerItem;
 }
 @end
