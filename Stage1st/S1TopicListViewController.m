@@ -129,6 +129,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self.scrollTabBar updateButtonFrame];
     if (![[self rootViewController] presentingDetailViewController]) {
         [self.tableView setUserInteractionEnabled:YES];
         [self.tableView setScrollsToTop:YES];
@@ -516,9 +517,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)viewOrientationDidChanged:(NSNotification *)notification
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return;
-    }
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+//        return;
+//    }
     [self.scrollTabBar updateButtonFrame];
 }
 
