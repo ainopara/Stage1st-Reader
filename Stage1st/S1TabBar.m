@@ -103,21 +103,13 @@
         offset.x = 0.0;
         return offset.x;
     }
-    if (offset.x < _lastContentOffset) {
-        CGFloat n = floorf(offset.x / widthPerItem);
-        if (fmodf(offset.x, widthPerItem) < widthPerItem / 2) {
-            offset.x = n * widthPerItem;
-        } else {
-            offset.x = (n + 1) * widthPerItem;
-        }
+    CGFloat n = floorf(offset.x / widthPerItem);
+    if (fmodf(offset.x, widthPerItem) > widthPerItem / 2) {
+        offset.x = (n + 1) * widthPerItem;
+    } else if (offset.x > _lastContentOffset && (n + 0.5) * widthPerItem > maxOffset ) {
+        offset.x = maxOffset;
     } else {
-        float offsetFix = 0.0;
-        CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
-        if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
-            offset.x = n*widthPerItem - offsetFix;
-        } else {
-            offset.x = (n+1)*widthPerItem - offsetFix;
-        }
+        offset.x = n * widthPerItem;
     }
     
     offset.x = offset.x > maxOffset ? maxOffset : offset.x;
