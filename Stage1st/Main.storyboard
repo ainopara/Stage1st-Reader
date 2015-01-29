@@ -115,11 +115,22 @@
                             <constraint firstItem="sgX-gl-SYq" firstAttribute="top" secondItem="Ov5-lb-lqV" secondAttribute="bottom" id="gXw-ac-eqK"/>
                             <constraint firstItem="Ov5-lb-lqV" firstAttribute="leading" secondItem="yXh-JJ-q5e" secondAttribute="leading" id="qnV-3G-b2J"/>
                             <constraint firstItem="QiY-0d-ChP" firstAttribute="top" secondItem="yXh-JJ-q5e" secondAttribute="top" constant="20" id="vpr-sy-Anw"/>
+                            <constraint firstItem="sgX-gl-SYq" firstAttribute="top" secondItem="QiY-0d-ChP" secondAttribute="bottom" id="wxm-Zu-Ybp"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="BVY-0j-nJc"/>
                                 <exclude reference="cP7-FQ-lcK"/>
+                                <exclude reference="wxm-Zu-Ybp"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="subviews">
+                                <exclude reference="Ov5-lb-lqV"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="F3F-RX-eAk"/>
+                                <include reference="wxm-Zu-Ybp"/>
                             </mask>
                         </variation>
                     </view>
@@ -131,7 +142,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bew-fI-rNI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1183" y="223"/>
+            <point key="canvasLocation" x="1183" y="222"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="2dh-B4-gfR">
