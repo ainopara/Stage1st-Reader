@@ -31,6 +31,7 @@
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";
 "SettingView_Login" = "Login";
+"SettingView_Logout" = "Logout";
 "SettingView_Not_Login_State_Mark" = "Not Login";
 "SettingView_Forum_Order_Custom" = "Forum Order";
 "SettingView_Font_Size" = "Font Size";
@@ -55,6 +56,7 @@
 "LoginView_Get_Login_Status" = "Get Login Status";
 "LoginView_Get_Login_Status_Success_Message" = "Getting Login Status Succeed";
 "LoginView_Get_Login_Status_Failure_Message" = "Getting Login Status Failed";
+"LoginView_Logout_Message" = "Logout Succeed";
 
 "REComposeSheetView_Cancel" = "Cancel";
 "REComposeSheetView_Post" = "Post";

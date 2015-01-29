@@ -36,11 +36,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.onepasswordSigninButton setHidden:![[OnePasswordExtension sharedExtension] isAppExtensionAvailable]];
     
     [self.usernameField setDelegate:self];
     self.usernameField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserIDCached"];
     [self.passwordField setDelegate:self];
+    
+    [self updateUI];
     /*
     self.navigationItem.title = NSLocalizedString(@"LoginView_Title", @"Login");
         
@@ -110,6 +111,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    
     if ([textField.placeholder isEqualToString:NSLocalizedString(@"LoginView_Username", @"Username")]) {
         [self.passwordField becomeFirstResponder];
     } else if ([textField.placeholder isEqualToString:NSLocalizedString(@"LoginView_Password", @"Password")]) {
@@ -131,6 +133,21 @@
     }];
 }
 
+- (void)updateUI {
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    
+    if (inLoginStateID) {
+        [self.usernameField setEnabled:NO];
+        [self.passwordField setHidden:YES];
+        [self.loginButton setTitle:NSLocalizedString(@"SettingView_Logout", @"Logout") forState:UIControlStateNormal];
+        [self.onepasswordSigninButton setHidden:YES];
+    } else {
+        [self.usernameField setEnabled:YES];
+        [self.passwordField setHidden:NO];
+        [self.loginButton setTitle:NSLocalizedString(@"SettingView_Login", @"Login") forState:UIControlStateNormal];
+        [self.onepasswordSigninButton setHidden:![[OnePasswordExtension sharedExtension] isAppExtensionAvailable]];
+    }
+}
 
 - (IBAction)findLoginFrom1Password:(UIButton *)sender {
     __weak typeof (self) miniMe = self;
@@ -149,43 +166,55 @@
 }
 
 - (IBAction)login:(UIButton *)sender {
-    if (self.usernameField.text.length > 0 && self.passwordField.text.length > 0) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [self.loginButton setEnabled:NO];
-        __weak typeof (self) miniMe = self;
-        
-        [S1NetworkManager postLoginForUsername:self.usernameField.text andPassword:self.passwordField.text success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            NSLog(@"Login Response: %@", result);
-            NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
-            __strong typeof(self) strongMe = miniMe;
-            NSRange failureMsgRange = [result rangeOfString:@"window.location.href"];
-            if (failureMsgRange.location != NSNotFound) {
-                NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-                [userDefault setValue:strongMe.usernameField.text forKey:@"InLoginStateID"];
-                [userDefault setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Success_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
-                [alertView show];
-            } else {
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    if (inLoginStateID) {
+        //Logout
+        [self clearCookiers];
+        [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
+        [self updateUI];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Logout", @"") message:NSLocalizedString(@"LoginView_Logout_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
+        [alertView show];
+    } else {
+        //Login
+        if (self.usernameField.text.length > 0 && self.passwordField.text.length > 0) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [self.loginButton setEnabled:NO];
+            __weak typeof (self) weakSelf = self;
+            
+            [S1NetworkManager postLoginForUsername:self.usernameField.text andPassword:self.passwordField.text success:^(NSURLSessionDataTask *task, id responseObject) {
+                NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                NSLog(@"Login Response: %@", result);
+                NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
+                __strong typeof(self) strongMe = weakSelf;
+                NSRange failureMsgRange = [result rangeOfString:@"window.location.href"];
+                if (failureMsgRange.location != NSNotFound) {
+                    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+                    [userDefault setValue:strongMe.usernameField.text forKey:@"InLoginStateID"];
+                    [userDefault setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
+                    [strongMe updateUI];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Success_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
+                    [alertView show];
+                } else {
+                    [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
+                    [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
+                    [strongMe clearCookiers];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
+                    [alertView show];
+                }
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                [strongMe.loginButton setEnabled:YES];
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                NSLog(@"%@", error);
+                __strong typeof(self) strongMe = weakSelf;
                 [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                 [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
                 [strongMe clearCookiers];
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                 [alertView show];
-            }
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            [strongMe.loginButton setEnabled:YES];
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            NSLog(@"%@", error);
-            __strong typeof(self) strongMe = miniMe;
-            [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
-            [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
-            [strongMe clearCookiers];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
-            [alertView show];
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-            [strongMe.loginButton setEnabled:YES];
-        }];
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                [strongMe.loginButton setEnabled:YES];
+            }];
+        }
     }
 }
 

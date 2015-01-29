@@ -159,6 +159,16 @@
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
++ (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
+                                        success:(void (^)(NSURLSessionDataTask *, id))success
+                                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"member.php";
+    NSDictionary *params = @{@"mod" : @"logging",
+                             @"action" : @"logout",
+                             @"formhash" : formhash};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+
 #pragma mark - Search
 
 + (void)postSearchForKeyword:(NSString *)keyword

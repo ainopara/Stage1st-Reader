@@ -31,6 +31,7 @@
 "SettingView_NavigationBar_Title" = "设置";
 "SettingView_NavigationBar_Back" = "返回";
 "SettingView_Login" = "登录";
+"SettingView_Logout" = "退出登录";
 "SettingView_Not_Login_State_Mark" = "未登录";
 "SettingView_Forum_Order_Custom" = "板块自定义";
 "SettingView_Font_Size" = "字体大小";
@@ -55,6 +56,7 @@
 "LoginView_Get_Login_Status" = "获取登录状态";
 "LoginView_Get_Login_Status_Success_Message" = "获取登录状态成功";
 "LoginView_Get_Login_Status_Failure_Message" = "获取登录状态未成功";
+"LoginView_Logout_Message" = "成功退出登录";
 
 "REComposeSheetView_Cancel" = "取消";
 "REComposeSheetView_Post" = "发送";
