@@ -168,7 +168,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
-    [self fetchContent];
+    [self fetchContentAndPrecacheNextPage:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
