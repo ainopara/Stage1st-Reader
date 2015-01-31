@@ -149,6 +149,7 @@
     re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
     //process embeded image attachments
+    __block NSString *finalString = [mutableContent copy];
     NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
     re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
@@ -159,7 +160,7 @@
                 if ([attachmentKey integerValue] == [attachmentID integerValue]) {
                     NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
                     NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
-                    [mutableContent replaceCharactersInRange:[result rangeAtIndex:0] withString:imageNode];
+                    finalString = [finalString stringByReplacingOccurrencesOfString:[NSString stringWithFormat: @"[attach]%@[/attach]", attachmentID] withString:imageNode];
                     [attachments removeObjectForKey:attachmentKey];
                     break;
                 }
@@ -167,7 +168,7 @@
         }
     }];
     
-    return mutableContent;
+    return finalString;
 }
 
 #pragma mark - Page Parsing
