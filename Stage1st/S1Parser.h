@@ -28,7 +28,7 @@
 
 + (NSString *)loginUserName:(NSString *)HTMLString;
 
-+ (NSNumber *)extractTopicIDFromLink:(NSString *)URLString;
++ (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString;
 + (NSString *)topicTitleFromPage:(NSData *)rawData;
 + (NSString *)messageFromPage:(NSData *)rawData;
 

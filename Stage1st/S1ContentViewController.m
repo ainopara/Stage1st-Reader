@@ -528,12 +528,10 @@
     }
     
     // Open S1 topic
-    NSNumber *topicID = [S1Parser extractTopicIDFromLink:request.URL.absoluteString];
-    if (topicID != nil) {
+    S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
+    if (topic.topicID != nil) {
         _presentingContentViewController = YES;
         S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
-        S1Topic *topic = [[S1Topic alloc] init];
-        topic.topicID = topicID;
         [contentViewController setTopic:topic];
         [contentViewController setDataCenter:self.dataCenter];
         [[self navigationController] pushViewController:contentViewController animated:YES];
