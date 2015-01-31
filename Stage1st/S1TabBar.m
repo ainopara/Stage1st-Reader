@@ -52,6 +52,7 @@
     if (_keys.count == 0) {
         UIToolbar *maskToolbar = [[UIToolbar alloc] initWithFrame:self.bounds];
         [self addSubview:maskToolbar];
+        self.contentSize = CGSizeMake(0, 0);
     } else {
         _buttons = [NSMutableArray arrayWithCapacity:_keys.count];
         [self addItems];
