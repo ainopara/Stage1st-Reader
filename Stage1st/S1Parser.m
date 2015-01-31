@@ -335,6 +335,10 @@
             //parse poll
             TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
             [floor setPoll: [floorPollNode raw]];
+            
+            //parse message
+            TFHppleElement *messageNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='pcb']/div[@class='locked']/em"] firstObject];
+            [floor setMessage: [messageNode text]];
 
             //parse content & floorID
             TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
@@ -429,8 +433,9 @@
         //process content
         NSString *contentString = topicFloor.content;
         contentString = [S1Parser stripTails:contentString];
-        if (contentString == nil) {
-            contentString = @"<td class=\"t_f\"><div class=\"s1-alert\">提示：作者被禁止或删除 内容自动屏蔽</div></td>";
+        //work when the floor's author is blocked and s1reader using parse mode
+        if (contentString == nil && topicFloor.message != nil) {
+            contentString = [NSString stringWithFormat:@"<td class=\"t_f\"><div class=\"s1-alert\">%@</div></td>", topicFloor.message];
         }
         
         //process attachment
