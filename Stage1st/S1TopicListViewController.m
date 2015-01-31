@@ -562,8 +562,25 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         [self.searchBar resignFirstResponder];
+        NSString *text = searchBar.text;
+        NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+        NSNumber *topicID = [nf numberFromString:text];
+        if (topicID != nil) {
+            S1Topic *topic = [self.dataCenter tracedTopic:topicID];
+            if (topic == nil) {
+                topic = [[S1Topic alloc] init];
+                topic.topicID = topicID;
+            }
+            S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+            [contentViewController setTopic:topic];
+            [contentViewController setDataCenter:self.dataCenter];
+            [[self navigationController] pushViewController:contentViewController animated:YES];
+            return;
+            
+        }
     } else { // search topics
         [self.searchBar resignFirstResponder];
         _loadingFlag = YES;
