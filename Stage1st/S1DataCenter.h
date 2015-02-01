@@ -34,7 +34,7 @@
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler;
-
+- (BOOL)hasFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *floorList))success failure:(void (^)(NSError *error))failure;
 

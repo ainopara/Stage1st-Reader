@@ -179,6 +179,7 @@
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     return [self.floorCache valueForKey:key] != nil;
 }
+
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
@@ -209,10 +210,15 @@
             //call finish block if exist
             void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
             if (handler != nil) {
+                [self.cacheFinishHandlers setValue:nil forKey:key];
                 handler(floorList);
             }
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+            if (handler != nil) {
+                [self.cacheFinishHandlers setValue:nil forKey:key];
+            }
             NSLog(@"pre cache failed.");
         }];
     } else {
@@ -234,10 +240,15 @@
             //call finish block if exist
             void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
             if (handler != nil) {
+                [self.cacheFinishHandlers setValue:nil forKey:key];
                 handler(floorList);
             }
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+            if (handler != nil) {
+                [self.cacheFinishHandlers setValue:nil forKey:key];
+            }
             NSLog(@"pre cache failed.");
         }];
     }
@@ -252,6 +263,11 @@
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     [self.cacheFinishHandlers setValue:handler forKey:key];
+}
+
+- (BOOL)hasFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+    return ([self.cacheFinishHandlers valueForKey:key] != nil);
 }
 
 #pragma mark - Network (Content)

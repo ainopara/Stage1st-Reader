@@ -632,6 +632,7 @@
     }
     //Set up HUD
     if (![self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]]) {
+        NSLog(@"Show HUD");
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
         [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
