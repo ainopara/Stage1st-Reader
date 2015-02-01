@@ -11,6 +11,7 @@
 @interface S1HUD : UIView
 
 @property (nonatomic, copy) NSString *text;
+@property (nonatomic, weak) UIView *parentView;
 
 @property (nonatomic, copy) void (^refreshEventHandler)(S1HUD *aHUD);
 
