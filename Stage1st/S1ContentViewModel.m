@@ -32,7 +32,7 @@
 
 - (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
     [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList) {
-        
+        NSString *page = [S1Parser generateContentPage:floorList withTopic:topic];
         //Set Floors
         NSMutableDictionary *floors;
         if(topic.floors != nil) {
@@ -45,8 +45,7 @@
         }
         topic.floors = floors;
         
-        NSString *string = [S1Parser generateContentPage:floorList withTopic:topic];
-        success(string);
+        success(page);
     } failure:^(NSError *error) {
         failure(error);
     }];

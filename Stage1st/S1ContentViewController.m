@@ -622,23 +622,26 @@
 - (void)fetchContentAndPrecacheNextPage:(BOOL)shouldUpdate
 {
     [self updatePageLabel];
-    S1HUD *HUD = [S1HUD showHUDInView:self.view];
-    [HUD showActivityIndicator];
     __weak typeof(self) weakSelf = self;
-    [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
-        __strong typeof(self) strongSelf = weakSelf;
-        [aHUD hideWithDelay:0.0];
-        [strongSelf fetchContent];
-    }];
+    
+    
+    S1HUD *HUD = nil;
     //remove cache for last page
     if (shouldUpdate) {
         [self.dataCenter removePrecachedFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]];
     }
-    // NSDate *start = [NSDate date];
+    //Set up HUD
+    if (![self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]]) {
+        HUD = [S1HUD showHUDInView:self.view];
+        [HUD showActivityIndicator];
+        [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
+            __strong typeof(self) strongSelf = weakSelf;
+            [aHUD hideWithDelay:0.0];
+            [strongSelf fetchContent];
+        }];
+    }
     
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
-        // NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-        // NSLog(@"Finish Load:%f",-timeInterval);
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf updatePageLabel];
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
@@ -654,21 +657,27 @@
             [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
             
         }
+        if (HUD != nil) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
+                    [HUD hideWithDelay:0.3];
+                } else {
+                    [HUD setText:strongSelf.topic.message withWidthMultiplier:5];
+                }
+            });
+        }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
-                [HUD hideWithDelay:0.3];
-            } else {
-                [HUD setText:strongSelf.topic.message withWidthMultiplier:5];
-            }
-        });
     } failure:^(NSError *error) {
         if (error.code == -999) {
             NSLog(@"request cancelled.");
-            [HUD hideWithDelay:0.3];
+            if (HUD != nil) {
+                [HUD hideWithDelay:0.3];
+            }
         } else {
             NSLog(@"%@", error);
-            [HUD showRefreshButton];
+            if (HUD != nil) {
+                [HUD showRefreshButton];
+            }
         }
     }];
 }
