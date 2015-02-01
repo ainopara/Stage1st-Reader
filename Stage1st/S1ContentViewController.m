@@ -167,6 +167,7 @@
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, self.actionBarButtonItem]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     
     [self fetchContentAndPrecacheNextPage:YES];
 }
@@ -183,10 +184,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     _presentingContentViewController = NO;
     [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -208,6 +205,8 @@
 
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 - (void)didReceiveMemoryWarning
 {
@@ -760,6 +759,7 @@
     [replyController presentFromViewController:self];
 }
 
+
 #pragma mark - Helpers
 
 - (void)scrollToButtomAnimated:(BOOL)animated
@@ -812,8 +812,7 @@
     return viewImage;
 }
 
-- (void)saveTopicViewedState:(id)sender
-{
+- (void)saveTopicViewedState:(id)sender {
     if (_finishLoading) {
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
@@ -822,7 +821,14 @@
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     [self.topic setFavorite:[NSNumber numberWithBool:[self.dataCenter topicIsFavorited:self.topic.topicID]]];
     [self.topic setLastReplyCount:self.topic.replyCount];
-    [self.dataCenter hasViewed:self.topic];}
+    [self.dataCenter hasViewed:self.topic];
+}
+
+- (void)deviceOrientationDidChange:(id)sender {
+    if (self.titleLabel) {
+        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    }
+}
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
 {
