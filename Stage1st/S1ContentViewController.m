@@ -700,11 +700,11 @@
     
     //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
     
-    NSString *replyDraft;
+    
     if (self.replyDraft) {
-        replyDraft = [self.replyDraft stringByAppendingString:text? text : @""];
+        self.replyDraft = [self.replyDraft stringByAppendingString:text? text : @""];
     } else {
-        replyDraft = text? text : @"";
+        self.replyDraft = text? text : @"";
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
@@ -714,13 +714,15 @@
     }
     __weak typeof(self) myself = self;
     [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
+        __strong typeof(self) strongMyself = myself;
         if (result == REComposeResultCancelled) {
+            strongMyself.replyDraft = composeViewController.text;
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         } else if (result == REComposeResultPosted) {
             if (composeViewController.text.length > 0) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
-                __strong typeof(self) strongMyself = myself;
+                
                 if (topicFloor) {
                     [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
                         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -764,7 +766,7 @@
         }
     }];
     
-    [replyController setText:[replyController.text stringByAppendingString:replyDraft]];
+    [replyController setText:[replyController.text stringByAppendingString:self.replyDraft]];
     [replyController.view setFrame:self.view.bounds];
     [replyController presentFromViewController:self];
 }
