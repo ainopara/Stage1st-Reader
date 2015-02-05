@@ -28,7 +28,7 @@
 
 @interface REComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
-@property (strong, readonly, nonatomic) REComposeBackgroundView *backgroundView;
+@property (strong, readonly, nonatomic) UIView *backgroundView;
 @property (strong, readonly, nonatomic) UIView *containerView;
 @property (strong, readonly, nonatomic) REComposeSheetView *sheetView;
 @property (assign, readwrite, nonatomic) BOOL userUpdatedAttachment;
@@ -41,7 +41,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _cornerRadius = (REUIKitIsFlatMode()) ? 6 : 10;
+        _cornerRadius = 6;
         _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectMake(0, 0, self.currentWidth - 8, 202)];
         self.tintColor = [UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1.0];
     }
@@ -69,44 +69,33 @@
 {
     [super viewDidLoad];
     
-    _backgroundView = [[REComposeBackgroundView alloc] initWithFrame:self.view.bounds];
+    _backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
     _backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _backgroundView.centerOffset = CGSizeMake(0, - self.view.frame.size.height / 2);
+    _backgroundView.opaque = NO;
     _backgroundView.alpha = 0;
-    if (REUIKitIsFlatMode()) {
-        _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
-    }
+    _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+    
     [self.view addSubview:_backgroundView];
     
     _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 202)];
     _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    if (REUIKitIsFlatMode()) {
-        _containerView.alpha = 0;
-    }
+    _containerView.alpha = 0;
+    
     _backView = [[UIView alloc] initWithFrame:CGRectMake(4, 0, self.currentWidth - 8, 202)];
     _backView.layer.cornerRadius = _cornerRadius;
-
     _backView.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
     _sheetView.frame = _backView.bounds;
     _sheetView.layer.cornerRadius = _cornerRadius;
     _sheetView.clipsToBounds = YES;
     _sheetView.delegate = self;
-    if (REUIKitIsFlatMode()) {
-        _sheetView.backgroundColor = self.tintColor;
-    }
+    _sheetView.backgroundColor = self.tintColor;
+    
     
     [_containerView addSubview:_backView];
     [self.view addSubview:_containerView];
     [_backView addSubview:_sheetView];
     
-    if (!REUIKitIsFlatMode()) {
-        _paperclipView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 77, 60, 79, 34)];
-        _paperclipView.image = [UIImage imageNamed:@"REComposeViewController.bundle/PaperClip"];
-        [_containerView addSubview:_paperclipView];
-        [_paperclipView setHidden:YES];
-    }
-        
     if (!_attachmentImage)
         _attachmentImage = [UIImage imageNamed:@"REComposeViewController.bundle/URLAttachment"];
     
@@ -121,25 +110,12 @@
     [super didMoveToParentViewController:parent];
 
     _backgroundView.frame = _rootViewController.view.bounds;
+    [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+    [self.sheetView.textView becomeFirstResponder];
     
-    if (REUIKitIsFlatMode()) {
-        [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-        [self.sheetView.textView becomeFirstResponder];
-    } else {
-        [UIView animateWithDuration:0.4 animations:^{
-            [self.sheetView.textView becomeFirstResponder];
-            [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-        }];
-    }
-    
-    [UIView animateWithDuration:0.3
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                        if (REUIKitIsFlatMode()) {
-                            self.containerView.alpha = 1;
-                        }
-                        self.backgroundView.alpha = 1;
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.containerView.alpha = 1;
+        self.backgroundView.alpha = 1;
     } completion:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -205,14 +181,6 @@
     }
     
     
-    if (!REUIKitIsFlatMode()) {
-        _backView.layer.shadowOpacity = 0.7;
-        _backView.layer.shadowColor = [UIColor blackColor].CGColor;
-        _backView.layer.shadowOffset = CGSizeMake(3, 5);
-        _backView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:_backView.bounds cornerRadius:_cornerRadius].CGPath;
-        _backView.layer.shouldRasterize = YES;
-    }
-    
     _paperclipView.hidden = !_hasAttachment;
     _sheetView.attachmentView.hidden = !_hasAttachment;
     
@@ -225,7 +193,7 @@
     
     CGRect textViewFrame = _sheetView.textView.frame;
     textViewFrame.size.width = !_hasAttachment ? _sheetView.textViewContainer.frame.size.width : _sheetView.textViewContainer.frame.size.width - 84;
-    textViewFrame.size.width -= REUIKitIsFlatMode() ? 14 : 0;
+    textViewFrame.size.width -= 14;
     _sheetView.textView.scrollIndicatorInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, _hasAttachment ? -85 : 0);
     textViewFrame.size.height = _sheetView.frame.size.height - _sheetView.navigationBar.frame.size.height - 3;
     _sheetView.textView.frame = textViewFrame;
@@ -242,7 +210,7 @@
     __typeof(&*self) __weak weakSelf = self;
     
     [UIView animateWithDuration:0.4 animations:^{
-        if (REUIKitIsFlatMode()) {
+        if (YES) {
             self.containerView.alpha = 0;
         } else {
             CGRect frame = weakSelf.containerView.frame;

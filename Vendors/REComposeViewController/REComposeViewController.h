@@ -24,9 +24,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RECommonFunctions.h"
 #import "REComposeSheetView.h"
-#import "REComposeBackgroundView.h"
 
 @class REComposeViewController;
 
@@ -41,7 +39,7 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 
 @interface REComposeViewController : UIViewController <REComposeSheetViewDelegate> {
     REComposeSheetView *_sheetView;
-    REComposeBackgroundView *_backgroundView;
+    UIView *_backgroundView;
     UIView *_backView;
     UIView *_containerView;
     UIImageView *_paperclipView;

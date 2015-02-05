@@ -75,6 +75,13 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
+    
+    
+    UITextField *lagFreeField = [[UITextField alloc] init];
+    [self.window addSubview:lagFreeField];
+    [lagFreeField becomeFirstResponder];
+    [lagFreeField resignFirstResponder];
+    [lagFreeField removeFromSuperview];
     return YES;
 }
 
