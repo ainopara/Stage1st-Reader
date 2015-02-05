@@ -122,7 +122,7 @@
 
     button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 0, 30, 30);
+    button.frame = CGRectMake(0, 0, 40, 30);
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
     UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
@@ -135,7 +135,7 @@
     //Forward Button
     button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 0, 30, 30);
+    button.frame = CGRectMake(0, 0, 40, 30);
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:100];
     UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
@@ -161,7 +161,7 @@
     
     self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem.width = 36.0f;
+    fixItem.width = 26.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, self.actionBarButtonItem]];
