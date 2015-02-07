@@ -37,11 +37,12 @@
     } completion:^(BOOL finished) {
         fromViewController.view.transform = CGAffineTransformIdentity;
         if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-            ;
+            if ([transitionContext transitionWasCancelled]) {
+                toViewController.view.transform = CGAffineTransformIdentity;
+            }
         } else {
             toViewController.view.transform = CGAffineTransformIdentity;
         }
-        
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
     }];
 }
