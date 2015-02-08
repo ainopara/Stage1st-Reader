@@ -30,7 +30,12 @@
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+        } else {
+            [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
+        }
+        
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
@@ -59,15 +64,21 @@
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
+    
     //Migrate to v3.6
     [S1Tracer upgradeDatabase];
+    
+    //Migrate to v3.7
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+    }
     
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:10 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[S1Global color1]];//color2
+    [[UIToolbar appearance] setBarTintColor:[S1Global color1]];
     [[UIToolbar appearance] setTintColor:[S1Global color3]];
     [[UINavigationBar appearance] setBarTintColor:[S1Global color1]];
     [[UINavigationBar appearance] setTintColor:[S1Global color3]];
@@ -76,13 +87,6 @@
     //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
     
-    
-    /*UITextField *lagFreeField = [[UITextField alloc] init];
-    [self.window addSubview:lagFreeField];
-    [lagFreeField becomeFirstResponder];
-    [lagFreeField resignFirstResponder];
-    [lagFreeField removeFromSuperview];
-    */
     return YES;
 }
 

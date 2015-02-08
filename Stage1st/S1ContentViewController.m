@@ -18,7 +18,6 @@
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
-#import "AFNetworking.h"
 #import "ActionSheetStringPicker.h"
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
