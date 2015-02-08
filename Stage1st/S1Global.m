@@ -19,7 +19,7 @@
 +(UIColor *)color9{return [UIColor colorWithRed:0.628 green:0.611 blue:0.484 alpha:1.000];}
 +(UIColor *)color10{return [UIColor colorWithRed:0.744 green:0.776 blue:0.696 alpha:1.000];}
 +(UIColor *)color11{return [UIColor colorWithRed:0.8 green:0.8 blue:0.6 alpha:1.000];}
-+(UIColor *)color12{return nil;}
++(UIColor *)color12{return [UIColor colorWithWhite: 0.667 alpha: 1];}
 +(UIColor *)color13{return nil;}
 +(UIColor *)color14{return nil;}
 +(UIColor *)color15{return nil;}

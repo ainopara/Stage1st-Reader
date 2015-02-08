@@ -654,7 +654,10 @@
                 __strong typeof(self) strongSelf = weakSelf;
                 [strongSelf updatePageLabel];
             }];
-            [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
+                [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
+            }
+            
             
         }
         if (HUD != nil) {
@@ -827,6 +830,7 @@
     if (_finishLoading) {
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];

@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
 
 
 
@@ -58,11 +59,12 @@
     
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
     
+    
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     
     self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
-    
+    self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
     self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
 
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
@@ -124,10 +126,11 @@
         }];
         [self.navigationController pushViewController:controller animated:YES];
     }
+    /*
     if (indexPath.section == 0 && indexPath.row == 7) {
         S1DatabaseManageViewController *databaseManageViewController = [[S1DatabaseManageViewController alloc] initWithStyle:UITableViewStyleGrouped];
         [self.navigationController pushViewController:databaseManageViewController animated:YES];
-    }
+    }*/
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 #pragma mark -
@@ -146,6 +149,9 @@
 }
 - (IBAction)switchUseAPI:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"UseAPI"];
+}
+- (IBAction)switchPrecache:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"PrecacheNextPage"];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

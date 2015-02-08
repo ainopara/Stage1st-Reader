@@ -159,6 +159,35 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="XDa-b9-WDw">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XDa-b9-WDw" id="dhg-ze-qnm">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oV5-7T-ny7">
+                                                    <rect key="frame" x="531" y="7" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="switchPrecache:" destination="Z9I-YZ-q2k" eventType="valueChanged" id="YN6-sT-1jP"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Precache Next Page" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zBD-2E-6nE">
+                                                    <rect key="frame" x="20" y="12" width="149" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="zBD-2E-6nE" secondAttribute="bottom" constant="3.5" id="Ctd-Y9-pe1"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="oV5-7T-ny7" secondAttribute="bottom" constant="-2" id="G4F-2c-zeS"/>
+                                                <constraint firstItem="zBD-2E-6nE" firstAttribute="leading" secondItem="dhg-ze-qnm" secondAttribute="leadingMargin" constant="12" id="aVB-mU-rrS"/>
+                                                <constraint firstItem="zBD-2E-6nE" firstAttribute="top" secondItem="dhg-ze-qnm" secondAttribute="topMargin" constant="4" id="nB6-yd-4It"/>
+                                                <constraint firstItem="oV5-7T-ny7" firstAttribute="top" secondItem="dhg-ze-qnm" secondAttribute="topMargin" constant="-1" id="sVs-o0-UMz"/>
+                                                <constraint firstItem="oV5-7T-ny7" firstAttribute="trailing" secondItem="dhg-ze-qnm" secondAttribute="trailingMargin" constant="-12" id="xnq-UY-4gz"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="OSm-vW-8QY">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
@@ -270,6 +299,7 @@
                         <outlet property="forumOrderCell" destination="qM9-kQ-VM0" id="3nx-e2-U3J"/>
                         <outlet property="keepHistoryCell" destination="hNg-YP-0G0" id="URo-UP-97R"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>
+                        <outlet property="precacheSwitch" destination="oV5-7T-ny7" id="nmO-gr-qP6"/>
                         <outlet property="replyIncrementSwitch" destination="NjD-eD-vbp" id="wZo-Jv-odG"/>
                         <outlet property="useAPISwitch" destination="BuD-0p-Vi4" id="2d8-oP-fWN"/>
                         <outlet property="usernameDetail" destination="nZs-MV-DJo" id="0ph-I0-JDx"/>

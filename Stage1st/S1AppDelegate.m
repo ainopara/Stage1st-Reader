@@ -44,7 +44,10 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"UseAPI"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UseAPI"];
+    }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"PrecacheNextPage"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"PrecacheNextPage"];
     }
     
     //Migrate to v3.4.0
@@ -84,7 +87,7 @@
     [[UINavigationBar appearance] setTintColor:[S1Global color3]];
 
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    //[controller handlePasteboardString:[UIPasteboard generalPasteboard].string];
+    [[UISwitch appearance] setOnTintColor:[S1Global color4]];
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
     
     return YES;
