@@ -506,7 +506,14 @@
             cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
         }
     } else {
-        cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad" ofType:@"css"];
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"18px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
+        } else if ([fontSizeKey isEqualToString:@"20px"]){
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
+        }
     }
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
