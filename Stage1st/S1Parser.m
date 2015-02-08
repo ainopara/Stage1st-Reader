@@ -20,9 +20,10 @@
 
 @implementation S1Parser
 # pragma mark - Process Data
-+ (NSString *)processImagesInHTMLString:(NSString *)HTMLString
++ (NSString *)processHTMLString:(NSString *)HTMLString
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    //process images
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
@@ -69,6 +70,31 @@
         [image removeAttributeForName:@"height"];
         
     }
+    
+    //process spoiler
+    NSArray *spoilers = [xmlDoc nodesForXPath:@"//font[@color='LemonChiffon']" error:nil];
+    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='Yellow']" error:nil]];
+    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='White']" error:nil]];
+    for (DDXMLElement *spoilerElement in spoilers) {
+        [spoilerElement removeAttributeForName:@"color"];
+        [spoilerElement setName:@"div"];
+        [spoilerElement addAttributeWithName:@"style" stringValue:@"display:none;"];
+        NSUInteger index = [spoilerElement index];
+        DDXMLElement *parentElement = (DDXMLElement *)[spoilerElement parent];
+        [spoilerElement detach];
+        
+        DDXMLElement *containerElement = [[DDXMLElement alloc] initWithName:@"div"];
+        DDXMLElement *buttonElement = [[DDXMLElement alloc] initWithName:@"input"];
+        [buttonElement addAttributeWithName:@"value" stringValue:@"显示反白内容"];
+        [buttonElement addAttributeWithName:@"type" stringValue:@"button"];
+        [buttonElement addAttributeWithName:@"style" stringValue:@"width:80px;font-size:10px;margin:0px;padding:0px;"];
+        [buttonElement addAttributeWithName:@"onclick" stringValue:@"var e = this.parentNode.getElementsByTagName('div')[0];e.style.display = '';e.style.border = '#aaa 1px solid';this.style.display = 'none';"];
+        [containerElement addChild:buttonElement];
+        [containerElement addChild:spoilerElement];
+        [parentElement insertChild:containerElement atIndex:index];
+    }
+    
+    
     NSString *processedString = [xmlDoc XMLStringWithOptions:DDXMLNodePrettyPrint];
     processedString = [processedString substringWithRange:NSMakeRange(183,[processedString length]-183-17)];
     if (processedString) {
@@ -463,7 +489,7 @@
         }
         finalString = [finalString stringByAppendingString:output];
     }
-    finalString = [S1Parser processImagesInHTMLString:finalString];
+    finalString = [S1Parser processHTMLString:finalString];
     NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
     NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
     NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
