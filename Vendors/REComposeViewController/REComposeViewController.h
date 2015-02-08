@@ -57,6 +57,7 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 @property (strong, readwrite, nonatomic) UIColor *tintColor;
 @property (strong, readwrite, nonatomic) UIImage *attachmentImage;
 @property (weak, readonly, nonatomic) UIViewController *rootViewController;
+@property (strong, readwrite, nonatomic) UIView *accessoryView;
 
 - (void)presentFromRootViewController;
 - (void)presentFromViewController:(UIViewController *)controller;

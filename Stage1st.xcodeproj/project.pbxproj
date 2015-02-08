@@ -293,6 +293,8 @@
 		C08A440D16DA775F003BF44C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */,
+				86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */,
 				C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */,
 				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
 				C08A440E16DA779E003BF44C /* S1URLCache.h */,
@@ -413,8 +415,6 @@
 				C083351816E363870035C1AA /* S1Tracer.m */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
-				86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */,
-				86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";

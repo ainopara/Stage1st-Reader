@@ -111,4 +111,10 @@
         [localDelegate postButtonPressed];
 }
 
+- (void)setAccessoryView:(UIView *)accessoryView {
+    _textView.inputAccessoryView = accessoryView;
+}
+- (UIView *)accessoryView {
+    return _textView.inputAccessoryView;
+}
 @end

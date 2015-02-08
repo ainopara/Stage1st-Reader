@@ -35,13 +35,16 @@
 
 @end
 
-@implementation REComposeViewController
+@implementation REComposeViewController {
+    CGFloat _keyboardHeight;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _cornerRadius = 6;
+        _keyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 387 : 197) : (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 299 : 252.0);
         _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectMake(0, 0, self.currentWidth - 8, 202)];
         self.tintColor = [UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1.0];
     }
@@ -110,15 +113,16 @@
     [super didMoveToParentViewController:parent];
 
     _backgroundView.frame = _rootViewController.view.bounds;
-    [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-    [self.sheetView.textView becomeFirstResponder];
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.containerView.alpha = 1;
         self.backgroundView.alpha = 1;
+        [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+        [self.sheetView.textView becomeFirstResponder];
     } completion:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateKeyboardFrame:) name:UIKeyboardDidShowNotification object:nil];
 
 }
 
@@ -139,39 +143,50 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear: animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)layoutWithOrientation:(UIInterfaceOrientation)interfaceOrientation width:(NSInteger)width height:(NSInteger)height
 {
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
+    NSInteger expectComposeViewHeight = 202;
+    
+    CGFloat accessoryViewHeight = 0;
+    if (_sheetView.textView.inputAccessoryView != nil) {
+        accessoryViewHeight = _sheetView.textView.inputAccessoryView.frame.size.height;
+    }
+    
+    CGRect frame = _containerView.frame;
+    frame.size.height = expectComposeViewHeight;
+    
     if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-        CGRect frame = _containerView.frame;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             offset *= 2;
         }
-        
-        NSInteger verticalOffset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 316 : 216;
-        
-        NSInteger containerHeight = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? _containerView.frame.size.height : _containerView.frame.size.height;
-        frame.origin.y = (height - verticalOffset - containerHeight) / 2;
-        if (frame.origin.y < 20) frame.origin.y = 20;
+        frame.origin.y = (height - _keyboardHeight - expectComposeViewHeight) / 2;
+        if (frame.origin.y < 20) {
+            frame.size.height = height - _keyboardHeight - 20;
+            frame.origin.y = 20;
+        }
         _containerView.frame = frame;
         
         _containerView.clipsToBounds = YES;
-        _backView.frame = CGRectMake(offset, 0, width - offset*2, UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 202 : 140);
+        _backView.frame = CGRectMake(offset, 0, width - offset*2, UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? expectComposeViewHeight : frame.size.height);
         _sheetView.frame = _backView.bounds;
         
         CGRect paperclipFrame = _paperclipView.frame;
         paperclipFrame.origin.x = width - 73 - offset;
         _paperclipView.frame = paperclipFrame;
     } else {
-        CGRect frame = _containerView.frame;
-        frame.origin.y = (height - 216 - _containerView.frame.size.height) / 2;
-        if (frame.origin.y < 20) frame.origin.y = 20;
+
+        frame.origin.y = (height - _keyboardHeight - accessoryViewHeight - expectComposeViewHeight) / 2;
+        if (frame.origin.y < 20) {
+            frame.size.height = height - _keyboardHeight - accessoryViewHeight - 20;
+            frame.origin.y = 20;
+        }
         _containerView.frame = frame;
-        _backView.frame = CGRectMake(offset, 0, width - offset*2, 202);
+        _backView.frame = CGRectMake(offset, 0, width - offset*2, frame.size.height);
         _sheetView.frame = _backView.bounds;
         
         
@@ -277,6 +292,13 @@
     self.sheetView.backgroundColor = tintColor;
 }
 
+- (void)setAccessoryView:(UIView *)accessoryView {
+    [_sheetView setAccessoryView:accessoryView];
+}
+- (UIView *)accessoryView {
+    return _sheetView.accessoryView;
+}
+
 #pragma mark -
 #pragma mark REComposeSheetViewDelegate
 
@@ -352,6 +374,21 @@
 - (void)viewOrientationDidChanged:(NSNotification *)notification
 {
     [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+}
+
+- (void)updateKeyboardFrame:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    CGSize kbSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    NSLog(@"%f", kbSize.height);
+    if (_keyboardHeight != kbSize.height) {
+        _keyboardHeight = kbSize.height;
+        [UIView animateWithDuration:0.4 animations:^{
+            [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+        }];
+    }
+    
+    
 }
 
 @end
