@@ -435,7 +435,7 @@
         <!--Navigation Controller-->
         <scene sceneID="mvP-Cs-VOt">
             <objects>
-                <navigationController storyboardIdentifier="SettingsNavigation" id="dph-w0-2OJ" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="SettingsNavigation" modalPresentationStyle="formSheet" id="dph-w0-2OJ" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="b8k-l2-njz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -445,13 +445,6 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FVh-5C-FKS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Font Size" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CtM-qh-yKj">
-                    <rect key="frame" x="0.0" y="0.0" width="68" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </objects>
             <point key="canvasLocation" x="315" y="384"/>
         </scene>

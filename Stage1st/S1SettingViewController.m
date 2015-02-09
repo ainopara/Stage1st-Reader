@@ -135,9 +135,7 @@
 }
 #pragma mark -
 - (IBAction)back:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)switchDisplayImage:(UISwitch *)sender {
