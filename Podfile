@@ -10,6 +10,5 @@ target "Stage1st" do
     pod 'SVWebViewController', :git => 'https://github.com/ainopara/SVWebViewController.git'
     pod '1PasswordExtension', '~> 1.0.0'
     pod 'IMQuickSearch'
-    pod 'KMCGeigerCounter'
 end
 

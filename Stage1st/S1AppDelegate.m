@@ -10,7 +10,6 @@
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"
-#import "KMCGeigerCounter.h"
 
 @implementation S1AppDelegate
 
@@ -38,7 +37,7 @@
         
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
+        [[NSUserDefaults standardUserDefaults] setValue:@2592000 forKey:@"HistoryLimit"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
@@ -85,9 +84,10 @@
     [[UIToolbar appearance] setTintColor:[S1Global color3]];
     [[UINavigationBar appearance] setBarTintColor:[S1Global color1]];
     [[UINavigationBar appearance] setTintColor:[S1Global color3]];
-
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [[UISwitch appearance] setOnTintColor:[S1Global color4]];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
     
     return YES;
