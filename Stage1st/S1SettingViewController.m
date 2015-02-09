@@ -9,7 +9,7 @@
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1DatabaseManageViewController.h"
-#include "GSStaticTableViewBuilder.h"
+#import "GSStaticTableViewBuilder.h"
 
 @interface S1SettingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
@@ -49,6 +49,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.navigationController.view.layer.cornerRadius  = 10.0;
+        self.navigationController.view.layer.masksToBounds = YES;
+        self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
+    }
     
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
