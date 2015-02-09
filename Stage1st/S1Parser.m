@@ -359,8 +359,8 @@
             }
             
             //parse poll
-            TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
-            [floor setPoll: [floorPollNode raw]];
+            //TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
+            //[floor setPoll: [floorPollNode raw]];
             
             //parse message
             TFHppleElement *messageNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='pcb']/div[@class='locked']/em"] firstObject];
