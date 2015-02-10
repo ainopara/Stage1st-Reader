@@ -458,7 +458,10 @@
         
         //process content
         NSString *contentString = topicFloor.content;
-        contentString = [S1Parser stripTails:contentString];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"]) {
+            contentString = [S1Parser stripTails:contentString];
+        }
+        
         //work when the floor's author is blocked and s1reader using parse mode
         if (contentString == nil && topicFloor.message != nil) {
             contentString = [NSString stringWithFormat:@"<td class=\"t_f\"><div class=\"s1-alert\">%@</div></td>", topicFloor.message];

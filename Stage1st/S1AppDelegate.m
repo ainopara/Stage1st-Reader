@@ -42,6 +42,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"RemoveTails"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RemoveTails"];
+    }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UseAPI"];
     }

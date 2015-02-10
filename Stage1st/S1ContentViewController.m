@@ -334,7 +334,6 @@
         // Weibo Action
         UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             if (!NSClassFromString(@"SLComposeViewController")) {
-                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
                 return;
             }
             SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
@@ -417,7 +416,6 @@
         // Weibo
         if (2 == buttonIndex) {
             if (!NSClassFromString(@"SLComposeViewController")) {
-                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Weibo_Service_Support_Message", @"")];
                 return;
             }
             SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];

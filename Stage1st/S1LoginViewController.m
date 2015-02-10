@@ -42,68 +42,6 @@
     [self.passwordField setDelegate:self];
     
     [self updateUI];
-    /*
-    self.navigationItem.title = NSLocalizedString(@"LoginView_Title", @"Login");
-        
-    self.usernameField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
-    self.usernameField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserIDCached"];
-    self.usernameField.textColor = [S1GlobalVariables color4];
-    self.usernameField.tag = 99;
-    self.usernameField.placeholder = NSLocalizedString(@"LoginView_ID", @"Id");
-    self.usernameField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.usernameField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.usernameField.delegate = self;
-    
-    self.passwordField = [[UITextField alloc] initWithFrame:_DEFAULT_TEXT_FIELD_RECT];
-    self.passwordField.text = @"";
-    self.passwordField.textColor = [S1GlobalVariables color4];
-    self.passwordField.tag = 100;
-    self.passwordField.placeholder = NSLocalizedString(@"LoginView_Password", @"Password");
-    self.passwordField.delegate = self;
-    self.passwordField.secureTextEntry = YES;
-    __weak typeof(self) myself = self;
-    [self addSection:^(GSSection *section) {
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"LoginView_User_ID", @"User ID");
-                if (cell.contentView.subviews.count < 2) {
-                    CGRect toFrame = _DEFAULT_TEXT_FIELD_RECT;
-                    toFrame.size.width = cell.contentView.bounds.size.width - toFrame.origin.x - 30.0f;
-                    myself.usernameField.frame = toFrame;
-                    [cell.contentView addSubview:myself.usernameField];
-                }
-            }];
-        }];
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell) {
-                cell.textLabel.text = NSLocalizedString(@"LoginView_Password", @"Password");
-                if (cell.contentView.subviews.count < 2) {
-                    CGRect toFrame = _DEFAULT_TEXT_FIELD_RECT;
-                    toFrame.size.width = cell.contentView.bounds.size.width - toFrame.origin.x - 30.0f;
-                    myself.passwordField.frame = toFrame;
-                    [cell.contentView addSubview:myself.passwordField];
-                }
-            }];
-        }];
-    }];
-    
-    [self addSection:^(GSSection *section) {
-        [section addRow:^(GSRow *row) {
-            [row setConfigurationBlock:^(UITableViewCell *cell){
-                cell.textLabel.text = NSLocalizedString(@"LoginView_Get_Login_Status", @"Get Login Status");
-                cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }];
-            [row setEventHandlerBlock:^(UITableViewCell *cell){
-                [myself clearCookiers];
-                if (myself.usernameField.text.length > 0 && myself.passwordField.text.length > 0) {
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                    [myself login];
-                }
-            }];
-        }];
-    }];
-     */
 }
 
 

@@ -40,6 +40,7 @@
 		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
+		86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
 		C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */; };
@@ -99,7 +100,6 @@
 		864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseListCell.m; path = Stage1st/S1DatabaseListCell.m; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
-		8656731A1A7A7B270025D22E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		8656731B1A7A7B2A0025D22E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad_22px.css; sourceTree = "<group>"; };
@@ -127,6 +127,8 @@
 		86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseManageViewController.m; path = Stage1st/S1DatabaseManageViewController.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
+		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
+		86E44DDE1A89BDBA001E0B83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ReorderForumViewController.m; path = Stage1st/S1ReorderForumViewController.m; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 		C095873E16CA8A36007E0119 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */,
 				86D4A8F8189186A400CA93FD /* FloorTemplate.html */,
 				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
 				867EECA71A104D8E00E0DE6F /* content_base.css */,
@@ -556,6 +559,7 @@
 				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */,
+				86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */,
 				864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */,
 				C095874216CA8A36007E0119 /* Localizable.strings in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
@@ -680,10 +684,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				865673181A7A7B190025D22E /* Base */,
-				8656731A1A7A7B270025D22E /* en */,
 				8656731B1A7A7B2A0025D22E /* zh-Hans */,
+				86E44DDE1A89BDBA001E0B83 /* en */,
 			);
 			name = Settings.storyboard;
+			sourceTree = "<group>";
+		};
+		86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				86E44DDB1A89B611001E0B83 /* zh-Hans */,
+			);
+			name = "Stage1st-InfoPlist.strings";
 			sourceTree = "<group>";
 		};
 		C095874016CA8A36007E0119 /* Localizable.strings */ = {

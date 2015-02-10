@@ -16,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *keepHistoryDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *replyIncrementSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *removeTailsSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
@@ -68,7 +68,7 @@
     
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     
-    self.replyIncrementSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"];
+    self.removeTailsSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"];
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
     self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
@@ -148,8 +148,8 @@
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"Display"];
 }
 
-- (IBAction)switchReplyIncrement:(UISwitch *)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ReplyIncrement"];
+- (IBAction)switchRemoveTails:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"RemoveTails"];
 }
 - (IBAction)switchUseAPI:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"UseAPI"];
