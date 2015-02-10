@@ -10,6 +10,7 @@
 #import "S1TopicListViewController.h"
 #import "S1DatabaseManageViewController.h"
 #import "GSStaticTableViewBuilder.h"
+//#import "MTStatusBarOverlay.h"
 
 @interface S1SettingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
@@ -49,7 +50,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
+    //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.navigationController.view.layer.cornerRadius  = 10.0;
         self.navigationController.view.layer.masksToBounds = YES;
