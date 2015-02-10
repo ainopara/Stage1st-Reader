@@ -35,14 +35,15 @@
 
 -(instancetype)init {
     self = [super init];
-    self.tracer = [[S1Tracer alloc] init];
-    self.topicListCache = [[NSMutableDictionary alloc] init];
-    self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
-    self.floorCache = [NSMutableDictionary dictionary];
-    self.cacheFinishHandlers = [NSMutableDictionary dictionary];
-    self.shouldReloadFavoriteCache = YES;
-    self.shouldReloadHistoryCache = YES;
-    self.sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
+    _tracer = [[S1Tracer alloc] init];
+    _topicListCache = [[NSMutableDictionary alloc] init];
+    _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
+    _floorCache = [NSMutableDictionary dictionary];
+    _cacheFinishHandlers = [NSMutableDictionary dictionary];
+    _shouldReloadFavoriteCache = YES;
+    _shouldReloadHistoryCache = YES;
+    //_shouldInterruptHistoryCallback = NO;
+    _sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
         if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
             return (NSComparisonResult)NSOrderedDescending;
         }
