@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.0.9)
-  - ActionSheetPicker-3.0 (1.3.11)
+  - ActionSheetPicker-3.0 (1.3.12)
   - AFNetworking (2.4.1):
     - AFNetworking/NSURLConnection (= 2.4.1)
     - AFNetworking/NSURLSession (= 2.4.1)
@@ -30,7 +30,6 @@ PODS:
   - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.4)
   - KissXML (5.1.1)
-  - KMCGeigerCounter (0.2.0)
   - SVWebViewController (1.0)
 
 DEPENDENCIES:
@@ -41,7 +40,6 @@ DEPENDENCIES:
   - IMQuickSearch
   - JTSImageViewController
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
-  - KMCGeigerCounter
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
 EXTERNAL SOURCES:
@@ -60,13 +58,12 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 40e5bfe30487e9c11b92dc81f4cb3e47abdf5a58
-  ActionSheetPicker-3.0: 4f48f8ca46f981effd10ba59a73401d4ae9d6a2e
+  ActionSheetPicker-3.0: e49127271ec833864f3235ba7261b1f0d093a503
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   FMDB: 0efa188cf0dd1ce82c27a478cd5f5fa245308677
   IMQuickSearch: b032f2916aebf84ef84dd44ff022218498319906
   JTSImageViewController: 9fe6402194b7679f0e28d0c1002d6164301fc34a
   KissXML: fb199a7f79732bdcd27f2abc83941840654f1e41
-  KMCGeigerCounter: 52e8f442f82e7750870d6b48e05f68086bbe0d8c
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca
 
 COCOAPODS: 0.35.0
