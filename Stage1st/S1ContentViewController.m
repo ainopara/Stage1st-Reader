@@ -108,8 +108,18 @@
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleLabel.text = self.topic.title;
-    self.titleLabel.textColor = [S1Global color4];
+    BOOL hasInvalidTitle = NO;
+    if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
+        self.titleLabel.text = @"载入中...";
+        hasInvalidTitle = YES;
+    } else {
+        self.titleLabel.text = self.topic.title;
+    }
+    if (hasInvalidTitle) {
+        self.titleLabel.textColor = [S1Global color12];
+    }else {
+        self.titleLabel.textColor = [S1Global color4];
+    }
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -643,7 +653,7 @@
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf updatePageLabel];
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
-        strongSelf.titleLabel.text = self.topic.title;
+        [strongSelf updateTitleLabelWithTitle:strongSelf.topic.title];
         _finishLoading = YES;
         // prepare next page
         if (_currentPage < _totalPages) {
@@ -807,6 +817,10 @@
     }
 }
 
+- (void)updateTitleLabelWithTitle:(NSString *)title {
+    self.titleLabel.text = title;
+    self.titleLabel.textColor = [S1Global color4];
+}
 - (UIImage *)screenShot
 {
     if (IS_RETINA) {
