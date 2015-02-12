@@ -65,11 +65,7 @@
 
 - (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     if (refresh || self.topicListCache[keyID] == nil) {
-        [self fetchTopicsForKeyFromServer:keyID withPage:@1 success:^(NSArray *topicList) {
-            success(topicList);
-        } failure:^(NSError *error) {
-            failure(error);
-        }];
+        [self fetchTopicsForKeyFromServer:keyID withPage:@1 success:success failure:failure];
     } else {
         success(self.topicListCache[keyID]);
     }
@@ -79,11 +75,7 @@
     if (self.topicListCachePageNumber[keyID] == nil) { return; }
     NSNumber *currentPageNumber = self.topicListCachePageNumber[keyID];
     NSNumber *nextPageNumber = [NSNumber numberWithInteger:[currentPageNumber integerValue] + 1];
-    [self fetchTopicsForKeyFromServer:keyID withPage:nextPageNumber success:^(NSArray *topicList) {
-        success(topicList);
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
+    [self fetchTopicsForKeyFromServer:keyID withPage:nextPageNumber success:success failure:failure];
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
@@ -111,9 +103,7 @@
                 
                 [strongMyself processTopics:topics withKeyID:keyID andPage:page];
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    success(strongMyself.topicListCache[keyID]);
-                });
+                success(strongMyself.topicListCache[keyID]);
             });
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -181,7 +171,7 @@
     return [self.floorCache valueForKey:key] != nil;
 }
 
-- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self
+- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self?
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     if ((shouldUpdate == NO) && ([self.floorCache valueForKey:key] != nil)) {

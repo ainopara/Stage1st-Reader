@@ -315,74 +315,78 @@ static NSString * const cellIdentifier = @"TopicCell";
         [HUD showActivityIndicator];
     }
     
-    //TODO: weak self
+    __weak typeof(self) weakSelf = self;
     [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
-        if (topicList.count > 0) {
-            if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-                self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-            }
-            self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
-            self.currentKey = key;
-            self.topics = [topicList mutableCopy];
-            [self.tableView reloadData];
-            if (self.tableView.hidden) { self.tableView.hidden = NO; }
-            if (self.cacheContentOffset[key] && !scrollToTop) {
-                [self.tableView setContentOffset:[self.cacheContentOffset[key] CGPointValue] animated:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(self) strongSelf = weakSelf;
+            if (topicList.count > 0) {
+                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                    strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+                }
+                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+                strongSelf.currentKey = key;
+                
+                strongSelf.topics = [topicList mutableCopy];
+                [strongSelf.tableView reloadData];
+                if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
+                if (strongSelf.cacheContentOffset[key] && !scrollToTop) {
+                    [strongSelf.tableView setContentOffset:[strongSelf.cacheContentOffset[key] CGPointValue] animated:NO];
+                } else {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                }
+                //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+                if (strongSelf.tableView.contentOffset.y < 0) {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                }
             } else {
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                    strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+                }
+                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+                strongSelf.currentKey = key;
+                if (![key isEqualToString:strongSelf.previousKey]) {
+                    strongSelf.topics = [[NSMutableArray alloc] init];
+                    [strongSelf.tableView reloadData];
+                }
             }
-            //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
-            if (self.tableView.contentOffset.y < 0) {
-                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            //hud hide
+            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+                [HUD hideWithDelay:0.3];
+            }
+            //others
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
             }
             
-        } else {
-            if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-                self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-            }
-            self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
-            self.currentKey = key;
-            if (![key isEqualToString:self.previousKey]) {
-                self.topics = [[NSMutableArray alloc] init];
-                [self.tableView reloadData];
-            }
-        }
-        //hud hide
-        if (refresh || ![self.dataCenter hasCacheForKey:key]) {
-            [HUD hideWithDelay:0.3];
-        }
-        //others
-        self.scrollTabBar.enabled = YES;
-        if (self.refreshControl.refreshing) {
-            [self.refreshControl endRefreshing];
-        }
-        
-        [self.searchBar setHidden: ([self.dataCenter canMakeSearchRequest] == NO)];
-        _loadingFlag = NO;
+            [strongSelf.searchBar setHidden: ([strongSelf.dataCenter canMakeSearchRequest] == NO)];
+            _loadingFlag = NO;
+        });
     } failure:^(NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
         if (error.code == -999) {
             NSLog(@"Code -999 may means user want to cancel this request.");
             [HUD hideWithDelay:0];
             //others
-            self.scrollTabBar.enabled = YES;
-            if (self.refreshControl.refreshing) {
-                [self.refreshControl endRefreshing];
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
             }
             _loadingFlag = NO;
         } else {
             //reload data
-            if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-                self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+            if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
-            self.previousKey = self.currentKey == nil ? @"" : self.currentKey;
-            self.currentKey = key;
-            if (![key isEqualToString:self.previousKey]) {
-                self.topics = [[NSMutableArray alloc] init];
-                [self.tableView reloadData];
+            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+            strongSelf.currentKey = key;
+            if (![key isEqualToString:strongSelf.previousKey]) {
+                strongSelf.topics = [[NSMutableArray alloc] init];
+                [strongSelf.tableView reloadData];
             }
             //hud hide
-            if (refresh || ![self.dataCenter hasCacheForKey:key]) {
+            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
                 if (error.code == -999) {
                     NSLog(@"Code -999 may means user want to cancel this request.");
                     [HUD hideWithDelay:0];
@@ -393,9 +397,9 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             
             //others
-            self.scrollTabBar.enabled = YES;
-            if (self.refreshControl.refreshing) {
-                [self.refreshControl endRefreshing];
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
             }
             _loadingFlag = NO;
         }
@@ -504,9 +508,13 @@ static NSString * const cellIdentifier = @"TopicCell";
         if ([self.currentKey isEqual: @"Search"]) {
             ;
         } else {
+            __weak typeof(self) weakSelf = self;
             [self.dataCenter loadNextPageForKey:self.threadsInfo[self.currentKey] success:^(NSArray *topicList) {
-                self.topics = [topicList mutableCopy];
-                [self.tableView reloadData];
+                __strong typeof(self) strongSelf = weakSelf;
+                strongSelf.topics = [topicList mutableCopy];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [strongSelf.tableView reloadData];
+                });
             } failure:^(NSError *error) {
                 NSLog(@"fail to load more...");
             }];
