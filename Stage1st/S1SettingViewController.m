@@ -22,12 +22,10 @@
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
 
-
-
-
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *leftSpaceConstraint;
 
 
 @end
@@ -50,14 +48,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
     //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (IS_IPAD) {
         self.navigationController.view.layer.cornerRadius  = 10.0;
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
-    
+    if (IS_WIDE_DEVICE) {
+        for (NSLayoutConstraint *constraint in self.leftSpaceConstraint) {
+            constraint.constant = 12;
+        }
+    }
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
         self.usernameDetail.text = inLoginStateID;
