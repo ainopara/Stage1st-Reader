@@ -217,12 +217,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+    [self.dataCenter clearTopicListCache];
+    [self.dataCenter clearContentPageCache];
+    [self updatePageLabel];
     // Dispose of any resources that can be recreated.
 }
-
 #pragma mark - Setters and Getters
 
 - (void)setTopic:(S1Topic *)topic

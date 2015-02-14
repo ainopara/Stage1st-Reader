@@ -139,13 +139,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [super viewWillDisappear:animated];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    [self.dataCenter clearTopicListCache];
-    [self.dataCenter clearContentPageCache];
-    // Dispose of any resources that can be recreated.
-}
 
 - (void)dealloc
 {

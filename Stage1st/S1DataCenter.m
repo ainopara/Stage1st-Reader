@@ -449,8 +449,8 @@
 }
 #pragma mark - Cache
 - (void)clearTopicListCache {
-    //self.topicListCache = [[NSMutableDictionary alloc] init];
-    //self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
+    self.topicListCache = [[NSMutableDictionary alloc] init];
+    self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
 
 - (void)clearContentPageCache {
