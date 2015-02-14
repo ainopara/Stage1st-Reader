@@ -31,6 +31,11 @@
         NSLog(@"Could not open db.");
         return nil;
     }
+    _backgroundDb = [FMDatabase databaseWithPath:databasePath];
+    if (![_backgroundDb open]) {
+        NSLog(@"Could not open background db.");
+        return nil;
+    }
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position FLOAT, visit_count INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
@@ -45,6 +50,7 @@
 {
     NSLog(@"Database closed.");
     [_db close];
+    [_backgroundDb close];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -91,21 +97,31 @@
     FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM (history INNER JOIN threads ON history.topic_id = threads.topic_id) ORDER BY threads.last_visit_time DESC;"];
     NSInteger count = 0;
     while ([historyResult next]) {
-        [historyTopics addObject:[S1Tracer topicFromQueryResult:historyResult inDatabase:_db]];
+        [historyTopics addObject:[S1Tracer topicFromQueryResult:historyResult]];
         count += 1;
         if (count == 100) {
             break;
         }
     }
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableArray *historyTopicsLeft = [NSMutableArray array];
-        while ([historyResult next]) {
-            [historyTopicsLeft addObject:[S1Tracer topicFromQueryResult:historyResult inDatabase:_db]];
-        }
-        NSLog(@"History Left count: %lu",(unsigned long)[historyTopicsLeft count] + 100);
-        
-        leftTopicsHandler(historyTopicsLeft);
-    });
+    for (S1Topic *topic in historyTopics) {
+        topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_db]];
+        topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_db]];
+    }
+    if (count > 99) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableArray *historyTopicsLeft = [NSMutableArray array];
+            while ([historyResult next]) {
+                [historyTopicsLeft addObject:[S1Tracer topicFromQueryResult:historyResult]];
+            }
+            NSLog(@"History Left count: %lu",(unsigned long)[historyTopicsLeft count] + count);
+            for (S1Topic *topic in historyTopicsLeft) {
+                topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_backgroundDb]];
+                topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_backgroundDb]];
+            }
+            leftTopicsHandler(historyTopicsLeft);
+        });
+    }
+    
     return historyTopics;
 }
 
@@ -130,7 +146,18 @@
     }
 }
 #pragma mark - Static
-
++ (S1Topic *)topicFromQueryResult:(FMResultSet *)result {
+    S1Topic *topic = [[S1Topic alloc] init];
+    topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
+    topic.title = [result stringForColumn:@"title"];
+    topic.replyCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]];
+    topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
+    topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
+    topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
+    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
+    topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
+    return topic;
+}
 + (S1Topic *)topicFromQueryResult:(FMResultSet *)result inDatabase:(FMDatabase *)database {
     S1Topic *topic = [[S1Topic alloc] init];
     topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
@@ -140,8 +167,8 @@
     topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
     topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
     topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
-    topic.favorite = [NSNumber numberWithBool:[self topicIsFavorited:topic.topicID inDatabase:database]];
-    topic.history = [NSNumber numberWithBool:[self topicIsInHistory:topic.topicID inDatabase:database]];
+    topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:database]];
+    topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:database]];
     topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
     return topic;
 }

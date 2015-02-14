@@ -18,6 +18,7 @@ typedef enum {
 @interface S1Tracer : NSObject
 
 @property (nonatomic, strong) FMDatabase *db;
+@property (nonatomic, strong) FMDatabase *backgroundDb;
 
 - (id)init;
 
