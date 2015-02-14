@@ -52,6 +52,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @implementation S1TopicListViewController {
     BOOL _loadingFlag;
+    BOOL _loadingMore;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -59,6 +60,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self = [super initWithCoder:coder];
     if (self) {
         _loadingFlag = NO;
+        _loadingMore = NO;
         self.currentKey = @"";
         self.previousKey = @"";
     }
@@ -492,7 +494,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         return;
     }
-    if (_loadingFlag) {
+    if (_loadingFlag || _loadingMore) {
         return;
     }
     if(indexPath.row == [self.topics count] - 15)
@@ -501,14 +503,17 @@ static NSString * const cellIdentifier = @"TopicCell";
         if ([self.currentKey isEqual: @"Search"]) {
             ;
         } else {
+            _loadingMore = YES;
             __weak typeof(self) weakSelf = self;
             [self.dataCenter loadNextPageForKey:self.threadsInfo[self.currentKey] success:^(NSArray *topicList) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.topics = [topicList mutableCopy];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [strongSelf.tableView reloadData];
+                    _loadingMore = NO;
                 });
             } failure:^(NSError *error) {
+                _loadingMore = NO;
                 NSLog(@"fail to load more...");
             }];
         }
