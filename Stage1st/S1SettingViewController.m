@@ -52,9 +52,9 @@
     //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
     //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
     if (IS_IPAD) {
-        self.navigationController.view.layer.cornerRadius  = 10.0;
+        //UIDropShadowView has a fixed corner radius.
+        self.navigationController.view.layer.cornerRadius  = 5.0;
         self.navigationController.view.layer.masksToBounds = YES;
-        self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
     if (IS_WIDE_DEVICE) {
         for (NSLayoutConstraint *constraint in self.leftSpaceConstraint) {
