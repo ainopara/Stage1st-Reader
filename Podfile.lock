@@ -39,19 +39,20 @@ DEPENDENCIES:
   - FMDB (~> 2.3)
   - IMQuickSearch
   - JTSImageViewController
-  - KissXML (from `https://github.com/ainopara/KissXML.git`)
+  - KissXML (from `https://github.com/ainopara/KissXML.git`, tag `5.1.1`)
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
 EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
+    :tag: 5.1.1
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 CHECKOUT OPTIONS:
   KissXML:
-    :commit: 9b06f96f1ed163951960376c26a03602ba4b6bbc
     :git: https://github.com/ainopara/KissXML.git
+    :tag: 5.1.1
   SVWebViewController:
     :commit: f48744c344fdb9828a5ce6afbafc70c1e60521df
     :git: https://github.com/ainopara/SVWebViewController.git
