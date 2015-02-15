@@ -72,7 +72,12 @@
 }
 
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    if (self.topicListCachePageNumber[keyID] == nil) { return; }
+    
+    if (self.topicListCachePageNumber[keyID] == nil) {
+        failure(nil);
+        return;
+    }
+    
     NSNumber *currentPageNumber = self.topicListCachePageNumber[keyID];
     NSNumber *nextPageNumber = [NSNumber numberWithInteger:[currentPageNumber integerValue] + 1];
     [self fetchTopicsForKeyFromServer:keyID withPage:nextPageNumber success:success failure:failure];

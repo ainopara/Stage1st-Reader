@@ -278,6 +278,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.naviItem.titleView = nil;
     self.naviItem.title = @"Stage1st";
     self.searchBar.text = @"";
+    _loadingMore = NO;
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
