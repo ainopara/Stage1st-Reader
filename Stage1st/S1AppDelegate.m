@@ -7,7 +7,6 @@
 //
 
 #import "S1AppDelegate.h"
-#import "S1RootViewController.h"
 #import "S1TopicListViewController.h"
 #import "S1URLCache.h"
 #import "S1Tracer.h"
@@ -16,9 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    //User Defaults;
+    //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
@@ -32,24 +29,28 @@
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+        } else {
+            [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
+        }
+        
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@259200 forKey:@"HistoryLimit"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"AppendSuffix"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"AppendSuffix"];
+        [[NSUserDefaults standardUserDefaults] setValue:@2592000 forKey:@"HistoryLimit"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
     }
-    /*
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FavoriteTopicShouldOrderByLastVisitDate"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FavoriteTopicShouldOrderByLastVisitDate"];
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"RemoveTails"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RemoveTails"];
     }
-    */
-    //Migrate tracer to sql database
-    [S1Tracer migrateTracerToDatabase];
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UseAPI"];
+    }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"PrecacheNextPage"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"PrecacheNextPage"];
+    }
     
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
@@ -68,27 +69,30 @@
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
+    
     //Migrate to v3.6
     [S1Tracer upgradeDatabase];
+    
+    //Migrate to v3.7
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+    }
+    
     //URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
-                                                         diskCapacity:10 * 1024 * 1024
-                                                             diskPath:nil];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:10 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[S1GlobalVariables color1]];//color2
-    [[UIToolbar appearance] setTintColor:[S1GlobalVariables color3]];
-    [[UINavigationBar appearance] setBarTintColor:[S1GlobalVariables color1]];
-    [[UINavigationBar appearance] setTintColor:[S1GlobalVariables color3]];
-
-    self.window.backgroundColor = [UIColor blackColor];
-    S1TopicListViewController *controller = [[S1TopicListViewController alloc] init];
-    S1RootViewController *rootVC = [[S1RootViewController alloc] initWithMasterViewController:controller];
-    self.window.rootViewController = rootVC;
+    [[UIToolbar appearance] setBarTintColor:[S1Global color1]];
+    [[UIToolbar appearance] setTintColor:[S1Global color3]];
+    [[UINavigationBar appearance] setBarTintColor:[S1Global color1]];
+    [[UINavigationBar appearance] setTintColor:[S1Global color3]];
+    [[UISwitch appearance] setOnTintColor:[S1Global color4]];
     
-    [self.window makeKeyAndVisible];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
+    //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
+    
     return YES;
 }
 
@@ -102,6 +106,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -117,6 +122,24 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    NSLog(@"%@ from %@", url, sourceApplication);
+    
+    //Open Specific Topic Case
+    
+    //Import Database Case
+    if ([[url absoluteString] hasSuffix:@".s1db"]) { //TODO: Use NSNotificationCenter
+        id rootvc = [(UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController] topViewController];
+        if ([rootvc isKindOfClass:[S1TopicListViewController class]]) {
+            S1TopicListViewController *tlvc = rootvc;
+            [tlvc handleDatabaseImport:url];
+        }
+    }
+    
+    
+    return YES;
 }
 
 @end

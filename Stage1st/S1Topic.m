@@ -42,4 +42,67 @@
     return self;
 }
 
+#pragma mark - Update
+
+- (void)addDataFromTracedTopic:(S1Topic *)topic {
+    if (self.topicID == nil && topic.topicID != nil) {
+        self.topicID = topic.topicID;
+    }
+    if (self.title == nil && topic.title != nil) {
+        self.title = topic.title;
+    }
+    if (self.replyCount == nil && topic.replyCount != nil) {
+        self.replyCount = topic.replyCount;
+    }
+    if (self.fID == nil && topic.fID != nil) {
+        self.fID = topic.fID;
+    }
+    self.lastReplyCount = topic.replyCount;
+    self.lastViewedPage = topic.lastViewedPage;
+    self.lastViewedPosition = topic.lastViewedPosition;
+    self.visitCount = topic.visitCount;
+    self.favorite = topic.favorite;
+}
+
+- (void)updateFromTopic:(S1Topic *)topic {
+    if (topic.title != nil) {
+        self.title = topic.title;
+    }
+    if (topic.replyCount != nil) {
+        self.replyCount = topic.replyCount;
+    }
+    if (topic.totalPageCount != nil) {
+        self.totalPageCount = topic.totalPageCount;
+    }
+    if (topic.authorUserID != nil) {
+        self.authorUserID = topic.authorUserID;
+    }
+    if (topic.authorUserName != nil) {
+        self.authorUserName = topic.authorUserName;
+    }
+    if (topic.formhash != nil) {
+        self.formhash = topic.formhash;
+    }
+    if (topic.message != nil) {
+        self.message = topic.message;
+    }
+}
+
+- (BOOL)absorbTopic:(S1Topic *)topic {
+    if ([topic.topicID isEqualToNumber:self.topicID]) {
+        if ([topic.lastViewedDate timeIntervalSince1970] > [self.lastViewedDate timeIntervalSince1970]) {
+            self.title = topic.title;
+            self.replyCount = topic.replyCount;
+            self.fID = topic.fID;
+            self.lastViewedDate = topic.lastViewedDate;
+            self.lastViewedPage = topic.lastViewedPage;
+            self.lastViewedPosition = topic.lastViewedPosition;
+            self.visitCount = [self.visitCount integerValue] > [topic.visitCount integerValue] ? self.visitCount : topic.visitCount;
+            return YES;
+        }
+    }
+    return NO;
+    
+}
+
 @end

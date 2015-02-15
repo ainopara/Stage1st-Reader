@@ -10,4 +10,8 @@
 
 @interface S1TopicListViewController : UIViewController
 
+- (void)handlePasteboardString:(NSString *)URL;
+
+- (void)handleDatabaseImport:(NSURL *)databaseURL;
+
 @end

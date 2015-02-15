@@ -8,8 +8,10 @@
 
 #import "AFHTTPSessionManager.h"
 
-@interface S1HTTPClient : AFHTTPSessionManager
+@interface S1HTTPSessionManager : AFHTTPSessionManager
 
-+ (S1HTTPClient *)sharedClient;
++ (S1HTTPSessionManager *)sharedHTTPClient;
+
++ (S1HTTPSessionManager *)sharedJSONClient;
 
 @end

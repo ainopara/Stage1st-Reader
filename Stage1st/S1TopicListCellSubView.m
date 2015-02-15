@@ -10,21 +10,13 @@
 #import "S1Topic.h"
 @implementation S1TopicListCellSubView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
     if (self) {
-        // Initialization code
         _selected = NO;
         _highlighted = NO;
     }
     return self;
-}
-
-- (void)setTopic:(S1Topic *)topic
-{
-    _topic = topic;
-    [self setNeedsDisplay];
 }
      
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -61,8 +53,14 @@
     //// Abstracted Attributes
     NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
     
-    
-    NSString* titleContent = self.topic.title;
+    //Init Attribute Title
+    NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    titleParagraphStyle.alignment = NSTextAlignmentLeft;
+    NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title == nil ? @"":self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
+    if (self.topic.highlight != nil && (![self.topic.highlight isEqualToString:@""])) {
+        [titleContent addAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0.876 green:0.532 blue:0.263 alpha:1.000]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+    }
     
     
     //// Rectangle Drawing
@@ -82,7 +80,7 @@
         NSMutableParagraphStyle *testParagraphStyle = [[NSMutableParagraphStyle alloc] init];
         testParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         testParagraphStyle.alignment = NSTextAlignmentLeft;
-        CGRect actualRect = [titleContent boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+        CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
         if (actualRect.size.height < 30.0f) {
             titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
         }
@@ -112,7 +110,7 @@
     [roundedRectanglePath stroke];
     
     
-    //// Text Drawing
+    //// Reply Count Text Drawing
     UIColor *replyCountFinalColor = nil;
     if ([self.topic.favorite  isEqual: @1]) {
         replyCountFinalColor = replyCountTextColorOfFavoriteThread;
@@ -137,7 +135,11 @@
                 NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
                 replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
                 replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-                [replyChangeContent drawInRect:CGRectMake(20, 38, 35, 16) withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                CGRect rect = CGRectMake(20, 38, 35, 16);
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                    rect = CGRectMake(20 + 10, 38, 35, 16);
+                }
+                [replyChangeContent drawInRect:rect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
                                                                                            NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                                                            NSForegroundColorAttributeName: replyCountFinalColor}];
             }
@@ -146,17 +148,13 @@
     
     
     //// Title Drawing
-    NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    titleParagraphStyle.alignment = NSTextAlignmentLeft;
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [titleContent drawInRect:titleRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f],
-                                                          NSParagraphStyleAttributeName: titleParagraphStyle,
-                                                          NSForegroundColorAttributeName: titleColor}];
+        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:15.0f] range:NSMakeRange(0, titleContent.length)];
+        [titleContent drawInRect:titleRect];
     } else {
-        [titleContent drawAtPoint:titlePoint withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:17.0f],
-                                                            NSParagraphStyleAttributeName: titleParagraphStyle,
-                                                            NSForegroundColorAttributeName: titleColor}];
+        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:17.0f] range:NSMakeRange(0, titleContent.length)];
+        [titleContent drawAtPoint:titlePoint];
     }
 }
 

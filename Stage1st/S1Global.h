@@ -10,8 +10,9 @@
 
 #define IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-
-@interface S1GlobalVariables : NSObject
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_WIDE_DEVICE ([UIScreen mainScreen].bounds.size.width > 400 && [UIScreen mainScreen].bounds.size.height > 400)
+@interface S1Global : NSObject
 + (UIColor *)color1;
 + (UIColor *)color2;
 + (UIColor *)color3;

@@ -17,19 +17,15 @@
 //
 
 #import "DEComposeTextView.h"
-#import "DEComposeRuledView.h"
-#import "REComposeViewController.h"
 
 @interface DEComposeTextView ()
 
 @property (nonatomic, retain) UILabel *placeholderLabel;
-@property (nonatomic, retain) DEComposeRuledView *ruledView;
 @property (nonatomic, retain) UIButton *fromButton;
 @property (nonatomic, retain) UIButton *accountButton;
 @property (nonatomic, retain) UIImageView *accountLine;
 
 - (void)textViewInit;
-- (CGRect)ruledViewFrame;
 - (void)updateAccountsView;
 
 @end
@@ -42,7 +38,6 @@
 @dynamic fromButtonFrame;
 
     // Private
-@synthesize ruledView = _ruledView;
 @synthesize fromButton = _fromButton;
 @synthesize accountButton = _accountButton;
 @synthesize accountLine = _accountLine;
@@ -79,12 +74,6 @@
 - (void)textViewInit
 {   
     self.clipsToBounds = NO;
-
-    _ruledView = [[DEComposeRuledView alloc] initWithFrame:[self ruledViewFrame]];
-    _ruledView.lineColor = [UIColor colorWithWhite:0.5f alpha:0.15f];
-    _ruledView.lineWidth = 1.0f;
-    _ruledView.rowHeight = self.font.lineHeight;
-    [self insertSubview:self.ruledView atIndex:0];
 }
 
 
@@ -116,43 +105,22 @@
         self.contentInset = UIEdgeInsetsMake(25.0f, 0.0f, 0.0f, 0.0f);
     }
     
-    self.ruledView.frame = [self ruledViewFrame];
 }
 
 
 - (void)setContentSize:(CGSize)contentSize
 {
     [super setContentSize:contentSize];
-    self.ruledView.frame = [self ruledViewFrame];
 }
 
 
 - (void)setFont:(UIFont *)font
 {
     [super setFont:font];
-    self.ruledView.rowHeight = self.font.lineHeight;
 }
 
 
 #pragma mark - Private
-
-- (CGRect)ruledViewFrame
-{
-    CGFloat extraForBounce = 200.0f;  // Extra added to top and bottom so it's visible when the user drags past the bounds.
-    CGFloat width = 1024.0f;  // Needs to be at least as wide as we might make the Tweet sheet.
-    CGFloat textAlignmentOffset = -2.0f;  // To center the text between the lines. May want to find a way to determine this procedurally eventually.
-    
-    CGRect frame;
-    if ([self.accountName length] > 0) {
-        frame = CGRectMake(0.0f, 30.0f, width, self.contentSize.height + extraForBounce);
-    }
-    else {
-        frame = CGRectMake(0.0f, -extraForBounce + textAlignmentOffset, width, self.contentSize.height + (2 * extraForBounce));
-    }
-    
-    return frame;
-}
-
 
 - (void)updateAccountsView
 {
@@ -160,7 +128,7 @@
         if (self.fromButton == nil) {
             self.fromButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [self.fromButton addTarget:self action:@selector(accountButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-            [self.fromButton setTitle:NSLocalizedString(@"From:", @"") forState:UIControlStateNormal];
+            [self.fromButton setTitle:NSLocalizedString(@"From:", @"DEComposeTextView.m") forState:UIControlStateNormal];
             self.fromButton.titleLabel.font = [UIFont systemFontOfSize:17.0f];
             [self.fromButton setTitleColor:[UIColor colorWithWhite:0.58f alpha:1.0f] forState:UIControlStateNormal];
             [self.fromButton setTitleColor:[UIColor lightTextColor] forState:UIControlStateHighlighted];
@@ -257,7 +225,7 @@
     if ([[self placeholder] length] > 0) {
         if (_placeholderLabel == nil )
         {
-            _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(REUIKitIsFlatMode() ? 5 : 8, 8, self.bounds.size.width - 16,0)];
+            _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 8, self.bounds.size.width - 16,0)];
             _placeholderLabel.lineBreakMode = NSLineBreakByWordWrapping;
             _placeholderLabel.numberOfLines = 0;
             _placeholderLabel.font = self.font;

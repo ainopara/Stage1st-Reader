@@ -40,6 +40,7 @@
 @property (readonly, nonatomic) UIView *textViewContainer;
 @property (readonly, nonatomic) DEComposeTextView *textView;
 @property (readonly, nonatomic) UIButton *attachmentViewButton;
+@property (nonatomic, strong) UIView *accessoryView;
 
 @end
 

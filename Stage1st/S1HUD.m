@@ -14,7 +14,6 @@ typedef enum {
     S1HUDStateShowControl
 } S1HUDState;
 
-
 @implementation S1HUD {
     S1HUDState _state;
 }
@@ -25,6 +24,7 @@ typedef enum {
     HUD.center = CGPointMake(roundf(CGRectGetMidX(view.bounds)), roundf(CGRectGetMidY(view.bounds)));
     HUD.alpha = 0.0;
     HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
+    HUD.parentView = view;
     [view addSubview:HUD];
     [UIView animateWithDuration:0.2 animations:^{
         HUD.alpha = 1.0;
@@ -40,15 +40,27 @@ typedef enum {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
         _state = S1HUDStateShowControl;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     return self;
 }
 
-- (void)setText:(NSString *)text
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)deviceOrientationDidChange:(id)sender {
+    if (self.parentView) {
+        self.center = CGPointMake(roundf(CGRectGetMidX(self.parentView.bounds)), roundf(CGRectGetMidY(self.parentView.bounds)));
+    }
+    
+}
+
+- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n
 {
     _text = text;
     [self removeSubviews];
-    self.bounds = CGRectMake(0, 0, 120, 60);
+    self.bounds = CGRectMake(0, 0, 60 * n, 60);
     _state = S1HUDStateShowText;
     [self setNeedsDisplay];
 }

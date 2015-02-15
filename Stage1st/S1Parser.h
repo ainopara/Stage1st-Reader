@@ -12,10 +12,15 @@
 @interface S1Parser : NSObject
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
-+ (NSArray *)contentsFromHTMLData:(NSData *)rawData withOffset:(NSInteger)offset;
++ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
++ (NSArray *)contentsFromHTMLData:(NSData *)rawData;
++ (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
+
++ (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
+
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
 
-+ (NSString *)formhashFromThreadString:(NSString *)HTMLString;
++ (NSString *)formhashFromPage:(NSString *)HTMLString;
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString;
 
@@ -23,4 +28,10 @@
 
 + (NSString *)loginUserName:(NSString *)HTMLString;
 
++ (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString;
++ (NSString *)topicTitleFromPage:(NSData *)rawData;
++ (NSString *)messageFromPage:(NSData *)rawData;
+
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  andPage:(NSNumber *)page;
++ (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict;
 @end

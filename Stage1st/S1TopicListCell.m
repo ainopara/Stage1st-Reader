@@ -8,50 +8,43 @@
 
 #import "S1TopicListCell.h"
 #import "S1TopicListCellSubView.h"
-#import "S1Topic.h"
+@interface S1TopicListCell ()
+
+@property (weak, nonatomic) IBOutlet S1TopicListCellSubView *drawingSubview;
+
+@end
 
 @implementation S1TopicListCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
     if (self) {
-        // Initialization code
-        self.autoresizesSubviews = YES;
-        self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        self.contentView.autoresizesSubviews = YES;
-        self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        self.drawingSubView = [[S1TopicListCellSubView alloc] initWithFrame:self.contentView.bounds]; //This value will be replaced by setFrame function
-        [self.drawingSubView setContentMode:UIViewContentModeRedraw];
-        [self.contentView addSubview:self.drawingSubView];
-        self.backgroundColor = [S1GlobalVariables color5];
+        self.backgroundColor = [S1Global color5];
     }
     return self;
 }
 
-- (void)setTopic:(S1Topic *)topic
-{
-    [self.drawingSubView setTopic:topic];
+- (void)setTopic:(S1Topic *)topic {
+    _topic = topic;
+    [self.drawingSubview setTopic:topic];
+    [self updateSubview];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    [self.drawingSubView setSelected:selected];
-    [self.drawingSubView setNeedsDisplay];
+    [self.drawingSubview setSelected:selected];
+    [self updateSubview];
     // Configure the view for the selected state
 }
 
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-{
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
-    [self.drawingSubView setHighlighted:highlighted];
-    [self.drawingSubView setNeedsDisplay];
+    [self.drawingSubview setHighlighted:highlighted];
+    [self updateSubview];
 }
 
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    [self.drawingSubView setFrame:self.contentView.bounds];
+- (void)updateSubview {
+    [self.drawingSubview setNeedsDisplay];
 }
 
 @end

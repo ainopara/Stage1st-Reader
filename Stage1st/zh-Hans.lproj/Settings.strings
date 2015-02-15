@@ -1,0 +1,75 @@
+/* Class = "IBUILabel"; text = "Display Image"; ObjectID = "4y5-0D-ImP"; */
+"4y5-0D-ImP.text" = "显示图片";
+
+/* Class = "IBUITableViewController"; title = "Forum Order"; ObjectID = "6R3-p1-NMf"; */
+"6R3-p1-NMf.title" = "板块自定义";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "8dV-mn-myv"; */
+"8dV-mn-myv.text" = "Detail";
+
+/* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "8hF-SF-9fr"; */
+"8hF-SF-9fr.placeholder" = "用户名";
+
+/* Class = "IBUILabel"; text = "Font Size"; ObjectID = "8vS-vt-Air"; */
+"8vS-vt-Air.text" = "字体大小";
+
+/* Class = "IBUILabel"; text = "Use API"; ObjectID = "AMT-Bb-S6D"; */
+"AMT-Bb-S6D.text" = "使用API";
+
+/* Class = "IBUIBarButtonItem"; title = "Back"; ObjectID = "CV4-G8-ASX"; */
+"CV4-G8-ASX.title" = "返回";
+
+/* Class = "IBUILabel"; text = "Keep History"; ObjectID = "DX9-1Q-Yua"; */
+"DX9-1Q-Yua.text" = "保存历史记录";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "E8b-PX-rjK"; */
+"E8b-PX-rjK.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "MDi-8t-5qr"; */
+"MDi-8t-5qr.text" = "Detail";
+
+/* Class = "IBUIViewController"; title = "Login"; ObjectID = "Rga-Ra-1eA"; */
+"Rga-Ra-1eA.title" = "登录";
+
+/* Class = "IBUILabel"; text = "Gabriel & ainopara"; ObjectID = "SWl-nG-F4S"; */
+"SWl-nG-F4S.text" = "Gabriel & ainopara";
+
+/* Class = "IBUITableViewController"; title = "Settings"; ObjectID = "Z9I-YZ-q2k"; */
+"Z9I-YZ-q2k.title" = "设置";
+
+/* Class = "IBUILabel"; text = "Forum Order"; ObjectID = "ZB5-71-yaj"; */
+"ZB5-71-yaj.text" = "板块自定义";
+
+/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "a7E-Z0-WQq"; */
+"a7E-Z0-WQq.placeholder" = "密码";
+
+/* Class = "IBUILabel"; text = "Import / Export"; ObjectID = "aUI-B0-MIH"; */
+"aUI-B0-MIH.text" = "导入/导出";
+
+/* Class = "IBUILabel"; text = "Remove Tails"; ObjectID = "afJ-hF-0oG"; */
+"afJ-hF-0oG.text" = "去除小尾巴";
+
+/* Class = "IBUILabel"; text = "Title"; ObjectID = "con-mD-8cX"; */
+"con-mD-8cX.text" = "Title";
+
+/* Class = "IBUILabel"; text = "Not Login"; ObjectID = "nZs-MV-DJo"; */
+"nZs-MV-DJo.text" = "未登录";
+
+/* Class = "IBUILabel"; text = "Login"; ObjectID = "ng5-KU-SG1"; */
+"ng5-KU-SG1.text" = "登录";
+
+/* Class = "IBUILabel"; text = "Version"; ObjectID = "pea-Ap-wK5"; */
+"pea-Ap-wK5.text" = "版本";
+
+/* Class = "IBUIButton"; normalTitle = "Login"; ObjectID = "swq-PA-Vhc"; */
+"swq-PA-Vhc.normalTitle" = "登录";
+
+/* Class = "IBUINavigationItem"; title = "Settings"; ObjectID = "u6Z-FP-JaY"; */
+"u6Z-FP-JaY.title" = "设置";
+
+/* Class = "IBUILabel"; text = "Developers"; ObjectID = "yBw-Qf-dtH"; */
+"yBw-Qf-dtH.text" = "开发者";
+
+/* Class = "IBUILabel"; text = "Precache Next Page"; ObjectID = "zBD-2E-6nE"; */
+"zBD-2E-6nE.text" = "预缓存下一页";
+
