@@ -29,7 +29,7 @@ PODS:
     - FMDB/common
   - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.4)
-  - KissXML (5.1.1)
+  - KissXML (5.1.2)
   - SVWebViewController (1.0)
 
 DEPENDENCIES:
@@ -39,20 +39,19 @@ DEPENDENCIES:
   - FMDB (~> 2.3)
   - IMQuickSearch
   - JTSImageViewController
-  - KissXML (from `https://github.com/ainopara/KissXML.git`, tag `5.1.1`)
+  - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
 EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-    :tag: 5.1.1
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 CHECKOUT OPTIONS:
   KissXML:
+    :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
-    :tag: 5.1.1
   SVWebViewController:
     :commit: f48744c344fdb9828a5ce6afbafc70c1e60521df
     :git: https://github.com/ainopara/SVWebViewController.git
@@ -64,7 +63,7 @@ SPEC CHECKSUMS:
   FMDB: 0efa188cf0dd1ce82c27a478cd5f5fa245308677
   IMQuickSearch: b032f2916aebf84ef84dd44ff022218498319906
   JTSImageViewController: 9fe6402194b7679f0e28d0c1002d6164301fc34a
-  KissXML: fb199a7f79732bdcd27f2abc83941840654f1e41
+  KissXML: 412981f8390f4e813a1a8476c67492ce8d975126
   SVWebViewController: e23a0cf92c2185d584787f0422b14592dd160fca
 
 COCOAPODS: 0.35.0

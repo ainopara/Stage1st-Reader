@@ -82,7 +82,7 @@
         NSUInteger index = [spoilerElement index];
         DDXMLElement *parentElement = (DDXMLElement *)[spoilerElement parent];
         [spoilerElement detach];
-        //TODO: resolve retain cycle here
+        [parentElement setOwner: xmlDoc];
         DDXMLElement *containerElement = [[DDXMLElement alloc] initWithName:@"div"];
         DDXMLElement *buttonElement = [[DDXMLElement alloc] initWithName:@"input"];
         [buttonElement addAttributeWithName:@"value" stringValue:@"显示反白内容"];
