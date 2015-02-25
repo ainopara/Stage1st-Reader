@@ -210,17 +210,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		86040B7A19DE3313004BF2BC /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */,
-				86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */,
-				8693431819E5A074008F7A58 /* S1ContentViewModel.h */,
-				8693431919E5A074008F7A58 /* S1ContentViewModel.m */,
-			);
-			name = ViewModel;
-			sourceTree = "<group>";
-		};
 		862F51B61891359A0038A289 /* TFHpple */ = {
 			isa = PBXGroup;
 			children = (
@@ -232,6 +221,28 @@
 				862F51BC189136000038A289 /* XPathQuery.m */,
 			);
 			name = TFHpple;
+			sourceTree = "<group>";
+		};
+		863580111A945DED007B21AD /* Topic List View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */,
+				86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */,
+				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
+				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
+			);
+			name = "Topic List View Controller";
+			sourceTree = "<group>";
+		};
+		863580121A945DFF007B21AD /* Content View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				8693431819E5A074008F7A58 /* S1ContentViewModel.h */,
+				8693431919E5A074008F7A58 /* S1ContentViewModel.m */,
+				C095878916CA993A007E0119 /* S1ContentViewController.h */,
+				C095878A16CA993A007E0119 /* S1ContentViewController.m */,
+			);
+			name = "Content View Controller";
 			sourceTree = "<group>";
 		};
 		864B128D1A4FC4E000247F72 /* Cells */ = {
@@ -273,6 +284,13 @@
 			);
 			name = REComposeViewController;
 			path = Vendors/REComposeViewController;
+			sourceTree = "<group>";
+		};
+		86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Personal Info View Controller";
 			sourceTree = "<group>";
 		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
@@ -404,8 +422,10 @@
 			children = (
 				C095877A16CA8DB0007E0119 /* Model */,
 				C095877B16CA8DBE007E0119 /* View */,
-				86040B7A19DE3313004BF2BC /* ViewModel */,
-				C095877C16CA8DC4007E0119 /* Controller */,
+				863580111A945DED007B21AD /* Topic List View Controller */,
+				863580121A945DFF007B21AD /* Content View Controller */,
+				86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */,
+				C09587A316CB6218007E0119 /* Settings View Controller */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -441,18 +461,6 @@
 			name = View;
 			sourceTree = "<group>";
 		};
-		C095877C16CA8DC4007E0119 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				C09587A316CB6218007E0119 /* Settings */,
-				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
-				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
-				C095878916CA993A007E0119 /* S1ContentViewController.h */,
-				C095878A16CA993A007E0119 /* S1ContentViewController.m */,
-			);
-			name = Controller;
-			sourceTree = "<group>";
-		};
 		C095878F16CB61FC007E0119 /* StaticTableViewBuilder */ = {
 			isa = PBXGroup;
 			children = (
@@ -474,7 +482,7 @@
 			path = Vendors/StaticTableViewBuilder;
 			sourceTree = "<group>";
 		};
-		C09587A316CB6218007E0119 /* Settings */ = {
+		C09587A316CB6218007E0119 /* Settings View Controller */ = {
 			isa = PBXGroup;
 			children = (
 				C09587A416CB623E007E0119 /* S1SettingViewController.h */,
@@ -486,7 +494,7 @@
 				86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */,
 				86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */,
 			);
-			name = Settings;
+			name = "Settings View Controller";
 			sourceTree = "<group>";
 		};
 		C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */ = {

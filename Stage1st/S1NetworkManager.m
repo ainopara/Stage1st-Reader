@@ -186,7 +186,39 @@
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
+#pragma mark - User Info
 
++ (void)requestThreadListForID:(NSNumber *)userID
+                       andPage:(NSNumber *)page
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"home.php";
+    NSDictionary *params = @{@"mod" : @"space",
+                             @"uid" : userID,
+                             @"do" : @"thread",
+                             @"view" : @"me",
+                             @"from" : @"space",
+                             @"type" : @"thread",
+                             @"page" : page,
+                             @"order" : @"dateline"};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+
++ (void)requestReplyListForID:(NSNumber *)userID
+                      andPage:(NSNumber *)page
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"home.php";
+    NSDictionary *params = @{@"mod" : @"space",
+                             @"uid" : userID,
+                             @"do" : @"thread",
+                             @"view" : @"me",
+                             @"from" : @"space",
+                             @"type" : @"reply",
+                             @"page" : page,
+                             @"order" : @"dateline"};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
 + (void) cancelRequest
 {
     [[[S1HTTPSessionManager sharedHTTPClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {

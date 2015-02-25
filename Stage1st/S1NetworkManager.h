@@ -70,6 +70,17 @@
                  andFormhash:(NSString *)formhash
                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+// User Info
++ (void)requestThreadListForID:(NSNumber *)userID
+                       andPage:(NSNumber *)page
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
++ (void)requestReplyListForID:(NSNumber *)userID
+                      andPage:(NSNumber *)page
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 
 + (void)cancelRequest;
 
