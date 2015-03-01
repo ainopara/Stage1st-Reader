@@ -680,31 +680,20 @@ static NSString * const cellIdentifier = @"TopicCell";
         [contentViewController setDataCenter:self.dataCenter];
     }
 }
-
+/*
 - (void)handlePasteboardString:(NSString *)URL
 {
     if (!URL) {
         return;
     }
-    NSString *pattern = @"bbs\\.saraba1st\\.com.*(?:tid=|thread-)([0-9]+)";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:URL options:NSMatchingReportProgress range:NSMakeRange(0, URL.length)];
-    if (result) {
-        S1Topic *clipboardTopic = [[S1Topic alloc] init];
-        NSString *topicIDString = [URL substringWithRange:[result rangeAtIndex:1]];
-        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
-        NSLog(@"Open Clipboard topic ID: %@", topicID);
-        clipboardTopic.topicID = topicID;
+    if (NO) {
+        S1Topic *clipboardTopic = [S1Parser extract];
+        NSLog(@"Open Clipboard topic ID: %@", clipboardTopic.topicID);
         [clipboardTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:topicID]];
-        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] init];
-        [contentViewController setTopic:self.clipboardTopic];
-        [contentViewController setDataCenter:self.dataCenter];
-        
-        [self.navigationController pushViewController:contentViewController animated:YES];
     }
     
 }
-
+*/
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
     [self.dataCenter handleDatabaseImport:databaseURL];
 }
