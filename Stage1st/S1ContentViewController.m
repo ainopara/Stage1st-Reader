@@ -537,15 +537,18 @@
     }
     
     // Open S1 topic
-    S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
-    if (topic.topicID != nil) {
-        _presentingContentViewController = YES;
-        S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
-        [contentViewController setTopic:topic];
-        [contentViewController setDataCenter:self.dataCenter];
-        [[self navigationController] pushViewController:contentViewController animated:YES];
-        return NO;
+    if ([request.URL.absoluteString hasPrefix:[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"]]) {
+        S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
+        if (topic.topicID != nil) {
+            _presentingContentViewController = YES;
+            S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+            [contentViewController setTopic:topic];
+            [contentViewController setDataCenter:self.dataCenter];
+            [[self navigationController] pushViewController:contentViewController animated:YES];
+            return NO;
+        }
     }
+    
     // Open link
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
