@@ -34,4 +34,6 @@
 
 + (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  andPage:(NSNumber *)page;
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict;
+
++ (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
 @end

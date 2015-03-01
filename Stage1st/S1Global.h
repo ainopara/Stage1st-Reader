@@ -34,4 +34,9 @@
 + (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey;
 + (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey;
 
+//Regex wrapper
++ (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern;
++ (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums;
++ (NSInteger)regexReplaceString:(NSMutableString *)string matchPattern:(NSString *)pattern withTemplate:(NSString *)temp;
+
 @end

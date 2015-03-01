@@ -111,8 +111,7 @@
     }
     NSMutableString *mutableContent = [content mutableCopy];
     NSString *tailPattern = @"((\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|( |&nbsp;)*—— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*)?((<br ?/>|<br></br>)<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:tailPattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@""];
+    [S1Global regexReplaceString:mutableContent matchPattern:tailPattern withTemplate:@""];
     return mutableContent;
 }
 
@@ -163,21 +162,15 @@
 + (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
     NSMutableString *mutableContent = [content mutableCopy];
     //process message
-    NSString *preprocessMessagePattern = @"提示: <em>(.*?)</em>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessMessagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<div class=\"s1-alert\">$1</div>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"提示: <em>(.*?)</em>" withTemplate:@"<div class=\"s1-alert\">$1</div>"];
     //process quote string
-    NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p>";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"<blockquote><p>引用:</p>" withTemplate:@"<blockquote>"];
     //process imgwidth issue
-    NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"<imgwidth=([^>]*)>" withTemplate:@"<img width=$1>"];
     //process embeded image attachments
     __block NSString *finalString = [mutableContent copy];
     NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
         if (result != nil && attachments != nil) {
             NSRange range = [result rangeAtIndex:1];
@@ -275,11 +268,8 @@
         NSString *titleString = [titlePart recursionText];
         
         NSString *URLString = [titlePart objectForKey:@"href"];
-        NSString *pattern = @".*tid=([0-9]+).*";
-        NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-        NSTextCheckingResult *result = [re firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-        NSString *topicIDString = [URLString substringWithRange:[result rangeAtIndex:1]];
-        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+        S1Topic *topicFromURL = [S1Parser extractTopicInfoFromLink:URLString];
+        NSNumber *topicID = topicFromURL.topicID;
         
         TFHppleElement *authorPart = [links objectAtIndex:1];
         NSString *authorName = [authorPart text];
@@ -307,7 +297,30 @@
     return topics;
     
 }
-
++ (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
+    NSArray *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
+    NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+    for (DDXMLElement *topicNode in topicNodes) {
+        DDXMLElement *topicFirstSection = [[topicNode nodesForXPath:@".//th/a" error:nil] firstObject];
+        NSString *topicHref = [[topicFirstSection attributeForName:@"href"] stringValue];
+        NSString *topicTitle = [topicFirstSection stringValue];
+        NSLog(@"%@, %@", topicHref, topicTitle);
+        S1Topic *topic = [S1Parser extractTopicInfoFromLink:topicHref];
+        topic.title = topicTitle;
+        
+        DDXMLElement *topicSecondSection = [[topicNode nodesForXPath:@".//a[@class='xg1']" error:nil] firstObject];
+        NSString *topicFieldIDString = [[topicSecondSection attributeForName:@"href"] stringValue];
+        NSNumber *topicFieldID = [NSNumber numberWithInteger:[[[S1Global regexExtractFromString:topicFieldIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject] integerValue]];
+        topic.fID = topicFieldID;
+        DDXMLElement *topicThirdSection = [[topicNode nodesForXPath:@".//a[@class='xi2']" error:nil] firstObject];
+        NSNumber *topicReplyCount = [NSNumber numberWithInteger:[[topicThirdSection stringValue] integerValue]];
+        NSLog(@"%@, %@", topicFieldIDString, topicReplyCount);
+        topic.replyCount = topicReplyCount;
+        [mutableArray addObject:topic];
+    }
+    return mutableArray;
+}
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
@@ -574,31 +587,24 @@
 + (NSString *)formhashFromPage:(NSString *)HTMLString
 {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    return formhash;
+    return [[S1Global regexExtractFromString:HTMLString withPattern:pattern andColums:@[@1]] firstObject];
 }
 
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
 {
-    NSString *pattern = @"<span title=\"共 ([0-9]+) 页\">";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    if (result) {
-        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"<span title=\"共 ([0-9]+) 页\">" andColums:@[@1]];
+    if (result.count != 0) {
+        return [((NSString *)[result firstObject]) integerValue];
     } else {
-        return 0;
+        return 1;
     }
 }
 
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
 {
-    NSString *pattern = @"回复:</span> <span class=\"xi1\">([0-9]+)</span>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    if (result) {
-        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"回复:</span> <span class=\"xi1\">([0-9]+)</span>" andColums:@[@1]];
+    if (result.count != 0) {
+        return [((NSString *)[result firstObject]) integerValue];
     } else {
         return 0;
     }
@@ -643,30 +649,22 @@
     
 }
 
-#pragma mark - Checking
-
 + (NSString *)loginUserName:(NSString *)HTMLString
 {
-    NSString *pattern = @"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    NSString *username = [[S1Global regexExtractFromString:HTMLString withPattern:@"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>" andColums:@[@1]] firstObject];
     return [username isEqualToString:@""]?nil:username;
 }
+
 #pragma mark - Extract Data
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
 {
     S1Topic *topic = [[S1Topic alloc] init];
-    NSString *pattern1 = [[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"] stringByAppendingString:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html"];
-    NSRegularExpression *re1 = [[NSRegularExpression alloc] initWithPattern:pattern1 options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result1 = [re1 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-    NSString *topicIDString = [URLString substringWithRange:[result1 rangeAtIndex:1]];
-    NSString *topicPageString = [URLString substringWithRange:[result1 rangeAtIndex:2]];
+    NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
+    NSString *topicIDString = [result firstObject];
+    NSString *topicPageString = [result lastObject];
     if ([topicIDString isEqualToString:@""]) {
-        NSString *pattern2 = @"forum\\.php\\?mod=viewthread&tid=([0-9]+)";
-        NSRegularExpression *re2 = [[NSRegularExpression alloc] initWithPattern:pattern2 options:NSRegularExpressionAnchorsMatchLines error:nil];
-        NSTextCheckingResult *result2 = [re2 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-        topicIDString = [URLString substringWithRange:[result2 rangeAtIndex:1]];
+        result = [S1Global regexExtractFromString:URLString withPattern:@"forum\\.php\\?mod=viewthread&tid=([0-9]+)" andColums:@[@1]];
+        topicIDString = [result firstObject];
         topicPageString = @"1";
     }
     if ([topicIDString isEqualToString:@""]) {

@@ -71,4 +71,30 @@
     return NSLocalizedString(@"SettingView_HistoryLimit_Forever",@"");
 }
 
++ (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern {
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSInteger count = [[re matchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)] count];
+    NSLog(@"REGEX Match: %ld", (long)count);
+    return count != 0;
+}
++ (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums {
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSTextCheckingResult *result = [re firstMatchInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)];
+    NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+    for (NSNumber *i in colums) {
+        if ([i integerValue] < [result numberOfRanges]) {
+            NSString *value = [string substringWithRange:[result rangeAtIndex:[i integerValue]]];
+            [mutableArray addObject:value];
+        }
+        
+    }
+    NSLog(@"REGEX Extract: %@", mutableArray);
+    return mutableArray;
+}
++ (NSInteger)regexReplaceString:(NSMutableString *)mutableString matchPattern:(NSString *)pattern withTemplate:(NSString *)temp {
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    return [re replaceMatchesInString:mutableString options:NSMatchingReportProgress range:NSMakeRange(0, [mutableString length]) withTemplate:temp];
+}
+
+
 @end
