@@ -662,19 +662,39 @@
     NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
     NSString *topicIDString = [result firstObject];
     NSString *topicPageString = [result lastObject];
-    if ([topicIDString isEqualToString:@""]) {
-        result = [S1Global regexExtractFromString:URLString withPattern:@"forum\\.php\\?mod=viewthread&tid=([0-9]+)" andColums:@[@1]];
-        topicIDString = [result firstObject];
-        topicPageString = @"1";
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
+        NSDictionary *dict = [S1Parser extractQuerysFromURLString:URLString];
+        topicIDString = [dict objectForKey:@"tid"];
+        topicPageString = [dict objectForKey:@"page"];
+        if (topicPageString == nil) {
+            topicPageString = @"1";
+        }
     }
-    if ([topicIDString isEqualToString:@""]) {
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
         return nil;
     }
     topic.topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
+    NSLog(@"%@", topic);
     return topic;
 }
 
-
++ (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString {
+    NSURL *url = [[NSURL alloc] initWithString:URLString];
+    if (url!= nil) {
+        NSString *queryString = url.query;
+        if (queryString != nil) {
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            for (NSString *component in [queryString componentsSeparatedByString:@"&"]) {
+                NSArray *part = [component componentsSeparatedByString:@"="];
+                if ([part count] == 2) {
+                    [dict setObject:[part lastObject] forKey:[part firstObject]];
+                }
+            }
+            return dict;
+        }
+    }
+    return nil;
+}
 
 @end
