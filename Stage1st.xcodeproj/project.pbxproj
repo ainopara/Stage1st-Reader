@@ -77,7 +77,7 @@
 		0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
-		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "jquery-2.1.1.min.js"; sourceTree = "<group>"; };
+		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "jquery-2.1.1.min.js"; path = "Stage1st/jquery-2.1.1.min.js"; sourceTree = "<group>"; };
 		86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewModel.h; path = Stage1st/S1TopicListViewModel.h; sourceTree = "<group>"; };
 		86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListViewModel.m; path = Stage1st/S1TopicListViewModel.m; sourceTree = "<group>"; };
 		86040B7E19DE3A74004BF2BC /* S1DataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DataCenter.h; path = Stage1st/S1DataCenter.h; sourceTree = "<group>"; };
@@ -101,8 +101,8 @@
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		8656731B1A7A7B2A0025D22E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
-		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad_20px.css; sourceTree = "<group>"; };
-		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad_22px.css; sourceTree = "<group>"; };
+		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
+		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
 		867C7F511899420D00DF55E8 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		867C7F561899420D00DF55E8 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
@@ -110,10 +110,10 @@
 		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
 		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
-		867EECA71A104D8E00E0DE6F /* content_base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_base.css; sourceTree = "<group>"; };
-		867EECA81A104D8E00E0DE6F /* content_15px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_15px.css; sourceTree = "<group>"; };
-		867EECA91A104D8E00E0DE6F /* content_17px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_17px.css; sourceTree = "<group>"; };
-		867EECAA1A104D8E00E0DE6F /* content_19px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_19px.css; sourceTree = "<group>"; };
+		867EECA71A104D8E00E0DE6F /* content_base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_base.css; path = Stage1st/content_base.css; sourceTree = "<group>"; };
+		867EECA81A104D8E00E0DE6F /* content_15px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_15px.css; path = Stage1st/content_15px.css; sourceTree = "<group>"; };
+		867EECA91A104D8E00E0DE6F /* content_17px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_17px.css; path = Stage1st/content_17px.css; sourceTree = "<group>"; };
+		867EECAA1A104D8E00E0DE6F /* content_19px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_19px.css; path = Stage1st/content_19px.css; sourceTree = "<group>"; };
 		8693431819E5A074008F7A58 /* S1ContentViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewModel.h; path = Stage1st/S1ContentViewModel.h; sourceTree = "<group>"; };
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
@@ -125,8 +125,8 @@
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseManageViewController.h; path = Stage1st/S1DatabaseManageViewController.h; sourceTree = "<group>"; };
 		86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseManageViewController.m; path = Stage1st/S1DatabaseManageViewController.m; sourceTree = "<group>"; };
-		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FloorTemplate.html; sourceTree = "<group>"; };
-		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ThreadTemplate.html; sourceTree = "<group>"; };
+		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = FloorTemplate.html; path = Stage1st/FloorTemplate.html; sourceTree = "<group>"; };
+		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ThreadTemplate.html; path = Stage1st/ThreadTemplate.html; sourceTree = "<group>"; };
 		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
 		86E44DDE1A89BDBA001E0B83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
@@ -139,10 +139,10 @@
 		C08334F416E2245B0035C1AA /* ODRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODRefreshControl.m; sourceTree = "<group>"; };
 		C08334F616E22E1F0035C1AA /* S1TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TabBar.h; path = Stage1st/S1TabBar.h; sourceTree = "<group>"; };
 		C08334F716E22E1F0035C1AA /* S1TabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TabBar.m; path = Stage1st/S1TabBar.m; sourceTree = "<group>"; };
-		C083351516E34DCF0035C1AA /* Threads.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Threads.plist; sourceTree = "<group>"; };
+		C083351516E34DCF0035C1AA /* Threads.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Threads.plist; path = Stage1st/Threads.plist; sourceTree = "<group>"; };
 		C083351716E363870035C1AA /* S1Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Tracer.h; path = Stage1st/S1Tracer.h; sourceTree = "<group>"; };
 		C083351816E363870035C1AA /* S1Tracer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Tracer.m; path = Stage1st/S1Tracer.m; sourceTree = "<group>"; };
-		C083353616E4FB220035C1AA /* InitialOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InitialOrder.plist; sourceTree = "<group>"; };
+		C083353616E4FB220035C1AA /* InitialOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = InitialOrder.plist; path = Stage1st/InitialOrder.plist; sourceTree = "<group>"; };
 		C083353816E503F60035C1AA /* S1LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1LoginViewController.h; path = Stage1st/S1LoginViewController.h; sourceTree = "<group>"; };
 		C083353916E503F60035C1AA /* S1LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1LoginViewController.m; path = Stage1st/S1LoginViewController.m; sourceTree = "<group>"; };
 		C083353C16E647A80035C1AA /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
@@ -185,7 +185,7 @@
 		C09587A516CB623E007E0119 /* S1SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1SettingViewController.m; path = Stage1st/S1SettingViewController.m; sourceTree = "<group>"; };
 		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
 		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTStatusBarOverlay.m; sourceTree = "<group>"; };
-		C0B1919616F0A80F0053E0C5 /* content_ipad_18px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = content_ipad_18px.css; sourceTree = "<group>"; };
+		C0B1919616F0A80F0053E0C5 /* content_ipad_18px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_18px.css; path = Stage1st/content_ipad_18px.css; sourceTree = "<group>"; };
 		D156A107F0694E36B647AD5F /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -361,6 +361,8 @@
 			children = (
 				C095874616CA8A36007E0119 /* S1AppDelegate.h */,
 				C095874716CA8A36007E0119 /* S1AppDelegate.m */,
+				860223501895051400A3E66E /* S1Global.h */,
+				860223511895051400A3E66E /* S1Global.m */,
 				C095873E16CA8A36007E0119 /* Supporting Files */,
 			);
 			path = Stage1st;
@@ -370,23 +372,9 @@
 			isa = PBXGroup;
 			children = (
 				86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */,
-				86D4A8F8189186A400CA93FD /* FloorTemplate.html */,
-				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
-				867EECA71A104D8E00E0DE6F /* content_base.css */,
-				867EECA81A104D8E00E0DE6F /* content_15px.css */,
-				867EECA91A104D8E00E0DE6F /* content_17px.css */,
-				867EECAA1A104D8E00E0DE6F /* content_19px.css */,
-				C0B1919616F0A80F0053E0C5 /* content_ipad_18px.css */,
-				8664D3E41A87A973006575B3 /* content_ipad_20px.css */,
-				8664D3E51A87A973006575B3 /* content_ipad_22px.css */,
-				86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */,
-				860223501895051400A3E66E /* S1Global.h */,
-				860223511895051400A3E66E /* S1Global.m */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				C095874316CA8A36007E0119 /* main.m */,
 				C095874516CA8A36007E0119 /* Stage1st-Prefix.pch */,
-				C083351516E34DCF0035C1AA /* Threads.plist */,
-				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -407,6 +395,18 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				86D4A8F8189186A400CA93FD /* FloorTemplate.html */,
+				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
+				867EECA71A104D8E00E0DE6F /* content_base.css */,
+				867EECA81A104D8E00E0DE6F /* content_15px.css */,
+				867EECA91A104D8E00E0DE6F /* content_17px.css */,
+				867EECAA1A104D8E00E0DE6F /* content_19px.css */,
+				C0B1919616F0A80F0053E0C5 /* content_ipad_18px.css */,
+				8664D3E41A87A973006575B3 /* content_ipad_20px.css */,
+				8664D3E51A87A973006575B3 /* content_ipad_22px.css */,
+				86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */,
+				C083351516E34DCF0035C1AA /* Threads.plist */,
+				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
 				865673171A7A7B190025D22E /* Settings.storyboard */,
