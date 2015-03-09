@@ -27,7 +27,6 @@
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
-		867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 867C7F581899420D00DF55E8 /* REComposeViewController.bundle */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
 		867EECAB1A104D8E00E0DE6F /* content_base.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECA71A104D8E00E0DE6F /* content_base.css */; };
 		867EECAC1A104D8E00E0DE6F /* content_15px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECA81A104D8E00E0DE6F /* content_15px.css */; };
@@ -107,7 +106,6 @@
 		867C7F511899420D00DF55E8 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		867C7F561899420D00DF55E8 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
 		867C7F571899420D00DF55E8 /* REComposeSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeSheetView.m; sourceTree = "<group>"; };
-		867C7F581899420D00DF55E8 /* REComposeViewController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = REComposeViewController.bundle; sourceTree = "<group>"; };
 		867C7F591899420D00DF55E8 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		867C7F5A1899420D00DF55E8 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
 		867EECA71A104D8E00E0DE6F /* content_base.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_base.css; path = Stage1st/content_base.css; sourceTree = "<group>"; };
@@ -278,7 +276,6 @@
 				867C7F511899420D00DF55E8 /* DEComposeTextView.m */,
 				867C7F561899420D00DF55E8 /* REComposeSheetView.h */,
 				867C7F571899420D00DF55E8 /* REComposeSheetView.m */,
-				867C7F581899420D00DF55E8 /* REComposeViewController.bundle */,
 				867C7F591899420D00DF55E8 /* REComposeViewController.h */,
 				867C7F5A1899420D00DF55E8 /* REComposeViewController.m */,
 			);
@@ -563,7 +560,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				867C7F601899420D00DF55E8 /* REComposeViewController.bundle in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */,
 				86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */,

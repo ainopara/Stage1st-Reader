@@ -100,7 +100,7 @@
     [_backView addSubview:_sheetView];
     
     if (!_attachmentImage)
-        _attachmentImage = [UIImage imageNamed:@"REComposeViewController.bundle/URLAttachment"];
+        _attachmentImage = [[UIImage alloc] init];
     
     _sheetView.attachmentImageView.image = _attachmentImage;
     [_sheetView.attachmentViewButton addTarget:self
@@ -292,13 +292,29 @@
     self.sheetView.backgroundColor = tintColor;
 }
 
-- (void)setAccessoryView:(UIView *)accessoryView {
-    [_sheetView setAccessoryView:accessoryView];
-}
-- (UIView *)accessoryView {
-    return _sheetView.accessoryView;
+
+#pragma mark - Input View and Accessory View
+
+- (void)setAccessoryView:(UIView *)view {
+    _sheetView.textView.inputAccessoryView = view;
 }
 
+- (UIView *)accessoryView {
+    return _sheetView.textView.inputAccessoryView;
+}
+
+- (void)setInputView:(UIView *)view {
+    _sheetView.textView.inputView = view;
+}
+
+- (UIView *)inputView {
+    return _sheetView.textView.inputView;
+}
+
+- (void)reloadInputViews {
+    [super reloadInputViews];
+    [_sheetView.textView reloadInputViews];
+}
 #pragma mark -
 #pragma mark REComposeSheetViewDelegate
 
