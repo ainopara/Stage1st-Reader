@@ -180,9 +180,9 @@
         _paperclipView.frame = paperclipFrame;
     } else {
 
-        frame.origin.y = (height - _keyboardHeight - accessoryViewHeight - expectComposeViewHeight) / 2;
+        frame.origin.y = (height - _keyboardHeight - expectComposeViewHeight) / 2;
         if (frame.origin.y < 20) {
-            frame.size.height = height - _keyboardHeight - accessoryViewHeight - 20;
+            frame.size.height = height - _keyboardHeight - 20 - 4;
             frame.origin.y = 20;
         }
         _containerView.frame = frame;
