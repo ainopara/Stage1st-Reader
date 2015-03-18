@@ -294,7 +294,9 @@
 
 
 #pragma mark - Input View and Accessory View
-
+- (DEComposeTextView *)textView {
+    return _sheetView.textView;
+}
 - (void)setAccessoryView:(UIView *)view {
     _sheetView.textView.inputAccessoryView = view;
 }

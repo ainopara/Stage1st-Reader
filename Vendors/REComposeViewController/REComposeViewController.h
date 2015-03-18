@@ -51,6 +51,7 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 @property (assign, readwrite, nonatomic) BOOL hasAttachment;
 @property (assign, readonly, nonatomic) BOOL userUpdatedAttachment;
 @property (strong, readwrite, nonatomic) NSString *text;
+@property (strong, readonly, nonatomic) DEComposeTextView *textView;
 @property (strong, readwrite, nonatomic) NSString *placeholderText;
 @property (strong, readonly, nonatomic) UINavigationBar *navigationBar;
 @property (strong, readonly, nonatomic) UINavigationItem *navigationItem;
