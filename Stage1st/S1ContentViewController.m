@@ -179,6 +179,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     
+    //Set up Activity for Hand Off
+    NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
+    activity.title = @"Viewing Topic";
+    activity.userInfo = @{@"topicID": self.topic.topicID,
+                          @"page": [NSNumber numberWithInteger:_currentPage]};
+    activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+    self.userActivity = activity;
+    
     [self fetchContentAndPrecacheNextPage:YES];
 }
 

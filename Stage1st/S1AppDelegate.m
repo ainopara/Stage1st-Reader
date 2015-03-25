@@ -142,4 +142,9 @@
     return YES;
 }
 
+// Hand Off Support
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+    NSLog(@"%@", userActivity.userInfo);
+    return YES;
+}
 @end
