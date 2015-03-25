@@ -53,8 +53,14 @@
 
 - (int)currentWidth
 {
-    UIScreen *screen = [UIScreen mainScreen];
-    return (!UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) ? screen.bounds.size.width : screen.bounds.size.height;
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        UIScreen *screen = [UIScreen mainScreen];
+        return (!UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) ? screen.bounds.size.width : screen.bounds.size.height;
+    } else {
+        UIScreen *screen = [UIScreen mainScreen];
+        return screen.bounds.size.width;
+    }
+    
 }
 
 - (void)loadView
@@ -84,7 +90,11 @@
     _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _containerView.alpha = 0;
     
-    _backView = [[UIView alloc] initWithFrame:CGRectMake(4, 0, self.currentWidth - 8, 202)];
+    NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+        offset *= 2;
+    }
+    _backView = [[UIView alloc] initWithFrame:CGRectMake(offset, 0, self.currentWidth - offset*2, 202)];
     _backView.layer.cornerRadius = _cornerRadius;
     _backView.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
@@ -106,6 +116,8 @@
     [_sheetView.attachmentViewButton addTarget:self
                                         action:@selector(didTapAttachmentView:)
                               forControlEvents:UIControlEventTouchUpInside];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateKeyboardFrame:) name:UIKeyboardDidShowNotification object:nil];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
@@ -120,9 +132,6 @@
         [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
         [self.sheetView.textView becomeFirstResponder];
     } completion:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateKeyboardFrame:) name:UIKeyboardDidShowNotification object:nil];
 
 }
 
