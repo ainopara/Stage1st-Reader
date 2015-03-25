@@ -81,7 +81,11 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
     }
-    
+    //Migrate to v3.8
+    if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
+        NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
+        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
+    }
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:10 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
@@ -128,6 +132,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - URL Scheme
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     NSLog(@"%@ from %@", url, sourceApplication);
     
@@ -154,7 +159,7 @@
     return YES;
 }
 
-// Hand Off Support
+#pragma mark - Hand Off
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
 }
@@ -167,6 +172,7 @@
     return YES;
 }
 
+#pragma mark - Helper
 - (void)presentContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]]) {
