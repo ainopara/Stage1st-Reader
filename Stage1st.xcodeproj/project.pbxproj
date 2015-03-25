@@ -23,6 +23,8 @@
 		864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
+		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */; };
+		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
@@ -100,6 +102,9 @@
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		8656731B1A7A7B2A0025D22E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
+		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceViewController.h; path = Stage1st/S1MahjongFaceViewController.h; sourceTree = "<group>"; };
+		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceViewController.m; path = Stage1st/S1MahjongFaceViewController.m; sourceTree = "<group>"; };
+		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
@@ -269,6 +274,15 @@
 			name = Animation;
 			sourceTree = "<group>";
 		};
+		865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */ = {
+			isa = PBXGroup;
+			children = (
+				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */,
+				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */,
+			);
+			name = S1MahjongFaceViewController;
+			sourceTree = "<group>";
+		};
 		867C7F4D1899420D00DF55E8 /* REComposeViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -379,6 +393,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,
 				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
@@ -409,6 +424,7 @@
 				865673171A7A7B190025D22E /* Settings.storyboard */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
+				86600FBB1AAD969D004394E6 /* MahjongMap.plist */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
 			);
 			name = Resources;
@@ -560,6 +576,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */,
 				86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */,
@@ -662,6 +679,7 @@
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
+				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
 			);
@@ -764,7 +782,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: quanlan huang (975852DY9A)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zheng Li (MSH6HLK46T)";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
@@ -772,7 +790,7 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "766de610-9158-4813-ada4-7eee6bd9f8d8";
+				PROVISIONING_PROFILE = "fed2e603-aa4e-4961-b11a-99417b793f26";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -785,7 +803,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: quanlan huang (975852DY9A)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zheng Li (MSH6HLK46T)";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
@@ -793,7 +811,7 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "766de610-9158-4813-ada4-7eee6bd9f8d8";
+				PROVISIONING_PROFILE = "fed2e603-aa4e-4961-b11a-99417b793f26";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

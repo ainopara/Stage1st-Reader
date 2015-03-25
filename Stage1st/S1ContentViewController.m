@@ -21,6 +21,7 @@
 #import "ActionSheetStringPicker.h"
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
+#import "S1MahjongFaceViewController.h"
 
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, REComposeViewControllerDelegate>
@@ -39,6 +40,8 @@
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
+@property (nonatomic, weak) REComposeViewController *replyController;
+@property (nonatomic, strong) S1MahjongFaceViewController *mahjongController;
 @end
 
 @implementation S1ContentViewController {
@@ -111,7 +114,7 @@
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     BOOL hasInvalidTitle = NO;
     if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
-        self.titleLabel.text = @"载入中...";
+        self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
         hasInvalidTitle = YES;
     } else {
         self.titleLabel.text = self.topic.title;
@@ -163,6 +166,8 @@
     self.pageLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
     [self.pageLabel addGestureRecognizer:pickPageGR];
+    //UIPanGestureRecognizer *panRightGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(forward:)];
+    //[self.pageLabel addGestureRecognizer:panRightGR];
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -402,6 +407,53 @@
         [self presentViewController:moreActionSheet animated:YES completion:nil];
     }
     
+}
+#pragma mark - Accessory View Delegate
+
+- (void)toggleFace:(id)sender {
+    NSLog(@"toggleFace");
+    if (self.replyController.inputView == nil) {
+        if (self.mahjongController == nil) {
+            self.mahjongController = [[S1MahjongFaceViewController alloc] init];
+        }
+        self.replyController.inputView = self.mahjongController.view;
+        [self.replyController reloadInputViews];
+    } else {
+        self.replyController.inputView = nil;
+        [self.replyController reloadInputViews];
+    }
+}
+
+- (void)insertSpoilerMark:(id)sender {
+    [self insertMarkWithAPart:@"[color=LemonChiffon]" andBPart:@"[/color]"];
+}
+
+- (void)insertQuoteMark:(id)sender {
+    [self insertMarkWithAPart:@"[quote]" andBPart:@"[/quote]"];
+}
+
+- (void)insertBoldMark:(id)sender {
+    [self insertMarkWithAPart:@"[b]" andBPart:@"[/b]"];
+}
+- (void)insertMarkWithAPart:(NSString *)aPart andBPart:(NSString *)bPart {
+    NSLog(@"insert %@ %@ %lu", aPart, bPart, (unsigned long)[aPart length]);
+    if (self.replyController.textView != nil) {
+        NSRange selectRange = self.replyController.textView.selectedRange;
+        NSUInteger aPartLenght = [aPart length];
+        if (selectRange.length == 0) {
+            NSString *wholeMark = [aPart stringByAppendingString:bPart];
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:wholeMark] atIndex:selectRange.location];
+            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
+        } else {
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:bPart] atIndex:selectRange.location + selectRange.length];
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:aPart] atIndex:selectRange.location];
+            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
+        }
+        
+        NSRange wholeRange = NSMakeRange(0, self.replyController.textView.textStorage.length);
+        [self.replyController.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+        [self.replyController.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+    }
 }
 
 #pragma mark - UIActionSheet Delegate (iOS7 Only)
@@ -719,7 +771,7 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
 {
     //check in login state.
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+    if (NO && ![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
     }
@@ -741,6 +793,46 @@
     replyController.delegate = self;
     [replyController setText:[replyController.text stringByAppendingString:self.replyDraft]];
     [replyController.view setFrame:self.view.bounds];
+    
+    //setup accessory view
+    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, replyController.view.bounds.size.width, 35)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
+    
+    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [faceButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
+    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
+    
+    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [spoilerButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
+    
+    UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [quoteButton setTitle:@"Q" forState:UIControlStateNormal];
+    [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
+    
+    UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [boldButton setTitle:@"B" forState:UIControlStateNormal];
+    [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
+    
+    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixItem.width = 26.0f;
+    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [toolbar setItems:@[flexItem, boldItem, fixItem, quoteItem, fixItem, spoilerItem, fixItem, faceItem, flexItem]];
+    [accessoryView addSubview:toolbar];
+    replyController.accessoryView = accessoryView;
+    self.replyController = replyController;
+    
     [replyController presentFromViewController:self];
 }
 
