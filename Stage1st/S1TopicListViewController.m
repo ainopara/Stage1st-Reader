@@ -69,7 +69,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.dataCenter = [[S1DataCenter alloc] init];
+    self.dataCenter = [S1DataCenter sharedDataCenter];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [S1Global color5];

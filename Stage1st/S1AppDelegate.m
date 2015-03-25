@@ -8,8 +8,12 @@
 
 #import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
+#import "S1ContentViewController.h"
 #import "S1URLCache.h"
+#import "S1Topic.h"
 #import "S1Tracer.h"
+#import "S1Parser.h"
+#import "S1DataCenter.h"
 
 @implementation S1AppDelegate
 
@@ -128,7 +132,17 @@
     NSLog(@"%@ from %@", url, sourceApplication);
     
     //Open Specific Topic Case
-    
+    NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];
+    NSString *topicIDString = [queryDict valueForKey:@"tid"];
+    NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+    S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
+    if (topic == nil) {
+        topic = [[S1Topic alloc] init];
+        topic.topicID = topicID;
+    }
+    if (topicIDString != nil) {
+        [self presentContentViewControllerForTopic:topic];
+    }
     //Import Database Case
     if ([[url absoluteString] hasSuffix:@".s1db"]) { //TODO: Use NSNotificationCenter
         id rootvc = [(UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController] topViewController];
@@ -137,14 +151,29 @@
             [tlvc handleDatabaseImport:url];
         }
     }
-    
-    
     return YES;
 }
 
 // Hand Off Support
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    NSLog(@"%@", userActivity.userInfo);
+- (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
+}
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
+    NSLog(@"SSS%@", userActivity.userInfo);
+    S1Topic *topic = [[S1Topic alloc] init];
+    topic.topicID = [userActivity.userInfo valueForKey:@"topicID"];
+    topic.lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
+    [self presentContentViewControllerForTopic:topic];
+    return YES;
+}
+
+- (void)presentContentViewControllerForTopic:(S1Topic *)topic {
+    id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    if ([rootvc isKindOfClass:[UINavigationController class]]) {
+        S1ContentViewController *contentViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Content"];
+        [contentViewController setTopic:topic];
+        [contentViewController setDataCenter:[S1DataCenter sharedDataCenter]];
+        [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
+    }
 }
 @end

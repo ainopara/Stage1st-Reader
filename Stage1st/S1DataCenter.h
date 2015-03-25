@@ -15,6 +15,9 @@
 @property (strong, nonatomic) S1Tracer *tracer;
 @property (assign, nonatomic) BOOL shouldReloadHistoryCache;
 @property (assign, nonatomic) BOOL shouldReloadFavoriteCache;
+
++ (S1DataCenter *)sharedDataCenter;
+
 //For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 

@@ -57,6 +57,16 @@
     return self;
 }
 
++ (S1DataCenter *)sharedDataCenter
+{
+    static S1DataCenter *dataCenter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dataCenter = [[S1DataCenter alloc] init];
+    });
+    return dataCenter;
+}
+
 - (BOOL)hasCacheForKey:(NSString *)keyID {
     return self.topicListCache[keyID] != nil;
 }

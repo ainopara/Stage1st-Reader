@@ -646,6 +646,7 @@
     [self updatePageLabel];
     __weak typeof(self) weakSelf = self;
     
+    self.userActivity.needsSave = YES;
     
     S1HUD *HUD = nil;
     //remove cache for last page
@@ -890,4 +891,9 @@
     return rect;
 }
 
+-(void)updateUserActivityState:(NSUserActivity *)activity {
+    NSLog(@"Hand Off Activity Updated");
+    activity.userInfo = @{@"topicID": self.topic.topicID,
+                          @"page": [NSNumber numberWithInteger:_currentPage]};
+}
 @end
