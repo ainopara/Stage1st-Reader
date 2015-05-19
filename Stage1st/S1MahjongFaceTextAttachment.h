@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface S1MahjongFaceTextAttachment : NSTextAttachment
-
+@property(strong, nonatomic) NSString *mahjongFaceTag;
 @end

@@ -53,14 +53,14 @@
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX >= -100) {
-            self.interactionController.completionSpeed = 0.3 / fmin((screenWidth - fmin(translation.x, 0)) / fabsf(velocityX), 0.3);
+            self.interactionController.completionSpeed = 0.3 / fmin((screenWidth - fmin(translation.x, 0)) / fabs(velocityX), 0.3);
             //NSLog(@"Finish Speed: %f", self.interactionController.completionSpeed);
             [self.interactionController finishInteractiveTransition];
             if (self.navigationController.viewControllers.count == 1) {
                 self.panRecognizer.enabled = NO;
             }
         } else {
-            self.interactionController.completionSpeed = 0.3 / fmin(fabsf(translation.x / velocityX), 0.3);
+            self.interactionController.completionSpeed = 0.3 / fmin(fabs(translation.x / velocityX), 0.3);
             //NSLog(@"Cancel Speed: %f", self.interactionController.completionSpeed);
             [self.interactionController cancelInteractiveTransition];
         }

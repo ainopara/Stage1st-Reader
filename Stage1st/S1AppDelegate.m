@@ -14,11 +14,14 @@
 #import "S1Tracer.h"
 #import "S1Parser.h"
 #import "S1DataCenter.h"
+#import "flurry.h"
 
 @implementation S1AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //Flurry
+    [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
     //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];

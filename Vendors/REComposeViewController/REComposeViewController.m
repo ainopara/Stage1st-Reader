@@ -44,7 +44,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _cornerRadius = 6;
-        _keyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 387 : 197) : (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 299 : 252.0);
+        _keyboardHeight = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 387 : 197) : (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 299 : 252.0);
         _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectMake(0, 0, self.currentWidth - 8, 202)];
         self.tintColor = [UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1.0];
     }
@@ -55,7 +55,7 @@
 {
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIScreen *screen = [UIScreen mainScreen];
-        return (!UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) ? screen.bounds.size.width : screen.bounds.size.height;
+        return (!UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) ? screen.bounds.size.width : screen.bounds.size.height;
     } else {
         UIScreen *screen = [UIScreen mainScreen];
         return screen.bounds.size.width;
@@ -160,10 +160,6 @@
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
     
-    CGFloat accessoryViewHeight = 0;
-    if (_sheetView.textView.inputAccessoryView != nil) {
-        accessoryViewHeight = _sheetView.textView.inputAccessoryView.frame.size.height;
-    }
     
     CGRect frame = _containerView.frame;
     frame.size.height = expectComposeViewHeight;
