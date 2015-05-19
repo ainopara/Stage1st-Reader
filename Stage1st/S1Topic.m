@@ -10,38 +10,25 @@
 
 @implementation S1Topic
 
+#pragma mark - Core Data Serializing
 
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"[Topic] ID:%@, Page & Position:%@ %@", self.topicID, self.lastViewedPage, self.lastViewedPosition];
++ (NSString *)managedObjectEntityName {
+    return @"Topic";
 }
 
-
-#pragma mark - NSCoding
-
-- (void)encodeWithCoder:(NSCoder *)encoder
-{
-    [encoder encodeObject:self.fID forKey:@"FID"];
-    [encoder encodeObject:self.topicID forKey:@"TopicID"];
-    [encoder encodeObject:self.title forKey:@"Title"];
-    [encoder encodeObject:self.replyCount forKey:@"ReplyCount"];
-    [encoder encodeObject:self.lastViewedPage forKey:@"LastViewedPage"];
-    [encoder encodeObject:self.lastViewedDate forKey:@"LastViewedDate"];
++ (NSDictionary *)managedObjectKeysByPropertyKey {
+    return @{@"topicID" : @"topicID",
+             @"title" : @"title",
+             @"replyCount" : @"replyCount",
+             @"fID" : @"fID",
+             @"favorite" : @"favorite",
+             @"lastViewedDate" : @"lastViewedDate",
+             @"lastViewedPage" : @"lastViewedPage",
+             @"lastViewedPosition" : @"lastViewedPosition"};
 }
-
-- (id)initWithCoder:(NSCoder *)decoder
-{
-    if (self = [super init]) {
-        self.fID = [decoder decodeObjectForKey:@"FID"];
-        self.topicID = [decoder decodeObjectForKey:@"TopicID"];
-        self.title = [decoder decodeObjectForKey:@"Title"];
-        self.replyCount = [decoder decodeObjectForKey:@"ReplyCount"];
-        self.lastViewedPage = [decoder decodeObjectForKey:@"LastViewedPage"];
-        self.lastViewedDate = [decoder decodeObjectForKey:@"LastViewedDate"];
-    }
-    return self;
++ (NSSet *)propertyKeysForManagedObjectUniquing {
+    return [[NSSet alloc] initWithArray:@[@"topicID"]];
 }
-
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {
@@ -103,6 +90,21 @@
     }
     return NO;
     
+}
+/*
++ (NSValueTransformer *)lastViewedDateEntityAttributeTransformer {
+    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSNumber *seconds) {
+        return [[NSDate alloc] initWithTimeIntervalSince1970: [seconds doubleValue]];
+    } reverseBlock:^(NSDate *date) {
+        return [NSNumber numberWithDouble:[date timeIntervalSince1970]];
+    }];
+}*/
+- (BOOL)shouldOverwriteManagedObject:(NSManagedObject *)managedObject {
+    NSDate *persistedDate = [managedObject valueForKey:@"lastViewedDate"];
+    if (persistedDate) {
+        return [self.lastViewedDate compare:persistedDate] == NSOrderedDescending;
+    }
+    return YES;
 }
 
 @end

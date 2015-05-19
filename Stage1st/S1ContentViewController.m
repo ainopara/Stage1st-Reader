@@ -217,12 +217,8 @@
     [self cancelRequest];
     [self saveTopicViewedState:nil];
     self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
-        });
-    });
+    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
     [super viewDidDisappear:animated];
 }
 
@@ -339,7 +335,7 @@
                                                         cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
-                                      [self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                      [self.topic.favorite boolValue]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
                                       NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
                                       NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link"),
                                       NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
@@ -352,10 +348,10 @@
             [self presentReplyViewWithAppendText:@"" reply:nil];
         }];
         // Favorite Action
-        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.topic.favorite boolValue]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
             S1HUD *HUD = [S1HUD showHUDInView:self.view];
-            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];
         }];
         // Weibo Action
@@ -481,9 +477,9 @@
         }
         // Favorite
         if (1 == buttonIndex) {
-            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+            self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
             S1HUD *HUD = [S1HUD showHUDInView:self.view];
-            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];
         }
         
@@ -953,7 +949,7 @@
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    [self.topic setFavorite:[NSNumber numberWithBool:[self.dataCenter topicIsFavorited:self.topic.topicID]]];
+    self.topic.lastViewedDate = [NSDate date];
     [self.topic setLastReplyCount:self.topic.replyCount];
     [self.dataCenter hasViewed:self.topic];
 }

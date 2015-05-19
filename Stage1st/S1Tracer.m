@@ -60,7 +60,7 @@
     NSString *title = topic.title;
     NSNumber *replyCount = topic.replyCount;
     NSNumber *fID = topic.fID;
-    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
+    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[topic.lastViewedDate timeIntervalSince1970]];
     NSNumber *lastViewedPage = topic.lastViewedPage;
     NSNumber *lastViewedPosition = topic.lastViewedPosition;
     FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];

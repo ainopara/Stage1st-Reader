@@ -61,8 +61,13 @@
     for (S1Topic *topic in topics) {
         topic.highlight = searchWord;
         NSDate *date = topic.lastViewedDate;
-        NSString *topicTitle = [formatter stringFromDate:date];
-        if ([[formatter stringFromDate:date] isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
+        NSString *topicTitle;
+        if (date) {
+             topicTitle = [formatter stringFromDate:date];
+        } else {
+             topicTitle = @"Unknown";
+        }
+        if ([topicTitle isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
             topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
         }
         if ([topicHeaderTitles containsObject:topicTitle]) {

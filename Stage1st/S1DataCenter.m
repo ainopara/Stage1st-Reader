@@ -13,8 +13,14 @@
 #import "S1Parser.h"
 #import "S1Floor.h"
 #import "IMQuickSearch.h"
+#import "S1PersistentStack.h"
+
 
 @interface S1DataCenter ()
+@property (strong, nonatomic) S1Tracer *tracer;
+
+@property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
+@property (nonatomic, strong) PersistentStack* persistentStack;
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
 @property (strong, nonatomic) NSString *formhash;
@@ -36,6 +42,9 @@
 -(instancetype)init {
     self = [super init];
     _tracer = [[S1Tracer alloc] init];
+    //iCloud and Core Data
+    _persistentStack = [[PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
+    _managedObjectContext = self.persistentStack.managedObjectContext;
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _floorCache = [NSMutableDictionary dictionary];
@@ -167,7 +176,7 @@
         
         //append tracer message to topics
         for (S1Topic *topic in topics) {
-            S1Topic *tempTopic = [strongMyself.tracer tracedTopicByID:topic.topicID];
+            S1Topic *tempTopic = [strongMyself tracedTopic:topic.topicID];
             if (tempTopic) {
                 [topic addDataFromTracedTopic:tempTopic];
             }
@@ -392,22 +401,28 @@
     //filter process
     if (self.shouldReloadHistoryCache || self.historySearch == nil) {
         __weak typeof(self) myself = self;
-        self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
-            __strong typeof(self) strongMyself = myself;
-            //update search filter
-            NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
-            IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
-            strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-            strongMyself.cachedHistoryTopics = fullTopics;
-            //return full data.
-            if ([searchWord isEqualToString:@""]) {
-                leftTopicsHandler(fullTopics);
-            } else {
-                NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-                [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
-                leftTopicsHandler(fullResult);
-            }
-        }];
+        if (YES) {
+            self.cachedHistoryTopics = [self.persistentStack historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
+                ;
+            }];
+        } else {
+            self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
+                __strong typeof(self) strongMyself = myself;
+                //update search filter
+                NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
+                IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
+                strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
+                strongMyself.cachedHistoryTopics = fullTopics;
+                //return full data.
+                if ([searchWord isEqualToString:@""]) {
+                    leftTopicsHandler(fullTopics);
+                } else {
+                    NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
+                    [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
+                    leftTopicsHandler(fullResult);
+                }
+            }];
+        }
         //set search filter
         IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:self.cachedHistoryTopics keys:@[@"title"]];
         self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
@@ -428,7 +443,12 @@
     
     //filter process
     if (self.shouldReloadFavoriteCache) {
-        NSMutableArray *topics = [self.tracer favoritedObjects];
+        NSMutableArray *topics;
+        if (YES) {
+            topics = [self.persistentStack favoritedObjects];
+        } else {
+            topics = [self.tracer favoritedObjects];
+        }
         IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
         self.favoriteSearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
         self.shouldReloadFavoriteCache = NO;
@@ -440,28 +460,62 @@
 }
 
 - (void)hasViewed:(S1Topic *)topic {
-    [self.tracer hasViewed:topic];
+    if (YES) {
+        [self.persistentStack hasViewed:topic];
+    } else {
+        [self.tracer hasViewed:topic];
+    }
+    
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
-    [self.tracer removeTopicFromHistory:topicID];
+    if (YES) {
+        [self.persistentStack removeTopicByID:topicID];
+    } else {
+        [self.tracer removeTopicFromHistory:topicID];
+    }
 }
 
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    [self.tracer setTopicFavoriteState:topicID withState:state];
+    if (YES) {
+        [self.persistentStack setTopicFavoriteState:topicID withState:state];
+    } else {
+        [self.tracer setTopicFavoriteState:topicID withState:state];
+    }
 }
 
 - (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    return [self.tracer topicIsFavorited:topicID];
+    if (YES) {
+        return NO;
+    } else {
+        return [self.tracer topicIsFavorited:topicID];
+    }
 }
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
-    return [self.tracer tracedTopicByID:topicID];
+    if (YES) {
+        return [self.persistentStack presistentedTopicByID:topicID];
+    } else {
+        return [self.tracer tracedTopicByID:topicID];
+    }
 }
 
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
     [self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
 }
+
+#pragma mark - Core Data
+- (NSURL*)storeURL
+{
+    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    return [documentsDirectory URLByAppendingPathComponent:@"CoreData.sqlite"];
+}
+
+- (NSURL*)modelURL
+{
+    return [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
+}
+
 #pragma mark - Cache
 - (void)clearTopicListCache {
     self.topicListCache = [[NSMutableDictionary alloc] init];
@@ -477,7 +531,7 @@
     for (S1Topic *topic in topics) {
         
         //append tracer message to topics
-        S1Topic *tempTopic = [self.tracer tracedTopicByID:topic.topicID];
+        S1Topic *tempTopic = [self tracedTopic:topic.topicID];
         if (tempTopic) {
             [topic addDataFromTracedTopic:tempTopic];
         }

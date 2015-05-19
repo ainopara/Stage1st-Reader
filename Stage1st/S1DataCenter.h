@@ -12,7 +12,6 @@
 @class S1Floor;
 @interface S1DataCenter : NSObject
 
-@property (strong, nonatomic) S1Tracer *tracer;
 @property (assign, nonatomic) BOOL shouldReloadHistoryCache;
 @property (assign, nonatomic) BOOL shouldReloadFavoriteCache;
 

@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Mantle.h"
+#import "MTLManagedObjectAdapter.h"
 
-@interface S1Topic : NSObject <NSCoding>
+@interface S1Topic : MTLModel <MTLManagedObjectSerializing>
 //Basic
 @property (nonatomic, copy) NSNumber *topicID;
 //To show in topic list
