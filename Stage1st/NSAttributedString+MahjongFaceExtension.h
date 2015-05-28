@@ -1,5 +1,5 @@
 //
-//  NSAttributedString+EmojiExtension.h
+//  NSAttributedString+MahjongFaceExtension.h
 //  Stage1st
 //
 //  Created by Zheng Li on 5/19/15.

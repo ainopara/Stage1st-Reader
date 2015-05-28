@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "S1MahjongFaceTextAttachment.h"
+
+@protocol S1MahjongFaceViewControllerDelegate;
 
 @interface S1MahjongFaceViewController : UIViewController
+@property (nonatomic, strong) NSString *currentCategory;
+@property (weak, nonatomic) id<S1MahjongFaceViewControllerDelegate> delegate;
+@end
 
-
-
+@protocol S1MahjongFaceViewControllerDelegate <NSObject>
+- (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment;
 @end

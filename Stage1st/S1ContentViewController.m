@@ -24,7 +24,7 @@
 #import "S1MahjongFaceViewController.h"
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, REComposeViewControllerDelegate>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -33,7 +33,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
-@property (nonatomic, strong) NSString *replyDraft;
+@property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
 
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
@@ -411,6 +411,7 @@
     if (self.replyController.inputView == nil) {
         if (self.mahjongController == nil) {
             self.mahjongController = [[S1MahjongFaceViewController alloc] init];
+            self.mahjongController.delegate = self;
         }
         self.replyController.inputView = self.mahjongController.view;
         [self.replyController reloadInputViews];
@@ -452,7 +453,7 @@
     }
 }
 
-#pragma mark - UIActionSheet Delegate (iOS7 Only)
+#pragma mark UIActionSheet Delegate (iOS7 Only)
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -523,7 +524,7 @@
     
 }
 
-#pragma mark - UIAlertView Delegate (iOS7 Only)
+#pragma mark UIAlertView Delegate (iOS7 Only)
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -537,7 +538,7 @@
     }
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark UIWebView Delegate
 
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -643,7 +644,7 @@
     
 }
 
-#pragma mark - JTSImageViewController Interactions Delegate
+#pragma mark JTSImageViewController Interactions Delegate
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     self.imageViewer = imageViewer;
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -676,11 +677,27 @@
     }
     
 }
-#pragma mark - UIScrollView Delegate
+#pragma mark UIScrollView Delegate
 
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
     return YES;
+}
+
+#pragma mark S1MahjongFaceViewControllerDelegate
+
+- (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
+    UITextView *textView = self.replyController.textView;
+    if (textView) {
+        [textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:attachment] atIndex:textView.selectedRange.location];
+        
+        //Move selection location
+        self.replyController.textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location + 1, self.replyController.textView.selectedRange.length);
+        
+        //Reset Text Style
+        NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
+        [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+        [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+    }
 }
 
 #pragma mark - Networking
@@ -772,10 +789,15 @@
         return;
     }
     
-    if (self.replyDraft) {
-        self.replyDraft = [self.replyDraft stringByAppendingString:text? text : @""];
+    if (self.attributedReplyDraft) {
+        if (text) {
+            [self.attributedReplyDraft appendAttributedString:[[NSAttributedString alloc] initWithString:text attributes:nil]];
+        }
     } else {
-        self.replyDraft = text? text : @"";
+        if (text) {
+            self.attributedReplyDraft = [[NSMutableAttributedString alloc] initWithString:text];
+        }
+        self.attributedReplyDraft = [[NSMutableAttributedString alloc] init];
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
@@ -787,7 +809,7 @@
         self.replyTopicFloor = nil;
     }
     replyController.delegate = self;
-    [replyController setText:[replyController.text stringByAppendingString:self.replyDraft]];
+    [replyController setAttributedText:self.attributedReplyDraft];
     [replyController.view setFrame:self.view.bounds];
     
     //setup accessory view
@@ -834,7 +856,7 @@
 
 - (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
     if (result == REComposeResultCancelled) {
-        self.replyDraft = composeViewController.text;
+        self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
         [composeViewController dismissViewControllerAnimated:YES completion:nil];
     } else if (result == REComposeResultPosted) {
         if (composeViewController.text.length > 0) {
@@ -846,7 +868,7 @@
                     __strong typeof(self) strongSelf = weakSelf;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                     [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                    strongSelf.replyDraft = @"";
+                    strongSelf.attributedReplyDraft = nil;
                     if (strongSelf->_currentPage == strongSelf->_totalPages) {
                         strongSelf->_needToScrollToBottom = YES;
                         [strongSelf fetchContentAndPrecacheNextPage:YES];
@@ -865,7 +887,7 @@
                     __strong typeof(self) strongSelf = weakSelf;
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                     [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                    strongSelf.replyDraft = @"";
+                    strongSelf.attributedReplyDraft = nil;
                     if (strongSelf->_currentPage == strongSelf->_totalPages) {
                         strongSelf->_needToScrollToBottom = YES;
                         [strongSelf fetchContentAndPrecacheNextPage:YES];

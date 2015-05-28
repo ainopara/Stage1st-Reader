@@ -25,6 +25,7 @@
 
 #import "REComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSAttributedString+MahjongFaceExtension.h"
 
 @interface REComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -273,13 +274,24 @@
 
 - (NSString *)text
 {
-    return _sheetView.textView.text;
+    return [_sheetView.textView.attributedText getPlainString];
 }
 
 - (void)setText:(NSString *)text
 {
     _sheetView.textView.text = text;
 }
+
+- (NSAttributedString *)attributedText
+{
+    return _sheetView.textView.attributedText;
+}
+
+- (void)setAttributedText:(NSAttributedString *)text
+{
+    _sheetView.textView.attributedText = text;
+}
+
 
 - (NSString *)placeholderText
 {

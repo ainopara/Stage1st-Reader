@@ -1,5 +1,5 @@
 //
-//  NSAttributedString+EmojiExtension.m
+//  NSAttributedString+MahjongFaceExtension.h
 //  Stage1st
 //
 //  Created by Zheng Li on 5/19/15.
@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NSAttributedString+EmojiExtension.h"
+#import "NSAttributedString+MahjongFaceExtension.h"
 #import "S1MahjongFaceTextAttachment.h"
 
 @implementation NSAttributedString (MahjongFaceExtension)

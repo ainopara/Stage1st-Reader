@@ -10,10 +10,8 @@
 #import "UIButton+AFNetworking.h"
 
 @interface S1MahjongFaceViewController ()
-
 @property (nonatomic, strong) NSDictionary *mahjongMap;
 @property (nonatomic, strong) NSMutableArray *buttonKeys;
-
 @end
 
 #pragma mark -
@@ -26,7 +24,8 @@
     [self.view setBackgroundColor:[S1Global color5]];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"MahjongMap" ofType:@"plist"];
     self.mahjongMap = [NSDictionary dictionaryWithContentsOfFile:path];
-    NSArray *keys = [self.mahjongMap allKeys];
+    NSArray *keys = [[self.mahjongMap valueForKey:@"face"] allKeys];
+    self.currentCategory = @"face";
     NSUInteger index = 0;
     NSUInteger row = 0;
     for (NSString *key in keys) {
@@ -54,13 +53,27 @@
 {
     NSLog(@"%ld", (long)button.tag);
     NSLog(@"%@", self.buttonKeys[button.tag]);
+    if (self.delegate) {
+        S1MahjongFaceTextAttachment *mahjongFaceTextAttachment = [S1MahjongFaceTextAttachment new];
+        
+        //Set tag and image
+        
+        NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong/"];
+        NSString *suffix = [[self.mahjongMap valueForKey:self.currentCategory] valueForKey:self.buttonKeys[button.tag]];
+        NSString *fullPath = [NSString stringWithFormat:@"%@%@", localPath, suffix];
+        NSData *imageData = [NSData dataWithContentsOfFile:fullPath];
+        
+        mahjongFaceTextAttachment.mahjongFaceTag = self.buttonKeys[button.tag];
+        mahjongFaceTextAttachment.image = [UIImage imageWithData:imageData];
+        [self.delegate mahjongFaceViewController:self didFinishWithResult:mahjongFaceTextAttachment];
+    }
 }
 
 #pragma mark Helper
 
 - (NSURL *)URLForKey:(NSString *)key {
     NSString *prefix = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"static/image/smiley/"];
-    NSString *mahjongURLString = [prefix stringByAppendingString:[self.mahjongMap valueForKey:key]];
+    NSString *mahjongURLString = [prefix stringByAppendingString:[[self.mahjongMap valueForKey:self.currentCategory] valueForKey:key]];
     return [NSURL URLWithString:mahjongURLString];
 }
 
