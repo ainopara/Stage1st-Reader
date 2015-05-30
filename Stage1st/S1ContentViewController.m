@@ -411,6 +411,8 @@
     if (self.replyController.inputView == nil) {
         if (self.mahjongController == nil) {
             self.mahjongController = [[S1MahjongFaceViewController alloc] init];
+            //[self.mahjongController.view setFrame:CGRectMake(0, 0, 320, 217)];
+            //[self.view addSubview:self.mahjongController.view];
             self.mahjongController.delegate = self;
         }
         self.replyController.inputView = self.mahjongController.view;

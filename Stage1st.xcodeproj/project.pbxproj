@@ -47,6 +47,8 @@
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
+		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
+		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
 		86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */; };
@@ -154,6 +156,10 @@
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+MahjongFaceExtension.h"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
 		86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseManageViewController.h; path = Stage1st/S1DatabaseManageViewController.h; sourceTree = "<group>"; };
 		86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseManageViewController.m; path = Stage1st/S1DatabaseManageViewController.m; sourceTree = "<group>"; };
+		86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFacePageView.h; path = Stage1st/S1MahjongFacePageView.h; sourceTree = "<group>"; };
+		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFacePageView.m; path = Stage1st/S1MahjongFacePageView.m; sourceTree = "<group>"; };
+		86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceButton.h; path = Stage1st/S1MahjongFaceButton.h; sourceTree = "<group>"; };
+		86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceButton.m; path = Stage1st/S1MahjongFaceButton.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = FloorTemplate.html; path = Stage1st/FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ThreadTemplate.html; path = Stage1st/ThreadTemplate.html; sourceTree = "<group>"; };
 		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
@@ -322,6 +328,10 @@
 				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
 				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
 				86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */,
+				86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */,
+				86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */,
+				86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */,
+				86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */,
 			);
 			name = S1MahjongFaceViewController;
 			sourceTree = "<group>";
@@ -738,6 +748,7 @@
 				86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */,
 				860223521895051400A3E66E /* S1Global.m in Sources */,
 				862F51BD189136000038A289 /* TFHpple.m in Sources */,
+				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
@@ -762,6 +773,7 @@
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
 				864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */,
+				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */,

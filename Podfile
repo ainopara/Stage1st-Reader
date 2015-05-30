@@ -12,5 +12,6 @@ target "Stage1st" do
     pod 'IMQuickSearch'
     pod 'Mantle'
     pod 'Masonry'
+    pod 'Reveal-iOS-SDK', :configurations => ['Debug']
 end
 
