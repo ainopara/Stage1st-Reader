@@ -216,7 +216,7 @@
 
 - (CGFloat)decideOffset:(CGPoint)offset {
     CGFloat widthPerItem = [self getWidthPerItemForScroll];
-    float maxOffset = _keys.count * _DEFAULT_WIDTH - self.bounds.size.width;
+    float maxOffset = _keys.count * widthPerItem - self.bounds.size.width;
     
     if (_lastContentOffset == 0 && offset.x == 0) {
         offset.x = 0.0;
@@ -230,7 +230,7 @@
             offset.x = (n + 1) * widthPerItem;
         }
     } else {
-        float offsetFix = _DEFAULT_WIDTH - fmodf(maxOffset, _DEFAULT_WIDTH);
+        float offsetFix = widthPerItem - fmodf(maxOffset, widthPerItem);
         CGFloat n = floorf((offset.x + offsetFix) / widthPerItem);
         if (((offset.x + offsetFix) - n*widthPerItem) < ((n+1)*widthPerItem -(offset.x + offsetFix))) {
             offset.x = n*widthPerItem - offsetFix;

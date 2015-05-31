@@ -126,15 +126,6 @@
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:newPageNumber]];
 }
 
-- (BOOL)moveToNextCategory {
-    NSUInteger currentCategoryIndex = [self.mahjongCategoryOrder indexOfObject:self.currentCategory];
-    if (currentCategoryIndex + 1 < [self.mahjongCategoryOrder count]) {
-        self.currentCategory = [self.mahjongCategoryOrder objectAtIndex:currentCategoryIndex +1];
-        return YES;
-    }
-    return NO;
-}
-
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     NSLog(@"%@",key);
     self.currentCategory = key;
