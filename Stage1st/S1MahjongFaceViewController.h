@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "S1MahjongFaceTextAttachment.h"
-
+@class S1MahjongFaceButton;
 @protocol S1MahjongFaceViewControllerDelegate;
 
 @interface S1MahjongFaceViewController : UIViewController
 @property (nonatomic, strong) NSString *currentCategory;
 @property (weak, nonatomic) id<S1MahjongFaceViewControllerDelegate> delegate;
+
+- (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
 @end
 
 @protocol S1MahjongFaceViewControllerDelegate <NSObject>

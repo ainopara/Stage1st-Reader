@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSArray *keys;
 @property (nonatomic, assign) BOOL enabled;
 
+-(void)setSelectedIndex:(NSInteger)index;
+
 @end
 
 

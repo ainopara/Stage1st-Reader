@@ -23,6 +23,23 @@
     CGFloat _lastFrameWidth;
 }
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _index = -1;
+        _lastFrameWidth = 0;
+        _enabled = YES;
+        self.backgroundColor = [S1Global color3];
+        self.canCancelContentTouches = YES;
+        self.bounces = NO;
+        self.showsHorizontalScrollIndicator = NO;
+        self.scrollsToTop = NO;
+        self.delegate = self;
+        //self.decelerationRate = UIScrollViewDecelerationRateFast;
+    }
+    return self;
+}
+//Init from Storyboard
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super initWithCoder:coder];
@@ -40,6 +57,8 @@
     }
     return self;
 }
+
+
 
 
 - (void)setKeys:(NSArray *)keys
@@ -239,6 +258,18 @@
     } else {
         return (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
     }
+}
+- (void)setSelectedIndex:(NSInteger)index {
+    if (index < 0 || index >= [_buttons count]) {
+        return;
+    }
+    if (_index >= 0) {
+        [_buttons[_index] setSelected:NO];
+    }
+    _index = index;
+    [_buttons[_index] setSelected:YES];
+    [self scrollRectToVisible:[_buttons[_index] frame] animated:YES];
+    
 }
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view {

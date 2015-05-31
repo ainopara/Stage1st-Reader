@@ -49,6 +49,7 @@
 		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
+		86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
 		86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */; };
@@ -160,6 +161,7 @@
 		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFacePageView.m; path = Stage1st/S1MahjongFacePageView.m; sourceTree = "<group>"; };
 		86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceButton.h; path = Stage1st/S1MahjongFaceButton.h; sourceTree = "<group>"; };
 		86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceButton.m; path = Stage1st/S1MahjongFaceButton.m; sourceTree = "<group>"; };
+		86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongCategoryOrder.plist; path = Stage1st/MahjongCategoryOrder.plist; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = FloorTemplate.html; path = Stage1st/FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ThreadTemplate.html; path = Stage1st/ThreadTemplate.html; sourceTree = "<group>"; };
 		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				86600FBB1AAD969D004394E6 /* MahjongMap.plist */,
+				86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */,
 				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */,
 				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */,
 				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
@@ -676,6 +679,7 @@
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */,
 				86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */,
+				86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */,
 				8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */,
 				86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */,
 				867EECAB1A104D8E00E0DE6F /* content_base.css in Resources */,
