@@ -99,6 +99,9 @@
         [self.delegate mahjongFaceViewController:self didFinishWithResult:mahjongFaceTextAttachment];
     }
 }
+- (void)backspacePressed:(UIButton *)button {
+    NSLog(@"backspace");
+}
 
 #pragma mark Delegate
 

@@ -54,6 +54,15 @@
         }
         buttonIndex = rowIndex * columns + columnIndex;
     }
+    if (!self.backspaceButton) {
+        self.backspaceButton = [[S1MahjongFaceButton alloc] init];
+        [self.backspaceButton setImage:[UIImage imageNamed:@"Backspace"] forState:UIControlStateNormal];
+        [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.backspaceButton];
+    }
+    [self.backspaceButton setFrame:CGRectMake((columns - 1) * 50 + 10,(rows - 1) * 50 , 50, 50)];
+    
+    
 }
 
 - (NSMutableURLRequest *)requestForURL:(NSURL *)URL {
@@ -76,9 +85,9 @@
 }
 
 - (void)setImageURL:(NSURL *)URL forButton:(S1MahjongFaceButton *)button {
-    [button setImage:nil forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"MahjongFacePlaceholder"] forState:UIControlStateNormal];
     __weak S1MahjongFaceButton *weakButton = button;
-    [button setImageForState:UIControlStateNormal withURLRequest:[self requestForURL:URL] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+    [button setImageForState:UIControlStateNormal withURLRequest:[self requestForURL:URL] placeholderImage:[UIImage imageNamed:@"MahjongFacePlaceholder"] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         __strong S1MahjongFaceButton *strongButton = weakButton;
         UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
         [strongButton setImage:theImage forState:UIControlStateNormal];
@@ -89,6 +98,11 @@
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button {
     if (self.viewController) {
         [self.viewController mahjongFacePressed:button];
+    }
+}
+- (void)backspacePressed:(UIButton *)button {
+    if (self.viewController) {
+        [self.viewController backspacePressed:button];
     }
 }
 @end

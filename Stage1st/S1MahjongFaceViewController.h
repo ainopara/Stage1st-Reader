@@ -16,6 +16,7 @@
 @property (weak, nonatomic) id<S1MahjongFaceViewControllerDelegate> delegate;
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
+- (void)backspacePressed:(UIButton *)button;
 @end
 
 @protocol S1MahjongFaceViewControllerDelegate <NSObject>
