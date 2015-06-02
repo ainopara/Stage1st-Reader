@@ -15,6 +15,7 @@
 
 @interface S1MahjongFaceViewController () <UIScrollViewDelegate, S1TabBarDelegate>
 @property (nonatomic, strong) NSDictionary *mahjongMap;
+@property (nonatomic, strong) NSDictionary *keyTranslation;
 @property (nonatomic, strong) NSArray *mahjongCategoryOrder;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -29,16 +30,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[S1Global color5]];
+    self.keyTranslation = @{@"face":@"麻将脸",
+                            @"dym":@"大姨妈",
+                            @"goose":@"鹅",
+                            @"zdl":@"战斗力",
+                            @"nq":@"扭曲",
+                            @"normal":@"正常向",
+                            @"blink":@"闪光弹",
+                            @"animal":@"动物",
+                            @"carton":@"动漫",
+                            @"bundam":@"雀高达"
+                            };
     self.pageViews = [[NSMutableArray alloc] init];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"MahjongMap" ofType:@"plist"];
     self.mahjongMap = [NSDictionary dictionaryWithContentsOfFile:path];
     path = [[NSBundle mainBundle] pathForResource:@"MahjongCategoryOrder" ofType:@"plist"];
     self.mahjongCategoryOrder = [NSArray arrayWithContentsOfFile:path];
-    self.currentCategory = @"face";
+    self.currentCategory = @"normal";
     // init tab bar
     self.tabBar = [[S1TabBar alloc] init];
     self.tabBar.tabbarDelegate = self;
-    self.tabBar.keys = self.mahjongCategoryOrder;
+    self.tabBar.keys = [self translateKey:self.mahjongCategoryOrder];
     [self.tabBar setSelectedIndex:[self.mahjongCategoryOrder indexOfObject:self.currentCategory]];
     [self.view addSubview:self.tabBar];
     [self.tabBar mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -101,6 +113,9 @@
 }
 - (void)backspacePressed:(UIButton *)button {
     NSLog(@"backspace");
+    if (self.delegate) {
+        [self.delegate mahjongFaceViewControllerDidPressBackSpace:self];
+    }
 }
 
 #pragma mark Delegate
@@ -131,7 +146,7 @@
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     NSLog(@"%@",key);
-    self.currentCategory = key;
+    self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
     [self.view setNeedsLayout];
 }
 
@@ -253,6 +268,17 @@
     NSLog(@"%ld", (long)totalPageCount);
     [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
+}
+
+- (NSArray *)translateKey:(NSArray *)keyArray {
+    NSMutableArray *translationResult = [[NSMutableArray alloc] initWithCapacity:[keyArray count]];
+    for (NSString *key in keyArray) {
+        NSString *value = [self.keyTranslation valueForKey:key];
+        if (value) {
+            [translationResult addObject:value];
+        }
+    }
+    return translationResult;
 }
 
 - (void)didReceiveMemoryWarning {

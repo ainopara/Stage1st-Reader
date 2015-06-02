@@ -21,4 +21,5 @@
 
 @protocol S1MahjongFaceViewControllerDelegate <NSObject>
 - (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment;
+- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceViewController *)mahjongFaceViewController;
 @end

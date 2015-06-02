@@ -22,6 +22,7 @@
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
 #import "S1MahjongFaceViewController.h"
+#import "Masonry.h"
 
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
@@ -702,6 +703,23 @@
     }
 }
 
+- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceViewController *)mahjongFaceViewController {
+    UITextView *textView = self.replyController.textView;
+    if (textView) {
+        NSRange range = textView.selectedRange;
+        if (range.length == 0) {
+            if (range.location > 0) {
+                range.location -= 1;
+                range.length = 1;
+            }
+        }
+        textView.selectedRange = range;
+        [textView.textStorage deleteCharactersInRange:textView.selectedRange];
+        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location, 0);
+        
+    }
+}
+
 #pragma mark - Networking
 
 - (void)fetchContent {
@@ -850,6 +868,12 @@
     
     [toolbar setItems:@[flexItem, boldItem, fixItem, quoteItem, fixItem, spoilerItem, fixItem, faceItem, flexItem]];
     [accessoryView addSubview:toolbar];
+    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(accessoryView.mas_left);
+        make.right.equalTo(accessoryView.mas_right);
+        make.top.equalTo(accessoryView.mas_top);
+        make.bottom.equalTo(accessoryView.mas_bottom);
+    }];
     replyController.accessoryView = accessoryView;
     self.replyController = replyController;
     
