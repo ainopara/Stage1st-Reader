@@ -35,7 +35,7 @@
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
-
+@property (nonatomic, strong) NSMutableDictionary *cachedViewPosition;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
 @property (nonatomic, strong) UIButton *backButton;
@@ -70,6 +70,7 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -86,6 +87,7 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -256,6 +258,7 @@
 {
     [self cancelRequest];
     _needToLoadLastPosition = NO;
+    [self saveViewPosition];
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -268,6 +271,7 @@
 {
     [self cancelRequest];
     _needToLoadLastPosition = NO;
+    [self saveViewPosition];
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
@@ -284,6 +288,7 @@
 - (void)backLongPressed:(UIGestureRecognizer *)gr
 {
     if (gr.state == UIGestureRecognizerStateBegan) {
+        [self saveViewPosition];
         if (_currentPage > 1) {
             _currentPage = 1;
             [self cancelRequest];
@@ -296,6 +301,7 @@
 - (void)forwardLongPressed:(UIGestureRecognizer *)gr
 {
     if (gr.state == UIGestureRecognizerStateBegan) {
+        [self saveViewPosition];
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
             [self cancelRequest];
@@ -319,6 +325,7 @@
                                             rows:array
                                 initialSelection:_currentPage - 1
                                        doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+                                           [self saveViewPosition];
                                            _currentPage = selectedIndex + 1;
                                            [self cancelRequest];
                                            [self fetchContent];
@@ -640,6 +647,11 @@
             [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
         }
         _needToLoadLastPosition = NO;
+    }
+    NSNumber *currentPageNumber = [NSNumber numberWithInteger:_currentPage];
+    NSNumber *positionForPage =[self.cachedViewPosition objectForKey:currentPageNumber];
+    if (positionForPage) {
+        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [positionForPage doubleValue])];
     }
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
@@ -1027,9 +1039,16 @@
     return rect;
 }
 
--(void)updateUserActivityState:(NSUserActivity *)activity {
+- (void)updateUserActivityState:(NSUserActivity *)activity {
     NSLog(@"Hand Off Activity Updated");
     activity.userInfo = @{@"topicID": self.topic.topicID,
                           @"page": [NSNumber numberWithInteger:_currentPage]};
 }
+
+- (void)saveViewPosition {
+    if (self.webView.scrollView.contentOffset.y != 0) {
+        [self.cachedViewPosition setObject:[NSNumber numberWithDouble:self.webView.scrollView.contentOffset.y] forKey:[NSNumber numberWithInteger:_currentPage]];
+    }
+}
+
 @end
