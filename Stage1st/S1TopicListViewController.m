@@ -23,7 +23,6 @@
 
 static NSString * const cellIdentifier = @"TopicCell";
 
-#define _BAR_HEIGHT 44.0f
 #define _UPPER_BAR_HEIGHT 64.0f
 #define _SEARCH_BAR_HEIGHT 40.0f
 
@@ -47,7 +46,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSMutableArray *searchResults; // Filtered search results
 @property (nonatomic, strong) NSMutableDictionary *cachedContentOffset;
 @property (nonatomic, strong) NSMutableDictionary *cachedLastRefreshTime;
-@property (nonatomic, strong) NSDictionary *threadsInfo;
+@property (nonatomic, strong) NSDictionary *forumKeyMap;
 
 @property (nonatomic, strong) S1Topic *clipboardTopic;
 
@@ -190,45 +189,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 
-- (void)presentInternalListForType:(S1InternalTopicListType)type
-{
-    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
-        [self cancelRequest];
-        self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
-    }
-    self.previousKey = self.currentKey;
-    self.currentKey = type == S1TopicListHistory ? @"History":@"Favorite";
-    if (self.tableView.hidden == YES) {
-        self.tableView.hidden = NO;
-    }
-    self.refreshControl.hidden = YES;
-    
-    if (type == S1TopicListHistory) {
-        self.dataCenter.shouldReloadHistoryCache = YES;
-    } else if (type == S1TopicListFavorite) {
-        self.dataCenter.shouldReloadFavoriteCache = YES;
-    }
-    __weak typeof(self) myself = self;
-    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@"" andLeftCallback:^(NSDictionary *fullResult) {
-        __strong typeof(self) strongMyself = myself;
-        strongMyself.topics = [fullResult valueForKey:@"topics"];
-        strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongMyself.tableView reloadData];
-        });
-    }];
-    self.topics = [result valueForKey:@"topics"];
-    self.topicHeaderTitles = [result valueForKey:@"headers"];
-    
-    [self.tableView reloadData];
-    if (self.topics && self.topics.count > 0) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-    
-    [self.scrollTabBar deselectAll];
-    
-}
-
 
 
 
@@ -319,7 +279,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         } else {
             _loadingMore = YES;
             __weak typeof(self) weakSelf = self;
-            [self.dataCenter loadNextPageForKey:self.threadsInfo[self.currentKey] success:^(NSArray *topicList) {
+            [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.topics = [topicList mutableCopy];
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -368,7 +328,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
-    if (NO) {
+    NSDate *lastRefreshDateForKey = [self.cachedLastRefreshTime valueForKey:key];
+    //NSLog(@"cache: %@, date: %@",self.cachedLastRefreshTime, lastRefreshDateForKey);
+    //NSLog(@"diff: %f", [[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey]);
+    if (lastRefreshDateForKey && ([[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey] <= 20.0)) {
         if (![self.currentKey isEqualToString:key]) {
             NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
             [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
@@ -504,13 +467,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     _loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD;
-    if (refresh || ![self.dataCenter hasCacheForKey:self.threadsInfo[key]]) {
+    if (refresh || ![self.dataCenter hasCacheForKey:self.forumKeyMap[key]]) {
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
     }
     
     __weak typeof(self) weakSelf = self;
-    [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
+    [self.viewModel topicListForKey:self.forumKeyMap[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
         dispatch_async(dispatch_get_main_queue(), ^{
             __strong typeof(self) strongSelf = weakSelf;
@@ -533,7 +496,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 if (strongSelf.tableView.contentOffset.y < 0) {
                     [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                 }
-                
+                [self.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
             } else {
                 if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
                     strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
@@ -646,6 +609,48 @@ static NSString * const cellIdentifier = @"TopicCell";
         [contentViewController setDataCenter:self.dataCenter];
     }
 }
+
+
+
+- (void)presentInternalListForType:(S1InternalTopicListType)type
+{
+    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        [self cancelRequest];
+        self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+    }
+    self.previousKey = self.currentKey;
+    self.currentKey = type == S1TopicListHistory ? @"History":@"Favorite";
+    if (self.tableView.hidden == YES) {
+        self.tableView.hidden = NO;
+    }
+    self.refreshControl.hidden = YES;
+    
+    if (type == S1TopicListHistory) {
+        self.dataCenter.shouldReloadHistoryCache = YES;
+    } else if (type == S1TopicListFavorite) {
+        self.dataCenter.shouldReloadFavoriteCache = YES;
+    }
+    __weak typeof(self) myself = self;
+    NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@"" andLeftCallback:^(NSDictionary *fullResult) {
+        __strong typeof(self) strongMyself = myself;
+        strongMyself.topics = [fullResult valueForKey:@"topics"];
+        strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongMyself.tableView reloadData];
+        });
+    }];
+    self.topics = [result valueForKey:@"topics"];
+    self.topicHeaderTitles = [result valueForKey:@"headers"];
+    
+    [self.tableView reloadData];
+    if (self.topics && self.topics.count > 0) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
+    [self.scrollTabBar deselectAll];
+    
+}
+
 /*
 - (void)handlePasteboardString:(NSString *)URL
 {
@@ -727,23 +732,28 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _segControl;
 }
 
-- (NSDictionary *)threadsInfo
+- (NSDictionary *)forumKeyMap
 {
-    if (_threadsInfo) {
-        return _threadsInfo;
+    if (!_forumKeyMap) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"ForumKeyMap" ofType:@"plist"];
+        _forumKeyMap = [NSDictionary dictionaryWithContentsOfFile:path];
     }
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"Threads" ofType:@"plist"];
-    _threadsInfo = [NSDictionary dictionaryWithContentsOfFile:path];
-    return _threadsInfo;
+    return _forumKeyMap;
 }
 
 - (NSMutableDictionary *)cachedContentOffset
 {
-    if(_cachedContentOffset) {
-        return _cachedContentOffset;
+    if(!_cachedContentOffset) {
+        _cachedContentOffset = [NSMutableDictionary dictionary];
     }
-    _cachedContentOffset = [NSMutableDictionary dictionary];
     return _cachedContentOffset;
+}
+
+- (NSMutableDictionary *)cachedLastRefreshTime {
+    if (!_cachedLastRefreshTime) {
+        _cachedLastRefreshTime = [NSMutableDictionary dictionary];
+    }
+    return _cachedLastRefreshTime;
 }
 
 @end

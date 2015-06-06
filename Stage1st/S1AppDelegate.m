@@ -152,13 +152,14 @@
         [self presentContentViewControllerForTopic:topic];
     }
     //Import Database Case
+    /*
     if ([[url absoluteString] hasSuffix:@".s1db"]) { //TODO: Use NSNotificationCenter
         id rootvc = [(UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController] topViewController];
         if ([rootvc isKindOfClass:[S1TopicListViewController class]]) {
             S1TopicListViewController *tlvc = rootvc;
             [tlvc handleDatabaseImport:url];
         }
-    }
+    }*/
     return YES;
 }
 

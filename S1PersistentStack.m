@@ -160,7 +160,7 @@
     NSManagedObject * managedTopicObject = [self presistentedManagedObjectForID:topicID];
     if (managedTopicObject) {
         S1Topic *topic = [MTLManagedObjectAdapter modelOfClass:[S1Topic class] fromManagedObject:managedTopicObject error:nil];
-        NSLog(@"Get Presistented Topic:%@", topic);
+        NSLog(@"Get Presistented Topic:%@", topic.topicID);
         return topic;
     } else {
         return nil;

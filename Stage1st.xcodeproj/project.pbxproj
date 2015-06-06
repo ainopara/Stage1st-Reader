@@ -58,7 +58,7 @@
 		C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */; };
 		C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F416E2245B0035C1AA /* ODRefreshControl.m */; };
 		C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F716E22E1F0035C1AA /* S1TabBar.m */; };
-		C083351616E34DCF0035C1AA /* Threads.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083351516E34DCF0035C1AA /* Threads.plist */; };
+		C083351616E34DCF0035C1AA /* ForumKeyMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083351516E34DCF0035C1AA /* ForumKeyMap.plist */; };
 		C083351916E363870035C1AA /* S1Tracer.m in Sources */ = {isa = PBXBuildFile; fileRef = C083351816E363870035C1AA /* S1Tracer.m */; };
 		C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083353616E4FB220035C1AA /* InitialOrder.plist */; };
 		C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C083353916E503F60035C1AA /* S1LoginViewController.m */; };
@@ -176,7 +176,7 @@
 		C08334F416E2245B0035C1AA /* ODRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODRefreshControl.m; sourceTree = "<group>"; };
 		C08334F616E22E1F0035C1AA /* S1TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TabBar.h; path = Stage1st/S1TabBar.h; sourceTree = "<group>"; };
 		C08334F716E22E1F0035C1AA /* S1TabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TabBar.m; path = Stage1st/S1TabBar.m; sourceTree = "<group>"; };
-		C083351516E34DCF0035C1AA /* Threads.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Threads.plist; path = Stage1st/Threads.plist; sourceTree = "<group>"; };
+		C083351516E34DCF0035C1AA /* ForumKeyMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ForumKeyMap.plist; path = Stage1st/ForumKeyMap.plist; sourceTree = "<group>"; };
 		C083351716E363870035C1AA /* S1Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Tracer.h; path = Stage1st/S1Tracer.h; sourceTree = "<group>"; };
 		C083351816E363870035C1AA /* S1Tracer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Tracer.m; path = Stage1st/S1Tracer.m; sourceTree = "<group>"; };
 		C083353616E4FB220035C1AA /* InitialOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = InitialOrder.plist; path = Stage1st/InitialOrder.plist; sourceTree = "<group>"; };
@@ -499,7 +499,7 @@
 				8664D3E41A87A973006575B3 /* content_ipad_20px.css */,
 				8664D3E51A87A973006575B3 /* content_ipad_22px.css */,
 				86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */,
-				C083351516E34DCF0035C1AA /* Threads.plist */,
+				C083351516E34DCF0035C1AA /* ForumKeyMap.plist */,
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
@@ -689,7 +689,7 @@
 				C0B1919716F0A80F0053E0C5 /* content_ipad_18px.css in Resources */,
 				86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */,
 				861513001A0E7B1200BAC814 /* Main.storyboard in Resources */,
-				C083351616E34DCF0035C1AA /* Threads.plist in Resources */,
+				C083351616E34DCF0035C1AA /* ForumKeyMap.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
