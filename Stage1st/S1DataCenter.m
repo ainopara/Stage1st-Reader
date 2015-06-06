@@ -15,6 +15,8 @@
 #import "IMQuickSearch.h"
 #import "S1PersistentStack.h"
 
+#define USE_CORE_DATA_STORAGE NO
+
 
 @interface S1DataCenter ()
 @property (strong, nonatomic) S1Tracer *tracer;
@@ -43,8 +45,10 @@
     self = [super init];
     _tracer = [[S1Tracer alloc] init];
     //iCloud and Core Data
-    _persistentStack = [[PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
-    _managedObjectContext = self.persistentStack.managedObjectContext;
+    if (USE_CORE_DATA_STORAGE) {
+        _persistentStack = [[PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
+        _managedObjectContext = self.persistentStack.managedObjectContext;
+    }
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _floorCache = [NSMutableDictionary dictionary];
@@ -401,7 +405,7 @@
     //filter process
     if (self.shouldReloadHistoryCache || self.historySearch == nil) {
         __weak typeof(self) myself = self;
-        if (YES) {
+        if (USE_CORE_DATA_STORAGE) {
             self.cachedHistoryTopics = [self.persistentStack historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
                 ;
             }];
@@ -444,7 +448,7 @@
     //filter process
     if (self.shouldReloadFavoriteCache) {
         NSMutableArray *topics;
-        if (YES) {
+        if (USE_CORE_DATA_STORAGE) {
             topics = [self.persistentStack favoritedObjects];
         } else {
             topics = [self.tracer favoritedObjects];
@@ -460,7 +464,7 @@
 }
 
 - (void)hasViewed:(S1Topic *)topic {
-    if (YES) {
+    if (USE_CORE_DATA_STORAGE) {
         [self.persistentStack hasViewed:topic];
     } else {
         [self.tracer hasViewed:topic];
@@ -469,7 +473,7 @@
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
-    if (YES) {
+    if (USE_CORE_DATA_STORAGE) {
         [self.persistentStack removeTopicByID:topicID];
     } else {
         [self.tracer removeTopicFromHistory:topicID];
@@ -477,7 +481,7 @@
 }
 
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    if (YES) {
+    if (USE_CORE_DATA_STORAGE) {
         [self.persistentStack setTopicFavoriteState:topicID withState:state];
     } else {
         [self.tracer setTopicFavoriteState:topicID withState:state];
@@ -485,7 +489,7 @@
 }
 
 - (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    if (YES) {
+    if (USE_CORE_DATA_STORAGE) {
         return NO;
     } else {
         return [self.tracer topicIsFavorited:topicID];
@@ -493,7 +497,7 @@
 }
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
-    if (YES) {
+    if (USE_CORE_DATA_STORAGE) {
         return [self.persistentStack presistentedTopicByID:topicID];
     } else {
         return [self.tracer tracedTopicByID:topicID];
