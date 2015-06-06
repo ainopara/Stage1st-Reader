@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+
 @class S1Tracer;
 @class S1Topic;
 @class S1Floor;
+
 @interface S1DataCenter : NSObject
 
 @property (assign, nonatomic) BOOL shouldReloadHistoryCache;

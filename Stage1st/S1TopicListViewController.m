@@ -31,11 +31,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) UISearchBar *searchBar;
-@property (nonatomic, strong) NSMutableArray *searchResults; // Filtered search results
 @property (weak, nonatomic) IBOutlet S1TabBar *scrollTabBar;
 
 @property (nonatomic, strong) S1DataCenter *dataCenter;
@@ -44,7 +44,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableArray *topicHeaderTitles;
-@property (nonatomic, strong) NSMutableDictionary *cacheContentOffset;
+@property (nonatomic, strong) NSMutableArray *searchResults; // Filtered search results
+@property (nonatomic, strong) NSMutableDictionary *cachedContentOffset;
+@property (nonatomic, strong) NSMutableDictionary *cachedLastRefreshTime;
 @property (nonatomic, strong) NSDictionary *threadsInfo;
 
 @property (nonatomic, strong) S1Topic *clipboardTopic;
@@ -57,6 +59,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     BOOL _loadingFlag;
     BOOL _loadingMore;
 }
+
+#pragma mark - Life Cycle
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -77,6 +81,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     self.view.backgroundColor = [S1Global color5];
     
+    //Setup Navigation Bar
+    [self.view addSubview:self.navigationBar];
+    
+    //Setup Table View
     self.tableView.rowHeight = 54.0f;
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     self.tableView.delegate = self;
@@ -88,38 +96,14 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.tableView.backgroundView.backgroundColor = [S1Global color5];
     }
     self.tableView.hidden = YES;
-    
-    //Search or Filter
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
-    self.searchBar.delegate = self;
-    //self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-    self.searchBar.tintColor = [S1Global color4];
-    self.searchBar.barTintColor = [S1Global color5];
-    self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
-    //[self.searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[S1Global color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
-    UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
-    gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
-    [self.searchBar addGestureRecognizer:gestureRecognizer];
     self.tableView.tableHeaderView = self.searchBar;
-    
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
     self.refreshControl.tintColor = [S1Global color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
-    self.navigationBar = [[UINavigationBar alloc] init];
-    self.navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
-    self.navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
-    self.naviItem = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
-    UIBarButtonItem *settingItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
-    self.historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
-    self.naviItem.leftBarButtonItem = settingItem;
-    self.naviItem.rightBarButtonItem = self.historyItem;
-    [self.navigationBar pushNavigationItem:self.naviItem animated:NO];
-    [self.view addSubview:self.navigationBar];
-    
+    //Setup Tab Bar
     self.scrollTabBar.keys = [self keys];
     self.scrollTabBar.tabbarDelegate = self;
     
@@ -152,26 +136,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1ContentViewWillDisappearNotification" object:nil];
 }
 
-#pragma mark - Getters and Setters
-
-- (NSDictionary *)threadsInfo
-{
-    if (_threadsInfo)
-        return _threadsInfo;
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"Threads" ofType:@"plist"];
-    _threadsInfo = [NSDictionary dictionaryWithContentsOfFile:path];
-    return _threadsInfo;
-}
-
-- (NSMutableDictionary *)cacheContentOffset
-{
-    if(_cacheContentOffset) {
-        return _cacheContentOffset;
-    }
-    _cacheContentOffset = [NSMutableDictionary dictionary];
-    return _cacheContentOffset;
-}
-
 #pragma mark - Item Actions
 
 - (void)settings:(id)sender
@@ -186,21 +150,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.naviItem setRightBarButtonItems:@[]];
     [self cancelRequest];
-    if (!self.segControl) {
-        self.segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
-        [self.segControl setWidth:80 forSegmentAtIndex:0];
-        [self.segControl setWidth:80 forSegmentAtIndex:1];
-        [self.segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
-        [self.segControl setSelectedSegmentIndex:0];
+    self.naviItem.titleView = self.segControl;
+    if (self.segControl.selectedSegmentIndex == 0) {
         [self presentInternalListForType:S1TopicListHistory];
     } else {
-        if (self.segControl.selectedSegmentIndex == 0) {
-            [self presentInternalListForType:S1TopicListHistory];
-        } else {
-            [self presentInternalListForType:S1TopicListFavorite];
-        }
+        [self presentInternalListForType:S1TopicListFavorite];
     }
-    self.naviItem.titleView = self.segControl;
 }
 
 - (void)refresh:(id)sender
@@ -239,7 +194,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
         [self cancelRequest];
-        self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+        self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
     }
     self.previousKey = self.currentKey;
     self.currentKey = type == S1TopicListHistory ? @"History":@"Favorite";
@@ -274,156 +229,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     
 }
 
-#pragma mark - Tab Bar Delegate
-
-- (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
-{
-    self.naviItem.titleView = nil;
-    self.naviItem.title = @"Stage1st";
-    self.searchBar.text = @"";
-    _loadingMore = NO;
-    [self.naviItem setRightBarButtonItem:self.historyItem];
-    
-    if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
-    if (NO) {
-        if (![self.currentKey isEqualToString:key]) {
-            NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
-            [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
-        } else { //press the key that selected currently
-            NSLog(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
-            [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
-        }
-    } else {
-        //Force refresh
-        [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
-    }
-
-}
 
 
 
-#pragma mark - Networking
 
-- (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop
-{
-    _loadingFlag = YES;
-    self.scrollTabBar.enabled = NO;
-    S1HUD *HUD;
-    if (refresh || ![self.dataCenter hasCacheForKey:self.threadsInfo[key]]) {
-        HUD = [S1HUD showHUDInView:self.view];
-        [HUD showActivityIndicator];
-    }
-    
-    __weak typeof(self) weakSelf = self;
-    [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
-        //reload data
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(self) strongSelf = weakSelf;
-            if (topicList.count > 0) {
-                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
-                    strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
-                }
-                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
-                strongSelf.currentKey = key;
-                
-                strongSelf.topics = [topicList mutableCopy];
-                [strongSelf.tableView reloadData];
-                if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
-                if (strongSelf.cacheContentOffset[key] && !scrollToTop) {
-                    [strongSelf.tableView setContentOffset:[strongSelf.cacheContentOffset[key] CGPointValue] animated:NO];
-                } else {
-                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                }
-                //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
-                if (strongSelf.tableView.contentOffset.y < 0) {
-                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-                }
-                
-            } else {
-                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
-                    strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
-                }
-                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
-                strongSelf.currentKey = key;
-                if (![key isEqualToString:strongSelf.previousKey]) {
-                    strongSelf.topics = [[NSMutableArray alloc] init];
-                    [strongSelf.tableView reloadData];
-                }
-            }
-            //hud hide
-            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-                [HUD hideWithDelay:0.3];
-            }
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
-            
-            [strongSelf.searchBar setHidden: ([strongSelf.dataCenter canMakeSearchRequest] == NO)];
-            _loadingFlag = NO;
-        });
-    } failure:^(NSError *error) {
-        __strong typeof(self) strongSelf = weakSelf;
-        if (error.code == -999) {
-            NSLog(@"Code -999 may means user want to cancel this request.");
-            [HUD hideWithDelay:0];
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
-            _loadingFlag = NO;
-        } else {
-            //reload data
-            if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
-                strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
-            }
-            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
-            strongSelf.currentKey = key;
-            if (![key isEqualToString:strongSelf.previousKey]) {
-                strongSelf.topics = [[NSMutableArray alloc] init];
-                [strongSelf.tableView reloadData];
-            }
-            //hud hide
-            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-                if (error.code == -999) {
-                    NSLog(@"Code -999 may means user want to cancel this request.");
-                    [HUD hideWithDelay:0];
-                } else {
-                    [HUD setText:@"Request Failed" withWidthMultiplier:2];
-                    [HUD hideWithDelay:0.3];
-                }
-            }
-            
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
-            _loadingFlag = NO;
-        }
-        
-    }];
-}
-
-#pragma mark - Orientation
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    //    return UIInterfaceOrientationMaskPortrait;
-    //}
-    return [super supportedInterfaceOrientations];
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    //    return UIInterfaceOrientationPortrait;
-    //}
-    return [super preferredInterfaceOrientationForPresentation];
-}
 
 #pragma mark - UITableView Delegate and Data Source
 
@@ -548,7 +357,33 @@ static NSString * const cellIdentifier = @"TopicCell";
     return 0;
 }
 
-#pragma mark - UISearchBar Delegate
+#pragma mark Tab Bar Delegate
+
+- (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
+{
+    self.naviItem.titleView = nil;
+    self.naviItem.title = @"Stage1st";
+    self.searchBar.text = @"";
+    _loadingMore = NO;
+    [self.naviItem setRightBarButtonItem:self.historyItem];
+    
+    if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
+    if (NO) {
+        if (![self.currentKey isEqualToString:key]) {
+            NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
+        } else { //press the key that selected currently
+            NSLog(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
+        }
+    } else {
+        //Force refresh
+        [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
+    }
+    
+}
+
+#pragma mark UISearchBar Delegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
@@ -600,7 +435,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [HUD showActivityIndicator];
         if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
             [self cancelRequest];
-            self.cacheContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
+            self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         }
         self.previousKey = self.currentKey;
         self.currentKey = @"Search";
@@ -641,7 +476,134 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.text = @"";
     [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
 }
-#pragma mark - Helpers
+
+
+#pragma mark - Orientation
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    //    return UIInterfaceOrientationMaskPortrait;
+    //}
+    return [super supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    //    return UIInterfaceOrientationPortrait;
+    //}
+    return [super preferredInterfaceOrientationForPresentation];
+}
+
+
+#pragma mark Networking
+
+- (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop
+{
+    _loadingFlag = YES;
+    self.scrollTabBar.enabled = NO;
+    S1HUD *HUD;
+    if (refresh || ![self.dataCenter hasCacheForKey:self.threadsInfo[key]]) {
+        HUD = [S1HUD showHUDInView:self.view];
+        [HUD showActivityIndicator];
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [self.viewModel topicListForKey:self.threadsInfo[key] shouldRefresh:refresh success:^(NSArray *topicList) {
+        //reload data
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(self) strongSelf = weakSelf;
+            if (topicList.count > 0) {
+                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                    strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+                }
+                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+                strongSelf.currentKey = key;
+                
+                strongSelf.topics = [topicList mutableCopy];
+                [strongSelf.tableView reloadData];
+                if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
+                if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
+                    [strongSelf.tableView setContentOffset:[strongSelf.cachedContentOffset[key] CGPointValue] animated:NO];
+                } else {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                }
+                //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+                if (strongSelf.tableView.contentOffset.y < 0) {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                }
+                
+            } else {
+                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                    strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+                }
+                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+                strongSelf.currentKey = key;
+                if (![key isEqualToString:strongSelf.previousKey]) {
+                    strongSelf.topics = [[NSMutableArray alloc] init];
+                    [strongSelf.tableView reloadData];
+                }
+            }
+            //hud hide
+            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+                [HUD hideWithDelay:0.3];
+            }
+            //others
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
+            }
+            
+            [strongSelf.searchBar setHidden: ([strongSelf.dataCenter canMakeSearchRequest] == NO)];
+            _loadingFlag = NO;
+        });
+    } failure:^(NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        if (error.code == -999) {
+            NSLog(@"Code -999 may means user want to cancel this request.");
+            [HUD hideWithDelay:0];
+            //others
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
+            }
+            _loadingFlag = NO;
+        } else {
+            //reload data
+            if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+            }
+            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+            strongSelf.currentKey = key;
+            if (![key isEqualToString:strongSelf.previousKey]) {
+                strongSelf.topics = [[NSMutableArray alloc] init];
+                [strongSelf.tableView reloadData];
+            }
+            //hud hide
+            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+                if (error.code == -999) {
+                    NSLog(@"Code -999 may means user want to cancel this request.");
+                    [HUD hideWithDelay:0];
+                } else {
+                    [HUD setText:@"Request Failed" withWidthMultiplier:2];
+                    [HUD hideWithDelay:0.3];
+                }
+            }
+            
+            //others
+            strongSelf.scrollTabBar.enabled = YES;
+            if (strongSelf.refreshControl.refreshing) {
+                [strongSelf.refreshControl endRefreshing];
+            }
+            _loadingFlag = NO;
+        }
+        
+    }];
+}
+
+
+#pragma mark Helpers
 
 - (NSArray *)keys
 {
@@ -652,13 +614,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.scrollTabBar setKeys:[self keys]];
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
-        self.cacheContentOffset = nil;
+        self.cachedContentOffset = nil;
     } else {
         self.tableView.hidden = YES;
         self.topics = [NSMutableArray array];
         self.previousKey = @"";
         self.currentKey = @"";
-        self.cacheContentOffset = nil;
+        self.cachedContentOffset = nil;
         [self.tableView reloadData];
     }
     
@@ -702,4 +664,86 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.dataCenter handleDatabaseImport:databaseURL];
 }
  */
+
+#pragma mark - Getters and Setters
+
+- (UINavigationBar *)navigationBar {
+    if (!_navigationBar) {
+        _navigationBar = [[UINavigationBar alloc] init];
+        _navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
+        _navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [_navigationBar pushNavigationItem:self.naviItem animated:NO];
+    }
+    return _navigationBar;
+}
+
+- (UINavigationItem *)naviItem {
+    if (!_naviItem) {
+        _naviItem = [[UINavigationItem alloc] initWithTitle:@"Stage1st"];
+        _naviItem.leftBarButtonItem = self.settingsItem;
+        _naviItem.rightBarButtonItem = self.historyItem;
+    }
+    return _naviItem;
+}
+
+- (UIBarButtonItem *)historyItem {
+    if (!_historyItem) {
+        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
+    }
+    return _historyItem;
+}
+
+- (UIBarButtonItem *)settingsItem {
+    if (!_settingsItem) {
+        _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+    }
+    return _settingsItem;
+}
+
+- (UISearchBar *)searchBar {
+    if (!_searchBar) {
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
+        _searchBar.delegate = self;
+        //_searchBar.searchBarStyle = UISearchBarStyleMinimal;
+        _searchBar.tintColor = [S1Global color4];
+        _searchBar.barTintColor = [S1Global color5];
+        _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
+        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[S1Global color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+        UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
+        gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
+        [_searchBar addGestureRecognizer:gestureRecognizer];
+    }
+    return _searchBar;
+}
+
+- (UISegmentedControl *)segControl {
+    if (!_segControl) {
+        _segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
+        [_segControl setWidth:80 forSegmentAtIndex:0];
+        [_segControl setWidth:80 forSegmentAtIndex:1];
+        [_segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];
+        [_segControl setSelectedSegmentIndex:0];
+    }
+    return _segControl;
+}
+
+- (NSDictionary *)threadsInfo
+{
+    if (_threadsInfo) {
+        return _threadsInfo;
+    }
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Threads" ofType:@"plist"];
+    _threadsInfo = [NSDictionary dictionaryWithContentsOfFile:path];
+    return _threadsInfo;
+}
+
+- (NSMutableDictionary *)cachedContentOffset
+{
+    if(_cachedContentOffset) {
+        return _cachedContentOffset;
+    }
+    _cachedContentOffset = [NSMutableDictionary dictionary];
+    return _cachedContentOffset;
+}
+
 @end
