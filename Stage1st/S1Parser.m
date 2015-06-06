@@ -659,9 +659,17 @@
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
 {
     S1Topic *topic = [[S1Topic alloc] init];
+    // Current Html Scheme
     NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
     NSString *topicIDString = [result firstObject];
     NSString *topicPageString = [result lastObject];
+    // Old Html Scheme
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
+        result = [S1Global regexExtractFromString:URLString withPattern:@"read-htm-tid-([0-9]+)\\.html" andColums:@[@1]];
+        topicIDString = [result firstObject];
+        topicPageString = @"1";
+    }
+    // Php Scheme
     if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
         NSDictionary *dict = [S1Parser extractQuerysFromURLString:URLString];
         topicIDString = [dict objectForKey:@"tid"];
