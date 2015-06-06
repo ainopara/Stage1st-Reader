@@ -15,7 +15,6 @@
 #import "S1TabBar.h"
 #import "S1DataCenter.h"
 #import "S1TopicListViewModel.h"
-#import "S1MahjongFaceViewController.h"
 #import "Masonry.h"
 
 #import "ODRefreshControl.h"
@@ -40,7 +39,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (weak, nonatomic) IBOutlet S1TabBar *scrollTabBar;
 
 @property (nonatomic, strong) S1DataCenter *dataCenter;
-@property (nonatomic, strong) S1MahjongFaceViewController *mjvc;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
@@ -52,6 +50,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) S1Topic *clipboardTopic;
 
 @end
+
+#pragma mark -
 
 @implementation S1TopicListViewController {
     BOOL _loadingFlag;
@@ -176,21 +176,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)settings:(id)sender
 {
-    /*
     NSString * storyboardName = @"Settings";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
     UIViewController * controllerToPresent = [storyboard instantiateViewControllerWithIdentifier:@"SettingsNavigation"];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
-     */
-
-    self.mjvc = [[S1MahjongFaceViewController alloc] init];
-    [self.view addSubview:self.mjvc.view];
-    [self.mjvc.view mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.view.mas_bottom);
-        make.left.equalTo(self.view.mas_left);
-        make.right.equalTo(self.view.mas_right);
-        make.height.equalTo(@217);
-    }];
 }
 
 - (void)archive:(id)sender
@@ -349,6 +338,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 if (strongSelf.tableView.contentOffset.y < 0) {
                     [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
                 }
+                
             } else {
                 if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
                     strongSelf.cacheContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
@@ -707,8 +697,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
 }
-*/
+
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
     [self.dataCenter handleDatabaseImport:databaseURL];
 }
+ */
 @end
