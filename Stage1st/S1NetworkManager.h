@@ -40,19 +40,19 @@
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID
-                                        fieldID:(NSNumber *)fieldID
+                                        forumID:(NSNumber *)forumID
                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 // Reply Specific Floor.
 + (void)postReplyForTopicID:(NSNumber *)topicID
                    withPage:(NSNumber *)page
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 // Reply Topic.
 + (void)postReplyForTopicID:(NSNumber *)topicID
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;

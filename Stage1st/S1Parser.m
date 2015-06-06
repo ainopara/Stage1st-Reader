@@ -310,12 +310,12 @@
         topic.title = topicTitle;
         
         DDXMLElement *topicSecondSection = [[topicNode nodesForXPath:@".//a[@class='xg1']" error:nil] firstObject];
-        NSString *topicFieldIDString = [[topicSecondSection attributeForName:@"href"] stringValue];
-        NSNumber *topicFieldID = [NSNumber numberWithInteger:[[[S1Global regexExtractFromString:topicFieldIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject] integerValue]];
-        topic.fID = topicFieldID;
+        NSString *topicForumIDString = [[topicSecondSection attributeForName:@"href"] stringValue];
+        NSNumber *topicForumID = [NSNumber numberWithInteger:[[[S1Global regexExtractFromString:topicForumIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject] integerValue]];
+        topic.fID = topicForumID;
         DDXMLElement *topicThirdSection = [[topicNode nodesForXPath:@".//a[@class='xi2']" error:nil] firstObject];
         NSNumber *topicReplyCount = [NSNumber numberWithInteger:[[topicThirdSection stringValue] integerValue]];
-        NSLog(@"%@, %@", topicFieldIDString, topicReplyCount);
+        NSLog(@"%@, %@", topicForumIDString, topicReplyCount);
         topic.replyCount = topicReplyCount;
         [mutableArray addObject:topic];
     }

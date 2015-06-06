@@ -354,14 +354,14 @@
 }
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
-    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID fieldID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID forumID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
         if ([params[@"requestSuccess"]  isEqual: @YES]) {
             [params removeObjectForKey:@"requestSuccess"];
             [params setObject:@"true" forKey:@"replysubmit"];
             [params setObject:text forKey:@"message"];
-            [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
+            [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page forumID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
                 success();
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 failure(error);
@@ -383,7 +383,7 @@
                              @"usesig":@"1",
                              @"subject":@"",
                              @"message":text};
-    [S1NetworkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager postReplyForTopicID:topic.topicID forumID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
         success();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);

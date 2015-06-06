@@ -104,13 +104,13 @@
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID
-                                        fieldID:(NSNumber *)fieldID
+                                        forumID:(NSNumber *)forumID
                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
     NSString *url = @"forum.php";
     NSDictionary *params = @{@"mod": @"post",
                              @"action": @"reply",
-                             @"fid": fieldID,
+                             @"fid": forumID,
                              @"tid": topicID,
                              @"repquote": floorID,
                              @"extra": @"",
@@ -124,22 +124,22 @@
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
                    withPage:(NSNumber *)page
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *, id))success
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%@&tid=%@&replysubmit=yes&inajax=1";
-    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, page, topicID];
+    NSString *url = [NSString stringWithFormat:urlTemplate, forumID, page, topicID];
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *, id))success
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1";
-    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, topicID];
+    NSString *url = [NSString stringWithFormat:urlTemplate, forumID, topicID];
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
