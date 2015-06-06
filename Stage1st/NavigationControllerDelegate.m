@@ -92,9 +92,11 @@
 
 - (NSUInteger)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
 {
-    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    //    return UIInterfaceOrientationMaskPortrait;
-    //}
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationMaskPortrait;
+        }
+    }
     return UIInterfaceOrientationMaskAll;
 }
 

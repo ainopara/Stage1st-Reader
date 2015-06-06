@@ -445,17 +445,21 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    //    return UIInterfaceOrientationMaskPortrait;
-    //}
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationMaskPortrait;
+        }
+    }
     return [super supportedInterfaceOrientations];
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-    //    return UIInterfaceOrientationPortrait;
-    //}
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationPortrait;
+        }
+    }
     return [super preferredInterfaceOrientationForPresentation];
 }
 

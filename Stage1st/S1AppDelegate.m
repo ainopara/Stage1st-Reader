@@ -58,6 +58,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"PrecacheNextPage"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"PrecacheNextPage"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ForcePortraitForPhone"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
+    }
     
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
