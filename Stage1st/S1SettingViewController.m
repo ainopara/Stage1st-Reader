@@ -57,11 +57,12 @@
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
-    if (IS_WIDE_DEVICE) {
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         for (NSLayoutConstraint *constraint in self.leftSpaceConstraint) {
-            constraint.constant = 12;
+            constraint.constant = 15;
         }
     }
+
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
         self.usernameDetail.text = inLoginStateID;
