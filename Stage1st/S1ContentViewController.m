@@ -188,12 +188,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     
     //Set up Activity for Hand Off
-    NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
-    activity.title = @"Viewing Topic";
-    activity.userInfo = @{@"topicID": self.topic.topicID,
-                          @"page": [NSNumber numberWithInteger:_currentPage]};
-    activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
-    self.userActivity = activity;
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        ; // iOS 7 do not support hand off
+    } else {
+        NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
+        activity.title = @"Viewing Topic";
+        activity.userInfo = @{@"topicID": self.topic.topicID,
+                              @"page": [NSNumber numberWithInteger:_currentPage]};
+        activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+        self.userActivity = activity;
+    }
+    
     
     [self fetchContentAndPrecacheNextPage:YES];
 }
@@ -250,6 +255,52 @@
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
+}
+
+- (UIView *)accessoryView {
+    //setup accessory view
+    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
+    
+    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [faceButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
+    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
+    
+    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [spoilerButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
+    
+    UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [quoteButton setTitle:@"Q" forState:UIControlStateNormal];
+    [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
+    
+    UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [boldButton setTitle:@"B" forState:UIControlStateNormal];
+    [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
+    
+    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixItem.width = 26.0f;
+    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [toolbar setItems:@[flexItem, boldItem, fixItem, quoteItem, fixItem, spoilerItem, fixItem, faceItem, flexItem]];
+    [accessoryView addSubview:toolbar];
+    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(accessoryView.mas_left);
+        make.right.equalTo(accessoryView.mas_right);
+        make.top.equalTo(accessoryView.mas_top);
+        make.bottom.equalTo(accessoryView.mas_bottom);
+    }];
+    return accessoryView;
 }
 
 #pragma mark - Bar Button Actions
@@ -742,8 +793,11 @@
 {
     [self updatePageLabel];
     __weak typeof(self) weakSelf = self;
-    
-    self.userActivity.needsSave = YES;
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        ; // iOS 7 do not support hand off
+    } else {
+        self.userActivity.needsSave = YES;
+    }
     
     S1HUD *HUD = nil;
     //remove cache for last page
@@ -816,7 +870,7 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
 {
     //check in login state.
-    if (NO && ![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
     }
@@ -833,6 +887,9 @@
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
+    self.replyController = replyController;
+    [replyController.view setFrame:self.view.bounds];
+    // set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
@@ -840,55 +897,11 @@
     } else {
         self.replyTopicFloor = nil;
     }
+    
     replyController.delegate = self;
     [replyController setAttributedText:self.attributedReplyDraft];
-    [replyController.view setFrame:self.view.bounds];
-    
-    //setup accessory view
-    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, replyController.view.bounds.size.width, 35)];
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
-    
-    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [faceButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
-    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
-    
-    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [spoilerButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
-    
-    UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
-    //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [quoteButton setTitle:@"Q" forState:UIControlStateNormal];
-    [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
-    
-    UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
-    //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [boldButton setTitle:@"B" forState:UIControlStateNormal];
-    [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
-    
-    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem.width = 26.0f;
-    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [toolbar setItems:@[flexItem, boldItem, fixItem, quoteItem, fixItem, spoilerItem, fixItem, faceItem, flexItem]];
-    [accessoryView addSubview:toolbar];
-    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(accessoryView.mas_left);
-        make.right.equalTo(accessoryView.mas_right);
-        make.top.equalTo(accessoryView.mas_top);
-        make.bottom.equalTo(accessoryView.mas_bottom);
-    }];
-    replyController.accessoryView = accessoryView;
-    self.replyController = replyController;
-    
+    replyController.accessoryView = [self accessoryView];
+     
     [replyController presentFromViewController:self];
 }
 
