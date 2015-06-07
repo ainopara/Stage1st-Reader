@@ -65,6 +65,7 @@
     self.pageControl.currentPage = 0;
     self.pageControl.pageIndicatorTintColor = [UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000];
     self.pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000];
+    [self.pageControl addTarget:self action:@selector(pageChanged:) forControlEvents:UIControlEventValueChanged];
     //self.pageControl.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.pageControl];
     [self.pageControl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -116,6 +117,12 @@
     if (self.delegate) {
         [self.delegate mahjongFaceViewControllerDidPressBackSpace:self];
     }
+}
+
+- (void)pageChanged:(UIPageControl *)pageControl {
+    NSLog(@"pageChanged: %ld", (long)self.pageControl.currentPage);
+    [self setPage:[self globalIndexForCategory:self.currentCategory andPage:self.pageControl.currentPage]];
+    [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:self.pageControl.currentPage]];
 }
 
 #pragma mark Delegate
