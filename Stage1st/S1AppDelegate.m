@@ -144,16 +144,36 @@
     
     //Open Specific Topic Case
     NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];
-    NSString *topicIDString = [queryDict valueForKey:@"tid"];
-    NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
-    S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
-    if (topic == nil) {
-        topic = [[S1Topic alloc] init];
-        topic.topicID = topicID;
+    if ([[url host] isEqualToString:@"open"]) {
+        NSString *topicIDString = [queryDict valueForKey:@"tid"];
+        
+        if (topicIDString != nil) {
+            NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+            S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
+            if (topic == nil) {
+                topic = [[S1Topic alloc] init];
+                topic.topicID = topicID;
+            }
+            [self presentContentViewControllerForTopic:topic];
+            return YES;
+        }
     }
-    if (topicIDString != nil) {
-        [self presentContentViewControllerForTopic:topic];
+    
+    if ([[url host] isEqualToString:@"settings"]) {
+        for (NSString *key in queryDict) {
+            if ([key isEqualToString:@"ForcePortraitForPhone"]) {
+                NSString *value = [queryDict valueForKey:key];
+                if ([value isEqualToString:@"YES"]) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
+                }
+                if ([value isEqualToString:@"NO"]) {
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ForcePortraitForPhone"];
+                }
+            }
+        }
     }
+    
+    
     //Import Database Case
     /*
     if ([[url absoluteString] hasSuffix:@".s1db"]) { //TODO: Use NSNotificationCenter
