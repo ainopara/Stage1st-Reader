@@ -22,7 +22,7 @@
 @property (strong, nonatomic) S1Tracer *tracer;
 
 @property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
-@property (nonatomic, strong) PersistentStack* persistentStack;
+@property (nonatomic, strong) S1PersistentStack* persistentStack;
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
 @property (strong, nonatomic) NSString *formhash;
@@ -46,7 +46,7 @@
     _tracer = [[S1Tracer alloc] init];
     //iCloud and Core Data
     if (USE_CORE_DATA_STORAGE) {
-        _persistentStack = [[PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
+        _persistentStack = [[S1PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
         _managedObjectContext = self.persistentStack.managedObjectContext;
     }
     _topicListCache = [[NSMutableDictionary alloc] init];

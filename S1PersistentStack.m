@@ -2,7 +2,7 @@
 #import "S1PersistentStack.h"
 #import "S1Topic.h"
 
-@interface PersistentStack ()
+@interface S1PersistentStack ()
 
 @property (nonatomic,strong,readwrite) NSManagedObjectContext* managedObjectContext;
 @property (nonatomic,strong) NSURL* modelURL;
@@ -10,7 +10,7 @@
 
 @end
 
-@implementation PersistentStack
+@implementation S1PersistentStack
 
 - (id)initWithStoreURL:(NSURL*)storeURL modelURL:(NSURL*)modelURL 
 {

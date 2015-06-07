@@ -3,7 +3,7 @@
 
 @class S1Topic;
 
-@interface PersistentStack : NSObject
+@interface S1PersistentStack : NSObject
 
 - (id)initWithStoreURL:(NSURL *)storeURL modelURL:(NSURL *)modelURL;
 
