@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *popAnimator;
 @property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *pushAnimator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
-@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+
 
 @end
 

@@ -23,6 +23,7 @@
 #import "JTSImageViewController.h"
 #import "S1MahjongFaceViewController.h"
 #import "Masonry.h"
+#import "NavigationControllerDelegate.h"
 
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
@@ -936,9 +937,13 @@
     replyController.accessoryView = [self accessoryView];
      
     [replyController presentFromViewController:self];
+    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
+    navigationDelegate.panRecognizer.enabled = NO;
 }
 
 - (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
+    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
+    navigationDelegate.panRecognizer.enabled = YES;
     if (result == REComposeResultCancelled) {
         self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
         [composeViewController dismissViewControllerAnimated:YES completion:nil];
