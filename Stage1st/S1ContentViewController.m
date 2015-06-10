@@ -25,7 +25,7 @@
 #import "Masonry.h"
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -631,10 +631,11 @@
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_None];
+                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
             [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
+            [imageViewer setOptionsDelegate:self];
         }
         return NO;
     }
@@ -743,6 +744,11 @@
     }
     
 }
+#pragma mark JTSImageViewController Options Delegate
+- (CGFloat)alphaForBackgroundDimmingOverlayInImageViewer:(JTSImageViewController *)imageViewer {
+    return 0.3;
+}
+
 #pragma mark UIScrollView Delegate
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {

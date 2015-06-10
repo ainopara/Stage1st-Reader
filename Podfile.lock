@@ -28,7 +28,7 @@ PODS:
   - FMDB/standard (2.5):
     - FMDB/common
   - IMQuickSearch (1.2.0)
-  - JTSImageViewController (1.4)
+  - JTSImageViewController (1.5)
   - KissXML (5.1.2)
   - Mantle (2.0.2):
     - Mantle/extobjc (= 2.0.2)
@@ -43,7 +43,7 @@ DEPENDENCIES:
   - AFNetworking
   - FMDB
   - IMQuickSearch
-  - JTSImageViewController
+  - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Mantle
   - Masonry
@@ -51,12 +51,17 @@ DEPENDENCIES:
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
 
 EXTERNAL SOURCES:
+  JTSImageViewController:
+    :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 CHECKOUT OPTIONS:
+  JTSImageViewController:
+    :commit: 125263cc3654d97268864cd04c369303937d878f
+    :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
@@ -70,7 +75,7 @@ SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   IMQuickSearch: 351fda5dcf33428bf04c28213b984d66015b691d
-  JTSImageViewController: 6a367b144e257db02cdfacdba78d684377d3777b
+  JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Mantle: 967fd31ea0220890b2e76589198996b534bb3fb1
   Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
