@@ -169,8 +169,8 @@
     self.pageLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
     [self.pageLabel addGestureRecognizer:pickPageGR];
-    //UIPanGestureRecognizer *panRightGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(forward:)];
-    //[self.pageLabel addGestureRecognizer:panRightGR];
+    UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
+    [self.pageLabel addGestureRecognizer:panGR];
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -330,7 +330,7 @@
         if (![self atBottom]) {
             [self scrollToButtomAnimated:YES];
         } else {
-            _needToScrollToBottom = YES;
+            //_needToScrollToBottom = YES;
             [self fetchContentAndPrecacheNextPage:YES];
         }
     }
@@ -379,13 +379,40 @@
                                            [self saveViewPosition];
                                            _currentPage = selectedIndex + 1;
                                            [self cancelRequest];
+                                           _needToLoadLastPosition = NO;
                                            [self fetchContent];
                                        }
                                      cancelBlock:nil
                                           origin:self.pageLabel];
 
 }
-
+- (void)panPageLabel:(UIPanGestureRecognizer *)gr {
+    
+    CGFloat distance = [gr translationInView:self.view].x;
+    NSInteger offset = distance / 50.0;
+    NSInteger destinationPage = _currentPage + offset;
+    while (destinationPage <= 0) {
+        destinationPage += _totalPages;
+    }
+    //NSLog(@"%f %ld", distance, (long)offset);
+    if (gr.state == UIGestureRecognizerStateBegan || gr.state == UIGestureRecognizerStateChanged) {
+        self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", destinationPage, (long)_totalPages];
+    } else if (gr.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"open %ld", destinationPage);
+        if (_currentPage != destinationPage) {
+            _currentPage = destinationPage;
+            [self saveViewPosition];
+            [self cancelRequest];
+            _needToLoadLastPosition = NO;
+            [self fetchContent];
+        }
+    } else {
+        NSLog(@"unexpected state:%ld", (long)gr.state);
+        [self updatePageLabel];
+    }
+    
+    
+}
 - (void)action:(id)sender
 {
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
