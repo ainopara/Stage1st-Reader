@@ -93,7 +93,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
     }
     //URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:10 * 1024 * 1024 diskPath:nil];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
     
     //Appearence
