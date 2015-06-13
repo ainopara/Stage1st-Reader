@@ -79,6 +79,9 @@
         [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
     }
     
+    if (topic.favorite != nil) {
+        [self setTopicFavoriteState:topic.topicID withState:[topic.favorite boolValue]];
+    }
     NSLog(@"Tracer has traced:%@", topic);
 }
 
