@@ -310,10 +310,10 @@
 
 + (void)upgradeDatabase
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectory = [paths objectAtIndex:0];
-    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
+    NSString *dbPath = [dbPathURL path];
     if ([fileManager fileExistsAtPath:dbPath]) {
         FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
         if (![db open]) {

@@ -395,14 +395,17 @@
     while (destinationPage <= 0) {
         destinationPage += _totalPages;
     }
+    while (destinationPage > _totalPages) {
+        destinationPage -= _totalPages;
+    }
     //NSLog(@"%f %ld", distance, (long)offset);
     if (gr.state == UIGestureRecognizerStateBegan || gr.state == UIGestureRecognizerStateChanged) {
         self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", destinationPage, (long)_totalPages];
     } else if (gr.state == UIGestureRecognizerStateEnded) {
         NSLog(@"open %ld", destinationPage);
         if (_currentPage != destinationPage) {
-            _currentPage = destinationPage;
             [self saveViewPosition];
+            _currentPage = destinationPage;
             [self cancelRequest];
             _needToLoadLastPosition = NO;
             [self fetchContent];
