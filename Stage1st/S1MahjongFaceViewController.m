@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *pageViews;
 @property (nonatomic, strong) S1TabBar *tabBar;
+@property (nonatomic, assign) BOOL shouldIngnoreScrollEvent;
 @end
 
 #pragma mark -
@@ -29,6 +30,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.shouldIngnoreScrollEvent = NO;
     [self.view setBackgroundColor:[S1Global color5]];
     self.keyTranslation = @{@"face":@"麻将脸",
                             @"dym":@"大姨妈",
@@ -36,7 +38,7 @@
                             @"zdl":@"战斗力",
                             @"nq":@"扭曲",
                             @"normal":@"正常向",
-                            @"blink":@"闪光弹",
+                            @"flash":@"闪光弹",
                             @"animal":@"动物",
                             @"carton":@"动漫",
                             @"bundam":@"雀高达"
@@ -128,6 +130,9 @@
 #pragma mark Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.shouldIngnoreScrollEvent) {
+        return;
+    }
     CGFloat pageWidth = CGRectGetWidth(scrollView.frame);
     NSInteger newPageNumber = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     NSString *lastCategory = self.currentCategory;
@@ -191,10 +196,10 @@
             break;
         }
     }
-    NSLog(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
-    if (localIndex >= [self pageCountForCategory:categoryForThisPage]) {
+    if (categoryForThisPage == nil || localIndex >= [self pageCountForCategory:categoryForThisPage]) {
         return;
     }
+    NSLog(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
     
     S1MahjongFacePageView *pageView = [self usableMahjongFacePageViewForIndex:globalIndex];
     
@@ -265,6 +270,7 @@
     NSLog(@"view did layout subviews");
     NSInteger totalPageCount = [self pageCountForCategory:self.currentCategory];
     NSInteger currentPage = (self.pageControl.currentPage > totalPageCount) ? totalPageCount : self.pageControl.currentPage;
+    self.pageControl.currentPage = currentPage;
     self.pageControl.numberOfPages = totalPageCount;
     
     NSInteger totalPageCountForAllCategory = 0;
@@ -273,7 +279,9 @@
     }
     self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * totalPageCountForAllCategory, CGRectGetHeight(self.scrollView.bounds));
     NSLog(@"%ld", (long)totalPageCount);
+    self.shouldIngnoreScrollEvent = YES;
     [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
+    self.shouldIngnoreScrollEvent = NO;
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
 }
 

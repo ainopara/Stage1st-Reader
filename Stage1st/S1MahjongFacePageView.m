@@ -28,8 +28,13 @@
     for(S1MahjongFaceButton *button in self.buttons) {
         buttonIndex = rowIndex * columns + columnIndex;
         if (buttonIndex < [list count] && buttonIndex < rows * columns) {
-            button.mahjongFaceKey = [[list objectAtIndex:buttonIndex] firstObject];
-            [self setImageURL:[[list objectAtIndex:buttonIndex] lastObject] forButton:button];
+            NSString *keyToSet = [[list objectAtIndex:buttonIndex] firstObject];
+            if ([button.mahjongFaceKey isEqualToString:keyToSet]) {
+                //NSLog(@"face button cache hit:%@",button.mahjongFaceKey);
+            } else {
+                button.mahjongFaceKey = keyToSet;
+                [self setImageURL:[[list objectAtIndex:buttonIndex] lastObject] forButton:button];
+            }
             [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 , 50, 50)];
             button.hidden = NO;
         } else {
@@ -92,7 +97,7 @@
         UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
         [strongButton setImage:theImage forState:UIControlStateNormal];
     } failure:^(NSError *error) {
-        NSLog(@"Unexpected failure when request mahjong face image");
+        NSLog(@"Unexpected failure when request mahjong face image:%@", error);
     }];
 }
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button {
