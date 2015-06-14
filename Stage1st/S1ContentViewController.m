@@ -265,7 +265,7 @@
     
     UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [faceButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
+    [faceButton setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
     [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
     
@@ -494,8 +494,7 @@
     }
     
 }
-#pragma mark - Accessory View Delegate
-
+#pragma mark Accessory View
 - (void)toggleFace:(id)sender {
     NSLog(@"toggleFace");
     if (self.replyController.inputView == nil) {
@@ -545,7 +544,10 @@
     }
 }
 
-#pragma mark UIActionSheet Delegate (iOS7 Only)
+
+
+
+#pragma mark - UIActionSheet Delegate (iOS7 Only)
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
