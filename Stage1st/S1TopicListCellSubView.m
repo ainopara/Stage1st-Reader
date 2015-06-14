@@ -157,5 +157,11 @@
         [titleContent drawAtPoint:titlePoint];
     }
 }
+- (NSString *)accessibilityLabel {
+    return self.topic.title;
+}
 
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
 @end
