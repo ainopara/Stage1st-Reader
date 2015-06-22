@@ -16,10 +16,11 @@ import UIKit
 
 class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     weak var scrollView : UIScrollView!
-    var offset : CGFloat = 0
+    weak var delegate : AIPullToActionDelagete?
+    
+    var offset : CGPoint = CGPoint(x: 0, y: 0)
     var size : CGSize = CGSize(width: 0, height: 0)
     var inset : UIEdgeInsets = UIEdgeInsetsZero
-    weak var delegate : AIPullToActionDelagete?
     
     init(scrollView : UIScrollView) {
         self.scrollView = scrollView
@@ -47,33 +48,33 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
 
         // Do any additional setup after loading the view.
     }
+    
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentOffset" {
-            self.offset = change["new"]?.CGPointValue().y ?? self.offset
+            self.offset = change["new"]?.CGPointValue() ?? self.offset
             //println("contentOffset: \(self.offset)")
         }
         if keyPath == "contentSize" {
             self.size = change["new"]?.CGSizeValue() ?? self.size
-            println("size:w: \(self.size.width) h:\(self.size.height)")
+            //println("size:w: \(self.size.width) h:\(self.size.height)")
         }
         if keyPath == "contentInset" {
             self.inset = change["new"]?.UIEdgeInsetsValue() ?? self.inset
-            println("inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
+            //println("inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
         }
     }
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let bottomOffset = self.offset + self.scrollView.bounds.height - self.size.height
+        if self.offset.y < 0 {
+            println("end dragging <- \(self.offset.y)")
+            self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
+            return
+        }
+        let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height
         if bottomOffset > 0 {
             println("end dragging -> \(bottomOffset)")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
+            return
         }
-        if self.offset < 0 {
-            println("end dragging <- \(self.offset)")
-            self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset)
-        }
-        
     }
-    
-
 }

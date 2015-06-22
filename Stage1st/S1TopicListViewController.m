@@ -134,6 +134,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)dealloc
 {
     NSLog(@"Topic List View Dealloced.");
+    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+    [self.tableView removeObserver:self forKeyPath:@"contentInset"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1ContentViewWillDisappearNotification" object:nil];
 }
@@ -672,7 +674,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         if ([[change objectForKey:@"new"] CGPointValue].y < -10) {
             [self.searchBar becomeFirstResponder];
         }
-        NSLog(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
+        //NSLog(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
+        return;
     }
 }
 
