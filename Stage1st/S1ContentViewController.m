@@ -26,13 +26,16 @@
 #import "NavigationControllerDelegate.h"
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, AIPullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) AIPullToActionViewController *pullToActionViewController;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *topDecorateLine;
+@property (nonatomic, strong) UIView *bottomDecorateLine;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
@@ -111,8 +114,18 @@
     self.webView.opaque = NO;
     self.webView.backgroundColor = [S1Global color5];
     
+    self.pullToActionViewController = [[AIPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
+    self.pullToActionViewController.delegate = self;
+    
+    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.topDecorateLine.backgroundColor = [S1Global color12];
+    [self.webView.scrollView addSubview:self.topDecorateLine];
+    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.bottomDecorateLine.backgroundColor = [S1Global color12];
+    [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -132,6 +145,10 @@
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
     [self.webView.scrollView insertSubview:self.titleLabel atIndex:0];
+    /*
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.webView.subviews[1])
+    }];*/
 
     UIButton *button = nil;
     
@@ -170,8 +187,10 @@
     self.pageLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
     [self.pageLabel addGestureRecognizer:pickPageGR];
-    UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
-    [self.pageLabel addGestureRecognizer:panGR];
+    
+    //disable this function for now
+    //UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
+    //[self.pageLabel addGestureRecognizer:panGR];
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -736,11 +755,17 @@
     NSNumber *currentPageNumber = [NSNumber numberWithInteger:_currentPage];
     NSNumber *positionForPage =[self.cachedViewPosition objectForKey:currentPageNumber];
     if (positionForPage) {
-        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [positionForPage doubleValue])];
+        if ([positionForPage doubleValue] >= self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height) {
+            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height)];
+        } else {
+            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [positionForPage doubleValue])];
+        }
+        
     }
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
     }
+    self.bottomDecorateLine.frame = CGRectMake(0, self.webView.scrollView.contentSize.height + 100, self.view.bounds.size.width - 0, 1);
     
 }
 
@@ -821,6 +846,23 @@
         
     }
 }
+#pragma mark AIPullToActionDelegate
+
+- (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
+    if (offset < -100) {
+        if (_currentPage != 1) {
+            [self back:self.backButton];
+        }
+    }
+    
+}
+
+- (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
+    if (offset > 100) {
+        [self forward:self.forwardButton];
+    }
+}
+
 
 #pragma mark - Networking
 

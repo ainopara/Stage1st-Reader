@@ -13,6 +13,7 @@
 		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
+		8607276A1B37AF2100DA8390 /* AIPullToActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */; };
 		8608C63E1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
@@ -96,6 +97,8 @@
 		86040B7F19DE3A74004BF2BC /* S1DataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DataCenter.m; path = Stage1st/S1DataCenter.m; sourceTree = "<group>"; };
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
+		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
+		860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AIPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/AIPullToActionViewController.swift; sourceTree = "<group>"; };
 		8608C63C1AD98B7300B21FE3 /* MTLManagedObjectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLManagedObjectAdapter.h; sourceTree = "<group>"; };
 		8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLManagedObjectAdapter.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
@@ -246,6 +249,15 @@
 				0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		860727651B37AE3C00DA8390 /* AIPullToAction */ = {
+			isa = PBXGroup;
+			children = (
+				860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */,
+				860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */,
+			);
+			name = AIPullToAction;
 			sourceTree = "<group>";
 		};
 		8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */ = {
@@ -473,6 +485,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				860727651B37AE3C00DA8390 /* AIPullToAction */,
 				867990951ADA689300E956F7 /* Flurry */,
 				8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
@@ -783,6 +796,7 @@
 				867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
+				8607276A1B37AF2100DA8390 /* AIPullToActionViewController.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
@@ -894,12 +908,15 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Vendors/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -920,12 +937,14 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Vendors/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

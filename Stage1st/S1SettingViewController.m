@@ -12,7 +12,7 @@
 #import "GSStaticTableViewBuilder.h"
 //#import "MTStatusBarOverlay.h"
 
-@interface S1SettingViewController ()
+@interface S1SettingViewController () <UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
@@ -27,7 +27,7 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *leftSpaceConstraint;
 
-
+@property (assign, nonatomic) CGFloat offset;
 @end
 
 
@@ -92,7 +92,31 @@
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    self.offset = 0;
+    self.tableView.delegate = self;
+    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
 }
+
+- (void)dealloc {
+    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (self.offset < -36) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"contentOffset"]) {
+        self.offset = [[change objectForKey:@"new"] CGPointValue].y + 64;
+        NSLog(@"%f",self.offset);
+    }
+}
+
 #pragma mark - Orientation
 
 - (NSUInteger)supportedInterfaceOrientations
