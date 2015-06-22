@@ -19,7 +19,7 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     var offset : CGFloat = 0
     var size : CGSize = CGSize(width: 0, height: 0)
     var inset : UIEdgeInsets = UIEdgeInsetsZero
-    internal var delegate : AIPullToActionDelagete?
+    weak var delegate : AIPullToActionDelagete?
     
     init(scrollView : UIScrollView) {
         self.scrollView = scrollView
