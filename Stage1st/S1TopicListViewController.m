@@ -637,11 +637,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     __weak typeof(self) myself = self;
     NSDictionary *result = [self.viewModel internalTopicsInfoFor:type withSearchWord:@"" andLeftCallback:^(NSDictionary *fullResult) {
         __strong typeof(self) strongMyself = myself;
-        strongMyself.topics = [fullResult valueForKey:@"topics"];
-        strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongMyself.tableView reloadData];
-        });
+        if ([strongMyself.currentKey isEqualToString:type == S1TopicListHistory ? @"History" : @"Favorite"]) {
+            strongMyself.topics = [fullResult valueForKey:@"topics"];
+            strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [strongMyself.tableView reloadData];
+            });
+        }
     }];
     self.topics = [result valueForKey:@"topics"];
     self.topicHeaderTitles = [result valueForKey:@"headers"];
