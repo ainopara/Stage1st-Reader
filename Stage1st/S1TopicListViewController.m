@@ -102,6 +102,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.refreshControl.tintColor = [S1Global color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
+    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [self.tableView addObserver:self forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew context:nil];
+    
     //Setup Tab Bar
     self.scrollTabBar.keys = [self keys];
     self.scrollTabBar.tabbarDelegate = self;
@@ -432,7 +435,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self.searchBar resignFirstResponder];
+    if (self.tableView.contentOffset.y > 0) {
+        [self.searchBar resignFirstResponder];
+    }
+    
 }
 
 - (void)clearSearchBarText:(UISwipeGestureRecognizer *)gestureRecognizer {
@@ -655,6 +661,19 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     [self.scrollTabBar deselectAll];
     
+}
+#pragma mark - Observer
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"contentInset"]) {
+        return;
+    }
+    if ([keyPath isEqualToString:@"contentOffset"]) {
+        if ([[change objectForKey:@"new"] CGPointValue].y < -10) {
+            [self.searchBar becomeFirstResponder];
+        }
+        NSLog(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
+    }
 }
 
 /*
