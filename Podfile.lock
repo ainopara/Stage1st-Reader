@@ -60,7 +60,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   JTSImageViewController:
-    :commit: b675586a5d3e63ded1dfaaa657bab75442332a0a
+    :commit: f70c14927d2512a044c6a927c2c647b1f935fb50
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca

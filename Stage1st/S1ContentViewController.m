@@ -697,11 +697,11 @@
         NSString *imageURL = request.URL.absoluteString;
         NSLog(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
-        imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
+        imageInfo.imageURL = request.URL;
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                initWithImageInfo:imageInfo
                                                mode:JTSImageViewControllerMode_Image
-                                               backgroundStyle:JTSImageViewControllerBackgroundOption_None];
+                                               backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
         [UIApplication sharedApplication].statusBarHidden = YES;
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
