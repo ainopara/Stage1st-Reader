@@ -671,8 +671,10 @@ static NSString * const cellIdentifier = @"TopicCell";
         return;
     }
     if ([keyPath isEqualToString:@"contentOffset"]) {
-        if ([[change objectForKey:@"new"] CGPointValue].y < -10) {
-            [self.searchBar becomeFirstResponder];
+        if ([self.currentKey isEqualToString:@"History"] || [self.currentKey isEqualToString:@"Favorite"]) {
+            if ([[change objectForKey:@"new"] CGPointValue].y < -10) {
+                [self.searchBar becomeFirstResponder];
+            }
         }
         //NSLog(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
         return;
