@@ -11,6 +11,7 @@ import UIKit
 @objc protocol AIPullToActionDelagete {
     optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset : CGFloat)
     optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(offset : CGFloat)
+    optional func scrollViewContentSizeDidChange(contentSize: CGSize)
 }
 
 
@@ -57,6 +58,7 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
         if keyPath == "contentSize" {
             self.size = change["new"]?.CGSizeValue() ?? self.size
             //println("size:w: \(self.size.width) h:\(self.size.height)")
+            self.delegate?.scrollViewContentSizeDidChange?(self.size)
         }
         if keyPath == "contentInset" {
             self.inset = change["new"]?.UIEdgeInsetsValue() ?? self.inset

@@ -419,9 +419,9 @@
     }
     //NSLog(@"%f %ld", distance, (long)offset);
     if (gr.state == UIGestureRecognizerStateBegan || gr.state == UIGestureRecognizerStateChanged) {
-        self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", destinationPage, (long)_totalPages];
+        self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)destinationPage, (long)_totalPages];
     } else if (gr.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"open %ld", destinationPage);
+        NSLog(@"open %ld", (long)destinationPage);
         if (_currentPage != destinationPage) {
             [self saveViewPosition];
             _currentPage = destinationPage;
@@ -765,7 +765,6 @@
     if (_needToScrollToBottom) {
         [self scrollToButtomAnimated:YES];
     }
-    self.bottomDecorateLine.frame = CGRectMake(0, self.webView.scrollView.contentSize.height + 100, self.view.bounds.size.width - 0, 1);
     
 }
 
@@ -849,7 +848,7 @@
 #pragma mark AIPullToActionDelegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
-    if (offset < -100) {
+    if (offset < -80) {
         if (_currentPage != 1) {
             [self back:self.backButton];
         }
@@ -858,11 +857,15 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 100) {
+    if (offset > 80) {
         [self forward:self.forwardButton];
     }
 }
 
+- (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
+    self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 80, contentSize.width - 0, 1);
+}
 
 #pragma mark - Networking
 
