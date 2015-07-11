@@ -12,8 +12,22 @@ import UIKit
     optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset : CGFloat)
     optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(offset : CGFloat)
     optional func scrollViewContentSizeDidChange(contentSize: CGSize)
+    optional func scrollViewContentOffsetProgress(progress: [String: Double])
 }
 
+private enum BaseLine {
+    case Top, Bottom
+}
+
+private struct AIOffsetRange {
+    let beginPosition: Double
+    let endPosition: Double
+    let baseLine: BaseLine
+    
+    func progress (offset: Double) -> Double {
+        return (offset - beginPosition) / (endPosition - beginPosition)
+    }
+}
 
 class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     weak var scrollView : UIScrollView!
@@ -22,10 +36,14 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     var offset : CGPoint = CGPoint(x: 0, y: 0)
     var size : CGSize = CGSize(width: 0, height: 0)
     var inset : UIEdgeInsets = UIEdgeInsetsZero
+    private var progressAction : [String: AIOffsetRange] = Dictionary<String, AIOffsetRange>()
     
     init(scrollView : UIScrollView) {
         self.scrollView = scrollView
         super.init(nibName: nil, bundle: nil)
+        
+        progressAction.updateValue(AIOffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
+        progressAction.updateValue(AIOffsetRange(beginPosition: 0, endPosition: 80, baseLine: .Bottom), forKey: "bottom")
         
         scrollView.delegate = self
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: NSKeyValueObservingOptions.New, context: nil)
@@ -53,6 +71,17 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentOffset" {
             self.offset = change["new"]?.CGPointValue() ?? self.offset
+            var progress : [String: Double] = Dictionary<String, Double>()
+            for (name, actionOffset) in self.progressAction {
+                if actionOffset.baseLine == .Top {
+                    let progressValue = actionOffset.progress(Double(self.offset.y))
+                    progress.updateValue(progressValue, forKey: name)
+                } else if actionOffset.baseLine == .Bottom {
+                    let progressValue = actionOffset.progress(Double(self.offset.y + self.scrollView.bounds.height - self.size.height))
+                    progress.updateValue(progressValue, forKey: name)
+                }
+            }
+            self.delegate?.scrollViewContentOffsetProgress?(progress)
             //println("contentOffset: \(self.offset)")
         }
         if keyPath == "contentSize" {

@@ -118,7 +118,10 @@
     self.pullToActionViewController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
-    self.topDecorateLine.backgroundColor = [S1Global color12];
+    if(_currentPage != 1) {
+        self.topDecorateLine.backgroundColor = [S1Global color12];
+    }
+    
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     self.bottomDecorateLine.backgroundColor = [S1Global color12];
@@ -157,6 +160,8 @@
     button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 40, 30);
+    button.imageView.clipsToBounds = NO;
+    button.imageView.contentMode = UIViewContentModeCenter;
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
     UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
@@ -170,6 +175,8 @@
     button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 40, 30);
+    button.imageView.clipsToBounds = NO;
+    button.imageView.contentMode = UIViewContentModeCenter;
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:100];
     UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
@@ -845,11 +852,11 @@
         
     }
 }
-#pragma mark AIPullToActionDelegate
+#pragma mark AIPullToAction Delegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
     if (offset < -80) {
-        if (_currentPage != 1) {
+        if (_currentPage != 1 && _finishLoading) {
             [self back:self.backButton];
         }
     }
@@ -857,14 +864,58 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 80) {
+    if (offset > 80 && _finishLoading) {
         [self forward:self.forwardButton];
     }
 }
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
+    if(_currentPage != 1) {
+        self.topDecorateLine.backgroundColor = [S1Global color12];
+    } else {
+        self.topDecorateLine.backgroundColor = [S1Global color5];
+    }
     self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 80, contentSize.width - 0, 1);
+}
+
+- (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
+    NSNumber *bottomProgress = progress[@"bottom"];
+    if (_currentPage == _totalPages) {
+        if ([bottomProgress doubleValue] >= 0) {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * [bottomProgress doubleValue], 0, 0, 1);
+        } else {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2, 0, 0, 1);
+        }
+        
+    } else {
+        double progress = [bottomProgress doubleValue];
+        if (progress < 0) {
+            progress = 0;
+        } else if (progress > 1){
+            progress = 1;
+        }
+        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * progress, 0, 0, 1);
+    }
+    
+
+    if (_currentPage != 1) {
+        NSNumber *topProgress = progress[@"top"];
+        double progress = [topProgress doubleValue];
+        if (progress < 0) {
+            progress = 0;
+        } else if (progress > 1){
+            progress = 1;
+        }
+        self.backButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * progress, 0, 0, 1);
+    } else {
+        self.backButton.imageView.layer.transform = CATransform3DIdentity;
+    }
+    
+    
+    
 }
 
 #pragma mark - Networking
@@ -1068,7 +1119,11 @@
     }
     self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
     //update forward button
-    if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
+    /*if (_totalPages == _currentPage) {
+        [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2, 0, 0, 1);
+        
+    } else*/ if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward-Cached"] forState:UIControlStateNormal];
     } else {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
