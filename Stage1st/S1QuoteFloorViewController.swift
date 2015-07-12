@@ -8,12 +8,17 @@
 
 import UIKit
 
-class S1QuoteFloorViewController: UIViewController {
-
+class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
+    var htmlString :String?
+    
     @IBOutlet weak var webView: UIWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if let htmlStirng = self.htmlString {
+            self.webView.loadHTMLString(htmlString, baseURL: NSURL())
+            self.webView.backgroundColor = S1Global.color5()
+            self.webView.delegate = self
+        }
         // Do any additional setup after loading the view.
     }
 
@@ -22,7 +27,12 @@ class S1QuoteFloorViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        if request.URL!.absoluteString == "about:blank" {
+            return true
+        }
+        return false
+    }
     /*
     // MARK: - Navigation
 

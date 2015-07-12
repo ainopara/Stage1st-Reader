@@ -536,6 +536,98 @@
     return threadPage;
 }
 
++ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic
+{
+    NSString *finalString = [[NSString alloc] init];
+    for (S1Floor *topicFloor in floorList) {
+        //process indexmark
+        NSString *floorIndexMark = topicFloor.indexMark;
+        if (![floorIndexMark isEqualToString:@"楼主"]) {
+            floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
+        }
+        
+        //process author
+        NSString *floorAuthor = topicFloor.author;
+        if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
+            floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
+        }
+        
+        //process time
+        NSString *floorPostTime = [S1Parser translateDateTimeString:topicFloor.postTime];
+        
+        //process reply Button
+        NSString *replyLinkString = @"";
+        
+        //process poll
+        NSString *pollContentString = @"";
+        
+        //process content
+        NSString *contentString = topicFloor.content;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"]) {
+            contentString = [S1Parser stripTails:contentString];
+        }
+        
+        //work when the floor's author is blocked and s1reader using parse mode
+        if (contentString == nil && topicFloor.message != nil) {
+            contentString = [NSString stringWithFormat:@"<td class=\"t_f\"><div class=\"s1-alert\">%@</div></td>", topicFloor.message];
+        }
+        
+        //process attachment
+        NSString *floorAttachment = @"";
+        if (topicFloor.imageAttachmentList) {
+            for (NSString *imageURLString in topicFloor.imageAttachmentList) {
+                NSString *processedImageURLString = [[NSString alloc] initWithString:imageURLString];
+                if ([topicFloor.imageAttachmentList indexOfObject:imageURLString] != 0) {
+                    processedImageURLString = [@"<br /><br />" stringByAppendingString:imageURLString];
+                }
+                floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
+            }
+            floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
+        }
+        
+        //generate page
+        NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
+        NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
+        NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
+        
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, pollContentString, contentString, floorAttachment];
+        
+        if ([floorList indexOfObject:topicFloor] != 0) {
+            output = [@"<br />" stringByAppendingString:output];
+        }
+        finalString = [finalString stringByAppendingString:output];
+    }
+    finalString = [S1Parser processHTMLString:finalString];
+    NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
+    NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
+    //CSS
+    NSString *baseCSS = [[NSBundle mainBundle] pathForResource:@"content_base" ofType:@"css"];
+    NSString *cssPath = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"15px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_15px" ofType:@"css"];
+        } else if ([fontSizeKey isEqualToString:@"17px"]){
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_17px" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
+        }
+    } else {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"18px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
+        } else if ([fontSizeKey isEqualToString:@"20px"]){
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
+        }
+    }
+    NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
+    return threadPage;
+}
+
 #pragma mark - Pick Information
 
 + (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData andPage:(NSNumber *)page{

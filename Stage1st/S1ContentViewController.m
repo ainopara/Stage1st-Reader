@@ -26,6 +26,7 @@
 #import "NavigationControllerDelegate.h"
 
 
+
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, AIPullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
@@ -726,16 +727,34 @@
             [[self navigationController] pushViewController:contentViewController animated:YES];
             return NO;
         }
+        // Open Quote Link
         NSDictionary *quarys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
         if (quarys) {
             NSLog(@"%@",quarys);
             if ([[quarys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
+                /*
                 [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
                     NSLog(@"finish");
                 } failure:^(NSError *error) {
                     NSLog(@"%@",error);
-                }];
-                return NO;
+                }];*/
+                if ([[quarys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
+                    NSInteger tid = [[quarys valueForKey:@"ptid"] integerValue];
+                    NSInteger pid = [[quarys valueForKey:@"pid"] integerValue];
+                    if (tid == [self.topic.topicID integerValue]) {
+                        for (S1Floor *floor in [self.topic.floors allValues]) {
+                            if (pid == [floor.floorID integerValue]) {
+                                _presentingContentViewController = YES;
+                                S1Topic *quoteTopic = [self.topic copy];
+                                NSString *htmlString = [S1Parser generateQuotePage:[@[floor] mutableCopy] withTopic:quoteTopic];
+                                S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
+                                quoteFloorViewController.htmlString = htmlString;
+                                [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
+                                return NO;
+                            }
+                        }
+                    }
+                }
             }
             
         }

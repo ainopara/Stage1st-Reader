@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5B593522E3734E14A32C7776 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D156A107F0694E36B647AD5F /* libPods-Stage1st.a */; };
+		482266A1EA1BF89064C95BC1 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */; };
 		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
@@ -89,6 +89,7 @@
 /* Begin PBXFileReference section */
 		0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.release.xcconfig"; sourceTree = "<group>"; };
 		0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
+		4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "jquery-2.1.1.min.js"; path = "Stage1st/jquery-2.1.1.min.js"; sourceTree = "<group>"; };
@@ -98,7 +99,7 @@
 		86040B7F19DE3A74004BF2BC /* S1DataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DataCenter.m; path = Stage1st/S1DataCenter.m; sourceTree = "<group>"; };
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
-		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
+		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AIPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/AIPullToActionViewController.swift; sourceTree = "<group>"; };
 		8608C63C1AD98B7300B21FE3 /* MTLManagedObjectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLManagedObjectAdapter.h; sourceTree = "<group>"; };
 		8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLManagedObjectAdapter.m; sourceTree = "<group>"; };
@@ -228,7 +229,6 @@
 		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
 		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTStatusBarOverlay.m; sourceTree = "<group>"; };
 		C0B1919616F0A80F0053E0C5 /* content_ipad_18px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_18px.css; path = Stage1st/content_ipad_18px.css; sourceTree = "<group>"; };
-		D156A107F0694E36B647AD5F /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,8 +236,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B593522E3734E14A32C7776 /* libPods-Stage1st.a in Frameworks */,
 				867990981ADA689300E956F7 /* libFlurry_6.3.0.a in Frameworks */,
+				482266A1EA1BF89064C95BC1 /* libPods-Stage1st.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,7 +257,6 @@
 			isa = PBXGroup;
 			children = (
 				860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */,
-				860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */,
 			);
 			name = AIPullToAction;
 			sourceTree = "<group>";
@@ -463,7 +462,7 @@
 		C095873616CA8A36007E0119 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D156A107F0694E36B647AD5F /* libPods-Stage1st.a */,
+				4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -476,6 +475,7 @@
 				C095874716CA8A36007E0119 /* S1AppDelegate.m */,
 				860223501895051400A3E66E /* S1Global.h */,
 				860223511895051400A3E66E /* S1Global.m */,
+				860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */,
 				C095873E16CA8A36007E0119 /* Supporting Files */,
 			);
 			path = Stage1st;

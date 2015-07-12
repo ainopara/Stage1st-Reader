@@ -19,6 +19,7 @@
 + (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
 
 + (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
++ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic;
 
 + (NSString *)formhashFromPage:(NSString *)HTMLString;
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
