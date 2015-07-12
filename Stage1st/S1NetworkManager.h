@@ -65,6 +65,13 @@
 + (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+
++ (void)findTopicFloor:(NSNumber *)floorID
+             inTopicID:(NSNumber *)topicID
+               success:(void (^)(NSURLSessionDataTask *, id))success
+               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
+
 // Search
 + (void)postSearchForKeyword:(NSString *)keyword
                  andFormhash:(NSString *)formhash

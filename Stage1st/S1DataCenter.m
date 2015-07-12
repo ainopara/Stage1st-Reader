@@ -394,6 +394,14 @@
     }];
 }
 
+- (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [S1NetworkManager findTopicFloor:floorID inTopicID:topicID success:^(NSURLSessionDataTask *task, id responseObject) {
+        success();
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
+}
+
 - (void)cancelRequest {
     [S1NetworkManager cancelRequest];
 }

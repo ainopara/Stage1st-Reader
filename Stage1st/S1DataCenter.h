@@ -45,7 +45,7 @@
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
-
+- (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;
 //Database
 - (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler;
 - (void)hasViewed:(S1Topic *)topic;

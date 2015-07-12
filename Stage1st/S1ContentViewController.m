@@ -726,6 +726,19 @@
             [[self navigationController] pushViewController:contentViewController animated:YES];
             return NO;
         }
+        NSDictionary *quarys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
+        if (quarys) {
+            NSLog(@"%@",quarys);
+            if ([[quarys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
+                [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
+                    NSLog(@"finish");
+                } failure:^(NSError *error) {
+                    NSLog(@"%@",error);
+                }];
+                return NO;
+            }
+            
+        }
     }
     
     // Open link

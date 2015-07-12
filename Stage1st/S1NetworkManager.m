@@ -168,6 +168,27 @@
                              @"formhash" : formhash};
     [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
 }
+#pragma mark - Redirect
++ (void)findTopicFloor:(NSNumber *)floorID
+             inTopicID:(NSNumber *)topicID
+               success:(void (^)(NSURLSessionDataTask *, id))success
+               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"forum.php";
+    NSDictionary *params = @{@"mod" : @"redirect",
+                             @"goto" : @"findpost",
+                             @"pid" : floorID,
+                             @"ptid" : topicID};
+    [[S1HTTPSessionManager sharedHTTPClient] setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+        NSLog(@"%@",response);
+        NSLog(@"%@",request);
+        if (request.URL) {
+            ;
+        }
+        return request;
+    }];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+
 
 #pragma mark - Search
 

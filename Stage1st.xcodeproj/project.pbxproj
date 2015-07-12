@@ -31,6 +31,7 @@
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
+		866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */; };
 		867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8679908F1AD9FB8700E956F7 /* EXTRuntimeExtensions.m */; };
 		867990941AD9FB8700E956F7 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 867990911AD9FB8700E956F7 /* EXTScope.m */; };
 		867990981ADA689300E956F7 /* libFlurry_6.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 867990971ADA689300E956F7 /* libFlurry_6.3.0.a */; };
@@ -127,6 +128,7 @@
 		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
+		866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorViewController.swift; path = Stage1st/S1QuoteFloorViewController.swift; sourceTree = "<group>"; };
 		8679908D1AD9FB8700E956F7 /* EXTKeyPathCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTKeyPathCoding.h; sourceTree = "<group>"; };
 		8679908E1AD9FB8700E956F7 /* EXTRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTRuntimeExtensions.h; sourceTree = "<group>"; };
 		8679908F1AD9FB8700E956F7 /* EXTRuntimeExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTRuntimeExtensions.m; sourceTree = "<group>"; };
@@ -351,6 +353,14 @@
 			name = S1MahjongFaceViewController;
 			sourceTree = "<group>";
 		};
+		866CDB951B526C4800FBB133 /* Quote Floor View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */,
+			);
+			name = "Quote Floor View Controller";
+			sourceTree = "<group>";
+		};
 		8679908C1AD9FB8700E956F7 /* extobjc */ = {
 			isa = PBXGroup;
 			children = (
@@ -531,6 +541,7 @@
 				C095877B16CA8DBE007E0119 /* View */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
+				866CDB951B526C4800FBB133 /* Quote Floor View Controller */,
 				86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */,
 				C09587A316CB6218007E0119 /* Settings View Controller */,
 			);
@@ -787,6 +798,7 @@
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
+				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
 				864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */,
