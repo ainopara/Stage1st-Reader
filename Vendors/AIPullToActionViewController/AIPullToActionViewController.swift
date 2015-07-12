@@ -111,11 +111,15 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
         case .Top:
             return Double(self.offset.y)
         case .Bottom:
-            return Double(self.offset.y + self.scrollView.bounds.height - self.size.height)
+            var temp = self.scrollView.bounds.height - self.size.height
+            if temp > 0 { temp = 0 }
+            return Double(self.offset.y + temp)
         case .Left:
             return Double(self.offset.x)
         case .Right:
-            return Double(self.offset.x + self.scrollView.bounds.width - self.size.width)
+            var temp = self.scrollView.bounds.width - self.size.width
+            if temp > 0 { temp = 0 }
+            return Double(self.offset.x + temp)
         }
     }
 }

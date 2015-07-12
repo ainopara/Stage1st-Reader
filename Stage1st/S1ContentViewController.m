@@ -881,7 +881,7 @@
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
     NSNumber *bottomProgress = progress[@"bottom"];
-    if (_currentPage == _totalPages) {
+    if (_currentPage >= _totalPages) {
         if ([bottomProgress doubleValue] >= 0) {
             [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
             self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * [bottomProgress doubleValue], 0, 0, 1);
@@ -1119,11 +1119,7 @@
     }
     self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
     //update forward button
-    /*if (_totalPages == _currentPage) {
-        [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2, 0, 0, 1);
-        
-    } else*/ if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
+    if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward-Cached"] forState:UIControlStateNormal];
     } else {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
