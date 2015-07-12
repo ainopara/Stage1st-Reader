@@ -15,14 +15,14 @@ import UIKit
     optional func scrollViewContentOffsetProgress(progress: [String: Double])
 }
 
-private enum BaseLine {
-    case Top, Bottom
+@objc enum AIOffsetBaseLine: Int {
+    case Top, Bottom, Left, Right
 }
 
 private struct AIOffsetRange {
     let beginPosition: Double
     let endPosition: Double
-    let baseLine: BaseLine
+    let baseLine: AIOffsetBaseLine
     
     func progress (offset: Double) -> Double {
         return (offset - beginPosition) / (endPosition - beginPosition)
@@ -71,17 +71,14 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentOffset" {
             self.offset = change["new"]?.CGPointValue() ?? self.offset
-            var progress : [String: Double] = Dictionary<String, Double>()
-            for (name, actionOffset) in self.progressAction {
-                if actionOffset.baseLine == .Top {
-                    let progressValue = actionOffset.progress(Double(self.offset.y))
-                    progress.updateValue(progressValue, forKey: name)
-                } else if actionOffset.baseLine == .Bottom {
-                    let progressValue = actionOffset.progress(Double(self.offset.y + self.scrollView.bounds.height - self.size.height))
+            if let delegateFunction = self.delegate?.scrollViewContentOffsetProgress {
+                var progress : [String: Double] = Dictionary<String, Double>()
+                for (name, actionOffset) in self.progressAction {
+                    let progressValue = actionOffset.progress(self.baseLineOffset(actionOffset.baseLine))
                     progress.updateValue(progressValue, forKey: name)
                 }
+                delegateFunction(progress)
             }
-            self.delegate?.scrollViewContentOffsetProgress?(progress)
             //println("contentOffset: \(self.offset)")
         }
         if keyPath == "contentSize" {
@@ -101,11 +98,24 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
             return
         }
-        let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height
+        let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height //TODO: consider content inset
         if bottomOffset > 0 {
             println("end dragging -> \(bottomOffset)")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
             return
+        }
+    }
+    
+    private func baseLineOffset(baseLine: AIOffsetBaseLine) -> Double {
+        switch baseLine {
+        case .Top:
+            return Double(self.offset.y)
+        case .Bottom:
+            return Double(self.offset.y + self.scrollView.bounds.height - self.size.height)
+        case .Left:
+            return Double(self.offset.x)
+        case .Right:
+            return Double(self.offset.x + self.scrollView.bounds.width - self.size.width)
         }
     }
 }
