@@ -749,7 +749,7 @@
                                 NSString *htmlString = [S1Parser generateQuotePage:[self chainSearchQuoteByFirstFloorID:@(pid)] withTopic:quoteTopic];
                                 S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
                                 quoteFloorViewController.htmlString = htmlString;
-                                quoteFloorViewController.centerFloorID = floor.floorID;
+                                quoteFloorViewController.centerFloorID = [floor.floorID integerValue];
                                 [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
                                 return NO;
                             }

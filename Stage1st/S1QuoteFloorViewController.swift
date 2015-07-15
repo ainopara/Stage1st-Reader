@@ -10,14 +10,16 @@ import UIKit
 
 class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     var htmlString :String?
-    var centerFloorID :NSNumber?
+    var centerFloorID :Int = 0
     @IBOutlet weak var webView: UIWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = S1Global.color5()
         if let htmlStirng = self.htmlString {
             self.webView.loadHTMLString(htmlString, baseURL: NSURL())
             self.webView.backgroundColor = S1Global.color5()
             self.webView.delegate = self
+            self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         }
         // Do any additional setup after loading the view.
     }
@@ -35,18 +37,16 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     }
     
     func webViewDidFinishLoad(webView: UIWebView) {
-        if let floorID = self.centerFloorID {
-            var offset = webView.scrollView.contentOffset
-            var computedOffset: CGFloat = positionOfElementWithId(floorID) - 32
-            if computedOffset > webView.scrollView.contentSize.height - webView.scrollView.bounds.height {
-                computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height;
-            }
-            if computedOffset < 0 {
-                computedOffset = 0
-            }
-            offset.y = computedOffset
-            webView.scrollView.contentOffset = offset
+        var offset = webView.scrollView.contentOffset
+        var computedOffset: CGFloat = positionOfElementWithId(self.centerFloorID) - 32
+        if computedOffset > webView.scrollView.contentSize.height - webView.scrollView.bounds.height {
+            computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height;
         }
+        if computedOffset < 0 {
+            computedOffset = 0
+        }
+        offset.y = computedOffset
+        webView.scrollView.contentOffset = offset
     }
     
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
