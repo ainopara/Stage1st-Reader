@@ -746,9 +746,10 @@
                             if (pid == [floor.floorID integerValue]) {
                                 _presentingContentViewController = YES;
                                 S1Topic *quoteTopic = [self.topic copy];
-                                NSString *htmlString = [S1Parser generateQuotePage:[@[floor] mutableCopy] withTopic:quoteTopic];
+                                NSString *htmlString = [S1Parser generateQuotePage:[self chainSearchQuoteByFirstFloorID:@(pid)] withTopic:quoteTopic];
                                 S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
                                 quoteFloorViewController.htmlString = htmlString;
+                                quoteFloorViewController.centerFloorID = floor.floorID;
                                 [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
                                 return NO;
                             }
@@ -781,6 +782,28 @@
         [self presentViewController:alert animated:YES completion:nil];
     }
     return NO;
+}
+
+- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+    if (floorID == nil) {
+        return nil;
+    }
+    for (S1Floor *floor in [self.topic.floors allValues]) {
+        if ([floorID integerValue] == [floor.floorID integerValue]) {
+            return floor;
+        }
+    }
+    return nil;
+}
+
+- (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    S1Floor *floor = [self searchFloorInCacheByFloorID:floorID];
+    while (floor) {
+        [result insertObject:floor atIndex:0];
+        floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
+    }
+    return result;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

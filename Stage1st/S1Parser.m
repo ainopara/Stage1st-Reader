@@ -419,6 +419,7 @@
         floor.indexMark = rawFloor[@"number"];
         floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
         floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]] withAttachments:attachments];
+        floor.firstQuoteReplyFloorID = [S1Parser firstQuoteReplyFloorIDFromFloorString:floor.content];
         //process attachments left.
         if (attachments != nil && [attachments count] > 0) {
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
@@ -747,6 +748,17 @@
     return [username isEqualToString:@""]?nil:username;
 }
 
++ (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {
+    NSString *urlString = [[S1Global regexExtractFromString:floorString withPattern:@"<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"" andColums:@[@1]] firstObject];
+    NSLog(@"%@",urlString);
+    if (urlString) {
+        NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
+        return resultDict[@"pid"];
+    }
+    return nil;
+}
+
+
 #pragma mark - Extract Data
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
 {
@@ -782,7 +794,7 @@
 + (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString {
     NSURL *url = [[NSURL alloc] initWithString:URLString];
     if (url!= nil) {
-        NSString *queryString = url.query;
+        NSString *queryString = [url.query gtm_stringByUnescapingFromHTML];
         if (queryString != nil) {
             NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
             for (NSString *component in [queryString componentsSeparatedByString:@"&"]) {

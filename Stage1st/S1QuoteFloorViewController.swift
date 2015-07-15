@@ -10,7 +10,7 @@ import UIKit
 
 class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     var htmlString :String?
-    
+    var centerFloorID :NSNumber?
     @IBOutlet weak var webView: UIWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +32,30 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
             return true
         }
         return false
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        if let floorID = self.centerFloorID {
+            var offset = webView.scrollView.contentOffset
+            var computedOffset: CGFloat = positionOfElementWithId(floorID) - 32
+            if computedOffset > webView.scrollView.contentSize.height - webView.scrollView.bounds.height {
+                computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height;
+            }
+            if computedOffset < 0 {
+                computedOffset = 0
+            }
+            offset.y = computedOffset
+            webView.scrollView.contentOffset = offset
+        }
+    }
+    
+    func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
+        let result: String? = self.webView.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
+        println(result)
+        if let result = result?.toInt() {
+            return CGFloat(result)
+        }
+        return 0;
     }
     /*
     // MARK: - Navigation

@@ -20,4 +20,6 @@
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, copy) NSArray *imageAttachmentList;
 
+@property (nonatomic, copy) NSNumber *firstQuoteReplyFloorID;
+
 @end

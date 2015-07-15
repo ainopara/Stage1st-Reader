@@ -104,7 +104,7 @@
                                 <items/>
                             </toolbar>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.95999997854232788" green="0.97000002861022949" blue="0.92000001668930054" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="QiY-0d-ChP" firstAttribute="leading" secondItem="yXh-JJ-q5e" secondAttribute="leading" id="6DU-gE-Ax7"/>
                             <constraint firstItem="QiY-0d-ChP" firstAttribute="top" secondItem="ICo-tY-83d" secondAttribute="bottom" id="BVY-0j-nJc"/>
@@ -157,18 +157,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qNN-hj-m1o">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.95999997854232788" green="0.97000002861022949" blue="0.92000001668930054" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="qNN-hj-m1o" firstAttribute="leading" secondItem="TYU-fK-85h" secondAttribute="leading" id="CHT-Zu-D0J"/>
                             <constraint firstItem="Snh-PT-EJa" firstAttribute="top" secondItem="qNN-hj-m1o" secondAttribute="bottom" id="OIq-AS-Cqr"/>
-                            <constraint firstItem="qNN-hj-m1o" firstAttribute="top" secondItem="TYU-fK-85h" secondAttribute="top" id="clE-ex-VgC"/>
+                            <constraint firstItem="qNN-hj-m1o" firstAttribute="top" secondItem="TYU-fK-85h" secondAttribute="top" constant="20" id="clE-ex-VgC"/>
                             <constraint firstAttribute="trailing" secondItem="qNN-hj-m1o" secondAttribute="trailing" id="rQf-6C-Lcb"/>
                         </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="webView" destination="qNN-hj-m1o" id="IOK-s9-3oP"/>
