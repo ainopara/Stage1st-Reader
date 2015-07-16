@@ -397,6 +397,18 @@
 			path = Vendors/REComposeViewController;
 			sourceTree = "<group>";
 		};
+		86A5AD871B56BAAE00E80790 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				C083351716E363870035C1AA /* S1Tracer.h */,
+				C083351816E363870035C1AA /* S1Tracer.m */,
+				865616B81AC7D82800CFD773 /* S1PersistentStack.h */,
+				865616B91AC7D82800CFD773 /* S1PersistentStack.m */,
+				8656167C1AC69E9200CFD773 /* Model.xcdatamodeld */,
+			);
+			name = Database;
+			sourceTree = "<group>";
+		};
 		86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -551,18 +563,14 @@
 		C095877A16CA8DB0007E0119 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C08A440D16DA775F003BF44C /* Networking */,
-				8656167C1AC69E9200CFD773 /* Model.xcdatamodeld */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
 				862CECE318D34611006CA29F /* S1Floor.h */,
 				862CECE418D34611006CA29F /* S1Floor.m */,
+				C08A440D16DA775F003BF44C /* Networking */,
+				86A5AD871B56BAAE00E80790 /* Database */,
 				C05286C116D3428E000B0DBD /* S1Parser.h */,
 				C05286C216D3428E000B0DBD /* S1Parser.m */,
-				C083351716E363870035C1AA /* S1Tracer.h */,
-				C083351816E363870035C1AA /* S1Tracer.m */,
-				865616B81AC7D82800CFD773 /* S1PersistentStack.h */,
-				865616B91AC7D82800CFD773 /* S1PersistentStack.m */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
 			);
