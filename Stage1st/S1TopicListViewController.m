@@ -78,7 +78,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.dataCenter = [S1DataCenter sharedDataCenter];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [S1Global color5];
+    self.view.backgroundColor = [[S1Global sharedInstance] color5];
     
     //Setup Navigation Bar
     [self.view addSubview:self.navigationBar];
@@ -89,17 +89,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    self.tableView.separatorColor = [S1Global color1];
-    self.tableView.backgroundColor = [S1Global color5];
+    self.tableView.separatorColor = [[S1Global sharedInstance] color1];
+    self.tableView.backgroundColor = [[S1Global sharedInstance] color5];
     if (self.tableView.backgroundView) {
-        self.tableView.backgroundView.backgroundColor = [S1Global color5];
+        self.tableView.backgroundView.backgroundColor = [[S1Global sharedInstance] color5];
     }
     self.tableView.hidden = YES;
     self.tableView.tableHeaderView = self.searchBar;
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [S1Global color8];
+    self.refreshControl.tintColor = [[S1Global sharedInstance] color8];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
@@ -302,10 +302,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
-        [view setBackgroundColor:[UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:0.300]];
+        [view setBackgroundColor:[[S1Global sharedInstance] color24]];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 20)];
-        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.topicHeaderTitles objectAtIndex:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [S1Global color4]}];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.topicHeaderTitles objectAtIndex:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[S1Global sharedInstance] color4]}];
         [label setAttributedText:labelTitle];
         label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
@@ -740,10 +740,10 @@ static NSString * const cellIdentifier = @"TopicCell";
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
         _searchBar.delegate = self;
         //_searchBar.searchBarStyle = UISearchBarStyleMinimal;
-        _searchBar.tintColor = [S1Global color4];
-        _searchBar.barTintColor = [S1Global color5];
+        _searchBar.tintColor = [[S1Global sharedInstance] color4];
+        _searchBar.barTintColor = [[S1Global sharedInstance] color5];
         _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
-        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[S1Global color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [_searchBar addGestureRecognizer:gestureRecognizer];

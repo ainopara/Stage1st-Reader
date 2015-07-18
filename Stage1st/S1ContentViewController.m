@@ -104,7 +104,7 @@
     [super viewDidLoad];
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [S1Global color5];
+    self.view.backgroundColor = [[S1Global sharedInstance] color5];
     
     //web view
     self.webView.delegate = self;
@@ -113,19 +113,19 @@
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.opaque = NO;
-    self.webView.backgroundColor = [S1Global color5];
+    self.webView.backgroundColor = [[S1Global sharedInstance] color5];
     
     self.pullToActionViewController = [[AIPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
     self.pullToActionViewController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [S1Global color12];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
-    self.bottomDecorateLine.backgroundColor = [S1Global color12];
+    self.bottomDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
@@ -141,9 +141,9 @@
         self.titleLabel.text = self.topic.title;
     }
     if (hasInvalidTitle) {
-        self.titleLabel.textColor = [S1Global color12];
+        self.titleLabel.textColor = [[S1Global sharedInstance] color12];
     }else {
-        self.titleLabel.textColor = [S1Global color4];
+        self.titleLabel.textColor = [[S1Global sharedInstance] color4];
     }
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -189,7 +189,7 @@
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-    self.pageLabel.textColor = [S1Global color3];
+    self.pageLabel.textColor = [[S1Global sharedInstance] color3];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     self.pageLabel.userInteractionEnabled = YES;
@@ -504,7 +504,7 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1Global color3]];
+            [controller.view setTintColor:[[S1Global sharedInstance] color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }];
         // Cancel Action
@@ -638,7 +638,7 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1Global color3]];
+            [controller.view setTintColor:[[S1Global sharedInstance] color3]];
             [self presentViewController:controller animated:YES completion:nil];
         }
     }
@@ -653,7 +653,7 @@
         _presentingWebViewer = YES;
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
-        [[controller view] setTintColor:[S1Global color3]];
+        [[controller view] setTintColor:[[S1Global sharedInstance] color3]];
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
@@ -773,7 +773,7 @@
             _presentingWebViewer = YES;
             NSLog(@"%@", request.URL);
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[S1Global color3]];
+            [[controller view] setTintColor:[[S1Global sharedInstance] color3]];
             //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:controller animated:YES completion:nil];
         }];
@@ -927,9 +927,9 @@
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [S1Global color12];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
     } else {
-        self.topDecorateLine.backgroundColor = [S1Global color5];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color5];
     }
     self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 80, contentSize.width - 0, 1);
 }
@@ -1189,7 +1189,7 @@
 
 - (void)updateTitleLabelWithTitle:(NSString *)title {
     self.titleLabel.text = title;
-    self.titleLabel.textColor = [S1Global color4];
+    self.titleLabel.textColor = [[S1Global sharedInstance] color4];
 }
 - (UIImage *)screenShot
 {

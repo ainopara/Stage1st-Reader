@@ -7,22 +7,68 @@
 //
 
 #import "S1Global.h"
+
+@interface S1Global ()
+
+@property (nonatomic, strong) NSDictionary *palette;
+
+@end
+
+
 @implementation S1Global
-+(UIColor *)color1{return [UIColor colorWithRed:0.822 green:0.853 blue:0.756 alpha:1.000];}
-+(UIColor *)color2{return [UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000];}
-+(UIColor *)color3{return [UIColor colorWithWhite:0.15 alpha:1.0];}
-+(UIColor *)color4{return [UIColor colorWithRed:56.0f/255.0f green:84.0f/255.0f blue:135.0f/255.0f alpha:1.0f];}
-+(UIColor *)color5{return [UIColor colorWithRed:0.96 green:0.97 blue:0.92 alpha:1.0];}
-+(UIColor *)color6{return [UIColor colorWithWhite:0.20f alpha:1.0f];}
-+(UIColor *)color7{return [UIColor colorWithRed:0.813 green:0.827 blue:0.726 alpha:1.000];}
-+(UIColor *)color8{return [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];}
-+(UIColor *)color9{return [UIColor colorWithRed:0.628 green:0.611 blue:0.484 alpha:1.000];}
-+(UIColor *)color10{return [UIColor colorWithRed:0.744 green:0.776 blue:0.696 alpha:1.000];}
-+(UIColor *)color11{return [UIColor colorWithRed:0.8 green:0.8 blue:0.6 alpha:1.000];}
-+(UIColor *)color12{return [UIColor colorWithWhite: 0.667 alpha: 1];}
-+(UIColor *)color13{return nil;}
-+(UIColor *)color14{return nil;}
-+(UIColor *)color15{return nil;}
+
++ (S1Global *)sharedInstance
+{
+    static S1Global *myGlobalHelper = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        myGlobalHelper = [[S1Global alloc] init];
+    });
+    return myGlobalHelper;
+}
+
+- init {
+    self = [super init];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"DefaultPalette" ofType:@"plist"];
+    self.palette = [NSDictionary dictionaryWithContentsOfFile:path];
+    return self;
+}
+
+- (UIColor *)colorInPaletteWithID:(NSString *)paletteID {
+    NSString *colorString = [self.palette valueForKey:paletteID];
+    UIColor *color = [S1Global colorFromHexString:colorString];
+    if (color == nil) {
+        color = [UIColor colorWithWhite:0 alpha:1];
+    }
+    return color;
+}
+
+
+- (UIColor *)color1{return [self colorInPaletteWithID:@"1"];}
+- (UIColor *)color2{return [self colorInPaletteWithID:@"2"];}
+- (UIColor *)color3{return [self colorInPaletteWithID:@"3"];}
+- (UIColor *)color4{return [self colorInPaletteWithID:@"4"];}
+- (UIColor *)color5{return [self colorInPaletteWithID:@"5"];}
+- (UIColor *)color6{return [self colorInPaletteWithID:@"6"];}
+- (UIColor *)color7{return [self colorInPaletteWithID:@"7"];}
+- (UIColor *)color8{return [self colorInPaletteWithID:@"8"];}
+- (UIColor *)color9{return [self colorInPaletteWithID:@"9"];}
+- (UIColor *)color10{return [self colorInPaletteWithID:@"10"];}
+- (UIColor *)color11{return [self colorInPaletteWithID:@"11"];}
+- (UIColor *)color12{return [self colorInPaletteWithID:@"12"];}
+- (UIColor *)color13{return [self colorInPaletteWithID:@"13"];}
+- (UIColor *)color14{return [self colorInPaletteWithID:@"14"];}
+- (UIColor *)color15{return [self colorInPaletteWithID:@"15"];}
+- (UIColor *)color16{return [self colorInPaletteWithID:@"16"];}
+- (UIColor *)color17{return [self colorInPaletteWithID:@"17"];}
+- (UIColor *)color18{return [self colorInPaletteWithID:@"18"];}
+- (UIColor *)color19{return [self colorInPaletteWithID:@"19"];}
+- (UIColor *)color20{return [self colorInPaletteWithID:@"20"];}
+- (UIColor *)color21{return [self colorInPaletteWithID:@"21"];}
+- (UIColor *)color22{return [self colorInPaletteWithID:@"22"];}
+- (UIColor *)color23{return [self colorInPaletteWithID:@"23"];}
+- (UIColor *)color24{return [self colorInPaletteWithID:@"24"];}
+- (UIColor *)color25{return [self colorInPaletteWithID:@"25"];}
 
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size
 {
@@ -41,6 +87,17 @@
 + (UIImage *)imageWithColor:(UIColor *)color
 {
     return [self imageWithColor:color size:CGSizeMake(1, 1)];
+}
+
+// Assumes input like "#00FF00" (#RRGGBB).
++ (UIColor *)colorFromHexString:(NSString *)hexString {
+    unsigned rgbValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    if ( [hexString rangeOfString:@"#"].location == 0 ) {
+        [scanner setScanLocation:1]; // bypass '#' character
+    }
+    [scanner scanHexInt:&rgbValue];
+    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1 - ((rgbValue & 0xFF000000) >> 24)/255.0];
 }
 
 + (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey

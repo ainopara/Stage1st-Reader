@@ -108,10 +108,10 @@ typedef enum {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
-    UIColor* color = [UIColor colorWithWhite:0.15 alpha:1.0];
-    UIColor* gradientColor = [UIColor colorWithWhite:0.15 alpha:0.80];
-    UIColor* gradientColor2 = [UIColor colorWithWhite:0.15 alpha:0.80];
-    UIColor* textColor = [UIColor colorWithRed: 0.88 green: 0.88 blue: 0.88 alpha: 1];
+    UIColor* color = [[S1Global sharedInstance] color3];
+    UIColor* gradientColor = [[S1Global sharedInstance] color22];
+    UIColor* gradientColor2 = [[S1Global sharedInstance] color22];
+    UIColor* textColor = [[S1Global sharedInstance] color23];
     
     //// Gradient Declarations
     NSArray* gradientColors = [NSArray arrayWithObjects:

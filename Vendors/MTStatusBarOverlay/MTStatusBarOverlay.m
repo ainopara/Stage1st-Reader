@@ -350,8 +350,8 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 		//[self addGestureRecognizer:downGestureRecognizer];
         
 		// Images used as background when status bar style is Default
-        defaultStatusBarImage_ = [S1Global imageWithColor:[S1Global color8]];
-        defaultStatusBarImageShrinked_ = [S1Global imageWithColor:[S1Global color8]];
+        defaultStatusBarImage_ = [S1Global imageWithColor:[[S1Global sharedInstance] color8]];
+        defaultStatusBarImageShrinked_ = [S1Global imageWithColor:[[S1Global sharedInstance] color8]];
 		
         
 		// Background-Image of the Content View

@@ -95,13 +95,13 @@
     //URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
-    
+
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[S1Global color1]];
-    [[UIToolbar appearance] setTintColor:[S1Global color3]];
-    [[UINavigationBar appearance] setBarTintColor:[S1Global color1]];
-    [[UINavigationBar appearance] setTintColor:[S1Global color3]];
-    [[UISwitch appearance] setOnTintColor:[S1Global color4]];
+    [[UIToolbar appearance] setBarTintColor:[[S1Global sharedInstance] color1]];
+    [[UIToolbar appearance] setTintColor:[[S1Global sharedInstance] color3]];
+    [[UINavigationBar appearance] setBarTintColor:[[S1Global sharedInstance] color1]];
+    [[UINavigationBar appearance] setTintColor:[[S1Global sharedInstance] color3]];
+    [[UISwitch appearance] setOnTintColor:[[S1Global sharedInstance] color4]];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     

@@ -14,10 +14,10 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var webView: UIWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = S1Global.color5()
+        self.view.backgroundColor = S1Global.sharedInstance().color5()
         if let htmlStirng = self.htmlString {
             self.webView.loadHTMLString(htmlString, baseURL: NSURL())
-            self.webView.backgroundColor = S1Global.color5()
+            self.webView.backgroundColor = S1Global.sharedInstance().color5()
             self.webView.delegate = self
             self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         }

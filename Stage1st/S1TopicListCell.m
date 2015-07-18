@@ -19,7 +19,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
-        self.backgroundColor = [S1Global color5];
+        self.backgroundColor = [[S1Global sharedInstance] color5];
     }
     return self;
 }

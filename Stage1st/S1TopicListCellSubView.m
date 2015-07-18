@@ -36,20 +36,20 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
-    UIColor* cellBackgroundColor = [UIColor colorWithRed: 0.96 green: 0.97 blue: 0.92 alpha: 1];
+    UIColor* cellBackgroundColor = [[S1Global sharedInstance] color5];
     if (self.selected || self.highlighted) {
-        cellBackgroundColor = [UIColor colorWithRed: 0.92 green: 0.92 blue: 0.86 alpha: 1];
+        cellBackgroundColor = [[S1Global sharedInstance] color13];
     }
     UIColor* replyCountRectFillColor = [UIColor clearColor];
-    UIColor* replyCountRectStrokeColor = [UIColor colorWithRed: 0.757 green: 0.749 blue: 0.698 alpha: 1];
-    UIColor* replyCountRectStrokeColorOfHistoryThread = [UIColor colorWithRed:0.290 green:0.565 blue:0.886 alpha:1.000];
-    UIColor* replyCountRectStrokeColorOfFavoriteThread = [UIColor colorWithRed:0.988 green:0.831 blue:0.416 alpha:1.000];
+    UIColor* replyCountRectStrokeColor = [[S1Global sharedInstance] color14];
+    UIColor* replyCountRectStrokeColorOfHistoryThread = [[S1Global sharedInstance] color15];
+    UIColor* replyCountRectStrokeColorOfFavoriteThread = [[S1Global sharedInstance] color16];
     
-    UIColor* replyCountTextColor = [UIColor colorWithRed: 0.647 green: 0.643 blue: 0.616 alpha: 1];
-    UIColor* replyCountTextColorOfHistoryThread = [UIColor colorWithRed:0.000 green:0.475 blue:1.000 alpha:1.000];
-    UIColor* replyCountTextColorOfFavoriteThread = [UIColor colorWithRed:0.961 green:0.651 blue:0.137 alpha:1.000];
+    UIColor* replyCountTextColor = [[S1Global sharedInstance] color17];
+    UIColor* replyCountTextColorOfHistoryThread = [[S1Global sharedInstance] color18];
+    UIColor* replyCountTextColorOfFavoriteThread = [[S1Global sharedInstance] color19];
     
-    UIColor* titleColor = [UIColor colorWithRed: 0.01 green: 0.17 blue: 0.50 alpha:1.0];
+    UIColor* titleColor = [[S1Global sharedInstance] color21];
     //// Abstracted Attributes
     NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
     
@@ -59,7 +59,7 @@
     titleParagraphStyle.alignment = NSTextAlignmentLeft;
     NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title == nil ? @"":self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
     if (self.topic.highlight != nil && (![self.topic.highlight isEqualToString:@""])) {
-        [titleContent addAttributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:0.876 green:0.532 blue:0.263 alpha:1.000]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+        [titleContent addAttributes:@{NSForegroundColorAttributeName:[[S1Global sharedInstance] color20]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
     }
     
     
