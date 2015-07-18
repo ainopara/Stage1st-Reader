@@ -120,12 +120,12 @@
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
-    self.bottomDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
+    self.bottomDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
@@ -141,9 +141,9 @@
         self.titleLabel.text = self.topic.title;
     }
     if (hasInvalidTitle) {
-        self.titleLabel.textColor = [[S1Global sharedInstance] color12];
+        self.titleLabel.textColor = [[S1Global sharedInstance] color17];
     }else {
-        self.titleLabel.textColor = [[S1Global sharedInstance] color4];
+        self.titleLabel.textColor = [[S1Global sharedInstance] color21];
     }
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -927,7 +927,7 @@
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color12];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
     } else {
         self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color5];
     }
@@ -1189,7 +1189,7 @@
 
 - (void)updateTitleLabelWithTitle:(NSString *)title {
     self.titleLabel.text = title;
-    self.titleLabel.textColor = [[S1Global sharedInstance] color4];
+    self.titleLabel.textColor = [[S1Global sharedInstance] color21];
 }
 - (UIImage *)screenShot
 {

@@ -38,7 +38,7 @@
     //// Color Declarations
     UIColor* cellBackgroundColor = [[S1Global sharedInstance] color5];
     if (self.selected || self.highlighted) {
-        cellBackgroundColor = [[S1Global sharedInstance] color13];
+        cellBackgroundColor = [[S1Global sharedInstance] color6];
     }
     UIColor* replyCountRectFillColor = [UIColor clearColor];
     UIColor* replyCountRectStrokeColor = [[S1Global sharedInstance] color14];

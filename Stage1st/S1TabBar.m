@@ -94,10 +94,10 @@
         CGRect rect = CGRectMake(width, 0.25, ceilf(widthPerItem), self.bounds.size.height-0.25);
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
-        //color2 color7
+        
         [btn setBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color1]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color10]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color10]] forState:UIControlStateHighlighted];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color2]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[S1Global sharedInstance] color2]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitleColor:[[S1Global sharedInstance] color3] forState:UIControlStateNormal];

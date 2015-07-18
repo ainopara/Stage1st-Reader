@@ -99,7 +99,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [[S1Global sharedInstance] color8];
+    self.refreshControl.tintColor = [[S1Global sharedInstance] color6];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
