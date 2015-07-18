@@ -120,12 +120,12 @@
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color14];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
-    self.bottomDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
+    self.bottomDecorateLine.backgroundColor = [[S1Global sharedInstance] color14];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
@@ -927,7 +927,7 @@
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color17];
+        self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color14];
     } else {
         self.topDecorateLine.backgroundColor = [[S1Global sharedInstance] color5];
     }
