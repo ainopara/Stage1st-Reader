@@ -40,11 +40,11 @@ font {
 }
 
 body {
-    background: #f6f7e7;
+    background: #F6F7EB;
 }
 
 tr {
-    background: #f6f7eb;
+    background: #F6F7EB;
 }
 
 a {
@@ -83,7 +83,7 @@ blockquote {
 
 .head {
     font-size: 12px;
-    background-color: #f6f7eb;
+    background-color: #F6F7EB;
     border-bottom: #ccc 1px solid;
     color: #aaa;
 }

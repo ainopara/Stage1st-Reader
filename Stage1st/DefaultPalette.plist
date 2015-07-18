@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Dark</key>
+	<false/>
 	<key>1</key>
 	<string>#DAE0CC</string>
 	<key>2</key>
@@ -11,7 +13,7 @@
 	<key>4</key>
 	<string>#476999</string>
 	<key>5</key>
-	<string>#F7F9EF</string>
+	<string>#F6F7EB</string>
 	<key>6</key>
 	<string>#EFEEE2</string>
 	<key>7</key>
@@ -50,7 +52,5 @@
 	<string>#E6E6E6</string>
 	<key>24</key>
 	<string>#B2DAE0CC</string>
-	<key>25</key>
-	<string></string>
 </dict>
 </plist>
