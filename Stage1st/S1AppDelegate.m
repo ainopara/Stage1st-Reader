@@ -97,12 +97,13 @@
     [NSURLCache setSharedURLCache:URLCache];
 
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[[S1Global sharedInstance] color1]];
-    [[UIToolbar appearance] setTintColor:[[S1Global sharedInstance] color3]];
-    [[UINavigationBar appearance] setBarTintColor:[[S1Global sharedInstance] color1]];
-    [[UINavigationBar appearance] setTintColor:[[S1Global sharedInstance] color3]];
-    [[UISwitch appearance] setOnTintColor:[[S1Global sharedInstance] color4]];
+    [[UIToolbar appearance] setBarTintColor:[[S1ColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"]];
+    [[UIToolbar appearance] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.toolbar.tint"]];
+    [[UINavigationBar appearance] setBarTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
+    [[UINavigationBar appearance] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+    [[UISwitch appearance] setOnTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.switch.tint"]];
     
+    [[S1ColorManager sharedInstance] updateStatusBarTintColor];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;

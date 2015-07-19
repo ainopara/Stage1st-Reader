@@ -31,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.shouldIngnoreScrollEvent = NO;
-    [self.view setBackgroundColor:[[S1Global sharedInstance] color5]];
+    [self.view setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"mahjongface.background"]];
     self.keyTranslation = @{@"face":@"麻将脸",
                             @"dym":@"大姨妈",
                             @"goose":@"鹅",
@@ -65,8 +65,8 @@
     self.pageControl = [[UIPageControl alloc] init];
     //self.pageControl.hidesForSinglePage = YES;
     self.pageControl.currentPage = 0;
-    self.pageControl.pageIndicatorTintColor = [[S1Global sharedInstance] color1];
-    self.pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:0.596 green:0.600 blue:0.516 alpha:1.000];
+    self.pageControl.pageIndicatorTintColor = [[S1ColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.indicatortint"];
+    self.pageControl.currentPageIndicatorTintColor = [[S1ColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.currentpage"];
     [self.pageControl addTarget:self action:@selector(pageChanged:) forControlEvents:UIControlEventValueChanged];
     //self.pageControl.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.pageControl];

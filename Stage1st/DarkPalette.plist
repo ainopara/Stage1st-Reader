@@ -2,55 +2,55 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Dark</key>
+	<true/>
 	<key>1</key>
-	<string>#DAE0CC</string>
+	<string>#1F2733</string>
 	<key>2</key>
-	<string>#A8A996</string>
+	<string>#2E3B4D</string>
 	<key>3</key>
-	<string>#333333</string>
+	<string>#CCCCCC</string>
 	<key>4</key>
-	<string>#476999</string>
+	<string>#B3B3B3</string>
 	<key>5</key>
-	<string>#252525</string>
+	<string>#000000</string>
 	<key>6</key>
-	<string>#424242</string>
+	<string>#1A1A1A</string>
 	<key>7</key>
-	<string>#D8DBC5</string>
+	<string></string>
 	<key>8</key>
-	<string>#EFEEE2</string>
+	<string></string>
 	<key>9</key>
-	<string>#B0AB8E</string>
+	<string></string>
 	<key>10</key>
-	<string>#C9D0BF</string>
+	<string></string>
 	<key>11</key>
-	<string>#D5D4A9</string>
+	<string></string>
 	<key>12</key>
-	<string>#B9B9B9</string>
+	<string></string>
 	<key>13</key>
-	<string></string>
+	<string>#FF000000</string>
 	<key>14</key>
-	<string></string>
+	<string>#333333</string>
 	<key>15</key>
-	<string></string>
+	<string>#5AA3E8</string>
 	<key>16</key>
-	<string></string>
+	<string>#FDDB7D</string>
 	<key>17</key>
-	<string></string>
+	<string>#545454</string>
 	<key>18</key>
-	<string></string>
+	<string>#0090FF</string>
 	<key>19</key>
-	<string></string>
+	<string>#F8B42D</string>
 	<key>20</key>
-	<string></string>
+	<string>#E79A54</string>
 	<key>21</key>
-	<string></string>
+	<string>#9B9B9B</string>
 	<key>22</key>
-	<string></string>
+	<string>#33333333</string>
 	<key>23</key>
-	<string></string>
+	<string>#E6E6E6</string>
 	<key>24</key>
-	<string></string>
-	<key>25</key>
-	<string></string>
+	<string>#B21F2733</string>
 </dict>
 </plist>

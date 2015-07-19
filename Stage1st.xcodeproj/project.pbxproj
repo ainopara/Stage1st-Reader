@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		482266A1EA1BF89064C95BC1 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
+		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */; };
 		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
@@ -94,6 +95,7 @@
 		4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
+		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
 		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "jquery-2.1.1.min.js"; path = "Stage1st/jquery-2.1.1.min.js"; sourceTree = "<group>"; };
 		86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewModel.h; path = Stage1st/S1TopicListViewModel.h; sourceTree = "<group>"; };
 		86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListViewModel.m; path = Stage1st/S1TopicListViewModel.m; sourceTree = "<group>"; };
@@ -495,6 +497,7 @@
 				C095873E16CA8A36007E0119 /* Supporting Files */,
 				86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */,
 				86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */,
+				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 			);
 			path = Stage1st;
 			sourceTree = "<group>";
@@ -709,6 +712,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */,
+				86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */,
 				8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */,

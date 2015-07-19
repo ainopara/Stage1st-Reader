@@ -8,29 +8,34 @@
 
 #import "S1Global.h"
 
-@interface S1Global ()
+@interface S1ColorManager ()
 
 @property (nonatomic, strong) NSDictionary *palette;
+@property (nonatomic, strong) NSDictionary *colorMap;
 
 @end
 
 
-@implementation S1Global
+@implementation S1ColorManager
 
-+ (S1Global *)sharedInstance
++ (S1ColorManager *)sharedInstance
 {
-    static S1Global *myGlobalHelper = nil;
+    static S1ColorManager *myGlobalHelper = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        myGlobalHelper = [[S1Global alloc] init];
+        myGlobalHelper = [[S1ColorManager alloc] init];
     });
     return myGlobalHelper;
 }
 
 - init {
     self = [super init];
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"DefaultPalette" ofType:@"plist"];
-    self.palette = [NSDictionary dictionaryWithContentsOfFile:path];
+    if (self) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"DarkPalette" ofType:@"plist"];
+        _palette = [NSDictionary dictionaryWithContentsOfFile:path];
+        path = [[NSBundle mainBundle] pathForResource:@"ColorMap" ofType:@"plist"];
+        _colorMap = [NSDictionary dictionaryWithContentsOfFile:path];
+    }
     return self;
 }
 
@@ -43,32 +48,27 @@
     return color;
 }
 
+- (UIColor *)colorForKey:(NSString *)key {
+    NSString *paletteID = [self.colorMap valueForKey:key];
+    if (paletteID == nil) {
+        paletteID = @"default";
+    }
+    UIColor *color = [self colorInPaletteWithID:paletteID];
+    return color;
+}
 
-- (UIColor *)color1{return [self colorInPaletteWithID:@"1"];}
-- (UIColor *)color2{return [self colorInPaletteWithID:@"2"];}
-- (UIColor *)color3{return [self colorInPaletteWithID:@"3"];}
-- (UIColor *)color4{return [self colorInPaletteWithID:@"4"];}
-- (UIColor *)color5{return [self colorInPaletteWithID:@"5"];}
-- (UIColor *)color6{return [self colorInPaletteWithID:@"6"];}
-- (UIColor *)color7{return [self colorInPaletteWithID:@"7"];}
-- (UIColor *)color8{return [self colorInPaletteWithID:@"8"];}
-- (UIColor *)color9{return [self colorInPaletteWithID:@"9"];}
-- (UIColor *)color10{return [self colorInPaletteWithID:@"10"];}
-- (UIColor *)color11{return [self colorInPaletteWithID:@"11"];}
-- (UIColor *)color12{return [self colorInPaletteWithID:@"12"];}
-- (UIColor *)color13{return [self colorInPaletteWithID:@"13"];}
-- (UIColor *)color14{return [self colorInPaletteWithID:@"14"];}
-- (UIColor *)color15{return [self colorInPaletteWithID:@"15"];}
-- (UIColor *)color16{return [self colorInPaletteWithID:@"16"];}
-- (UIColor *)color17{return [self colorInPaletteWithID:@"17"];}
-- (UIColor *)color18{return [self colorInPaletteWithID:@"18"];}
-- (UIColor *)color19{return [self colorInPaletteWithID:@"19"];}
-- (UIColor *)color20{return [self colorInPaletteWithID:@"20"];}
-- (UIColor *)color21{return [self colorInPaletteWithID:@"21"];}
-- (UIColor *)color22{return [self colorInPaletteWithID:@"22"];}
-- (UIColor *)color23{return [self colorInPaletteWithID:@"23"];}
-- (UIColor *)color24{return [self colorInPaletteWithID:@"24"];}
-- (UIColor *)color25{return [self colorInPaletteWithID:@"25"];}
+- (void)updateStatusBarTintColor {
+    BOOL isDarkTheme = [[self.palette valueForKey:@"Dark"] boolValue];
+    if (isDarkTheme) {
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    } else {
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    }
+}
+
+@end
+
+@implementation S1Global
 
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size
 {
