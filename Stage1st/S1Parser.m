@@ -634,8 +634,9 @@
             cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
         }
     }
+    NSString *colorCSS = [S1Parser renderColorCSS];
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
     return threadPage;
 }
 
