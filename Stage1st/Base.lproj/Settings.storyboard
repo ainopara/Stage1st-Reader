@@ -232,6 +232,35 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="mOQ-st-vPz">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mOQ-st-vPz" id="nbd-Z6-P0s">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rMC-JB-vnF">
+                                                    <rect key="frame" x="531" y="7" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="switchNightMode:" destination="Z9I-YZ-q2k" eventType="valueChanged" id="xVW-Pq-cgp"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Night Mode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iaq-ft-rzy">
+                                                    <rect key="frame" x="8" y="12" width="85" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="rMC-JB-vnF" secondAttribute="bottom" constant="-2" id="13Y-E8-f0I"/>
+                                                <constraint firstItem="rMC-JB-vnF" firstAttribute="trailing" secondItem="nbd-Z6-P0s" secondAttribute="trailingMargin" constant="-12" id="3vv-DB-Meg"/>
+                                                <constraint firstItem="Iaq-ft-rzy" firstAttribute="leading" secondItem="nbd-Z6-P0s" secondAttribute="leadingMargin" id="5ba-nf-7fw"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Iaq-ft-rzy" secondAttribute="bottom" constant="3.5" id="Bjd-Ah-mfI"/>
+                                                <constraint firstItem="rMC-JB-vnF" firstAttribute="top" secondItem="nbd-Z6-P0s" secondAttribute="topMargin" constant="-1" id="QMz-tk-zgM"/>
+                                                <constraint firstItem="Iaq-ft-rzy" firstAttribute="top" secondItem="nbd-Z6-P0s" secondAttribute="topMargin" constant="4" id="cPe-5D-pWr"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection id="e4M-E1-pBD">
@@ -299,6 +328,7 @@
                         <outlet property="forumOrderCell" destination="qM9-kQ-VM0" id="3nx-e2-U3J"/>
                         <outlet property="keepHistoryCell" destination="hNg-YP-0G0" id="URo-UP-97R"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>
+                        <outlet property="nightModeSwitch" destination="rMC-JB-vnF" id="jcf-gV-Bua"/>
                         <outlet property="precacheSwitch" destination="oV5-7T-ny7" id="nmO-gr-qP6"/>
                         <outlet property="removeTailsSwitch" destination="NjD-eD-vbp" id="avr-I8-AHw"/>
                         <outlet property="useAPISwitch" destination="BuD-0p-Vi4" id="2d8-oP-fWN"/>

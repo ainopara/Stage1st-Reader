@@ -61,6 +61,9 @@
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ForcePortraitForPhone"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"NightMode"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NightMode"];
+    }
     
     //Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];

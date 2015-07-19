@@ -31,7 +31,8 @@
 - init {
     self = [super init];
     if (self) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"DarkPalette" ofType:@"plist"];
+        NSString *paletteName = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == YES ? @"DarkPalette" : @"DefaultPalette";
+        NSString *path = [[NSBundle mainBundle] pathForResource:paletteName ofType:@"plist"];
         _palette = [NSDictionary dictionaryWithContentsOfFile:path];
         path = [[NSBundle mainBundle] pathForResource:@"ColorMap" ofType:@"plist"];
         _colorMap = [NSDictionary dictionaryWithContentsOfFile:path];
