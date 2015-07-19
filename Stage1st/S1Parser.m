@@ -435,7 +435,16 @@
     return floorList;
 }
 
-
++ (NSString *)renderColorCSS {
+    NSString *CSSTemplatePath = [[NSBundle mainBundle] pathForResource:@"color" ofType:@"css"];
+    NSData *CSSTemplateData = [NSData dataWithContentsOfFile:CSSTemplatePath];
+    NSString *CSSTemplate = [[NSString alloc] initWithData:CSSTemplateData  encoding:NSUTF8StringEncoding];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"5"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{text}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"21"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{border}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"14"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{borderText}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"17"]];
+    return CSSTemplate;
+}
 
 
 #pragma mark - Page Generating
@@ -532,8 +541,9 @@
             cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
         }
     }
+    NSString *colorCSS = [S1Parser renderColorCSS];
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
     return threadPage;
 }
 

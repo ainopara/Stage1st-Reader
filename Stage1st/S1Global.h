@@ -18,7 +18,7 @@
 + (S1ColorManager *)sharedInstance;
 
 - (void)updateStatusBarTintColor;
-
+- (NSString *)htmlColorStringWithID:(NSString *)paletteID;
 - (UIColor *)colorForKey:(NSString *)key;
 
 @end

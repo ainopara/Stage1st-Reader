@@ -39,6 +39,10 @@
     return self;
 }
 
+- (NSString *)htmlColorStringWithID:(NSString *)paletteID {
+    return [self.palette valueForKey:paletteID];
+}
+
 - (UIColor *)colorInPaletteWithID:(NSString *)paletteID {
     NSString *colorString = [self.palette valueForKey:paletteID];
     UIColor *color = [S1Global colorFromHexString:colorString];
