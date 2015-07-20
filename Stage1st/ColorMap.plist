@@ -12,8 +12,12 @@
 	<string>1</string>
 	<key>appearance.navigationbar.tint</key>
 	<string>3</string>
+	<key>appearance.navigationbar.title</key>
+	<string>3</string>
 	<key>appearance.switch.tint</key>
 	<string>4</string>
+	<key>appearance.searchbar.text</key>
+	<string>3</string>
 	<key>tabbar.background</key>
 	<string>3</string>
 	<key>tabbar.button.background.normal</key>
@@ -80,6 +84,10 @@
 	<string>21</string>
 	<key>content.titlelabel.text.disable</key>
 	<string>17</string>
+	<key>reply.background</key>
+	<string>7</string>
+	<key>reply.text</key>
+	<string>8</string>
 	<key>mahjongface.background</key>
 	<string>5</string>
 	<key>mahjongface.pagecontrol.indicatortint</key>

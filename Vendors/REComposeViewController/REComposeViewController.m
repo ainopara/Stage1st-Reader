@@ -309,6 +309,13 @@
     self.sheetView.backgroundColor = tintColor;
 }
 
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance {
+    _sheetView.textView.keyboardAppearance = appearance;
+}
+
+- (void)setSheetViewBackgroundColor:(UIColor *)color {
+    _sheetView.backgroundColor = color;
+}
 
 #pragma mark - Input View and Accessory View
 - (DEComposeTextView *)textView {

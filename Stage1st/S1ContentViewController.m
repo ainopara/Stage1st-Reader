@@ -1077,6 +1077,9 @@
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
+    [replyController setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
+    //[replyController setSheetViewBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
+    [replyController setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
     self.replyController = replyController;
     [replyController.view setFrame:self.view.bounds];
     // set title

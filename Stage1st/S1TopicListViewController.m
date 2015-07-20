@@ -751,7 +751,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_searchBar) {
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
         _searchBar.delegate = self;
-        //_searchBar.searchBarStyle = UISearchBarStyleMinimal;
+        if ([[S1ColorManager sharedInstance] isDarkTheme]) {
+            _searchBar.searchBarStyle = UISearchBarStyleMinimal;
+        }
         _searchBar.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
         _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");

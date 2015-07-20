@@ -62,6 +62,9 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 @property (strong, readwrite, nonatomic) UIView *accessoryView;
 @property (strong, readwrite, nonatomic) UIView *inputView;
 
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance;
+- (void)setSheetViewBackgroundColor:(UIColor *)color;
+
 - (void)presentFromRootViewController;
 - (void)presentFromViewController:(UIViewController *)controller;
 

@@ -62,9 +62,12 @@
     return color;
 }
 
+- (BOOL)isDarkTheme {
+    return [[self.palette valueForKey:@"Dark"] boolValue];
+}
+
 - (void)updateStatusBarTintColor {
-    BOOL isDarkTheme = [[self.palette valueForKey:@"Dark"] boolValue];
-    if (isDarkTheme) {
+    if ([self isDarkTheme]) {
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     } else {
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
