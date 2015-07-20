@@ -109,12 +109,13 @@
     [[UISwitch appearance] setOnTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.switch.tint"]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"appearance.searchbar.text"],
                                                                                                  NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
-    
+    /*
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         ;
     } else {
         [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     }
+    */
     [[S1ColorManager sharedInstance] updateStatusBarTintColor];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
