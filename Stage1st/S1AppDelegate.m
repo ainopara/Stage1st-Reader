@@ -109,6 +109,7 @@
     [[UISwitch appearance] setOnTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.switch.tint"]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"appearance.searchbar.text"],
                                                                                                  NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
+    [[UIScrollView appearance] setIndicatorStyle:[[S1ColorManager sharedInstance] isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];
     /*
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         ;

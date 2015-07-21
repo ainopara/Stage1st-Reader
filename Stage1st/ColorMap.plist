@@ -86,6 +86,8 @@
 	<string>17</string>
 	<key>reply.background</key>
 	<string>7</string>
+	<key>reply.tint</key>
+	<string>3</string>
 	<key>reply.text</key>
 	<string>8</string>
 	<key>mahjongface.background</key>

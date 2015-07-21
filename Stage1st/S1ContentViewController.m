@@ -1078,7 +1078,7 @@
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
     [replyController setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
-    //[replyController setSheetViewBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
+    [replyController setTextViewTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.tint"]];
     [replyController setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
     self.replyController = replyController;
     [replyController.view setFrame:self.view.bounds];
