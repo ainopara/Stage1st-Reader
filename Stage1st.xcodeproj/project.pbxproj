@@ -14,7 +14,7 @@
 		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
-		8607276A1B37AF2100DA8390 /* AIPullToActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */; };
+		8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* APPullToActionViewController.swift */; };
 		8608C63E1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
@@ -105,7 +105,7 @@
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
 		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AIPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/AIPullToActionViewController.swift; sourceTree = "<group>"; };
+		860727691B37AF2100DA8390 /* APPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/APPullToActionViewController.swift; sourceTree = "<group>"; };
 		8608C63C1AD98B7300B21FE3 /* MTLManagedObjectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLManagedObjectAdapter.h; sourceTree = "<group>"; };
 		8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLManagedObjectAdapter.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
@@ -261,12 +261,12 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		860727651B37AE3C00DA8390 /* AIPullToAction */ = {
+		860727651B37AE3C00DA8390 /* APPullToAction */ = {
 			isa = PBXGroup;
 			children = (
-				860727691B37AF2100DA8390 /* AIPullToActionViewController.swift */,
+				860727691B37AF2100DA8390 /* APPullToActionViewController.swift */,
 			);
-			name = AIPullToAction;
+			name = APPullToAction;
 			sourceTree = "<group>";
 		};
 		8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */ = {
@@ -358,6 +358,13 @@
 				86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */,
 			);
 			name = S1MahjongFaceViewController;
+			sourceTree = "<group>";
+		};
+		865E8F281B5E588E007587C0 /* VisualEffectHud */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = VisualEffectHud;
 			sourceTree = "<group>";
 		};
 		866CDB951B526C4800FBB133 /* Quote Floor View Controller */ = {
@@ -518,7 +525,8 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				860727651B37AE3C00DA8390 /* AIPullToAction */,
+				865E8F281B5E588E007587C0 /* VisualEffectHud */,
+				860727651B37AE3C00DA8390 /* APPullToAction */,
 				867990951ADA689300E956F7 /* Flurry */,
 				8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
@@ -832,7 +840,7 @@
 				867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
-				8607276A1B37AF2100DA8390 /* AIPullToActionViewController.swift in Sources */,
+				8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,

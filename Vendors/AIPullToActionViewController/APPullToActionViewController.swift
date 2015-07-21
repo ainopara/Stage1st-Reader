@@ -1,5 +1,5 @@
 //
-//  AIPullToActionViewController.swift
+//  APPullToActionViewController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 6/22/15.
@@ -8,42 +8,42 @@
 
 import UIKit
 
-@objc protocol AIPullToActionDelagete {
+@objc protocol APPullToActionDelagete {
     optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset : CGFloat)
     optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(offset : CGFloat)
     optional func scrollViewContentSizeDidChange(contentSize: CGSize)
     optional func scrollViewContentOffsetProgress(progress: [String: Double])
 }
 
-@objc enum AIOffsetBaseLine: Int {
+@objc enum APOffsetBaseLine: Int {
     case Top, Bottom, Left, Right
 }
 
-private struct AIOffsetRange {
+private struct APOffsetRange {
     let beginPosition: Double
     let endPosition: Double
-    let baseLine: AIOffsetBaseLine
+    let baseLine: APOffsetBaseLine
     
     func progress (offset: Double) -> Double {
         return (offset - beginPosition) / (endPosition - beginPosition)
     }
 }
 
-class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
+class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
     weak var scrollView : UIScrollView!
-    weak var delegate : AIPullToActionDelagete?
+    weak var delegate : APPullToActionDelagete?
     
     var offset : CGPoint = CGPoint(x: 0, y: 0)
     var size : CGSize = CGSize(width: 0, height: 0)
     var inset : UIEdgeInsets = UIEdgeInsetsZero
-    private var progressAction : [String: AIOffsetRange] = Dictionary<String, AIOffsetRange>()
+    private var progressAction : [String: APOffsetRange] = Dictionary<String, APOffsetRange>()
     
     init(scrollView : UIScrollView) {
         self.scrollView = scrollView
         super.init(nibName: nil, bundle: nil)
         
-        progressAction.updateValue(AIOffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
-        progressAction.updateValue(AIOffsetRange(beginPosition: 0, endPosition: 80, baseLine: .Bottom), forKey: "bottom")
+        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
+        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: 80, baseLine: .Bottom), forKey: "bottom")
         
         scrollView.delegate = self
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: NSKeyValueObservingOptions.New, context: nil)
@@ -106,7 +106,7 @@ class AIPullToActionViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    private func baseLineOffset(baseLine: AIOffsetBaseLine) -> Double {
+    private func baseLineOffset(baseLine: APOffsetBaseLine) -> Double {
         switch baseLine {
         case .Top:
             return Double(self.offset.y)

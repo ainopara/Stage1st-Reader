@@ -27,11 +27,11 @@
 
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, AIPullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, APPullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) AIPullToActionViewController *pullToActionViewController;
+@property (nonatomic, strong) APPullToActionViewController *pullToActionViewController;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -115,7 +115,7 @@
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
-    self.pullToActionViewController = [[AIPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
+    self.pullToActionViewController = [[APPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
     self.pullToActionViewController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
@@ -910,7 +910,7 @@
         
     }
 }
-#pragma mark AIPullToAction Delegate
+#pragma mark APPullToAction Delegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
     if (offset < -80) {

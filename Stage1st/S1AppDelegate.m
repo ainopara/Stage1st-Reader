@@ -110,6 +110,7 @@
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"appearance.searchbar.text"],
                                                                                                  NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
     [[UIScrollView appearance] setIndicatorStyle:[[S1ColorManager sharedInstance] isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];
+    [[UITextField appearance] setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
     /*
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         ;

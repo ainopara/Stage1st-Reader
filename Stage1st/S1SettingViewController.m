@@ -115,7 +115,7 @@
 {
     if ([keyPath isEqualToString:@"contentOffset"]) {
         self.offset = [[change objectForKey:@"new"] CGPointValue].y + 64;
-        NSLog(@"%f",self.offset);
+        //NSLog(@"%f",self.offset);
     }
 }
 
