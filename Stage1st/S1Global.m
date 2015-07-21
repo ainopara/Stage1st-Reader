@@ -46,11 +46,13 @@
 
 - (UIColor *)colorInPaletteWithID:(NSString *)paletteID {
     NSString *colorString = [self.palette valueForKey:paletteID];
-    UIColor *color = [S1Global colorFromHexString:colorString];
-    if (color == nil) {
-        color = [UIColor colorWithWhite:0 alpha:1];
+    if (colorString != nil) {
+        UIColor *color = [S1Global colorFromHexString:colorString];
+        if (color != nil) {
+            return color;
+        }
     }
-    return color;
+    return [UIColor colorWithWhite:0 alpha:1];
 }
 
 - (UIColor *)colorForKey:(NSString *)key {

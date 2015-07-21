@@ -400,7 +400,7 @@
             [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
         }
     }
-    [ActionSheetStringPicker showPickerWithTitle:@""
+    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:@""
                                             rows:array
                                 initialSelection:_currentPage - 1
                                        doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
@@ -412,6 +412,9 @@
                                        }
                                      cancelBlock:nil
                                           origin:self.pageLabel];
+    picker.pickerBackgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.picker.background"];
+    picker.pickerTextAttributes = @{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+    [picker showActionSheetPicker];
 
 }
 - (void)panPageLabel:(UIPanGestureRecognizer *)gr {

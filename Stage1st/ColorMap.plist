@@ -84,12 +84,16 @@
 	<string>21</string>
 	<key>content.titlelabel.text.disable</key>
 	<string>17</string>
+	<key>content.picker.background</key>
+	<string>7</string>
+	<key>content.picker.text</key>
+	<string>8</string>
 	<key>reply.background</key>
 	<string>7</string>
-	<key>reply.tint</key>
-	<string>3</string>
 	<key>reply.text</key>
 	<string>8</string>
+	<key>reply.tint</key>
+	<string>3</string>
 	<key>mahjongface.background</key>
 	<string>5</string>
 	<key>mahjongface.pagecontrol.indicatortint</key>
