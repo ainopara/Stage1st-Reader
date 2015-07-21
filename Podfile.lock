@@ -22,6 +22,11 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - CocoaLumberjack (1.9.2):
+    - CocoaLumberjack/Extensions (= 1.9.2)
+  - CocoaLumberjack/Core (1.9.2)
+  - CocoaLumberjack/Extensions (1.9.2):
+    - CocoaLumberjack/Core
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
@@ -34,12 +39,17 @@ PODS:
     - Mantle/extobjc (= 2.0.2)
   - Mantle/extobjc (2.0.2)
   - Masonry (0.6.1)
+  - Reachability (3.2)
   - Reveal-iOS-SDK (1.5.1)
   - SVWebViewController (1.0)
+  - YapDatabase (2.6.5):
+    - YapDatabase/standard (= 2.6.5)
+  - YapDatabase/standard (2.6.5):
+    - CocoaLumberjack (~> 1)
 
 DEPENDENCIES:
   - 1PasswordExtension
-  - ActionSheetPicker-3.0
+  - ActionSheetPicker-3.0 (from `https://github.com/ainopara/ActionSheetPicker-3.0.git`)
   - AFNetworking
   - FMDB
   - IMQuickSearch
@@ -47,10 +57,14 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Mantle
   - Masonry
+  - Reachability
   - Reveal-iOS-SDK
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
+  - YapDatabase
 
 EXTERNAL SOURCES:
+  ActionSheetPicker-3.0:
+    :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -59,6 +73,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 CHECKOUT OPTIONS:
+  ActionSheetPicker-3.0:
+    :commit: 3fd26b0f45fcaf3e4aa130ead8b55b70d867a569
+    :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
     :commit: fe2a1232672f8aef721505504f30b62de8059f85
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -73,13 +90,16 @@ SPEC CHECKSUMS:
   1PasswordExtension: fcf300204bda5b5c78936dbb937a7d661f1ca796
   ActionSheetPicker-3.0: cc9f90ae785070623e9b972270013c3242190fb0
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  CocoaLumberjack: 628fca2e88ef06f7cf6817309aa405f325d9a6fa
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   IMQuickSearch: 351fda5dcf33428bf04c28213b984d66015b691d
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Mantle: 967fd31ea0220890b2e76589198996b534bb3fb1
   Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: c9c55cad2729c85f6ced415f1b21857c9a2d8ef9
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
+  YapDatabase: 814f9ff862a95c1e581d93335a4020482b69155b
 
-COCOAPODS: 0.37.2
+COCOAPODS: 0.38.0
