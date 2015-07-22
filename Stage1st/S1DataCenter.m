@@ -203,7 +203,7 @@
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     if ((shouldUpdate == NO) && ([self.floorCache valueForKey:key] != nil)) {
-        NSLog(@"Precache:%@-%@ cancel.", topic.topicID, page);
+        NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
         return;
     }
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
@@ -238,7 +238,7 @@
             if (handler != nil) {
                 [self.cacheFinishHandlers setValue:nil forKey:key];
             }
-            NSLog(@"pre cache failed.");
+            NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
         }];
     } else {
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -268,7 +268,7 @@
             if (handler != nil) {
                 [self.cacheFinishHandlers setValue:nil forKey:key];
             }
-            NSLog(@"pre cache failed.");
+            NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
         }];
     }
 }

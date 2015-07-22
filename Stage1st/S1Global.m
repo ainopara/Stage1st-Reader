@@ -141,7 +141,7 @@
 + (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern {
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSInteger count = [[re matchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)] count];
-    NSLog(@"REGEX Match: %ld", (long)count);
+    //NSLog(@"REGEX Match: %ld", (long)count);
     return count != 0;
 }
 + (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums {
@@ -155,7 +155,7 @@
         }
         
     }
-    NSLog(@"REGEX Extract: %@", mutableArray);
+    //NSLog(@"REGEX Extract: %@", mutableArray);
     return mutableArray;
 }
 + (NSInteger)regexReplaceString:(NSMutableString *)mutableString matchPattern:(NSString *)pattern withTemplate:(NSString *)temp {

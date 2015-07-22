@@ -96,7 +96,7 @@
 		4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
-		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
+		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ColorMap.plist; path = Stage1st/ColorMap.plist; sourceTree = "<group>"; };
 		86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "jquery-2.1.1.min.js"; path = "Stage1st/jquery-2.1.1.min.js"; sourceTree = "<group>"; };
 		86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewModel.h; path = Stage1st/S1TopicListViewModel.h; sourceTree = "<group>"; };
 		86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListViewModel.m; path = Stage1st/S1TopicListViewModel.m; sourceTree = "<group>"; };
@@ -176,8 +176,8 @@
 		86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongCategoryOrder.plist; path = Stage1st/MahjongCategoryOrder.plist; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = FloorTemplate.html; path = Stage1st/FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ThreadTemplate.html; path = Stage1st/ThreadTemplate.html; sourceTree = "<group>"; };
-		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
-		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
+		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
+		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
 		86E44DDE1A89BDBA001E0B83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
@@ -360,13 +360,6 @@
 			name = S1MahjongFaceViewController;
 			sourceTree = "<group>";
 		};
-		865E8F281B5E588E007587C0 /* VisualEffectHud */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = VisualEffectHud;
-			sourceTree = "<group>";
-		};
 		866CDB951B526C4800FBB133 /* Quote Floor View Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -504,9 +497,6 @@
 				860223511895051400A3E66E /* S1Global.m */,
 				860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */,
 				C095873E16CA8A36007E0119 /* Supporting Files */,
-				86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */,
-				86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */,
-				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 			);
 			path = Stage1st;
 			sourceTree = "<group>";
@@ -525,7 +515,6 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				865E8F281B5E588E007587C0 /* VisualEffectHud */,
 				860727651B37AE3C00DA8390 /* APPullToAction */,
 				867990951ADA689300E956F7 /* Flurry */,
 				8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */,
@@ -543,6 +532,9 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */,
+				86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */,
+				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 				86D4A8F8189186A400CA93FD /* FloorTemplate.html */,
 				86D4A8F9189186A400CA93FD /* ThreadTemplate.html */,
 				86A8AEFE1B5BDC92007597AE /* color.css */,
