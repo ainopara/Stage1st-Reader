@@ -26,7 +26,6 @@
 		864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		8656167E1AC69E9200CFD773 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8656167C1AC69E9200CFD773 /* Model.xcdatamodeld */; };
-		865616BA1AC7D82800CFD773 /* S1PersistentStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 865616B91AC7D82800CFD773 /* S1PersistentStack.m */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */; };
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
@@ -48,6 +47,7 @@
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
 		869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF131A18839900EB2BF4 /* S1PopAnimator.m */; };
 		86A8AEFF1B5BDC92007597AE /* color.css in Resources */ = {isa = PBXBuildFile; fileRef = 86A8AEFE1B5BDC92007597AE /* color.css */; };
+		86AC6D901B6072BC00751869 /* S1PersistentStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86AC6D8F1B6072BC00751869 /* S1PersistentStack.m */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
@@ -125,8 +125,6 @@
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8656167D1AC69E9200CFD773 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
-		865616B81AC7D82800CFD773 /* S1PersistentStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1PersistentStack.h; sourceTree = "<group>"; };
-		865616B91AC7D82800CFD773 /* S1PersistentStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1PersistentStack.m; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		8656731B1A7A7B2A0025D22E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceViewController.h; path = Stage1st/S1MahjongFaceViewController.h; sourceTree = "<group>"; };
@@ -162,6 +160,8 @@
 		869CAF121A18839900EB2BF4 /* S1PopAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PopAnimator.h; path = Stage1st/S1PopAnimator.h; sourceTree = "<group>"; };
 		869CAF131A18839900EB2BF4 /* S1PopAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PopAnimator.m; path = Stage1st/S1PopAnimator.m; sourceTree = "<group>"; };
 		86A8AEFE1B5BDC92007597AE /* color.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = color.css; path = Stage1st/color.css; sourceTree = "<group>"; };
+		86AC6D8E1B6072BC00751869 /* S1PersistentStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PersistentStack.h; path = Stage1st/S1PersistentStack.h; sourceTree = "<group>"; };
+		86AC6D8F1B6072BC00751869 /* S1PersistentStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PersistentStack.m; path = Stage1st/S1PersistentStack.m; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
@@ -410,8 +410,8 @@
 			children = (
 				C083351716E363870035C1AA /* S1Tracer.h */,
 				C083351816E363870035C1AA /* S1Tracer.m */,
-				865616B81AC7D82800CFD773 /* S1PersistentStack.h */,
-				865616B91AC7D82800CFD773 /* S1PersistentStack.m */,
+				86AC6D8E1B6072BC00751869 /* S1PersistentStack.h */,
+				86AC6D8F1B6072BC00751869 /* S1PersistentStack.m */,
 				8656167C1AC69E9200CFD773 /* Model.xcdatamodeld */,
 			);
 			name = Database;
@@ -792,7 +792,6 @@
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
-				865616BA1AC7D82800CFD773 /* S1PersistentStack.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
@@ -816,6 +815,7 @@
 				8608C63E1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
+				86AC6D901B6072BC00751869 /* S1PersistentStack.m in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
 				8656167E1AC69E9200CFD773 /* Model.xcdatamodeld in Sources */,
