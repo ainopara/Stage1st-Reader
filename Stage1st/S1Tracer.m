@@ -54,6 +54,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Backend Protocol
+
 - (void)hasViewed:(S1Topic *)topic
 {
     NSNumber *topicID = topic.topicID;
@@ -139,6 +141,29 @@
     return favoriteTopics;
 }
 
+- (BOOL)topicIsFavorited:(NSNumber *)topic_id
+{
+    return [S1Tracer topicIsFavorited:topic_id inDatabase:_db];
+}
+
+-(void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state
+{
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topicID];
+    if ([historyResult next]) {
+        if (state) {
+            ;
+        } else {
+            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topicID]; //topic_id in favorite table and state should be NO
+        }
+    } else {
+        if (state) {
+            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topicID, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
+        } else {
+            ;
+        }
+    }
+}
+
 - (S1Topic *)tracedTopicByID:(NSNumber *)topicID
 {
     FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;",topicID];
@@ -216,31 +241,6 @@
     [_db executeUpdate:@"DELETE FROM history WHERE topic_id IN (SELECT history.topic_id FROM history INNER JOIN threads ON history.topic_id = threads.topic_id WHERE threads.last_visit_time < ?);",[[NSNumber alloc] initWithDouble:dueDate]];
     [_db executeUpdate:@"DELETE FROM threads WHERE topic_id NOT IN (SELECT topic_id FROM history UNION SELECT topic_id FROM favorite);"];
     
-}
-- (BOOL)topicIsFavorited:(NSNumber *)topic_id
-{
-    return [S1Tracer topicIsFavorited:topic_id inDatabase:_db];
-    
-}
-
-
-
--(void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state
-{
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topicID];
-    if ([historyResult next]) {
-        if (state) {
-            ;
-        } else {
-            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topicID]; //topic_id in favorite table and state should be NO
-        }
-    } else {
-        if (state) {
-            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topicID, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
-        } else {
-            ;
-        }
-    }
 }
 
 #pragma mark - Sync Database File
