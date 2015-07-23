@@ -14,21 +14,23 @@
 #import "S1Floor.h"
 #import "IMQuickSearch.h"
 #import "S1PersistentStack.h"
+#import "YapDatabase.h"
 
 #define USE_CORE_DATA_STORAGE NO
 
 
 @interface S1DataCenter ()
-@property (strong, nonatomic) S1Tracer *tracer;
 
-@property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
-@property (nonatomic, strong) S1PersistentStack* persistentStack;
+@property (strong, nonatomic) id<S1Backend> tracer;
+
+@property (strong, nonatomic) YapDatabase *cacheDatabase;
+@property (strong, nonatomic) YapDatabaseConnection *cacheConnection;
+@property (strong, nonatomic) YapDatabaseConnection *backgroundCacheConnection;
+
+@property (strong, nonatomic) NSString *formhash;
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
-@property (strong, nonatomic) NSString *formhash;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
-
-@property (strong, nonatomic) NSMutableDictionary *floorCache;
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
 
 @property (strong, nonatomic) NSArray *cachedHistoryTopics;
@@ -43,16 +45,19 @@
 
 -(instancetype)init {
     self = [super init];
-    _tracer = [[S1Tracer alloc] init];
-    //iCloud and Core Data
+    
     if (USE_CORE_DATA_STORAGE) {
-        _persistentStack = [[S1PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
-        _managedObjectContext = self.persistentStack.managedObjectContext;
+        //Core Data with iCloud
+        _tracer = [[S1PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
+    } else {
+        _tracer = [[S1Tracer alloc] init];
     }
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
-    _floorCache = [NSMutableDictionary dictionary];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
+    _cacheDatabase = [[YapDatabase alloc] initWithPath:self.cacheURL.absoluteString];
+    _cacheConnection = [_cacheDatabase newConnection];
+    _backgroundCacheConnection = [_cacheDatabase newConnection];
     _shouldReloadFavoriteCache = YES;
     _shouldReloadHistoryCache = YES;
     //_shouldInterruptHistoryCallback = NO;
@@ -80,9 +85,7 @@
     return dataCenter;
 }
 
-- (BOOL)hasCacheForKey:(NSString *)keyID {
-    return self.topicListCache[keyID] != nil;
-}
+
 
 #pragma mark - Network (Topic List)
 
@@ -196,16 +199,20 @@
 #pragma mark - Network (Content Cache)
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return [self.floorCache valueForKey:key] != nil;
+    return [self hasCacheForKey:key inCollection:@"FloorCache"];
 }
 
-- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self?
+- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ((shouldUpdate == NO) && ([self.floorCache valueForKey:key] != nil)) {
+    if ((shouldUpdate == NO) && ([self hasCacheForKey:key inCollection:@"FloorCache"])) {
         NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
         return;
     }
+    void (^failureHandler)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
+        [self.cacheFinishHandlers setValue:nil forKey:key];
+        NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
+    };
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
@@ -221,25 +228,12 @@
             [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+            
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
-            //call finish block if exist
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-                handler(floorList);
-            }
+            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-            }
-            NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
-        }];
+        } failure:failureHandler];
     } else {
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
@@ -251,32 +245,17 @@
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
+            
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
-            //call finish block if exist
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-                handler(floorList);
-            }
+            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-            }
-            NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
-        }];
+        } failure:failureHandler];
     }
 }
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ([self.floorCache valueForKey:key] != nil) {
-        [self.floorCache removeObjectForKey:key];
-    }
+    [self removeCacheForKey:key inCollection:@"FloorCache"];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
@@ -284,16 +263,20 @@
     [self.cacheFinishHandlers setValue:handler forKey:key];
 }
 
-- (BOOL)hasFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return ([self.cacheFinishHandlers valueForKey:key] != nil);
+- (void)callFinishHandlerIfExistForKey:(NSString *)key withResult:(NSArray *)floorList {
+    //call finish block if exist
+    void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+    if (handler != nil) {
+        [self.cacheFinishHandlers setValue:nil forKey:key];
+        handler(floorList);
+    }
 }
 
 #pragma mark - Network (Content)
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    // Use Cache Result
+    // Use Cache Result If Exist
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    NSArray *floorList = [self.floorCache objectForKey:key];
+    NSArray *floorList = [self cacheValueForKey:key inCollection:@"FloorCache"];
     if (floorList) {
         success(floorList);
         return;
@@ -319,10 +302,7 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
             
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -339,14 +319,12 @@
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+            
             //get floors
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
             
             success(floorList);
             
@@ -413,28 +391,22 @@
     //filter process
     if (self.shouldReloadHistoryCache || self.historySearch == nil) {
         __weak typeof(self) myself = self;
-        if (USE_CORE_DATA_STORAGE) {
-            self.cachedHistoryTopics = [self.persistentStack historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
-                ;
-            }];
-        } else {
-            self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
-                __strong typeof(self) strongMyself = myself;
-                //update search filter
-                NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
-                IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
-                strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-                strongMyself.cachedHistoryTopics = fullTopics;
-                //return full data.
-                if ([searchWord isEqualToString:@""]) {
-                    leftTopicsHandler(fullTopics);
-                } else {
-                    NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-                    [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
-                    leftTopicsHandler(fullResult);
-                }
-            }];
-        }
+        self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
+            __strong typeof(self) strongMyself = myself;
+            //update search filter
+            NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
+            IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
+            strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
+            strongMyself.cachedHistoryTopics = fullTopics;
+            //return full data.
+            if ([searchWord isEqualToString:@""]) {
+                leftTopicsHandler(fullTopics);
+            } else {
+                NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
+                [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
+                leftTopicsHandler(fullResult);
+            }
+        }];
         //set search filter
         IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:self.cachedHistoryTopics keys:@[@"title"]];
         self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
@@ -456,11 +428,8 @@
     //filter process
     if (self.shouldReloadFavoriteCache) {
         NSMutableArray *topics;
-        if (USE_CORE_DATA_STORAGE) {
-            topics = [self.persistentStack favoritedObjects];
-        } else {
-            topics = [self.tracer favoritedObjects];
-        }
+        topics = [self.tracer favoritedObjects];
+
         IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
         self.favoriteSearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
         self.shouldReloadFavoriteCache = NO;
@@ -472,48 +441,27 @@
 }
 
 - (void)hasViewed:(S1Topic *)topic {
-    if (USE_CORE_DATA_STORAGE) {
-        [self.persistentStack hasViewed:topic];
-    } else {
-        [self.tracer hasViewed:topic];
-    }
-    
+    [self.tracer hasViewed:topic];
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
-    if (USE_CORE_DATA_STORAGE) {
-        [self.persistentStack removeTopicByID:topicID];
-    } else {
-        [self.tracer removeTopicFromHistory:topicID];
-    }
+    [self.tracer removeTopicFromHistory:topicID];
 }
 
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    if (USE_CORE_DATA_STORAGE) {
-        [self.persistentStack setTopicFavoriteState:topicID withState:state];
-    } else {
-        [self.tracer setTopicFavoriteState:topicID withState:state];
-    }
+    [self.tracer setTopicFavoriteState:topicID withState:state];
 }
 
 - (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    if (USE_CORE_DATA_STORAGE) {
-        return NO;
-    } else {
-        return [self.tracer topicIsFavorited:topicID];
-    }
+    return [self.tracer topicIsFavorited:topicID];
 }
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
-    if (USE_CORE_DATA_STORAGE) {
-        return [self.persistentStack presistentedTopicByID:topicID];
-    } else {
-        return [self.tracer tracedTopicByID:topicID];
-    }
+    return [self.tracer tracedTopicByID:topicID];
 }
 
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
-    [self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
+    //[self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
 }
 
 #pragma mark - Core Data
@@ -528,15 +476,54 @@
     return [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
 }
 
-#pragma mark - Cache
+#pragma mark - Floor Cache
+
+- (NSURL*)cacheURL
+{
+    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    return [documentsDirectory URLByAppendingPathComponent:@"Cache.sqlite"];
+}
+
+- (void)setCacheValue:(id)value forKey:(NSString *)key inCollection:(NSString *)collection {
+    [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [transaction setObject:value forKey:key inCollection:collection];
+    }];
+}
+
+- (id)cacheValueForKey:(NSString *)key inCollection:(NSString *)collection {
+    __block NSArray *result = nil;
+    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
+        result = [transaction objectForKey:key inCollection:collection];
+    }];
+    return result;
+}
+
+- (BOOL)hasCacheForKey:(NSString *)key inCollection:(NSString *)collection {
+    __block BOOL hasCache = NO;
+    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
+        hasCache = [transaction hasObjectForKey:key inCollection:collection];
+    }];
+    //NSLog(@"%@, %d",key, hasCache);
+    return hasCache;
+}
+
+- (void)removeCacheForKey:(NSString *)key inCollection:(NSString *)collection {
+    [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [transaction removeObjectForKey:key inCollection:collection];
+    }];
+}
+
+#pragma mark - Topic List Cache
+
+- (BOOL)hasCacheForKey:(NSString *)keyID {
+    return self.topicListCache[keyID] != nil;
+}
+
 - (void)clearTopicListCache {
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
 
-- (void)clearContentPageCache {
-    self.floorCache = [NSMutableDictionary dictionary];
-}
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];

@@ -6,32 +6,18 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+#import "S1DataCenter.h"
+
 @class FMDatabase;
 @class S1Topic;
 
-typedef enum {
-    S1TopicOrderByFavoriteSetDate,
-    S1TopicOrderByLastVisitDate
-} S1TopicOrderType;
-
-@interface S1Tracer : NSObject
+@interface S1Tracer : NSObject<S1Backend>
 
 @property (nonatomic, strong) FMDatabase *db;
 @property (nonatomic, strong) FMDatabase *backgroundDb;
 
 - (id)init;
-
-- (void)hasViewed:(S1Topic *)topic;
-- (void)removeTopicFromHistory:(NSNumber *)topic_id;
-
-- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler;
-- (NSMutableArray *)favoritedObjects;
-
-- (S1Topic *)tracedTopicByID:(NSNumber *)key;
-
-- (BOOL)topicIsFavorited:(NSNumber *)topic_id;
-- (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
 
 - (BOOL)syncWithDatabasePath:(NSString *)databasePath;
 

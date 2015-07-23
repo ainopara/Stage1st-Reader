@@ -268,7 +268,6 @@
 {
     [super didReceiveMemoryWarning];
     [self.dataCenter clearTopicListCache];
-    [self.dataCenter clearContentPageCache];
     [self updatePageLabel];
     // Dispose of any resources that can be recreated.
 }

@@ -761,7 +761,7 @@
 
 + (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {
     NSString *urlString = [[S1Global regexExtractFromString:floorString withPattern:@"<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"" andColums:@[@1]] firstObject];
-    NSLog(@"%@",urlString);
+    //NSLog(@"First Quote URL: %@",urlString);
     if (urlString) {
         NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
         return resultDict[@"pid"];

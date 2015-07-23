@@ -38,14 +38,14 @@
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler;
-- (BOOL)hasFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *floorList))success failure:(void (^)(NSError *error))failure;
-
+// Reply
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
-
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
+
 - (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;
+
 //Database
 - (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler;
 - (void)hasViewed:(S1Topic *)topic;
@@ -63,6 +63,19 @@
 - (void)cancelRequest;
 
 - (void)clearTopicListCache;
+@end
 
-- (void)clearContentPageCache;
+@protocol S1Backend <NSObject>
+
+- (void)hasViewed:(S1Topic *)topic;
+- (void)removeTopicFromHistory:(NSNumber *)topicID;
+
+- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler;
+- (NSMutableArray *)favoritedObjects;
+
+- (S1Topic *)tracedTopicByID:(NSNumber *)key;
+
+- (BOOL)topicIsFavorited:(NSNumber *)topicID;
+- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
+
 @end

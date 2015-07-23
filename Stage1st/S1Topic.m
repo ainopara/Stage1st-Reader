@@ -29,6 +29,15 @@
 + (NSSet *)propertyKeysForManagedObjectUniquing {
     return [[NSSet alloc] initWithArray:@[@"topicID"]];
 }
+#pragma mark - Coding
++ (NSDictionary *)encodingBehaviorsByPropertyKey {
+    NSDictionary *excludeProperties = @{
+                                        NSStringFromSelector(@selector(floors)): @(MTLModelEncodingBehaviorExcluded)
+                                        };
+    NSDictionary *encodingBehaviors = [[super encodingBehaviorsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:excludeProperties];
+    return encodingBehaviors;
+}
+
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {

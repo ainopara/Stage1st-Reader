@@ -85,11 +85,11 @@
     NSLog(@"Tracer has traced:%@", topic);
 }
 
-- (void)removeTopicFromHistory:(NSNumber *)topic_id
+- (void)removeTopicFromHistory:(NSNumber *)topicID
 {
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topic_id];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topicID];
     if ([historyResult next]) {
-        [_db executeUpdate:@"DELETE FROM history WHERE topic_id = ?;", topic_id];
+        [_db executeUpdate:@"DELETE FROM history WHERE topic_id = ?;", topicID];
     }
 }
 
@@ -176,9 +176,9 @@
     return topic;
 }
 
-+ (BOOL)topicIsFavorited:(NSNumber *)topic_id inDatabase:(FMDatabase *)database
++ (BOOL)topicIsFavorited:(NSNumber *)topicID inDatabase:(FMDatabase *)database
 {
-    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
+    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topicID];
     if ([historyResult next]) {
         return YES;
     } else {
@@ -187,9 +187,9 @@
     
 }
 
-+ (BOOL)topicIsInHistory:(NSNumber *)topic_id inDatabase:(FMDatabase *)database
++ (BOOL)topicIsInHistory:(NSNumber *)topicID inDatabase:(FMDatabase *)database
 {
-    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topic_id];
+    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topicID];
     if ([historyResult next]) {
         return YES;
     } else {
@@ -225,18 +225,18 @@
 
 
 
--(void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state
+-(void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state
 {
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
+    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topicID];
     if ([historyResult next]) {
         if (state) {
             ;
         } else {
-            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topic_id]; //topic_id in favorite table and state should be NO
+            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topicID]; //topic_id in favorite table and state should be NO
         }
     } else {
         if (state) {
-            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topic_id, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
+            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topicID, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
         } else {
             ;
         }

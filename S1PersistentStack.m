@@ -134,7 +134,7 @@
     [self.managedObjectContext save:NULL];
 }
 
-#pragma mark - Custom
+#pragma mark - Backend Protocol
 - (void)hasViewed:(S1Topic *)topic {
     NSError *error;
     [MTLManagedObjectAdapter managedObjectFromModel:topic insertingIntoContext:self.managedObjectContext error:&error];
@@ -145,7 +145,7 @@
     
 }
 
-- (void)removeTopicByID:(NSNumber *)topicID {
+- (void)removeTopicFromHistory:(NSNumber *)topicID {
     
 }
 
@@ -167,17 +167,6 @@
     }
     
 }
-
-- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    NSManagedObject * managedTopicObject = [self presistentedManagedObjectForID:topicID];
-    if (managedTopicObject) {
-        [managedTopicObject setValue:[NSNumber numberWithBool:state] forKey:@"favorite"];
-    } else {
-        NSLog(@"Error: setTopicFavoriteState can not find target topic:%@", topicID);
-    }
-    
-}
-
 
 - (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler
 {
@@ -211,6 +200,22 @@
     NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
     return favoriteTopics;
 }
+
+- (BOOL)topicIsFavorited:(NSNumber *)topicID {
+    return NO;
+}
+
+- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
+    NSManagedObject * managedTopicObject = [self presistentedManagedObjectForID:topicID];
+    if (managedTopicObject) {
+        [managedTopicObject setValue:[NSNumber numberWithBool:state] forKey:@"favorite"];
+    } else {
+        NSLog(@"Error: setTopicFavoriteState can not find target topic:%@", topicID);
+    }
+    
+}
+
+#pragma mark - Sync
 
 - (void)mergeObjects:(NSArray *)managedObjectArray {
     NSManagedObjectContext *mergeObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
