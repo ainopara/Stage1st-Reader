@@ -156,7 +156,7 @@
     return [results lastObject];
 }
 
-- (S1Topic *)presistentedTopicByID:(NSNumber *)topicID {
+- (S1Topic *)tracedTopicByID:(NSNumber *)topicID {
     NSManagedObject * managedTopicObject = [self presistentedManagedObjectForID:topicID];
     if (managedTopicObject) {
         S1Topic *topic = [MTLManagedObjectAdapter modelOfClass:[S1Topic class] fromManagedObject:managedTopicObject error:nil];

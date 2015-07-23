@@ -73,7 +73,7 @@
 - (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler;
 - (NSMutableArray *)favoritedObjects;
 
-- (S1Topic *)tracedTopicByID:(NSNumber *)key;
+- (S1Topic *)tracedTopicByID:(NSNumber *)topicID;
 
 - (BOOL)topicIsFavorited:(NSNumber *)topicID;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
