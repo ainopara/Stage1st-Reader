@@ -229,6 +229,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         cell = [[S1TopicListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     
     if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
         [cell setTopic:[[self.topics objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]];
