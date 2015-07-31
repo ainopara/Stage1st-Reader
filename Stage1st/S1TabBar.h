@@ -10,7 +10,7 @@
 
 @protocol S1TabBarDelegate;
 
-
+// TODO: Rewrite this in swift.
 @interface S1TabBar : UIScrollView <UIScrollViewDelegate>
 
 - (void)deselectAll;

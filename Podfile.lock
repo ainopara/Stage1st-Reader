@@ -77,7 +77,7 @@ CHECKOUT OPTIONS:
     :commit: 3fd26b0f45fcaf3e4aa130ead8b55b70d867a569
     :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
-    :commit: a7a99da6037e71aa675659a8b044ec846510dd36
+    :commit: 60d6ed33e322fc2648b6a18d238d440d43aa2704
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
@@ -102,4 +102,4 @@ SPEC CHECKSUMS:
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 814f9ff862a95c1e581d93335a4020482b69155b
 
-COCOAPODS: 0.38.0
+COCOAPODS: 0.38.2
