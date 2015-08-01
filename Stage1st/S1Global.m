@@ -40,6 +40,20 @@
     return self;
 }
 
+- (void)setPaletteForNightMode:(BOOL)nightMode {
+    NSString *paletteName = nightMode == YES ? @"DarkPalette" : @"DefaultPalette";
+    [self loadPaletteByName:paletteName andPushNotification:YES];
+}
+
+- (void)loadPaletteByName:(NSString *)paletteName andPushNotification:(BOOL)shouldPush {
+    NSString *path = [[NSBundle mainBundle] pathForResource:paletteName ofType:@"plist"];
+    _palette = [NSDictionary dictionaryWithContentsOfFile:path];
+    [self updateGlobalAppearance];
+    if (shouldPush) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PaletteDidChangeNotification" object:nil];
+    }
+}
+
 - (NSString *)htmlColorStringWithID:(NSString *)paletteID {
     return [self.palette valueForKey:paletteID];
 }
@@ -68,7 +82,18 @@
     return [[self.palette valueForKey:@"Dark"] boolValue];
 }
 
-- (void)updateStatusBarTintColor {
+- (void)updateGlobalAppearance {
+    [[UIToolbar appearance] setBarTintColor:[self colorForKey:@"appearance.toolbar.bartint"]];
+    [[UIToolbar appearance] setTintColor:[self  colorForKey:@"appearance.toolbar.tint"]];
+    [[UINavigationBar appearance] setBarTintColor:[self  colorForKey:@"appearance.navigationbar.battint"]];
+    [[UINavigationBar appearance] setTintColor:[self  colorForKey:@"appearance.navigationbar.tint"]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [self colorForKey:@"appearance.navigationbar.title"],
+                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+    [[UISwitch appearance] setOnTintColor:[self  colorForKey:@"appearance.switch.tint"]];
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[self colorForKey:@"appearance.searchbar.text"],
+                                                                                                 NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
+    [[UIScrollView appearance] setIndicatorStyle:[self isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];
+    [[UITextField appearance] setKeyboardAppearance:[self isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
     if ([self isDarkTheme]) {
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     } else {

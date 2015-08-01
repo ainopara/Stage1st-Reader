@@ -196,6 +196,7 @@
 }
 - (IBAction)switchNightMode:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"NightMode"];
+    [[S1ColorManager sharedInstance] setPaletteForNightMode:sender.on];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

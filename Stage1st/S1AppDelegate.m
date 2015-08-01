@@ -100,17 +100,7 @@
     [NSURLCache setSharedURLCache:URLCache];
 
     //Appearence
-    [[UIToolbar appearance] setBarTintColor:[[S1ColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"]];
-    [[UIToolbar appearance] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.toolbar.tint"]];
-    [[UINavigationBar appearance] setBarTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
-    [[UINavigationBar appearance] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
-                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
-    [[UISwitch appearance] setOnTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.switch.tint"]];
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"appearance.searchbar.text"],
-                                                                                                 NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
-    [[UIScrollView appearance] setIndicatorStyle:[[S1ColorManager sharedInstance] isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];
-    [[UITextField appearance] setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
+    
     /*
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         ;
@@ -118,7 +108,7 @@
         [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     }
     */
-    [[S1ColorManager sharedInstance] updateStatusBarTintColor];
+    [[S1ColorManager sharedInstance] updateGlobalAppearance];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;

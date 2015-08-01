@@ -17,8 +17,11 @@
 
 + (S1ColorManager *)sharedInstance;
 
-- (void)updateStatusBarTintColor;
+- (void)setPaletteForNightMode:(BOOL)nightMode;
+- (void)loadPaletteByName:(NSString *)paletteName andPushNotification:(BOOL)shouldPush;
 - (BOOL)isDarkTheme;
+- (void)updateGlobalAppearance;
+
 - (NSString *)htmlColorStringWithID:(NSString *)paletteID;
 - (UIColor *)colorForKey:(NSString *)key;
 
