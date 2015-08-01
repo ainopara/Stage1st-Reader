@@ -50,7 +50,7 @@
     _palette = [NSDictionary dictionaryWithContentsOfFile:path];
     [self updateGlobalAppearance];
     if (shouldPush) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"PaletteDidChangeNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"S1PaletteDidChangeNotification" object:nil];
     }
 }
 
@@ -89,7 +89,7 @@
     [[UINavigationBar appearance] setTintColor:[self  colorForKey:@"appearance.navigationbar.tint"]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [self colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
-    [[UISwitch appearance] setOnTintColor:[self  colorForKey:@"appearance.switch.tint"]];
+    [[UISwitch appearance] setOnTintColor:[self colorForKey:@"appearance.switch.tint"]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[self colorForKey:@"appearance.searchbar.text"],
                                                                                                  NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
     [[UIScrollView appearance] setIndicatorStyle:[self isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];

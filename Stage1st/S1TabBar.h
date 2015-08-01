@@ -22,6 +22,8 @@
 
 -(void)setSelectedIndex:(NSInteger)index;
 
+- (void)updateColor;
+
 @end
 
 

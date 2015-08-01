@@ -113,6 +113,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -137,8 +138,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSLog(@"Topic List View Dealloced.");
     [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
     [self.tableView removeObserver:self forKeyPath:@"contentInset"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1UserMayReorderedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"S1ContentViewWillDisappearNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Item Actions
@@ -578,16 +578,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     }];
 }
 
+#pragma mark Notification Handler
 
-#pragma mark Helpers
-
-- (NSArray *)keys
-{
-    return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
-}
-
-- (void)updateTabbar:(NSNotification *)notification
-{
+- (void)updateTabbar:(NSNotification *)notification {
     [self.scrollTabBar setKeys:[self keys]];
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         self.cachedContentOffset = nil;
@@ -602,15 +595,44 @@ static NSString * const cellIdentifier = @"TopicCell";
     
 }
 
+- (void)reloadTableData:(NSNotification *)notification {
+    [self.tableView reloadData];
+}
+
+- (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
+    self.view.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.background"];
+    self.tableView.separatorColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
+    self.tableView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+    if (self.tableView.backgroundView) {
+        self.tableView.backgroundView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+    }
+    self.refreshControl.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
+    self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+    if ([[S1ColorManager sharedInstance] isDarkTheme]) {
+        self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    } else {
+        self.searchBar.searchBarStyle = UISearchBarStyleDefault;
+    }
+    self.searchBar.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
+    self.searchBar.barTintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
+    [self.tableView reloadData];
+    [self.scrollTabBar updateColor];
+    [self.navigationBar setBarTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
+    [self.navigationBar setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
+                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+}
+#pragma mark Helpers
+
+- (NSArray *)keys
+{
+    return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
+}
+
 -(void) cancelRequest
 {
     [self.dataCenter cancelRequest];
     
-}
-
-- (void)reloadTableData:(NSNotification *)notification
-{
-    [self.tableView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -622,8 +644,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         [contentViewController setDataCenter:self.dataCenter];
     }
 }
-
-
 
 - (void)presentInternalListForType:(S1InternalTopicListType)type
 {
@@ -665,6 +685,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.scrollTabBar deselectAll];
     
 }
+
 #pragma mark - Observer
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

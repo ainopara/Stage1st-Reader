@@ -275,4 +275,17 @@
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view {
     return YES;
 }
+
+
+- (void)updateColor {
+    self.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"tabbar.background"];
+    for (UIButton *btn in _buttons) {
+        [btn setBackgroundImage:[S1Global imageWithColor:[[S1ColorManager sharedInstance] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[S1ColorManager sharedInstance] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[S1ColorManager sharedInstance]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setTitleColor:[[S1ColorManager sharedInstance] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
+    }
+    
+    
+}
 @end
