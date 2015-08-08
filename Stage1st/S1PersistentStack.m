@@ -202,6 +202,12 @@
 }
 
 - (BOOL)topicIsFavorited:(NSNumber *)topicID {
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Topic"];
+    request.predicate = [NSPredicate predicateWithFormat:@"topicID = %@ and favorite = TRUE", topicID];
+    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:nil];
+    if (results && [results count] != 0) {
+        return YES;
+    }
     return NO;
 }
 

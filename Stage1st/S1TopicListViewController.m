@@ -757,7 +757,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIBarButtonItem *)historyItem {
     if (!_historyItem) {
-        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
+        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive-Syncing"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
     }
     return _historyItem;
 }
