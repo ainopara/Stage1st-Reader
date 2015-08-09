@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Mantle.h"
-#import "MTLManagedObjectAdapter.h"
+#import <CloudKit/CloudKit.h>
+#import "MyDatabaseObject.h"
 
-@interface S1Topic : MTLModel <MTLManagedObjectSerializing>
+@interface S1Topic : MyDatabaseObject<NSCoding, NSCopying>
 //Basic
 @property (nonatomic, copy) NSNumber *topicID;
 //To show in topic list
@@ -18,19 +18,20 @@
 @property (nonatomic, copy) NSNumber *replyCount;
 @property (nonatomic, copy) NSNumber *lastReplyCount;
 @property (nonatomic, copy) NSNumber *favorite;
-@property (nonatomic, copy) NSNumber *history;
+@property (nonatomic, copy) NSDate *favoriteDate;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
 @property (nonatomic, copy) NSString *highlight;
-//To generate content page
+
+//To generate content page & Search post owner
 @property (nonatomic, copy) NSNumber *authorUserID;
+@property (nonatomic, copy) NSString *authorUserName;
 
 //Used to update page count in content view
 @property (nonatomic, copy) NSNumber *totalPageCount;
 //Not Used
 @property (nonatomic, copy) NSNumber *fID;
-@property (nonatomic, copy) NSString *authorUserName;
-@property (nonatomic, copy) NSNumber *visitCount;
+
 //For Reply
 @property (nonatomic, copy) NSString *formhash;
 
@@ -39,6 +40,9 @@
 @property (nonatomic, copy) NSMutableDictionary *floors;
 
 @property (nonatomic, copy) NSString *message;
+
+- (instancetype)initWithRecord:(CKRecord *)record;
+
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic;
 - (void)updateFromTopic:(S1Topic *)topic;

@@ -110,7 +110,6 @@
     }
     for (S1Topic *topic in historyTopics) {
         topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_db]];
-        topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_db]];
     }
     if (count > 99) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -121,7 +120,6 @@
             NSLog(@"History Left count: %lu",(unsigned long)[historyTopicsLeft count] + count);
             for (S1Topic *topic in historyTopicsLeft) {
                 topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_backgroundDb]];
-                topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_backgroundDb]];
             }
             leftTopicsHandler(historyTopicsLeft);
         });
@@ -139,11 +137,6 @@
     }
     NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
     return favoriteTopics;
-}
-
-- (BOOL)topicIsFavorited:(NSNumber *)topic_id
-{
-    return [S1Tracer topicIsFavorited:topic_id inDatabase:_db];
 }
 
 -(void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state
@@ -182,7 +175,6 @@
     topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
     topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
     topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
-    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
     topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
     return topic;
 }
@@ -194,9 +186,7 @@
     topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
     topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
     topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
-    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
     topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:database]];
-    topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:database]];
     topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
     return topic;
 }
@@ -276,36 +266,7 @@
 
 - (void)updateTopic:(S1Topic *)topic
 {
-    NSNumber *topicID = topic.topicID;
-    NSString *title = topic.title;
-    NSNumber *replyCount = topic.replyCount;
-    NSNumber *fID = topic.fID;
-    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[topic.lastViewedDate timeIntervalSince1970]];
-    NSNumber *lastViewedPage = topic.lastViewedPage;
-    NSNumber *lastViewedPosition = topic.lastViewedPosition;
-    NSNumber *visitCount = topic.visitCount;
-    //update threads table
-    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
-    if ([result next]) {
-        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?, last_viewed_position = ?,visit_count = ? WHERE topic_id = ?;",
-         title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount, topicID];
-    } else {
-        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, visit_count) VALUES (?,?,?,?,?,?,?,?);",
-         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount];
-    }
-    //update history table
-    if ([topic.history boolValue]) {
-        FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
-        if ([historyResult next]) {
-            ;
-        } else {
-            [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
-        }
-    }
-    //update favorite table
-    if ([topic.favorite boolValue]) {
-        [self setTopicFavoriteState:topicID withState:YES];
-    }
+    
 }
 
 

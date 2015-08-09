@@ -137,7 +137,7 @@
 #pragma mark - Backend Protocol
 - (void)hasViewed:(S1Topic *)topic {
     NSError *error;
-    [MTLManagedObjectAdapter managedObjectFromModel:topic insertingIntoContext:self.managedObjectContext error:&error];
+    //[MTLManagedObjectAdapter managedObjectFromModel:topic insertingIntoContext:self.managedObjectContext error:&error];
     if (error) {
         NSLog(@"Mantle Error: %@", error);
     }
@@ -199,16 +199,6 @@
     }
     NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
     return favoriteTopics;
-}
-
-- (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Topic"];
-    request.predicate = [NSPredicate predicateWithFormat:@"topicID = %@ and favorite = TRUE", topicID];
-    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:nil];
-    if (results && [results count] != 0) {
-        return YES;
-    }
-    return NO;
 }
 
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {

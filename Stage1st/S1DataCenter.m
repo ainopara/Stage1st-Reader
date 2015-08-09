@@ -13,11 +13,8 @@
 #import "S1Parser.h"
 #import "S1Floor.h"
 #import "IMQuickSearch.h"
-#import "S1PersistentStack.h"
 #import "YapDatabase.h"
-
-#define USE_CORE_DATA_STORAGE NO
-
+#import "S1YapDatabaseAdapter.h"
 
 @interface S1DataCenter ()
 
@@ -46,12 +43,7 @@
 -(instancetype)init {
     self = [super init];
     
-    if (USE_CORE_DATA_STORAGE) {
-        //Core Data with iCloud
-        _tracer = [[S1PersistentStack alloc] initWithStoreURL:self.storeURL modelURL:self.modelURL];
-    } else {
-        _tracer = [[S1Tracer alloc] init];
-    }
+    _tracer = [[S1YapDatabaseAdapter alloc] init];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
@@ -452,28 +444,12 @@
     [self.tracer setTopicFavoriteState:topicID withState:state];
 }
 
-- (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    return [self.tracer topicIsFavorited:topicID];
-}
-
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
     return [self.tracer tracedTopicByID:topicID];
 }
 
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
     //[self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
-}
-
-#pragma mark - Core Data
-- (NSURL*)storeURL
-{
-    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-    return [documentsDirectory URLByAppendingPathComponent:@"CoreData.sqlite"];
-}
-
-- (NSURL*)modelURL
-{
-    return [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
 }
 
 #pragma mark - Floor Cache

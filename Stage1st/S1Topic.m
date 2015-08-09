@@ -8,36 +8,99 @@
 
 #import "S1Topic.h"
 
-@implementation S1Topic
+/**
+ * Keys for encoding / decoding (to avoid typos)
+ **/
+static NSString *const k_version = @"version";
+static NSString *const k_topicID = @"topicID";
+static NSString *const k_title  = @"title";
+static NSString *const k_replyCount = @"replyCount";
+static NSString *const k_fID  = @"fID";
+static NSString *const k_lastViewedDate = @"lastViewedPage";
+static NSString *const k_lastViewedPage = @"lastModified";
+static NSString *const k_lastViewedPosition = @"lastViewedPosition";
+static NSString *const k_favorite = @"favorite";
+static NSString *const k_favoriteDate = @"favoriteDate";
 
-#pragma mark - Core Data Serializing
+@implementation S1Topic : MyDatabaseObject
 
-+ (NSString *)managedObjectEntityName {
-    return @"Topic";
+- (instancetype)initWithRecord:(CKRecord *)record
+{
+    if (![record.recordType isEqualToString:@"topic"])
+    {
+        NSAssert(NO, @"Attempting to create topic from non-topic record"); // For debug builds
+        return nil;                                                      // For release builds
+    }
+    
+    if ((self = [super init]))
+    {
+        _topicID = @([record.recordID.recordName integerValue]);
+        
+        NSSet *cloudKeys = self.allCloudProperties;
+        for (NSString *cloudKey in cloudKeys)
+        {
+            if (![cloudKey isEqualToString:k_topicID])
+            {
+                [self setLocalValueFromCloudValue:[record objectForKey:cloudKey] forCloudKey:cloudKey];
+            }
+        }
+    }
+    return self;
 }
 
-+ (NSDictionary *)managedObjectKeysByPropertyKey {
-    return @{@"topicID" : @"topicID",
-             @"title" : @"title",
-             @"replyCount" : @"replyCount",
-             @"fID" : @"fID",
-             @"favorite" : @"favorite",
-             @"lastViewedDate" : @"lastViewedDate",
-             @"lastViewedPage" : @"lastViewedPage",
-             @"lastViewedPosition" : @"lastViewedPosition"};
-}
-+ (NSSet *)propertyKeysForManagedObjectUniquing {
-    return [[NSSet alloc] initWithArray:@[@"topicID"]];
-}
+
 #pragma mark - Coding
-+ (NSDictionary *)encodingBehaviorsByPropertyKey {
-    NSDictionary *excludeProperties = @{
-                                        NSStringFromSelector(@selector(floors)): @(MTLModelEncodingBehaviorExcluded)
-                                        };
-    NSDictionary *encodingBehaviors = [[super encodingBehaviorsByPropertyKey] mtl_dictionaryByAddingEntriesFromDictionary:excludeProperties];
-    return encodingBehaviors;
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if ((self = [super init])) {
+        _topicID = [aDecoder decodeObjectForKey:k_topicID];
+        _title = [aDecoder decodeObjectForKey:k_title];
+        _fID = [aDecoder decodeObjectForKey:k_fID];
+        _replyCount = [aDecoder decodeObjectForKey:k_replyCount];
+        _lastViewedDate = [aDecoder decodeObjectForKey:k_lastViewedDate];
+        _lastViewedPage = [aDecoder decodeObjectForKey:k_lastViewedPage];
+        _lastViewedPosition = [aDecoder decodeObjectForKey:k_lastViewedPosition];
+        _favorite = [aDecoder decodeObjectForKey:k_favorite];
+        _favoriteDate = [aDecoder decodeObjectForKey:k_favoriteDate];
+    }
+    return self;
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_topicID forKey:k_topicID];
+    [aCoder encodeObject:_title forKey:k_title];
+    [aCoder encodeObject:_fID forKey:k_fID];
+    [aCoder encodeObject:_replyCount forKey:k_replyCount];
+    [aCoder encodeObject:_lastViewedDate forKey:k_lastViewedDate];
+    [aCoder encodeObject:_lastViewedPage forKey:k_lastViewedPage];
+    [aCoder encodeObject:_lastViewedPosition forKey:k_lastViewedPosition];
+    [aCoder encodeObject:_favorite forKey:k_favorite];
+    [aCoder encodeObject:_favoriteDate forKey:k_favoriteDate];
+}
+
+#pragma mark - Copying
+- (id)copyWithZone:(NSZone *)zone
+{
+    S1Topic *copy = [super copyWithZone:zone]; // Be sure to invoke [MyDatabaseObject copyWithZone:] !
+    copy->_topicID = _topicID;
+    copy->_title = _title;
+    copy->_replyCount = _replyCount;
+    copy->_lastReplyCount = _lastReplyCount;
+    copy->_favorite = _favorite;
+    copy->_favoriteDate = _favoriteDate;
+    copy->_lastViewedDate = _lastViewedDate;
+    copy->_lastViewedPosition = _lastViewedPosition;
+    copy->_highlight = _highlight;
+    copy->_authorUserID = _authorUserID;
+    copy->_authorUserName = _authorUserName;
+    copy->_totalPageCount = _totalPageCount;
+    copy->_fID = _fID;
+    copy->_formhash = _formhash;
+    copy->_lastViewedPage = _lastViewedPage;
+    copy->_message = _message;
+    //TODO: Make it clear if we should copy floors.
+    return copy;
+}
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {
@@ -56,7 +119,6 @@
     self.lastReplyCount = topic.replyCount;
     self.lastViewedPage = topic.lastViewedPage;
     self.lastViewedPosition = topic.lastViewedPosition;
-    self.visitCount = topic.visitCount;
     self.favorite = topic.favorite;
 }
 
@@ -93,7 +155,6 @@
             self.lastViewedDate = topic.lastViewedDate;
             self.lastViewedPage = topic.lastViewedPage;
             self.lastViewedPosition = topic.lastViewedPosition;
-            self.visitCount = [self.visitCount integerValue] > [topic.visitCount integerValue] ? self.visitCount : topic.visitCount;
             return YES;
         }
     }
@@ -108,12 +169,85 @@
         return [NSNumber numberWithDouble:[date timeIntervalSince1970]];
     }];
 }*/
-- (BOOL)shouldOverwriteManagedObject:(NSManagedObject *)managedObject {
-    NSDate *persistedDate = [managedObject valueForKey:@"lastViewedDate"];
-    if (persistedDate) {
-        return [self.lastViewedDate compare:persistedDate] == NSOrderedDescending;
-    }
+
+#pragma mark MyDatabaseObject overrides
+
++ (BOOL)storesOriginalCloudValues
+{
     return YES;
 }
+
++ (NSMutableDictionary *)mappings_localKeyToCloudKey
+{
+    NSMutableDictionary *mappings_localKeyToCloudKey = [super mappings_localKeyToCloudKey];
+    //mappings_localKeyToCloudKey[@"creationDate"] = @"created";
+    [mappings_localKeyToCloudKey removeObjectForKey:@"highlight"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"formhash"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"totalPageCount"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"floors"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"message"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyCount"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserID"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserName"];
+    return mappings_localKeyToCloudKey;
+}
+
+- (id)cloudValueForCloudKey:(NSString *)cloudKey
+{
+    // Override me if needed.
+    // For example:
+    //
+    // - (id)cloudValueForCloudKey:(NSString *)cloudKey
+    // {
+    //     if ([cloudKey isEqualToString:@"color"])
+    //     {
+    //         // We store UIColor in the cloud as a string (r,g,b,a)
+    //         return ConvertUIColorToNSString(self.color);
+    //     }
+    //     else
+    //     {
+    //         return [super cloudValueForCloudKey:cloudKey];
+    //     }
+    // }
+    
+    return [super cloudValueForCloudKey:cloudKey];
+}
+
+- (void)setLocalValueFromCloudValue:(id)cloudValue forCloudKey:(NSString *)cloudKey
+{
+    // Override me if needed.
+    // For example:
+    //
+    // - (void)setLocalValueFromCloudValue:(id)cloudValue forCloudKey:(NSString *)cloudKey
+    // {
+    //     if ([cloudKey isEqualToString:@"color"])
+    //     {
+    //         // We store UIColor in the cloud as a string (r,g,b,a)
+    //         self.color = ConvertNSStringToUIColor(cloudValue);
+    //     }
+    //     else
+    //     {
+    //         return [super setLocalValueForCloudValue:cloudValue cloudKey:cloudKey];
+    //     }
+    // }
+    
+    return [super setLocalValueFromCloudValue:cloudValue forCloudKey:cloudKey];
+}
+
+#pragma mark KVO overrides
+
+- (void)setNilValueForKey:(NSString *)key
+{
+    if ([key isEqualToString:@"priority"]) {
+        //self.priority = TodoPriorityNormal;
+    }
+    if ([key isEqualToString:@"isDone"]) {
+        //self.isDone = NO;
+    }
+    else {
+        [super setNilValueForKey:key];
+    }
+}
+
 
 @end

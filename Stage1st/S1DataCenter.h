@@ -52,7 +52,6 @@
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 
 - (NSMutableArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord;
-- (BOOL)topicIsFavorited:(NSNumber *)topicID;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID;
@@ -75,7 +74,6 @@
 
 - (S1Topic *)tracedTopicByID:(NSNumber *)topicID;
 
-- (BOOL)topicIsFavorited:(NSNumber *)topicID;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
 @end

@@ -14,7 +14,12 @@
 #import "S1Tracer.h"
 #import "S1Parser.h"
 #import "S1DataCenter.h"
+#import "CloudKitManager.h"
+#import "DatabaseManager.h"
 #import "flurry.h"
+
+
+S1AppDelegate *MyAppDelegate;
 
 @implementation S1AppDelegate
 
@@ -65,7 +70,7 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NightMode"];
     }
     
-    //Migrate to v3.4.0
+    // Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
@@ -83,23 +88,39 @@
         [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     
-    //Migrate to v3.6
+    // Migrate to v3.6
     [S1Tracer upgradeDatabase];
     
-    //Migrate to v3.7
+    // Migrate to v3.7
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
         [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
     }
-    //Migrate to v3.8
+    // Migrate to v3.8
     if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
         NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
     }
-    //URL Cache
+    
+    // Start database & cloudKit (in that order)
+    
+    [DatabaseManager initialize];
+    [CloudKitManager initialize];
+    
+    // Register for push notifications
+    
+    UIUserNotificationSettings *notificationSettings =
+    [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+    
+    [application registerUserNotificationSettings:notificationSettings];
+    
+    // Reachability
+    _reachability = [Reachability reachabilityForInternetConnection];
+    [_reachability startNotifier];
+    // URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
-    //Appearence
+    // Appearence
     
     /*
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -191,6 +212,52 @@
     }*/
     return YES;
 }
+
+#pragma mark - Push (iOS 8)
+
+
+- (void)application:(UIApplication *)application
+didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    NSLog(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
+    
+    [application registerForRemoteNotifications];
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    NSLog(@"Registered for Push notifications with token: %@", deviceToken);
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"Push subscription failed: %@", error);
+}
+
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
+{
+    NSLog(@"Push received: %@", userInfo);
+    
+    __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
+    
+    [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
+	    ^(UIBackgroundFetchResult fetchResult, BOOL moreComing)
+     {
+         if (fetchResult == UIBackgroundFetchResultNewData) {
+             combinedFetchResult = UIBackgroundFetchResultNewData;
+         }
+         else if (fetchResult == UIBackgroundFetchResultFailed && combinedFetchResult == UIBackgroundFetchResultNoData) {
+             combinedFetchResult = UIBackgroundFetchResultFailed;
+         }
+         
+         if (!moreComing) {
+             completionHandler(combinedFetchResult);
+         }
+     }];
+}
+
 
 #pragma mark - Hand Off
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
