@@ -103,7 +103,7 @@ DatabaseManager *MyDatabaseManager;
 		
 		if ([object isKindOfClass:[MyDatabaseObject class]])
 		{
-			//[(MyDatabaseObject *)object makeImmutable];
+			[(MyDatabaseObject *)object makeImmutable];
 		}
 		
 		return object;
@@ -118,7 +118,7 @@ DatabaseManager *MyDatabaseManager;
 		
 		if ([object isKindOfClass:[MyDatabaseObject class]])
 		{
-			//[object makeImmutable];
+			[object makeImmutable];
 		}
 		
 		return object;
@@ -270,7 +270,7 @@ DatabaseManager *MyDatabaseManager;
         return YES;
     }];
     
-    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@"filter"];
+    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@""];
     [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
             NSLog(@"Error registering %@ !!!", Ext_FilteredView_Archive);

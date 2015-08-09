@@ -38,45 +38,4 @@
     }];
 }
 
-- (NSDictionary *)internalTopicsInfoFor:(S1InternalTopicListType)type withSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSDictionary *))leftTopicsHandler {
-    NSArray *topics;
-    if (type == S1TopicListHistory) {
-        topics = [self.dataCenter historyTopicsWithSearchWord:searchWord andLeftCallback:^(NSArray *fullTopics) {
-            leftTopicsHandler([S1TopicListViewModel processTopicHeader:fullTopics withSearchWord:searchWord]);
-        }];
-    } else if (type == S1TopicListFavorite) {
-        topics = [self.dataCenter favoriteTopicsWithSearchWord:searchWord];
-    } else {
-        return @{@"headers": @[@[]], @"topics":@[@[]]};
-    }
-    return [S1TopicListViewModel processTopicHeader:topics withSearchWord:searchWord];
-    
-}
-
-+ (NSDictionary *)processTopicHeader:(NSArray *)topics withSearchWord:(NSString *)searchWord {
-    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
-    NSMutableArray *topicHeaderTitles = [[NSMutableArray alloc] init];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
-    for (S1Topic *topic in topics) {
-        topic.highlight = searchWord;
-        NSDate *date = topic.lastViewedDate;
-        NSString *topicTitle;
-        if (date) {
-             topicTitle = [formatter stringFromDate:date];
-        } else {
-             topicTitle = @"Unknown";
-        }
-        if ([topicTitle isEqualToString:[formatter stringFromDate:[[NSDate alloc] initWithTimeIntervalSinceNow:0]]]) {
-            topicTitle = [topicTitle stringByAppendingString:NSLocalizedString(@"TopicListView_ListHeader_Today", @"Today")];
-        }
-        if ([topicHeaderTitles containsObject:topicTitle]) {
-            [[processedTopics objectAtIndex:[topicHeaderTitles indexOfObject:topicTitle]] addObject:topic];
-        } else {
-            [topicHeaderTitles addObject:topicTitle];
-            [processedTopics addObject:[[NSMutableArray alloc] initWithObjects:topic, nil]];
-        }
-    }
-    return @{@"headers":topicHeaderTitles, @"topics":processedTopics};
-}
 @end

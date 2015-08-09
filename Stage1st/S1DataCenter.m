@@ -50,8 +50,6 @@
     _cacheDatabase = [[YapDatabase alloc] initWithPath:self.cacheURL.absoluteString];
     _cacheConnection = [_cacheDatabase newConnection];
     _backgroundCacheConnection = [_cacheDatabase newConnection];
-    _shouldReloadFavoriteCache = YES;
-    _shouldReloadHistoryCache = YES;
     //_shouldInterruptHistoryCallback = NO;
     _sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
         if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
@@ -378,59 +376,6 @@
 
 
 #pragma mark - Database
-
-- (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler {
-    //filter process
-    if (self.shouldReloadHistoryCache || self.historySearch == nil) {
-        __weak typeof(self) myself = self;
-        self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
-            __strong typeof(self) strongMyself = myself;
-            //update search filter
-            NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
-            IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
-            strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-            strongMyself.cachedHistoryTopics = fullTopics;
-            //return full data.
-            if ([searchWord isEqualToString:@""]) {
-                leftTopicsHandler(fullTopics);
-            } else {
-                NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-                [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
-                leftTopicsHandler(fullResult);
-            }
-        }];
-        //set search filter
-        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:self.cachedHistoryTopics keys:@[@"title"]];
-        self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-        self.shouldReloadHistoryCache = NO;
-    }
-    //return parital data
-    if ([searchWord isEqualToString:@""]) {
-        return self.cachedHistoryTopics;
-    } else {
-        NSMutableArray *result = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-        
-        [result sortUsingDescriptors:@[self.sortDescriptor]];
-        return result;
-    }
-}
-
-- (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {
-    
-    //filter process
-    if (self.shouldReloadFavoriteCache) {
-        NSMutableArray *topics;
-        topics = [self.tracer favoritedObjects];
-
-        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
-        self.favoriteSearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-        self.shouldReloadFavoriteCache = NO;
-    }
-    NSMutableArray *result = [[self.favoriteSearch filteredObjectsWithValue:searchWord] mutableCopy];
-    
-    [result sortUsingDescriptors:@[self.sortDescriptor]];
-    return result;
-}
 
 - (void)hasViewed:(S1Topic *)topic {
     [self.tracer hasViewed:topic];

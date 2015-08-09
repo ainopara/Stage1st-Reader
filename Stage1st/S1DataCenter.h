@@ -14,9 +14,6 @@
 
 @interface S1DataCenter : NSObject
 
-@property (assign, nonatomic) BOOL shouldReloadHistoryCache;
-@property (assign, nonatomic) BOOL shouldReloadFavoriteCache;
-
 + (S1DataCenter *)sharedDataCenter;
 
 //For topic list View Controller
@@ -47,11 +44,9 @@
 - (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;
 
 //Database
-- (NSMutableArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler;
+
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
-
-- (NSMutableArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID;

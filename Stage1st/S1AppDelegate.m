@@ -67,7 +67,7 @@ S1AppDelegate *MyAppDelegate;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
     }
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"NightMode"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NightMode"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
     }
     
     // Migrate to v3.4.0

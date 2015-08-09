@@ -22,6 +22,7 @@
 #import "MTStatusBarOverlay.h"
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
+#import "YapDatabaseFilteredView.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -380,23 +381,25 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
-        __weak typeof(self) myself = self;
-        NSDictionary *result = [self.viewModel internalTopicsInfoFor:[self.currentKey isEqual: @"History"]?S1TopicListHistory:S1TopicListFavorite withSearchWord:searchText andLeftCallback:^(NSDictionary *fullResult) {
-            __strong typeof(self) strongMyself = myself;
-            //strongMyself.topics = [fullResult valueForKey:@"topics"];
-            //strongMyself.topicHeaderTitles = [fullResult valueForKey:@"headers"];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [strongMyself.tableView reloadData];
-            });
-        }];
-        //self.topics = [result valueForKey:@"topics"];
-        //self.topicHeaderTitles = [result valueForKey:@"headers"];
-        
-        [self.tableView reloadData];
+        [self updateFilter:searchText withCurrentKey:self.currentKey];
         if (self.topics && self.topics.count > 0) {
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+            //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
     }
+}
+
+- (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
+    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(NSString *group, NSString *collection, NSString *key, id object) {
+        S1Topic *topic = object;
+        BOOL favoirteFilter = YES;
+        if ([currentKey isEqual: @"Favorite"]) {
+            favoirteFilter = topic.favorite;
+        }
+        return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:searchText]) && favoirteFilter;
+    }];
+    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
+        [[transaction ext:Ext_FilteredView_Archive] setFiltering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@", currentKey, searchText]];
+    }];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -660,12 +663,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSArray *notifications = [notification.userInfo objectForKey:kNotificationsKey];
     NSArray *sectionChanges = nil;
     NSArray *rowChanges = nil;
-    [[self.databaseConnection ext:Ext_View_Archive] getSectionChanges:&sectionChanges
+    [[self.databaseConnection ext:Ext_FilteredView_Archive] getSectionChanges:&sectionChanges
                                                     rowChanges:&rowChanges
                                               forNotifications:notifications
                                                   withMappings:self.mappings];
     
-    if ([rowChanges count] == 0)
+    if ([rowChanges count] == 0 && [sectionChanges count] == 0)
     {
         // There aren't any changes that affect our tableView
         return;
@@ -685,7 +688,6 @@ static NSString * const cellIdentifier = @"TopicCell";
                     break;
             }
         }
-        
         
         for (YapDatabaseViewRowChange *rowChange in rowChanges)
         {
@@ -744,12 +746,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     
-    NSLog(@"ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount);
-    
     if (suspendCount > 0){
-        NSLog(@"Status: Suspended (suspendCount = %lu)", (unsigned long)suspendCount);
+        NSLog(@"Status: Suspended (suspendCount = %lu) ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount);
     } else {
-        NSLog(@"Status: Resumed");
+        NSLog(@"Status: Resumed ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount);
     }
     
     if (suspendCount > 0 || inFlightCount + queuedCount > 0) {
@@ -793,13 +793,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.refreshControl.hidden = YES;
     
-    if (type == S1TopicListHistory) {
-        self.dataCenter.shouldReloadHistoryCache = YES;
-    } else if (type == S1TopicListFavorite) {
-        self.dataCenter.shouldReloadFavoriteCache = YES;
-    }
-    
     [self.tableView reloadData];
+    [self updateFilter:self.searchBar.text withCurrentKey:self.currentKey];
+    
     if (self.topics && self.topics.count > 0) {
         //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
@@ -812,13 +808,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         
-        if ([transaction ext:Ext_View_Archive])
+        if ([transaction ext:Ext_FilteredView_Archive])
         {
             self.mappings = [[YapDatabaseViewMappings alloc] initWithGroupFilterBlock:^BOOL(NSString *group, YapDatabaseReadTransaction *transaction) {
                 return YES;
             } sortBlock:^NSComparisonResult(NSString *group1, NSString *group2, YapDatabaseReadTransaction *transaction) {
                 return [group1 compare:group2];
-            } view:Ext_View_Archive];
+            } view:Ext_FilteredView_Archive];
             [self.mappings updateWithTransaction:transaction];
         }
         else
@@ -834,7 +830,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     __block S1Topic *topic = nil;
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         
-        topic = [[transaction ext:Ext_View_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
+        topic = [[transaction ext:Ext_FilteredView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
     }];
     
     return topic;
