@@ -1,4 +1,5 @@
 /* Localized versions of Info.plist keys */
+"SystemLanguage" = "English";
 
 "ContentView_ActionSheet_Cancel" = "Cancel";
 "ContentView_ActionSheet_Reply" = "Reply";

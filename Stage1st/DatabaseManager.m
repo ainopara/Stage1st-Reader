@@ -256,7 +256,7 @@ DatabaseManager *MyDatabaseManager;
 	YapDatabaseView *orderView =
 	  [[YapDatabaseView alloc] initWithGrouping:orderGrouping
 	                                    sorting:orderSorting
-	                                 versionTag:@"sortedByCreationDate"];
+	                                 versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
 	
 	[database asyncRegisterExtension:orderView withName:Ext_View_Archive completionBlock:^(BOOL ready) {
 		if (!ready) {

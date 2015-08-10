@@ -48,6 +48,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) YapDatabaseConnection *databaseConnection;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
+@property (nonatomic, strong) NSString *searchKeyword;
 @property (nonatomic, strong) NSMutableArray *topics;
 
 @property (nonatomic, strong) NSMutableDictionary *cachedContentOffset;
@@ -67,17 +68,17 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark - Life Cycle
 
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         _loadingFlag = NO;
         _loadingMore = NO;
-        self.currentKey = @"";
-        self.previousKey = @"";
+        _currentKey = @"";
+        _previousKey = @"";
     }
     return self;
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -238,9 +239,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     
-    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         [cell setTopic:[self topicAtIndexPath:indexPath]];
         cell.highlight = self.searchBar.text;
+        return cell;
+    } else if ([self.currentKey isEqual: @"Search"]) {
+        [cell setTopic:self.topics[indexPath.row]];
+        cell.highlight = self.searchKeyword;
         return cell;
     } else {
         [cell setTopic:self.topics[indexPath.row]];
@@ -440,6 +445,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         self.previousKey = self.currentKey;
         self.currentKey = @"Search";
+        self.searchKeyword = self.searchBar.text;
         self.refreshControl.hidden = YES;
         
         [self.dataCenter searchTopicsForKeyword:searchBar.text success:^(NSArray *topicList) {

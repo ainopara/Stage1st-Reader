@@ -213,31 +213,22 @@ S1AppDelegate *MyAppDelegate;
     return YES;
 }
 
-#pragma mark - Push (iOS 8)
+#pragma mark - Push Notification For Sync (iOS 8)
 
-
-- (void)application:(UIApplication *)application
-didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
-{
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     NSLog(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
-    
     [application registerForRemoteNotifications];
 }
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSLog(@"Registered for Push notifications with token: %@", deviceToken);
 }
 
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     NSLog(@"Push subscription failed: %@", error);
 }
 
-- (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo
-fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
-{
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     NSLog(@"Push received: %@", userInfo);
     
     __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
@@ -258,8 +249,8 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandl
      }];
 }
 
-
 #pragma mark - Hand Off
+
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
 }

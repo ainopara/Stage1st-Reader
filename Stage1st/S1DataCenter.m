@@ -177,9 +177,7 @@
             if (tempTopic) {
                 [topic addDataFromTracedTopic:tempTopic];
             }
-            topic.highlight = keyword;
         }
-        
         success(topics);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
