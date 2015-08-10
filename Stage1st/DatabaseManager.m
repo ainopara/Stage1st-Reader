@@ -266,7 +266,7 @@ DatabaseManager *MyDatabaseManager;
 }
 
 - (void)setupFilteredArchiveViewExtension {
-    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withRowBlock:^BOOL(NSString *group, NSString *collection, NSString *key, id object, id metadata) {
+    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(NSString *group, NSString *collection, NSString *key, id object) {
         return YES;
     }];
     

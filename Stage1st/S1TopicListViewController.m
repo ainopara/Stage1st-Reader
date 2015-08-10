@@ -829,7 +829,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 NSDate *date1 = [formatter dateFromString:group1];
                 NSDate *date2 = [formatter dateFromString:group2];
                 if (date1 && date2) {
-                    return [date1 compare:date2];
+                    return [date2 compare:date1];
                 }
                 return [group1 compare:group2];
             } view:Ext_FilteredView_Archive];

@@ -8,9 +8,8 @@
 
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
-#import "S1DatabaseManageViewController.h"
 #import "GSStaticTableViewBuilder.h"
-//#import "MTStatusBarOverlay.h"
+
 
 @interface S1SettingViewController () <UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
@@ -26,14 +25,13 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
-@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *leftSpaceConstraint;
 
 @property (assign, nonatomic) CGFloat offset;
 @end
 
 
 @implementation S1SettingViewController
-
+#pragma mark - Life Cycle
 - (void)viewWillAppear:(BOOL)animated {
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
@@ -57,11 +55,6 @@
         self.navigationController.view.layer.cornerRadius  = 5.0;
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
-    }
-    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-        for (NSLayoutConstraint *constraint in self.leftSpaceConstraint) {
-            constraint.constant = 15;
-        }
     }
 
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
@@ -107,6 +100,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Pull To Close
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (self.offset < -36) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -143,7 +137,7 @@
     }
     return [super preferredInterfaceOrientationForPresentation];
 }
-#pragma mark -
+#pragma mark - Navigation
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"%@", indexPath);
     
@@ -179,7 +173,7 @@
     }*/
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-#pragma mark -
+#pragma mark - Actions
 - (IBAction)back:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -206,6 +200,7 @@
     
 }
 
+#pragma mark - Notification
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
     [self.displayImageSwitch setOnTintColor:[[S1ColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.removeTailsSwitch setOnTintColor:[[S1ColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
