@@ -393,7 +393,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         S1Topic *topic = object;
         BOOL favoirteFilter = YES;
         if ([currentKey isEqual: @"Favorite"]) {
-            favoirteFilter = topic.favorite;
+            favoirteFilter = [topic.favorite boolValue];
         }
         return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:searchText]) && favoirteFilter;
     }];
@@ -813,6 +813,13 @@ static NSString * const cellIdentifier = @"TopicCell";
             self.mappings = [[YapDatabaseViewMappings alloc] initWithGroupFilterBlock:^BOOL(NSString *group, YapDatabaseReadTransaction *transaction) {
                 return YES;
             } sortBlock:^NSComparisonResult(NSString *group1, NSString *group2, YapDatabaseReadTransaction *transaction) {
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+                NSDate *date1 = [formatter dateFromString:group1];
+                NSDate *date2 = [formatter dateFromString:group2];
+                if (date1 && date2) {
+                    return [date1 compare:date2];
+                }
                 return [group1 compare:group2];
             } view:Ext_FilteredView_Archive];
             [self.mappings updateWithTransaction:transaction];

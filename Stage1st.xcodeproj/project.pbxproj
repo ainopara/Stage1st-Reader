@@ -20,7 +20,6 @@
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
 		8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* APPullToActionViewController.swift */; };
-		8608C63E1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
 		8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8627EAB01A204EF80063617C /* S1PushAnimator.m */; };
@@ -36,8 +35,6 @@
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
 		866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */; };
-		867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8679908F1AD9FB8700E956F7 /* EXTRuntimeExtensions.m */; };
-		867990941AD9FB8700E956F7 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = 867990911AD9FB8700E956F7 /* EXTScope.m */; };
 		867990981ADA689300E956F7 /* libFlurry_6.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 867990971ADA689300E956F7 /* libFlurry_6.3.0.a */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
@@ -118,8 +115,6 @@
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
 		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		860727691B37AF2100DA8390 /* APPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/APPullToActionViewController.swift; sourceTree = "<group>"; };
-		8608C63C1AD98B7300B21FE3 /* MTLManagedObjectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTLManagedObjectAdapter.h; sourceTree = "<group>"; };
-		8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTLManagedObjectAdapter.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		861512FF1A0E7B1200BAC814 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Stage1st/Main.storyboard; sourceTree = "<group>"; };
 		8627EAAF1A204EF80063617C /* S1PushAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PushAnimator.h; path = Stage1st/S1PushAnimator.h; sourceTree = "<group>"; };
@@ -144,12 +139,6 @@
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorViewController.swift; path = Stage1st/S1QuoteFloorViewController.swift; sourceTree = "<group>"; };
-		8679908D1AD9FB8700E956F7 /* EXTKeyPathCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTKeyPathCoding.h; sourceTree = "<group>"; };
-		8679908E1AD9FB8700E956F7 /* EXTRuntimeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTRuntimeExtensions.h; sourceTree = "<group>"; };
-		8679908F1AD9FB8700E956F7 /* EXTRuntimeExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTRuntimeExtensions.m; sourceTree = "<group>"; };
-		867990901AD9FB8700E956F7 /* EXTScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTScope.h; sourceTree = "<group>"; };
-		867990911AD9FB8700E956F7 /* EXTScope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTScope.m; sourceTree = "<group>"; };
-		867990921AD9FB8700E956F7 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metamacros.h; sourceTree = "<group>"; };
 		867990961ADA689300E956F7 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		867990971ADA689300E956F7 /* libFlurry_6.3.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_6.3.0.a; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
@@ -301,17 +290,6 @@
 			name = APPullToAction;
 			sourceTree = "<group>";
 		};
-		8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */ = {
-			isa = PBXGroup;
-			children = (
-				8679908C1AD9FB8700E956F7 /* extobjc */,
-				8608C63C1AD98B7300B21FE3 /* MTLManagedObjectAdapter.h */,
-				8608C63D1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m */,
-			);
-			name = MTLManagedObjectAdapter;
-			path = Vendors/MTLManagedObjectAdapter;
-			sourceTree = "<group>";
-		};
 		862F51B61891359A0038A289 /* TFHpple */ = {
 			isa = PBXGroup;
 			children = (
@@ -398,19 +376,6 @@
 				866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */,
 			);
 			name = "Quote Floor View Controller";
-			sourceTree = "<group>";
-		};
-		8679908C1AD9FB8700E956F7 /* extobjc */ = {
-			isa = PBXGroup;
-			children = (
-				8679908D1AD9FB8700E956F7 /* EXTKeyPathCoding.h */,
-				8679908E1AD9FB8700E956F7 /* EXTRuntimeExtensions.h */,
-				8679908F1AD9FB8700E956F7 /* EXTRuntimeExtensions.m */,
-				867990901AD9FB8700E956F7 /* EXTScope.h */,
-				867990911AD9FB8700E956F7 /* EXTScope.m */,
-				867990921AD9FB8700E956F7 /* metamacros.h */,
-			);
-			path = extobjc;
 			sourceTree = "<group>";
 		};
 		867990951ADA689300E956F7 /* Flurry */ = {
@@ -547,7 +512,6 @@
 			children = (
 				860727651B37AE3C00DA8390 /* APPullToAction */,
 				867990951ADA689300E956F7 /* Flurry */,
-				8608C63B1AD98B7300B21FE3 /* MTLManagedObjectAdapter */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,
@@ -817,7 +781,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				867990941AD9FB8700E956F7 /* EXTScope.m in Sources */,
 				C095874416CA8A36007E0119 /* main.m in Sources */,
 				86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */,
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
@@ -848,7 +811,6 @@
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
-				8608C63E1AD98B7300B21FE3 /* MTLManagedObjectAdapter.m in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
@@ -866,7 +828,6 @@
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
-				867990931AD9FB8700E956F7 /* EXTRuntimeExtensions.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
 				8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */,
