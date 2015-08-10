@@ -21,7 +21,6 @@
 @property (nonatomic, copy) NSDate *favoriteDate;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
-@property (nonatomic, copy) NSString *highlight;
 
 //To generate content page & Search post owner
 @property (nonatomic, copy) NSNumber *authorUserID;

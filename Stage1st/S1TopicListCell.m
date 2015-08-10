@@ -44,6 +44,11 @@
     [self updateSubview];
 }
 
+- (void)setHighlight:(NSString *)highlight {
+    [self.drawingSubview setHighlight:highlight];
+    [self updateSubview];
+}
+
 - (void)updateSubview {
     [self.drawingSubview setNeedsDisplay];
 }

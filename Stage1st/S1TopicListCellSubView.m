@@ -58,8 +58,8 @@
     titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
     titleParagraphStyle.alignment = NSTextAlignmentLeft;
     NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title == nil ? @"":self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
-    if (self.topic.highlight != nil && (![self.topic.highlight isEqualToString:@""])) {
-        [titleContent addAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.title.highlight"]} range:[[titleContent string] rangeOfString:self.topic.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+    if (self.highlight != nil && (![self.highlight isEqualToString:@""])) {
+        [titleContent addAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.title.highlight"]} range:[[titleContent string] rangeOfString:self.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
     }
     
     

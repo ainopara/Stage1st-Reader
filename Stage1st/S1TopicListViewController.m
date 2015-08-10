@@ -240,9 +240,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
         [cell setTopic:[self topicAtIndexPath:indexPath]];
+        cell.highlight = self.searchBar.text;
         return cell;
     } else {
         [cell setTopic:self.topics[indexPath.row]];
+        cell.highlight = @"";
         return cell;
     }
 }
@@ -382,6 +384,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         [self updateFilter:searchText withCurrentKey:self.currentKey];
+        for (S1TopicListCell *cell in [self.tableView visibleCells]) {
+            cell.highlight = searchText;
+        }
         if (self.topics && self.topics.count > 0) {
             //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
@@ -395,7 +400,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         if ([currentKey isEqual: @"Favorite"]) {
             favoirteFilter = [topic.favorite boolValue];
         }
-        return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:searchText]) && favoirteFilter;
+        return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:[searchText lowercaseString]]) && favoirteFilter;
     }];
     [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
         [[transaction ext:Ext_FilteredView_Archive] setFiltering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@", currentKey, searchText]];

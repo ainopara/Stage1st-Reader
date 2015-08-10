@@ -14,6 +14,7 @@
 @interface S1TopicListCell : UITableViewCell
 
 @property (nonatomic, strong) S1Topic *topic;
+@property (nonatomic, strong) NSString *highlight;
 
 - (void)updateSubview;
 
