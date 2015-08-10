@@ -15,13 +15,13 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.background")
-        if let htmlStirng = self.htmlString {
+        if let theHtmlStirng = self.htmlString {
             self.webView.dataDetectorTypes = .None;
             self.webView.opaque = false;
             self.webView.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.webview.background")
             self.webView.delegate = self
             self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-            self.webView.loadHTMLString(htmlString, baseURL: NSURL())
+            self.webView.loadHTMLString(theHtmlString, baseURL: NSURL())
         }
         // Do any additional setup after loading the view.
     }
@@ -53,9 +53,9 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
         let result: String? = self.webView.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
-        println(result)
-        if let result = result?.toInt() {
-            return CGFloat(result)
+        print(result)
+        if let result1 = result , let result2 = Double(result1) {
+            return CGFloat(result2)
         }
         return 0;
     }

@@ -67,40 +67,45 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
 
         // Do any additional setup after loading the view.
     }
-    
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentOffset" {
-            self.offset = change["new"]?.CGPointValue() ?? self.offset
-            if let delegateFunction = self.delegate?.scrollViewContentOffsetProgress {
-                var progress : [String: Double] = Dictionary<String, Double>()
-                for (name, actionOffset) in self.progressAction {
-                    let progressValue = actionOffset.progress(self.baseLineOffset(actionOffset.baseLine))
-                    progress.updateValue(progressValue, forKey: name)
+            if let changes = change {
+                self.offset = changes["new"]?.CGPointValue ?? self.offset
+                if let delegateFunction = self.delegate?.scrollViewContentOffsetProgress {
+                    var progress : [String: Double] = Dictionary<String, Double>()
+                    for (name, actionOffset) in self.progressAction {
+                        let progressValue = actionOffset.progress(self.baseLineOffset(actionOffset.baseLine))
+                        progress.updateValue(progressValue, forKey: name)
+                    }
+                    delegateFunction(progress)
                 }
-                delegateFunction(progress)
             }
             //println("contentOffset: \(self.offset)")
         }
         if keyPath == "contentSize" {
-            self.size = change["new"]?.CGSizeValue() ?? self.size
-            //println("size:w: \(self.size.width) h:\(self.size.height)")
-            self.delegate?.scrollViewContentSizeDidChange?(self.size)
+            if let changes = change {
+                self.size = changes["new"]?.CGSizeValue() ?? self.size
+                //println("size:w: \(self.size.width) h:\(self.size.height)")
+                self.delegate?.scrollViewContentSizeDidChange?(self.size)
+            }
         }
         if keyPath == "contentInset" {
-            self.inset = change["new"]?.UIEdgeInsetsValue() ?? self.inset
-            //println("inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
+            if let changes = change {
+                self.inset = changes["new"]?.UIEdgeInsetsValue() ?? self.inset
+                //println("inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
+            }
         }
     }
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if self.offset.y < 0 {
-            println("end dragging <- \(self.offset.y)")
+            print("end dragging <- \(self.offset.y)")
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
             return
         }
         let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height //TODO: consider content inset
         if bottomOffset > 0 {
-            println("end dragging -> \(bottomOffset)")
+            print("end dragging -> \(bottomOffset)")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
             return
         }
