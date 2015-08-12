@@ -10,17 +10,17 @@
 #import "S1DataCenter.h"
 
 @class FMDatabase;
+@class YapDatabaseReadWriteTransaction;
 @class S1Topic;
 
-@interface S1Tracer : NSObject<S1Backend>
+@interface S1Tracer : NSObject
 
 @property (nonatomic, strong) FMDatabase *db;
 @property (nonatomic, strong) FMDatabase *backgroundDb;
 
 - (id)init;
 
-- (BOOL)syncWithDatabasePath:(NSString *)databasePath;
-
 + (void)upgradeDatabase;
++ (void)migrateDatabase:(YapDatabaseReadWriteTransaction *)transaction;
 
 @end

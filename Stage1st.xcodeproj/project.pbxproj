@@ -43,6 +43,7 @@
 		867EECAC1A104D8E00E0DE6F /* content_15px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECA81A104D8E00E0DE6F /* content_15px.css */; };
 		867EECAD1A104D8E00E0DE6F /* content_17px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECA91A104D8E00E0DE6F /* content_17px.css */; };
 		867EECAE1A104D8E00E0DE6F /* content_19px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECAA1A104D8E00E0DE6F /* content_19px.css */; };
+		868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */; };
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
@@ -151,6 +152,8 @@
 		867EECA81A104D8E00E0DE6F /* content_15px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_15px.css; path = Stage1st/content_15px.css; sourceTree = "<group>"; };
 		867EECA91A104D8E00E0DE6F /* content_17px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_17px.css; path = Stage1st/content_17px.css; sourceTree = "<group>"; };
 		867EECAA1A104D8E00E0DE6F /* content_19px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_19px.css; path = Stage1st/content_19px.css; sourceTree = "<group>"; };
+		868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1CacheDatabaseManager.h; path = Stage1st/S1CacheDatabaseManager.h; sourceTree = "<group>"; };
+		868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1CacheDatabaseManager.m; path = Stage1st/S1CacheDatabaseManager.m; sourceTree = "<group>"; };
 		8693431819E5A074008F7A58 /* S1ContentViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewModel.h; path = Stage1st/S1ContentViewModel.h; sourceTree = "<group>"; };
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
@@ -269,6 +272,8 @@
 				860573541B762C3B00C70781 /* CloudKitManager.m */,
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
+				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
+				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
 			);
 			name = YapDatabase;
 			sourceTree = "<group>";
@@ -786,6 +791,7 @@
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
+				868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,

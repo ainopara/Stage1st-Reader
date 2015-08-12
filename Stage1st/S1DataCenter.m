@@ -15,14 +15,11 @@
 #import "IMQuickSearch.h"
 #import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
+#import "S1CacheDatabaseManager.h"
 
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) id<S1Backend> tracer;
-
-@property (strong, nonatomic) YapDatabase *cacheDatabase;
-@property (strong, nonatomic) YapDatabaseConnection *cacheConnection;
-@property (strong, nonatomic) YapDatabaseConnection *backgroundCacheConnection;
 
 @property (strong, nonatomic) NSString *formhash;
 
@@ -47,9 +44,6 @@
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
-    _cacheDatabase = [[YapDatabase alloc] initWithPath:self.cacheURL.absoluteString];
-    _cacheConnection = [_cacheDatabase newConnection];
-    _backgroundCacheConnection = [_cacheDatabase newConnection];
     //_shouldInterruptHistoryCallback = NO;
     _sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
         if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
@@ -187,13 +181,13 @@
 #pragma mark - Network (Content Cache)
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return [self hasCacheForKey:key inCollection:@"FloorCache"];
+    return [[S1CacheDatabaseManager sharedInstance] hasCacheForKey:key inCollection:Collection_TopicFloors];
 }
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ((shouldUpdate == NO) && ([self hasCacheForKey:key inCollection:@"FloorCache"])) {
+    if ((shouldUpdate == NO) && ([[S1CacheDatabaseManager sharedInstance] hasCacheForKey:key inCollection:Collection_TopicFloors])) {
         NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
         return;
     }
@@ -218,7 +212,7 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
             [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:failureHandler];
@@ -235,7 +229,7 @@
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
             [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:failureHandler];
@@ -243,7 +237,7 @@
 }
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    [self removeCacheForKey:key inCollection:@"FloorCache"];
+    [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key inCollection:Collection_TopicFloors];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
@@ -264,7 +258,7 @@
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     // Use Cache Result If Exist
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    NSArray *floorList = [self cacheValueForKey:key inCollection:@"FloorCache"];
+    NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForKey:key inCollection:Collection_TopicFloors];
     if (floorList) {
         success(floorList);
         return;
@@ -290,7 +284,7 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
             
             success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -312,7 +306,7 @@
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            [self setCacheValue:floorList forKey:key inCollection:@"FloorCache"];
+            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
             
             success(floorList);
             
@@ -395,42 +389,7 @@
     //[self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
 }
 
-#pragma mark - Floor Cache
 
-- (NSURL*)cacheURL
-{
-    NSURL* documentsDirectory = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-    return [documentsDirectory URLByAppendingPathComponent:@"Cache.sqlite"];
-}
-
-- (void)setCacheValue:(id)value forKey:(NSString *)key inCollection:(NSString *)collection {
-    [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
-        [transaction setObject:value forKey:key inCollection:collection];
-    }];
-}
-
-- (id)cacheValueForKey:(NSString *)key inCollection:(NSString *)collection {
-    __block NSArray *result = nil;
-    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
-        result = [transaction objectForKey:key inCollection:collection];
-    }];
-    return result;
-}
-
-- (BOOL)hasCacheForKey:(NSString *)key inCollection:(NSString *)collection {
-    __block BOOL hasCache = NO;
-    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
-        hasCache = [transaction hasObjectForKey:key inCollection:collection];
-    }];
-    //NSLog(@"%@, %d",key, hasCache);
-    return hasCache;
-}
-
-- (void)removeCacheForKey:(NSString *)key inCollection:(NSString *)collection {
-    [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
-        [transaction removeObjectForKey:key inCollection:collection];
-    }];
-}
 
 #pragma mark - Topic List Cache
 

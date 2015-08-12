@@ -145,20 +145,33 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     }
 }
 
-- (BOOL)absorbTopic:(S1Topic *)topic {
+- (void)absorbTopic:(S1Topic *)topic {
     if ([topic.topicID isEqualToNumber:self.topicID]) {
         if ([topic.lastViewedDate timeIntervalSince1970] > [self.lastViewedDate timeIntervalSince1970]) {
-            self.title = topic.title;
-            self.replyCount = topic.replyCount;
-            self.fID = topic.fID;
-            self.lastViewedDate = topic.lastViewedDate;
-            self.lastViewedPage = topic.lastViewedPage;
-            self.lastViewedPosition = topic.lastViewedPosition;
-            return YES;
+            if (topic.title != nil && (![self.title isEqualToString:topic.title])) {
+                self.title = topic.title;
+            }
+            if (topic.replyCount != nil && (![self.replyCount isEqualToNumber:topic.replyCount])) {
+                self.replyCount = topic.replyCount;
+            }
+            if (topic.fID != nil && (![self.fID isEqualToNumber:topic.fID])) {
+                self.fID = topic.fID;
+            }
+            if (topic.lastViewedDate != nil && (![self.lastViewedDate isEqualToDate:topic.lastViewedDate])) {
+                self.lastViewedDate = topic.lastViewedDate;
+            }
+            if (topic.lastViewedPage != nil && (![self.lastViewedPage isEqualToNumber:topic.lastViewedPage])) {
+                self.lastViewedPage = topic.lastViewedPage;
+            }
+            if (topic.lastViewedPosition != nil && (![self.lastViewedPosition isEqualToNumber:topic.lastViewedPosition])) {
+                self.lastViewedPosition = topic.lastViewedPosition;
+            }
+        }
+        if ([topic.favorite boolValue]) {
+            self.favorite = [NSNumber numberWithBool:YES];
+            self.favoriteDate = topic.favoriteDate;
         }
     }
-    return NO;
-    
 }
 /*
 + (NSValueTransformer *)lastViewedDateEntityAttributeTransformer {

@@ -25,8 +25,19 @@
 - (NSString *)htmlColorStringWithID:(NSString *)paletteID;
 - (UIColor *)colorForKey:(NSString *)key;
 
+
+
 @end
 
+@interface S1Formatter : NSObject
+
++ (S1Formatter *)sharedInstance;
+
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSMutableDictionary *dateCache;
+- (NSString *)headerForDate:(NSDate *)date;
+- (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2;
+@end
 
 @interface S1Global : NSObject
 

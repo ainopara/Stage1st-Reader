@@ -179,7 +179,7 @@ DatabaseManager *MyDatabaseManager;
 	// Setup database connection(s)
 	
 	uiDatabaseConnection = [database newConnection];
-	uiDatabaseConnection.objectCacheLimit = 400;
+	uiDatabaseConnection.objectCacheLimit = 10000;
 	uiDatabaseConnection.metadataCacheEnabled = NO;
 	
 	#if YapDatabaseEnforcePermittedTransactions
@@ -187,7 +187,7 @@ DatabaseManager *MyDatabaseManager;
 	#endif
 	
 	bgDatabaseConnection = [database newConnection];
-	bgDatabaseConnection.objectCacheLimit = 400;
+	bgDatabaseConnection.objectCacheLimit = 8000;
 	bgDatabaseConnection.metadataCacheEnabled = NO;
 	
 	// Start the longLivedReadTransaction on the UI connection.
@@ -216,16 +216,13 @@ DatabaseManager *MyDatabaseManager;
 	// We use it to drive the tableView.
 	//
 	
-	YapDatabaseViewGrouping *orderGrouping = [YapDatabaseViewGrouping withObjectBlock:
-	    ^NSString *(NSString *collection, NSString *key, id object)
-	{
+	YapDatabaseViewGrouping *orderGrouping = [YapDatabaseViewGrouping withObjectBlock:^NSString *(YapDatabaseReadTransaction *transaction, NSString *collection, NSString *key, id object) {
 		if ([object isKindOfClass:[S1Topic class]])
 		{
             S1Topic *topic = object;
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+            
             if (topic.lastViewedDate) {
-                return [formatter stringFromDate:topic.lastViewedDate];
+                return [[S1Formatter sharedInstance] headerForDate:topic.lastViewedDate];
             } else {
                 return @"Unknown Date";
             }
@@ -235,16 +232,14 @@ DatabaseManager *MyDatabaseManager;
 		return nil; // exclude from view
 	}];
 	
-	YapDatabaseViewSorting *orderSorting = [YapDatabaseViewSorting withObjectBlock:
-	    ^(NSString *group, NSString *collection1, NSString *key1, S1Topic *topic1,
-	                       NSString *collection2, NSString *key2, S1Topic *topic2)
-	{
+    YapDatabaseViewSorting *orderSorting = [YapDatabaseViewSorting withObjectBlock:^NSComparisonResult(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection1, NSString *key1, id object1, NSString *collection2, NSString *key2, id object2) {
 		// We want:
 		// - Most recently created Todo at index 0.
 		// - Least recent created Todo at the end.
 		//
 		// This is descending order (opposite of "standard" in Cocoa) so we swap the normal comparison.
-		
+        S1Topic *topic1 = object1;
+        S1Topic *topic2 = object2;
 		NSComparisonResult cmp = [topic1.lastViewedDate compare:topic2.lastViewedDate];
 		
 		if (cmp == NSOrderedAscending) return NSOrderedDescending;
@@ -258,20 +253,20 @@ DatabaseManager *MyDatabaseManager;
 	                                    sorting:orderSorting
 	                                 versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
 	
-	[database asyncRegisterExtension:orderView withName:Ext_View_Archive completionBlock:^(BOOL ready) {
-		if (!ready) {
-			NSLog(@"Error registering %@ !!!", Ext_View_Archive);
-		}
-	}];
+    [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.uiDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+        if (!ready) {
+            NSLog(@"Error registering %@ !!!", Ext_View_Archive);
+        }
+    }];
 }
 
 - (void)setupFilteredArchiveViewExtension {
-    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(NSString *group, NSString *collection, NSString *key, id object) {
+    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection, NSString *key, id object) {
         return YES;
     }];
     
-    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@""];
-    [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive completionBlock:^(BOOL ready) {
+    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@"History:"];
+    [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive connection:self.uiDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
             NSLog(@"Error registering %@ !!!", Ext_FilteredView_Archive);
         }
@@ -425,6 +420,7 @@ DatabaseManager *MyDatabaseManager;
 			// You'll want to add more error handling here.
 			
 			NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
+            NSLog(@"Unhandled ckErrorCode: %@", operationError);
 		}
 	};
 	

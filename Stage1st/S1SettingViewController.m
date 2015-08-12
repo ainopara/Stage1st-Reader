@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
 
 @property (assign, nonatomic) CGFloat offset;
 @end
@@ -73,6 +74,7 @@
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
     self.nightModeSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"];
+    
     self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
 
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");

@@ -282,7 +282,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         
     }
 }
-
+/*
 - (NSArray *)tableView:(UITableView *)sender editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.currentKey  isEqual: @"History"]) {
@@ -301,7 +301,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return @[];
 }
 
-
+*/
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *) cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
@@ -399,7 +399,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
-    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(NSString *group, NSString *collection, NSString *key, id object) {
+    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection, NSString *key, id object) {
         S1Topic *topic = object;
         BOOL favoirteFilter = YES;
         if ([currentKey isEqual: @"Favorite"]) {
@@ -671,20 +671,41 @@ static NSString * const cellIdentifier = @"TopicCell";
         return;
     }
     
-    NSArray *notifications = [notification.userInfo objectForKey:kNotificationsKey];
-    NSArray *sectionChanges = nil;
-    NSArray *rowChanges = nil;
-    [[self.databaseConnection ext:Ext_FilteredView_Archive] getSectionChanges:&sectionChanges
-                                                    rowChanges:&rowChanges
-                                              forNotifications:notifications
-                                                  withMappings:self.mappings];
+    //NSArray *notifications = [notification.userInfo objectForKey:kNotificationsKey];
     
-    if ([rowChanges count] == 0 && [sectionChanges count] == 0)
+    // If the view isn't visible, we might decide to skip the UI animation stuff.
+    if (!(self.isViewLoaded && self.view.window))
     {
-        // There aren't any changes that affect our tableView
+        // Since we moved our databaseConnection to a new commit,
+        // we need to update the mappings too.
+        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction){
+            [self.mappings updateWithTransaction:transaction];
+        }];
         return;
     }
+    
+    
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction){
+            [self.mappings updateWithTransaction:transaction];
+        }];
+        [self.tableView reloadData];
+        /*
+        NSLog(@"rowChange:%lu,sectionChange: %lu",(unsigned long)[rowChanges count], (unsigned long)[sectionChanges count]);
+        NSArray *sectionChanges = nil;
+        NSArray *rowChanges = nil;
+        [[self.databaseConnection ext:Ext_FilteredView_Archive] getSectionChanges:&sectionChanges
+                                                                       rowChanges:&rowChanges
+                                                                 forNotifications:notifications
+                                                                     withMappings:self.mappings];
+        
+        if ([rowChanges count] == 0 && [sectionChanges count] == 0)
+        {
+            // There aren't any changes that affect our tableView
+            return;
+        }*/
+        /*
+        
         [self.tableView beginUpdates];
         
         for (YapDatabaseViewSectionChange *sectionChange in sectionChanges) {
@@ -734,6 +755,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         
         [self.tableView endUpdates];
+         */
     }
     
 }
@@ -824,14 +846,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             self.mappings = [[YapDatabaseViewMappings alloc] initWithGroupFilterBlock:^BOOL(NSString *group, YapDatabaseReadTransaction *transaction) {
                 return YES;
             } sortBlock:^NSComparisonResult(NSString *group1, NSString *group2, YapDatabaseReadTransaction *transaction) {
-                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                [formatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
-                NSDate *date1 = [formatter dateFromString:group1];
-                NSDate *date2 = [formatter dateFromString:group2];
-                if (date1 && date2) {
-                    return [date2 compare:date1];
-                }
-                return [group1 compare:group2];
+                return [[S1Formatter sharedInstance] compareDateString:group1 withDateString:group2];
             } view:Ext_FilteredView_Archive];
             [self.mappings updateWithTransaction:transaction];
         }

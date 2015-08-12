@@ -248,7 +248,32 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection id="e4M-E1-pBD">
+                            <tableViewSection headerTitle="Syncing" id="q9g-tA-73J">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="2Df-Zp-Qy9" detailTextLabel="174-Ea-QdT" style="IBUITableViewCellStyleValue1" id="dLz-1f-fon">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dLz-1f-fon" id="7kw-RX-qsV">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="iCloud Sync" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2Df-Zp-Qy9">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Off" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="174-Ea-QdT">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Credits" id="e4M-E1-pBD">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" textLabel="pea-Ap-wK5" detailTextLabel="8dV-mn-myv" style="IBUITableViewCellStyleValue1" id="dAM-zs-hWh">
                                         <autoresizingMask key="autoresizingMask"/>
@@ -311,6 +336,7 @@
                         <outlet property="fontSizeCell" destination="mMi-Ax-Ued" id="rF1-ZR-trL"/>
                         <outlet property="fontSizeDetail" destination="MDi-8t-5qr" id="Lgf-wT-G5d"/>
                         <outlet property="forumOrderCell" destination="qM9-kQ-VM0" id="3nx-e2-U3J"/>
+                        <outlet property="iCloudSyncCell" destination="dLz-1f-fon" id="SHY-u1-79V"/>
                         <outlet property="keepHistoryCell" destination="hNg-YP-0G0" id="URo-UP-97R"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>
                         <outlet property="nightModeSwitch" destination="rMC-JB-vnF" id="jcf-gV-Bua"/>

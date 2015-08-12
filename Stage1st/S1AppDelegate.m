@@ -17,6 +17,7 @@
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "flurry.h"
+#import "DDTTYLogger.h"
 
 
 S1AppDelegate *MyAppDelegate;
@@ -27,6 +28,7 @@ S1AppDelegate *MyAppDelegate;
 {
     //Flurry
     [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
     //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
@@ -105,6 +107,11 @@ S1AppDelegate *MyAppDelegate;
     
     [DatabaseManager initialize];
     [CloudKitManager initialize];
+    /*
+    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [S1Tracer migrateDatabase:transaction];
+    }];
+    */
     
     // Register for push notifications
     

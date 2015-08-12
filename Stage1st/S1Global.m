@@ -7,11 +7,13 @@
 //
 
 #import "S1Global.h"
+#import "S1CacheDatabaseManager.h"
 
 @interface S1ColorManager ()
 
 @property (nonatomic, strong) NSDictionary *palette;
 @property (nonatomic, strong) NSDictionary *colorMap;
+
 
 @end
 
@@ -20,12 +22,12 @@
 
 + (S1ColorManager *)sharedInstance
 {
-    static S1ColorManager *myGlobalHelper = nil;
+    static S1ColorManager *MyGlobalColorManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        myGlobalHelper = [[S1ColorManager alloc] init];
+        MyGlobalColorManager = [[S1ColorManager alloc] init];
     });
-    return myGlobalHelper;
+    return MyGlobalColorManager;
 }
 
 - init {
@@ -101,7 +103,60 @@
     }
 }
 
+
+
 @end
+
+@implementation S1Formatter
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _dateCache = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
++ (S1Formatter *)sharedInstance
+{
+    static S1Formatter *myGlobalFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        myGlobalFormatter = [[S1Formatter alloc] init];
+    });
+    return myGlobalFormatter;
+}
+
+- (NSDateFormatter *)dateFormatter {
+    if (_dateFormatter == nil) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+    }
+    return _dateFormatter;
+}
+
+- (NSString *)headerForDate:(NSDate *)date {
+    return [self.dateFormatter stringFromDate:date];
+}
+
+- (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2 {
+    NSDate *date1 = [self.dateCache valueForKey:dateString1];
+    if (date1 == nil) {
+        date1 = [self.dateFormatter dateFromString:dateString1];
+        [self.dateCache setValue:date1 forKey:dateString1];
+    }
+    NSDate *date2 = [self.dateCache valueForKey:dateString2];
+    if (date2 == nil) {
+        date2 = [self.dateFormatter dateFromString:dateString2];
+        [self.dateCache setValue:date2 forKey:dateString2];
+    }
+    if (date1 && date2) {
+        return [date2 compare:date1];
+    }
+    return [dateString1 compare:dateString2];
+}
+
+@end
+
 
 @implementation S1Global
 
