@@ -24,11 +24,22 @@ S1AppDelegate *MyAppDelegate;
 
 @implementation S1AppDelegate
 
+- (instancetype)init {
+    if ((self = [super init])) {
+        // Store global reference
+        MyAppDelegate = self;
+        // Configure logging
+        //[DDLog addLogger:[DDTTYLogger sharedInstance]];
+    }
+    return self;
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Flurry
     [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
     //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
@@ -107,11 +118,11 @@ S1AppDelegate *MyAppDelegate;
     
     [DatabaseManager initialize];
     [CloudKitManager initialize];
-    /*
-    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
-        [S1Tracer migrateDatabase:transaction];
-    }];
-    */
+
+    // Migrate Database
+    [S1Tracer migrateDatabase];
+    
+
     
     // Register for push notifications
     

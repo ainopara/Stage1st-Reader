@@ -12,7 +12,6 @@
 #import "S1Tracer.h"
 #import "S1Parser.h"
 #import "S1Floor.h"
-#import "IMQuickSearch.h"
 #import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
 #import "S1CacheDatabaseManager.h"
@@ -28,9 +27,6 @@
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
 
 @property (strong, nonatomic) NSArray *cachedHistoryTopics;
-@property (strong, nonatomic) IMQuickSearch *historySearch;
-@property (strong, nonatomic) IMQuickSearch *favoriteSearch;
-@property (strong, nonatomic) NSSortDescriptor *sortDescriptor;
 
 @end
 
@@ -45,16 +41,6 @@
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
     //_shouldInterruptHistoryCallback = NO;
-    _sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
-        if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        
-        if ([obj1 timeIntervalSince1970] < [obj2 timeIntervalSince1970]) {
-            return (NSComparisonResult)NSOrderedAscending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
     
     return self;
 }

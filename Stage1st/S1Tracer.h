@@ -21,6 +21,6 @@
 - (id)init;
 
 + (void)upgradeDatabase;
-+ (void)migrateDatabase:(YapDatabaseReadWriteTransaction *)transaction;
++ (void)migrateDatabase;
 
 @end

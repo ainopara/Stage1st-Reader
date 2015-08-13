@@ -110,41 +110,59 @@
 
 #pragma mark - Migrate
 
-+ (void)migrateDatabase:(YapDatabaseReadWriteTransaction *)transaction {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-    NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
-    NSString *dbPath = [dbPathURL path];
-    if ([fileManager fileExistsAtPath:dbPath]) {
-        FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
-        if (![db open]) {
-            NSLog(@"Could not open db.");
-            return;
-        }
-
-        FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id);"];
-        NSInteger succeedCount = 0;
-        NSInteger failCount = 0;
-        while ([result next]) {
-            S1Topic *topic = [S1Tracer topicFromQueryResult:result];
-            S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
-            if (tracedTopic) {
-                tracedTopic = [tracedTopic copy];
-                [tracedTopic absorbTopic:topic];
-            } else {
-                tracedTopic = topic;
-            }
-            if (tracedTopic) {
-                [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
-                succeedCount += 1;
-            } else {
-                failCount += 1;
++ (void)migrateDatabase {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"migrateDatabase begin.");
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+        NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
+        NSString *dbPath = [dbPathURL path];
+        if ([fileManager fileExistsAtPath:dbPath]) {
+            FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
+            if (![db open]) {
+                NSLog(@"Could not open db.");
+                return;
             }
             
+            FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
+            __block NSInteger succeedCount = 0;
+            __block NSInteger failCount = 0;
+            __block BOOL allImported = NO;
+            while (!allImported) {
+                [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+                    while ([result next]) {
+                        S1Topic *topic = [S1Tracer topicFromQueryResult:result];
+                        S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
+                        if (tracedTopic) {
+                            tracedTopic = [tracedTopic copy];
+                            [tracedTopic absorbTopic:topic];
+                        } else {
+                            tracedTopic = topic;
+                        }
+                        if (tracedTopic) {
+                            [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
+                            succeedCount += 1;
+                        } else {
+                            failCount += 1;
+                        }
+                        if (succeedCount % 50 == 1) {
+                            break;
+                        }
+                    }
+                    if (![result hasAnotherRow]) {
+                        allImported = YES;
+                    }
+                }];
+            }
+            NSLog(@"%ld Topics Imported.(%ld fails)", (long)succeedCount, (long)failCount);
+            
+            [db close];
+            NSError *error;
+            [fileManager moveItemAtURL:dbPathURL toURL:[documentDirectory URLByAppendingPathComponent:@"Stage1stReader.databasebackup"] error:&error];
+            if (error) {
+                NSLog(@"Fail to Rename Database: %@",error);
+            }
         }
-        NSLog(@"%ld Topics Imported.(%ld fails)", (long)succeedCount, (long)failCount);
-        
-        [db close];
-    }
+    });
 }
 @end

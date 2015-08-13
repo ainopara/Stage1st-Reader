@@ -277,7 +277,12 @@
 {
     // Used to estimate total page number
     #define _REPLY_PER_PAGE 30
-    _topic = [topic copy];
+    if ([topic isImmutable]) {
+        _topic = [topic copy];
+    } else {
+        _topic = topic;
+    }
+    
     _totalPages = ([topic.replyCount integerValue] / _REPLY_PER_PAGE) + 1;
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];

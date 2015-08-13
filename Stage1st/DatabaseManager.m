@@ -43,7 +43,7 @@ DatabaseManager *MyDatabaseManager;
 {
 	NSString *databaseName = @"Stage1stYap.sqlite";
 	
-	NSURL *baseURL = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory
+	NSURL *baseURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory
 	                                                        inDomain:NSUserDomainMask
 	                                               appropriateForURL:nil
 	                                                          create:YES
@@ -404,7 +404,7 @@ DatabaseManager *MyDatabaseManager;
 	  ^(NSString *databaseIdentifier, NSError *operationError)
 	{
 		NSInteger ckErrorCode = operationError.code;
-		
+        NSLog(@"CKError: %@", operationError);
 		if (ckErrorCode == CKErrorNetworkUnavailable ||
 		    ckErrorCode == CKErrorNetworkFailure      )
 		{

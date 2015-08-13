@@ -707,7 +707,7 @@ static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 	
 	operation.fetchRecordsCompletionBlock = ^(NSDictionary *recordsByRecordID, NSError *operationError) {
 		
-		if (operationError)
+		if (operationError && operationError.code != 2)
 		{
 			if (completionHandler) {
 				completionHandler(operationError);
