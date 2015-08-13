@@ -183,7 +183,7 @@ DatabaseManager *MyDatabaseManager;
 	#endif
 	
 	bgDatabaseConnection = [database newConnection];
-	bgDatabaseConnection.objectCacheLimit = 10000;
+	bgDatabaseConnection.objectCacheLimit = 0;
 	bgDatabaseConnection.metadataCacheEnabled = NO;
 	
 	// Start the longLivedReadTransaction on the UI connection.
