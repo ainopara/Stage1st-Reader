@@ -170,11 +170,7 @@ DatabaseManager *MyDatabaseManager;
 	//
 	// ^^^ FOR ADVANCED USERS ONLY ^^^
 	
-	// Setup the extensions
 	
-	[self setupArchiveViewExtension];
-    [self setupFilteredArchiveViewExtension];
-	[self setupCloudKitExtension];
 	
 	// Setup database connection(s)
 	
@@ -187,7 +183,7 @@ DatabaseManager *MyDatabaseManager;
 	#endif
 	
 	bgDatabaseConnection = [database newConnection];
-	bgDatabaseConnection.objectCacheLimit = 8000;
+	bgDatabaseConnection.objectCacheLimit = 10000;
 	bgDatabaseConnection.metadataCacheEnabled = NO;
 	
 	// Start the longLivedReadTransaction on the UI connection.
@@ -195,6 +191,13 @@ DatabaseManager *MyDatabaseManager;
 	[uiDatabaseConnection enableExceptionsForImplicitlyEndingLongLivedReadTransaction];
 	[uiDatabaseConnection beginLongLivedReadTransaction];
 	
+    // Setup the extensions
+    
+    [self setupArchiveViewExtension];
+    [self setupFilteredArchiveViewExtension];
+    [self setupCloudKitExtension];
+    
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 	                                         selector:@selector(yapDatabaseModified:)
 	                                             name:YapDatabaseModifiedNotification
@@ -253,7 +256,7 @@ DatabaseManager *MyDatabaseManager;
 	                                    sorting:orderSorting
 	                                 versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
 	
-    [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.uiDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
             NSLog(@"Error registering %@ !!!", Ext_View_Archive);
         }
@@ -266,7 +269,7 @@ DatabaseManager *MyDatabaseManager;
     }];
     
     YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@"History:"];
-    [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive connection:self.uiDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
             NSLog(@"Error registering %@ !!!", Ext_FilteredView_Archive);
         }
