@@ -19,31 +19,31 @@
     [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         if (tracedTopic == nil) {
-            [transaction setObject:topic forKey:[topic.topicID stringValue] inCollection:Collection_Topics];
+            [transaction setObject:[topic copy] forKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         } else {
             tracedTopic = [tracedTopic copy];
-            if (![tracedTopic.topicID isEqualToNumber:topic.topicID]) {
+            if (topic.topicID != nil && (tracedTopic.topicID == nil || (tracedTopic.topicID != nil && (![tracedTopic.topicID isEqualToNumber:topic.topicID])))) {
                 tracedTopic.topicID = topic.topicID;
             }
-            if (![tracedTopic.title isEqualToString:topic.title]) {
+            if (topic.title != nil && (tracedTopic.title == nil || (tracedTopic.title != nil && (![tracedTopic.title isEqualToString:topic.title])))) {
                 tracedTopic.title = topic.title;
             }
-            if (![tracedTopic.fID isEqualToNumber:topic.fID]) {
+            if (topic.fID != nil && (tracedTopic.fID == nil || (tracedTopic.fID != nil && (![tracedTopic.fID isEqualToNumber:topic.fID])))) {
                 tracedTopic.fID = topic.fID;
             }
-            if (![tracedTopic.replyCount isEqualToNumber:topic.replyCount]) {
+            if (topic.replyCount != nil && (tracedTopic.replyCount == nil || (tracedTopic.replyCount != nil && (![tracedTopic.replyCount isEqualToNumber:topic.replyCount])))) {
                 tracedTopic.replyCount = topic.replyCount;
             }
-            if (![tracedTopic.lastViewedPage isEqualToNumber:topic.lastViewedPage]) {
+            if (topic.lastViewedPage != nil && (tracedTopic.lastViewedPage == nil || (tracedTopic.lastViewedPage != nil && (![tracedTopic.lastViewedPage isEqualToNumber:topic.lastViewedPage])))) {
                 tracedTopic.lastViewedPage = topic.lastViewedPage;
             }
-            if (![tracedTopic.lastViewedPosition isEqualToNumber:topic.lastViewedPosition]) {
+            if (topic.lastViewedPosition != nil && (tracedTopic.lastViewedPosition == nil || (tracedTopic.lastViewedPosition != nil && (![tracedTopic.lastViewedPosition isEqualToNumber:topic.lastViewedPosition])))) {
                 tracedTopic.lastViewedPosition = topic.lastViewedPosition;
             }
-            if (![tracedTopic.favorite isEqualToNumber:topic.favorite]) {
+            if (topic.favorite != nil && (tracedTopic.favorite == nil || (tracedTopic.favorite != nil && (![tracedTopic.favorite isEqualToNumber:topic.favorite])))) {
                 tracedTopic.favorite = topic.favorite;
             }
-            if (![tracedTopic.favoriteDate isEqualToDate:topic.favoriteDate]) {
+            if (topic.favoriteDate != nil && (tracedTopic.favoriteDate == nil || (tracedTopic.favoriteDate != nil && (![tracedTopic.favoriteDate isEqualToDate:topic.favoriteDate])))) {
                 tracedTopic.favoriteDate = topic.favoriteDate;
             }
             tracedTopic.lastViewedDate = [NSDate date];

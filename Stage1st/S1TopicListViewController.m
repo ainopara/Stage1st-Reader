@@ -408,7 +408,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:[searchText lowercaseString]]) && favoirteFilter;
     }];
     [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
-        [[transaction ext:Ext_FilteredView_Archive] setFiltering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@", currentKey, searchText]];
+        [[transaction ext:Ext_FilteredView_Archive] setFiltering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@:%@", NSLocalizedString(@"SystemLanguage", @"Just Identifier"), currentKey, searchText]];
     }];
 }
 

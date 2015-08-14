@@ -268,7 +268,7 @@ DatabaseManager *MyDatabaseManager;
         return YES;
     }];
     
-    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:@"History:"];
+    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@:%@", NSLocalizedString(@"SystemLanguage", @"Just Identifier"), @"History", @""]];
     [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
             NSLog(@"Error registering %@ !!!", Ext_FilteredView_Archive);

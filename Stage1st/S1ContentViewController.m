@@ -287,6 +287,9 @@
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
+    if (topic.favorite == nil) {
+        topic.favorite = @(NO);
+    }
 }
 
 - (UIView *)accessoryView {

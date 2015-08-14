@@ -24,6 +24,14 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 @implementation S1Topic : MyDatabaseObject
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _favorite = @(NO);
+    }
+    return self;
+}
+
 - (instancetype)initWithRecord:(CKRecord *)record
 {
     if (![record.recordType isEqualToString:@"topic"])
@@ -43,6 +51,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
             {
                 [self setLocalValueFromCloudValue:[record objectForKey:cloudKey] forCloudKey:cloudKey];
             }
+        }
+        if (_favorite == nil) {
+            _favorite = @(NO);
         }
     }
     return self;
@@ -115,10 +126,16 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     if (self.fID == nil && topic.fID != nil) {
         self.fID = topic.fID;
     }
+    if (self.favorite == nil && topic.favorite != nil) {
+        self.favorite = topic.favorite;
+    }
+    if (self.favorite == nil) {
+        self.favorite = @(NO);
+    }
     self.lastReplyCount = topic.replyCount;
     self.lastViewedPage = topic.lastViewedPage;
     self.lastViewedPosition = topic.lastViewedPosition;
-    self.favorite = topic.favorite;
+    
 }
 
 - (void)updateFromTopic:(S1Topic *)topic {
@@ -249,8 +266,8 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 - (void)setNilValueForKey:(NSString *)key
 {
-    if ([key isEqualToString:@"priority"]) {
-        //self.priority = TodoPriorityNormal;
+    if ([key isEqualToString:@"favorite"]) {
+        //self.favorite = NO;
     }
     if ([key isEqualToString:@"isDone"]) {
         //self.isDone = NO;

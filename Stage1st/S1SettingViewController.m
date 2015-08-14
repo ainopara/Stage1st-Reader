@@ -9,6 +9,7 @@
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
 #import "GSStaticTableViewBuilder.h"
+#import "DatabaseManager.h"
 
 
 @interface S1SettingViewController () <UITableViewDelegate>
@@ -90,11 +91,15 @@
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
+    [self updateiCloudStatus];
+    
     self.offset = 0;
     self.tableView.delegate = self;
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
 }
 
 - (void)dealloc {
@@ -214,4 +219,31 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                  NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
 }
+
+- (void)cloudKitSuspendCountChanged:(NSNotification *)notification
+{
+    [self updateiCloudStatus];
+}
+
+- (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
+{
+    [self updateiCloudStatus];
+}
+#pragma mark - Helper
+
+- (void)updateiCloudStatus {
+    NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
+    
+    NSUInteger inFlightCount = 0;
+    NSUInteger queuedCount = 0;
+    [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
+    NSString *titleString;
+    if (suspendCount > 0){
+        titleString = [NSString stringWithFormat:@"Suspended(%lu)(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
+    } else {
+        titleString = [NSString stringWithFormat:@"Resumed (%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+    }
+    self.iCloudSyncCell.detailTextLabel.text = titleString;
+}
+
 @end
