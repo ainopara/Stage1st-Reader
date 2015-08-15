@@ -287,8 +287,8 @@
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
-    if (topic.favorite == nil) {
-        topic.favorite = @(NO);
+    if (_topic.favorite == nil) {
+        _topic.favorite = @(NO);
     }
 }
 

@@ -35,6 +35,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) UIImageView *archiveImageView;
+@property (nonatomic, strong) CAKeyframeAnimation *archiveSyncAnimation;
+@property (nonatomic, strong) NSArray *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -786,9 +789,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     if (suspendCount > 0 || inFlightCount + queuedCount > 0) {
-        _historyItem.image = [UIImage imageNamed:@"Archive-Syncing"];
+        if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
+            [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
+        }
     } else {
-        _historyItem.image = [UIImage imageNamed:@"Archive"];
+        [_archiveImageView.layer removeAllAnimations];
     }
 }
 
@@ -940,10 +945,46 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIBarButtonItem *)historyItem {
     if (!_historyItem) {
-        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStyleBordered target:self action:@selector(archive:)];
+        _historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveImageView];
+        [_historyItem setStyle:UIBarButtonItemStyleBordered];
+        [_historyItem setTarget:self];
+        [_historyItem setAction:@selector(archive:)];
         [self updateArchiveIcon];
     }
     return _historyItem;
+}
+
+- (UIImageView *)archiveImageView {
+    if (!_archiveImageView) {
+        _archiveImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Archive"]];
+    }
+    return _archiveImageView;
+}
+
+- (CAKeyframeAnimation *)archiveSyncAnimation {
+    if (!_archiveSyncAnimation) {
+        _archiveSyncAnimation = [[CAKeyframeAnimation alloc] init];
+        [_archiveSyncAnimation setKeyPath:@"contents"];
+        //_archiveSyncAnimation.calculationMode = kCAAnimationDiscrete;
+        _archiveSyncAnimation.duration = 3.0;
+        _archiveSyncAnimation.values = self.archiveSyncImages;
+        _archiveSyncAnimation.repeatCount = HUGE_VALF;
+        _archiveSyncAnimation.removedOnCompletion = false;
+        _archiveSyncAnimation.fillMode = kCAFillModeForwards;
+    }
+    return _archiveSyncAnimation;
+}
+
+- (NSArray *)archiveSyncImages {
+    if (!_archiveSyncImages) {
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        for (NSInteger i = 1; i <= 36; i++) {
+            UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"Archive-Syncing %ld", (long)i]];
+            [array addObject:(id)[image CGImage]];
+        }
+        _archiveSyncImages = array;
+    }
+    return _archiveSyncImages;
 }
 
 - (UIBarButtonItem *)settingsItem {
