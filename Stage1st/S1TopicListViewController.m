@@ -947,8 +947,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_historyItem) {
         _historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveImageView];
         [_historyItem setStyle:UIBarButtonItemStyleBordered];
-        [_historyItem setTarget:self];
-        [_historyItem setAction:@selector(archive:)];
         [self updateArchiveIcon];
     }
     return _historyItem;
@@ -957,6 +955,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UIImageView *)archiveImageView {
     if (!_archiveImageView) {
         _archiveImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Archive"]];
+        UITapGestureRecognizer *gr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(archive:)];
+        [_archiveImageView addGestureRecognizer:gr];
     }
     return _archiveImageView;
 }

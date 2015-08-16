@@ -184,7 +184,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
                 self.lastViewedPosition = topic.lastViewedPosition;
             }
         }
-        if ([topic.favorite boolValue]) {
+        if ([topic.favorite boolValue] == YES && ![self.favorite boolValue]) {
             self.favorite = [NSNumber numberWithBool:YES];
             self.favoriteDate = topic.favoriteDate;
         }

@@ -123,9 +123,10 @@
                 NSLog(@"Could not open db.");
                 return;
             }
-            
+            // TODO: Should change query to make sure topic that in favorite list but not in history list to be imported.
             FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
             __block NSInteger succeedCount = 0;
+            __block NSInteger changeCount = 0;
             __block NSInteger failCount = 0;
             __block BOOL allImported = NO;
             while (!allImported) {
@@ -140,12 +141,16 @@
                             tracedTopic = topic;
                         }
                         if (tracedTopic) {
-                            [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
+                            if (tracedTopic.hasChangedProperties) {
+                                NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
+                                [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
+                                changeCount += 1;
+                            }
                             succeedCount += 1;
                         } else {
                             failCount += 1;
                         }
-                        if (succeedCount % 50 == 1) {
+                        if (changeCount % 50 == 1) {
                             break;
                         }
                     }
@@ -154,7 +159,7 @@
                     }
                 }];
             }
-            NSLog(@"%ld Topics Imported.(%ld fails)", (long)succeedCount, (long)failCount);
+            NSLog(@"%ld Topics Counted.%ld Topics Changed.(%ld fails)", (long)succeedCount, (long)changeCount, (long)failCount);
             
             [db close];
             NSError *error;
