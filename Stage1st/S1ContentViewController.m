@@ -613,6 +613,9 @@
         // Favorite
         if (1 == buttonIndex) {
             self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
+            if ([self.topic.favorite boolValue]) {
+                self.topic.favoriteDate = [NSDate date];
+            }
             S1HUD *HUD = [S1HUD showHUDInView:self.view];
             [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];

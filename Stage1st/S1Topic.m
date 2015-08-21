@@ -111,6 +111,18 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     //TODO: Make it clear if we should copy floors.
     return copy;
 }
+
+#pragma mark - Description
+
+- (NSString *)description {
+    NSString *despString = [NSString stringWithFormat:@"Topic %@: %lu cloud key changes -> ", self.topicID, (unsigned long)[self.changedCloudProperties count]];
+    for (NSString *property in self.changedCloudProperties) {
+        despString = [despString stringByAppendingString:[NSString stringWithFormat:@"\n%@ : %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]]];
+    }
+    return despString;
+}
+
+
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {
@@ -126,7 +138,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     if (self.fID == nil && topic.fID != nil) {
         self.fID = topic.fID;
     }
-    if (self.favorite == nil && topic.favorite != nil) {
+    if (topic.favorite != nil) {
         self.favorite = topic.favorite;
     }
     if (self.favorite == nil) {

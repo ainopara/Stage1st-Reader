@@ -195,7 +195,14 @@ DatabaseManager *MyDatabaseManager;
     
     [self setupArchiveViewExtension];
     [self setupFilteredArchiveViewExtension];
-    [self setupCloudKitExtension];
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7 do not support cloud kit sync
+        ;
+    } else {
+        // iOS 8 and more
+        [self setupCloudKitExtension];
+    }
+    
     
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -417,13 +424,21 @@ DatabaseManager *MyDatabaseManager;
 		else if (ckErrorCode == CKErrorNotAuthenticated)
 		{
 			[MyCloudKitManager handleNotAuthenticated];
-		}
+        }
+        else if (ckErrorCode == CKErrorRequestRateLimited)
+        {
+            NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
+            NSLog(@"Unhandled ckError: %@", operationError);
+        }
+        else if (ckErrorCode == CKErrorUserDeletedZone)
+        {
+            NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
+            NSLog(@"Unhandled ckError: %@", operationError);
+        }
 		else
 		{
-			// You'll want to add more error handling here.
-			
 			NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
-            NSLog(@"Unhandled ckErrorCode: %@", operationError);
+            NSLog(@"Unhandled ckError: %@", operationError);
 		}
 	};
 	

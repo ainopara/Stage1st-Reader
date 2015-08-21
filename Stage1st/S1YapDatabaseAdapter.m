@@ -19,6 +19,7 @@
     [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         if (tracedTopic == nil) {
+            NSLog(@"Traced: \n%@",topic);
             [transaction setObject:[topic copy] forKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         } else {
             tracedTopic = [tracedTopic copy];
@@ -47,7 +48,7 @@
                 tracedTopic.favoriteDate = topic.favoriteDate;
             }
             tracedTopic.lastViewedDate = [NSDate date];
-            
+            NSLog(@"Traced: \n%@",tracedTopic);
             [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
         }
     }];

@@ -232,18 +232,26 @@
 #pragma mark - Helper
 
 - (void)updateiCloudStatus {
-    NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
-    
-    NSUInteger inFlightCount = 0;
-    NSUInteger queuedCount = 0;
-    [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     NSString *titleString;
-    if (suspendCount > 0){
-        titleString = [NSString stringWithFormat:@"Suspended(%lu)(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7
+        titleString = @"Off";
     } else {
-        titleString = [NSString stringWithFormat:@"Resumed (%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+        // iOS 8 and more
+        NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
+        
+        NSUInteger inFlightCount = 0;
+        NSUInteger queuedCount = 0;
+        [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
+        
+        if (suspendCount > 0){
+            titleString = [NSString stringWithFormat:@"Suspended(%lu)(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
+        } else {
+            titleString = [NSString stringWithFormat:@"Resumed (%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+        }
+        self.iCloudSyncCell.detailTextLabel.text = titleString;
     }
-    self.iCloudSyncCell.detailTextLabel.text = titleString;
+    
 }
 
 @end

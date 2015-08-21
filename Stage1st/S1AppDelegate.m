@@ -82,6 +82,9 @@ S1AppDelegate *MyAppDelegate;
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"NightMode"]) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
     }
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"EnableSync"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"EnableSync"];
+    }
     
     // Migrate to v3.4.0
     NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
@@ -117,23 +120,37 @@ S1AppDelegate *MyAppDelegate;
     // Start database & cloudKit (in that order)
     
     [DatabaseManager initialize];
-    [CloudKitManager initialize];
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7 do not support CloudKit
+        ;
+    } else {
+        // iOS 8 and more
+        [CloudKitManager initialize];
+    }
+    
 
     // Migrate Database
     [S1Tracer migrateDatabase];
     
 
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7 do not support CloudKit
+        ;
+    } else {
+        // iOS 8 and more
+        // Register for push notifications
+        
+        UIUserNotificationSettings *notificationSettings =
+        [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+        
+        [application registerUserNotificationSettings:notificationSettings];
+    }
     
-    // Register for push notifications
-    
-    UIUserNotificationSettings *notificationSettings =
-    [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
-    
-    [application registerUserNotificationSettings:notificationSettings];
     
     // Reachability
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
+    
     // URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
