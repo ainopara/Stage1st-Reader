@@ -43,7 +43,7 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
         super.init(nibName: nil, bundle: nil)
         
         progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
-        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: 80, baseLine: .Bottom), forKey: "bottom")
+        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: 50, baseLine: .Bottom), forKey: "bottom")
         
         scrollView.delegate = self
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: NSKeyValueObservingOptions.New, context: nil)

@@ -935,7 +935,7 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 80 && _finishLoading) {
+    if (offset > 50 && _finishLoading) {
         [self forward:self.forwardButton];
     }
 }
@@ -947,7 +947,7 @@
     } else {
         self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
     }
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 80, contentSize.width - 0, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 50, contentSize.width - 0, 1);
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
