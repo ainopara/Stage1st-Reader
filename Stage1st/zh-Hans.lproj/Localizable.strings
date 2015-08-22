@@ -21,6 +21,8 @@
 /* Weibo */
 "ContentView_ActionSheet_Weibo" = "分享到微博";
 
+"ContentView_ActionSheet_Share" = "分享";
+
 /* No comment provided by engineer. */
 "ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "需要启用中文键盘才能使用";
 

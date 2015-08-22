@@ -195,6 +195,9 @@
     self.pageLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
     [self.pageLabel addGestureRecognizer:pickPageGR];
+    UILongPressGestureRecognizer *forceRefreshGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forceRefreshPressed:)];
+    forceRefreshGR.minimumPressDuration = 0.5;
+    [self.pageLabel addGestureRecognizer:forceRefreshGR];
     
     //disable this function for now
     //UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
@@ -363,7 +366,7 @@
         [self fetchContent];
     } else {
         if (![self atBottom]) {
-            [self scrollToButtomAnimated:YES];
+            [self scrollToBottomAnimated:YES];
         } else {
             //_needToScrollToBottom = YES;
             [self fetchContentAndPrecacheNextPage:YES];
@@ -423,6 +426,17 @@
     picker.pickerTextAttributes = @{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"content.picker.text"],};
     [picker showActionSheetPicker];
 
+}
+
+- (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
+    if (gr.state == UIGestureRecognizerStateBegan) {
+        NSLog(@"forceRefresh pressed");
+        [self cancelRequest];
+        _needToLoadLastPosition = NO;
+        [self saveViewPosition];
+        [self fetchContentAndPrecacheNextPage:YES];
+    }
+    
 }
 - (void)panPageLabel:(UIPanGestureRecognizer *)gr {
     
@@ -484,24 +498,15 @@
             [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];
         }];
-        // Weibo Action
-        UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if (!NSClassFromString(@"SLComposeViewController")) {
-                return;
+        // Share Action
+        UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], [self screenShot]] applicationActivities:nil];
+            if ([activityController respondsToSelector:@selector(popoverPresentationController)]) {
+                [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
             }
-            SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
-            if (!controller) {
-                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"")];
-                return;
-            }
-            [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-            [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
-            [controller addImage:[self screenShot]];
-            
-            __weak SLComposeViewController *weakController = controller;
-            [self presentViewController:controller animated:YES completion:nil];
-            [controller setCompletionHandler:^(SLComposeViewControllerResult result){
-                [weakController dismissViewControllerAnimated:YES completion:nil];
+            [self presentViewController:activityController animated:YES completion:nil];
+            [activityController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+                NSLog(@"finish:%@",activityType);
             }];
         }];
         // Copy Link
@@ -824,24 +829,25 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPosition) {
         if (self.topic.lastViewedPosition != 0) {
             [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
         }
         _needToLoadLastPosition = NO;
     }
-    NSNumber *currentPageNumber = [NSNumber numberWithInteger:_currentPage];
-    NSNumber *positionForPage =[self.cachedViewPosition objectForKey:currentPageNumber];
+
+    // Restore last view position from cached position in this view controller.
+    NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
     if (positionForPage) {
-        if ([positionForPage doubleValue] >= self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height) {
-            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height)];
-        } else {
-            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [positionForPage doubleValue])];
-        }
-        
+        CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
+        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
     }
+    
+    // User want to scroll to bottom.
     if (_needToScrollToBottom) {
-        [self scrollToButtomAnimated:YES];
+        _needToScrollToBottom = NO;
+        [self scrollToBottomAnimated:YES];
     }
     
 }
@@ -926,9 +932,9 @@
 #pragma mark APPullToAction Delegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
-    if (offset < -80) {
-        if (_currentPage != 1 && _finishLoading) {
-            [self back:self.backButton];
+    if (offset < -80 && _finishLoading) {
+        if (_currentPage != 1) {
+            [self back:nil];
         }
     }
     
@@ -936,7 +942,7 @@
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
     if (offset > 50 && _finishLoading) {
-        [self forward:self.forwardButton];
+        [self forward:nil];
     }
 }
 
@@ -1173,10 +1179,9 @@
 
 #pragma mark - Helpers
 
-- (void)scrollToButtomAnimated:(BOOL)animated
+- (void)scrollToBottomAnimated:(BOOL)animated
 {
     [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height-self.webView.scrollView.bounds.size.height) animated:animated];
-    _needToScrollToBottom = NO;
 }
 
 - (BOOL)atBottom
