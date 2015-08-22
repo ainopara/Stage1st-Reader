@@ -14,6 +14,7 @@
 		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
+		8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605636D1B88222100E1D63E /* S1CloudKitViewController.m */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
 		860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */; };
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
@@ -105,6 +106,8 @@
 		86040B7F19DE3A74004BF2BC /* S1DataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DataCenter.m; path = Stage1st/S1DataCenter.m; sourceTree = "<group>"; };
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
+		8605636C1B88222100E1D63E /* S1CloudKitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1CloudKitViewController.h; path = Stage1st/S1CloudKitViewController.h; sourceTree = "<group>"; };
+		8605636D1B88222100E1D63E /* S1CloudKitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1CloudKitViewController.m; path = Stage1st/S1CloudKitViewController.m; sourceTree = "<group>"; };
 		8605734E1B7623A300C70781 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1YapDatabaseAdapter.h; path = Stage1st/S1YapDatabaseAdapter.h; sourceTree = "<group>"; };
 		860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1YapDatabaseAdapter.m; path = Stage1st/S1YapDatabaseAdapter.m; sourceTree = "<group>"; };
@@ -635,6 +638,8 @@
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
 				86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */,
 				86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */,
+				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
+				8605636D1B88222100E1D63E /* S1CloudKitViewController.m */,
 			);
 			name = "Settings View Controller";
 			sourceTree = "<group>";
@@ -797,6 +802,7 @@
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
+				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
 				C095879E16CB61FC007E0119 /* GSRow.m in Sources */,
