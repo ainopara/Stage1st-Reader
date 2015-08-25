@@ -496,8 +496,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark - Orientation
 
-- (NSUInteger)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             return UIInterfaceOrientationMaskPortrait;

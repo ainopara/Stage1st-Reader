@@ -90,7 +90,7 @@
     return self.interactionController;
 }
 
-- (NSUInteger)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
+- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
