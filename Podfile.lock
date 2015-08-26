@@ -1,25 +1,25 @@
 PODS:
-  - 1PasswordExtension (1.2)
-  - ActionSheetPicker-3.0 (1.6.2)
-  - AFNetworking (2.5.4):
-    - AFNetworking/NSURLConnection (= 2.5.4)
-    - AFNetworking/NSURLSession (= 2.5.4)
-    - AFNetworking/Reachability (= 2.5.4)
-    - AFNetworking/Security (= 2.5.4)
-    - AFNetworking/Serialization (= 2.5.4)
-    - AFNetworking/UIKit (= 2.5.4)
-  - AFNetworking/NSURLConnection (2.5.4):
+  - 1PasswordExtension (1.5)
+  - ActionSheetPicker-3.0 (1.7.0)
+  - AFNetworking (2.6.0):
+    - AFNetworking/NSURLConnection (= 2.6.0)
+    - AFNetworking/NSURLSession (= 2.6.0)
+    - AFNetworking/Reachability (= 2.6.0)
+    - AFNetworking/Security (= 2.6.0)
+    - AFNetworking/Serialization (= 2.6.0)
+    - AFNetworking/UIKit (= 2.6.0)
+  - AFNetworking/NSURLConnection (2.6.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.4):
+  - AFNetworking/NSURLSession (2.6.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.4)
-  - AFNetworking/Security (2.5.4)
-  - AFNetworking/Serialization (2.5.4)
-  - AFNetworking/UIKit (2.5.4):
+  - AFNetworking/Reachability (2.6.0)
+  - AFNetworking/Security (2.6.0)
+  - AFNetworking/Serialization (2.6.0)
+  - AFNetworking/UIKit (2.6.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - CocoaLumberjack (2.0.1):
@@ -38,16 +38,16 @@ PODS:
   - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
-  - Mantle (2.0.2):
-    - Mantle/extobjc (= 2.0.2)
-  - Mantle/extobjc (2.0.2)
-  - Masonry (0.6.1)
+  - Mantle (2.0.4):
+    - Mantle/extobjc (= 2.0.4)
+  - Mantle/extobjc (2.0.4)
+  - Masonry (0.6.2)
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.5.1)
   - SVWebViewController (1.0)
-  - YapDatabase (2.7):
-    - YapDatabase/standard (= 2.7)
-  - YapDatabase/standard (2.7):
+  - YapDatabase (2.7.1):
+    - YapDatabase/standard (= 2.7.1)
+  - YapDatabase/standard (2.7.1):
     - CocoaLumberjack (~> 2)
 
 DEPENDENCIES:
@@ -77,7 +77,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   ActionSheetPicker-3.0:
-    :commit: 3fd26b0f45fcaf3e4aa130ead8b55b70d867a569
+    :commit: 84dc266ff1a1dd39448cbb7fa880db1f45048e84
     :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
     :commit: 60d6ed33e322fc2648b6a18d238d440d43aa2704
@@ -90,19 +90,19 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: fcf300204bda5b5c78936dbb937a7d661f1ca796
-  ActionSheetPicker-3.0: cc9f90ae785070623e9b972270013c3242190fb0
-  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  1PasswordExtension: d2392e44526be30ae7d23f305e96e411ede9b9d1
+  ActionSheetPicker-3.0: 6516052442fc8ca8f3cc4b3c7aa0436de12373df
+  AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   CocoaLumberjack: 019d1361244274a6138c788c6cb80baabc13fb8f
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   IMQuickSearch: 351fda5dcf33428bf04c28213b984d66015b691d
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Mantle: 967fd31ea0220890b2e76589198996b534bb3fb1
-  Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
+  Mantle: 6bee68168423948be0c0c5924832bf3af188e099
+  Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: c9c55cad2729c85f6ced415f1b21857c9a2d8ef9
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
-  YapDatabase: 9ec61885759a832d41f965e27f7ee08a06d4c441
+  YapDatabase: e9ff9a189e99268a331575411e8462e4c6df2bc3
 
 COCOAPODS: 0.38.2
