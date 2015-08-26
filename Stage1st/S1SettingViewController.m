@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
 
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *offsetConstraint;
 @property (assign, nonatomic) CGFloat offset;
 @end
 
@@ -57,6 +58,11 @@
         self.navigationController.view.layer.cornerRadius  = 5.0;
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
+    }
+    if (!SYSTEM_VERSION_LESS_THAN(@"8")) {
+        for (NSLayoutConstraint *constraint in self.offsetConstraint) {
+            constraint.active = NO;
+        }
     }
 
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
