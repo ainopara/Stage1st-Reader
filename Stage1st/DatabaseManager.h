@@ -46,7 +46,8 @@ extern NSString *const Collection_CloudKit;
  * E.g.: [[transaction ext:Ext_View_Archive] objectAtIndexPath:indexPath withMappings:mappings]
 **/
 extern NSString *const Ext_View_Archive;
-extern NSString *const Ext_FilteredView_Archive;
+extern NSString *const Ext_FullTextSearch_Archive;
+extern NSString *const Ext_searchResultView_Archive;
 extern NSString *const Ext_CloudKit;
 
 /**

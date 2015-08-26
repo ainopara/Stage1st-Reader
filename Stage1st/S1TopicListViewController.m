@@ -23,6 +23,7 @@
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
 #import "YapDatabaseFilteredView.h"
+#import "YapDatabaseSearchResultsView.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -49,6 +50,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
 @property (nonatomic, strong) YapDatabaseViewMappings *mappings;
 @property (nonatomic, strong) YapDatabaseConnection *databaseConnection;
+@property (nonatomic, strong) YapDatabaseSearchQueue *searchQueue;
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSString *searchKeyword;
@@ -402,16 +404,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
-    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection, NSString *key, id object) {
-        S1Topic *topic = object;
-        BOOL favoirteFilter = YES;
-        if ([currentKey isEqual: @"Favorite"]) {
-            favoirteFilter = [topic.favorite boolValue];
-        }
-        return ([searchText isEqualToString:@""] || [[topic.title lowercaseString] containsString:[searchText lowercaseString]]) && favoirteFilter;
-    }];
+    NSString *query = [NSString stringWithFormat:@"favorite:%@ title:%@*", [currentKey isEqualToString:@"Favorite"] ? @"FY":@"F*", searchText];
+    NSLog(@"%@",query);
+    [self.searchQueue enqueueQuery:query];
     [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
-        [[transaction ext:Ext_FilteredView_Archive] setFiltering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@:%@", NSLocalizedString(@"SystemLanguage", @"Just Identifier"), currentKey, searchText]];
+        [[transaction ext:Ext_searchResultView_Archive] performSearchWithQueue:self.searchQueue];
     }];
 }
 
@@ -846,13 +843,13 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         
-        if ([transaction ext:Ext_FilteredView_Archive])
+        if ([transaction ext:Ext_searchResultView_Archive])
         {
             self.mappings = [[YapDatabaseViewMappings alloc] initWithGroupFilterBlock:^BOOL(NSString *group, YapDatabaseReadTransaction *transaction) {
                 return YES;
             } sortBlock:^NSComparisonResult(NSString *group1, NSString *group2, YapDatabaseReadTransaction *transaction) {
                 return [[S1Formatter sharedInstance] compareDateString:group1 withDateString:group2];
-            } view:Ext_FilteredView_Archive];
+            } view:Ext_searchResultView_Archive];
             [self.mappings updateWithTransaction:transaction];
         }
         else
@@ -868,7 +865,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     __block S1Topic *topic = nil;
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         
-        topic = [[transaction ext:Ext_FilteredView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
+        topic = [[transaction ext:Ext_searchResultView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
     }];
     
     return topic;
@@ -1010,6 +1007,13 @@ static NSString * const cellIdentifier = @"TopicCell";
         [_searchBar addGestureRecognizer:gestureRecognizer];
     }
     return _searchBar;
+}
+
+- (YapDatabaseSearchQueue *)searchQueue {
+    if (!_searchQueue) {
+        _searchQueue = [[YapDatabaseSearchQueue alloc] init];
+    }
+    return _searchQueue;
 }
 
 - (UISegmentedControl *)segControl {

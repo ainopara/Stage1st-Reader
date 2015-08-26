@@ -2,6 +2,8 @@
 #import "CloudKitManager.h"
 #import "S1AppDelegate.h"
 #import "YapDatabaseFilteredView.h"
+#import "YapDatabaseFullTextSearch.h"
+#import "YapDatabaseSearchResultsView.h"
 #import "MyDatabaseObject.h"
 #import "S1Topic.h"
 
@@ -15,7 +17,8 @@ NSString *const Collection_Topics    = @"topics";
 NSString *const Collection_CloudKit = @"cloudKit";
 
 NSString *const Ext_View_Archive = @"archive";
-NSString *const Ext_FilteredView_Archive = @"filteredArchive";
+NSString *const Ext_FullTextSearch_Archive = @"fullTextSearchArchive";
+NSString *const Ext_searchResultView_Archive = @"searchResultViewArchive";
 NSString *const Ext_CloudKit   = @"cloudKit";
 
 NSString *const CloudKitZoneName = @"zone1";
@@ -103,6 +106,13 @@ DatabaseManager *MyDatabaseManager;
 		
 		if ([object isKindOfClass:[MyDatabaseObject class]])
 		{
+            if ([object isKindOfClass:[S1Topic class]]) {
+                S1Topic *topic = object;
+                if (topic.title == nil) {
+                    topic.title = @"";
+                }
+            }
+            
 			[(MyDatabaseObject *)object makeImmutable];
 		}
 		
@@ -194,7 +204,8 @@ DatabaseManager *MyDatabaseManager;
     // Setup the extensions
     
     [self setupArchiveViewExtension];
-    [self setupFilteredArchiveViewExtension];
+    [self setupFullTextSearchExtension];
+    [self setupSearchResultViewExtension];
     if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // iOS 7 do not support cloud kit sync
         ;
@@ -270,15 +281,40 @@ DatabaseManager *MyDatabaseManager;
     }];
 }
 
-- (void)setupFilteredArchiveViewExtension {
-    YapDatabaseViewFiltering *filteringBlock = [YapDatabaseViewFiltering withObjectBlock:^BOOL(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection, NSString *key, id object) {
-        return YES;
+- (void)setupFullTextSearchExtension {
+    NSArray *propertiesToIndexForMySearch = @[ @"title", @"favorite" ];
+    YapDatabaseFullTextSearchHandler *handler = [YapDatabaseFullTextSearchHandler withObjectBlock:^(NSMutableDictionary *dict, NSString *collection, NSString *key, id object) {
+        
+        if ([object isKindOfClass:[S1Topic class]])
+        {
+            S1Topic *topic = (S1Topic *)object;
+            NSString *searchTitle = topic.title;
+            for (NSUInteger index = 0; index < topic.title.length; index++) {
+                searchTitle = [searchTitle stringByAppendingString:[NSString stringWithFormat:@" %@", [topic.title substringFromIndex:index]]];
+            }
+            [dict setObject:searchTitle forKey:@"title"];
+            [dict setObject:[topic.favorite boolValue] == YES ? @"FY" : @"FN" forKey:@"favorite"];
+        }
+        else
+        {
+            // Don't need to index this item.
+            // So we simply don't add anything to the dict.
+        }
     }];
-    
-    YapDatabaseFilteredView *filteredView = [[YapDatabaseFilteredView alloc] initWithParentViewName:Ext_View_Archive filtering:filteringBlock versionTag:[NSString stringWithFormat:@"%@:%@:%@", NSLocalizedString(@"SystemLanguage", @"Just Identifier"), @"History", @""]];
-    [database asyncRegisterExtension:filteredView withName:Ext_FilteredView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch handler:handler versionTag:@"1"];
+    [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_FilteredView_Archive);
+            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+        }
+    }];
+}
+
+- (void)setupSearchResultViewExtension {
+    YapDatabaseSearchResultsViewOptions *options = [[YapDatabaseSearchResultsViewOptions alloc] init];
+    YapDatabaseSearchResultsView *searchResultView = [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive parentViewName:Ext_View_Archive versionTag:@"1" options:options];
+    [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+        if (!ready) {
+            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
