@@ -37,6 +37,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
 @property (nonatomic, strong) UIImageView *archiveImageView;
+@property (nonatomic, strong) UIButton *archiveButton;
 @property (nonatomic, strong) CAKeyframeAnimation *archiveSyncAnimation;
 @property (nonatomic, strong) NSArray *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
@@ -773,6 +774,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark Helpers
 
 - (void)updateArchiveIcon {
+    return;
     NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
 
     NSUInteger inFlightCount = 0;
@@ -942,18 +944,26 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIBarButtonItem *)historyItem {
     if (!_historyItem) {
-        _historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveImageView];
-        [_historyItem setStyle:UIBarButtonItemStyleBordered];
+        //_historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveButton];
+        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStylePlain target:self action:@selector(archive:)];
         [self updateArchiveIcon];
     }
     return _historyItem;
 }
 
+- (UIButton *)archiveButton {
+    if (!_archiveButton) {
+        _archiveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _archiveButton.frame = CGRectMake(0, 0, 44, 44);
+        [_archiveButton addTarget:self action:@selector(archive:) forControlEvents:UIControlEventTouchUpInside];
+        [_archiveButton addSubview:self.archiveImageView];
+    }
+    return _archiveButton;
+}
+
 - (UIImageView *)archiveImageView {
     if (!_archiveImageView) {
         _archiveImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Archive"]];
-        UITapGestureRecognizer *gr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(archive:)];
-        [_archiveImageView addGestureRecognizer:gr];
     }
     return _archiveImageView;
 }
@@ -986,7 +996,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIBarButtonItem *)settingsItem {
     if (!_settingsItem) {
-        _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStyleBordered target:self action:@selector(settings:)];
+        _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStylePlain target:self action:@selector(settings:)];
     }
     return _settingsItem;
 }
