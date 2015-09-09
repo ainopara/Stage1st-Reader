@@ -777,7 +777,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark Helpers
 
 - (void)updateArchiveIcon {
-    return;
     NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
 
     NSUInteger inFlightCount = 0;
@@ -790,12 +789,14 @@ static NSString * const cellIdentifier = @"TopicCell";
         NSLog(@"Status: Resumed ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount);
     }
     
-    if (suspendCount > 0 || inFlightCount + queuedCount > 0) {
-        if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
-            [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
-        }
+    if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
+        //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
+        //    [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
+        //}
+        _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
     } else {
-        [_archiveImageView.layer removeAllAnimations];
+        _historyItem.image = [UIImage imageNamed:@"Archive"];
+        //[_archiveImageView.layer removeAllAnimations];
     }
 }
 

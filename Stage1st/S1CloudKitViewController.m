@@ -8,6 +8,7 @@
 
 #import "S1CloudKitViewController.h"
 #import "DatabaseManager.h"
+#import "CloudKitManager.h"
 
 @interface S1CloudKitViewController ()
 @property (weak, nonatomic) IBOutlet UISwitch *iCloudSwitch;
@@ -37,6 +38,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
     
+    [self cloudKitSuspendCountChanged:nil];
+    [self cloudKitInFlightChangeSetChanged:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
 }
@@ -50,6 +53,12 @@
 
 - (IBAction)switchiCloud:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:self.iCloudSwitch.on forKey:@"EnableSync"];
+    if (self.iCloudSwitch.on) {
+        MyCloudKitManager.enabled = YES;
+        [MyCloudKitManager continueCloudKitFlow];
+    } else {
+        MyCloudKitManager.enabled = NO;
+    }
 }
 
 #pragma mark - Table view data source
