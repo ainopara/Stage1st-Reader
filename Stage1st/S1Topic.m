@@ -16,8 +16,8 @@ static NSString *const k_topicID = @"topicID";
 static NSString *const k_title  = @"title";
 static NSString *const k_replyCount = @"replyCount";
 static NSString *const k_fID  = @"fID";
-static NSString *const k_lastViewedDate = @"lastViewedPage";
-static NSString *const k_lastViewedPage = @"lastModified";
+static NSString *const k_lastViewedDate = @"lastViewedDate";
+static NSString *const k_lastViewedPage = @"lastViewedPage";
 static NSString *const k_lastViewedPosition = @"lastViewedPosition";
 static NSString *const k_favorite = @"favorite";
 static NSString *const k_favoriteDate = @"favoriteDate";
@@ -270,8 +270,11 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     //         return [super setLocalValueForCloudValue:cloudValue cloudKey:cloudKey];
     //     }
     // }
-    
-    return [super setLocalValueFromCloudValue:cloudValue forCloudKey:cloudKey];
+    if ([cloudKey isEqualToString:@"title"] && cloudValue == nil) {
+        self.title = @"";
+    } else {
+        return [super setLocalValueFromCloudValue:cloudValue forCloudKey:cloudKey];
+    }
 }
 
 #pragma mark KVO overrides

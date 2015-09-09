@@ -50,7 +50,8 @@
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID;
-
+- (NSNumber *)numberOfTopics;
+- (NSNumber *)numberOfFavorite;
 - (void)handleDatabaseImport:(NSURL *)databaseURL;
 
 //About Network
@@ -65,5 +66,6 @@
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 - (S1Topic *)tracedTopicByID:(NSNumber *)topicID;
 - (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state;
-
+- (NSNumber *)numberOfTopicsInDatabse;
+- (NSNumber *)numberOfFavoriteTopicsInDatabse;
 @end

@@ -368,6 +368,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     self.naviItem.titleView = self.titleLabel;
     self.searchBar.text = @"";
+    self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
     _loadingMore = NO;
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
@@ -691,6 +692,8 @@ static NSString * const cellIdentifier = @"TopicCell";
             [self.mappings updateWithTransaction:transaction];
         }];
         [self.tableView reloadData];
+        NSNumber *count = [self.currentKey isEqual: @"History"] ? [self.dataCenter numberOfTopics] : [self.dataCenter numberOfFavorite];
+        self.searchBar.placeholder = [NSString stringWithFormat: NSLocalizedString(@"TopicListView_SearchBar_Detail_Hint", @"Search"), count];
         /*
         NSLog(@"rowChange:%lu,sectionChange: %lu",(unsigned long)[rowChanges count], (unsigned long)[sectionChanges count]);
         NSArray *sectionChanges = nil;

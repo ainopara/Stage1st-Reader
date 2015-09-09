@@ -71,6 +71,7 @@ static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 		setupQueue = dispatch_queue_create("CloudKitManager.setup", DISPATCH_QUEUE_SERIAL);
 		fetchQueue = dispatch_queue_create("CloudKitManager.fetch", DISPATCH_QUEUE_SERIAL);
 		
+        self.enabled = NO;
 		self.needsCreateZone = YES;
 		self.needsCreateZoneSubscription = YES;
 		self.needsFetchRecordChangesAfterAppLaunch = YES;
@@ -135,8 +136,10 @@ static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 - (void)continueCloudKitFlow
 {
 	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
-	
-	if (self.needsCreateZone)
+    if (!self.enabled) {
+        return;
+    }
+	else if (self.needsCreateZone)
 	{
 		[self createZone];
 	}
@@ -565,7 +568,7 @@ static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 		else // if (hasChanges || moreComing)
 		{
 			NSLog(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
-			NSLog(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
+			//NSLog(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
 			
 			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				

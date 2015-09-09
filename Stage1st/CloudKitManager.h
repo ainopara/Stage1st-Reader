@@ -11,7 +11,7 @@ extern CloudKitManager *MyCloudKitManager;
 
 
 @interface CloudKitManager : NSObject
-
+@property (assign, nonatomic) BOOL enabled;
 /**
  * Standard singleton pattern.
  * As a shortcut, you can use the global MyCloudKitManager ivar instead.
@@ -66,4 +66,6 @@ extern CloudKitManager *MyCloudKitManager;
 **/
 - (void)refetchMissedRecordIDs:(NSArray *)recordIDs withCompletionHandler:(void (^)(NSError *error))completionHandler;
 
+
+- (void)continueCloudKitFlow;
 @end

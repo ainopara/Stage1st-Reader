@@ -147,6 +147,7 @@
 "TopicListView_NavigationBar_Settings" = "设置";
 
 /* Search */
+"TopicListView_SearchBar_Detail_Hint" = "在%@主题中搜索";
 "TopicListView_SearchBar_Hint" = "搜索";
 
 /* Favorite */

@@ -29,6 +29,7 @@
 "TopicListView_ListHeader_Short_Style" = "MMMM d";
 "TopicListView_ListHeader_Today" = " (Today)";
 "TopicListView_SearchBar_Hint" = "Search";
+"TopicListView_SearchBar_Detail_Hint" = "Search %@ Topics";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";

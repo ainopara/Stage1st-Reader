@@ -371,6 +371,14 @@
     return [self.tracer tracedTopicByID:topicID];
 }
 
+- (NSNumber *)numberOfTopics {
+    return [self.tracer numberOfTopicsInDatabse];
+}
+
+- (NSNumber *)numberOfFavorite {
+    return [self.tracer numberOfFavoriteTopicsInDatabse];
+}
+
 - (void)handleDatabaseImport:(NSURL *)databaseURL {
     //[self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
 }

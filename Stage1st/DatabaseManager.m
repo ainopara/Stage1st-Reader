@@ -206,15 +206,7 @@ DatabaseManager *MyDatabaseManager;
     [self setupArchiveViewExtension];
     [self setupFullTextSearchExtension];
     [self setupSearchResultViewExtension];
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support cloud kit sync
-        ;
-    } else {
-        // iOS 8 and more
-        [self setupCloudKitExtension];
-    }
-    
-    
+    [self setupCloudKitExtension];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
 	                                         selector:@selector(yapDatabaseModified:)
@@ -327,6 +319,9 @@ DatabaseManager *MyDatabaseManager;
 	    ^(CKRecord *__autoreleasing *inOutRecordPtr, YDBCKRecordInfo *recordInfo,
 		  NSString *collection, NSString *key, S1Topic *topic)
 	{
+        if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+            return;
+        }
 		CKRecord *record = inOutRecordPtr ? *inOutRecordPtr : nil;
 		if (record                          && // not a newly inserted object
 		    !topic.hasChangedCloudProperties && // no sync'd properties changed in the todo
@@ -427,21 +422,35 @@ DatabaseManager *MyDatabaseManager;
 			}
 			
 			NSMutableSet *localChangedKeys = [NSMutableSet setWithArray:mergeInfo.pendingLocalRecord.changedKeys];
+            NSDate *remoteLastUpdateDate = [remoteRecord valueForKey:@"lastViewedDate"];
+            NSDate *localLastUpdateDate = topic.lastViewedDate;
+            
+            NSLog(@"Merge: Remote Change");
+            for (NSString *key in remoteChangedKeys) {
+                NSLog(@"%@ : %@", key, [remoteRecord valueForKey:key]);
+            }
+            NSLog(@"Merge: Local Change");
+            for (NSString *key in localChangedKeys) {
+                NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+            }
+            
+            if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] >=0) {
+                NSLog(@"Merge: Winner Remote -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                for (NSString *remoteChangedKey in remoteChangedKeys) {
+                    id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
+                    
+                    [topic setLocalValueFromCloudValue:remoteChangedValue forCloudKey:remoteChangedKey];
+                }
+                [transaction setObject:topic forKey:key inCollection:collection];
+            } else {
+                NSLog(@"Merge: Winner Local -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                for (NSString *localChangedKey in localChangedKeys)
+                {
+                    id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
+                    [mergeInfo.updatedPendingLocalRecord setObject:localChangedValue forKey:localChangedKey];
+                }
+            }
 			
-			for (NSString *remoteChangedKey in remoteChangedKeys)
-			{
-				id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
-				
-				[topic setLocalValueFromCloudValue:remoteChangedValue forCloudKey:remoteChangedKey];
-				[localChangedKeys removeObject:remoteChangedKey];
-			}
-			for (NSString *localChangedKey in localChangedKeys)
-			{
-				id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
-				[mergeInfo.updatedPendingLocalRecord setObject:localChangedValue forKey:localChangedKey];
-			}
-			
-			[transaction setObject:topic forKey:key inCollection:collection];
 		}
 	};
 	
