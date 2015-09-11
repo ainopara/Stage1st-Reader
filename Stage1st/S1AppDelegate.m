@@ -142,7 +142,7 @@ S1AppDelegate *MyAppDelegate;
     // Reachability
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
     // URL Cache
     S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
@@ -227,16 +227,6 @@ S1AppDelegate *MyAppDelegate;
         }
     }
     
-    
-    //Import Database Case
-    /*
-    if ([[url absoluteString] hasSuffix:@".s1db"]) { //TODO: Use NSNotificationCenter
-        id rootvc = [(UINavigationController *)[[[UIApplication sharedApplication] keyWindow] rootViewController] topViewController];
-        if ([rootvc isKindOfClass:[S1TopicListViewController class]]) {
-            S1TopicListViewController *tlvc = rootvc;
-            [tlvc handleDatabaseImport:url];
-        }
-    }*/
     return YES;
 }
 
@@ -291,6 +281,16 @@ S1AppDelegate *MyAppDelegate;
     topic.lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
     [self presentContentViewControllerForTopic:topic];
     return YES;
+}
+#pragma mark - Reachability
+
+- (void)reachabilityChanged:(NSNotification *)notification {
+    Reachability *reachability = notification.object;
+    if ([reachability isReachableViaWiFi]) {
+        NSLog(@"%@",@"display picture");
+    } else {
+        NSLog(@"%@",@"display placeholder");
+    }
 }
 
 #pragma mark - Helper

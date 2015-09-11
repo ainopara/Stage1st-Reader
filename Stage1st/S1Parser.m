@@ -13,6 +13,7 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 #import "GTMNSString+HTML.h"
+#import "S1AppDelegate.h"
 
 
 @interface S1Parser()
@@ -45,7 +46,7 @@
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
                 [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"img%ld", (long)imageCount]];
                 imageCount += 1;
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"] || [MyAppDelegate.reachability isReachableViaWiFi]) {
                     [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
                 } else {
                     NSString *placeholderURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"stage1streader-placeholder.png"];
