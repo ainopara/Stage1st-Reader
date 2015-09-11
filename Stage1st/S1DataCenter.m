@@ -24,10 +24,8 @@
 
 @property (strong, nonatomic) NSMutableDictionary *topicListCache;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
+
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
-
-@property (strong, nonatomic) NSArray *cachedHistoryTopics;
-
 @end
 
 
@@ -166,14 +164,13 @@
 
 #pragma mark - Network (Content Cache)
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return [[S1CacheDatabaseManager sharedInstance] hasCacheForKey:key inCollection:Collection_TopicFloors];
+    return [[S1CacheDatabaseManager sharedInstance] hasCacheForTopicID:topic.topicID withPage:page];
 }
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ((shouldUpdate == NO) && ([[S1CacheDatabaseManager sharedInstance] hasCacheForKey:key inCollection:Collection_TopicFloors])) {
+    if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
         NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
         return;
     }
@@ -198,8 +195,10 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
-            [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            }];
+            
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:failureHandler];
     } else {
@@ -215,7 +214,9 @@
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            }];
             [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:failureHandler];
@@ -223,7 +224,7 @@
 }
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key inCollection:Collection_TopicFloors];
+    [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
@@ -240,11 +241,14 @@
     }
 }
 
+- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+    return [[S1CacheDatabaseManager sharedInstance] findFloorByID:floorID];
+}
+
 #pragma mark - Network (Content)
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
     // Use Cache Result If Exist
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForKey:key inCollection:Collection_TopicFloors];
+    NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
     if (floorList) {
         success(floorList);
         return;
@@ -270,9 +274,10 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                success(floorList);
+            }];
             
-            success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
         }];
@@ -292,9 +297,9 @@
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setCacheValue:floorList forKey:key inCollection:Collection_TopicFloors];
-            
-            success(floorList);
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                success(floorList);
+            }];
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
@@ -363,12 +368,12 @@
     [self.tracer removeTopicFromHistory:topicID];
 }
 
-- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    [self.tracer setTopicFavoriteState:topicID withState:state];
+- (void)removeTopicFromFavorite:(NSNumber *)topicID {
+    [self.tracer removeTopicFromFavorite:topicID];
 }
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
-    return [self.tracer tracedTopicByID:topicID];
+    return [self.tracer topicByID:topicID];
 }
 
 - (NSNumber *)numberOfTopics {
@@ -378,12 +383,6 @@
 - (NSNumber *)numberOfFavorite {
     return [self.tracer numberOfFavoriteTopicsInDatabse];
 }
-
-- (void)handleDatabaseImport:(NSURL *)databaseURL {
-    //[self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
-}
-
-
 
 #pragma mark - Topic List Cache
 

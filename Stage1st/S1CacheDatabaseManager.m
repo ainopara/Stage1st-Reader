@@ -8,11 +8,12 @@
 
 #import "S1CacheDatabaseManager.h"
 #import "YapDatabase.h"
+#import "S1Floor.h"
 
 
 NSString *const Collection_TopicFloors = @"topicFloors";
-NSString *const Collection_Headers = @"headers";
-
+NSString *const Collection_FloorIDs = @"floorIDs";
+NSString *const Metadata_LastUsed = @"lastUsed";
 
 @interface S1CacheDatabaseManager ()
 
@@ -42,7 +43,7 @@ NSString *const Collection_Headers = @"headers";
     return cacheDatabaseManager;
 }
 
-#pragma mark - Floor Cache
+#pragma mark - Batch Floor Cache
 
 - (NSURL*)cacheURL
 {
@@ -50,32 +51,91 @@ NSString *const Collection_Headers = @"headers";
     return [documentsDirectory URLByAppendingPathComponent:@"Cache.sqlite"];
 }
 
-- (void)setCacheValue:(id)value forKey:(NSString *)key inCollection:(NSString *)collection {
-    [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
-        [transaction setObject:value forKey:key inCollection:collection];
-    }];
+- (void)setFloorArray:(NSArray *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block{
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topicID, page];
+    [self.backgroundCacheConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [floors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            S1Floor *floor = obj;
+            [transaction setObject:key forKey: [floor.floorID stringValue] inCollection:Collection_FloorIDs];
+        }];
+        [transaction setObject:floors forKey:key inCollection:Collection_TopicFloors withMetadata:@{Metadata_LastUsed:[NSDate date]}];
+    } completionBlock:block];
 }
 
-- (id)cacheValueForKey:(NSString *)key inCollection:(NSString *)collection {
+- (NSArray *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
     __block NSArray *result = nil;
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topicID, page];
     [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
-        result = [transaction objectForKey:key inCollection:collection];
+        result = [transaction objectForKey:key inCollection:Collection_TopicFloors];
+    }];
+    [self.backgroundCacheConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        NSDictionary *metaData = [transaction metadataForKey:key inCollection:Collection_TopicFloors];
+        if (metaData) {
+            NSMutableDictionary *mutableMetaData = [metaData mutableCopy];
+            [mutableMetaData setValue:[NSDate date] forKey:Metadata_LastUsed];
+            [transaction replaceMetadata:mutableMetaData forKey:key inCollection:Collection_TopicFloors];
+        }
     }];
     return result;
 }
 
-- (BOOL)hasCacheForKey:(NSString *)key inCollection:(NSString *)collection {
+- (BOOL)hasCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
     __block BOOL hasCache = NO;
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topicID, page];
     [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
-        hasCache = [transaction hasObjectForKey:key inCollection:collection];
+        hasCache = [transaction hasObjectForKey:key inCollection:Collection_TopicFloors];
     }];
     //NSLog(@"%@, %d",key, hasCache);
     return hasCache;
 }
 
-- (void)removeCacheForKey:(NSString *)key inCollection:(NSString *)collection {
+- (void)removeCacheForKey:(NSString *)key {
     [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
-        [transaction removeObjectForKey:key inCollection:collection];
+        [transaction removeObjectForKey:key inCollection:Collection_TopicFloors];
     }];
 }
+
+#pragma mark - Single Floor Operation
+
+- (S1Floor *)findFloorByID:(NSNumber *)floorID {
+    NSString *floorIDString = [floorID stringValue];
+    __block S1Floor *result = nil;
+    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
+        NSString *key = [transaction objectForKey:floorIDString inCollection:Collection_FloorIDs];
+        if (key) {
+            NSArray *floors = [transaction objectForKey:key inCollection:Collection_TopicFloors];
+            if (floors) {
+                __block S1Floor *theResult = nil;
+                [floors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    S1Floor *floor = obj;
+                    if ([floor.floorID isEqualToNumber:floorID]) {
+                        theResult = floor;
+                        *stop = YES;
+                    }
+                }];
+                result = theResult;
+            }
+        }
+        
+    }];
+    return result;
+}
+#pragma mark - Cleaning
+
+- (void)removeCacheLastUsedBeforeDate:(NSDate *)date {
+    [self.backgroundCacheConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        __block NSMutableArray *keysToRemove = [[NSMutableArray alloc] init];
+        [transaction enumerateKeysAndMetadataInCollection:Collection_TopicFloors usingBlock:^(NSString *key, id metadata, BOOL *stop) {
+            NSDictionary *metaDataDict = metadata;
+            NSDate *lastUsedDate = [metaDataDict valueForKey:Metadata_LastUsed];
+            if (date && lastUsedDate && [date timeIntervalSinceDate:lastUsedDate] > 0) {
+                [keysToRemove addObject:key];
+            }
+        }];
+        for (NSString *key in keysToRemove) {
+            [transaction removeObjectForKey:key inCollection:Collection_TopicFloors];
+        }
+    }];
+}
+
 @end

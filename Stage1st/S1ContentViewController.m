@@ -231,7 +231,7 @@
     }
     
     
-    [self fetchContentAndPrecacheNextPage:YES];
+    [self fetchContentAndPrecacheNextPage:_currentPage == _totalPages];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -308,14 +308,14 @@
     
     UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [spoilerButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [spoilerButton setTitle:@"H" forState:UIControlStateNormal];
     [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
-    
+    /*
     UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
     //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [quoteButton setTitle:@"Q" forState:UIControlStateNormal];
+    [quoteButton setTitle:@"「-」" forState:UIControlStateNormal];
     [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
     
@@ -325,12 +325,12 @@
     [boldButton setTitle:@"B" forState:UIControlStateNormal];
     [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
-    
+    */
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixItem.width = 26.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    [toolbar setItems:@[flexItem, boldItem, fixItem, quoteItem, fixItem, spoilerItem, fixItem, faceItem, flexItem]];
+    [toolbar setItems:@[flexItem, spoilerItem, fixItem, faceItem, flexItem]];
     [accessoryView addSubview:toolbar];
     [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(accessoryView.mas_left);
@@ -809,12 +809,7 @@
     if (floorID == nil) {
         return nil;
     }
-    for (S1Floor *floor in [self.topic.floors allValues]) {
-        if ([floorID integerValue] == [floor.floorID integerValue]) {
-            return floor;
-        }
-    }
-    return nil;
+    return [self.dataCenter searchFloorInCacheByFloorID:floorID];
 }
 
 - (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {

@@ -61,38 +61,15 @@
     }];
 }
 
-
-- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler
-{
-    NSMutableArray *historyTopics = [NSMutableArray array];
-    [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        [transaction enumerateKeysAndObjectsInCollection:Collection_Topics usingBlock:^(NSString *key, id object, BOOL *stop) {
-            [historyTopics addObject:object];
-        }];
+-(void)removeTopicFromFavorite:(NSNumber *)topicID {
+    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        S1Topic *topic = [[transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics] copy];
+        topic.favorite = [NSNumber numberWithBool:NO];
+        [transaction replaceObject:topic forKey:[topicID stringValue] inCollection:Collection_Topics];
     }];
-    return historyTopics;
 }
 
-- (NSMutableArray *)favoritedObjects
-{
-    NSMutableArray *favoriteTopics = [NSMutableArray array];
-    [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        [transaction enumerateKeysAndObjectsInCollection:Collection_Topics usingBlock:^(NSString *key, id object, BOOL *stop) {
-            S1Topic *topic = object;
-            if ([topic.favorite boolValue]) {
-                [favoriteTopics addObject:object];
-            }
-        }];
-    }];
-    return favoriteTopics;
-}
-
--(void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state
-{
-    
-}
-
-- (S1Topic *)tracedTopicByID:(NSNumber *)topicID
+- (S1Topic *)topicByID:(NSNumber *)topicID
 {
     __block S1Topic *topic = nil;
     [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {

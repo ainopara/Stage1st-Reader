@@ -414,7 +414,7 @@
         if ([rawFloor valueForKey:@"attachments"]!= nil) {
             attachments = [rawFloor[@"attachments"] mutableCopy];
         }
-        floor.floorID = rawFloor[@"pid"];
+        floor.floorID = [NSNumber numberWithInteger:[rawFloor[@"pid"] integerValue]];
         floor.author = rawFloor[@"author"];
         floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
         floor.indexMark = rawFloor[@"number"];
@@ -765,7 +765,7 @@
     //NSLog(@"First Quote URL: %@",urlString);
     if (urlString) {
         NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
-        return resultDict[@"pid"];
+        return [NSNumber numberWithInteger:[resultDict[@"pid"] integerValue]];
     }
     return nil;
 }

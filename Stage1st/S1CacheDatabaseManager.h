@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-
-extern NSString *const Collection_TopicFloors;
-extern NSString *const Collection_Headers;
+@class S1Floor;
 
 @interface S1CacheDatabaseManager : NSObject
 + (S1CacheDatabaseManager *)sharedInstance;
 
-- (void)setCacheValue:(id)value forKey:(NSString *)key inCollection:(NSString *)collection;
-- (id)cacheValueForKey:(NSString *)key inCollection:(NSString *)collection;
-- (BOOL)hasCacheForKey:(NSString *)key inCollection:(NSString *)collection;
-- (void)removeCacheForKey:(NSString *)key inCollection:(NSString *)collection;
+- (void)setFloorArray:(NSArray *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
+- (NSArray *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
+- (BOOL)hasCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
+- (void)removeCacheForKey:(NSString *)key;
+
+- (S1Floor *)findFloorByID:(NSNumber *)floorID;
 @end

@@ -51,7 +51,7 @@
     
     UIColor* titleColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.title.text"];
     //// Abstracted Attributes
-    NSString* textContent = [NSString stringWithFormat:@"%@", self.topic.replyCount];
+    NSString* textContent = [self.topic.replyCount stringValue];
     
     //Init Attribute Title
     NSMutableParagraphStyle *titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];

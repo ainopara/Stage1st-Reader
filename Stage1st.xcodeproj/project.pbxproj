@@ -271,12 +271,12 @@
 			children = (
 				860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */,
 				860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */,
+				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
+				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
 				860573531B762C3B00C70781 /* CloudKitManager.h */,
 				860573541B762C3B00C70781 /* CloudKitManager.m */,
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
-				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
-				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
 			);
 			name = YapDatabase;
 			sourceTree = "<group>";

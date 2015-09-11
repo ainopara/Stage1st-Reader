@@ -273,18 +273,22 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //add code here for when you hit delete
+        NSString *group = nil;
+        NSUInteger groupIndex = 0;
+
+        [self.mappings getGroup:&group index:&groupIndex forIndexPath:indexPath];
+        __block S1Topic *topic = nil;
+        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+            topic = [[transaction extension:Ext_searchResultView_Archive] objectAtIndex:groupIndex inGroup:group];
+        }];
         if ([self.currentKey  isEqual: @"History"]) {
-            S1Topic *topic = self.topics[indexPath.section][indexPath.row];
             [self.dataCenter removeTopicFromHistory:topic.topicID];
-            [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
-            [self.tableView reloadData];
         }
         if ([self.currentKey  isEqual: @"Favorite"]) {
-            S1Topic *topic = self.topics[indexPath.section][indexPath.row];
-            [self.dataCenter setTopicFavoriteState:topic.topicID withState:NO];
-            [self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
-            [self.tableView reloadData];
+            [self.dataCenter removeTopicFromFavorite:topic.topicID];
         }
+        //[self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
+        //[self.tableView reloadData];
         
     }
 }
