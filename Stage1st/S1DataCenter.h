@@ -58,6 +58,8 @@
 - (void)cancelRequest;
 
 - (void)clearTopicListCache;
+
+- (void)cleaning;
 @end
 
 @protocol S1Backend <NSObject>

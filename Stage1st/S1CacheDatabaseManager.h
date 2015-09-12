@@ -18,4 +18,6 @@
 - (void)removeCacheForKey:(NSString *)key;
 
 - (S1Floor *)findFloorByID:(NSNumber *)floorID;
+
+- (void)removeCacheLastUsedBeforeDate:(NSDate *)date;
 @end

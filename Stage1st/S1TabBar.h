@@ -12,15 +12,13 @@
 
 // TODO: Rewrite this in swift.
 @interface S1TabBar : UIScrollView <UIScrollViewDelegate>
-
-- (void)deselectAll;
-
 @property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
-
 @property (nonatomic, strong) NSArray *keys;
 @property (nonatomic, assign) BOOL enabled;
-
--(void)setSelectedIndex:(NSInteger)index;
+@property (nonatomic, strong) NSNumber *expectPresentingButtonCount;
+@property (nonatomic, strong) NSNumber *minButtonWidth;
+- (void)setSelectedIndex:(NSInteger)index;
+- (void)deselectAll;
 
 - (void)updateColor;
 

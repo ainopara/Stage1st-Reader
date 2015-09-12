@@ -394,7 +394,10 @@
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
-
+#pragma mark - Cleaning
+- (void)cleaning {
+    [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2*7*24*3600]];
+}
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];

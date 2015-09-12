@@ -8,10 +8,6 @@
 
 #import "S1TabBar.h"
 
-#define _DEFAULT_WIDTH 80.0f
-#define _DEFAULT_WIDTH_IPAD 96.0f
-#define _DEFAULT_WIDTH_IPAD_LANDSCAPE 128.0f
-
 @interface S1TabBar ()
 
 @end
@@ -21,6 +17,7 @@
     NSInteger _index;
     CGFloat _lastContentOffset;
     CGFloat _lastFrameWidth;
+    BOOL _needRecalculateButtonWidth;
 }
 
 - (instancetype)init {
@@ -29,6 +26,9 @@
         _index = -1;
         _lastFrameWidth = 0;
         _enabled = YES;
+        _needRecalculateButtonWidth = YES;
+        _minButtonWidth = [NSNumber numberWithDouble:80.0];
+        _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
         self.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"tabbar.background"];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
@@ -47,6 +47,9 @@
         _index = -1;
         _lastFrameWidth = 0;
         _enabled = YES;
+        _needRecalculateButtonWidth = YES;
+        _minButtonWidth = [NSNumber numberWithDouble:80.0];
+        _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
         self.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"tabbar.background"];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
@@ -82,16 +85,10 @@
 {
     if (_keys.count == 0) return;
     
-    CGFloat widthPerItem;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        widthPerItem = (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
-    } else {
-        widthPerItem = (_keys.count >= 8 ? _DEFAULT_WIDTH_IPAD : self.bounds.size.width/_keys.count); //will be overwrited by layoutsubviews.
-    }
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.25, ceilf(widthPerItem), self.bounds.size.height-0.25);
+        CGRect rect = CGRectMake(width, 0.25, 80.0, self.bounds.size.height-0.25); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
@@ -108,19 +105,16 @@
         [btn setTag:idx];
         [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
         [_buttons addObject:btn];
-        width += widthPerItem;
+        width += 80.0; // The Width will be reset by layoutSubviews
         [self addSubview:btn];
         
     }];
     //update content size when user change keys in settings.
     self.contentSize = CGSizeMake(width, self.bounds.size.height);
+    _needRecalculateButtonWidth = YES;
 }
 
 #pragma mark - Scroll View Delegate
-
-
-
-
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.x;
@@ -129,11 +123,9 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if (!decelerate) {
-        CGPoint offset = scrollView.contentOffset;
-        offset.x = [self decideOffset:offset];
+        CGPoint offset = [self decideOffset:scrollView.contentOffset];
         [scrollView setContentOffset:offset animated:YES];
     }
-    return;
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
@@ -142,10 +134,8 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    CGPoint offset = scrollView.contentOffset;
-    offset.x = [self decideOffset:offset];
+    CGPoint offset = [self decideOffset:scrollView.contentOffset];
     [scrollView setContentOffset:offset animated:YES];
-    return;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)aScrollView
@@ -177,50 +167,34 @@
 #pragma mark - Layout
 
 - (void)layoutSubviews {
-    if (self.frame.size.width == _lastFrameWidth) {
+    if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {
         return;
     }
     NSLog(@"Tabbar layout for width:%.1f", self.frame.size.width);
     CGFloat widthPerItem = [self determineWidthPerItem];
     NSInteger maxIndex = 0;
-    NSArray * subviews = [self subviews];
-    for(id obj in subviews) {
-        if ([obj isMemberOfClass:[UIButton class]]) {
-            UIButton *btn = (UIButton *)obj;
-            NSInteger index = btn.tag;
-            CGRect rect = CGRectMake(widthPerItem * index, 0.25, ceilf(widthPerItem) + 1, self.bounds.size.height-0.25);
-            [btn setFrame:rect];
-            if (index > maxIndex) {
-                maxIndex = index;
-            }
+    for(UIButton *button in _buttons) {
+        NSInteger index = button.tag;
+        CGRect rect = CGRectMake(widthPerItem * index, 0.25, ceilf(widthPerItem) + 1, self.bounds.size.height-0.25);
+        [button setFrame:rect];
+        if (index > maxIndex) {
+            maxIndex = index;
         }
     }
     [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
     _lastFrameWidth = self.frame.size.width;
-    
+    _needRecalculateButtonWidth = NO;
 }
 
 #pragma mark - Helper
 
-- (CGFloat)getWidthPerItemForScroll {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return _DEFAULT_WIDTH;
-    } else {
-        if (self.bounds.size.width <= 768.0f) {
-            return _DEFAULT_WIDTH_IPAD;
-        } else {
-            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-        }
-    }
-}
-
-- (CGFloat)decideOffset:(CGPoint)offset {
-    CGFloat widthPerItem = [self getWidthPerItemForScroll];
+- (CGPoint)decideOffset:(CGPoint)offset {
+    CGFloat widthPerItem = [self determineWidthPerItem];
     float maxOffset = _keys.count * widthPerItem - self.bounds.size.width;
     
     if (_lastContentOffset == 0 && offset.x == 0) {
         offset.x = 0.0;
-        return offset.x;
+        return offset;
     }
     if (offset.x < _lastContentOffset) {
         CGFloat n = floorf(offset.x / widthPerItem);
@@ -241,24 +215,17 @@
     
     offset.x = offset.x > maxOffset ? maxOffset : offset.x;
     offset.x = offset.x < 0 ? 0.0 : offset.x;
-    return offset.x;
+    return offset;
 }
 
 - (CGFloat) determineWidthPerItem
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        CGFloat screenWidth = self.bounds.size.width;
-        if (_keys.count < 8) {
-            return screenWidth/_keys.count;
-        } else if (screenWidth <= 768.0f) {
-            return _DEFAULT_WIDTH_IPAD;
-        } else {
-            return _DEFAULT_WIDTH_IPAD_LANDSCAPE;
-        }
-    } else {
-        return (_keys.count * _DEFAULT_WIDTH >= self.bounds.size.width ? _DEFAULT_WIDTH : self.bounds.size.width/_keys.count);
-    }
+    CGFloat screenWidth = self.bounds.size.width;
+    CGFloat keyCountWidth = screenWidth / [_keys count];
+    CGFloat expectWidth = fmaxf([self.minButtonWidth doubleValue], screenWidth / [self.expectPresentingButtonCount integerValue]);
+    return fmaxf(keyCountWidth, expectWidth);
 }
+
 - (void)setSelectedIndex:(NSInteger)index {
     if (index < 0 || index >= [_buttons count]) {
         return;

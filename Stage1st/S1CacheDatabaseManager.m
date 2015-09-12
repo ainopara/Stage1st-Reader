@@ -132,6 +132,7 @@ NSString *const Metadata_LastUsed = @"lastUsed";
                 [keysToRemove addObject:key];
             }
         }];
+        NSLog(@"Keys to remove from floor cache: %@",keysToRemove);
         for (NSString *key in keysToRemove) {
             [transaction removeObjectForKey:key inCollection:Collection_TopicFloors];
         }

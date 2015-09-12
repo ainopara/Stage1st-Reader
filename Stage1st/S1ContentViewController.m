@@ -936,19 +936,24 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 50 && _finishLoading) {
+    if (offset > 60 && _finishLoading) {
         [self forward:nil];
     }
 }
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
-    if(_currentPage != 1) {
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 60, contentSize.width - 0, 1);
+    if(_currentPage != 1 && _finishLoading) {
         self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     } else {
         self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
     }
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 50, contentSize.width - 0, 1);
+    if (_finishLoading) {
+        self.bottomDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    } else {
+        self.bottomDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    }
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
@@ -985,7 +990,10 @@
     } else {
         self.backButton.imageView.layer.transform = CATransform3DIdentity;
     }
-    
+    if (!_finishLoading) {
+        self.forwardButton.imageView.layer.transform = CATransform3DIdentity;
+        self.backButton.imageView.layer.transform = CATransform3DIdentity;
+    }
     
     
 }
@@ -1077,10 +1085,10 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
 {
     //check in login state.
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+    /*if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
-    }
+    }*/
     
     if (self.attributedReplyDraft) {
         if (text) {

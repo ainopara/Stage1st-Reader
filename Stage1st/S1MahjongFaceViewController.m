@@ -51,6 +51,8 @@
     self.currentCategory = @"normal";
     // init tab bar
     self.tabBar = [[S1TabBar alloc] init];
+    self.tabBar.minButtonWidth = @60.0;
+    self.tabBar.expectPresentingButtonCount = @10;
     self.tabBar.tabbarDelegate = self;
     self.tabBar.keys = [self translateKey:self.mahjongCategoryOrder];
     [self.tabBar setSelectedIndex:[self.mahjongCategoryOrder indexOfObject:self.currentCategory]];
