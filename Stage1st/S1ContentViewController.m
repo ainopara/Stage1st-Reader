@@ -805,22 +805,7 @@
     return NO;
 }
 
-- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
-    if (floorID == nil) {
-        return nil;
-    }
-    return [self.dataCenter searchFloorInCacheByFloorID:floorID];
-}
 
-- (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    S1Floor *floor = [self searchFloorInCacheByFloorID:floorID];
-    while (floor) {
-        [result insertObject:floor atIndex:0];
-        floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
-    }
-    return result;
-}
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
@@ -1285,4 +1270,20 @@
     }
 }
 
+- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+    if (floorID == nil) {
+        return nil;
+    }
+    return [self.dataCenter searchFloorInCacheByFloorID:floorID];
+}
+
+- (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    S1Floor *floor = [self searchFloorInCacheByFloorID:floorID];
+    while (floor) {
+        [result insertObject:floor atIndex:0];
+        floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
+    }
+    return result;
+}
 @end

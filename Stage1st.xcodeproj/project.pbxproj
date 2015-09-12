@@ -266,19 +266,17 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		8605735C1B762C5000C70781 /* YapDatabase */ = {
+		8605735C1B762C5000C70781 /* MainDatabase */ = {
 			isa = PBXGroup;
 			children = (
 				860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */,
 				860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */,
-				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
-				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
 				860573531B762C3B00C70781 /* CloudKitManager.h */,
 				860573541B762C3B00C70781 /* CloudKitManager.m */,
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
 			);
-			name = YapDatabase;
+			name = MainDatabase;
 			sourceTree = "<group>";
 		};
 		8605735D1B762C6100C70781 /* Sqlite3 */ = {
@@ -413,10 +411,20 @@
 		86A5AD871B56BAAE00E80790 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				8605735C1B762C5000C70781 /* YapDatabase */,
+				8605735C1B762C5000C70781 /* MainDatabase */,
+				86A766CE1BA3EE13009BAD0D /* FloorCache */,
 				8605735D1B762C6100C70781 /* Sqlite3 */,
 			);
 			name = Database;
+			sourceTree = "<group>";
+		};
+		86A766CE1BA3EE13009BAD0D /* FloorCache */ = {
+			isa = PBXGroup;
+			children = (
+				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
+				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
+			);
+			name = FloorCache;
 			sourceTree = "<group>";
 		};
 		86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */ = {
@@ -564,6 +572,12 @@
 			isa = PBXGroup;
 			children = (
 				C095877A16CA8DB0007E0119 /* Model */,
+				C08A440D16DA775F003BF44C /* Networking */,
+				86A5AD871B56BAAE00E80790 /* Database */,
+				C05286C116D3428E000B0DBD /* S1Parser.h */,
+				C05286C216D3428E000B0DBD /* S1Parser.m */,
+				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
+				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
 				C095877B16CA8DBE007E0119 /* View */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
@@ -583,12 +597,6 @@
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
 				862CECE318D34611006CA29F /* S1Floor.h */,
 				862CECE418D34611006CA29F /* S1Floor.m */,
-				C08A440D16DA775F003BF44C /* Networking */,
-				86A5AD871B56BAAE00E80790 /* Database */,
-				C05286C116D3428E000B0DBD /* S1Parser.h */,
-				C05286C216D3428E000B0DBD /* S1Parser.m */,
-				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
-				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -666,6 +674,7 @@
 				C095873116CA8A36007E0119 /* Frameworks */,
 				C095873216CA8A36007E0119 /* Resources */,
 				5ADE05C1571C4EE3A1FB1506 /* Copy Pods Resources */,
+				86A766CF1BA43703009BAD0D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -768,6 +777,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		86A766CF1BA43703009BAD0D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "#!/bin/bash\n# Auto Increment Version Script\nREV=`git rev-list develop | wc -l | awk '{print $1}'`\nbuildPlist=$INFOPLIST_FILE\necho $buildPlist\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion ${REV}\" \"$buildPlist\"\n\nCFBundleVersion=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$buildPlist\")\nBUILD_NR=${CFBundleVersion}\nBUILD_NR=$(($BUILD_NR + 4000))\n#echo $BUILD_NR\nCFBundleVersion=$BUILD_NR\n#echo $CFBundleVersion\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $CFBundleVersion\" \"$buildPlist\"";
 		};
 		F515F879F9444AD48B7C0E01 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
