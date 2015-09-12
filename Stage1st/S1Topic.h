@@ -36,7 +36,7 @@
 
 //For Tracing
 @property (nonatomic, copy) NSNumber *lastViewedPage;
-@property (nonatomic, copy) NSMutableDictionary *floors;
+@property (nonatomic, copy) NSDictionary *floors;
 
 @property (nonatomic, copy) NSString *message;
 

@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.5)
-  - ActionSheetPicker-3.0 (1.7.0)
+  - ActionSheetPicker-3.0 (1.7.2)
   - AFNetworking (2.6.0):
     - AFNetworking/NSURLConnection (= 2.6.0)
     - AFNetworking/NSURLSession (= 2.6.0)
@@ -35,7 +35,6 @@ PODS:
   - FMDB/common (2.5)
   - FMDB/standard (2.5):
     - FMDB/common
-  - IMQuickSearch (1.2.0)
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
   - Mantle (2.0.4):
@@ -52,10 +51,9 @@ PODS:
 
 DEPENDENCIES:
   - 1PasswordExtension
-  - ActionSheetPicker-3.0 (from `https://github.com/ainopara/ActionSheetPicker-3.0.git`)
+  - ActionSheetPicker-3.0
   - AFNetworking
   - FMDB
-  - IMQuickSearch
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Mantle
@@ -66,8 +64,6 @@ DEPENDENCIES:
   - YapDatabase
 
 EXTERNAL SOURCES:
-  ActionSheetPicker-3.0:
-    :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -76,9 +72,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 CHECKOUT OPTIONS:
-  ActionSheetPicker-3.0:
-    :commit: 84dc266ff1a1dd39448cbb7fa880db1f45048e84
-    :git: https://github.com/ainopara/ActionSheetPicker-3.0.git
   JTSImageViewController:
     :commit: 60d6ed33e322fc2648b6a18d238d440d43aa2704
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -91,11 +84,10 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: d2392e44526be30ae7d23f305e96e411ede9b9d1
-  ActionSheetPicker-3.0: 6516052442fc8ca8f3cc4b3c7aa0436de12373df
+  ActionSheetPicker-3.0: c5bdca19fd8b3d798f0c79892cbab6f11a8523ae
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   CocoaLumberjack: 019d1361244274a6138c788c6cb80baabc13fb8f
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
-  IMQuickSearch: 351fda5dcf33428bf04c28213b984d66015b691d
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Mantle: 6bee68168423948be0c0c5924832bf3af188e099

@@ -255,9 +255,8 @@
         } else {
             titleString = [NSString stringWithFormat:@"Resumed (%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
         }
-        self.iCloudSyncCell.detailTextLabel.text = titleString;
     }
-    
+    self.iCloudSyncCell.detailTextLabel.text = titleString;
 }
 
 @end
