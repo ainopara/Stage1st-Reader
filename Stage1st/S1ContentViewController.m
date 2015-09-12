@@ -763,18 +763,18 @@
                     NSInteger tid = [[quarys valueForKey:@"ptid"] integerValue];
                     NSInteger pid = [[quarys valueForKey:@"pid"] integerValue];
                     if (tid == [self.topic.topicID integerValue]) {
-                        for (S1Floor *floor in [self.topic.floors allValues]) {
-                            if (pid == [floor.floorID integerValue]) {
-                                _presentingContentViewController = YES;
-                                S1Topic *quoteTopic = [self.topic copy];
-                                NSString *htmlString = [S1Parser generateQuotePage:[self chainSearchQuoteByFirstFloorID:@(pid)] withTopic:quoteTopic];
-                                S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
-                                quoteFloorViewController.htmlString = htmlString;
-                                quoteFloorViewController.centerFloorID = [floor.floorID integerValue];
-                                [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
-                                return NO;
-                            }
+                        NSArray *chainQuoteFloors = [self chainSearchQuoteByFirstFloorID:@(pid)];
+                        if ([chainQuoteFloors count] > 0) {
+                            _presentingContentViewController = YES;
+                            S1Topic *quoteTopic = [self.topic copy];
+                            NSString *htmlString = [S1Parser generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
+                            S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
+                            quoteFloorViewController.htmlString = htmlString;
+                            quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
+                            [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
+                            return NO;
                         }
+                        
                     }
                 }
             }
