@@ -824,10 +824,11 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPosition) {
         if (self.topic.lastViewedPosition != 0) {
-            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
+            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
         }
         _needToLoadLastPosition = NO;
     }
@@ -835,7 +836,6 @@
     // Restore last view position from cached position in this view controller.
     NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
     if (positionForPage) {
-        CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
         [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
     }
     
