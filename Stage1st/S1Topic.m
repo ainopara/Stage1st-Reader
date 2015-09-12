@@ -249,7 +249,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     //         return [super cloudValueForCloudKey:cloudKey];
     //     }
     // }
-    
+    if ([cloudKey isEqualToString:@"title"] && self.title == nil) {
+        return @"";
+    }
     return [super cloudValueForCloudKey:cloudKey];
 }
 
