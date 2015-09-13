@@ -174,7 +174,12 @@
     
     //Forward Button
     button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    if (_currentPage == _totalPages) {
+        [button setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+    } else {
+        [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    }
+    
     button.frame = CGRectMake(0, 0, 40, 30);
     button.imageView.clipsToBounds = NO;
     button.imageView.contentMode = UIViewContentModeCenter;
@@ -231,7 +236,7 @@
     }
     
     
-    [self fetchContentAndPrecacheNextPage:_currentPage == _totalPages];
+    [self fetchContentAndForceUpdate:_currentPage == _totalPages];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -369,7 +374,7 @@
             [self scrollToBottomAnimated:YES];
         } else {
             //_needToScrollToBottom = YES;
-            [self fetchContentAndPrecacheNextPage:YES];
+            [self fetchContentAndForceUpdate:YES];
         }
     }
 }
@@ -415,10 +420,16 @@
                                 initialSelection:_currentPage - 1
                                        doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
                                            [self saveViewPosition];
-                                           _currentPage = selectedIndex + 1;
+                                           
                                            [self cancelRequest];
                                            _needToLoadLastPosition = NO;
-                                           [self fetchContent];
+                                           if (_currentPage != selectedIndex + 1) {
+                                               _currentPage = selectedIndex + 1;
+                                               [self fetchContent];
+                                           } else {
+                                               [self fetchContentAndForceUpdate:YES];
+                                           }
+                                           
                                        }
                                      cancelBlock:nil
                                           origin:self.pageLabel];
@@ -434,7 +445,7 @@
         [self cancelRequest];
         _needToLoadLastPosition = NO;
         [self saveViewPosition];
-        [self fetchContentAndPrecacheNextPage:YES];
+        [self fetchContentAndForceUpdate:YES];
     }
     
 }
@@ -979,17 +990,15 @@
         self.forwardButton.imageView.layer.transform = CATransform3DIdentity;
         self.backButton.imageView.layer.transform = CATransform3DIdentity;
     }
-    
-    
 }
 
 #pragma mark - Networking
 
 - (void)fetchContent {
-    [self fetchContentAndPrecacheNextPage:NO];
+    [self fetchContentAndForceUpdate:NO];
 }
 
-- (void)fetchContentAndPrecacheNextPage:(BOOL)shouldUpdate
+- (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate
 {
     [self updatePageLabel];
     __weak typeof(self) weakSelf = self;
@@ -1129,7 +1138,7 @@
                     strongSelf.attributedReplyDraft = nil;
                     if (strongSelf->_currentPage == strongSelf->_totalPages) {
                         strongSelf->_needToScrollToBottom = YES;
-                        [strongSelf fetchContentAndPrecacheNextPage:YES];
+                        [strongSelf fetchContentAndForceUpdate:YES];
                     }
                 } failure:^(NSError *error) {
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -1148,7 +1157,7 @@
                     strongSelf.attributedReplyDraft = nil;
                     if (strongSelf->_currentPage == strongSelf->_totalPages) {
                         strongSelf->_needToScrollToBottom = YES;
-                        [strongSelf fetchContentAndPrecacheNextPage:YES];
+                        [strongSelf fetchContentAndForceUpdate:YES];
                     }
                 } failure:^(NSError *error) {
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];

@@ -219,9 +219,8 @@
         NSArray *package = @[key, [self URLForKey:key inCategory:categoryForThisPage]];
         [mahjongFacePackages addObject:package];
     }
-    [pageView setMahjongFaceList:mahjongFacePackages withRows:rows andColumns:columns];
-    
     pageView.frame = CGRectMake(globalIndex * CGRectGetWidth(scrollView.bounds), 0, CGRectGetWidth(scrollView.bounds), CGRectGetHeight(scrollView.bounds));
+    [pageView setMahjongFaceList:mahjongFacePackages withRows:rows andColumns:columns];
 }
 
 - (void)setPage:(NSInteger)page {

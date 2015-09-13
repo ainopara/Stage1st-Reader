@@ -25,6 +25,7 @@
     NSInteger rowIndex = 0;
     NSInteger columnIndex = 0;
     NSInteger buttonIndex = 0;
+    CGFloat heightOffset = (self.frame.size.height - rows*50.0)/2;
     for(S1MahjongFaceButton *button in self.buttons) {
         buttonIndex = rowIndex * columns + columnIndex;
         if (buttonIndex < [list count] && buttonIndex < rows * columns) {
@@ -35,7 +36,7 @@
                 button.mahjongFaceKey = keyToSet;
                 [self setImageURL:[[list objectAtIndex:buttonIndex] lastObject] forButton:button];
             }
-            [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 , 50, 50)];
+            [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
             button.hidden = NO;
         } else {
             button.hidden = YES;
@@ -51,7 +52,7 @@
         NSString *key = [[list objectAtIndex:buttonIndex] firstObject];
         NSURL *URL = [[list objectAtIndex:buttonIndex] lastObject];
         S1MahjongFaceButton *button = [self mahjongFaceButtonForKey:key andURL:URL];
-        [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 , 50, 50)];
+        [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
         columnIndex += 1;
         if (columnIndex == columns) {
             rowIndex += 1;
@@ -65,7 +66,7 @@
         [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backspaceButton];
     }
-    [self.backspaceButton setFrame:CGRectMake((columns - 1) * 50 + 10,(rows - 1) * 50 , 50, 50)];
+    [self.backspaceButton setFrame:CGRectMake((columns - 1) * 50 + 10,(rows - 1) * 50 + heightOffset, 50, 50)];
     
     
 }
