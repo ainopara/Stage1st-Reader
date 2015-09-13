@@ -32,7 +32,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.shouldIngnoreScrollEvent = NO;
-    self.historyCountLimit = 0;
     [self.view setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"mahjongface.background"]];
     self.keyTranslation = @{@"history":@"历史",
                             @"face":@"麻将脸",
