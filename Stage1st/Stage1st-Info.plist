@@ -45,9 +45,14 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4554</string>
+	<string>4555</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>Stage1st.view-topic</string>
@@ -103,9 +108,5 @@
 			</dict>
 		</dict>
 	</array>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key><true/>
-    </dict>
 </dict>
 </plist>

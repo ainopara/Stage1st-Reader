@@ -530,11 +530,20 @@
         }];
         // Origin Page Action
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
-            [self presentViewController:controller animated:YES completion:nil];
+            if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+                _presentingWebViewer = YES;
+                
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+                [controller.view setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+                [self presentViewController:controller animated:YES completion:nil];
+            } else {
+                NSURL *url = [NSURL URLWithString:pageAddress];
+                
+                if (![[UIApplication sharedApplication] openURL:url]) {
+                    NSLog(@"%@%@",@"Failed to open url:",[url description]);
+                }
+            }
         }];
         // Cancel Action
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];

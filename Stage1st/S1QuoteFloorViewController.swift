@@ -15,7 +15,7 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.background")
-        if let theHtmlStirng = self.htmlString {
+        if let theHtmlString = self.htmlString {
             self.webView.dataDetectorTypes = .None;
             self.webView.opaque = false;
             self.webView.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.webview.background")
