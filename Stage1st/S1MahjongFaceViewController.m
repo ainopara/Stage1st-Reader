@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSDictionary *mahjongMap;
 @property (nonatomic, strong) NSDictionary *keyTranslation;
 @property (nonatomic, strong) NSArray *mahjongCategoryOrder;
+@property (nonatomic, strong) NSMutableArray *historyArray;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -31,8 +32,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.shouldIngnoreScrollEvent = NO;
+    self.historyCountLimit = 0;
     [self.view setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"mahjongface.background"]];
-    self.keyTranslation = @{@"face":@"麻将脸",
+    self.keyTranslation = @{@"history":@"历史",
+                            @"face":@"麻将脸",
                             @"dym":@"大姨妈",
                             @"goose":@"鹅",
                             @"zdl":@"战斗力",
@@ -48,11 +51,18 @@
     self.mahjongMap = [NSDictionary dictionaryWithContentsOfFile:path];
     path = [[NSBundle mainBundle] pathForResource:@"MahjongCategoryOrder" ofType:@"plist"];
     self.mahjongCategoryOrder = [NSArray arrayWithContentsOfFile:path];
-    self.currentCategory = @"normal";
+    NSMutableArray *mutableOrder = [self.mahjongCategoryOrder mutableCopy];
+    [mutableOrder insertObject:@"history" atIndex:0];
+    self.mahjongCategoryOrder = [mutableOrder copy];
+    self.historyArray = [self.delegate restoreHistoryArray];//[NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"MahjongfaceHistory"]];
+    if (self.historyArray == nil) {
+        self.historyArray = [NSMutableArray array];
+    }
+    self.currentCategory = @"history";
     // init tab bar
     self.tabBar = [[S1TabBar alloc] init];
     self.tabBar.minButtonWidth = @60.0;
-    self.tabBar.expectPresentingButtonCount = @10;
+    self.tabBar.expectPresentingButtonCount = @11;
     self.tabBar.tabbarDelegate = self;
     self.tabBar.keys = [self translateKey:self.mahjongCategoryOrder];
     [self.tabBar setSelectedIndex:[self.mahjongCategoryOrder indexOfObject:self.currentCategory]];
@@ -96,11 +106,15 @@
     //[self.view layoutIfNeeded];
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [self.delegate saveHistoryArray:self.historyArray];//[[NSUserDefaults standardUserDefaults] setObject:self.historyArray forKey:@"MahjongfaceHistory"];
+}
 #pragma mark Event
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button
 {
     NSLog(@"%@", button.mahjongFaceKey);
+    
     if (self.delegate) {
         S1MahjongFaceTextAttachment *mahjongFaceTextAttachment = [S1MahjongFaceTextAttachment new];
         
@@ -114,6 +128,27 @@
         mahjongFaceTextAttachment.mahjongFaceTag = button.mahjongFaceKey;
         mahjongFaceTextAttachment.image = [UIImage imageWithData:imageData];
         [self.delegate mahjongFaceViewController:self didFinishWithResult:mahjongFaceTextAttachment];
+    }
+    //Update history
+    NSArray *thePackage = nil;
+    for (NSArray *package in self.historyArray) {
+        if ([[package firstObject] isEqualToString:button.mahjongFaceKey]) {
+            thePackage = package;
+            [self.historyArray removeObject:package];
+            break;
+        }
+    }
+    if ([self.currentCategory isEqualToString:@"history"]) {
+        [self.historyArray insertObject:thePackage atIndex:0];
+    } else {
+        [self.historyArray insertObject:@[button.mahjongFaceKey, [self URLForKey:button.mahjongFaceKey inCategory:self.currentCategory]] atIndex:0];
+    }
+    if (self.historyCountLimit != 0 && [self.historyArray count] > self.historyCountLimit) {
+        NSMutableArray *newHistoryArray = [NSMutableArray arrayWithCapacity:self.historyCountLimit];
+        for (NSUInteger i = 0; i < self.historyCountLimit; i++) {
+            [newHistoryArray addObject:[self.historyArray objectAtIndex:i]];
+        }
+        self.historyArray = newHistoryArray;
     }
 }
 - (void)backspacePressed:(UIButton *)button {
@@ -161,6 +196,7 @@
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     NSLog(@"%@",key);
     self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
+    self.pageControl.currentPage = 0;
     [self.view setNeedsLayout];
 }
 
@@ -210,14 +246,23 @@
     NSUInteger startingIndex = localIndex * (rows * columns - 1);
     NSUInteger endingIndex = (localIndex + 1) * (rows * columns - 1);
     NSMutableArray *mahjongFacePackages = [[NSMutableArray alloc] initWithCapacity:rows * columns];
-    NSArray *allKeys = [[self.mahjongMap valueForKey:categoryForThisPage] allKeys];
-    for (NSUInteger index = startingIndex; index < endingIndex; index++) {
-        if (index == [allKeys count]) {
-            break;
+    if ([categoryForThisPage isEqualToString:@"history"]) {
+        for (NSUInteger index = startingIndex; index < endingIndex; index++) {
+            if (index >= [self.historyArray count]) {
+                break;
+            }
+            [mahjongFacePackages addObject:[self.historyArray objectAtIndex:index]];
         }
-        NSString *key = [allKeys objectAtIndex:index];
-        NSArray *package = @[key, [self URLForKey:key inCategory:categoryForThisPage]];
-        [mahjongFacePackages addObject:package];
+    } else {
+        NSArray *allKeys = [[self.mahjongMap valueForKey:categoryForThisPage] allKeys];
+        for (NSUInteger index = startingIndex; index < endingIndex; index++) {
+            if (index == [allKeys count]) {
+                break;
+            }
+            NSString *key = [allKeys objectAtIndex:index];
+            NSArray *package = @[key, [self URLForKey:key inCategory:categoryForThisPage]];
+            [mahjongFacePackages addObject:package];
+        }
     }
     pageView.frame = CGRectMake(globalIndex * CGRectGetWidth(scrollView.bounds), 0, CGRectGetWidth(scrollView.bounds), CGRectGetHeight(scrollView.bounds));
     [pageView setMahjongFaceList:mahjongFacePackages withRows:rows andColumns:columns];
@@ -251,7 +296,15 @@
     NSInteger rows = [self numberOfRowsForFrameSize:self.scrollView.bounds.size];
     NSInteger columns = [self numberOfColumnsForFrameSize:self.scrollView.bounds.size];
     NSInteger countPerPage = rows * columns - 1;
-    NSInteger countInCategory = [[self.mahjongMap valueForKey:key] count];
+    NSInteger countInCategory;
+    if ([key isEqualToString:@"history"]) {
+        countInCategory = [self.historyArray count];
+        if (countInCategory == 0) {
+            countInCategory = 1;
+        }
+    } else {
+        countInCategory = [[self.mahjongMap valueForKey:key] count];
+    }
     NSInteger totalPageCount = (NSUInteger)ceil((float)countInCategory / countPerPage);
     return totalPageCount;
 }

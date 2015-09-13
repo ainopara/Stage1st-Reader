@@ -13,6 +13,7 @@
 
 @interface S1MahjongFaceViewController : UIViewController
 @property (nonatomic, strong) NSString *currentCategory;
+@property (nonatomic, assign) NSUInteger historyCountLimit;
 @property (weak, nonatomic) id<S1MahjongFaceViewControllerDelegate> delegate;
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
@@ -22,4 +23,6 @@
 @protocol S1MahjongFaceViewControllerDelegate <NSObject>
 - (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment;
 - (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceViewController *)mahjongFaceViewController;
+- (NSMutableArray *)restoreHistoryArray;
+- (void)saveHistoryArray:(NSMutableArray *)historyArray;
 @end

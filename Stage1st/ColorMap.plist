@@ -100,6 +100,8 @@
 	<string>1</string>
 	<key>mahjongface.pagecontrol.currentpage</key>
 	<string>3</string>
+	<key>mahjongface.backspace.tint</key>
+	<string>3</string>
 	<key>hud.border</key>
 	<string>3</string>
 	<key>hud.background</key>

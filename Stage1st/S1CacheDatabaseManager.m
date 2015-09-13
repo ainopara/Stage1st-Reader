@@ -13,6 +13,7 @@
 
 NSString *const Collection_TopicFloors = @"topicFloors";
 NSString *const Collection_FloorIDs = @"floorIDs";
+NSString *const Collection_MahjongFace = @"mahjongFace";
 NSString *const Metadata_LastUsed = @"lastUsed";
 
 @interface S1CacheDatabaseManager ()
@@ -137,6 +138,20 @@ NSString *const Metadata_LastUsed = @"lastUsed";
             [transaction removeObjectForKey:key inCollection:Collection_TopicFloors];
         }
     }];
+}
+
+- (void)saveMahjongFaceHistory:(NSMutableArray *)historyArray {
+    [self.backgroundCacheConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [transaction setObject:historyArray forKey:@"history" inCollection:Collection_MahjongFace];
+    }];
+}
+
+- (NSMutableArray *)mahjongFaceHistory {
+    __block NSMutableArray *historyArray = nil;
+    [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
+        historyArray = [transaction objectForKey:@"history" inCollection:Collection_MahjongFace];
+    }];
+    return historyArray;
 }
 
 @end

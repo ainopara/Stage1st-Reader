@@ -920,6 +920,15 @@
         
     }
 }
+
+- (void)saveHistoryArray:(NSMutableArray *)historyArray {
+    self.dataCenter.mahjongFaceHistoryArray = historyArray;
+}
+
+- (NSMutableArray *)restoreHistoryArray {
+    return self.dataCenter.mahjongFaceHistoryArray;
+}
+
 #pragma mark APPullToAction Delegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {

@@ -20,4 +20,7 @@
 - (S1Floor *)findFloorByID:(NSNumber *)floorID;
 
 - (void)removeCacheLastUsedBeforeDate:(NSDate *)date;
+
+- (void)saveMahjongFaceHistory:(NSMutableArray *)historyArray;
+- (NSMutableArray *)mahjongFaceHistory;
 @end

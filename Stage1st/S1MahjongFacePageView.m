@@ -62,7 +62,8 @@
     }
     if (!self.backspaceButton) {
         self.backspaceButton = [[S1MahjongFaceButton alloc] init];
-        [self.backspaceButton setImage:[UIImage imageNamed:@"Backspace"] forState:UIControlStateNormal];
+        [self.backspaceButton setImage:[[UIImage imageNamed:@"Backspace"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        [self.backspaceButton setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"mahjongface.backspace.tint"]];
         [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backspaceButton];
     }

@@ -60,6 +60,9 @@
 - (void)clearTopicListCache;
 
 - (void)cleaning;
+
+// Mahjong Face
+@property (strong, nonatomic) NSMutableArray *mahjongFaceHistoryArray;
 @end
 
 @protocol S1Backend <NSObject>

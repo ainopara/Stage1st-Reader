@@ -398,6 +398,15 @@
 - (void)cleaning {
     [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2*7*24*3600]];
 }
+#pragma mark - Mahjongface History
+- (NSMutableArray *)mahjongFaceHistoryArray {
+    return [[S1CacheDatabaseManager sharedInstance] mahjongFaceHistory];
+}
+
+- (void)setMahjongFaceHistoryArray:(NSMutableArray *)mahjongFaceHistoryArray {
+    [[S1CacheDatabaseManager sharedInstance] saveMahjongFaceHistory:mahjongFaceHistoryArray];
+}
+
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
