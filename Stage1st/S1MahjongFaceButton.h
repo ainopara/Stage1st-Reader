@@ -10,4 +10,5 @@
 
 @interface S1MahjongFaceButton : UIButton
 @property (nonatomic, strong) NSString *mahjongFaceKey;
+@property (nonatomic, strong) NSString *category;
 @end

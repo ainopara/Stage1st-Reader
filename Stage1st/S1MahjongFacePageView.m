@@ -34,6 +34,7 @@
                 //NSLog(@"face button cache hit:%@",button.mahjongFaceKey);
             } else {
                 button.mahjongFaceKey = keyToSet;
+                button.category =[[list objectAtIndex:buttonIndex] objectAtIndex:1];
                 [self setImageURL:[[list objectAtIndex:buttonIndex] lastObject] forButton:button];
             }
             [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
@@ -50,8 +51,10 @@
     buttonIndex = rowIndex * columns + columnIndex;
     while (buttonIndex < [list count] && buttonIndex < rows * columns) {
         NSString *key = [[list objectAtIndex:buttonIndex] firstObject];
+        NSString *category = [[list objectAtIndex:buttonIndex] objectAtIndex:1];
         NSURL *URL = [[list objectAtIndex:buttonIndex] lastObject];
         S1MahjongFaceButton *button = [self mahjongFaceButtonForKey:key andURL:URL];
+        button.category = category;
         [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
         columnIndex += 1;
         if (columnIndex == columns) {

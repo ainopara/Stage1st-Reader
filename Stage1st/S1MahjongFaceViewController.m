@@ -120,7 +120,7 @@
         //Set tag and image
         
         NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong/"];
-        NSString *suffix = [[self.mahjongMap valueForKey:self.currentCategory] valueForKey:button.mahjongFaceKey];
+        NSString *suffix = [[self.mahjongMap valueForKey:button.category] valueForKey:button.mahjongFaceKey];
         NSString *fullPath = [NSString stringWithFormat:@"%@%@", localPath, suffix];
         NSData *imageData = [NSData dataWithContentsOfFile:fullPath];
         
@@ -140,7 +140,7 @@
     if ([self.currentCategory isEqualToString:@"history"]) {
         [self.historyArray insertObject:thePackage atIndex:0];
     } else {
-        [self.historyArray insertObject:@[button.mahjongFaceKey, [self URLForKey:button.mahjongFaceKey inCategory:self.currentCategory]] atIndex:0];
+        [self.historyArray insertObject:@[button.mahjongFaceKey, button.category, [self URLForKey:button.mahjongFaceKey inCategory:button.category]] atIndex:0];
     }
     if (self.historyCountLimit != 0 && [self.historyArray count] > self.historyCountLimit) {
         NSMutableArray *newHistoryArray = [NSMutableArray arrayWithCapacity:self.historyCountLimit];
@@ -259,7 +259,7 @@
                 break;
             }
             NSString *key = [allKeys objectAtIndex:index];
-            NSArray *package = @[key, [self URLForKey:key inCategory:categoryForThisPage]];
+            NSArray *package = @[key, categoryForThisPage, [self URLForKey:key inCategory:categoryForThisPage]];
             [mahjongFacePackages addObject:package];
         }
     }
