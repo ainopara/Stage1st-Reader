@@ -510,7 +510,7 @@
             [HUD hideWithDelay:0.3];
         }];
         // Share Action
-        UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], [self screenShot]] applicationActivities:nil];
             if ([activityController respondsToSelector:@selector(popoverPresentationController)]) {
                 [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
@@ -541,7 +541,7 @@
         
         [moreActionSheet addAction:replyAction];
         [moreActionSheet addAction:favoriteAction];
-        [moreActionSheet addAction:weiboAction];
+        [moreActionSheet addAction:shareAction];
         [moreActionSheet addAction:copyLinkAction];
         [moreActionSheet addAction:originPageAction];
         [moreActionSheet addAction:cancelAction];
