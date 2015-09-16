@@ -474,18 +474,15 @@ DatabaseManager *MyDatabaseManager;
         }
         else if (ckErrorCode == CKErrorRequestRateLimited)
         {
-            NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
-            NSLog(@"Unhandled ckError: %@", operationError);
+            [MyCloudKitManager handleFallbackError:operationError];
         }
         else if (ckErrorCode == CKErrorUserDeletedZone)
         {
-            NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
-            NSLog(@"Unhandled ckError: %@", operationError);
+            [MyCloudKitManager handleFallbackError:operationError];
         }
 		else
 		{
-			NSLog(@"Unhandled ckErrorCode: %ld", (long)ckErrorCode);
-            NSLog(@"Unhandled ckError: %@", operationError);
+			[MyCloudKitManager handleFallbackError:operationError];
 		}
 	};
 	

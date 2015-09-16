@@ -8,10 +8,11 @@
  * [[CloudKitManager sharedInstance] foobar] -> MyCloudKitManager.foobar
 **/
 extern CloudKitManager *MyCloudKitManager;
-
+extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 
 @interface CloudKitManager : NSObject
 @property (assign, nonatomic) BOOL enabled;
+@property (strong, nonatomic) NSError *lastCloudkitError;
 /**
  * Standard singleton pattern.
  * As a shortcut, you can use the global MyCloudKitManager ivar instead.
@@ -36,6 +37,8 @@ extern CloudKitManager *MyCloudKitManager;
  * - CKErrorNotAuthenticated
 **/
 - (void)handleNotAuthenticated;
+
+- (void)handleFallbackError:(NSError *)error;
 
 /**
  * This method uses CKFetchRecordChangesOperation to fetch changes.

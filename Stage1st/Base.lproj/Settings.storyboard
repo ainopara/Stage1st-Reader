@@ -569,6 +569,26 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="0Lh-c0-gNo" detailTextLabel="kc8-ab-2ZD" style="IBUITableViewCellStyleValue1" id="bkP-5h-X6n">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bkP-5h-X6n" id="Y0o-Kw-t83">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Last Error" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0Lh-c0-gNo">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kc8-ab-2ZD">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Database" id="cHD-6O-vzM">
@@ -647,6 +667,7 @@
                         <outlet property="clearCloudDataLabel" destination="e5P-TU-gZI" id="5bF-lA-gcB"/>
                         <outlet property="currentStatusLabel" destination="gBN-o4-LQ9" id="2D0-A1-kLG"/>
                         <outlet property="iCloudSwitch" destination="oEO-15-Bew" id="h4j-ZL-g7n"/>
+                        <outlet property="lastErrorMessageLabel" destination="kc8-ab-2ZD" id="ooZ-nL-rL1"/>
                         <outlet property="uploadQueueLabel" destination="mV7-3q-fFB" id="oG6-gz-6XX"/>
                     </connections>
                 </tableViewController>

@@ -12,7 +12,7 @@ CloudKitManager *MyCloudKitManager;
 static NSString *const Key_HasZone             = @"hasZone";
 static NSString *const Key_HasZoneSubscription = @"hasZoneSubscription";
 static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
-
+NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_UnhandledErrorOccurred";
 @interface CloudKitManager ()
 
 // Initial setup
@@ -839,6 +839,13 @@ static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 	self.needsResume = YES;
 	
 	[self warnAboutAccount];
+}
+
+- (void)handleFallbackError:(NSError *)error {
+    NSLog(@"Unhandled ckErrorCode: %ld", (long)error.code);
+    NSLog(@"Unhandled ckError: %@", error);
+    self.lastCloudkitError = error;
+    [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
 }
 
 - (void)_refetchMissedRecordIDs

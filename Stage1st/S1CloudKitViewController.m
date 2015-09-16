@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *currentStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uploadQueueLabel;
 @property (weak, nonatomic) IBOutlet UILabel *clearCloudDataLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lastErrorMessageLabel;
 
 @end
 
@@ -29,17 +30,27 @@
         self.currentStatusLabel.text = @"-";
         self.uploadQueueLabel.text = @"-";
         self.clearCloudDataLabel.enabled = NO;
+        self.lastErrorMessageLabel.text = @"-";
     } else {
         // iOS 8 and more
         self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
+        NSError *error = [MyCloudKitManager lastCloudkitError];
+        if (error) {
+            self.lastErrorMessageLabel.text = error.localizedDescription;
+        } else {
+            self.lastErrorMessageLabel.text = @"-";
+        }
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitUnhandledErrorOccurred:) name:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:nil];
     
     [self cloudKitSuspendCountChanged:nil];
     [self cloudKitInFlightChangeSetChanged:nil];
+    
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
 }
@@ -47,6 +58,10 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Action
@@ -94,4 +109,9 @@
     self.uploadQueueLabel.text = [NSString stringWithFormat:@"%lu-%lu", (unsigned long)inFlightCount, (unsigned long)queuedCount];
 }
 
+- (void)cloudKitUnhandledErrorOccurred:(NSNotification *)notification
+{
+    NSError *error = notification.object;
+    self.lastErrorMessageLabel.text = error.localizedDescription;
+}
 @end
