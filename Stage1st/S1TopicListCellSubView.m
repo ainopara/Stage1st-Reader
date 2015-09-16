@@ -63,35 +63,87 @@
     }
     
     
-    //// Rectangle Drawing
+    // Background Drawing
     UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:self.bounds];
     [cellBackgroundColor setFill];
     [rectanglePath fill];
     
     CGRect roundRectangleRect = CGRectZero;
-    CGRect textRect = CGRectZero;
+    CGRect replyCountRect = CGRectZero;
+    CGRect replyIncrementCountRect = CGRectZero;
     CGRect titleRect = CGRectZero;
     CGPoint titlePoint = CGPointZero;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        roundRectangleRect = CGRectMake(19, 18, 37, 19);
-        textRect = CGRectMake(20, 20, 35, 18);
-        titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
-        
-        NSMutableParagraphStyle *testParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-        testParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        testParagraphStyle.alignment = NSTextAlignmentLeft;
-        CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15.0f], NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
-        if (actualRect.size.height < 30.0f) {
-            titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
+    NSMutableParagraphStyle *testParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    testParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    testParagraphStyle.alignment = NSTextAlignmentLeft;
+    UIFont *titleFont = nil;
+    if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            roundRectangleRect = CGRectMake(19, 18, 37, 19);
+            replyCountRect = CGRectMake(20, 20, 35, 18);
+            replyIncrementCountRect = CGRectMake(20, 38, 35, 16);
+            titleFont = [UIFont systemFontOfSize:15.0f];
+            titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 38);
+            
+            CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: titleFont, NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+            if (actualRect.size.height < 30.0f) {
+                titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
+            }
         }
-        
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
+            replyCountRect = CGRectMake(20+10, 19.5, 35, 18);
+            replyIncrementCountRect = CGRectMake(20+10, 38, 35, 16);
+            titleFont = [UIFont systemFontOfSize:17.0];
+            CGFloat fontHeight = titleFont.lineHeight;
+            CGFloat margin = roundf((self.bounds.size.height - fontHeight * 2) / 2) - 0.5;
+            titleRect = CGRectMake(90, margin, self.bounds.size.width - 90, 44);
+            
+            CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: titleFont, NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+            if (actualRect.size.height < 30.0f) {
+                titleRect = CGRectMake(90, 15.5, self.bounds.size.width - 90, 44);
+            }
+
+            titlePoint = CGPointMake(90, roundf((self.bounds.size.height-fontHeight)/2)-0.5);
+        }
+    } else {
+        NSInteger horizontalClass = self.traitCollection.horizontalSizeClass;
+        //NSInteger verticalClass = self.traitCollection.verticalSizeClass;
+        //NSLog(@"%ld %ld",(long)horizontalClass, (long)verticalClass);
+        switch (horizontalClass) {
+            case UIUserInterfaceSizeClassCompact:
+                roundRectangleRect = CGRectMake(19, 18, 37, 19);
+                replyCountRect = CGRectMake(20, 20, 35, 18);
+                replyIncrementCountRect = CGRectMake(20, 38, 35, 16);
+                titleFont = [UIFont systemFontOfSize:15.0f];
+                titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 44);
+                
+                CGRect actualRect = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: titleFont, NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+                if (actualRect.size.height < 30.0f) {
+                    titleRect = CGRectMake(70, 18, self.bounds.size.width - 90, 33);
+                }
+                break;
+            
+            case UIUserInterfaceSizeClassRegular:
+                roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
+                replyCountRect = CGRectMake(20+10, 19.5, 35, 18);
+                replyIncrementCountRect = CGRectMake(20+10, 38, 35, 16);
+                titleFont = [UIFont systemFontOfSize:17.0];
+                CGFloat fontHeight = titleFont.lineHeight;
+                CGFloat margin = roundf((self.bounds.size.height - fontHeight * 2) / 2) - 0.5;
+                titleRect = CGRectMake(90, margin, self.bounds.size.width - 90, 44);
+                
+                CGRect actualRect1 = [[titleContent string] boundingRectWithSize:titleRect.size options:NSStringDrawingTruncatesLastVisibleLine + NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: titleFont, NSParagraphStyleAttributeName: testParagraphStyle} context:nil];
+                if (actualRect1.size.height < 30.0f) {
+                    titleRect = CGRectMake(90, 15.5, self.bounds.size.width - 90, 44);
+                }
+                break;
+            default:
+                break;
+        }
     }
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
-        textRect = CGRectMake(20+10, 19.5, 35, 18);
-        CGFloat fontHeight = [UIFont boldSystemFontOfSize:18.0].lineHeight;
-        titlePoint = CGPointMake(90, roundf((self.bounds.size.height-fontHeight)/2)-0.5);
-    }
+    
+    
     
     //// Rounded Rectangle Drawing
     UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect:roundRectangleRect cornerRadius:2];
@@ -122,7 +174,7 @@
     NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
     replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-    [textContent drawInRect:textRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
+    [textContent drawInRect:replyCountRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
                                                       NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                       NSForegroundColorAttributeName: replyCountFinalColor}];
     
@@ -135,11 +187,7 @@
                 NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
                 replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
                 replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-                CGRect rect = CGRectMake(20, 38, 35, 16);
-                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-                    rect = CGRectMake(20 + 10, 38, 35, 16);
-                }
-                [replyChangeContent drawInRect:rect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                [replyChangeContent drawInRect:replyIncrementCountRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
                                                                                            NSParagraphStyleAttributeName: replyCountParagraphStyle,
                                                                                            NSForegroundColorAttributeName: replyCountFinalColor}];
             }
@@ -150,11 +198,11 @@
     //// Title Drawing
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:15.0f] range:NSMakeRange(0, titleContent.length)];
+        [titleContent addAttribute:NSFontAttributeName value: titleFont range:NSMakeRange(0, titleContent.length)];
         [titleContent drawInRect:titleRect];
     } else {
-        [titleContent addAttribute:NSFontAttributeName value: [UIFont systemFontOfSize:17.0f] range:NSMakeRange(0, titleContent.length)];
-        [titleContent drawAtPoint:titlePoint];
+        [titleContent addAttribute:NSFontAttributeName value: titleFont range:NSMakeRange(0, titleContent.length)];
+        [titleContent drawInRect:titleRect];
     }
 }
 - (NSString *)accessibilityLabel {
@@ -163,5 +211,11 @@
 
 - (BOOL)isAccessibilityElement {
     return YES;
+}
+
+
+- (void)traitCollectionDidChange:(nullable UITraitCollection *)previousTraitCollection {
+    //NSLog(@"trait change: %@",previousTraitCollection);
+    //NSLog(@"%@",self.traitCollection);
 }
 @end
