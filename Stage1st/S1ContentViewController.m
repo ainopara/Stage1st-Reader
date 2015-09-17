@@ -975,41 +975,37 @@
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
-    NSNumber *bottomProgress = progress[@"bottom"];
-    if (_currentPage >= _totalPages) {
-        if ([bottomProgress doubleValue] >= 0) {
+    
+    // When page not finish loading, no animation should be presented.
+    if (!_finishLoading) {
+        if (_currentPage >= _totalPages) {
             [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
-            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * [bottomProgress doubleValue], 0, 0, 1);
+        }
+        self.forwardButton.imageView.layer.transform = CATransform3DIdentity;
+        self.backButton.imageView.layer.transform = CATransform3DIdentity;
+        return;
+    }
+    // Process for bottom offset
+    double bottomProgress = [progress[@"bottom"] doubleValue];
+    if (_currentPage >= _totalPages) {
+        if (bottomProgress >= 0) {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * bottomProgress, 0, 0, 1);
         } else {
             [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
             self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2, 0, 0, 1);
         }
-        
     } else {
-        double progress = [bottomProgress doubleValue];
-        if (progress < 0) {
-            progress = 0;
-        } else if (progress > 1){
-            progress = 1;
-        }
-        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * progress, 0, 0, 1);
+        bottomProgress = fmax(fmin(bottomProgress, 1.0f), 0.0f);
+        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * bottomProgress, 0, 0, 1);
     }
     
-
+    //Progress for top offset
     if (_currentPage != 1) {
-        NSNumber *topProgress = progress[@"top"];
-        double progress = [topProgress doubleValue];
-        if (progress < 0) {
-            progress = 0;
-        } else if (progress > 1){
-            progress = 1;
-        }
-        self.backButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * progress, 0, 0, 1);
+        double topProgress = [progress[@"top"] doubleValue];
+        topProgress = fmax(fmin(topProgress, 1.0f), 0.0f);
+        self.backButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * topProgress, 0, 0, 1);
     } else {
-        self.backButton.imageView.layer.transform = CATransform3DIdentity;
-    }
-    if (!_finishLoading) {
-        self.forwardButton.imageView.layer.transform = CATransform3DIdentity;
         self.backButton.imageView.layer.transform = CATransform3DIdentity;
     }
 }
