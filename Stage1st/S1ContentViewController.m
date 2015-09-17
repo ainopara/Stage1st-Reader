@@ -231,10 +231,14 @@
         ; // iOS 7 do not support hand off
     } else {
         NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
-        activity.title = @"Viewing Topic";
+        activity.title = self.topic.title;
         activity.userInfo = @{@"topicID": self.topic.topicID,
                               @"page": [NSNumber numberWithInteger:_currentPage]};
         activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+        //iOS 9 Search api
+        if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
+            activity.eligibleForSearch = YES;
+        }
         self.userActivity = activity;
     }
     

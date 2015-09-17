@@ -276,12 +276,46 @@ S1AppDelegate *MyAppDelegate;
     return YES;
 }
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    NSLog(@"SSS%@", userActivity.userInfo);
-    S1Topic *topic = [[S1Topic alloc] init];
-    topic.topicID = [userActivity.userInfo valueForKey:@"topicID"];
-    topic.lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
-    [self presentContentViewControllerForTopic:topic];
-    return YES;
+    NSLog(@"Receive Hand Off: %@", userActivity.userInfo);
+    NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
+    if (topicID) {
+        S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
+        if (topic) {
+            NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
+            if (lastViewedPage) {
+                topic = [topic copy];
+                topic.lastViewedPage = lastViewedPage;
+            }
+        } else {
+            topic = [[S1Topic alloc] init];
+            topic.topicID = topicID;
+            NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
+            if (lastViewedPage) {
+                topic.lastViewedPage = lastViewedPage;
+            }
+        }
+        [self presentContentViewControllerForTopic:topic];
+        return YES;
+    } else {
+        NSString *urlString = [userActivity.webpageURL absoluteString];
+        S1Topic *parsedTopic = [S1Parser extractTopicInfoFromLink:urlString];
+        if (parsedTopic.topicID) {
+            S1Topic *tracedTopic = [[S1DataCenter sharedDataCenter] tracedTopic:parsedTopic.topicID];
+            if (tracedTopic) {
+                NSNumber *lastViewedPage = parsedTopic.lastViewedPage;
+                if (lastViewedPage) {
+                    tracedTopic = [tracedTopic copy];
+                    tracedTopic.lastViewedPage = lastViewedPage;
+                }
+                [self presentContentViewControllerForTopic:tracedTopic];
+                return YES;
+            } else {
+                [self presentContentViewControllerForTopic:parsedTopic];
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 #pragma mark - Reachability
 
