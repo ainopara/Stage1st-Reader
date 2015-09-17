@@ -515,6 +515,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [super preferredInterfaceOrientationForPresentation];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    NSLog(@"h%f,w%f",size.height, size.width);
+    CGRect frame = self.view.frame;
+    frame.size = size;
+    self.view.frame = frame;
+}
 
 #pragma mark Networking
 

@@ -149,10 +149,13 @@
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
     [self.webView.scrollView insertSubview:self.titleLabel atIndex:0];
-    /*
+    
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.webView.subviews[1])
-    }];*/
+        make.bottom.equalTo(self.webView.scrollView.subviews[1].mas_top);
+        make.centerX.equalTo(self.view.mas_centerX);
+        make.height.equalTo(@64);
+        make.width.equalTo(self.view.mas_width);
+    }];
 
     UIButton *button = nil;
     
@@ -1092,6 +1095,13 @@
 {
     [self.dataCenter cancelRequest];
     
+}
+
+#pragma mark - Layout
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    CGRect frame = self.view.frame;
+    frame.size = size;
+    self.view.frame = frame;
 }
 
 #pragma mark - Reply
