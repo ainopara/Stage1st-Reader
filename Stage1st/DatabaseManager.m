@@ -316,7 +316,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupCloudKitExtension
 {
 	YapDatabaseCloudKitRecordHandler *recordHandler = [YapDatabaseCloudKitRecordHandler withObjectBlock:
-	    ^(CKRecord *__autoreleasing *inOutRecordPtr, YDBCKRecordInfo *recordInfo,
+	    ^(YapDatabaseReadTransaction *transaction, CKRecord *__autoreleasing *inOutRecordPtr, YDBCKRecordInfo *recordInfo,
 		  NSString *collection, NSString *key, S1Topic *topic)
 	{
         if (SYSTEM_VERSION_LESS_THAN(@"8")) {

@@ -272,7 +272,7 @@
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+    self.pullToActionViewController = nil;
 }
 
 - (void)didReceiveMemoryWarning

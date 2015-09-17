@@ -1,6 +1,6 @@
 PODS:
-  - 1PasswordExtension (1.5)
-  - ActionSheetPicker-3.0 (1.7.2)
+  - 1PasswordExtension (1.6)
+  - ActionSheetPicker-3.0 (2.0.0)
   - AFNetworking (2.6.0):
     - AFNetworking/NSURLConnection (= 2.6.0)
     - AFNetworking/NSURLSession (= 2.6.0)
@@ -37,16 +37,16 @@ PODS:
     - FMDB/common
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
-  - Mantle (2.0.4):
-    - Mantle/extobjc (= 2.0.4)
-  - Mantle/extobjc (2.0.4)
+  - Mantle (2.0.5):
+    - Mantle/extobjc (= 2.0.5)
+  - Mantle/extobjc (2.0.5)
   - Masonry (0.6.2)
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.5.1)
   - SVWebViewController (1.0)
-  - YapDatabase (2.7.1):
-    - YapDatabase/standard (= 2.7.1)
-  - YapDatabase/standard (2.7.1):
+  - YapDatabase (2.7.2):
+    - YapDatabase/standard (= 2.7.2)
+  - YapDatabase/standard (2.7.2):
     - CocoaLumberjack (~> 2)
 
 DEPENDENCIES:
@@ -83,18 +83,18 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ainopara/SVWebViewController.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: d2392e44526be30ae7d23f305e96e411ede9b9d1
-  ActionSheetPicker-3.0: c5bdca19fd8b3d798f0c79892cbab6f11a8523ae
+  1PasswordExtension: 846c1497815c8b5dcf2828bc843d21d04f07138f
+  ActionSheetPicker-3.0: dcd0e3cf07458875e93f5f0c27a7bac0902c26bb
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   CocoaLumberjack: 019d1361244274a6138c788c6cb80baabc13fb8f
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Mantle: 6bee68168423948be0c0c5924832bf3af188e099
+  Mantle: 1912395033f601de5adc8ee91e48f46e4c7051ad
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: c9c55cad2729c85f6ced415f1b21857c9a2d8ef9
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
-  YapDatabase: e9ff9a189e99268a331575411e8462e4c6df2bc3
+  YapDatabase: bcf13bd764ab4961fb48bef937becf964e50063d
 
 COCOAPODS: 0.38.2
