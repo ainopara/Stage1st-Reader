@@ -238,6 +238,7 @@
         //iOS 9 Search api
         if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
             activity.eligibleForSearch = YES;
+            activity.requiredUserInfoKeys = [NSSet setWithObjects:@"topicID", nil];
         }
         self.userActivity = activity;
     }
@@ -817,17 +818,31 @@
         [alertView show];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-        UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            _presentingWebViewer = YES;
-            NSLog(@"%@", request.URL);
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
-            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:controller animated:YES completion:nil];
-        }];
-        [alert addAction:cancelAction];
-        [alert addAction:continueAction];
+        if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                _presentingWebViewer = YES;
+                NSLog(@"%@", request.URL);
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
+                [[controller view] setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+                //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+                [self presentViewController:controller animated:YES completion:nil];
+            }];
+            [alert addAction:cancelAction];
+            [alert addAction:continueAction];
+        } else {
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                _presentingWebViewer = YES;
+                NSLog(@"%@", request.URL);
+                if (![[UIApplication sharedApplication] openURL:request.URL]) {
+                    NSLog(@"%@%@",@"Failed to open url:",[request.URL description]);
+                }
+            }];
+            [alert addAction:cancelAction];
+            [alert addAction:continueAction];
+        }
+        
         [self presentViewController:alert animated:YES completion:nil];
     }
     return NO;
@@ -1300,6 +1315,7 @@
     NSLog(@"Hand Off Activity Updated");
     activity.userInfo = @{@"topicID": self.topic.topicID,
                           @"page": [NSNumber numberWithInteger:_currentPage]};
+    self.userActivity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
 }
 
 - (void)saveViewPosition {
@@ -1324,4 +1340,5 @@
     }
     return result;
 }
+
 @end

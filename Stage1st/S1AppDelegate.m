@@ -270,7 +270,7 @@ S1AppDelegate *MyAppDelegate;
     }
 }
 
-#pragma mark - Hand Off
+#pragma mark - Hand Off (iOS 8)
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
