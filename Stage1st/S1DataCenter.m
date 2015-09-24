@@ -246,11 +246,11 @@
 }
 
 #pragma mark - Network (Content)
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *, BOOL))success failure:(void (^)(NSError *))failure {
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
     if (floorList) {
-        success(floorList);
+        success(floorList, YES);
         return;
     }
     
@@ -275,7 +275,7 @@
             
             //update floor cache
             [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                success(floorList);
+                success(floorList, NO);
             }];
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -298,7 +298,7 @@
             
             //update floor cache
             [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                success(floorList);
+                success(floorList, NO);
             }];
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {

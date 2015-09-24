@@ -283,8 +283,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    [self.dataCenter clearTopicListCache];
-    [self updatePageLabel];
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - Setters and Getters
@@ -709,7 +707,7 @@
     }
 }
 
-#pragma mark UIWebView Delegate
+#pragma mark UIWebView
 
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -875,7 +873,7 @@
     
 }
 
-#pragma mark JTSImageViewController Interactions Delegate
+#pragma mark JTSImageViewController
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     self.imageViewer = imageViewer;
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -908,18 +906,18 @@
     }
     
 }
-#pragma mark JTSImageViewController Options Delegate
+
 - (CGFloat)alphaForBackgroundDimmingOverlayInImageViewer:(JTSImageViewController *)imageViewer {
     return 0.3;
 }
 
-#pragma mark UIScrollView Delegate
+#pragma mark UIScrollView
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
     return YES;
 }
 
-#pragma mark S1MahjongFaceViewControllerDelegate
+#pragma mark Mahjong Face
 
 - (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
     UITextView *textView = self.replyController.textView;
@@ -961,7 +959,7 @@
     return self.dataCenter.mahjongFaceHistoryArray;
 }
 
-#pragma mark APPullToAction Delegate
+#pragma mark Pull To Action
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
     if (offset < -80 && _finishLoading) {
@@ -1062,7 +1060,7 @@
         }];
     }
     
-    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
+    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf updatePageLabel];
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
@@ -1078,9 +1076,8 @@
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
                 [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
             }
-            
-            
         }
+        // dismiss hud
         if (HUD != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
@@ -1089,6 +1086,13 @@
                     [HUD setText:strongSelf.topic.message withWidthMultiplier:5];
                 }
             });
+        }
+        // auto refresh when current page not full.
+        if (shouldRefetch != nil && _currentPage < _totalPages && [shouldRefetch boolValue]) {
+            [strongSelf cancelRequest];
+            _needToLoadLastPosition = NO;
+            [strongSelf saveViewPosition];
+            [strongSelf fetchContentAndForceUpdate:YES];
         }
         
     } failure:^(NSError *error) {
@@ -1256,6 +1260,7 @@
     self.titleLabel.text = title;
     self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
+
 - (UIImage *)screenShot
 {
     if (IS_RETINA) {

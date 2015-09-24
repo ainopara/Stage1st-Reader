@@ -36,7 +36,7 @@
         self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
         NSError *error = [MyCloudKitManager lastCloudkitError];
         if (error) {
-            self.lastErrorMessageLabel.text = error.localizedDescription;
+            self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)error.code];
         } else {
             self.lastErrorMessageLabel.text = @"-";
         }
@@ -112,6 +112,6 @@
 - (void)cloudKitUnhandledErrorOccurred:(NSNotification *)notification
 {
     NSError *error = notification.object;
-    self.lastErrorMessageLabel.text = error.localizedDescription;
+    self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)error.code];
 }
 @end

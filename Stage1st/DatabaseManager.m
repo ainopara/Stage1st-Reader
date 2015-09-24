@@ -185,7 +185,7 @@ DatabaseManager *MyDatabaseManager;
 	// Setup database connection(s)
 	
 	uiDatabaseConnection = [database newConnection];
-	uiDatabaseConnection.objectCacheLimit = 10000;
+	uiDatabaseConnection.objectCacheLimit = 0;
 	uiDatabaseConnection.metadataCacheEnabled = NO;
 	
 	#if YapDatabaseEnforcePermittedTransactions

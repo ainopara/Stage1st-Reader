@@ -10,6 +10,7 @@
 #import "S1TopicListViewController.h"
 #import "GSStaticTableViewBuilder.h"
 #import "DatabaseManager.h"
+#import "MTStatusBarOverlay.h"
 
 
 @interface S1SettingViewController () <UITableViewDelegate>
@@ -51,8 +52,8 @@
 {
     [super viewDidLoad];
     
-    //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
-    //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
+    [[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
+    [[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
     if (IS_IPAD) {
         //UIDropShadowView has a fixed corner radius.
         self.navigationController.view.layer.cornerRadius  = 5.0;
