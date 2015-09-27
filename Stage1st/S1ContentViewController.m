@@ -154,7 +154,7 @@
         make.bottom.equalTo(self.webView.scrollView.subviews[1].mas_top);
         make.centerX.equalTo(self.view.mas_centerX);
         make.height.equalTo(@64);
-        make.width.equalTo(self.view.mas_width);
+        make.width.equalTo(self.view.mas_width).with.offset(-24);
     }];
 
     UIButton *button = nil;
@@ -1089,9 +1089,6 @@
         }
         // auto refresh when current page not full.
         if (shouldRefetch != nil && _currentPage < _totalPages && [shouldRefetch boolValue]) {
-            [strongSelf cancelRequest];
-            _needToLoadLastPosition = NO;
-            [strongSelf saveViewPosition];
             [strongSelf fetchContentAndForceUpdate:YES];
         }
         

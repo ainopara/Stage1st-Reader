@@ -66,6 +66,7 @@
     if (!self.backspaceButton) {
         self.backspaceButton = [[S1MahjongFaceButton alloc] init];
         [self.backspaceButton setImage:[[UIImage imageNamed:@"Backspace"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        self.backspaceButton.adjustsImageWhenHighlighted = NO;
         [self.backspaceButton setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"mahjongface.backspace.tint"]];
         [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backspaceButton];
@@ -87,7 +88,7 @@
     [button addTarget:self action:@selector(mahjongFacePressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:button];
     [self.buttons addObject:button];
-    
+    button.adjustsImageWhenHighlighted = NO;
     button.mahjongFaceKey = key;
     [self setImageURL:URL forButton:button];
     
@@ -101,7 +102,6 @@
         __strong S1MahjongFaceButton *strongButton = weakButton;
         UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
         [strongButton setImage:theImage forState:UIControlStateNormal];
-        [strongButton setImage:theImage forState:UIControlStateHighlighted];
     } failure:^(NSError *error) {
         NSLog(@"Unexpected failure when request mahjong face image:%@", error);
     }];
