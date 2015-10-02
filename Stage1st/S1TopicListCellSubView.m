@@ -113,7 +113,9 @@
         switch (horizontalClass) {
             case UIUserInterfaceSizeClassCompact:
                 roundRectangleRect = CGRectMake(19, 18, 37, 19);
+                roundRectangleRect = CGRectInset(roundRectangleRect, -2, 0);
                 replyCountRect = CGRectMake(20, 20, 35, 18);
+                replyCountRect = CGRectInset(replyCountRect, -2, 0);
                 replyIncrementCountRect = CGRectMake(20, 38, 35, 16);
                 titleFont = [UIFont systemFontOfSize:15.0f];
                 titleRect = CGRectMake(70, 8, self.bounds.size.width - 90, 44);
@@ -126,7 +128,9 @@
             
             case UIUserInterfaceSizeClassRegular:
                 roundRectangleRect = CGRectMake(19+10, 17, 37, 20);
+                roundRectangleRect = CGRectInset(roundRectangleRect, -2, 0);
                 replyCountRect = CGRectMake(20+10, 19.5, 35, 18);
+                replyCountRect = CGRectInset(replyCountRect, -2, 0);
                 replyIncrementCountRect = CGRectMake(20+10, 38, 35, 16);
                 titleFont = [UIFont systemFontOfSize:17.0];
                 CGFloat fontHeight = titleFont.lineHeight;
