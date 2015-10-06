@@ -72,6 +72,9 @@
     } else {
         topic.favorite = [NSNumber numberWithBool:NO];
     }
+    if (topic.title == nil) {
+        topic.title = @"";
+    }
     return topic;
 }
 
@@ -142,7 +145,7 @@
                         }
                         if (tracedTopic) {
                             if (tracedTopic.hasChangedProperties) {
-                                NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
+                                //NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
                                 [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
                                 changeCount += 1;
                             }
@@ -150,7 +153,7 @@
                         } else {
                             failCount += 1;
                         }
-                        if (changeCount % 50 == 1) {
+                        if (changeCount % 100 == 1) {
                             break;
                         }
                     }

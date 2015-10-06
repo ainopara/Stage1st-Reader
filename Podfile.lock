@@ -61,7 +61,7 @@ DEPENDENCIES:
   - Reachability
   - Reveal-iOS-SDK
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
-  - YapDatabase
+  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `tryLimitUpload2`)
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -70,6 +70,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/KissXML.git
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
+  YapDatabase:
+    :branch: tryLimitUpload2
+    :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
   JTSImageViewController:
@@ -81,6 +84,9 @@ CHECKOUT OPTIONS:
   SVWebViewController:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
+  YapDatabase:
+    :commit: dd9f8bea93c7f7eac0c5efa11bf7374b64d33635
+    :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 846c1497815c8b5dcf2828bc843d21d04f07138f
@@ -95,6 +101,6 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: c9c55cad2729c85f6ced415f1b21857c9a2d8ef9
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
-  YapDatabase: bcf13bd764ab4961fb48bef937becf964e50063d
+  YapDatabase: c9bf113e40137e96e67ff65a25cd4bf4bdc0beed
 
 COCOAPODS: 0.38.2
