@@ -17,13 +17,15 @@
 #pragma mark - Backend Protocol
 
 - (void)hasViewed:(S1Topic *)topic {
-    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         if (tracedTopic == nil) {
             NSLog(@"Traced: \n%@",topic);
-            [transaction setObject:[topic copy] forKey:[topic.topicID stringValue] inCollection:Collection_Topics];
+            S1Topic *topicCopy = [topic copy]; // do not change topic's value since it's shared with topiclist view controller.
+            topicCopy.lastReplyCount = nil;
+            [transaction setObject:topicCopy forKey:[topicCopy.topicID stringValue] inCollection:Collection_Topics];
         } else {
-            tracedTopic = [tracedTopic copy];
+            tracedTopic = [tracedTopic copy]; // make mutable
             if (topic.topicID != nil && (tracedTopic.topicID == nil || (tracedTopic.topicID != nil && (![tracedTopic.topicID isEqualToNumber:topic.topicID])))) {
                 tracedTopic.topicID = topic.topicID;
             }
@@ -32,6 +34,9 @@
             }
             if (topic.fID != nil && (tracedTopic.fID == nil || (tracedTopic.fID != nil && (![tracedTopic.fID isEqualToNumber:topic.fID])))) {
                 tracedTopic.fID = topic.fID;
+            }
+            if (topic.authorUserID != nil && (tracedTopic.authorUserID == nil || (tracedTopic.authorUserID != nil && (![tracedTopic.authorUserID isEqualToNumber:topic.authorUserID])))) {
+                tracedTopic.authorUserID = topic.authorUserID;
             }
             if (topic.replyCount != nil && (tracedTopic.replyCount == nil || (tracedTopic.replyCount != nil && (![tracedTopic.replyCount isEqualToNumber:topic.replyCount])))) {
                 tracedTopic.replyCount = topic.replyCount;
@@ -48,6 +53,7 @@
             if (topic.favoriteDate != nil && (tracedTopic.favoriteDate == nil || (tracedTopic.favoriteDate != nil && (![tracedTopic.favoriteDate isEqualToDate:topic.favoriteDate])))) {
                 tracedTopic.favoriteDate = topic.favoriteDate;
             }
+            tracedTopic.lastReplyCount = nil;
             tracedTopic.lastViewedDate = [NSDate date];
             NSLog(@"Traced: \n%@",tracedTopic);
             [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];

@@ -11,11 +11,12 @@
 /**
  * Keys for encoding / decoding (to avoid typos)
  **/
-static NSString *const k_version = @"version";
+static NSString *const k_version = @"version"; // not used for now
 static NSString *const k_topicID = @"topicID";
 static NSString *const k_title  = @"title";
 static NSString *const k_replyCount = @"replyCount";
 static NSString *const k_fID  = @"fID";
+static NSString *const k_authorID  = @"authorID";
 static NSString *const k_lastViewedDate = @"lastViewedDate";
 static NSString *const k_lastViewedPage = @"lastViewedPage";
 static NSString *const k_lastViewedPosition = @"lastViewedPosition";
@@ -67,6 +68,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
         _topicID = [aDecoder decodeObjectForKey:k_topicID];
         _title = [aDecoder decodeObjectForKey:k_title];
         _fID = [aDecoder decodeObjectForKey:k_fID];
+        _authorUserID = [aDecoder decodeObjectForKey:k_authorID];
         _replyCount = [aDecoder decodeObjectForKey:k_replyCount];
         _lastViewedDate = [aDecoder decodeObjectForKey:k_lastViewedDate];
         _lastViewedPage = [aDecoder decodeObjectForKey:k_lastViewedPage];
@@ -81,6 +83,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [aCoder encodeObject:_topicID forKey:k_topicID];
     [aCoder encodeObject:_title forKey:k_title];
     [aCoder encodeObject:_fID forKey:k_fID];
+    [aCoder encodeObject:_authorUserID forKey:k_authorID];
     [aCoder encodeObject:_replyCount forKey:k_replyCount];
     [aCoder encodeObject:_lastViewedDate forKey:k_lastViewedDate];
     [aCoder encodeObject:_lastViewedPage forKey:k_lastViewedPage];
@@ -211,7 +214,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     }];
 }*/
 
-#pragma mark MyDatabaseObject overrides
+#pragma mark - MyDatabaseObject overrides
 
 + (BOOL)storesOriginalCloudValues
 {

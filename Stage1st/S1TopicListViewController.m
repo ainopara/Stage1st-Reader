@@ -645,7 +645,11 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)reloadTableData:(NSNotification *)notification {
-    [self.tableView reloadData];
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        ;
+    } else {
+        [self.tableView reloadData];
+    }
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
@@ -902,25 +906,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         return;
     }
 }
-
-/*
-- (void)handlePasteboardString:(NSString *)URL
-{
-    if (!URL) {
-        return;
-    }
-    if (NO) {
-        S1Topic *clipboardTopic = [S1Parser extract];
-        NSLog(@"Open Clipboard topic ID: %@", clipboardTopic.topicID);
-        [clipboardTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:topicID]];
-    }
-    
-}
-
-- (void)handleDatabaseImport:(NSURL *)databaseURL {
-    [self.dataCenter handleDatabaseImport:databaseURL];
-}
- */
 
 #pragma mark - Getters and Setters
 

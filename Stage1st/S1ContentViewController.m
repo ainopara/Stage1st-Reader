@@ -267,10 +267,15 @@
     }
     //NSLog(@"Content View did disappear");
     [self cancelRequest];
-    [self saveTopicViewedState:nil];
-    self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
-    NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self saveTopicViewedState:nil];
+        self.topic.floors = [[NSMutableDictionary alloc] init]; //clear cache floors to reduce memory useage
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+        });
+    });
+    
     [super viewDidDisappear:animated];
 }
 
