@@ -320,26 +320,32 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (_loadingFlag || _loadingMore) {
         return;
     }
+    // Normal Case and Search Case
     if(indexPath.row == [self.topics count] - 15)
     {
-        NSLog(@"Reach last topic, load more.");
         if ([self.currentKey isEqual: @"Search"]) {
-            ;
-        } else {
-            _loadingMore = YES;
-            __weak typeof(self) weakSelf = self;
-            [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
-                __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.topics = [topicList mutableCopy];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [strongSelf.tableView reloadData];
-                    _loadingMore = NO;
-                });
-            } failure:^(NSError *error) {
-                _loadingMore = NO;
-                NSLog(@"fail to load more...");
-            }];
+            
         }
+        self.tableView.tableFooterView = [self footerView];
+        NSLog(@"Reach last topic, load more.");
+        _loadingMore = YES;
+        __weak typeof(self) weakSelf = self;
+        [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.topics = [topicList mutableCopy];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                strongSelf.tableView.tableFooterView = nil;
+                [strongSelf.tableView reloadData];
+                _loadingMore = NO;
+            });
+        } failure:^(NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                strongSelf.tableView.tableFooterView = nil;
+                _loadingMore = NO;
+            });
+            NSLog(@"fail to load more...");
+        }];
     }
 }
 
@@ -1057,6 +1063,22 @@ static NSString * const cellIdentifier = @"TopicCell";
         _cachedLastRefreshTime = [NSMutableDictionary dictionary];
     }
     return _cachedLastRefreshTime;
+}
+
+- (UIView *)footerView {
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
+    [footerView setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"]];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 44)];
+    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:16.0], NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]}];
+    [label setAttributedText:labelTitle];
+    label.backgroundColor = [UIColor clearColor];
+    [footerView addSubview:label];
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(footerView.mas_centerX);
+        make.centerY.equalTo(footerView.mas_centerY);
+    }];
+    return footerView;
 }
 
 @end

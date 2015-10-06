@@ -40,6 +40,10 @@
 	<string>4</string>
 	<key>topiclist.tableview.header.background</key>
 	<string>24</string>
+	<key>topiclist.tableview.footer.text</key>
+	<string>4</string>
+	<key>topiclist.tableview.footer.background</key>
+	<string>5</string>
 	<key>topiclist.cell.background.normal</key>
 	<string>5</string>
 	<key>topiclist.cell.background.highlight</key>
