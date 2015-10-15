@@ -397,6 +397,11 @@
 #pragma mark - Cleaning
 - (void)cleaning {
     [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2*7*24*3600]];
+    NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
+    if (duration < 0) {
+        return;
+    }
+    [self.tracer removeTopicBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-duration]];
 }
 #pragma mark - Mahjongface History
 - (NSMutableArray *)mahjongFaceHistoryArray {

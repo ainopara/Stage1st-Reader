@@ -200,6 +200,12 @@
         return @1209600;
     } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1month",@"")]){
         return @2592000;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_3months",@"")]){
+        return @7884000;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_6months",@"")]){
+        return @15768000;
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1year",@"")]){
+        return @31536000;
     }
     return @-1;
 }
@@ -214,6 +220,12 @@
         return NSLocalizedString(@"SettingView_HistoryLimit_2weeks",@"");
     } else if ([numberKey isEqualToNumber:@2592000]) {
         return NSLocalizedString(@"SettingView_HistoryLimit_1month",@"");
+    } else if ([numberKey isEqualToNumber:@7884000]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_3months",@"");
+    } else if ([numberKey isEqualToNumber:@15768000]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_6months",@"");
+    } else if ([numberKey isEqualToNumber:@31536000]) {
+        return NSLocalizedString(@"SettingView_HistoryLimit_1year",@"");
     }
     return NSLocalizedString(@"SettingView_HistoryLimit_Forever",@"");
 }

@@ -98,6 +98,9 @@
 /* (No Commment) */
 "SettingView_HistoryLimit" = "保存历史记录";
 
+"SettingView_HistoryLimit_3months" = "3个月";
+"SettingView_HistoryLimit_6months" = "6个月";
+"SettingView_HistoryLimit_1year" = "1年";
 /* 1 month */
 "SettingView_HistoryLimit_1month" = "1个月";
 

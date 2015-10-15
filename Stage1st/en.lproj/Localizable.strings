@@ -48,6 +48,9 @@
 "SettingView_HistoryLimit_1week" = "1 week";
 "SettingView_HistoryLimit_2weeks" = "2 weeks";
 "SettingView_HistoryLimit_1month" = "1 month";
+"SettingView_HistoryLimit_3months" = "3 months";
+"SettingView_HistoryLimit_6months" = "6 months";
+"SettingView_HistoryLimit_1year" = "1 year";
 "SettingView_HistoryLimit_Forever" = "Forever";
 
 "SettingView_Version" = "Version";

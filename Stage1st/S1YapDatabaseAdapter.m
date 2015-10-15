@@ -102,4 +102,22 @@
     return @(count);
 }
 
+- (void)removeTopicBeforeDate:(NSDate *)date {
+    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        __block NSMutableArray *keysToRemove = [[NSMutableArray alloc] init];
+        [transaction enumerateKeysAndObjectsInCollection:Collection_Topics usingBlock:^(NSString * _Nonnull key, id  _Nonnull object, BOOL * _Nonnull stop) {
+            S1Topic *topic = object;
+            NSDate *lastUsedDate = topic.lastViewedDate;
+            BOOL favorite = [topic.favorite boolValue];
+            if ((!favorite) && date && lastUsedDate && [date timeIntervalSinceDate:lastUsedDate] > 0) {
+                [keysToRemove addObject:key];
+            }
+        }];
+        NSLog(@"Keys to remove from floor cache: %@",keysToRemove);
+        for (NSString *key in keysToRemove) {
+            [transaction removeObjectForKey:key inCollection:Collection_Topics];
+        }
+    }];
+}
+
 @end

@@ -73,4 +73,5 @@
 - (S1Topic *)topicByID:(NSNumber *)topicID;
 - (NSNumber *)numberOfTopicsInDatabse;
 - (NSNumber *)numberOfFavoriteTopicsInDatabse;
+- (void)removeTopicBeforeDate:(NSDate *)date;
 @end
