@@ -13,7 +13,7 @@
 #import "MTStatusBarOverlay.h"
 
 
-@interface S1SettingViewController () <UITableViewDelegate>
+@interface S1SettingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
@@ -23,11 +23,13 @@
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *nightModeSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *forcePortraitSwitch;
 
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *offsetConstraint;
 @property (assign, nonatomic) CGFloat offset;
@@ -52,8 +54,8 @@
 {
     [super viewDidLoad];
     
-    //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
-    //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
+    [[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
+    [[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
     if (IS_IPAD) {
         //UIDropShadowView has a fixed corner radius.
         self.navigationController.view.layer.cornerRadius  = 5.0;
@@ -74,7 +76,10 @@
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
-    
+    self.forcePortraitSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"];
+    if (IS_IPAD) {
+        self.forcePortraitCell.hidden = YES;
+    }
     
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     
@@ -152,6 +157,15 @@
     return [super preferredInterfaceOrientationForPresentation];
 }
 #pragma mark - Navigation
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.row == 8) {
+        if (IS_IPAD) {
+            return 0;
+        }
+    }
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"%@", indexPath);
     
@@ -171,7 +185,7 @@
     }
     if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
+        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"),NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
         
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:selectedKey];
         controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
@@ -208,6 +222,9 @@
 - (IBAction)switchNightMode:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"NightMode"];
     [[S1ColorManager sharedInstance] setPaletteForNightMode:sender.on];
+}
+- (IBAction)switchForcePortrait:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ForcePortraitForPhone"];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
