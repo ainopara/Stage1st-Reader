@@ -837,23 +837,44 @@ kDetailViewWidth, kHistoryTableRowHeight*kMaxHistoryTableRowCount + kStatusBarHe
 	}
     
 	CGFloat pi = (CGFloat)M_PI;
-	if (orientation == UIDeviceOrientationPortrait) {
-		self.transform = CGAffineTransformIdentity;
-		self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
-		self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.0f, kWidthSmall, self.frame.size.height);
-	}else if (orientation == UIDeviceOrientationLandscapeLeft) {
-		self.transform = CGAffineTransformMakeRotation(pi * (90.f) / 180.0f);
-        self.frame = CGRectMake((SYSTEM_VERSION_LESS_THAN(@"8")? kScreenWidth : kScreenHeight) - kStatusBarHeight, 0, kStatusBarHeight, kScreenHeight);
-		self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0,kWidthSmall,kStatusBarHeight);
-	} else if (orientation == UIDeviceOrientationLandscapeRight) {
-		self.transform = CGAffineTransformMakeRotation(pi * (-90.f) / 180.0f);
-        self.frame = CGRectMake(0.f,0.f, kStatusBarHeight, SYSTEM_VERSION_LESS_THAN(@"8")?kScreenHeight : kScreenWidth);
-		self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0.f, kWidthSmall, kStatusBarHeight);
-	} else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
-		self.transform = CGAffineTransformMakeRotation(pi);
-		self.frame = CGRectMake(0.f,kScreenHeight - kStatusBarHeight,kScreenWidth,kStatusBarHeight);
-		self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.f, kWidthSmall, self.frame.size.height);
-	}
+    if (SYSTEM_VERSION_LESS_THAN(@"9") || (!IS_IPAD)) {
+        if (orientation == UIDeviceOrientationPortrait) {
+            self.transform = CGAffineTransformIdentity;
+            self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.0f, kWidthSmall, self.frame.size.height);
+        }else if (orientation == UIDeviceOrientationLandscapeLeft) {
+            self.transform = CGAffineTransformMakeRotation(pi * (90.f) / 180.0f);
+            self.frame = CGRectMake((SYSTEM_VERSION_LESS_THAN(@"8")? kScreenWidth : kScreenHeight) - kStatusBarHeight, 0, kStatusBarHeight, kScreenHeight);
+            self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0,kWidthSmall,kStatusBarHeight);
+        } else if (orientation == UIDeviceOrientationLandscapeRight) {
+            self.transform = CGAffineTransformMakeRotation(pi * (-90.f) / 180.0f);
+            self.frame = CGRectMake(0.f,0.f, kStatusBarHeight, SYSTEM_VERSION_LESS_THAN(@"8")?kScreenHeight : kScreenWidth);
+            self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0.f, kWidthSmall, kStatusBarHeight);
+        } else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
+            self.transform = CGAffineTransformMakeRotation(pi);
+            self.frame = CGRectMake(0.f,kScreenHeight - kStatusBarHeight,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.f, kWidthSmall, self.frame.size.height);
+        }
+    } else {
+        if (orientation == UIInterfaceOrientationPortrait) {
+            self.transform = CGAffineTransformIdentity;
+            self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.0f, kWidthSmall, self.frame.size.height);
+        }else if (orientation == UIInterfaceOrientationLandscapeLeft) {
+            self.transform = CGAffineTransformIdentity;
+            self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0,kWidthSmall,kStatusBarHeight);
+        } else if (orientation == UIInterfaceOrientationLandscapeRight) {
+            self.transform = CGAffineTransformIdentity;
+            self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(kScreenHeight-kWidthSmall,0.f, kWidthSmall, kStatusBarHeight);
+        } else if (orientation == UIInterfaceOrientationPortraitUpsideDown) {
+            self.transform = CGAffineTransformIdentity;
+            self.frame = CGRectMake(0.f,0.f,kScreenWidth,kStatusBarHeight);
+            self.smallFrame = CGRectMake(self.frame.size.width - kWidthSmall, 0.f, kWidthSmall, self.frame.size.height);
+        }
+    }
+	
     
     self.backgroundView.frame = [self backgroundViewFrameForStatusBarInterfaceOrientation];
     
