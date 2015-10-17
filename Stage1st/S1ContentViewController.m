@@ -60,6 +60,7 @@
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
     BOOL _presentingContentViewController;
+    BOOL _shouldRestoreViewPosition;
     NSURL *_urlToOpen; // iOS7 Only
 }
 
@@ -75,6 +76,7 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _shouldRestoreViewPosition = NO;
         _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -92,6 +94,7 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _shouldRestoreViewPosition = NO;
         _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -1068,6 +1071,10 @@
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf updatePageLabel];
+        if (_shouldRestoreViewPosition) {
+            [strongSelf saveViewPosition];
+            _shouldRestoreViewPosition = NO;
+        }
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
         [strongSelf updateTitleLabelWithTitle:strongSelf.topic.title];
         _finishLoading = YES;
@@ -1094,6 +1101,7 @@
         }
         // auto refresh when current page not full.
         if (shouldRefetch != nil && _currentPage < _totalPages && [shouldRefetch boolValue]) {
+            _shouldRestoreViewPosition = YES;
             [strongSelf fetchContentAndForceUpdate:YES];
         }
         
