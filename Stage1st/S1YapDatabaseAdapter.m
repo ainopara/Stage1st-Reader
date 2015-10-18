@@ -113,7 +113,7 @@
                 [keysToRemove addObject:key];
             }
         }];
-        NSLog(@"Keys to remove from floor cache: %@",keysToRemove);
+        NSLog(@"Keys to remove from topic history: %@",keysToRemove);
         for (NSString *key in keysToRemove) {
             [transaction removeObjectForKey:key inCollection:Collection_Topics];
         }
