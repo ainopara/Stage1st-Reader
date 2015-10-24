@@ -179,7 +179,7 @@
     return [self imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
-// Assumes input like "#00FF00" (#RRGGBB).
+// Assumes input like "#00FF00" or "#FF000000" (#(AA)RRGGBB).
 + (UIColor *)colorFromHexString:(NSString *)hexString {
     unsigned rgbValue = 0;
     NSScanner *scanner = [NSScanner scannerWithString:hexString];

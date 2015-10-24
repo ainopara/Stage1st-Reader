@@ -52,7 +52,7 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
         
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -99,13 +99,13 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if self.offset.y < 0 {
-            print("end dragging <- \(self.offset.y)")
+            print("end dragging <- \(self.offset.y)", terminator: "")
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
             return
         }
         let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height //TODO: consider content inset
         if bottomOffset > 0 {
-            print("end dragging -> \(bottomOffset)")
+            print("end dragging -> \(bottomOffset)", terminator: "")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
             return
         }
