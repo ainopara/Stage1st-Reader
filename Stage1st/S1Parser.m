@@ -76,6 +76,7 @@
     NSArray *spoilers = [xmlDoc nodesForXPath:@"//font[@color='LemonChiffon']" error:nil];
     spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='Yellow']" error:nil]];
     spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='#fffacd']" error:nil]];
+    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='#FFFFCC']" error:nil]];
     spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='White']" error:nil]];
     
     for (DDXMLElement *spoilerElement in spoilers) {

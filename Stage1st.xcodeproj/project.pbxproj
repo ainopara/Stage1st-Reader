@@ -675,6 +675,7 @@
 				C095873216CA8A36007E0119 /* Resources */,
 				5ADE05C1571C4EE3A1FB1506 /* Copy Pods Resources */,
 				86A766CF1BA43703009BAD0D /* ShellScript */,
+				2E7804F85E26786F46F73123 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -694,7 +695,7 @@
 				CLASSPREFIX = S1;
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Renaissance;
 				TargetAttributes = {
 					C095873316CA8A36007E0119 = {
@@ -765,6 +766,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2E7804F85E26786F46F73123 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5ADE05C1571C4EE3A1FB1506 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -921,6 +937,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -985,6 +1002,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Vendors/Flurry",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ain.Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st-Bridging-Header.h";
@@ -1016,6 +1034,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Vendors/Flurry",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ain.Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st-Bridging-Header.h";

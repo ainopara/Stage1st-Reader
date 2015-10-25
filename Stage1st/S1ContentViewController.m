@@ -448,7 +448,12 @@
                                      cancelBlock:nil
                                           origin:self.pageLabel];
     picker.pickerBackgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.picker.background"];
-    picker.pickerTextAttributes = @{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+    
+    NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    labelParagraphStyle.alignment = NSTextAlignmentCenter;
+    picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
+                                    NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+    
     [picker showActionSheetPicker];
 
 }
