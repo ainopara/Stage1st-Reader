@@ -153,7 +153,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupDatabase
 {
 	NSString *databasePath = [[self class] databasePath];
-	NSLog(@"databasePath: %@", databasePath);
+	// NSLog(@"databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".

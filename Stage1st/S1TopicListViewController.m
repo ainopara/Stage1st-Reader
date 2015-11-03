@@ -324,7 +324,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if(indexPath.row == [self.topics count] - 15)
     {
         if ([self.currentKey isEqual: @"Search"]) {
-            
+            return;
         }
         self.tableView.tableFooterView = [self footerView];
         NSLog(@"Reach last topic, load more.");

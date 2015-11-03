@@ -16,7 +16,6 @@
 #import "S1DataCenter.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "flurry.h"
 #import "DDTTYLogger.h"
 
 
@@ -38,7 +37,7 @@ S1AppDelegate *MyAppDelegate;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Flurry
-    [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
+    // [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
     
     //Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {

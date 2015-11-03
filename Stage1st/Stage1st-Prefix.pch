@@ -15,6 +15,5 @@
     #import <SystemConfiguration/SystemConfiguration.h>
     #import <MobileCoreServices/MobileCoreServices.h>
     #import "S1Global.h"
-    #import "Flurry.h"
     #import "Stage1st-Swift.h"
 #endif
