@@ -462,14 +462,17 @@ DatabaseManager *MyDatabaseManager;
 		if (ckErrorCode == CKErrorNetworkUnavailable ||
 		    ckErrorCode == CKErrorNetworkFailure      )
 		{
+            [MyCloudKitManager handleFallbackError:operationError];
 			[MyCloudKitManager handleNetworkError];
 		}
 		else if (ckErrorCode == CKErrorPartialFailure)
 		{
+            [MyCloudKitManager handleFallbackError:operationError];
 			[MyCloudKitManager handlePartialFailure];
 		}
 		else if (ckErrorCode == CKErrorNotAuthenticated)
 		{
+            [MyCloudKitManager handleFallbackError:operationError];
 			[MyCloudKitManager handleNotAuthenticated];
         }
         else if (ckErrorCode == CKErrorRequestRateLimited)

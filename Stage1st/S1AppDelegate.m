@@ -122,8 +122,9 @@ S1AppDelegate *MyAppDelegate;
     [CloudKitManager initialize];
 
     // Migrate Database
-    [S1Tracer migrateDatabase];
-    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [S1Tracer migrateDatabase];
+    });
 
     if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // iOS 7 do not support CloudKit

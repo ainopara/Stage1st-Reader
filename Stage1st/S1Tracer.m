@@ -115,7 +115,7 @@
 
 + (void)migrateDatabase {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"migrateDatabase begin.");
+        
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
         NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
@@ -126,6 +126,7 @@
                 NSLog(@"Could not open db.");
                 return;
             }
+            NSLog(@"migrateDatabase begin.");
             // TODO: Should change query to make sure topic that in favorite list but not in history list to be imported.
             FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
             __block NSInteger succeedCount = 0;
@@ -170,7 +171,10 @@
             if (error) {
                 NSLog(@"Fail to Rename Database: %@",error);
             }
+        } else {
+            NSLog(@"file not found in path: %@", dbPath);
         }
+        
     });
 }
 @end
