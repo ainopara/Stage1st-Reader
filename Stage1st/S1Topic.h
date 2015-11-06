@@ -40,6 +40,9 @@
 
 @property (nonatomic, copy) NSString *message;
 
+// Model Version
+@property (nonatomic, copy) NSNumber *modelVersion;
+
 
 - (instancetype)initWithRecord:(CKRecord *)record;
 // Update

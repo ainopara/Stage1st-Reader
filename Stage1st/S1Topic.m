@@ -29,6 +29,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     self = [super init];
     if (self) {
         _favorite = @(NO);
+        _modelVersion = @1;
     }
     return self;
 }
@@ -56,6 +57,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
         if (_favorite == nil) {
             _favorite = @(NO);
         }
+        _modelVersion = @1;
     }
     return self;
 }
@@ -75,6 +77,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
         _lastViewedPosition = [aDecoder decodeObjectForKey:k_lastViewedPosition];
         _favorite = [aDecoder decodeObjectForKey:k_favorite];
         _favoriteDate = [aDecoder decodeObjectForKey:k_favoriteDate];
+        _modelVersion = [aDecoder decodeObjectForKey:k_version];
     }
     return self;
 }
@@ -90,6 +93,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [aCoder encodeObject:_lastViewedPosition forKey:k_lastViewedPosition];
     [aCoder encodeObject:_favorite forKey:k_favorite];
     [aCoder encodeObject:_favoriteDate forKey:k_favoriteDate];
+    [aCoder encodeObject:_modelVersion forKey:k_version];
 }
 
 #pragma mark - Copying
@@ -111,14 +115,15 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     copy->_formhash = _formhash;
     copy->_lastViewedPage = _lastViewedPage;
     copy->_message = _message;
-    //TODO: Make it clear if we should copy floors.
+    copy->_floors = _floors;
+    copy->_modelVersion = _modelVersion;
     return copy;
 }
 
 #pragma mark - Description
 
 - (NSString *)description {
-    NSString *despString = [NSString stringWithFormat:@"Topic %@: %lu cloud key changes -> ", self.topicID, (unsigned long)[self.changedCloudProperties count]];
+    NSString *despString = [NSString stringWithFormat:@"Topic(Version: %@) %@: %lu cloud key changes -> ", self.modelVersion, self.topicID, (unsigned long)[self.changedCloudProperties count]];
     for (NSString *property in self.changedCloudProperties) {
         despString = [despString stringByAppendingString:[NSString stringWithFormat:@"\n%@ : %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]]];
     }
@@ -230,9 +235,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [mappings_localKeyToCloudKey removeObjectForKey:@"floors"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"message"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyCount"];
-    [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserID"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserName"];
     return mappings_localKeyToCloudKey;
+    
 }
 
 - (id)cloudValueForCloudKey:(NSString *)cloudKey
@@ -286,15 +291,8 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 - (void)setNilValueForKey:(NSString *)key
 {
-    if ([key isEqualToString:@"favorite"]) {
-        //self.favorite = NO;
-    }
-    if ([key isEqualToString:@"isDone"]) {
-        //self.isDone = NO;
-    }
-    else {
-        [super setNilValueForKey:key];
-    }
+    [super setNilValueForKey:key];
+
 }
 
 
