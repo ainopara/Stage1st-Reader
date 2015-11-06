@@ -462,34 +462,29 @@ DatabaseManager *MyDatabaseManager;
 	{
 		NSInteger ckErrorCode = operationError.code;
         NSLog(@"CKError: %@", operationError);
+        [MyCloudKitManager reportError:operationError];
 		if (ckErrorCode == CKErrorNetworkUnavailable ||
-		    ckErrorCode == CKErrorNetworkFailure      )
-		{
-            [MyCloudKitManager handleFallbackError:operationError];
+		    ckErrorCode == CKErrorNetworkFailure      ) {
 			[MyCloudKitManager handleNetworkError];
 		}
-		else if (ckErrorCode == CKErrorPartialFailure)
-		{
-            [MyCloudKitManager handleFallbackError:operationError];
+		else if (ckErrorCode == CKErrorPartialFailure) {
 			[MyCloudKitManager handlePartialFailure];
 		}
-		else if (ckErrorCode == CKErrorNotAuthenticated)
-		{
-            [MyCloudKitManager handleFallbackError:operationError];
+		else if (ckErrorCode == CKErrorNotAuthenticated) {
 			[MyCloudKitManager handleNotAuthenticated];
         }
-        else if (ckErrorCode == CKErrorRequestRateLimited)
-        {
-            [MyCloudKitManager handleFallbackError:operationError];
+        else if (ckErrorCode == CKErrorRequestRateLimited) {
+
         }
-        else if (ckErrorCode == CKErrorUserDeletedZone)
-        {
-            [MyCloudKitManager handleFallbackError:operationError];
+        else if (ckErrorCode == CKErrorUserDeletedZone) {
+
         }
-		else
-		{
-			[MyCloudKitManager handleFallbackError:operationError];
+		else if (ckErrorCode == CKErrorChangeTokenExpired) {
+            [MyCloudKitManager handleChangeTokenExpired];
 		}
+        else {
+            
+        }
 	};
 	
 	NSSet *topics = [NSSet setWithObject:Collection_Topics];
@@ -543,4 +538,9 @@ DatabaseManager *MyDatabaseManager;
 	                                                  userInfo:userInfo];
 }
 
+- (void)unregisterCloudKitExtension {
+    [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
+        NSLog(@"Exrension %@ unregistered.",Ext_CloudKit);
+    }];
+}
 @end

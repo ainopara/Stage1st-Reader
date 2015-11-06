@@ -39,7 +39,11 @@ extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 **/
 - (void)handleNotAuthenticated;
 
-- (void)handleFallbackError:(NSError *)error;
+- (void)handleChangeTokenExpired;
+
+- (void)handleZoneNotFound;
+
+- (void)reportError:(NSError *)error;
 
 /**
  * This method uses CKFetchRecordChangesOperation to fetch changes.

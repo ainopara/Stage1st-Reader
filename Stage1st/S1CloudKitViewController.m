@@ -81,6 +81,9 @@
                            otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
     
     [alertView show];
+    if (self.iCloudSwitch.on == NO) {
+        [MyDatabaseManager unregisterCloudKitExtension];
+    }
 }
 
 #pragma mark - Table view data source

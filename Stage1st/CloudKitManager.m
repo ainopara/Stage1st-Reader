@@ -519,7 +519,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 			// - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
 			
 			NSLog(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
-            [self handleFallbackError:operationError];
+            [self reportError:operationError];
 			NSInteger ckErrorCode = operationError.code;
 			
 			if (ckErrorCode == CKErrorChangeTokenExpired)
@@ -527,11 +527,12 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 				// CKErrorChangeTokenExpired:
 				//   The previousServerChangeToken value is too old and the client must re-sync from scratch.
 				
-				[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-					
-					[transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
-				}];
-			}
+                [self handleChangeTokenExpired];
+            } else if (ckErrorCode == CKErrorZoneNotFound) {
+                [self handleZoneNotFound];
+            }
+            
+            
 			
 			if (completionHandler) {
 				completionHandler(UIBackgroundFetchResultFailed, NO);
@@ -821,25 +822,31 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	}
 }
 
-/**
- * Invoke me if you get one of the following errors via YapDatabaseCloudKitOperationErrorBlock:
- * - CKErrorNotAuthenticated
-**/
-- (void)handleNotAuthenticated
-{
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
-	
-	// When the YapDatabaseCloudKitOperationErrorBlock is invoked,
-	// the extension has already automatically suspended itself.
-	// It is our job to properly handle the error, and resume the extension when ready.
+- (void)handleNotAuthenticated {
 	self.needsResume = YES;
 	
 	[self warnAboutAccount];
 }
 
-- (void)handleFallbackError:(NSError *)error {
-    NSLog(@"Unhandled ckErrorCode: %ld", (long)error.code);
-    NSLog(@"Unhandled ckError: %@", error);
+- (void)handleChangeTokenExpired {
+    self.needsResume = YES;
+    
+    [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
+	}];
+}
+
+- (void)handleZoneNotFound {
+    self.needsCreateZone = YES;
+    [MyDatabaseManager.cloudKitExtension suspend];
+    self.needsCreateZoneSubscription = YES;
+    [MyDatabaseManager.cloudKitExtension suspend];
+    [self continueCloudKitFlow];
+}
+
+- (void)reportError:(NSError *)error {
+    NSLog(@"ckErrorCode: %ld", (long)error.code);
+    NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
 }
