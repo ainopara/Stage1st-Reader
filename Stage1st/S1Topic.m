@@ -229,7 +229,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 + (NSMutableDictionary *)mappings_localKeyToCloudKey
 {
     NSMutableDictionary *mappings_localKeyToCloudKey = [super mappings_localKeyToCloudKey];
-    //mappings_localKeyToCloudKey[@"creationDate"] = @"created";
     [mappings_localKeyToCloudKey removeObjectForKey:@"formhash"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"totalPageCount"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"floors"];

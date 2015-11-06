@@ -71,7 +71,6 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 		setupQueue = dispatch_queue_create("CloudKitManager.setup", DISPATCH_QUEUE_SERIAL);
 		fetchQueue = dispatch_queue_create("CloudKitManager.fetch", DISPATCH_QUEUE_SERIAL);
 		
-        self.enabled = NO;
 		self.needsCreateZone = YES;
 		self.needsCreateZoneSubscription = YES;
 		self.needsFetchRecordChangesAfterAppLaunch = YES;
@@ -136,10 +135,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 - (void)continueCloudKitFlow
 {
 	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
-    if (!self.enabled) {
-        return;
-    }
-	else if (self.needsCreateZone)
+    if (self.needsCreateZone)
 	{
 		[self createZone];
 	}
@@ -212,15 +208,15 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 {
 	dispatch_block_t block = ^{
 		
-		NSString *title = @"This sample app doesn't support switching iCloud accounts.";
-		NSString *message = @"But, of course, your app will, right ???";
+		NSString *title = @"Stage1st Reader doesn't support switching iCloud accounts.";
+		NSString *message = @"Maybe in future.";
 		
 		UIAlertView *alertView =
 		  [[UIAlertView alloc] initWithTitle:title
 		                             message:message
 		                            delegate:nil
 		                   cancelButtonTitle:nil
-		                   otherButtonTitles:@"Of Course", nil];
+		                   otherButtonTitles:@"OK", nil];
 		
 		[alertView show];
 	};
@@ -523,7 +519,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 			// - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
 			
 			NSLog(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
-			
+            [self handleFallbackError:operationError];
 			NSInteger ckErrorCode = operationError.code;
 			
 			if (ckErrorCode == CKErrorChangeTokenExpired)

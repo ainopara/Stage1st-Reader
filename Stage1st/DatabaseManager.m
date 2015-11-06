@@ -206,7 +206,13 @@ DatabaseManager *MyDatabaseManager;
     [self setupArchiveViewExtension];
     [self setupFullTextSearchExtension];
     [self setupSearchResultViewExtension];
-    [self setupCloudKitExtension];
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7 do not support cloud kit sync
+        ;
+    } else {
+        // iOS 8 and more
+        [self setupCloudKitExtension];
+    }
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
 	                                         selector:@selector(yapDatabaseModified:)
@@ -319,9 +325,6 @@ DatabaseManager *MyDatabaseManager;
 	    ^(YapDatabaseReadTransaction *transaction, CKRecord *__autoreleasing *inOutRecordPtr, YDBCKRecordInfo *recordInfo,
 		  NSString *collection, NSString *key, S1Topic *topic)
 	{
-        if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-            return;
-        }
 		CKRecord *record = inOutRecordPtr ? *inOutRecordPtr : nil;
 		if (record                          && // not a newly inserted object
 		    !topic.hasChangedCloudProperties && // no sync'd properties changed in the todo

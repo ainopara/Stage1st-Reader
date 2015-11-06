@@ -49,7 +49,9 @@
     
     [self cloudKitSuspendCountChanged:nil];
     [self cloudKitInFlightChangeSetChanged:nil];
-    
+    if (MyCloudKitManager.lastCloudkitError != nil) {
+        self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)MyCloudKitManager.lastCloudkitError.code];
+    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -68,12 +70,17 @@
 
 - (IBAction)switchiCloud:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:self.iCloudSwitch.on forKey:@"EnableSync"];
-    if (self.iCloudSwitch.on) {
-        MyCloudKitManager.enabled = YES;
-        [MyCloudKitManager continueCloudKitFlow];
-    } else {
-        MyCloudKitManager.enabled = NO;
-    }
+    NSString *title = @"设置将于下次启动时生效";
+    NSString *message = @"";
+    
+    UIAlertView *alertView =
+		  [[UIAlertView alloc] initWithTitle:title
+                                     message:message
+                                    delegate:nil
+                           cancelButtonTitle:nil
+                           otherButtonTitles:@"好的", nil];
+    
+    [alertView show];
 }
 
 #pragma mark - Table view data source

@@ -119,7 +119,13 @@ S1AppDelegate *MyAppDelegate;
     // Start database & cloudKit (in that order)
     
     [DatabaseManager initialize];
-    [CloudKitManager initialize];
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7 do not support CloudKit
+        ;
+    } else {
+        // iOS 8 and more
+        [CloudKitManager initialize];
+    }
 
     // Migrate Database
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -132,8 +138,6 @@ S1AppDelegate *MyAppDelegate;
     } else {
         // iOS 8 and more
         // Register for push notifications
-        MyCloudKitManager.enabled = YES;
-        [MyCloudKitManager continueCloudKitFlow];
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
         [application registerUserNotificationSettings:notificationSettings];
     }
@@ -250,24 +254,24 @@ S1AppDelegate *MyAppDelegate;
     NSLog(@"Push received: %@", userInfo);
     if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // iOS 7
-    } else {
-        // iOS 8 and more
-        __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
-        
-        [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
-            ^(UIBackgroundFetchResult fetchResult, BOOL moreComing) {
-            if (fetchResult == UIBackgroundFetchResultNewData) {
-                combinedFetchResult = UIBackgroundFetchResultNewData;
-            }
-            else if (fetchResult == UIBackgroundFetchResultFailed && combinedFetchResult == UIBackgroundFetchResultNoData) {
-                combinedFetchResult = UIBackgroundFetchResultFailed;
-            }
-            
-            if (!moreComing) {
-                completionHandler(combinedFetchResult);
-            }
-        }];
+        return;
     }
+    // iOS 8 and more
+    __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
+    
+    [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
+        ^(UIBackgroundFetchResult fetchResult, BOOL moreComing) {
+        if (fetchResult == UIBackgroundFetchResultNewData) {
+            combinedFetchResult = UIBackgroundFetchResultNewData;
+        }
+        else if (fetchResult == UIBackgroundFetchResultFailed && combinedFetchResult == UIBackgroundFetchResultNoData) {
+            combinedFetchResult = UIBackgroundFetchResultFailed;
+        }
+        
+        if (!moreComing) {
+            completionHandler(combinedFetchResult);
+        }
+    }];
 }
 
 #pragma mark - Hand Off (iOS 8)
