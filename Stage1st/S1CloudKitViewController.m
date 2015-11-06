@@ -70,7 +70,7 @@
 
 - (IBAction)switchiCloud:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:self.iCloudSwitch.on forKey:@"EnableSync"];
-    NSString *title = @"设置将于下次启动时生效";
+    NSString *title = NSLocalizedString(@"SettingView_CloudKit_Enable_Message", @"");
     NSString *message = @"";
     
     UIAlertView *alertView =
@@ -78,7 +78,7 @@
                                      message:message
                                     delegate:nil
                            cancelButtonTitle:nil
-                           otherButtonTitles:@"好的", nil];
+                           otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
     
     [alertView show];
 }

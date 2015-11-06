@@ -53,6 +53,8 @@
 "SettingView_HistoryLimit_1year" = "1 year";
 "SettingView_HistoryLimit_Forever" = "Forever";
 
+"SettingView_CloudKit_Enable_Message" = "Settings will take effect on next start";
+
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";
 

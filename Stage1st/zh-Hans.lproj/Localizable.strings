@@ -159,3 +159,5 @@
 /* History */
 "TopicListView_SegmentControl_History" = "历史";
 
+"SettingView_CloudKit_Enable_Message" = "设置将于下次启动时生效";
+
