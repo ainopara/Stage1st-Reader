@@ -12,7 +12,7 @@
 "2UX-Wg-p1U.text" = "上传队列";
 
 /* Class = "UILabel"; text = "显示图片"; ObjectID = "4y5-0D-ImP"; */
-"4y5-0D-ImP.text" = "显示图片";
+"4y5-0D-ImP.text" = "移动数据下显示图片";
 
 /* Class = "UITableViewController"; title = "板块自定义"; ObjectID = "6R3-p1-NMf"; */
 "6R3-p1-NMf.title" = "板块自定义";

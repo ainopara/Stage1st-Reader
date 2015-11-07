@@ -12,7 +12,7 @@
 "2UX-Wg-p1U.text" = "Upload Queue";
 
 /* Class = "UILabel"; text = "Display Image"; ObjectID = "4y5-0D-ImP"; */
-"4y5-0D-ImP.text" = "Display Image";
+"4y5-0D-ImP.text" = "Display Image (Mobile Data)";
 
 /* Class = "UITableViewController"; title = "Forum Order"; ObjectID = "6R3-p1-NMf"; */
 "6R3-p1-NMf.title" = "Forum Order";
