@@ -12,7 +12,7 @@ target "Stage1st" do
     pod 'Mantle'
     pod 'Masonry'
     pod 'Reachability'
-    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'tryLimitUpload2'
+    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
 end
 

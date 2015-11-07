@@ -154,7 +154,7 @@
                         } else {
                             failCount += 1;
                         }
-                        if (changeCount % 100 == 1) {
+                        if (changeCount % 50 == 1) {
                             break;
                         }
                     }

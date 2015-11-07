@@ -90,6 +90,23 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSLog(@"%@",indexPath);
+    if (indexPath.section == 1 && indexPath.row == 2) {
+        if (MyCloudKitManager.lastCloudkitError == nil) {
+            return;
+        }
+        NSString *title = @"Error Detail";
+        NSString *message = [MyCloudKitManager.lastCloudkitError description];
+        
+        UIAlertView *alertView =
+        [[UIAlertView alloc] initWithTitle:title
+                                   message:message
+                                  delegate:nil
+                         cancelButtonTitle:nil
+                         otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
+        
+        [alertView show];
+    }
 }
 
 #pragma mark - Notification
