@@ -44,7 +44,7 @@
 "SettingView_ReplyIncrement" = "Show Reply Increment";
 "SettingView_CloudKit_Status_Off" = "Off";
 "SettingView_CloudKit_Status_Suspended" = "Suspended(%lu)(%lu-%lu)";
-"SettingView_CloudKit_Status_Resumed" = "Resumed(%lu)(%lu-%lu)";
+"SettingView_CloudKit_Status_Resumed" = "Resumed(%lu-%lu)";
 /*"SettingView_Favorite_Order" = "Record Sort By Last Visit Date";*/
 
 "SettingView_HistoryLimit_3days" = "3 days";

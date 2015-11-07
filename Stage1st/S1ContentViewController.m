@@ -626,6 +626,8 @@
         NSRange wholeRange = NSMakeRange(0, self.replyController.textView.textStorage.length);
         [self.replyController.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
         [self.replyController.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+        [self.replyController.textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
+        [self.replyController.textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
     }
 }
 
@@ -944,6 +946,8 @@
         NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
         [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
         [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+        [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
+        [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
     }
 }
 
@@ -1162,6 +1166,7 @@
     [replyController setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
     [replyController setTextViewTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.tint"]];
     [replyController setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
+    [replyController.textView setTextColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"]];
     self.replyController = replyController;
     [replyController.view setFrame:self.view.bounds];
     // set title
