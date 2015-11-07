@@ -259,7 +259,7 @@
     NSString *titleString;
     if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // iOS 7
-        titleString = @"Off";
+        titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
     } else {
         // iOS 8 and more
         NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
@@ -269,9 +269,9 @@
         [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
         
         if (suspendCount > 0){
-            titleString = [NSString stringWithFormat:@"Suspended(%lu)(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
+            titleString = [NSString stringWithFormat:NSLocalizedString(@"SettingView_CloudKit_Status_Suspended", @"Suspended"), (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
         } else {
-            titleString = [NSString stringWithFormat:@"Resumed (%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+            titleString = [NSString stringWithFormat:NSLocalizedString(@"SettingView_CloudKit_Status_Resumed", @"Resumed"), (unsigned long)inFlightCount, (unsigned long)queuedCount];
         }
     }
     self.iCloudSyncCell.detailTextLabel.text = titleString;

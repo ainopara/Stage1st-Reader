@@ -161,3 +161,7 @@
 
 "SettingView_CloudKit_Enable_Message" = "设置将于下次启动时生效";
 
+"SettingView_CloudKit_Status_Off" = "关闭";
+"SettingView_CloudKit_Status_Suspended" = "暂停(%lu)(%lu-%lu)";
+"SettingView_CloudKit_Status_Resumed" = "恢复(%lu)(%lu-%lu)";
+
