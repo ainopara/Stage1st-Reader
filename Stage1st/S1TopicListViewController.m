@@ -523,6 +523,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     NSLog(@"h%f,w%f",size.height, size.width);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"S1ViewWillTransitionToSizeNotification" object:[NSValue valueWithCGSize:size]];
     CGRect frame = self.view.frame;
     frame.size = size;
     self.view.frame = frame;

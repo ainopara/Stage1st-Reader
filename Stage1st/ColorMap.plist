@@ -112,9 +112,9 @@
 	<string>22</string>
 	<key>hud.text</key>
 	<string>23</string>
-	<key>statusbaroverlay.background</key>
-	<string>6</string>
 	<key>overlay.background</key>
 	<string>6</string>
+	<key>overlay.text</key>
+	<string>3</string>
 </dict>
 </plist>
