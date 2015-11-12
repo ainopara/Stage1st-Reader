@@ -25,7 +25,7 @@
 #import <SafariServices/SafariServices.h>
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, SFSafariViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -567,6 +567,7 @@
             
             if (NSClassFromString(@"SFSafariViewController")) {
                 SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:request.URL];
+                safariViewController.delegate = self;
                 [self presentViewController:safariViewController animated:YES completion:nil];
             }
             else {
@@ -595,6 +596,12 @@
         [self scrollToButtomAnimated:YES];
     }
     
+}
+
+#pragma mark - SFSafariViewControllerDelegate
+
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - JTSImageViewController Interactions Delegate
