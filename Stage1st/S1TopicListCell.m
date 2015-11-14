@@ -20,7 +20,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         //Fix bug in iPad that set background color for cell not work. Set it manually in delegate.
-        //self.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
+        //self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     }
     return self;
 }

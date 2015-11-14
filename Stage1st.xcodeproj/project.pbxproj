@@ -30,6 +30,7 @@
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
 		864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
+		86522CB71BF7551A00BF3379 /* APColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86522CB61BF7551A00BF3379 /* APColorManager.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */; };
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
@@ -106,7 +107,7 @@
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1NetworkManager.m; path = Stage1st/S1NetworkManager.m; sourceTree = "<group>"; };
 		8605636C1B88222100E1D63E /* S1CloudKitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1CloudKitViewController.h; path = Stage1st/S1CloudKitViewController.h; sourceTree = "<group>"; };
-		8605636D1B88222100E1D63E /* S1CloudKitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1CloudKitViewController.m; path = Stage1st/S1CloudKitViewController.m; sourceTree = "<group>"; };
+		8605636D1B88222100E1D63E /* S1CloudKitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1CloudKitViewController.m; path = Stage1st/S1CloudKitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8605734E1B7623A300C70781 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1YapDatabaseAdapter.h; path = Stage1st/S1YapDatabaseAdapter.h; sourceTree = "<group>"; };
 		860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1YapDatabaseAdapter.m; path = Stage1st/S1YapDatabaseAdapter.m; sourceTree = "<group>"; };
@@ -133,6 +134,7 @@
 		864B128A1A4F9C4200247F72 /* S1DatabaseListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseListCell.h; path = Stage1st/S1DatabaseListCell.h; sourceTree = "<group>"; };
 		864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseListCell.m; path = Stage1st/S1DatabaseListCell.m; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		86522CB61BF7551A00BF3379 /* APColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APColorManager.swift; path = Vendors/APColorManager/APColorManager.swift; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceViewController.h; path = Stage1st/S1MahjongFaceViewController.h; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				86522CB61BF7551A00BF3379 /* APColorManager.swift */,
 				860727651B37AE3C00DA8390 /* APPullToAction */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
@@ -858,6 +861,7 @@
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
+				86522CB71BF7551A00BF3379 /* APColorManager.swift in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
 				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
 				864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */,

@@ -112,10 +112,10 @@
 #pragma mark - Notification
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-        [self.iCloudSwitch setOnTintColor:[[S1ColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
-    [self.navigationController.navigationBar setBarTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
-    [self.navigationController.navigationBar setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+        [self.iCloudSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.navigationController.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
+    [self.navigationController.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
 }
 
 - (void)cloudKitSuspendCountChanged:(NSNotification *)notification

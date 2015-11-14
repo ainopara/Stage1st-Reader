@@ -14,11 +14,11 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var webView: UIWebView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.background")
+        self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
         if let theHtmlString = self.htmlString {
             self.webView.dataDetectorTypes = .None;
             self.webView.opaque = false;
-            self.webView.backgroundColor = S1ColorManager.sharedInstance().colorForKey("content.webview.background")
+            self.webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
             self.webView.delegate = self
             self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
             self.webView.loadHTMLString(theHtmlString, baseURL: NSURL())

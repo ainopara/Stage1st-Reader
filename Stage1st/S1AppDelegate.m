@@ -157,10 +157,10 @@ S1AppDelegate *MyAppDelegate;
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         ;
     } else {
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     }
     */
-    [[S1ColorManager sharedInstance] updateGlobalAppearance];
+    [[APColorManager sharedInstance] updateGlobalAppearance];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;

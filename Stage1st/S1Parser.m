@@ -443,10 +443,10 @@
     NSString *CSSTemplatePath = [[NSBundle mainBundle] pathForResource:@"color" ofType:@"css"];
     NSData *CSSTemplateData = [NSData dataWithContentsOfFile:CSSTemplatePath];
     NSString *CSSTemplate = [[NSString alloc] initWithData:CSSTemplateData  encoding:NSUTF8StringEncoding];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"5"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{text}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"21"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{border}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"14"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{borderText}}" withString:[[S1ColorManager sharedInstance] htmlColorStringWithID:@"17"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"5"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{text}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"21"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{border}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"14"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{borderText}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"17"]];
     return CSSTemplate;
 }
 

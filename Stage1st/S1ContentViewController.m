@@ -107,7 +107,7 @@
     [super viewDidLoad];
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.background"];
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
     
     //web view
     self.webView.delegate = self;
@@ -116,19 +116,19 @@
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.webView.opaque = NO;
-    self.webView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
     self.pullToActionViewController = [[APPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
     self.pullToActionViewController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
-    self.bottomDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
@@ -144,9 +144,9 @@
         self.titleLabel.text = self.topic.title;
     }
     if (hasInvalidTitle) {
-        self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
     }else {
-        self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
     }
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -200,7 +200,7 @@
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-    self.pageLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
+    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     self.pageLabel.userInteractionEnabled = YES;
@@ -447,12 +447,12 @@
                                        }
                                      cancelBlock:nil
                                           origin:self.pageLabel];
-    picker.pickerBackgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.picker.background"];
+    picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     labelParagraphStyle.alignment = NSTextAlignmentCenter;
     picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
-                                    NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+                                    NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"],};
     
     [picker showActionSheetPicker];
 
@@ -554,7 +554,7 @@
                 _presentingWebViewer = YES;
                 
                 SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-                [controller.view setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+                [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
                 [self presentViewController:controller animated:YES completion:nil];
             } else {
                 NSURL *url = [NSURL URLWithString:pageAddress];
@@ -627,7 +627,7 @@
         [self.replyController.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
         [self.replyController.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
         [self.replyController.textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
-        [self.replyController.textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+        [self.replyController.textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
     }
 }
 
@@ -701,7 +701,7 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+            [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
             [self presentViewController:controller animated:YES completion:nil];
         }
     }
@@ -716,7 +716,7 @@
         _presentingWebViewer = YES;
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
-        [[controller view] setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+        [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
@@ -837,7 +837,7 @@
                 _presentingWebViewer = YES;
                 NSLog(@"%@", request.URL);
                 SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-                [[controller view] setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"content.tint"]];
+                [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
                 //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
                 [self presentViewController:controller animated:YES completion:nil];
             }];
@@ -947,7 +947,7 @@
         [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
         [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
         [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
-        [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+        [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
     }
 }
 
@@ -997,14 +997,14 @@
     self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
     self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 60, contentSize.width - 0, 1);
     if(_currentPage != 1 && _finishLoading) {
-        self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     } else {
-        self.topDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     }
     if (_finishLoading) {
-        self.bottomDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     } else {
-        self.bottomDecorateLine.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"content.webview.background"];
+        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     }
 }
 
@@ -1163,10 +1163,10 @@
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
-    [replyController setKeyboardAppearance:[[S1ColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
-    [replyController setTextViewTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.tint"]];
-    [replyController setTintColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.background"]];
-    [replyController.textView setTextColor:[[S1ColorManager sharedInstance] colorForKey:@"reply.text"]];
+    [replyController setKeyboardAppearance:[[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
+    [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];
+    [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
+    [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
     self.replyController = replyController;
     [replyController.view setFrame:self.view.bounds];
     // set title
@@ -1278,7 +1278,7 @@
 
 - (void)updateTitleLabelWithTitle:(NSString *)title {
     self.titleLabel.text = title;
-    self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+    self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
 
 - (UIImage *)screenShot

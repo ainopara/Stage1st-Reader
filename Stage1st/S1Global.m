@@ -87,7 +87,7 @@
 - (void)updateGlobalAppearance {
     [[UIToolbar appearance] setBarTintColor:[self colorForKey:@"appearance.toolbar.bartint"]];
     [[UIToolbar appearance] setTintColor:[self  colorForKey:@"appearance.toolbar.tint"]];
-    [[UINavigationBar appearance] setBarTintColor:[self  colorForKey:@"appearance.navigationbar.battint"]];
+    [[UINavigationBar appearance] setBarTintColor:[self  colorForKey:@"appearance.navigationbar.bartint"]];
     [[UINavigationBar appearance] setTintColor:[self  colorForKey:@"appearance.navigationbar.tint"]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [self colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
@@ -101,6 +101,10 @@
     } else {
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     }
+}
+
+- (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName: color, NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
 }
 
 

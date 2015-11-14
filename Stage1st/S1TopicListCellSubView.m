@@ -36,20 +36,20 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
-    UIColor* cellBackgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
+    UIColor* cellBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     if (self.selected || self.highlighted) {
-        cellBackgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.highlight"];
+        cellBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.highlight"];
     }
-    UIColor* replyCountRectFillColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.fill"];
-    UIColor* replyCountRectStrokeColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.normal"];
-    UIColor* replyCountRectStrokeColorOfHistoryThread = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.history"];
-    UIColor* replyCountRectStrokeColorOfFavoriteThread = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.favorite"];
+    UIColor* replyCountRectFillColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.fill"];
+    UIColor* replyCountRectStrokeColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.normal"];
+    UIColor* replyCountRectStrokeColorOfHistoryThread = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.history"];
+    UIColor* replyCountRectStrokeColorOfFavoriteThread = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.border.favorite"];
     
-    UIColor* replyCountTextColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.normal"];
-    UIColor* replyCountTextColorOfHistoryThread = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.history"];
-    UIColor* replyCountTextColorOfFavoriteThread = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.favorite"];
+    UIColor* replyCountTextColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.normal"];
+    UIColor* replyCountTextColorOfHistoryThread = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.history"];
+    UIColor* replyCountTextColorOfFavoriteThread = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.replycount.text.favorite"];
     
-    UIColor* titleColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.title.text"];
+    UIColor* titleColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.title.text"];
     //// Abstracted Attributes
     NSString* textContent = [self.topic.replyCount stringValue];
     
@@ -59,7 +59,7 @@
     titleParagraphStyle.alignment = NSTextAlignmentLeft;
     NSMutableAttributedString *titleContent = [[NSMutableAttributedString alloc] initWithString:self.topic.title == nil ? @"":self.topic.title attributes:@{NSForegroundColorAttributeName: titleColor, NSParagraphStyleAttributeName: titleParagraphStyle}];
     if (self.highlight != nil && (![self.highlight isEqualToString:@""])) {
-        [titleContent addAttributes:@{NSForegroundColorAttributeName:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.title.highlight"]} range:[[titleContent string] rangeOfString:self.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
+        [titleContent addAttributes:@{NSForegroundColorAttributeName:[[APColorManager sharedInstance] colorForKey:@"topiclist.cell.title.highlight"]} range:[[titleContent string] rangeOfString:self.highlight options:NSWidthInsensitiveSearch | NSCaseInsensitiveSearch]];
     }
     
     

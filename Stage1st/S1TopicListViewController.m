@@ -91,7 +91,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.dataCenter = [S1DataCenter sharedDataCenter];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.background"];
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.background"];
     
     //Setup Navigation Bar
     [self.view addSubview:self.navigationBar];
@@ -102,17 +102,17 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    self.tableView.separatorColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
-    self.tableView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+    self.tableView.separatorColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
+    self.tableView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
     if (self.tableView.backgroundView) {
-        self.tableView.backgroundView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+        self.tableView.backgroundView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
     }
     self.tableView.hidden = YES;
     self.tableView.tableHeaderView = self.searchBar;
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
+    self.refreshControl.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
@@ -243,7 +243,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         cell = [[S1TopicListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
+    cell.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         [cell setTopic:[self topicAtIndexPath:indexPath]];
@@ -352,10 +352,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
-        [view setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.background"]];
+        [view setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.background"]];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 20)];
-        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.mappings groupForSection:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.text"]}];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.mappings groupForSection:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.text"]}];
         [label setAttributedText:labelTitle];
         label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
@@ -660,26 +660,26 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-    self.view.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.background"];
-    self.tableView.separatorColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
-    self.tableView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.background"];
+    self.tableView.separatorColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
+    self.tableView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
     if (self.tableView.backgroundView) {
-        self.tableView.backgroundView.backgroundColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+        self.tableView.backgroundView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
     }
-    self.refreshControl.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
-    self.titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
-    if ([[S1ColorManager sharedInstance] isDarkTheme]) {
+    self.refreshControl.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
+    self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+    if ([[APColorManager sharedInstance] isDarkTheme]) {
         self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
     } else {
         self.searchBar.searchBarStyle = UISearchBarStyleDefault;
     }
-    self.searchBar.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
-    self.searchBar.barTintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
+    self.searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
+    self.searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
-    [self.navigationBar setBarTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
-    [self.navigationBar setTintColor:[[S1ColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
+    [self.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
+    [self.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
 }
 
@@ -941,7 +941,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.text = @"Stage1st";
         _titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
-        _titleLabel.textColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+        _titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
         [_titleLabel sizeToFit];
     }
     return _titleLabel;
@@ -1010,13 +1010,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_searchBar) {
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
         _searchBar.delegate = self;
-        if ([[S1ColorManager sharedInstance] isDarkTheme]) {
+        if ([[APColorManager sharedInstance] isDarkTheme]) {
             _searchBar.searchBarStyle = UISearchBarStyleMinimal;
         }
-        _searchBar.tintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
-        _searchBar.barTintColor = [[S1ColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
+        _searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
+        _searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
         _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
-        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[[S1ColorManager sharedInstance] color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [_searchBar addGestureRecognizer:gestureRecognizer];
@@ -1068,10 +1068,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIView *)footerView {
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
-    [footerView setBackgroundColor:[[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"]];
+    [footerView setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"]];
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 44)];
-    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:16.0], NSForegroundColorAttributeName: [[S1ColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]}];
+    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:16.0], NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]}];
     [label setAttributedText:labelTitle];
     label.backgroundColor = [UIColor clearColor];
     [footerView addSubview:label];
