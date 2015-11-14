@@ -511,6 +511,7 @@
 				C095873116CA8A36007E0119 /* Frameworks */,
 				C095873216CA8A36007E0119 /* Resources */,
 				5ADE05C1571C4EE3A1FB1506 /* Copy Pods Resources */,
+				AF01C72BF20667D903CD148F /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -528,7 +529,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = S1;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Renaissance;
 			};
 			buildConfigurationList = C095872F16CA8A36007E0119 /* Build configuration list for PBXProject "Stage1st" */;
@@ -594,6 +595,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AF01C72BF20667D903CD148F /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F515F879F9444AD48B7C0E01 /* Check Pods Manifest.lock */ = {
@@ -711,6 +727,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -767,6 +784,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "766de610-9158-4813-ada4-7eee6bd9f8d8";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -788,6 +806,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "766de610-9158-4813-ada4-7eee6bd9f8d8";
 				TARGETED_DEVICE_FAMILY = "1,2";
