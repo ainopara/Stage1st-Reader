@@ -160,48 +160,37 @@
 {
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
+    NSInteger minimumComposeViewWidth = 320;
     
-    
+    // decide container's frame ( y position and height)
     CGRect frame = _containerView.frame;
     frame.size.height = expectComposeViewHeight;
-    
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            offset *= 2;
-        }
-        frame.origin.y = (height - _keyboardHeight - expectComposeViewHeight) / 2;
-        if (frame.origin.y < 20) {
-            frame.size.height = height - _keyboardHeight - 20;
-            frame.origin.y = 20;
-        }
-        _containerView.frame = frame;
-        
-        _containerView.clipsToBounds = YES;
-        _backView.frame = CGRectMake(offset, 0, width - offset*2, UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? expectComposeViewHeight : frame.size.height);
-        _sheetView.frame = _backView.bounds;
-        
-        CGRect paperclipFrame = _paperclipView.frame;
-        paperclipFrame.origin.x = width - 73 - offset;
-        _paperclipView.frame = paperclipFrame;
+    NSInteger yPosition = (height - _keyboardHeight - expectComposeViewHeight) / 2;
+    if (yPosition < 20) {
+        frame.size.height = height - _keyboardHeight - 20 - 4;
+        frame.origin.y = 20;
     } else {
-
-        frame.origin.y = (height - _keyboardHeight - expectComposeViewHeight) / 2;
-        if (frame.origin.y < 20) {
-            frame.size.height = height - _keyboardHeight - 20 - 4;
-            frame.origin.y = 20;
-        }
-        _containerView.frame = frame;
-        _backView.frame = CGRectMake(offset, 0, width - offset*2, frame.size.height);
-        _sheetView.frame = _backView.bounds;
-        
-        
-        CGRect paperclipFrame = _paperclipView.frame;
-        paperclipFrame.origin.x = width - 73 - offset;
-        _paperclipView.frame = paperclipFrame;
+        frame.origin.y = yPosition;
     }
+    _containerView.frame = frame;
+    _containerView.clipsToBounds = YES;
+    // decide backview's frame(x position and width)
+    if (UIInterfaceOrientationIsLandscape(interfaceOrientation) && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        offset *= 2;
+    }
+    if (width - offset * 2.0 < minimumComposeViewWidth) {
+        offset = (width - minimumComposeViewWidth) / 2.0;
+        if (offset < 4.0) {
+            offset = 4.0;
+        }
+    }
+    _backView.frame = CGRectMake(offset, 0, width - offset*2, frame.size.height);
+    _sheetView.frame = _backView.bounds;
     
-    
+    // decide paperclip's positon
+    CGRect paperclipFrame = _paperclipView.frame;
+    paperclipFrame.origin.x = width - 73 - offset;
+    _paperclipView.frame = paperclipFrame;
     _paperclipView.hidden = !_hasAttachment;
     _sheetView.attachmentView.hidden = !_hasAttachment;
     
