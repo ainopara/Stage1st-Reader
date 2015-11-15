@@ -22,8 +22,10 @@
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
 
+#import <SafariServices/SafariServices.h>
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate>
+
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, SFSafariViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -376,9 +378,15 @@
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1Global color3]];
-            [self presentViewController:controller animated:YES completion:nil];
+            if (NSClassFromString(@"SFSafariViewController")) {
+                SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:pageAddress]];
+                [self presentViewController:safariViewController animated:YES completion:nil];
+            }
+            else {
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+                [controller.view setTintColor:[S1Global color3]];
+                [self presentViewController:controller animated:YES completion:nil];
+            }
         }];
         // Cancel Action
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
@@ -556,11 +564,18 @@
         UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
         UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             _presentingWebViewer = YES;
-            NSLog(@"%@", request.URL);
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[S1Global color3]];
-            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:controller animated:YES completion:nil];
+            
+            if (NSClassFromString(@"SFSafariViewController")) {
+                SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:request.URL];
+                safariViewController.delegate = self;
+                [self presentViewController:safariViewController animated:YES completion:nil];
+            }
+            else {
+                //
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
+                [[controller view] setTintColor:[S1Global color3]];
+                [self presentViewController:controller animated:YES completion:nil];
+            }
         }];
         [alert addAction:cancelAction];
         [alert addAction:continueAction];
@@ -581,6 +596,12 @@
         [self scrollToButtomAnimated:YES];
     }
     
+}
+
+#pragma mark - SFSafariViewControllerDelegate
+
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - JTSImageViewController Interactions Delegate
