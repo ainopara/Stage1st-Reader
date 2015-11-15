@@ -9,105 +9,11 @@
 #import "S1Global.h"
 #import "S1CacheDatabaseManager.h"
 
-@interface S1ColorManager ()
-
-@property (nonatomic, strong) NSDictionary *palette;
-@property (nonatomic, strong) NSDictionary *colorMap;
-
-
-@end
-
-
 @implementation S1ColorManager
 
-+ (S1ColorManager *)sharedInstance
-{
-    static S1ColorManager *MyGlobalColorManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        MyGlobalColorManager = [[S1ColorManager alloc] init];
-    });
-    return MyGlobalColorManager;
-}
-
-- init {
-    self = [super init];
-    if (self) {
-        NSString *paletteName = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == YES ? @"DarkPalette" : @"DefaultPalette";
-        NSString *path = [[NSBundle mainBundle] pathForResource:paletteName ofType:@"plist"];
-        _palette = [NSDictionary dictionaryWithContentsOfFile:path];
-        path = [[NSBundle mainBundle] pathForResource:@"ColorMap" ofType:@"plist"];
-        _colorMap = [NSDictionary dictionaryWithContentsOfFile:path];
-    }
-    return self;
-}
-
-- (void)setPaletteForNightMode:(BOOL)nightMode {
-    NSString *paletteName = nightMode == YES ? @"DarkPalette" : @"DefaultPalette";
-    [self loadPaletteByName:paletteName andPushNotification:YES];
-}
-
-- (void)loadPaletteByName:(NSString *)paletteName andPushNotification:(BOOL)shouldPush {
-    NSString *path = [[NSBundle mainBundle] pathForResource:paletteName ofType:@"plist"];
-    _palette = [NSDictionary dictionaryWithContentsOfFile:path];
-    [self updateGlobalAppearance];
-    if (shouldPush) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"S1PaletteDidChangeNotification" object:nil];
-    }
-}
-
-- (NSString *)htmlColorStringWithID:(NSString *)paletteID {
-    return [self.palette valueForKey:paletteID];
-}
-
-- (UIColor *)colorInPaletteWithID:(NSString *)paletteID {
-    NSString *colorString = [self.palette valueForKey:paletteID];
-    if (colorString != nil) {
-        UIColor *color = [S1Global colorFromHexString:colorString];
-        if (color != nil) {
-            return color;
-        }
-    }
-    return [UIColor colorWithWhite:0 alpha:1];
-}
-
-- (UIColor *)colorForKey:(NSString *)key {
-    NSString *paletteID = [self.colorMap valueForKey:key];
-    if (paletteID == nil) {
-        paletteID = @"default";
-    }
-    UIColor *color = [self colorInPaletteWithID:paletteID];
-    return color;
-}
-
-- (BOOL)isDarkTheme {
-    return [[self.palette valueForKey:@"Dark"] boolValue];
-}
-
-- (void)updateGlobalAppearance {
-    [[UIToolbar appearance] setBarTintColor:[self colorForKey:@"appearance.toolbar.bartint"]];
-    [[UIToolbar appearance] setTintColor:[self  colorForKey:@"appearance.toolbar.tint"]];
-    [[UINavigationBar appearance] setBarTintColor:[self  colorForKey:@"appearance.navigationbar.bartint"]];
-    [[UINavigationBar appearance] setTintColor:[self  colorForKey:@"appearance.navigationbar.tint"]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [self colorForKey:@"appearance.navigationbar.title"],
-                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
-    [[UISwitch appearance] setOnTintColor:[self colorForKey:@"appearance.switch.tint"]];
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName:[self colorForKey:@"appearance.searchbar.text"],
-                                                                                                 NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
-    [[UIScrollView appearance] setIndicatorStyle:[self isDarkTheme] ? UIScrollViewIndicatorStyleWhite: UIScrollViewIndicatorStyleDefault];
-    [[UITextField appearance] setKeyboardAppearance:[self isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
-    if ([self isDarkTheme]) {
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    } else {
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    }
-}
-
-- (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
++ (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName: color, NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
 }
-
-
 
 @end
 

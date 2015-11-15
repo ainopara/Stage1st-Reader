@@ -286,14 +286,6 @@
 			name = Sqlite3;
 			sourceTree = "<group>";
 		};
-		860727651B37AE3C00DA8390 /* APPullToAction */ = {
-			isa = PBXGroup;
-			children = (
-				860727691B37AF2100DA8390 /* APPullToActionViewController.swift */,
-			);
-			name = APPullToAction;
-			sourceTree = "<group>";
-		};
 		862F51B61891359A0038A289 /* TFHpple */ = {
 			isa = PBXGroup;
 			children = (
@@ -515,7 +507,7 @@
 			isa = PBXGroup;
 			children = (
 				86522CB61BF7551A00BF3379 /* APColorManager.swift */,
-				860727651B37AE3C00DA8390 /* APPullToAction */,
+				860727691B37AF2100DA8390 /* APPullToActionViewController.swift */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,

@@ -15,9 +15,7 @@
 
 @interface S1ColorManager : NSObject
 
-+ (S1ColorManager *)sharedInstance;
-
-- (void)updataSearchBarAppearanceWithColor:(UIColor *)color;
++ (void)updataSearchBarAppearanceWithColor:(UIColor *)color;
 
 @end
 

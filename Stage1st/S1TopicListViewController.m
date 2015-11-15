@@ -677,7 +677,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
-    [self.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
+    [self.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.bartint"]];
     [self.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];

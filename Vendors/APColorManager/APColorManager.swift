@@ -9,10 +9,17 @@
 import Foundation
 import UIKit
 
+@objc enum PaletteType : NSInteger {
+    case Day
+    case Night
+}
+
+
 class APColorManager : NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
     let fallbackColor = UIColor.blackColor()
+    let defaultPaletteURL = NSBundle.mainBundle().URLForResource("DarkPalette", withExtension: "plist")
     
     static let sharedInstance = {
         return APColorManager()
@@ -33,12 +40,18 @@ class APColorManager : NSObject {
         super.init()
     }
     
-    func setPaletteForNightMode(nightMode: Bool) {
-        let paletteName: String = nightMode == true ? "DarkPalette" : "DefaultPalette"
-        self.loadPaletteByName(paletteName, shouldPushNotification: true)
+    func switchPalette(type: PaletteType) {
+        let paletteName: String = type == .Night ? "DarkPalette" : "DefaultPalette"
+        let paletteURL = NSBundle.mainBundle().URLForResource(paletteName, withExtension: "plist")
+        self.loadPaletteByURL(paletteURL, shouldPushNotification: true)
     }
     
-    func loadPaletteByName(paletteName: String, shouldPushNotification shouldPush: Bool) {
+    func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
+        guard let paletteURL = paletteURL,
+            palette = NSDictionary(contentsOfURL: paletteURL) else {
+            return
+        }
+        self.palette = palette
         self.updateGlobalAppearance()
         if (shouldPush) {
             NSNotificationCenter.defaultCenter().postNotificationName("S1PaletteDidChangeNotification", object: nil)
@@ -63,7 +76,7 @@ class APColorManager : NSObject {
             UITextField.appearanceWhenContainedInInstancesOfClasses([UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFontOfSize(14.0)]
         } else {
             // Fallback on earlier versions
-            S1ColorManager.sharedInstance().updataSearchBarAppearanceWithColor(self.colorForKey("appearance.searchbar.text"))
+            S1ColorManager.updataSearchBarAppearanceWithColor(self.colorForKey("appearance.searchbar.text"))
         }
         UIScrollView.appearance().indicatorStyle = self.isDarkTheme() ? .White : .Default
         UITextField.appearance().keyboardAppearance = self.isDarkTheme() ? .Dark : .Default
