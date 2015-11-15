@@ -589,9 +589,11 @@
             self.mahjongController.delegate = self;
             self.mahjongController.historyCountLimit = 99;
         }
+        [(UIButton *)sender setImage:[UIImage imageNamed:@"KeyboardButton"] forState:UIControlStateNormal];
         self.replyController.inputView = self.mahjongController.view;
         [self.replyController reloadInputViews];
     } else {
+        [(UIButton *)sender setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
         self.replyController.inputView = nil;
         [self.replyController reloadInputViews];
     }
