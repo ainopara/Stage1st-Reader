@@ -43,6 +43,10 @@ extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 
 - (void)handleZoneNotFound;
 
+- (void)handleUserDeletedZone;
+
+- (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error;
+
 - (void)reportError:(NSError *)error;
 
 /**

@@ -844,6 +844,15 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     [self continueCloudKitFlow];
 }
 
+- (void)handleUserDeletedZone {
+    [self handleZoneNotFound];
+}
+
+- (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
+    NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
+    NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+}
+
 - (void)reportError:(NSError *)error {
     NSLog(@"ckErrorCode: %ld", (long)error.code);
     NSLog(@"ckError: %@", error);

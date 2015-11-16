@@ -463,6 +463,7 @@ DatabaseManager *MyDatabaseManager;
 		NSInteger ckErrorCode = operationError.code;
         NSLog(@"CKError: %@", operationError);
         [MyCloudKitManager reportError:operationError];
+        
 		if (ckErrorCode == CKErrorNetworkUnavailable ||
 		    ckErrorCode == CKErrorNetworkFailure      ) {
 			[MyCloudKitManager handleNetworkError];
@@ -473,11 +474,12 @@ DatabaseManager *MyDatabaseManager;
 		else if (ckErrorCode == CKErrorNotAuthenticated) {
 			[MyCloudKitManager handleNotAuthenticated];
         }
-        else if (ckErrorCode == CKErrorRequestRateLimited) {
-
+        else if (ckErrorCode == CKErrorRequestRateLimited ||
+                 ckErrorCode == CKErrorServiceUnavailable  ) {
+            [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
         }
         else if (ckErrorCode == CKErrorUserDeletedZone) {
-
+            [MyCloudKitManager handleUserDeletedZone];
         }
 		else if (ckErrorCode == CKErrorChangeTokenExpired) {
             [MyCloudKitManager handleChangeTokenExpired];
