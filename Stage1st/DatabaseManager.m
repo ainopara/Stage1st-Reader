@@ -469,7 +469,9 @@ DatabaseManager *MyDatabaseManager;
 			[MyCloudKitManager handleNetworkError];
 		}
 		else if (ckErrorCode == CKErrorPartialFailure) {
-			[MyCloudKitManager handlePartialFailure];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [MyCloudKitManager handlePartialFailure];
+            });
 		}
 		else if (ckErrorCode == CKErrorNotAuthenticated) {
 			[MyCloudKitManager handleNotAuthenticated];
