@@ -863,7 +863,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
-    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"error": [error localizedDescription]}];
+    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": [NSString stringWithFormat:@"%ld", (long)[error code]],
+                                                                         @"description": [[error userInfo] valueForKey:@"CKErrorDescription"]}];
 }
 
 - (void)_refetchMissedRecordIDs
