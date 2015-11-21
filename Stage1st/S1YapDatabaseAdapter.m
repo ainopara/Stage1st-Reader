@@ -113,7 +113,7 @@
                 [keysToRemove addObject:key];
             }
         }];
-        NSLog(@"Keys to remove from topic history: %@",keysToRemove);
+        NSLog(@"%lu keys removed from topic history",(unsigned long)[keysToRemove count]);
         for (NSString *key in keysToRemove) {
             [transaction removeObjectForKey:key inCollection:Collection_Topics];
         }

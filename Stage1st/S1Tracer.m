@@ -171,10 +171,7 @@
             if (error) {
                 NSLog(@"Fail to Rename Database: %@",error);
             }
-        } else {
-            NSLog(@"file not found in path: %@", dbPath);
         }
-        
     });
 }
 @end

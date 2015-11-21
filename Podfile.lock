@@ -30,6 +30,11 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.2.0):
     - CocoaLumberjack/Default
+  - Crashlytics (3.4.0):
+    - Fabric (~> 1.6.0)
+  - Fabric (1.6.0):
+    - Fabric/Base (= 1.6.0)
+  - Fabric/Base (1.6.0)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
@@ -48,11 +53,14 @@ PODS:
     - YapDatabase/standard (= 2.7.6)
   - YapDatabase/standard (2.7.6):
     - CocoaLumberjack (~> 2)
+  - YYText (0.9.4)
 
 DEPENDENCIES:
   - 1PasswordExtension
   - ActionSheetPicker-3.0
   - AFNetworking
+  - Crashlytics
+  - Fabric
   - FMDB
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
@@ -61,7 +69,8 @@ DEPENDENCIES:
   - Reachability
   - Reveal-iOS-SDK
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
-  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `with-all-modification`)
+  - YYText
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -71,7 +80,7 @@ EXTERNAL SOURCES:
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :branch: limit-cloudkit-upload
+    :branch: with-all-modification
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
@@ -85,7 +94,7 @@ CHECKOUT OPTIONS:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :commit: fa7eefe7ffd730c0092f9e77638953d9a722f973
+    :commit: 03d08511a5d6f61ffedfd86c6f92e6d29f426c27
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -93,6 +102,8 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 11f2053085d3088dc1ef9d38a9f11c18b528dd9e
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
+  Crashlytics: 1ee87895c37472eb3f01f409ea1654a464d2f8d4
+  Fabric: d737eda3a26ac940a5430230eedb35f16b226131
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
@@ -102,5 +113,6 @@ SPEC CHECKSUMS:
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 00e5a5d1b5dba1bd540ef644576233b5612e6122
+  YYText: 67a80bd0ac293832dae4830c7e25f837ffd99488
 
 COCOAPODS: 0.39.0

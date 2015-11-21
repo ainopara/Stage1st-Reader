@@ -437,7 +437,7 @@ DatabaseManager *MyDatabaseManager;
                 NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
             }
             
-            if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] >=0) {
+            if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] > 0) {
                 NSLog(@"Merge: Winner Remote -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *remoteChangedKey in remoteChangedKeys) {
                     id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
@@ -445,13 +445,16 @@ DatabaseManager *MyDatabaseManager;
                     [topic setLocalValueFromCloudValue:remoteChangedValue forCloudKey:remoteChangedKey];
                 }
                 [transaction setObject:topic forKey:key inCollection:collection];
-            } else {
+            } else if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] < 0){
                 NSLog(@"Merge: Winner Local -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *localChangedKey in localChangedKeys)
                 {
                     id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
                     [mergeInfo.updatedPendingLocalRecord setObject:localChangedValue forKey:localChangedKey];
                 }
+            } else {
+                NSLog(@"Merge: Draw");
+                // Nothing to do since Remote record and Local record are same.
             }
 			
 		}

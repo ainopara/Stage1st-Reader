@@ -17,7 +17,8 @@
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "DDTTYLogger.h"
-
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 S1AppDelegate *MyAppDelegate;
 
@@ -36,10 +37,12 @@ S1AppDelegate *MyAppDelegate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //Flurry
+    // Flurry
     // [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
-    
-    //Setup User Defaults
+    // Crashlytics
+    [Fabric with:@[[Crashlytics class]]];
+
+    // Setup User Defaults
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];

@@ -6,6 +6,7 @@
 
 #import <CloudKit/CloudKit.h>
 #import <Reachability/Reachability.h>
+#import <Crashlytics/Answers.h>
 
 CloudKitManager *MyCloudKitManager;
 
@@ -530,6 +531,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
                 [self handleChangeTokenExpired];
             } else if (ckErrorCode == CKErrorZoneNotFound) {
                 [self handleZoneNotFound];
+            } else if (ckErrorCode == CKErrorUserDeletedZone) {
+                [self handleUserDeletedZone];
             }
             
             
@@ -788,7 +791,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	self.needsFetchRecordChanges = YES;
 	
 	
-	YDBCKChangeSet *failedChangeSet = [[MyDatabaseManager.cloudKitExtension pendingChangeSets] firstObject];
+	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension firstPendingChangeSet];
 	
 	if ([failedChangeSet.uuid isEqualToString:lastChangeSetUUID] && self.lastSuccessfulFetchResultWasNoData)
 	{
@@ -837,10 +840,12 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 }
 
 - (void)handleZoneNotFound {
+    [self handleChangeTokenExpired];
     self.needsCreateZone = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
     self.needsCreateZoneSubscription = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
+    self.needsResume = YES;
     [self continueCloudKitFlow];
 }
 
@@ -858,13 +863,14 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
+    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"error": [error localizedDescription]}];
 }
 
 - (void)_refetchMissedRecordIDs
 {
 	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
-	YDBCKChangeSet *failedChangeSet = [[MyDatabaseManager.cloudKitExtension pendingChangeSets] firstObject];
+	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension firstPendingChangeSet];
 	NSArray *recordIDs = failedChangeSet.recordIDsToSave;
 	
 	if (recordIDs.count == 0)
