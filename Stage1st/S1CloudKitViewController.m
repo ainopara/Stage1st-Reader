@@ -97,6 +97,9 @@
         }
         NSString *title = @"Error Detail";
         NSString *message = [MyCloudKitManager.lastCloudkitError localizedDescription];
+        if (message == nil) {
+            message = @"No description information.";
+        }
         
         UIAlertView *alertView =
         [[UIAlertView alloc] initWithTitle:title
