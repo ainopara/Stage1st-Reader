@@ -69,7 +69,7 @@ DEPENDENCIES:
   - Reachability
   - Reveal-iOS-SDK
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
-  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `with-all-modification`)
+  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYText
 
 EXTERNAL SOURCES:
@@ -80,7 +80,7 @@ EXTERNAL SOURCES:
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :branch: with-all-modification
+    :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
@@ -94,7 +94,7 @@ CHECKOUT OPTIONS:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :commit: 03d08511a5d6f61ffedfd86c6f92e6d29f426c27
+    :commit: 3f6d4bd462f98b0c7b3fa3ae87402a24bc941520
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:

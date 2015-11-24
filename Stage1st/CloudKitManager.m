@@ -791,7 +791,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	self.needsFetchRecordChanges = YES;
 	
 	
-	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension firstPendingChangeSet];
+	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension currentChangeSet];
 	
 	if ([failedChangeSet.uuid isEqualToString:lastChangeSetUUID] && self.lastSuccessfulFetchResultWasNoData)
 	{
@@ -875,7 +875,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 {
 	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
-	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension firstPendingChangeSet];
+	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension currentChangeSet];
 	NSArray *recordIDs = failedChangeSet.recordIDsToSave;
 	
 	if (recordIDs.count == 0)
