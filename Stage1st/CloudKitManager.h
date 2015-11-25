@@ -20,6 +20,8 @@ extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 **/
 + (instancetype)sharedInstance; // Or MyCloudKitManager global ivar
 
+
+- (void)prepareForUnregister;
 /**
  * Invoke me if you get one of the following errors via YapDatabaseCloudKitOperationErrorBlock:
  * - CKErrorNetworkUnavailable

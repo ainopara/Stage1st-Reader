@@ -400,7 +400,6 @@ DatabaseManager *MyDatabaseManager;
 		if ([remoteRecord.recordType isEqualToString:@"topic"])
 		{
 			S1Topic *topic = [transaction objectForKey:key inCollection:collection];
-			topic = [topic copy]; // make mutable copy
 			
 			// CloudKit doesn't tell us exactly what changed.
 			// We're just being given the latest version of the CKRecord.
@@ -427,18 +426,20 @@ DatabaseManager *MyDatabaseManager;
 			NSMutableSet *localChangedKeys = [NSMutableSet setWithArray:mergeInfo.pendingLocalRecord.changedKeys];
             NSDate *remoteLastUpdateDate = [remoteRecord valueForKey:@"lastViewedDate"];
             NSDate *localLastUpdateDate = topic.lastViewedDate;
-            
-            NSLog(@"Merge: Remote Change");
-            for (NSString *key in remoteChangedKeys) {
-                NSLog(@"%@ : %@", key, [remoteRecord valueForKey:key]);
-            }
-            NSLog(@"Merge: Local Change");
-            for (NSString *key in localChangedKeys) {
-                NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+            if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] != 0) {
+                NSLog(@"Merge: Remote Change");
+                for (NSString *key in remoteChangedKeys) {
+                    NSLog(@"%@ : %@", key, [remoteRecord valueForKey:key]);
+                }
+                NSLog(@"Merge: Local Change");
+                for (NSString *key in localChangedKeys) {
+                    NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+                }
             }
             
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] > 0) {
-                NSLog(@"Merge: Winner Remote -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                NSLog(@"Merge: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                topic = [topic copy]; // make mutable copy
                 for (NSString *remoteChangedKey in remoteChangedKeys) {
                     id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
                     
@@ -446,15 +447,25 @@ DatabaseManager *MyDatabaseManager;
                 }
                 [transaction setObject:topic forKey:key inCollection:collection];
             } else if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] < 0){
-                NSLog(@"Merge: Winner Local -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                NSLog(@"Merge: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *localChangedKey in localChangedKeys)
                 {
                     id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
                     [mergeInfo.updatedPendingLocalRecord setObject:localChangedValue forKey:localChangedKey];
                 }
             } else {
-                NSLog(@"Merge: Draw");
                 // Nothing to do since Remote record and Local record are same.
+                // But last update date is not enough to make sure all keys of them have same value.
+                // Since favorite state is important, It's batter to make those who favorite is ture win.
+                if ([[remoteRecord valueForKey:@"favorite"] boolValue] == YES && [topic.favorite boolValue] == NO) {
+                    NSLog(@"Merge: Draw -- favorite mismatch -- update local value to fit cloud state");
+                    topic = [topic copy]; // make mutable copy
+                    topic.favorite = @YES;
+                    [transaction setObject:topic forKey:key inCollection:collection];
+                } else if ([[remoteRecord valueForKey:@"favorite"] boolValue] == NO && [topic.favorite boolValue] == YES) {
+                    NSLog(@"Merge: Draw -- favorite mismatch -- update cloud value to fit local state");
+                    [mergeInfo.updatedPendingLocalRecord setObject:@YES forKey:@"favorite"];
+                }
             }
 			
 		}
@@ -514,7 +525,10 @@ DatabaseManager *MyDatabaseManager;
 	[database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
 		if (!ready) {
 			NSLog(@"Error registering %@ !!!", Ext_CloudKit);
-		}
+        } else {
+            NSLog(@"Registering %@ finished.", Ext_CloudKit);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
+        }
 	}];
 }
 
@@ -544,7 +558,7 @@ DatabaseManager *MyDatabaseManager;
 	                                                    object:self
 	                                                  userInfo:userInfo];
 }
-
+#pragma mark Helper
 - (void)unregisterCloudKitExtension {
     [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
         NSLog(@"Exrension %@ unregistered.",Ext_CloudKit);

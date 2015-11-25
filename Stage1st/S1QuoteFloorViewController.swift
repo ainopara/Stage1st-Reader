@@ -12,6 +12,8 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     var htmlString :String?
     var centerFloorID :Int = 0
     @IBOutlet weak var webView: UIWebView!
+    
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
@@ -31,13 +33,17 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - WebView Delegate
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        if request.URL!.absoluteString == "about:blank" {
+        guard let URL = request.URL else {
+            return false
+        }
+        if URL.absoluteString == "about:blank" {
             return true
         }
         return false
     }
-    
+
     func webViewDidFinishLoad(webView: UIWebView) {
         var offset = webView.scrollView.contentOffset
         var computedOffset: CGFloat = positionOfElementWithId(self.centerFloorID) - 32
@@ -51,6 +57,7 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
         webView.scrollView.contentOffset = offset
     }
     
+    // MARK: - Helper
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
         let result: String? = self.webView.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
         print(result, terminator: "")
@@ -59,14 +66,5 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
         }
         return 0;
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

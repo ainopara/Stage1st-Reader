@@ -72,6 +72,9 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 		setupQueue = dispatch_queue_create("CloudKitManager.setup", DISPATCH_QUEUE_SERIAL);
 		fetchQueue = dispatch_queue_create("CloudKitManager.fetch", DISPATCH_QUEUE_SERIAL);
 		
+		dispatch_suspend(setupQueue);
+		dispatch_suspend(fetchQueue);
+        
 		self.needsCreateZone = YES;
 		self.needsCreateZoneSubscription = YES;
 		self.needsFetchRecordChangesAfterAppLaunch = YES;
@@ -97,6 +100,11 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 		                                         selector:@selector(reachabilityChanged:)
 		                                             name:kReachabilityChangedNotification
 		                                           object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(cloudKitRegisterFinish)
+                                                     name:@"S1YapDatabaseCloudKitRegisterFinish"
+                                                   object:nil];
 	}
 	return self;
 }
@@ -228,9 +236,18 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 		dispatch_async(dispatch_get_main_queue(), block);
 }
 
+- (void)prepareForUnregister {
+    [databaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
+        [transaction removeObjectForKey:Key_HasZone inCollection:Collection_CloudKit];
+        [transaction removeObjectForKey:Key_HasZoneSubscription inCollection:Collection_CloudKit];
+    }];
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark App Launch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 - (void)createZone
 {
@@ -534,9 +551,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
             } else if (ckErrorCode == CKErrorUserDeletedZone) {
                 [self handleUserDeletedZone];
             }
-            
-            
-			
+
 			if (completionHandler) {
 				completionHandler(UIBackgroundFetchResultFailed, NO);
 			}
@@ -841,11 +856,15 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 
 - (void)handleZoneNotFound {
     [self handleChangeTokenExpired];
+    
     self.needsCreateZone = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
+    
     self.needsCreateZoneSubscription = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
+    
     self.needsResume = YES;
+    
     [self continueCloudKitFlow];
 }
 
@@ -856,6 +875,11 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
     NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.needsResume = YES;
+        [self continueCloudKitFlow];
+    });
 }
 
 - (void)reportError:(NSError *)error {
@@ -863,11 +887,24 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
+    NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
     NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
+    NSString *subErrorDescription = nil;
     if (errorDescription == nil) {
         errorDescription = @"Unknown";
     }
-    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": [NSString stringWithFormat:@"%ld", (long)[error code]],
+    NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
+    for (NSError *subError in allErrors) {
+        if (subError.code != 22) {
+            subErrorDescription = [subError localizedDescription];
+            code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
+            break;
+        }
+    }
+    if (subErrorDescription != nil) {
+        errorDescription = subErrorDescription;
+    }
+    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
                                                                          @"description": errorDescription}];
 }
 
@@ -993,6 +1030,11 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	{
 		[self continueCloudKitFlow];
 	}
+}
+
+- (void)cloudKitRegisterFinish {
+    dispatch_resume(fetchQueue);
+    dispatch_resume(setupQueue);
 }
 
 @end

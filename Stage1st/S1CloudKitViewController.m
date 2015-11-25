@@ -36,7 +36,7 @@
         self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
         NSError *error = [MyCloudKitManager lastCloudkitError];
         if (error) {
-            self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)error.code];
+            [self updateErrorMessageWithError:error];
         } else {
             self.lastErrorMessageLabel.text = @"-";
         }
@@ -82,6 +82,7 @@
     
     [alertView show];
     if (self.iCloudSwitch.on == NO) {
+        [MyCloudKitManager prepareForUnregister];
         [MyDatabaseManager unregisterCloudKitExtension];
     }
 }
@@ -109,6 +110,13 @@
                          otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
         
         [alertView show];
+    } else if (indexPath.section == 2 && indexPath.row == 0) {
+        NSLog(@"Suspend");
+        [MyDatabaseManager.cloudKitExtension suspend];
+        
+    } else if (indexPath.section == 2 && indexPath.row == 1) {
+        NSLog(@"Resume");
+        [MyDatabaseManager.cloudKitExtension resume];
     }
 }
 
@@ -121,8 +129,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
 }
 
-- (void)cloudKitSuspendCountChanged:(NSNotification *)notification
-{
+- (void)cloudKitSuspendCountChanged:(NSNotification *)notification {
     NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
     if (suspendCount > 0) {
         self.currentStatusLabel.text = [NSString stringWithFormat:@"Suspended(%lu)", (unsigned long)suspendCount];
@@ -131,17 +138,38 @@
     }
 }
 
-- (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
-{
+- (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification {
     NSUInteger inFlightCount = 0;
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     self.uploadQueueLabel.text = [NSString stringWithFormat:@"%lu-%lu", (unsigned long)inFlightCount, (unsigned long)queuedCount];
 }
 
-- (void)cloudKitUnhandledErrorOccurred:(NSNotification *)notification
-{
+- (void)cloudKitUnhandledErrorOccurred:(NSNotification *)notification {
     NSError *error = notification.object;
     self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)error.code];
+}
+
+#pragma mark - Helper
+
+- (void)updateErrorMessageWithError:(NSError *)error {
+    NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
+    NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
+    NSString *subErrorDescription = nil;
+    if (errorDescription == nil) {
+        errorDescription = @"Unknown";
+    }
+    NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
+    for (NSError *subError in allErrors) {
+        if (subError.code != 22) {
+            subErrorDescription = [subError localizedDescription];
+            code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
+            break;
+        }
+    }
+    if (subErrorDescription != nil) {
+        errorDescription = subErrorDescription;
+    }
+    self.lastErrorMessageLabel.text = code;
 }
 @end
