@@ -889,14 +889,14 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
     NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
     NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
-    NSString *subErrorDescription = nil;
     if (errorDescription == nil) {
         errorDescription = @"Unknown";
     }
+    NSString *subErrorDescription = nil;
     NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
     for (NSError *subError in allErrors) {
         if (subError.code != 22) {
-            subErrorDescription = [subError localizedDescription];
+            subErrorDescription = [[subError userInfo] valueForKey:@"CKErrorDescription"];
             code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
             break;
         }
@@ -904,6 +904,7 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     if (subErrorDescription != nil) {
         errorDescription = subErrorDescription;
     }
+    code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
     [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
                                                                          @"description": errorDescription}];
 }
