@@ -277,6 +277,13 @@ S1AppDelegate *MyAppDelegate;
     }];
 }
 
+#pragma mark - Background Sync
+/*
+-(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+ 
+}
+*/
+
 #pragma mark - Hand Off (iOS 8)
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
