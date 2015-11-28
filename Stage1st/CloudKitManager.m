@@ -918,7 +918,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
     for (NSError *subError in allErrors) {
         if (subError.code != 22) {
-            subErrorDescription = [[subError userInfo] valueForKey:@"CKErrorDescription"];
+            subErrorDescription = [[subError userInfo] valueForKey:@"ServerErrorDescription"];
             code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
             break;
         }
