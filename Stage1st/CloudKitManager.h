@@ -9,10 +9,24 @@
 **/
 extern CloudKitManager *MyCloudKitManager;
 extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
+extern NSString *const YapDatabaseCloudKitStateChangeNotification;
+
+typedef enum : NSUInteger {
+    CKManagerStateInit, // extension registering
+    CKManagerStateSetup, // create zone and create zone subscription
+    CKManagerStateFetch, // fetch server changes
+    CKManagerStateUpload, // upload local changes
+    CKManagerStateReady, // nothing to do, ready for fetch or upload
+    CKManagerStateRecover, // trying to recover from an error
+    CKManagerStateHalt, // failed to recover from an error, will halt until next boot
+} CKManagerState;
+
 
 @interface CloudKitManager : NSObject
 
-@property (strong, nonatomic) NSError *lastCloudkitError;
+@property (atomic, readwrite) CKManagerState state;
+
+@property (strong, atomic) NSError *lastCloudkitError;
 
 /**
  * Standard singleton pattern.
@@ -48,6 +62,8 @@ extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 - (void)handleUserDeletedZone;
 
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error;
+
+- (void)handleOtherErrors;
 
 - (void)reportError:(NSError *)error;
 

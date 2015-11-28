@@ -13,7 +13,9 @@ CloudKitManager *MyCloudKitManager;
 static NSString *const Key_HasZone             = @"hasZone";
 static NSString *const Key_HasZoneSubscription = @"hasZoneSubscription";
 static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
-NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_UnhandledErrorOccurred";
+NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"S1YDBCK_UnhandledErrorOccurred";
+NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChange";
+
 @interface CloudKitManager ()
 
 // Initial setup
@@ -75,6 +77,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 		dispatch_suspend(setupQueue);
 		dispatch_suspend(fetchQueue);
         
+        self.state = CKManagerStateInit;
+        [self postNotificationForCloudKitManagerStateChange];
 		self.needsCreateZone = YES;
 		self.needsCreateZoneSubscription = YES;
 		self.needsFetchRecordChangesAfterAppLaunch = YES;
@@ -252,7 +256,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 - (void)createZone
 {
 	dispatch_async(setupQueue, ^{ @autoreleasepool {
-		
+        self.state = CKManagerStateSetup;
+        [self postNotificationForCloudKitManagerStateChange];
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding operation at a time.
@@ -337,7 +342,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 - (void)createZoneSubscription
 {
 	dispatch_async(setupQueue, ^{ @autoreleasepool {
-		
+		self.state = CKManagerStateSetup;
+        [self postNotificationForCloudKitManagerStateChange];
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding operation at a time.
@@ -438,13 +444,20 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
         (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
 	dispatch_async(fetchQueue, ^{ @autoreleasepool {
-	
+        self.state = CKManagerStateFetch;
+        [self postNotificationForCloudKitManagerStateChange];
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding fetchRecordsOperation at a time.
 		dispatch_suspend(fetchQueue);
 		
-		[self _fetchRecordChangesWithCompletionHandler:completionHandler];
+        [self _fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing){
+            if (self.state == CKManagerStateFetch && result != UIBackgroundFetchResultFailed && moreComing == NO) {
+                self.state = CKManagerStateReady;
+                [self postNotificationForCloudKitManagerStateChange];
+            }
+            completionHandler(result, moreComing);
+        }];
 	}});
 }
 
@@ -844,6 +857,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	self.needsResume = YES;
 	
 	[self warnAboutAccount];
+    self.state = CKManagerStateHalt;
+    [self postNotificationForCloudKitManagerStateChange];
 }
 
 - (void)handleChangeTokenExpired {
@@ -872,6 +887,11 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     [self handleZoneNotFound];
 }
 
+- (void)handleOtherErrors {
+    self.state = CKManagerStateHalt;
+    [self postNotificationForCloudKitManagerStateChange];
+}
+
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
     NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
@@ -887,6 +907,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
+    self.state = CKManagerStateRecover;
+    [self postNotificationForCloudKitManagerStateChange];
     NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
     NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
     if (errorDescription == nil) {
@@ -1018,6 +1040,20 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	NSString *changeSetUUID = [notification.userInfo objectForKey:@"uuid"];
 	
 	lastChangeSetUUID = changeSetUUID;
+    
+    NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
+    
+    NSUInteger inFlightCount = 0;
+    NSUInteger queuedCount = 0;
+    [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
+    if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
+        self.state = CKManagerStateUpload;
+        [self postNotificationForCloudKitManagerStateChange];
+    } else if(suspendCount == 0 && inFlightCount + queuedCount == 0) {
+        self.state = CKManagerStateReady;
+        [self postNotificationForCloudKitManagerStateChange];
+    }
+    
 }
 
 - (void)reachabilityChanged:(NSNotification *)notification
@@ -1029,6 +1065,8 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 	//NSLog(@"%@ - reachability.isReachable = %@", THIS_FILE, (reachability.isReachable ? @"YES" : @"NO"));
 	if (reachability.isReachable)
 	{
+        //self.state = CKManagerStateReady;
+        //[self postNotificationForCloudKitManagerStateChange];
 		[self continueCloudKitFlow];
 	}
 }
@@ -1036,6 +1074,14 @@ NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"YDBCK_
 - (void)cloudKitRegisterFinish {
     dispatch_resume(fetchQueue);
     dispatch_resume(setupQueue);
+}
+
+#pragma mark Helper
+
+- (void)postNotificationForCloudKitManagerStateChange {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitStateChangeNotification object:nil];
+    });
 }
 
 @end

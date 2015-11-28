@@ -129,8 +129,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseConnectionDidUpdate:) name:UIDatabaseConnectionDidUpdateNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -787,16 +787,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     
 }
 
-- (void)cloudKitSuspendCountChanged:(NSNotification *)notification
-{
+- (void)cloudKitStateChanged:(NSNotification *)notification {
     [self updateArchiveIcon];
 }
-
-- (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
-{
-    [self updateArchiveIcon];
-}
-
 #pragma mark Helpers
 
 - (void)updateArchiveIcon {
@@ -805,13 +798,46 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSUInteger inFlightCount = 0;
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
-    
-    if (suspendCount > 0){
-        NSLog(@"Status: Suspended (suspendCount = %lu) ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount);
-    } else {
-        NSLog(@"Status: Resumed ChangeSets: InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount);
+    NSString *titleString = @"";
+    switch ([MyCloudKitManager state]) {
+        case CKManagerStateInit:
+            titleString = [@"Init/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateSetup:
+            titleString = [@"Setup/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateFetch:
+            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            titleString = [@"Fetch/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateUpload:
+            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            titleString = [@"Upload/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateReady:
+            _historyItem.image = [UIImage imageNamed:@"Archive"];
+            titleString = [@"Ready/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateRecover:
+            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            titleString = [@"Recover/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateHalt:
+            _historyItem.image = [UIImage imageNamed:@"Archive"];
+            titleString = [@"Halt/" stringByAppendingString:titleString];
+            break;
+            
+        default:
+            break;
     }
     
+    if (suspendCount > 0){
+        titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Suspended (suspendCount = %lu) - InFlight(%lu), Queued(%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount]];
+    } else {
+        titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
+    }
+    NSLog(@"%@", titleString);
+    /*
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
         //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
         //    [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
@@ -820,7 +846,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else {
         _historyItem.image = [UIImage imageNamed:@"Archive"];
         //[_archiveImageView.layer removeAllAnimations];
-    }
+    }*/
 }
 
 - (NSArray *)keys

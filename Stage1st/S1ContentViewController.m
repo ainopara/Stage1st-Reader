@@ -1294,10 +1294,10 @@
 
 - (void)saveTopicViewedState:(id)sender {
     if (_finishLoading) {
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
         //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     self.topic.lastViewedDate = [NSDate date];

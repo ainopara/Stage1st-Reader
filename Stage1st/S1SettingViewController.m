@@ -11,6 +11,7 @@
 #import "GSStaticTableViewBuilder.h"
 #import "DatabaseManager.h"
 #import "MTStatusBarOverlay.h"
+#import "CloudKitManager.h"
 
 
 @interface S1SettingViewController ()
@@ -112,8 +113,7 @@
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
 }
 
 - (void)dealloc {
@@ -246,13 +246,7 @@
                                                  NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
 }
 
-- (void)cloudKitSuspendCountChanged:(NSNotification *)notification
-{
-    [self updateiCloudStatus];
-}
-
-- (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
-{
+- (void)cloudKitStateChanged:(NSNotification *)notification {
     [self updateiCloudStatus];
 }
 #pragma mark - Helper
@@ -271,10 +265,36 @@
         [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
         
         if (suspendCount > 0){
-            titleString = [NSString stringWithFormat:NSLocalizedString(@"SettingView_CloudKit_Status_Suspended", @"Suspended"), (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
+            titleString = [NSString stringWithFormat:@"S%lu(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
         } else {
-            titleString = [NSString stringWithFormat:NSLocalizedString(@"SettingView_CloudKit_Status_Resumed", @"Resumed"), (unsigned long)inFlightCount, (unsigned long)queuedCount];
+            titleString = [NSString stringWithFormat:@"R(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
         }
+    }
+    switch ([MyCloudKitManager state]) {
+        case CKManagerStateInit:
+            titleString = [@"Init/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateSetup:
+            titleString = [@"Setup/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateFetch:
+            titleString = [@"Fetch/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateUpload:
+            titleString = [@"Upload/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateReady:
+            titleString = [@"Ready/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateRecover:
+            titleString = [@"Recover/" stringByAppendingString:titleString];
+            break;
+        case CKManagerStateHalt:
+            titleString = [@"Halt/" stringByAppendingString:titleString];
+            break;
+            
+        default:
+            break;
     }
     self.iCloudSyncCell.detailTextLabel.text = titleString;
 }

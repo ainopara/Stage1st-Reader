@@ -501,7 +501,7 @@ DatabaseManager *MyDatabaseManager;
             [MyCloudKitManager handleChangeTokenExpired];
 		}
         else {
-            
+            [MyCloudKitManager handleOtherErrors];
         }
 	};
 	
