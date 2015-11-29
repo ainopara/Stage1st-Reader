@@ -475,7 +475,6 @@ DatabaseManager *MyDatabaseManager;
 	  ^(NSString *databaseIdentifier, NSError *operationError)
 	{
 		NSInteger ckErrorCode = operationError.code;
-        NSLog(@"CKError: %@", operationError);
         [MyCloudKitManager reportError:operationError];
         
 		if (ckErrorCode == CKErrorNetworkUnavailable ||

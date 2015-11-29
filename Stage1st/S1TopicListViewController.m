@@ -681,6 +681,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
     self.searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
+    self.searchBar.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
     [self.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.bartint"]];
