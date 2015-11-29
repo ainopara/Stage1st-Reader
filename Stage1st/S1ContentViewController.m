@@ -423,7 +423,7 @@
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (long i = 0; i < (_currentPage > _totalPages ? _currentPage : _totalPages); i++) {
         if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithLong:i + 1]]) {
-            [array addObject:[NSString stringWithFormat:@"第 %ld 页✓", i + 1]];
+            [array addObject:[NSString stringWithFormat:@"✓第 %ld 页✓", i + 1]];
         } else {
             [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
         }
@@ -451,6 +451,7 @@
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     labelParagraphStyle.alignment = NSTextAlignmentCenter;
     picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
+                                    NSFontAttributeName: [UIFont systemFontOfSize:19.0],
                                     NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"],};
     
     [picker showActionSheetPicker];
@@ -1172,6 +1173,7 @@
     replyController.delegate = self;
     [replyController setAttributedText:self.attributedReplyDraft];
     replyController.accessoryView = [self accessoryView];
+    [self resetTextViewStyle:replyController.textView];
      
     [replyController presentFromViewController:self];
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
