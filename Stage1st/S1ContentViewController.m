@@ -115,6 +115,7 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
@@ -136,18 +137,15 @@
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    BOOL hasInvalidTitle = NO;
+
     if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
         self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
-        hasInvalidTitle = YES;
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
     } else {
         self.titleLabel.text = self.topic.title;
-    }
-    if (hasInvalidTitle) {
-        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
-    }else {
         self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
     }
+
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
@@ -228,6 +226,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     
     //Set up Activity for Hand Off
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -1236,6 +1235,50 @@
     }
 }
 
+#pragma mark - Notificatons
+
+- (void)saveTopicViewedState:(id)sender {
+    if (_finishLoading) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
+    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
+    }
+    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
+    self.topic.lastViewedDate = [NSDate date];
+    [self.topic setLastReplyCount:self.topic.replyCount];
+    [self.dataCenter hasViewed:self.topic];
+}
+
+- (void)deviceOrientationDidChange:(id)sender {
+    if (self.titleLabel) {
+        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    }
+}
+
+- (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
+    self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    if(_currentPage != 1) {
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    }
+    self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
+        self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
+    } else {
+        self.titleLabel.text = self.topic.title;
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+    }
+    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
+    self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
+    self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
+
+    _needToLoadLastPosition = NO;
+    [self saveViewPosition];
+    [self fetchContentAndForceUpdate:NO];
+}
+
 #pragma mark - Helpers
 
 - (void)scrollToBottomAnimated:(BOOL)animated
@@ -1292,24 +1335,7 @@
     return viewImage;
 }
 
-- (void)saveTopicViewedState:(id)sender {
-    if (_finishLoading) {
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
-    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
-        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
-    }
-    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    self.topic.lastViewedDate = [NSDate date];
-    [self.topic setLastReplyCount:self.topic.replyCount];
-    [self.dataCenter hasViewed:self.topic];
-}
 
-- (void)deviceOrientationDidChange:(id)sender {
-    if (self.titleLabel) {
-        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-    }
-}
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
 {

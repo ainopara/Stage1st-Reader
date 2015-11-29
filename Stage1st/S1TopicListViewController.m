@@ -24,6 +24,7 @@
 #import "CloudKitManager.h"
 #import "YapDatabaseFilteredView.h"
 #import "YapDatabaseSearchResultsView.h"
+#import "NavigationControllerDelegate.h"
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -109,6 +110,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.tableView.hidden = YES;
     self.tableView.tableHeaderView = self.searchBar;
+    [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
+    
     //self.definesPresentationContext = YES;
     
     self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];

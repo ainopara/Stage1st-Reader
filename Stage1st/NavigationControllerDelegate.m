@@ -12,8 +12,9 @@
 
 #define _TRIGGER_THRESHOLD 60.0f
 #define _TRIGGER_VELOCITY_THRESHOLD 500.0f
+#define _COLOR_CHANGE_TRIGGER_THRESHOLD 100.0f
 
-@interface NavigationControllerDelegate ()
+@interface NavigationControllerDelegate () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UINavigationController *navigationController;
 @property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *popAnimator;
@@ -26,17 +27,39 @@
 
 @implementation NavigationControllerDelegate
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
     self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
     [self.navigationController.view addGestureRecognizer:self.panRecognizer];
-    
+    self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
+    self.colorPanRecognizer.delegate = self;
+    [self.navigationController.view addGestureRecognizer:self.colorPanRecognizer];
     self.popAnimator = [S1PopAnimator new];
     self.pushAnimator = [S1PushAnimator new];
 }
 
-- (void)pan:(UIPanGestureRecognizer*)recognizer
-{
+
+
+- (void)colorPan:(UIPanGestureRecognizer *)recognizer {
+    UIView* view = self.navigationController.view;
+    CGPoint translation = [recognizer translationInView:view];
+    if (recognizer.state == UIGestureRecognizerStateChanged) {
+        NSLog(@"%f",translation.y);
+        if (translation.y > _COLOR_CHANGE_TRIGGER_THRESHOLD && [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == NO) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NightMode"];
+            [[APColorManager sharedInstance] switchPalette:PaletteTypeNight];
+            recognizer.enabled = NO;
+            recognizer.enabled = YES;
+        }
+        if (translation.y < -_COLOR_CHANGE_TRIGGER_THRESHOLD && [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == YES) {
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
+            [[APColorManager sharedInstance] switchPalette:PaletteTypeDay];
+            recognizer.enabled = NO;
+            recognizer.enabled = YES;
+        }
+    }
+}
+
+- (void)pan:(UIPanGestureRecognizer*)recognizer {
     UIView* view = self.navigationController.view;
     CGPoint translation = [recognizer translationInView:view];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
@@ -72,6 +95,13 @@
     }
 }
 
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.colorPanRecognizer && gestureRecognizer.numberOfTouches == 1) {
+        return NO;
+    }
+    return YES;
+}
+
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     if (operation == UINavigationControllerOperationPop) {
@@ -85,13 +115,11 @@
     return nil;
 }
 
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
-{
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
     return self.interactionController;
 }
 
-- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
-{
+- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             return UIInterfaceOrientationMaskPortrait;
