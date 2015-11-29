@@ -45,6 +45,14 @@
 "SettingView_CloudKit_Status_Off" = "Off";
 "SettingView_CloudKit_Status_Suspended" = "Suspended(%lu)(%lu-%lu)";
 "SettingView_CloudKit_Status_Resumed" = "Resumed(%lu-%lu)";
+
+"SettingView_CloudKit_Status_Init" = "Init";
+"SettingView_CloudKit_Status_Setup" = "Setup";
+"SettingView_CloudKit_Status_Fetch" = "Fetch";
+"SettingView_CloudKit_Status_Upload" = "Upload";
+"SettingView_CloudKit_Status_Ready" = "Ready";
+"SettingView_CloudKit_Status_Recover" = "Recover";
+"SettingView_CloudKit_Status_Halt" = "Halt";
 /*"SettingView_Favorite_Order" = "Record Sort By Last Visit Date";*/
 
 "SettingView_HistoryLimit_3days" = "3 days";

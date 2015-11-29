@@ -165,3 +165,11 @@
 "SettingView_CloudKit_Status_Suspended" = "暂停(%lu)(%lu-%lu)";
 "SettingView_CloudKit_Status_Resumed" = "恢复(%lu-%lu)";
 
+"SettingView_CloudKit_Status_Init" = "初始化";
+"SettingView_CloudKit_Status_Setup" = "配置中";
+"SettingView_CloudKit_Status_Fetch" = "获取更新";
+"SettingView_CloudKit_Status_Upload" = "上传中";
+"SettingView_CloudKit_Status_Ready" = "就绪";
+"SettingView_CloudKit_Status_Recover" = "错误恢复中";
+"SettingView_CloudKit_Status_Halt" = "挂起";
+

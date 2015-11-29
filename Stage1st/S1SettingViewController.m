@@ -264,38 +264,35 @@
         NSUInteger queuedCount = 0;
         [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
         
-        if (suspendCount > 0){
-            titleString = [NSString stringWithFormat:@"S%lu(%lu-%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount];
-        } else {
-            titleString = [NSString stringWithFormat:@"R(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+        switch ([MyCloudKitManager state]) {
+            case CKManagerStateInit:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Init", @"Init");
+                break;
+            case CKManagerStateSetup:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Setup", @"Setup");
+                break;
+            case CKManagerStateFetch:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Fetch", @"Fetch");
+                break;
+            case CKManagerStateUpload:
+                titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Upload", @"Upload") stringByAppendingString:titleString];
+                break;
+            case CKManagerStateReady:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Ready", @"Ready");
+                break;
+            case CKManagerStateRecover:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Recover", @"Recover");
+                break;
+            case CKManagerStateHalt:
+                titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
+                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Halt", @"Halt") stringByAppendingString:titleString];
+                break;
+            default:
+                break;
         }
     }
-    switch ([MyCloudKitManager state]) {
-        case CKManagerStateInit:
-            titleString = [@"Init/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateSetup:
-            titleString = [@"Setup/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateFetch:
-            titleString = [@"Fetch/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateUpload:
-            titleString = [@"Upload/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateReady:
-            titleString = [@"Ready/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateRecover:
-            titleString = [@"Recover/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateHalt:
-            titleString = [@"Halt/" stringByAppendingString:titleString];
-            break;
-            
-        default:
-            break;
-    }
+    
     self.iCloudSyncCell.detailTextLabel.text = titleString;
 }
 
