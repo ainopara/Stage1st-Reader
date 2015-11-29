@@ -209,7 +209,7 @@ S1AppDelegate *MyAppDelegate;
     if ([[url host] isEqualToString:@"open"]) {
         NSString *topicIDString = [queryDict valueForKey:@"tid"];
         
-        if (topicIDString != nil) {
+        if (topicIDString) {
             NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
             S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
             if (topic == nil) {

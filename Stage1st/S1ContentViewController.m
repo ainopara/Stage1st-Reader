@@ -776,6 +776,12 @@
     if ([request.URL.absoluteString hasPrefix:[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"]]) {
         S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
         if (topic.topicID != nil) {
+            S1Topic *tracedTopic = [self.dataCenter tracedTopic:topic.topicID];
+            if (tracedTopic != nil) {
+                NSNumber *lastViewedPage = topic.lastViewedPage;
+                topic = [tracedTopic copy];
+                topic.lastViewedPage = lastViewedPage;
+            }
             _presentingContentViewController = YES;
             S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
             [contentViewController setTopic:topic];

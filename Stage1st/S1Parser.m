@@ -774,7 +774,7 @@
 }
 
 
-#pragma mark - Extract Data
+#pragma mark - Extract From Link
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
 {
     S1Topic *topic = [[S1Topic alloc] init];
