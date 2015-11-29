@@ -868,7 +868,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([segue.identifier isEqualToString:@"Show Content"]) {
         S1TopicListCell *cell = sender;
         S1ContentViewController *contentViewController = segue.destinationViewController;
-        
+        if (![self.currentKey  isEqual: @"History"] && ![self.currentKey  isEqual: @"Favorite"]) {
+            [cell.topic addDataFromTracedTopic:[self.dataCenter tracedTopic:cell.topic.topicID]];
+        }
         [contentViewController setTopic:cell.topic];
         [contentViewController setDataCenter:self.dataCenter];
     }
