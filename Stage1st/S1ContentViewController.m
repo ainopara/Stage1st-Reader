@@ -616,11 +616,7 @@
             self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
         }
         
-        NSRange wholeRange = NSMakeRange(0, self.replyController.textView.textStorage.length);
-        [self.replyController.textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
-        [self.replyController.textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
-        [self.replyController.textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
-        [self.replyController.textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+        [self resetTextViewStyle:self.replyController.textView];
     }
 }
 
@@ -939,14 +935,10 @@
         [textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:attachment] atIndex:textView.selectedRange.location];
         
         //Move selection location
-        self.replyController.textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location + 1, self.replyController.textView.selectedRange.length);
+        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location + 1, self.replyController.textView.selectedRange.length);
         
         //Reset Text Style
-        NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
-        [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
-        [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
-        [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
-        [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+        [self resetTextViewStyle:textView];
     }
 }
 
@@ -1390,6 +1382,16 @@
         floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
     }
     return result;
+}
+
+- (void)resetTextViewStyle:(UITextView *)textView {
+    NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
+    [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+    [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+    [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
+    [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+    [textView setFont:[UIFont systemFontOfSize:17.0f]];
+    [textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
 }
 
 @end
