@@ -1138,10 +1138,10 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
 {
     //check in login state.
-    /*if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
-    }*/
+    }
     
     if (self.attributedReplyDraft) {
         if (text) {

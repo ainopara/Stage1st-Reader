@@ -890,9 +890,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView reloadData];
     [self updateFilter:self.searchBar.text withCurrentKey:self.currentKey];
     
-    if (self.topics && self.topics.count > 0) {
-        //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
+    [self.tableView setContentOffset:CGPointZero animated:NO];
     
     [self.scrollTabBar deselectAll];
     
