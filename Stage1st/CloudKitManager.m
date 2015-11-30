@@ -559,6 +559,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 				//   The previousServerChangeToken value is too old and the client must re-sync from scratch.
 				
                 [self handleChangeTokenExpired];
+                
             } else if (ckErrorCode == CKErrorZoneNotFound) {
                 [self handleZoneNotFound];
             } else if (ckErrorCode == CKErrorUserDeletedZone) {
@@ -867,10 +868,11 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
 	}];
+    [self continueCloudKitFlow];
 }
 
 - (void)handleZoneNotFound {
-    [self handleChangeTokenExpired];
+    [self prepareForUnregister];
     
     self.needsCreateZone = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
