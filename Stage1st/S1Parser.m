@@ -73,12 +73,19 @@
     }
     
     //process spoiler
-    NSArray *spoilers = [xmlDoc nodesForXPath:@"//font[@color='LemonChiffon']" error:nil];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='Yellow']" error:nil]];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='#fffacd']" error:nil]];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='#FFFFCC']" error:nil]];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='White']" error:nil]];
-    
+    NSArray<NSString *> *spoilerXpathList = @[@"//font[@color='LemonChiffon']",
+                                              @"//font[@color='Yellow']",
+                                              @"//font[@color='#fffacd']",
+                                              @"//font[@color='#FFFFCC']",
+                                              @"//font[@color='White']"];
+     NSArray< DDXMLElement *> * _Nullable spoilers = @[];
+    for (NSString *spoilerXpath in spoilerXpathList) {
+        NSArray< DDXMLElement *> * _Nullable temp = [xmlDoc nodesForXPath:spoilerXpath error:nil];
+        if (temp != nil) {
+            spoilers = [spoilers arrayByAddingObjectsFromArray:temp];
+        }
+    }
+
     for (DDXMLElement *spoilerElement in spoilers) {
         [spoilerElement removeAttributeForName:@"color"];
         [spoilerElement setName:@"div"];
