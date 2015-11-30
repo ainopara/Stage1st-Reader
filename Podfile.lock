@@ -40,9 +40,9 @@ PODS:
     - FMDB/common
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
-  - Mantle (2.0.5):
-    - Mantle/extobjc (= 2.0.5)
-  - Mantle/extobjc (2.0.5)
+  - Mantle (2.0.6):
+    - Mantle/extobjc (= 2.0.6)
+  - Mantle/extobjc (2.0.6)
   - Masonry (0.6.3)
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.6.2)
@@ -92,7 +92,7 @@ CHECKOUT OPTIONS:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :commit: 3f6d4bd462f98b0c7b3fa3ae87402a24bc941520
+    :commit: c362719ec8d42b6af1c20e328b6ea4660440e69f
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -105,7 +105,7 @@ SPEC CHECKSUMS:
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Mantle: 1912395033f601de5adc8ee91e48f46e4c7051ad
+  Mantle: 299966b00759634931699f69cb6a30b9239b944d
   Masonry: ff105a956abcd19a618b2028b121cb638d7a8e2f
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
