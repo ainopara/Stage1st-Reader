@@ -13,8 +13,6 @@ target "Stage1st" do
     pod 'Masonry'
     pod 'Reachability'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
-    pod 'Reveal-iOS-SDK', :configurations => ['Debug']
-    pod 'YYText'
     pod 'Fabric'
     pod 'Crashlytics'
 end

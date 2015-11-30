@@ -45,13 +45,11 @@ PODS:
   - Mantle/extobjc (2.0.6)
   - Masonry (0.6.3)
   - Reachability (3.2)
-  - Reveal-iOS-SDK (1.6.2)
   - SVWebViewController (1.0)
   - YapDatabase (2.7.6):
     - YapDatabase/standard (= 2.7.6)
   - YapDatabase/standard (2.7.6):
     - CocoaLumberjack (~> 2)
-  - YYText (0.9.11)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -65,10 +63,8 @@ DEPENDENCIES:
   - Mantle
   - Masonry
   - Reachability
-  - Reveal-iOS-SDK
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
-  - YYText
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -108,9 +104,7 @@ SPEC CHECKSUMS:
   Mantle: 299966b00759634931699f69cb6a30b9239b944d
   Masonry: ff105a956abcd19a618b2028b121cb638d7a8e2f
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 00e5a5d1b5dba1bd540ef644576233b5612e6122
-  YYText: 11d30e835ed4cfcc0f0ed27a44b4b604d879d5fe
 
 COCOAPODS: 0.39.0
