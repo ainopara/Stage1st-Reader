@@ -686,7 +686,7 @@
     topic.formhash = responseDict[@"Variables"][@"formhash"];
     topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
     double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
-    topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
+    topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] + 1 / postPerPage )];
     topic.message = responseDict[@"Message"][@"messagestr"];
     return topic;
 }

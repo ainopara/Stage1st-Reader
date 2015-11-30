@@ -304,7 +304,7 @@
         _topic = topic;
     }
     
-    _totalPages = ([topic.replyCount integerValue] / _REPLY_PER_PAGE) + 1;
+    _totalPages = (([topic.replyCount integerValue] + 1) / _REPLY_PER_PAGE) + 1;
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
