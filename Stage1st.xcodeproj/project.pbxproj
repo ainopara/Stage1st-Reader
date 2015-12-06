@@ -20,7 +20,7 @@
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
-		8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* APPullToActionViewController.swift */; };
+		8607276A1B37AF2100DA8390 /* APPullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860727691B37AF2100DA8390 /* APPullToActionController.swift */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
 		8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8627EAB01A204EF80063617C /* S1PushAnimator.m */; };
@@ -120,7 +120,7 @@
 		860573571B762C3B00C70781 /* MyDatabaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDatabaseObject.h; path = Stage1st/MyDatabaseObject.h; sourceTree = "<group>"; };
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
 		860727661B37AEEC00DA8390 /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		860727691B37AF2100DA8390 /* APPullToActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APPullToActionViewController.swift; path = Vendors/AIPullToActionViewController/APPullToActionViewController.swift; sourceTree = "<group>"; };
+		860727691B37AF2100DA8390 /* APPullToActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APPullToActionController.swift; path = Vendors/AIPullToActionViewController/APPullToActionController.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		861512FF1A0E7B1200BAC814 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Stage1st/Main.storyboard; sourceTree = "<group>"; };
 		8627EAAF1A204EF80063617C /* S1PushAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PushAnimator.h; path = Stage1st/S1PushAnimator.h; sourceTree = "<group>"; };
@@ -517,7 +517,7 @@
 			isa = PBXGroup;
 			children = (
 				86522CB61BF7551A00BF3379 /* APColorManager.swift */,
-				860727691B37AF2100DA8390 /* APPullToActionViewController.swift */,
+				860727691B37AF2100DA8390 /* APPullToActionController.swift */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,
@@ -869,7 +869,7 @@
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
-				8607276A1B37AF2100DA8390 /* APPullToActionViewController.swift in Sources */,
+				8607276A1B37AF2100DA8390 /* APPullToActionController.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,

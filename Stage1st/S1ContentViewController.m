@@ -27,11 +27,11 @@
 
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, APPullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) APPullToActionViewController *pullToActionViewController;
+@property (nonatomic, strong) PullToActionController *pullToActionController;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -113,14 +113,16 @@
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.scrollsToTop = YES;
-    self.webView.scrollView.delegate = self;
+    self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
-    self.pullToActionViewController = [[APPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullToActionViewController.delegate = self;
+    self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
+    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:-80.0];
+    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:60.0];
+    self.pullToActionController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
@@ -284,7 +286,7 @@
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.pullToActionViewController = nil;
+    self.pullToActionController = nil;
 }
 
 - (void)didReceiveMemoryWarning
