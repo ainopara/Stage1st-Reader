@@ -42,9 +42,6 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         self.scrollView = scrollView
         super.init()
         
-        progressAction.updateValue(OffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
-        progressAction.updateValue(OffsetRange(beginPosition: 0, endPosition: 60, baseLine: .Bottom), forKey: "bottom")
-        
         scrollView.delegate = self //TODO: FIX ME! if the scroll view is in a UIWebView, It may lead to some issue. See http://sam.dods.co/blog/2014/08/03/secondary-delegate/
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: .New, context: nil)
         scrollView.addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
