@@ -9,19 +9,19 @@
 import Foundation
 import UIKit
 
-@objc enum PaletteType : NSInteger {
+@objc public enum PaletteType : NSInteger {
     case Day
     case Night
 }
 
 
-class APColorManager : NSObject {
+public class APColorManager : NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
     let fallbackColor = UIColor.blackColor()
     let defaultPaletteURL = NSBundle.mainBundle().URLForResource("DarkPalette2", withExtension: "plist")
     
-    static let sharedInstance = {
+    public static let sharedInstance = {
         return APColorManager()
     }()
     
