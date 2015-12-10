@@ -287,6 +287,9 @@ DatabaseManager *MyDatabaseManager;
         {
             S1Topic *topic = (S1Topic *)object;
             NSString *searchTitle = topic.title;
+            if (searchTitle == nil) {
+                searchTitle = @"";
+            }
             for (NSUInteger index = 0; index < topic.title.length; index++) {
                 searchTitle = [searchTitle stringByAppendingString:[NSString stringWithFormat:@" %@", [topic.title substringFromIndex:index]]];
             }

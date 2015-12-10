@@ -208,6 +208,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
             self.favorite = [NSNumber numberWithBool:YES];
             self.favoriteDate = topic.favoriteDate;
         }
+        if (self.title == nil) {
+            self.title = @"";
+        }
     }
 }
 /*
