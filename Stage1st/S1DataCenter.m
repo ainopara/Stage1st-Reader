@@ -333,6 +333,12 @@
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *))failure {
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
+    NSString *formhash = topic.formhash;
+    if (formhash == nil) {
+        NSError *error = [[NSError alloc] initWithDomain:@"formhash is nil" code:-998 userInfo:nil];
+        failure(error);
+        return;
+    }
     NSDictionary *params = @{@"posttime":timestamp,
                              @"formhash":topic.formhash,
                              @"usesig":@"1",

@@ -1208,6 +1208,8 @@
                 if (error.code == -999) {
                     NSLog(@"Code -999 may means user want to cancel this request.");
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                } else if (error.code == -998){
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
                 } else {
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                 }
