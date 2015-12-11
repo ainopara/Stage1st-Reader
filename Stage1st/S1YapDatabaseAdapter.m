@@ -63,7 +63,10 @@
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
     [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        [transaction removeObjectForKey:[topicID stringValue] inCollection:Collection_Topics];
+        S1Topic *topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
+        if ([topic.favorite boolValue] != YES) {
+            [transaction removeObjectForKey:[topicID stringValue] inCollection:Collection_Topics];
+        }
     }];
 }
 
