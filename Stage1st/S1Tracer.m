@@ -114,6 +114,7 @@
 #pragma mark - Migrate
 
 + (void)importTopicsInSet:(FMResultSet *)result {
+    __block NSInteger newCount = 0;
     __block NSInteger succeedCount = 0;
     __block NSInteger changeCount = 0;
     __block NSInteger failCount = 0;
@@ -128,6 +129,7 @@
                     [tracedTopic absorbTopic:topic];
                 } else {
                     tracedTopic = topic;
+                    newCount += 1;
                 }
                 if (tracedTopic) {
                     if (tracedTopic.hasChangedProperties) {
@@ -148,7 +150,7 @@
             }
         }];
     }
-    NSLog(@"%ld Topics Counted.%ld Topics Changed.(%ld fails)", (long)succeedCount, (long)changeCount, (long)failCount);
+    NSLog(@"%ld / %ld Changed.(%ld new) %ld fails.", (long)changeCount, (long)succeedCount, (long)newCount, (long)failCount);
 }
 
 + (void)importDatabaseAtPath:(NSURL *)dbPathURL {
@@ -161,12 +163,12 @@
         return;
     }
     NSLog(@"migrateDatabase begin.");
-    // TODO: Should change query to make sure topic that in favorite list but not in history list to be imported.
     FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     result = [db executeQuery:@"SELECT threads.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM (threads JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     [db close];
+    NSLog(@"migrateDatabase finish.");
     NSError *error;
     [fileManager moveItemAtURL:dbPathURL toURL:[documentDirectory URLByAppendingPathComponent:@"Stage1stReader.dbbackup"] error:&error];
     if (error) {

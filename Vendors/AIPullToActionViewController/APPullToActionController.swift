@@ -42,7 +42,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         self.scrollView = scrollView
         super.init()
         
-        scrollView.delegate = self //TODO: FIX ME! if the scroll view is in a UIWebView, It may lead to some issue. See http://sam.dods.co/blog/2014/08/03/secondary-delegate/
+        scrollView.delegate = self
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: .New, context: nil)
         scrollView.addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
         scrollView.addObserver(self, forKeyPath: "contentInset", options: .New, context: nil)
