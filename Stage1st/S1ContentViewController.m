@@ -112,7 +112,6 @@
     //web view
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    self.webView.scrollView.scrollsToTop = YES;
     //self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
@@ -885,8 +884,10 @@
     if (_needToScrollToBottom) {
         _needToScrollToBottom = NO;
         [self scrollToBottomAnimated:YES];
+    } else {
+        // clear the decelerating by animate to scroll to the same position.
+        [self.webView.scrollView setContentOffset:self.webView.scrollView.contentOffset animated:YES];
     }
-    
 }
 
 #pragma mark JTSImageViewController
@@ -929,9 +930,6 @@
 
 #pragma mark UIScrollView
 
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
-    return YES;
-}
 
 #pragma mark Mahjong Face
 
