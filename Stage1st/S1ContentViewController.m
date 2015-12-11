@@ -113,7 +113,7 @@
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.scrollsToTop = YES;
-    self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
+    //self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
@@ -286,6 +286,9 @@
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
+    self.webView.scrollView.delegate = nil;
+    self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
 }
 
