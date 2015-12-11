@@ -383,6 +383,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.text = @"";
     self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
     _loadingMore = NO;
+    [self cancelRequest];
     [self.naviItem setRightBarButtonItem:self.historyItem];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
