@@ -27,11 +27,11 @@
 
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, APPullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (nonatomic, strong) APPullToActionViewController *pullToActionViewController;
+@property (nonatomic, strong) PullToActionController *pullToActionController;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -112,15 +112,16 @@
     //web view
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    self.webView.scrollView.scrollsToTop = YES;
-    self.webView.scrollView.delegate = self;
+    //self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
-    self.pullToActionViewController = [[APPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
-    self.pullToActionViewController.delegate = self;
+    self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
+    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:-80.0];
+    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:60.0];
+    self.pullToActionController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
     if(_currentPage != 1) {
@@ -284,7 +285,10 @@
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.pullToActionViewController = nil;
+    // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
+    self.webView.scrollView.delegate = nil;
+    self.pullToActionController.delegate = nil;
+    self.pullToActionController = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -880,8 +884,10 @@
     if (_needToScrollToBottom) {
         _needToScrollToBottom = NO;
         [self scrollToBottomAnimated:YES];
+    } else {
+        // clear the decelerating by animate to scroll to the same position.
+        [self.webView.scrollView setContentOffset:self.webView.scrollView.contentOffset animated:YES];
     }
-    
 }
 
 #pragma mark JTSImageViewController
@@ -924,9 +930,6 @@
 
 #pragma mark UIScrollView
 
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
-    return YES;
-}
 
 #pragma mark Mahjong Face
 
@@ -1183,52 +1186,39 @@
 - (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
     navigationDelegate.panRecognizer.enabled = YES;
+    self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
     if (result == REComposeResultCancelled) {
-        self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
         [composeViewController dismissViewControllerAnimated:YES completion:nil];
     } else if (result == REComposeResultPosted) {
         if (composeViewController.text.length > 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
             __weak typeof(self) weakSelf = self;
+            void (^successBlock)() = ^{
+                __strong typeof(self) strongSelf = weakSelf;
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                strongSelf.attributedReplyDraft = nil;
+                if (strongSelf->_currentPage == strongSelf->_totalPages) {
+                    strongSelf->_needToScrollToBottom = YES;
+                    [strongSelf fetchContentAndForceUpdate:YES];
+                }
+            };
+            void (^failureBlock)() = ^(NSError *error) {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error.code == -999) {
+                    NSLog(@"Code -999 may means user want to cancel this request.");
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                } else if (error.code == -998){
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
+                } else {
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                }
+            };
             if (self.replyTopicFloor) {
-                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                    strongSelf.attributedReplyDraft = nil;
-                    if (strongSelf->_currentPage == strongSelf->_totalPages) {
-                        strongSelf->_needToScrollToBottom = YES;
-                        [strongSelf fetchContentAndForceUpdate:YES];
-                    }
-                } failure:^(NSError *error) {
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    if (error.code == -999) {
-                        NSLog(@"Code -999 may means user want to cancel this request.");
-                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                    } else {
-                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                    }
-                }];
+                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success: successBlock failure:failureBlock];
             } else {
-                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                    strongSelf.attributedReplyDraft = nil;
-                    if (strongSelf->_currentPage == strongSelf->_totalPages) {
-                        strongSelf->_needToScrollToBottom = YES;
-                        [strongSelf fetchContentAndForceUpdate:YES];
-                    }
-                } failure:^(NSError *error) {
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    if (error.code == -999) {
-                        NSLog(@"Code -999 may means user want to cancel this request.");
-                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                    } else {
-                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                    }
-                }];
+                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:successBlock failure:failureBlock];
             }
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         }

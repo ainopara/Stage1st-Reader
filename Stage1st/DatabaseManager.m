@@ -287,6 +287,9 @@ DatabaseManager *MyDatabaseManager;
         {
             S1Topic *topic = (S1Topic *)object;
             NSString *searchTitle = topic.title;
+            if (searchTitle == nil) {
+                searchTitle = @"";
+            }
             for (NSUInteger index = 0; index < topic.title.length; index++) {
                 searchTitle = [searchTitle stringByAppendingString:[NSString stringWithFormat:@" %@", [topic.title substringFromIndex:index]]];
             }
@@ -299,8 +302,10 @@ DatabaseManager *MyDatabaseManager;
             // So we simply don't add anything to the dict.
         }
     }];
+    
+    // TODO: compress the generated search string,They are not build in function so that I must implement them and make them accessed by sqlite.
+    // (use sqlite3_create_function to add custom function to sqlite)
     //NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
-    //TODO: They are not build in function so that I must implement them and make them accessed by sqlite.(use sqlite3_create_function to add custom function to sqlite)
     YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
     [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {

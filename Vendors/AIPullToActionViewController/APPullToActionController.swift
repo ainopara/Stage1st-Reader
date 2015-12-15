@@ -1,5 +1,5 @@
 //
-//  APPullToActionViewController.swift
+//  APPullToActionController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 6/22/15.
@@ -8,66 +8,58 @@
 
 import UIKit
 
-@objc protocol APPullToActionDelagete {
+@objc public protocol PullToActionDelagete {
     optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset : CGFloat)
     optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(offset : CGFloat)
     optional func scrollViewContentSizeDidChange(contentSize: CGSize)
     optional func scrollViewContentOffsetProgress(progress: [String: Double])
 }
 
-@objc enum APOffsetBaseLine: Int {
+@objc public enum OffsetBaseLine: Int {
     case Top, Bottom, Left, Right
 }
 
-private struct APOffsetRange {
+struct OffsetRange {
     let beginPosition: Double
     let endPosition: Double
-    let baseLine: APOffsetBaseLine
+    let baseLine: OffsetBaseLine
     
     func progress (offset: Double) -> Double {
         return (offset - beginPosition) / (endPosition - beginPosition)
     }
 }
 
-class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
+public class PullToActionController: NSObject, UIScrollViewDelegate {
     weak var scrollView : UIScrollView!
-    weak var delegate : APPullToActionDelagete?
+    weak var delegate : PullToActionDelagete?
     
     var offset : CGPoint = CGPoint(x: 0, y: 0)
     var size : CGSize = CGSize(width: 0, height: 0)
     var inset : UIEdgeInsets = UIEdgeInsetsZero
-    private var progressAction : [String: APOffsetRange] = Dictionary<String, APOffsetRange>()
+    private var progressAction : [String: OffsetRange] = Dictionary<String, OffsetRange>()
     
     init(scrollView : UIScrollView) {
         self.scrollView = scrollView
-        super.init(nibName: nil, bundle: nil)
-        
-        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: -80, baseLine: .Top), forKey: "top")
-        progressAction.updateValue(APOffsetRange(beginPosition: 0, endPosition: 60, baseLine: .Bottom), forKey: "bottom")
+        super.init()
         
         scrollView.delegate = self
-        scrollView.addObserver(self, forKeyPath: "contentOffset", options: NSKeyValueObservingOptions.New, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.New, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentInset", options: NSKeyValueObservingOptions.New, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentOffset", options: .New, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentInset", options: .New, context: nil)
         
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     deinit {
         self.scrollView.removeObserver(self, forKeyPath: "contentOffset")
         self.scrollView.removeObserver(self, forKeyPath: "contentSize")
         self.scrollView.removeObserver(self, forKeyPath: "contentInset")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
+        progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    
+    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "contentOffset" {
             if let changes = change {
                 self.offset = changes["new"]?.CGPointValue ?? self.offset
@@ -97,7 +89,7 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if self.offset.y < 0 {
             print("end dragging <- \(self.offset.y)", terminator: "")
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
@@ -111,7 +103,7 @@ class APPullToActionViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    private func baseLineOffset(baseLine: APOffsetBaseLine) -> Double {
+    private func baseLineOffset(baseLine: OffsetBaseLine) -> Double {
         switch baseLine {
         case .Top:
             return Double(self.offset.y)
