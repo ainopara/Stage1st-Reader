@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface NavigationControllerDelegate : NSObject <UINavigationControllerDelegate>
-
+@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+@property (strong, nonatomic) UIPanGestureRecognizer *colorPanRecognizer;
 @end

@@ -8,9 +8,11 @@
 
 #import "S1SettingViewController.h"
 #import "S1TopicListViewController.h"
-#import "S1DatabaseManageViewController.h"
 #import "GSStaticTableViewBuilder.h"
-//#import "MTStatusBarOverlay.h"
+#import "DatabaseManager.h"
+#import "MTStatusBarOverlay.h"
+#import "CloudKitManager.h"
+
 
 @interface S1SettingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
@@ -21,18 +23,22 @@
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *nightModeSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *forcePortraitSwitch;
 
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
-@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *leftSpaceConstraint;
+@property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 
-
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *offsetConstraint;
+@property (assign, nonatomic) CGFloat offset;
 @end
 
 
 @implementation S1SettingViewController
-
+#pragma mark - Life Cycle
 - (void)viewWillAppear:(BOOL)animated {
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
@@ -42,7 +48,9 @@
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+    [self updateiCloudStatus];
     [super viewWillAppear:animated];
+    
 }
 
 - (void)viewDidLoad
@@ -57,11 +65,12 @@
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
-    if (IS_WIDE_DEVICE) {
-        for (NSLayoutConstraint *constraint in self.leftSpaceConstraint) {
-            constraint.constant = 12;
+    if (!SYSTEM_VERSION_LESS_THAN(@"8")) {
+        for (NSLayoutConstraint *constraint in self.offsetConstraint) {
+            constraint.active = NO;
         }
     }
+
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
         self.usernameDetail.text = inLoginStateID;
@@ -70,13 +79,18 @@
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
-    
+    self.forcePortraitSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"];
+    if (IS_IPAD) {
+        self.forcePortraitCell.hidden = YES;
+    }
     
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     
     self.removeTailsSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"];
     self.useAPISwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"];
     self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
+    self.nightModeSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"];
+    
     self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
 
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
@@ -91,25 +105,69 @@
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    [self updateiCloudStatus];
+    
+    self.offset = 0;
+    self.tableView.delegate = self;
+    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
 }
+
+- (void)dealloc {
+    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Pull To Close
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (self.offset < -36) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"contentOffset"]) {
+        self.offset = [[change objectForKey:@"new"] CGPointValue].y + 64;
+        //NSLog(@"%f",self.offset);
+    }
+}
+
 #pragma mark - Orientation
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return UIInterfaceOrientationMaskPortrait;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationMaskPortrait;
+        }
     }
     return [super supportedInterfaceOrientations];
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return UIInterfaceOrientationPortrait;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            return UIInterfaceOrientationPortrait;
+        }
     }
     return [super preferredInterfaceOrientationForPresentation];
 }
-#pragma mark -
+#pragma mark - Navigation
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.row == 8) {
+        if (IS_IPAD) {
+            return 0;
+        }
+    }
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"%@", indexPath);
     
@@ -129,7 +187,7 @@
     }
     if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
+        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"),NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
         
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:selectedKey];
         controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
@@ -145,7 +203,7 @@
     }*/
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-#pragma mark -
+#pragma mark - Actions
 - (IBAction)back:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -163,8 +221,79 @@
 - (IBAction)switchPrecache:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"PrecacheNextPage"];
 }
+- (IBAction)switchNightMode:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"NightMode"];
+    [[APColorManager sharedInstance] switchPalette:sender.on == YES ? PaletteTypeNight : PaletteTypeDay];
+}
+- (IBAction)switchForcePortrait:(UISwitch *)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ForcePortraitForPhone"];
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
 }
+
+#pragma mark - Notification
+- (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
+    [self.displayImageSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.removeTailsSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.precacheSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.useAPISwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.nightModeSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.navigationController.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.bartint"]];
+    [self.navigationController.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
+                                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+}
+
+- (void)cloudKitStateChanged:(NSNotification *)notification {
+    [self updateiCloudStatus];
+}
+#pragma mark - Helper
+
+- (void)updateiCloudStatus {
+    NSString *titleString;
+    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        // iOS 7
+        titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
+    } else {
+        // iOS 8 and more
+        NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
+        
+        NSUInteger inFlightCount = 0;
+        NSUInteger queuedCount = 0;
+        [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
+        
+        switch ([MyCloudKitManager state]) {
+            case CKManagerStateInit:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Init", @"Init");
+                break;
+            case CKManagerStateSetup:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Setup", @"Setup");
+                break;
+            case CKManagerStateFetch:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Fetch", @"Fetch");
+                break;
+            case CKManagerStateUpload:
+                titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Upload", @"Upload") stringByAppendingString:titleString];
+                break;
+            case CKManagerStateReady:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Ready", @"Ready");
+                break;
+            case CKManagerStateRecover:
+                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Recover", @"Recover");
+                break;
+            case CKManagerStateHalt:
+                titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
+                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Halt", @"Halt") stringByAppendingString:titleString];
+                break;
+            default:
+                break;
+        }
+    }
+    
+    self.iCloudSyncCell.detailTextLabel.text = titleString;
+}
+
 @end

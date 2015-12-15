@@ -51,6 +51,8 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 @property (assign, readwrite, nonatomic) BOOL hasAttachment;
 @property (assign, readonly, nonatomic) BOOL userUpdatedAttachment;
 @property (strong, readwrite, nonatomic) NSString *text;
+@property (strong, readwrite, nonatomic) NSAttributedString *attributedText;
+@property (strong, readonly, nonatomic) DEComposeTextView *textView;
 @property (strong, readwrite, nonatomic) NSString *placeholderText;
 @property (strong, readonly, nonatomic) UINavigationBar *navigationBar;
 @property (strong, readonly, nonatomic) UINavigationItem *navigationItem;
@@ -58,6 +60,10 @@ typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController
 @property (strong, readwrite, nonatomic) UIImage *attachmentImage;
 @property (weak, readonly, nonatomic) UIViewController *rootViewController;
 @property (strong, readwrite, nonatomic) UIView *accessoryView;
+@property (strong, readwrite, nonatomic) UIView *inputView;
+
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance;
+- (void)setTextViewTintColor:(UIColor *)color;
 
 - (void)presentFromRootViewController;
 - (void)presentFromViewController:(UIViewController *)controller;

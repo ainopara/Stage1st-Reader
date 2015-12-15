@@ -14,14 +14,12 @@ iframe {
 }
 
 .text {
-    border-left: #022c80 4px solid;
     padding-left: 10px;
     margin-top: 10px;
     font-style: italic;
 }
 
 .i_table {
-    border: #ccc 1px solid;
     border-radius: 0px;
     word-break: break-all;
     font-family: Helvetica;
@@ -29,7 +27,6 @@ iframe {
 }
 
 .t_f {
-    color: #022c80;
     /*font-size: 17px; in CSS file*/
     /*line-height: 150; in CSS file*/
 }
@@ -39,25 +36,7 @@ font {
     font-family: Helvetica;
 }
 
-body {
-    background: #f6f7e7;
-}
 
-tr {
-    background: #f6f7eb;
-}
-
-a {
-    color: #022c80;
-}
-
-a:link {
-    color: #022c80;
-}
-
-a:visited {
-    color: #022c80;
-}
 
 h1 {
     /*font-size: 20px; in CSS file*/
@@ -83,9 +62,6 @@ blockquote {
 
 .head {
     font-size: 12px;
-    background-color: #f6f7eb;
-    border-bottom: #ccc 1px solid;
-    color: #aaa;
 }
 .head div {
     padding: 3px;
@@ -98,11 +74,9 @@ blockquote {
     text-align:right;
 }
 .reply a{
-    color: #aaa;
     text-decoration: none;
 }
 .attachment {
-    border-top: #ccc 1px solid;
     padding: 3px;
 }
 .attachment img{
@@ -116,20 +90,16 @@ blockquote {
     font-style: normal;
     font-size: 12px;
     text-align: center;
-    color: #aaa;
     display: block;
     margin-bottom: -25px;
 }
 .s1-poll {
     font-size: 14px;
-    color: #022c80;
-    border-bottom: #ccc 1px solid;
 }
 .s1-alert {
     font-style: normal;
     font-size: 12px;
     text-align: center;
-    color: #aaa;
 }
 div.pbg {
     height: 3px;

@@ -12,22 +12,20 @@
 #import "S1Tracer.h"
 #import "S1Parser.h"
 #import "S1Floor.h"
-#import "IMQuickSearch.h"
+#import "YapDatabase.h"
+#import "S1YapDatabaseAdapter.h"
+#import "S1CacheDatabaseManager.h"
 
 @interface S1DataCenter ()
 
-@property (strong, nonatomic) NSMutableDictionary *topicListCache;
+@property (strong, nonatomic) id<S1Backend> tracer;
+
 @property (strong, nonatomic) NSString *formhash;
+
+@property (strong, nonatomic) NSMutableDictionary *topicListCache;
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
-@property (strong, nonatomic) NSMutableDictionary *floorCache;
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
-
-@property (strong, nonatomic) NSArray *cachedHistoryTopics;
-@property (strong, nonatomic) IMQuickSearch *historySearch;
-@property (strong, nonatomic) IMQuickSearch *favoriteSearch;
-@property (strong, nonatomic) NSSortDescriptor *sortDescriptor;
-
 @end
 
 
@@ -35,31 +33,27 @@
 
 -(instancetype)init {
     self = [super init];
-    _tracer = [[S1Tracer alloc] init];
+    
+    _tracer = [[S1YapDatabaseAdapter alloc] init];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
-    _floorCache = [NSMutableDictionary dictionary];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
-    _shouldReloadFavoriteCache = YES;
-    _shouldReloadHistoryCache = YES;
     //_shouldInterruptHistoryCallback = NO;
-    _sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastViewedDate" ascending:NO comparator:^NSComparisonResult(id obj1, id obj2) {
-        if ([obj1 timeIntervalSince1970] > [obj2 timeIntervalSince1970]) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        
-        if ([obj1 timeIntervalSince1970] < [obj2 timeIntervalSince1970]) {
-            return (NSComparisonResult)NSOrderedAscending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
     
     return self;
 }
 
-- (BOOL)hasCacheForKey:(NSString *)keyID {
-    return self.topicListCache[keyID] != nil;
++ (S1DataCenter *)sharedDataCenter
+{
+    static S1DataCenter *dataCenter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dataCenter = [[S1DataCenter alloc] init];
+    });
+    return dataCenter;
 }
+
+
 
 #pragma mark - Network (Topic List)
 
@@ -157,13 +151,11 @@
         
         //append tracer message to topics
         for (S1Topic *topic in topics) {
-            S1Topic *tempTopic = [strongMyself.tracer tracedTopicByID:topic.topicID];
+            S1Topic *tempTopic = [strongMyself tracedTopic:topic.topicID];
             if (tempTopic) {
                 [topic addDataFromTracedTopic:tempTopic];
             }
-            topic.highlight = keyword;
         }
-        
         success(topics);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
@@ -172,17 +164,20 @@
 
 #pragma mark - Network (Content Cache)
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return [self.floorCache valueForKey:key] != nil;
+    return [[S1CacheDatabaseManager sharedInstance] hasCacheForTopicID:topic.topicID withPage:page];
 }
 
-- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {//TODO: weak self?
+- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ((shouldUpdate == NO) && ([self.floorCache valueForKey:key] != nil)) {
-        NSLog(@"Precache:%@-%@ cancel.", topic.topicID, page);
+    if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
+        NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
         return;
     }
+    void (^failureHandler)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
+        [self.cacheFinishHandlers setValue:nil forKey:key];
+        NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
+    };
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
@@ -198,25 +193,14 @@
             [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+            
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
-            //call finish block if exist
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-                handler(floorList);
-            }
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            }];
+            
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-            }
-            NSLog(@"pre cache failed.");
-        }];
+        } failure:failureHandler];
     } else {
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
@@ -228,32 +212,19 @@
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
             //get floors
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
+            
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
-            //call finish block if exist
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-                handler(floorList);
-            }
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            }];
+            [self callFinishHandlerIfExistForKey:key withResult:floorList];
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-            if (handler != nil) {
-                [self.cacheFinishHandlers setValue:nil forKey:key];
-            }
-            NSLog(@"pre cache failed.");
-        }];
+        } failure:failureHandler];
     }
 }
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    if ([self.floorCache valueForKey:key] != nil) {
-        [self.floorCache removeObjectForKey:key];
-    }
+    [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
@@ -261,18 +232,25 @@
     [self.cacheFinishHandlers setValue:handler forKey:key];
 }
 
-- (BOOL)hasFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    return ([self.cacheFinishHandlers valueForKey:key] != nil);
+- (void)callFinishHandlerIfExistForKey:(NSString *)key withResult:(NSArray *)floorList {
+    //call finish block if exist
+    void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
+    if (handler != nil) {
+        [self.cacheFinishHandlers setValue:nil forKey:key];
+        handler(floorList);
+    }
+}
+
+- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+    return [[S1CacheDatabaseManager sharedInstance] findFloorByID:floorID];
 }
 
 #pragma mark - Network (Content)
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    // Use Cache Result
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    NSArray *floorList = [self.floorCache objectForKey:key];
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *, BOOL))success failure:(void (^)(NSError *))failure {
+    // Use Cache Result If Exist
+    NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
     if (floorList) {
-        success(floorList);
+        success(floorList, YES);
         return;
     }
     
@@ -296,12 +274,10 @@
             NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
             
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                success(floorList, NO);
+            }];
             
-            success(floorList);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
         }];
@@ -316,16 +292,14 @@
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
+            
             //get floors
             NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
             
             //update floor cache
-            if ([self.floorCache valueForKey:key] != nil) {
-                [self.floorCache removeObjectForKey:key];
-            }
-            [self.floorCache addEntriesFromDictionary:@{key: floorList}];
-            
-            success(floorList);
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                success(floorList, NO);
+            }];
             
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             failure(error);
@@ -335,14 +309,14 @@
 }
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
-    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID fieldID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID forumID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
         if ([params[@"requestSuccess"]  isEqual: @YES]) {
             [params removeObjectForKey:@"requestSuccess"];
             [params setObject:@"true" forKey:@"replysubmit"];
             [params setObject:text forKey:@"message"];
-            [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page fieldID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
+            [S1NetworkManager postReplyForTopicID:topic.topicID withPage:page forumID:topic.fID andParams:[params copy] success:^(NSURLSessionDataTask *task, id responseObject) {
                 success();
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 failure(error);
@@ -364,7 +338,15 @@
                              @"usesig":@"1",
                              @"subject":@"",
                              @"message":text};
-    [S1NetworkManager postReplyForTopicID:topic.topicID fieldID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [S1NetworkManager postReplyForTopicID:topic.topicID forumID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        success();
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
+}
+
+- (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [S1NetworkManager findTopicFloor:floorID inTopicID:topicID success:^(NSURLSessionDataTask *task, id responseObject) {
         success();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
@@ -378,57 +360,6 @@
 
 #pragma mark - Database
 
-- (NSArray *)historyTopicsWithSearchWord:(NSString *)searchWord andLeftCallback:(void (^)(NSArray *))leftTopicsHandler {
-    //filter process
-    if (self.shouldReloadHistoryCache || self.historySearch == nil) {
-        __weak typeof(self) myself = self;
-        self.cachedHistoryTopics = [self.tracer historyObjectsWithLeftCallback:^(NSMutableArray *leftTopics) {
-            __strong typeof(self) strongMyself = myself;
-            //update search filter
-            NSArray *fullTopics = [strongMyself.cachedHistoryTopics arrayByAddingObjectsFromArray:leftTopics];
-            IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:fullTopics keys:@[@"title"]];
-            strongMyself.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-            strongMyself.cachedHistoryTopics = fullTopics;
-            //return full data.
-            if ([searchWord isEqualToString:@""]) {
-                leftTopicsHandler(fullTopics);
-            } else {
-                NSMutableArray *fullResult = [[strongMyself.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-                [fullResult sortUsingDescriptors:@[strongMyself.sortDescriptor]];
-                leftTopicsHandler(fullResult);
-            }
-        }];
-        //set search filter
-        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:self.cachedHistoryTopics keys:@[@"title"]];
-        self.historySearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-        self.shouldReloadHistoryCache = NO;
-    }
-    //return parital data
-    if ([searchWord isEqualToString:@""]) {
-        return self.cachedHistoryTopics;
-    } else {
-        NSMutableArray *result = [[self.historySearch filteredObjectsWithValue:searchWord] mutableCopy];
-        
-        [result sortUsingDescriptors:@[self.sortDescriptor]];
-        return result;
-    }
-}
-
-- (NSArray *)favoriteTopicsWithSearchWord:(NSString *)searchWord {
-    
-    //filter process
-    if (self.shouldReloadFavoriteCache) {
-        NSMutableArray *topics = [self.tracer favoritedObjects];
-        IMQuickSearchFilter *filter = [IMQuickSearchFilter filterWithSearchArray:topics keys:@[@"title"]];
-        self.favoriteSearch = [[IMQuickSearch alloc] initWithFilters:@[filter]];
-        self.shouldReloadFavoriteCache = NO;
-    }
-    NSMutableArray *result = [[self.favoriteSearch filteredObjectsWithValue:searchWord] mutableCopy];
-    
-    [result sortUsingDescriptors:@[self.sortDescriptor]];
-    return result;
-}
-
 - (void)hasViewed:(S1Topic *)topic {
     [self.tracer hasViewed:topic];
 }
@@ -437,37 +368,57 @@
     [self.tracer removeTopicFromHistory:topicID];
 }
 
-- (void)setTopicFavoriteState:(NSNumber *)topicID withState:(BOOL)state {
-    [self.tracer setTopicFavoriteState:topicID withState:state];
-}
-
-- (BOOL)topicIsFavorited:(NSNumber *)topicID {
-    return [self.tracer topicIsFavorited:topicID];
+- (void)removeTopicFromFavorite:(NSNumber *)topicID {
+    [self.tracer removeTopicFromFavorite:topicID];
 }
 
 - (S1Topic *)tracedTopic:(NSNumber *)topicID {
-    return [self.tracer tracedTopicByID:topicID];
+    return [self.tracer topicByID:topicID];
 }
 
-- (void)handleDatabaseImport:(NSURL *)databaseURL {
-    [self.tracer syncWithDatabasePath:[databaseURL absoluteString]];
+- (NSNumber *)numberOfTopics {
+    return [self.tracer numberOfTopicsInDatabse];
 }
-#pragma mark - Cache
+
+- (NSNumber *)numberOfFavorite {
+    return [self.tracer numberOfFavoriteTopicsInDatabse];
+}
+
+#pragma mark - Topic List Cache
+
+- (BOOL)hasCacheForKey:(NSString *)keyID {
+    return self.topicListCache[keyID] != nil;
+}
+
 - (void)clearTopicListCache {
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
-
-- (void)clearContentPageCache {
-    self.floorCache = [NSMutableDictionary dictionary];
+#pragma mark - Cleaning
+- (void)cleaning {
+    [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2*7*24*3600]];
+    NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
+    if (duration < 0) {
+        return;
+    }
+    [self.tracer removeTopicBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-duration]];
 }
+#pragma mark - Mahjongface History
+- (NSMutableArray *)mahjongFaceHistoryArray {
+    return [[S1CacheDatabaseManager sharedInstance] mahjongFaceHistory];
+}
+
+- (void)setMahjongFaceHistoryArray:(NSMutableArray *)mahjongFaceHistoryArray {
+    [[S1CacheDatabaseManager sharedInstance] saveMahjongFaceHistory:mahjongFaceHistoryArray];
+}
+
 #pragma mark - Helper
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
     for (S1Topic *topic in topics) {
         
         //append tracer message to topics
-        S1Topic *tempTopic = [self.tracer tracedTopicByID:topic.topicID];
+        S1Topic *tempTopic = [self tracedTopic:topic.topicID];
         if (tempTopic) {
             [topic addDataFromTracedTopic:tempTopic];
         }

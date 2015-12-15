@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "mantle.h"
 
-@interface S1Floor : NSObject
+@interface S1Floor : MTLModel
 
 @property (nonatomic, copy) NSNumber *floorID;
 @property (nonatomic, copy) NSString *indexMark;
@@ -19,5 +20,7 @@
 @property (nonatomic, copy) NSString *poll;
 @property (nonatomic, copy) NSString *message;
 @property (nonatomic, copy) NSArray *imageAttachmentList;
+
+@property (nonatomic, copy) NSNumber *firstQuoteReplyFloorID;
 
 @end

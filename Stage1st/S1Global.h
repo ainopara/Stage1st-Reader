@@ -7,31 +7,41 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h> 
 
 #define IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-#define IS_WIDE_DEVICE ([UIScreen mainScreen].bounds.size.width > 400 && [UIScreen mainScreen].bounds.size.height > 400)
+
+@interface S1ColorManager : NSObject
+
++ (void)updataSearchBarAppearanceWithColor:(UIColor *)color;
+
+@end
+
+@interface S1Formatter : NSObject
+
++ (S1Formatter *)sharedInstance;
+
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSMutableDictionary *dateCache;
+- (NSString *)headerForDate:(NSDate *)date;
+- (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2;
+@end
+
 @interface S1Global : NSObject
-+ (UIColor *)color1;
-+ (UIColor *)color2;
-+ (UIColor *)color3;
-+ (UIColor *)color4;
-+ (UIColor *)color5;
-+ (UIColor *)color6;
-+ (UIColor *)color7;
-+ (UIColor *)color8;
-+ (UIColor *)color9;
-+ (UIColor *)color10;
-+ (UIColor *)color11;
-+ (UIColor *)color12;
-+ (UIColor *)color13;
-+ (UIColor *)color14;
-+ (UIColor *)color15;
+
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
 + (UIImage *)imageWithColor:(UIColor *)color;
 
++ (UIColor *)colorFromHexString:(NSString *)hexString;
+
 + (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey;
 + (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey;
+
+//Regex wrapper
++ (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern;
++ (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums;
++ (NSInteger)regexReplaceString:(NSMutableString *)string matchPattern:(NSString *)pattern withTemplate:(NSString *)temp;
 
 @end

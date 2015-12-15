@@ -1,8 +1,10 @@
 /* Localized versions of Info.plist keys */
+"SystemLanguage" = "English";
 
 "ContentView_ActionSheet_Cancel" = "Cancel";
 "ContentView_ActionSheet_Reply" = "Reply";
 "ContentView_ActionSheet_Weibo" = "Sina Weibo";
+"ContentView_ActionSheet_Share" = "Share";
 "ContentView_ActionSheet_OriginPage" = "Original Page";
 "ContentView_ActionSheet_Favorite" = "Favorite";
 "ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
@@ -27,6 +29,7 @@
 "TopicListView_ListHeader_Short_Style" = "MMMM d";
 "TopicListView_ListHeader_Today" = " (Today)";
 "TopicListView_SearchBar_Hint" = "Search";
+"TopicListView_SearchBar_Detail_Hint" = "Search %@ Topics";
 
 "SettingView_NavigationBar_Title" = "Settings";
 "SettingView_NavigationBar_Back" = "Back";
@@ -39,13 +42,29 @@
 "SettingView_Append_Suffix" = "Reply Suffix";
 "SettingView_HistoryLimit" = "Keep History";
 "SettingView_ReplyIncrement" = "Show Reply Increment";
+"SettingView_CloudKit_Status_Off" = "Off";
+"SettingView_CloudKit_Status_Suspended" = "Suspended(%lu)(%lu-%lu)";
+"SettingView_CloudKit_Status_Resumed" = "Resumed(%lu-%lu)";
+
+"SettingView_CloudKit_Status_Init" = "Init";
+"SettingView_CloudKit_Status_Setup" = "Setup";
+"SettingView_CloudKit_Status_Fetch" = "Fetch";
+"SettingView_CloudKit_Status_Upload" = "Upload";
+"SettingView_CloudKit_Status_Ready" = "Ready";
+"SettingView_CloudKit_Status_Recover" = "Recover";
+"SettingView_CloudKit_Status_Halt" = "Halt";
 /*"SettingView_Favorite_Order" = "Record Sort By Last Visit Date";*/
 
 "SettingView_HistoryLimit_3days" = "3 days";
 "SettingView_HistoryLimit_1week" = "1 week";
 "SettingView_HistoryLimit_2weeks" = "2 weeks";
 "SettingView_HistoryLimit_1month" = "1 month";
+"SettingView_HistoryLimit_3months" = "3 months";
+"SettingView_HistoryLimit_6months" = "6 months";
+"SettingView_HistoryLimit_1year" = "1 year";
 "SettingView_HistoryLimit_Forever" = "Forever";
+
+"SettingView_CloudKit_Enable_Message" = "Settings will take effect on next start";
 
 "SettingView_Version" = "Version";
 "SettingView_Developer" = "Developer";

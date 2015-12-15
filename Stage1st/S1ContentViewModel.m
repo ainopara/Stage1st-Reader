@@ -30,22 +30,16 @@
     return self;
 }
 
-- (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
-    [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList) {
+- (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *, NSNumber *))success failure:(void (^)(NSError *))failure {
+    [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList, BOOL fromCache) {
         NSString *page = [S1Parser generateContentPage:floorList withTopic:topic];
         //Set Floors
-        NSMutableDictionary *floors;
-        if(topic.floors != nil) {
-            floors = [[NSMutableDictionary alloc] initWithDictionary:topic.floors];
-        } else {
-            floors = [[NSMutableDictionary alloc] init];
-        }
+        NSMutableDictionary *floors = [[NSMutableDictionary alloc] initWithCapacity:[floorList count]];
         for (S1Floor *floor in floorList) {
             [floors setValue:floor forKey:floor.indexMark];
         }
         topic.floors = floors;
-        
-        success(page);
+        success(page, @(fromCache && [floorList count] != 30));
     } failure:^(NSError *error) {
         failure(error);
     }];

@@ -13,6 +13,7 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 #import "GTMNSString+HTML.h"
+#import "S1AppDelegate.h"
 
 
 @interface S1Parser()
@@ -45,7 +46,7 @@
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
                 [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"img%ld", (long)imageCount]];
                 imageCount += 1;
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"]) {
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"] || [MyAppDelegate.reachability isReachableViaWiFi]) {
                     [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];
                 } else {
                     NSString *placeholderURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"stage1streader-placeholder.png"];
@@ -72,9 +73,19 @@
     }
     
     //process spoiler
-    NSArray *spoilers = [xmlDoc nodesForXPath:@"//font[@color='LemonChiffon']" error:nil];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='Yellow']" error:nil]];
-    spoilers = [spoilers arrayByAddingObjectsFromArray:[xmlDoc nodesForXPath:@"//font[@color='White']" error:nil]];
+    NSArray<NSString *> *spoilerXpathList = @[@"//font[@color='LemonChiffon']",
+                                              @"//font[@color='Yellow']",
+                                              @"//font[@color='#fffacd']",
+                                              @"//font[@color='#FFFFCC']",
+                                              @"//font[@color='White']"];
+     NSArray< DDXMLElement *> * _Nullable spoilers = @[];
+    for (NSString *spoilerXpath in spoilerXpathList) {
+        NSArray< DDXMLElement *> * _Nullable temp = [xmlDoc nodesForXPath:spoilerXpath error:nil];
+        if (temp != nil) {
+            spoilers = [spoilers arrayByAddingObjectsFromArray:temp];
+        }
+    }
+
     for (DDXMLElement *spoilerElement in spoilers) {
         [spoilerElement removeAttributeForName:@"color"];
         [spoilerElement setName:@"div"];
@@ -111,8 +122,7 @@
     }
     NSMutableString *mutableContent = [content mutableCopy];
     NSString *tailPattern = @"((\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|( |&nbsp;)*—— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*)?((<br ?/>|<br></br>)<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:tailPattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@""];
+    [S1Global regexReplaceString:mutableContent matchPattern:tailPattern withTemplate:@""];
     return mutableContent;
 }
 
@@ -163,21 +173,15 @@
 + (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
     NSMutableString *mutableContent = [content mutableCopy];
     //process message
-    NSString *preprocessMessagePattern = @"提示: <em>(.*?)</em>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessMessagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<div class=\"s1-alert\">$1</div>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"提示: <em>(.*?)</em>" withTemplate:@"<div class=\"s1-alert\">$1</div>"];
     //process quote string
-    NSString *preprocessQuotePattern = @"<blockquote><p>引用:</p>";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessQuotePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<blockquote>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"<blockquote><p>引用:</p>" withTemplate:@"<blockquote>"];
     //process imgwidth issue
-    NSString *preprocessImagePattern = @"<imgwidth=([^>]*)>";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re replaceMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) withTemplate:@"<img width=$1>"];
+    [S1Global regexReplaceString:mutableContent matchPattern:@"<imgwidth=([^>]*)>" withTemplate:@"<img width=$1>"];
     //process embeded image attachments
     __block NSString *finalString = [mutableContent copy];
     NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
-    re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
         if (result != nil && attachments != nil) {
             NSRange range = [result rangeAtIndex:1];
@@ -275,11 +279,8 @@
         NSString *titleString = [titlePart recursionText];
         
         NSString *URLString = [titlePart objectForKey:@"href"];
-        NSString *pattern = @".*tid=([0-9]+).*";
-        NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-        NSTextCheckingResult *result = [re firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-        NSString *topicIDString = [URLString substringWithRange:[result rangeAtIndex:1]];
-        NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+        S1Topic *topicFromURL = [S1Parser extractTopicInfoFromLink:URLString];
+        NSNumber *topicID = topicFromURL.topicID;
         
         TFHppleElement *authorPart = [links objectAtIndex:1];
         NSString *authorName = [authorPart text];
@@ -307,7 +308,30 @@
     return topics;
     
 }
-
++ (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
+    DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
+    NSArray *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
+    NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+    for (DDXMLElement *topicNode in topicNodes) {
+        DDXMLElement *topicFirstSection = [[topicNode nodesForXPath:@".//th/a" error:nil] firstObject];
+        NSString *topicHref = [[topicFirstSection attributeForName:@"href"] stringValue];
+        NSString *topicTitle = [topicFirstSection stringValue];
+        NSLog(@"%@, %@", topicHref, topicTitle);
+        S1Topic *topic = [S1Parser extractTopicInfoFromLink:topicHref];
+        topic.title = topicTitle;
+        
+        DDXMLElement *topicSecondSection = [[topicNode nodesForXPath:@".//a[@class='xg1']" error:nil] firstObject];
+        NSString *topicForumIDString = [[topicSecondSection attributeForName:@"href"] stringValue];
+        NSNumber *topicForumID = [NSNumber numberWithInteger:[[[S1Global regexExtractFromString:topicForumIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject] integerValue]];
+        topic.fID = topicForumID;
+        DDXMLElement *topicThirdSection = [[topicNode nodesForXPath:@".//a[@class='xi2']" error:nil] firstObject];
+        NSNumber *topicReplyCount = [NSNumber numberWithInteger:[[topicThirdSection stringValue] integerValue]];
+        NSLog(@"%@, %@", topicForumIDString, topicReplyCount);
+        topic.replyCount = topicReplyCount;
+        [mutableArray addObject:topic];
+    }
+    return mutableArray;
+}
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
@@ -400,12 +424,13 @@
         if ([rawFloor valueForKey:@"attachments"]!= nil) {
             attachments = [rawFloor[@"attachments"] mutableCopy];
         }
-        floor.floorID = rawFloor[@"pid"];
+        floor.floorID = [NSNumber numberWithInteger:[rawFloor[@"pid"] integerValue]];
         floor.author = rawFloor[@"author"];
         floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
         floor.indexMark = rawFloor[@"number"];
         floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
         floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]] withAttachments:attachments];
+        floor.firstQuoteReplyFloorID = [S1Parser firstQuoteReplyFloorIDFromFloorString:floor.content];
         //process attachments left.
         if (attachments != nil && [attachments count] > 0) {
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
@@ -421,7 +446,16 @@
     return floorList;
 }
 
-
++ (NSString *)renderColorCSS {
+    NSString *CSSTemplatePath = [[NSBundle mainBundle] pathForResource:@"color" ofType:@"css"];
+    NSData *CSSTemplateData = [NSData dataWithContentsOfFile:CSSTemplatePath];
+    NSString *CSSTemplate = [[NSString alloc] initWithData:CSSTemplateData  encoding:NSUTF8StringEncoding];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"5"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{text}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"21"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{border}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"14"]];
+    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{borderText}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"17"]];
+    return CSSTemplate;
+}
 
 
 #pragma mark - Page Generating
@@ -518,8 +552,102 @@
             cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
         }
     }
+    NSString *colorCSS = [S1Parser renderColorCSS];
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, jqueryPath, finalString];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
+    return threadPage;
+}
+
++ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic
+{
+    NSString *finalString = [[NSString alloc] init];
+    for (S1Floor *topicFloor in floorList) {
+        //process indexmark
+        NSString *floorIndexMark = topicFloor.indexMark;
+        if (![floorIndexMark isEqualToString:@"楼主"]) {
+            floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
+        }
+        
+        //process author
+        NSString *floorAuthor = topicFloor.author;
+        if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
+            floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
+        }
+        
+        //process time
+        NSString *floorPostTime = [S1Parser translateDateTimeString:topicFloor.postTime];
+        
+        //process reply Button
+        NSString *replyLinkString = @"";
+        
+        //process poll
+        NSString *pollContentString = @"";
+        
+        //process content
+        NSString *contentString = topicFloor.content;
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"]) {
+            contentString = [S1Parser stripTails:contentString];
+        }
+        
+        //work when the floor's author is blocked and s1reader using parse mode
+        if (contentString == nil && topicFloor.message != nil) {
+            contentString = [NSString stringWithFormat:@"<td class=\"t_f\"><div class=\"s1-alert\">%@</div></td>", topicFloor.message];
+        }
+        
+        //process attachment
+        NSString *floorAttachment = @"";
+        if (topicFloor.imageAttachmentList) {
+            for (NSString *imageURLString in topicFloor.imageAttachmentList) {
+                NSString *processedImageURLString = [[NSString alloc] initWithString:imageURLString];
+                if ([topicFloor.imageAttachmentList indexOfObject:imageURLString] != 0) {
+                    processedImageURLString = [@"<br /><br />" stringByAppendingString:imageURLString];
+                }
+                floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
+            }
+            floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
+        }
+        
+        //generate page
+        NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
+        NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
+        NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
+        
+        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, pollContentString, contentString, floorAttachment];
+        
+        if ([floorList indexOfObject:topicFloor] != 0) {
+            output = [@"<br />" stringByAppendingString:output];
+        }
+        finalString = [finalString stringByAppendingString:output];
+    }
+    finalString = [S1Parser processHTMLString:finalString];
+    NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
+    NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
+    //CSS
+    NSString *baseCSS = [[NSBundle mainBundle] pathForResource:@"content_base" ofType:@"css"];
+    NSString *cssPath = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"15px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_15px" ofType:@"css"];
+        } else if ([fontSizeKey isEqualToString:@"17px"]){
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_17px" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
+        }
+    } else {
+        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+        if ([fontSizeKey isEqualToString:@"18px"]) {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
+        } else if ([fontSizeKey isEqualToString:@"20px"]){
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
+        } else {
+            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
+        }
+    }
+    NSString *colorCSS = [S1Parser renderColorCSS];
+    NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
     return threadPage;
 }
 
@@ -565,7 +693,7 @@
     topic.formhash = responseDict[@"Variables"][@"formhash"];
     topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
     double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
-    topic.totalPageCount = [NSNumber numberWithDouble: ceil( [topic.replyCount doubleValue] / postPerPage )];
+    topic.totalPageCount = [NSNumber numberWithDouble: ceil( ([topic.replyCount doubleValue] + 1) / postPerPage )];
     topic.message = responseDict[@"Message"][@"messagestr"];
     return topic;
 }
@@ -574,31 +702,24 @@
 + (NSString *)formhashFromPage:(NSString *)HTMLString
 {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *formhash = [HTMLString substringWithRange:[result rangeAtIndex:1]];
-    return formhash;
+    return [[S1Global regexExtractFromString:HTMLString withPattern:pattern andColums:@[@1]] firstObject];
 }
 
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
 {
-    NSString *pattern = @"<span title=\"共 ([0-9]+) 页\">";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    if (result) {
-        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"<span title=\"共 ([0-9]+) 页\">" andColums:@[@1]];
+    if (result.count != 0) {
+        return [((NSString *)[result firstObject]) integerValue];
     } else {
-        return 0;
+        return 1;
     }
 }
 
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
 {
-    NSString *pattern = @"回复:</span> <span class=\"xi1\">([0-9]+)</span>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    if (result) {
-        return [[HTMLString substringWithRange:[result rangeAtIndex:1]] integerValue];
+    NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"回复:</span> <span class=\"xi1\">([0-9]+)</span>" andColums:@[@1]];
+    if (result.count != 0) {
+        return [((NSString *)[result firstObject]) integerValue];
     } else {
         return 0;
     }
@@ -643,40 +764,71 @@
     
 }
 
-#pragma mark - Checking
-
 + (NSString *)loginUserName:(NSString *)HTMLString
 {
-    NSString *pattern = @"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result = [re firstMatchInString:HTMLString options:NSMatchingReportProgress range:NSMakeRange(0, HTMLString.length)];
-    NSString *username = [HTMLString substringWithRange:[result rangeAtIndex:1]];
+    NSString *username = [[S1Global regexExtractFromString:HTMLString withPattern:@"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>" andColums:@[@1]] firstObject];
     return [username isEqualToString:@""]?nil:username;
 }
-#pragma mark - Extract Data
+
++ (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {
+    NSString *urlString = [[S1Global regexExtractFromString:floorString withPattern:@"<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"" andColums:@[@1]] firstObject];
+    //NSLog(@"First Quote URL: %@",urlString);
+    if (urlString) {
+        NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
+        return [NSNumber numberWithInteger:[resultDict[@"pid"] integerValue]];
+    }
+    return nil;
+}
+
+
+#pragma mark - Extract From Link
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
 {
     S1Topic *topic = [[S1Topic alloc] init];
-    NSString *pattern1 = [[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"] stringByAppendingString:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html"];
-    NSRegularExpression *re1 = [[NSRegularExpression alloc] initWithPattern:pattern1 options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSTextCheckingResult *result1 = [re1 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-    NSString *topicIDString = [URLString substringWithRange:[result1 rangeAtIndex:1]];
-    NSString *topicPageString = [URLString substringWithRange:[result1 rangeAtIndex:2]];
-    if ([topicIDString isEqualToString:@""]) {
-        NSString *pattern2 = @"forum\\.php\\?mod=viewthread&tid=([0-9]+)";
-        NSRegularExpression *re2 = [[NSRegularExpression alloc] initWithPattern:pattern2 options:NSRegularExpressionAnchorsMatchLines error:nil];
-        NSTextCheckingResult *result2 = [re2 firstMatchInString:URLString options:NSMatchingReportProgress range:NSMakeRange(0, URLString.length)];
-        topicIDString = [URLString substringWithRange:[result2 rangeAtIndex:1]];
+    // Current Html Scheme
+    NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
+    NSString *topicIDString = [result firstObject];
+    NSString *topicPageString = [result lastObject];
+    // Old Html Scheme
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
+        result = [S1Global regexExtractFromString:URLString withPattern:@"read-htm-tid-([0-9]+)\\.html" andColums:@[@1]];
+        topicIDString = [result firstObject];
         topicPageString = @"1";
     }
-    if ([topicIDString isEqualToString:@""]) {
+    // Php Scheme
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
+        NSDictionary *dict = [S1Parser extractQuerysFromURLString:URLString];
+        topicIDString = [dict objectForKey:@"tid"];
+        topicPageString = [dict objectForKey:@"page"];
+        if (topicPageString == nil) {
+            topicPageString = @"1";
+        }
+    }
+    if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
         return nil;
     }
     topic.topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
+    NSLog(@"%@", topic);
     return topic;
 }
 
-
++ (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString {
+    NSURL *url = [[NSURL alloc] initWithString:URLString];
+    if (url!= nil) {
+        NSString *queryString = [url.query gtm_stringByUnescapingFromHTML];
+        if (queryString != nil) {
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            for (NSString *component in [queryString componentsSeparatedByString:@"&"]) {
+                NSArray *part = [component componentsSeparatedByString:@"="];
+                if ([part count] == 2) {
+                    [dict setObject:[part lastObject] forKey:[part firstObject]];
+                }
+            }
+            return dict;
+        }
+    }
+    return nil;
+}
 
 @end

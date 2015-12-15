@@ -1,0 +1,57 @@
+.text {
+    border-left: {{text}} 4px solid;
+}
+
+.i_table {
+    border: {{border}} 1px solid;
+}
+
+.t_f {
+    color: {{text}};
+}
+
+body {
+    background: {{background}};
+}
+
+tr {
+    background: {{background}};
+}
+
+a {
+    color: {{text}};
+}
+
+a:link {
+    color: {{text}};
+}
+
+a:visited {
+    color: {{text}};
+}
+
+.head {
+    background-color: {{background}};
+    border-bottom: {{border}} 1px solid;
+    color: {{borderText}};
+}
+
+.reply a{
+    color: {{borderText}};
+}
+
+.attachment {
+    border-top: {{border}} 1px solid;
+}
+
+.pstatus {
+    color: {{borderText}};
+}
+
+.s1-poll {
+    color: {{text}};
+    border-bottom: {{border}} 1px solid;
+}
+.s1-alert {
+    color: {{borderText}};
+}

@@ -21,23 +21,33 @@
 #import "ActionSheetStringPicker.h"
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
+#import "S1MahjongFaceViewController.h"
+#import "Masonry.h"
+#import "NavigationControllerDelegate.h"
 
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate>
+
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, APPullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) APPullToActionViewController *pullToActionViewController;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 @property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIView *topDecorateLine;
+@property (nonatomic, strong) UIView *bottomDecorateLine;
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
-@property (nonatomic, strong) NSString *replyDraft;
-
+@property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
+@property (nonatomic, strong) NSMutableDictionary *cachedViewPosition;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *forwardButton;
+@property (nonatomic, weak) S1Floor *replyTopicFloor;
+@property (nonatomic, weak) REComposeViewController *replyController;
+@property (nonatomic, strong) S1MahjongFaceViewController *mahjongController;
 @end
 
 @implementation S1ContentViewController {
@@ -50,6 +60,7 @@
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
     BOOL _presentingContentViewController;
+    BOOL _shouldRestoreViewPosition;
     NSURL *_urlToOpen; // iOS7 Only
 }
 
@@ -65,6 +76,8 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _shouldRestoreViewPosition = NO;
+        _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -81,6 +94,8 @@
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
+        _shouldRestoreViewPosition = NO;
+        _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -92,7 +107,7 @@
     [super viewDidLoad];
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
-    self.view.backgroundColor = [S1Global color5];
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
     
     //web view
     self.webView.delegate = self;
@@ -100,30 +115,48 @@
     self.webView.scrollView.scrollsToTop = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
-    self.webView.backgroundColor = [S1Global color5];
+    self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
+    self.pullToActionViewController = [[APPullToActionViewController alloc] initWithScrollView:self.webView.scrollView];
+    self.pullToActionViewController.delegate = self;
+    
+    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    if(_currentPage != 1) {
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    }
+    
+    [self.webView.scrollView addSubview:self.topDecorateLine];
+    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    BOOL hasInvalidTitle = NO;
+
     if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
-        self.titleLabel.text = @"载入中...";
-        hasInvalidTitle = YES;
+        self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
     } else {
         self.titleLabel.text = self.topic.title;
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
     }
-    if (hasInvalidTitle) {
-        self.titleLabel.textColor = [S1Global color12];
-    }else {
-        self.titleLabel.textColor = [S1Global color4];
-    }
+
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
     }
     [self.webView.scrollView insertSubview:self.titleLabel atIndex:0];
+    
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.webView.scrollView.subviews[1].mas_top);
+        make.centerX.equalTo(self.view.mas_centerX);
+        make.height.equalTo(@64);
+        make.width.equalTo(self.view.mas_width).with.offset(-24);
+    }];
 
     UIButton *button = nil;
     
@@ -132,6 +165,8 @@
     button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
     button.frame = CGRectMake(0, 0, 40, 30);
+    button.imageView.clipsToBounds = NO;
+    button.imageView.contentMode = UIViewContentModeCenter;
     [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
     UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
@@ -143,8 +178,15 @@
     
     //Forward Button
     button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    if (_currentPage == _totalPages) {
+        [button setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+    } else {
+        [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    }
+    
     button.frame = CGRectMake(0, 0, 40, 30);
+    button.imageView.clipsToBounds = NO;
+    button.imageView.contentMode = UIViewContentModeCenter;
     [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:100];
     UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
@@ -156,12 +198,19 @@
     //Page Label
     self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
     self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-    self.pageLabel.textColor = [S1Global color3];
+    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
     self.pageLabel.backgroundColor = [UIColor clearColor];
     self.pageLabel.textAlignment = NSTextAlignmentCenter;
     self.pageLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
     [self.pageLabel addGestureRecognizer:pickPageGR];
+    UILongPressGestureRecognizer *forceRefreshGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forceRefreshPressed:)];
+    forceRefreshGR.minimumPressDuration = 0.5;
+    [self.pageLabel addGestureRecognizer:forceRefreshGR];
+    
+    //disable this function for now
+    //UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
+    //[self.pageLabel addGestureRecognizer:panGR];
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -177,8 +226,27 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     
-    [self fetchContentAndPrecacheNextPage:YES];
+    //Set up Activity for Hand Off
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        ; // iOS 7 do not support hand off
+    } else {
+        NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
+        activity.title = self.topic.title;
+        activity.userInfo = @{@"topicID": self.topic.topicID,
+                              @"page": [NSNumber numberWithInteger:_currentPage]};
+        activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+        //iOS 9 Search api
+        if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
+            activity.eligibleForSearch = YES;
+            activity.requiredUserInfoKeys = [NSSet setWithObjects:@"topicID", nil];
+        }
+        self.userActivity = activity;
+    }
+    
+    
+    [self fetchContentAndForceUpdate:_currentPage == _totalPages];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -201,29 +269,27 @@
     }
     //NSLog(@"Content View did disappear");
     [self cancelRequest];
-    [self saveTopicViewedState:nil];
-    self.topic.floors = [[NSMutableDictionary alloc] init]; //If want to cache floors, remove this line.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self saveTopicViewedState:nil];
+        self.topic.floors = [[NSMutableDictionary alloc] init]; //clear cache floors to reduce memory useage
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         });
     });
+    
     [super viewDidDisappear:animated];
 }
 
 - (void)dealloc {
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+    self.pullToActionViewController = nil;
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    [self.dataCenter clearTopicListCache];
-    [self.dataCenter clearContentPageCache];
-    [self updatePageLabel];
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - Setters and Getters
@@ -232,11 +298,65 @@
 {
     // Used to estimate total page number
     #define _REPLY_PER_PAGE 30
-    _topic = topic;
-    _totalPages = ([topic.replyCount integerValue] / _REPLY_PER_PAGE) + 1;
+    if ([topic isImmutable]) {
+        _topic = [topic copy];
+    } else {
+        _topic = topic;
+    }
+    
+    _totalPages = (([topic.replyCount integerValue] + 1) / _REPLY_PER_PAGE) + 1;
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
+    if (_topic.favorite == nil) {
+        _topic.favorite = @(NO);
+    }
+}
+
+- (UIView *)accessoryView {
+    //setup accessory view
+    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
+    
+    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [faceButton setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
+    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
+    
+    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [spoilerButton setTitle:@"H" forState:UIControlStateNormal];
+    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
+    /*
+    UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [quoteButton setTitle:@"「-」" forState:UIControlStateNormal];
+    [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
+    
+    UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
+    //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+    [boldButton setTitle:@"B" forState:UIControlStateNormal];
+    [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
+    */
+    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixItem.width = 26.0f;
+    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [toolbar setItems:@[flexItem, spoilerItem, fixItem, faceItem, flexItem]];
+    [accessoryView addSubview:toolbar];
+    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(accessoryView.mas_left);
+        make.right.equalTo(accessoryView.mas_right);
+        make.top.equalTo(accessoryView.mas_top);
+        make.bottom.equalTo(accessoryView.mas_bottom);
+    }];
+    return accessoryView;
 }
 
 #pragma mark - Bar Button Actions
@@ -245,6 +365,7 @@
 {
     [self cancelRequest];
     _needToLoadLastPosition = NO;
+    [self saveViewPosition];
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
         [self fetchContent];
@@ -257,15 +378,16 @@
 {
     [self cancelRequest];
     _needToLoadLastPosition = NO;
+    [self saveViewPosition];
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
         [self fetchContent];
     } else {
         if (![self atBottom]) {
-            [self scrollToButtomAnimated:YES];
+            [self scrollToBottomAnimated:YES];
         } else {
-            _needToScrollToBottom = YES;
-            [self fetchContentAndPrecacheNextPage:YES];
+            //_needToScrollToBottom = YES;
+            [self fetchContentAndForceUpdate:YES];
         }
     }
 }
@@ -273,6 +395,7 @@
 - (void)backLongPressed:(UIGestureRecognizer *)gr
 {
     if (gr.state == UIGestureRecognizerStateBegan) {
+        [self saveViewPosition];
         if (_currentPage > 1) {
             _currentPage = 1;
             [self cancelRequest];
@@ -285,6 +408,7 @@
 - (void)forwardLongPressed:(UIGestureRecognizer *)gr
 {
     if (gr.state == UIGestureRecognizerStateBegan) {
+        [self saveViewPosition];
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
             [self cancelRequest];
@@ -299,24 +423,81 @@
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (long i = 0; i < (_currentPage > _totalPages ? _currentPage : _totalPages); i++) {
         if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithLong:i + 1]]) {
-            [array addObject:[NSString stringWithFormat:@"第 %ld 页✓", i + 1]];
+            [array addObject:[NSString stringWithFormat:@"✓第 %ld 页✓", i + 1]];
         } else {
             [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
         }
     }
-    [ActionSheetStringPicker showPickerWithTitle:@""
+    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:@""
                                             rows:array
                                 initialSelection:_currentPage - 1
                                        doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                           _currentPage = selectedIndex + 1;
+                                           [self saveViewPosition];
+                                           
                                            [self cancelRequest];
-                                           [self fetchContent];
+                                           _needToLoadLastPosition = NO;
+                                           if (_currentPage != selectedIndex + 1) {
+                                               _currentPage = selectedIndex + 1;
+                                               [self fetchContent];
+                                           } else {
+                                               [self fetchContentAndForceUpdate:YES];
+                                           }
+                                           
                                        }
                                      cancelBlock:nil
                                           origin:self.pageLabel];
+    picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
+    
+    NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    labelParagraphStyle.alignment = NSTextAlignmentCenter;
+    picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
+                                    NSFontAttributeName: [UIFont systemFontOfSize:19.0],
+                                    NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+    
+    [picker showActionSheetPicker];
 
 }
 
+- (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
+    if (gr.state == UIGestureRecognizerStateBegan) {
+        NSLog(@"forceRefresh pressed");
+        [self cancelRequest];
+        _needToLoadLastPosition = NO;
+        [self saveViewPosition];
+        [self fetchContentAndForceUpdate:YES];
+    }
+    
+}
+- (void)panPageLabel:(UIPanGestureRecognizer *)gr {
+    
+    CGFloat distance = [gr translationInView:self.view].x;
+    NSInteger offset = distance / 50.0;
+    NSInteger destinationPage = _currentPage + offset;
+    while (destinationPage <= 0) {
+        destinationPage += _totalPages;
+    }
+    while (destinationPage > _totalPages) {
+        destinationPage -= _totalPages;
+    }
+    //NSLog(@"%f %ld", distance, (long)offset);
+    if (gr.state == UIGestureRecognizerStateBegan || gr.state == UIGestureRecognizerStateChanged) {
+        self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)destinationPage, (long)_totalPages];
+    } else if (gr.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"open %ld", (long)destinationPage);
+        if (_currentPage != destinationPage) {
+            [self saveViewPosition];
+            _currentPage = destinationPage;
+            [self cancelRequest];
+            _needToLoadLastPosition = NO;
+            [self fetchContent];
+        }
+    } else {
+        NSLog(@"unexpected state:%ld", (long)gr.state);
+        [self updatePageLabel];
+    }
+    
+    
+}
 - (void)action:(id)sender
 {
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -325,7 +506,7 @@
                                                         cancelButtonTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel")
                                                    destructiveButtonTitle:nil
                                                         otherButtonTitles:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply"),
-                                      [self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
+                                      [self.topic.favorite boolValue]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite"),
                                       NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo"),
                                       NSLocalizedString(@"ContentView_ActionSheet_CopyLink", @"Copy Link"),
                                       NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin"), nil];
@@ -338,30 +519,24 @@
             [self presentReplyViewWithAppendText:@"" reply:nil];
         }];
         // Favorite Action
-        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.dataCenter topicIsFavorited:self.topic.topicID]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+        UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.topic.favorite boolValue]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
+            if ([self.topic.favorite boolValue]) {
+                self.topic.favoriteDate = [NSDate date];
+            }
             S1HUD *HUD = [S1HUD showHUDInView:self.view];
-            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];
         }];
-        // Weibo Action
-        UIAlertAction *weiboAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Weibo", @"Weibo") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if (!NSClassFromString(@"SLComposeViewController")) {
-                return;
+        // Share Action
+        UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], [self screenShot]] applicationActivities:nil];
+            if ([activityController respondsToSelector:@selector(popoverPresentationController)]) {
+                [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
             }
-            SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
-            if (!controller) {
-                [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message", @"")];
-                return;
-            }
-            [controller setInitialText:[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title]];
-            [controller addURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]]];
-            [controller addImage:[self screenShot]];
-            
-            __weak SLComposeViewController *weakController = controller;
-            [self presentViewController:controller animated:YES completion:nil];
-            [controller setCompletionHandler:^(SLComposeViewControllerResult result){
-                [weakController dismissViewControllerAnimated:YES completion:nil];
+            [self presentViewController:activityController animated:YES completion:nil];
+            [activityController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+                NSLog(@"finish:%@",activityType);
             }];
         }];
         // Copy Link
@@ -374,10 +549,11 @@
         }];
         // Origin Page Action
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
+            _presentingWebViewer = YES;
+            
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1Global color3]];
+            [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
             [self presentViewController:controller animated:YES completion:nil];
         }];
         // Cancel Action
@@ -385,7 +561,7 @@
         
         [moreActionSheet addAction:replyAction];
         [moreActionSheet addAction:favoriteAction];
-        [moreActionSheet addAction:weiboAction];
+        [moreActionSheet addAction:shareAction];
         [moreActionSheet addAction:copyLinkAction];
         [moreActionSheet addAction:originPageAction];
         [moreActionSheet addAction:cancelAction];
@@ -394,6 +570,59 @@
     }
     
 }
+#pragma mark Accessory View
+- (void)toggleFace:(id)sender {
+    NSLog(@"toggleFace");
+    if (self.replyController.inputView == nil) {
+        if (self.mahjongController == nil) {
+            self.mahjongController = [[S1MahjongFaceViewController alloc] init];
+            //[self.mahjongController.view setFrame:CGRectMake(0, 0, 320, 217)];
+            //[self.view addSubview:self.mahjongController.view];
+            self.mahjongController.delegate = self;
+            self.mahjongController.historyCountLimit = 99;
+        }
+        [(UIButton *)sender setImage:[UIImage imageNamed:@"KeyboardButton"] forState:UIControlStateNormal];
+        self.replyController.inputView = self.mahjongController.view;
+        [self.replyController reloadInputViews];
+    } else {
+        [(UIButton *)sender setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
+        self.replyController.inputView = nil;
+        [self.replyController reloadInputViews];
+    }
+}
+
+- (void)insertSpoilerMark:(id)sender {
+    [self insertMarkWithAPart:@"[color=LemonChiffon]" andBPart:@"[/color]"];
+}
+
+- (void)insertQuoteMark:(id)sender {
+    [self insertMarkWithAPart:@"[quote]" andBPart:@"[/quote]"];
+}
+
+- (void)insertBoldMark:(id)sender {
+    [self insertMarkWithAPart:@"[b]" andBPart:@"[/b]"];
+}
+- (void)insertMarkWithAPart:(NSString *)aPart andBPart:(NSString *)bPart {
+    NSLog(@"insert %@ %@ %lu", aPart, bPart, (unsigned long)[aPart length]);
+    if (self.replyController.textView != nil) {
+        NSRange selectRange = self.replyController.textView.selectedRange;
+        NSUInteger aPartLenght = [aPart length];
+        if (selectRange.length == 0) {
+            NSString *wholeMark = [aPart stringByAppendingString:bPart];
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:wholeMark] atIndex:selectRange.location];
+            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
+        } else {
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:bPart] atIndex:selectRange.location + selectRange.length];
+            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:aPart] atIndex:selectRange.location];
+            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
+        }
+        
+        [self resetTextViewStyle:self.replyController.textView];
+    }
+}
+
+
+
 
 #pragma mark - UIActionSheet Delegate (iOS7 Only)
 
@@ -420,9 +649,12 @@
         }
         // Favorite
         if (1 == buttonIndex) {
-            [self.dataCenter setTopicFavoriteState:self.topic.topicID withState:(![self.dataCenter topicIsFavorited:self.topic.topicID])];
+            self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
+            if ([self.topic.favorite boolValue]) {
+                self.topic.favoriteDate = [NSDate date];
+            }
             S1HUD *HUD = [S1HUD showHUDInView:self.view];
-            [HUD setText:[self.dataCenter topicIsFavorited:self.topic.topicID] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
+            [HUD setText:[self.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite") withWidthMultiplier:2];
             [HUD hideWithDelay:0.3];
         }
         
@@ -459,14 +691,14 @@
             _presentingWebViewer = YES;
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-            [controller.view setTintColor:[S1Global color3]];
+            [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
             [self presentViewController:controller animated:YES completion:nil];
         }
     }
     
 }
 
-#pragma mark - UIAlertView Delegate (iOS7 Only)
+#pragma mark UIAlertView Delegate (iOS7 Only)
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -474,13 +706,13 @@
         _presentingWebViewer = YES;
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
-        [[controller view] setTintColor:[S1Global color3]];
+        [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
         //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];        
     }
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark UIWebView
 
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
@@ -512,10 +744,11 @@
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                    initWithImageInfo:imageInfo
                                                    mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_None];
+                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
             [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
+            [imageViewer setOptionsDelegate:self];
         }
         return NO;
     }
@@ -525,11 +758,11 @@
         NSString *imageURL = request.URL.absoluteString;
         NSLog(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
-        imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
+        imageInfo.imageURL = request.URL;
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
                                                initWithImageInfo:imageInfo
                                                mode:JTSImageViewControllerMode_Image
-                                               backgroundStyle:JTSImageViewControllerBackgroundOption_None];
+                                               backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
         [UIApplication sharedApplication].statusBarHidden = YES;
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
@@ -537,15 +770,56 @@
     }
     
     // Open S1 topic
-    S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
-    if (topic.topicID != nil) {
-        _presentingContentViewController = YES;
-        S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
-        [contentViewController setTopic:topic];
-        [contentViewController setDataCenter:self.dataCenter];
-        [[self navigationController] pushViewController:contentViewController animated:YES];
-        return NO;
+    if ([request.URL.absoluteString hasPrefix:[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"]]) {
+        S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
+        if (topic.topicID != nil) {
+            S1Topic *tracedTopic = [self.dataCenter tracedTopic:topic.topicID];
+            if (tracedTopic != nil) {
+                NSNumber *lastViewedPage = topic.lastViewedPage;
+                topic = [tracedTopic copy];
+                topic.lastViewedPage = lastViewedPage;
+            }
+            _presentingContentViewController = YES;
+            S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+            [contentViewController setTopic:topic];
+            [contentViewController setDataCenter:self.dataCenter];
+            [[self navigationController] pushViewController:contentViewController animated:YES];
+            return NO;
+        }
+        // Open Quote Link
+        NSDictionary *quarys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
+        if (quarys) {
+            NSLog(@"%@",quarys);
+            if ([[quarys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
+                /*
+                [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
+                    NSLog(@"finish");
+                } failure:^(NSError *error) {
+                    NSLog(@"%@",error);
+                }];*/
+                if ([[quarys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
+                    NSInteger tid = [[quarys valueForKey:@"ptid"] integerValue];
+                    NSInteger pid = [[quarys valueForKey:@"pid"] integerValue];
+                    if (tid == [self.topic.topicID integerValue]) {
+                        NSArray *chainQuoteFloors = [self chainSearchQuoteByFirstFloorID:@(pid)];
+                        if ([chainQuoteFloors count] > 0) {
+                            _presentingContentViewController = YES;
+                            S1Topic *quoteTopic = [self.topic copy];
+                            NSString *htmlString = [S1Parser generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
+                            S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
+                            quoteFloorViewController.htmlString = htmlString;
+                            quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
+                            [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
+                            return NO;
+                        }
+                        
+                    }
+                }
+            }
+            
+        }
     }
+    
     // Open link
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString delegate:self cancelButtonTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") otherButtonTitles:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @""), nil];
@@ -553,37 +827,64 @@
         [alertView show];
     } else {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-        UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            _presentingWebViewer = YES;
-            NSLog(@"%@", request.URL);
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[S1Global color3]];
-            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:controller animated:YES completion:nil];
-        }];
-        [alert addAction:cancelAction];
-        [alert addAction:continueAction];
+        if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                _presentingWebViewer = YES;
+                NSLog(@"%@", request.URL);
+                SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
+                [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
+                //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
+                [self presentViewController:controller animated:YES completion:nil];
+            }];
+            [alert addAction:cancelAction];
+            [alert addAction:continueAction];
+        } else {
+            UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                _presentingWebViewer = YES;
+                NSLog(@"%@", request.URL);
+                if (![[UIApplication sharedApplication] openURL:request.URL]) {
+                    NSLog(@"%@%@",@"Failed to open url:",[request.URL description]);
+                }
+            }];
+            [alert addAction:cancelAction];
+            [alert addAction:continueAction];
+        }
+        
         [self presentViewController:alert animated:YES completion:nil];
     }
     return NO;
 }
 
+
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
+    // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPosition) {
         if (self.topic.lastViewedPosition != 0) {
-            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, [self.topic.lastViewedPosition floatValue])];
+            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
         }
         _needToLoadLastPosition = NO;
     }
+
+    // Restore last view position from cached position in this view controller.
+    NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
+    if (positionForPage) {
+        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
+    }
+    
+    // User want to scroll to bottom.
     if (_needToScrollToBottom) {
-        [self scrollToButtomAnimated:YES];
+        _needToScrollToBottom = NO;
+        [self scrollToBottomAnimated:YES];
     }
     
 }
 
-#pragma mark - JTSImageViewController Interactions Delegate
+#pragma mark JTSImageViewController
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     self.imageViewer = imageViewer;
     if (SYSTEM_VERSION_LESS_THAN(@"8")) {
@@ -616,24 +917,140 @@
     }
     
 }
-#pragma mark - UIScrollView Delegate
 
-- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
+- (CGFloat)alphaForBackgroundDimmingOverlayInImageViewer:(JTSImageViewController *)imageViewer {
+    return 0.3;
+}
+
+#pragma mark UIScrollView
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
     return YES;
+}
+
+#pragma mark Mahjong Face
+
+- (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
+    UITextView *textView = self.replyController.textView;
+    if (textView) {
+        [textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:attachment] atIndex:textView.selectedRange.location];
+        
+        //Move selection location
+        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location + 1, self.replyController.textView.selectedRange.length);
+        
+        //Reset Text Style
+        [self resetTextViewStyle:textView];
+    }
+}
+
+- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceViewController *)mahjongFaceViewController {
+    UITextView *textView = self.replyController.textView;
+    if (textView) {
+        NSRange range = textView.selectedRange;
+        if (range.length == 0) {
+            if (range.location > 0) {
+                range.location -= 1;
+                range.length = 1;
+            }
+        }
+        textView.selectedRange = range;
+        [textView.textStorage deleteCharactersInRange:textView.selectedRange];
+        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location, 0);
+        
+    }
+}
+
+- (void)saveHistoryArray:(NSMutableArray *)historyArray {
+    self.dataCenter.mahjongFaceHistoryArray = historyArray;
+}
+
+- (NSMutableArray *)restoreHistoryArray {
+    return self.dataCenter.mahjongFaceHistoryArray;
+}
+
+#pragma mark Pull To Action
+
+- (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
+    if (offset < -80 && _finishLoading) {
+        if (_currentPage != 1) {
+            [self back:nil];
+        }
+    }
+    
+}
+
+- (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
+    if (offset > 60 && _finishLoading) {
+        [self forward:nil];
+    }
+}
+
+- (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
+    self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 60, contentSize.width - 0, 1);
+    if(_currentPage != 1 && _finishLoading) {
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    } else {
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    }
+    if (_finishLoading) {
+        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    } else {
+        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    }
+}
+
+- (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
+    
+    // When page not finish loading, no animation should be presented.
+    if (!_finishLoading) {
+        if (_currentPage >= _totalPages) {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+        }
+        self.forwardButton.imageView.layer.transform = CATransform3DIdentity;
+        self.backButton.imageView.layer.transform = CATransform3DIdentity;
+        return;
+    }
+    // Process for bottom offset
+    double bottomProgress = [progress[@"bottom"] doubleValue];
+    if (_currentPage >= _totalPages) {
+        if (bottomProgress >= 0) {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * bottomProgress, 0, 0, 1);
+        } else {
+            [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+            self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2, 0, 0, 1);
+        }
+    } else {
+        bottomProgress = fmax(fmin(bottomProgress, 1.0f), 0.0f);
+        self.forwardButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * bottomProgress, 0, 0, 1);
+    }
+    
+    //Progress for top offset
+    if (_currentPage != 1) {
+        double topProgress = [progress[@"top"] doubleValue];
+        topProgress = fmax(fmin(topProgress, 1.0f), 0.0f);
+        self.backButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * topProgress, 0, 0, 1);
+    } else {
+        self.backButton.imageView.layer.transform = CATransform3DIdentity;
+    }
 }
 
 #pragma mark - Networking
 
 - (void)fetchContent {
-    [self fetchContentAndPrecacheNextPage:NO];
+    [self fetchContentAndForceUpdate:NO];
 }
 
-- (void)fetchContentAndPrecacheNextPage:(BOOL)shouldUpdate
+- (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate
 {
     [self updatePageLabel];
     __weak typeof(self) weakSelf = self;
-    
+    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
+        ; // iOS 7 do not support hand off
+    } else {
+        self.userActivity.needsSave = YES;
+    }
     
     S1HUD *HUD = nil;
     //remove cache for last page
@@ -652,9 +1069,13 @@
         }];
     }
     
-    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents) {
+    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong typeof(self) strongSelf = weakSelf;
         [strongSelf updatePageLabel];
+        if (_shouldRestoreViewPosition) {
+            [strongSelf saveViewPosition];
+            _shouldRestoreViewPosition = NO;
+        }
         [strongSelf.webView loadHTMLString:contents baseURL:nil];
         [strongSelf updateTitleLabelWithTitle:strongSelf.topic.title];
         _finishLoading = YES;
@@ -668,9 +1089,8 @@
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
                 [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
             }
-            
-            
         }
+        // dismiss hud
         if (HUD != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (strongSelf.topic.message == nil || [strongSelf.topic.message isEqualToString:@""]) {
@@ -679,6 +1099,11 @@
                     [HUD setText:strongSelf.topic.message withWidthMultiplier:5];
                 }
             });
+        }
+        // auto refresh when current page not full.
+        if (shouldRefetch != nil && _currentPage < _totalPages && [shouldRefetch boolValue]) {
+            _shouldRestoreViewPosition = YES;
+            [strongSelf fetchContentAndForceUpdate:YES];
         }
         
     } failure:^(NSError *error) {
@@ -702,6 +1127,13 @@
     
 }
 
+#pragma mark - Layout
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    CGRect frame = self.view.frame;
+    frame.size = size;
+    self.view.frame = frame;
+}
+
 #pragma mark - Reply
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
 {
@@ -711,86 +1143,147 @@
         return;
     }
     
-    //[self rootViewController].modalPresentationStyle = UIModalPresentationCurrentContext;
-    
-    
-    if (self.replyDraft) {
-        self.replyDraft = [self.replyDraft stringByAppendingString:text? text : @""];
+    if (self.attributedReplyDraft) {
+        if (text) {
+            [self.attributedReplyDraft appendAttributedString:[[NSAttributedString alloc] initWithString:text attributes:nil]];
+        }
     } else {
-        self.replyDraft = text? text : @"";
+        if (text) {
+            self.attributedReplyDraft = [[NSMutableAttributedString alloc] initWithString:text];
+        }
+        self.attributedReplyDraft = [[NSMutableAttributedString alloc] init];
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] init];
+    [replyController setKeyboardAppearance:[[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
+    [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];
+    [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
+    [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
+    self.replyController = replyController;
+    [replyController.view setFrame:self.view.bounds];
+    // set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
+        self.replyTopicFloor = topicFloor;
+    } else {
+        self.replyTopicFloor = nil;
     }
-    __weak typeof(self) myself = self;
-    [replyController setCompletionHandler:^(REComposeViewController *composeViewController, REComposeResult result){
-        __strong typeof(self) strongMyself = myself;
-        if (result == REComposeResultCancelled) {
-            strongMyself.replyDraft = composeViewController.text;
-            [composeViewController dismissViewControllerAnimated:YES completion:nil];
-        } else if (result == REComposeResultPosted) {
-            if (composeViewController.text.length > 0) {
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
-                
-                if (topicFloor) {
-                    [self.dataCenter replySpecificFloor:topicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
-                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        
-                        strongMyself.replyDraft = @"";
-                        if (strongMyself->_currentPage == strongMyself->_totalPages) {
-                            strongMyself->_needToScrollToBottom = YES;
-                            [strongMyself fetchContentAndPrecacheNextPage:YES];
-                        }
-                    } failure:^(NSError *error) {
-                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        if (error.code == -999) {
-                            NSLog(@"Code -999 may means user want to cancel this request.");
-                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                        } else {
-                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                        }
-                    }];
-                } else {
-                    [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
-                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                        strongMyself.replyDraft = @"";
-                        if (strongMyself->_currentPage == strongMyself->_totalPages) {
-                            strongMyself->_needToScrollToBottom = YES;
-                            [strongMyself fetchContentAndPrecacheNextPage:YES];
-                        }
-                    } failure:^(NSError *error) {
-                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        if (error.code == -999) {
-                            NSLog(@"Code -999 may means user want to cancel this request.");
-                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                        } else {
-                            [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                        }
-                    }];
-                }
-                [composeViewController dismissViewControllerAnimated:YES completion:nil];
-            }
-        }
-    }];
     
-    [replyController setText:[replyController.text stringByAppendingString:self.replyDraft]];
-    [replyController.view setFrame:self.view.bounds];
+    replyController.delegate = self;
+    [replyController setAttributedText:self.attributedReplyDraft];
+    replyController.accessoryView = [self accessoryView];
+    [self resetTextViewStyle:replyController.textView];
+     
     [replyController presentFromViewController:self];
+    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
+    navigationDelegate.panRecognizer.enabled = NO;
 }
 
+- (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
+    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
+    navigationDelegate.panRecognizer.enabled = YES;
+    if (result == REComposeResultCancelled) {
+        self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
+        [composeViewController dismissViewControllerAnimated:YES completion:nil];
+    } else if (result == REComposeResultPosted) {
+        if (composeViewController.text.length > 0) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
+            __weak typeof(self) weakSelf = self;
+            if (self.replyTopicFloor) {
+                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success:^{
+                    __strong typeof(self) strongSelf = weakSelf;
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                    strongSelf.attributedReplyDraft = nil;
+                    if (strongSelf->_currentPage == strongSelf->_totalPages) {
+                        strongSelf->_needToScrollToBottom = YES;
+                        [strongSelf fetchContentAndForceUpdate:YES];
+                    }
+                } failure:^(NSError *error) {
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    if (error.code == -999) {
+                        NSLog(@"Code -999 may means user want to cancel this request.");
+                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                    } else {
+                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                    }
+                }];
+            } else {
+                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:^{
+                    __strong typeof(self) strongSelf = weakSelf;
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                    strongSelf.attributedReplyDraft = nil;
+                    if (strongSelf->_currentPage == strongSelf->_totalPages) {
+                        strongSelf->_needToScrollToBottom = YES;
+                        [strongSelf fetchContentAndForceUpdate:YES];
+                    }
+                } failure:^(NSError *error) {
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    if (error.code == -999) {
+                        NSLog(@"Code -999 may means user want to cancel this request.");
+                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                    } else {
+                        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                    }
+                }];
+            }
+            [composeViewController dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+#pragma mark - Notificatons
+
+- (void)saveTopicViewedState:(id)sender {
+    if (_finishLoading) {
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
+    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
+        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
+        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
+    }
+    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
+    self.topic.lastViewedDate = [NSDate date];
+    [self.topic setLastReplyCount:self.topic.replyCount];
+    [self.dataCenter hasViewed:self.topic];
+}
+
+- (void)deviceOrientationDidChange:(id)sender {
+    if (self.titleLabel) {
+        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+    }
+}
+
+- (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
+    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
+    self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    if(_currentPage != 1) {
+        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    }
+    self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
+        self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
+    } else {
+        self.titleLabel.text = self.topic.title;
+        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+    }
+    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
+    self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
+    self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
+
+    _needToLoadLastPosition = NO;
+    [self saveViewPosition];
+    [self fetchContentAndForceUpdate:NO];
+}
 
 #pragma mark - Helpers
 
-- (void)scrollToButtomAnimated:(BOOL)animated
+- (void)scrollToBottomAnimated:(BOOL)animated
 {
     [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height-self.webView.scrollView.bounds.size.height) animated:animated];
-    _needToScrollToBottom = NO;
 }
 
 - (BOOL)atBottom
@@ -822,8 +1315,9 @@
 
 - (void)updateTitleLabelWithTitle:(NSString *)title {
     self.titleLabel.text = title;
-    self.titleLabel.textColor = [S1Global color4];
+    self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
+
 - (UIImage *)screenShot
 {
     if (IS_RETINA) {
@@ -841,24 +1335,7 @@
     return viewImage;
 }
 
-- (void)saveTopicViewedState:(id)sender {
-    if (_finishLoading) {
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: self.webView.scrollView.contentOffset.y]];
-    } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
-        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
-        [self.topic setLastViewedPosition:[NSNumber numberWithFloat: 0.0]];
-    }
-    [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
-    [self.topic setFavorite:[NSNumber numberWithBool:[self.dataCenter topicIsFavorited:self.topic.topicID]]];
-    [self.topic setLastReplyCount:self.topic.replyCount];
-    [self.dataCenter hasViewed:self.topic];
-}
 
-- (void)deviceOrientationDidChange:(id)sender {
-    if (self.titleLabel) {
-        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-    }
-}
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
 {
@@ -877,6 +1354,46 @@
     NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:js, elementID]];
     CGRect rect = CGRectFromString(result);
     return rect;
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity {
+    NSLog(@"Hand Off Activity Updated");
+    activity.userInfo = @{@"topicID": self.topic.topicID,
+                          @"page": [NSNumber numberWithInteger:_currentPage]};
+    self.userActivity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+}
+
+- (void)saveViewPosition {
+    if (self.webView.scrollView.contentOffset.y != 0) {
+        [self.cachedViewPosition setObject:[NSNumber numberWithDouble:self.webView.scrollView.contentOffset.y] forKey:[NSNumber numberWithInteger:_currentPage]];
+    }
+}
+
+- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+    if (floorID == nil) {
+        return nil;
+    }
+    return [self.dataCenter searchFloorInCacheByFloorID:floorID];
+}
+
+- (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    S1Floor *floor = [self searchFloorInCacheByFloorID:floorID];
+    while (floor) {
+        [result insertObject:floor atIndex:0];
+        floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
+    }
+    return result;
+}
+
+- (void)resetTextViewStyle:(UITextView *)textView {
+    NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
+    [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
+    [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
+    [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
+    [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
+    [textView setFont:[UIFont systemFontOfSize:17.0f]];
+    [textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
 }
 
 @end

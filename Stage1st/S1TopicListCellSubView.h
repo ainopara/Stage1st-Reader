@@ -15,6 +15,7 @@
 @interface S1TopicListCellSubView : UIView
 
 @property (nonatomic, strong) S1Topic *topic;
+@property (nonatomic, strong) NSString *highlight;
 @property BOOL selected;
 @property BOOL highlighted;
 

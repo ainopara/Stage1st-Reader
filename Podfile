@@ -2,13 +2,18 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "7.0"
 
 target "Stage1st" do
-    pod 'FMDB', '~> 2.3'
-    pod 'AFNetworking', '~> 2.4.1'
+    pod 'FMDB'
+    pod 'AFNetworking'
     pod 'ActionSheetPicker-3.0'
-    pod 'JTSImageViewController'
+    pod 'JTSImageViewController', :git => 'https://github.com/ainopara/JTSImageViewController.git'
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'SVWebViewController', :git => 'https://github.com/ainopara/SVWebViewController.git'
-    pod '1PasswordExtension', '~> 1.0.0'
-    pod 'IMQuickSearch'
+    pod '1PasswordExtension'
+    pod 'Mantle'
+    pod 'Masonry'
+    pod 'Reachability'
+    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
+    pod 'Fabric'
+    pod 'Crashlytics'
 end
 

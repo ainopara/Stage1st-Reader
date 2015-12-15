@@ -19,7 +19,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
-        self.backgroundColor = [S1Global color5];
+        //Fix bug in iPad that set background color for cell not work. Set it manually in delegate.
+        //self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     }
     return self;
 }
@@ -40,6 +41,11 @@
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
     [self.drawingSubview setHighlighted:highlighted];
+    [self updateSubview];
+}
+
+- (void)setHighlight:(NSString *)highlight {
+    [self.drawingSubview setHighlight:highlight];
     [self updateSubview];
 }
 

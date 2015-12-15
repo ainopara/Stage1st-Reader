@@ -6,14 +6,12 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-@class FMDatabase;
-@class S1Topic;
+@import Foundation;
+#import "S1DataCenter.h"
 
-typedef enum {
-    S1TopicOrderByFavoriteSetDate,
-    S1TopicOrderByLastVisitDate
-} S1TopicOrderType;
+@class FMDatabase;
+@class YapDatabaseReadWriteTransaction;
+@class S1Topic;
 
 @interface S1Tracer : NSObject
 
@@ -22,19 +20,7 @@ typedef enum {
 
 - (id)init;
 
-- (void)hasViewed:(S1Topic *)topic;
-- (void)removeTopicFromHistory:(NSNumber *)topic_id;
-
-- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler;
-- (NSMutableArray *)favoritedObjects;
-
-- (S1Topic *)tracedTopicByID:(NSNumber *)key;
-
-- (BOOL)topicIsFavorited:(NSNumber *)topic_id;
-- (void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state;
-
-- (BOOL)syncWithDatabasePath:(NSString *)databasePath;
-
 + (void)upgradeDatabase;
++ (void)migrateDatabase;
 
 @end

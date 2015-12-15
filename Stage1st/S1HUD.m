@@ -8,6 +8,7 @@
 
 #import "S1HUD.h"
 #import "UIControl+BlockWrapper.h"
+#import "Masonry.h"
 
 typedef enum {
     S1HUDStateShowText,
@@ -26,6 +27,12 @@ typedef enum {
     HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
     HUD.parentView = view;
     [view addSubview:HUD];
+    [HUD mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(view.mas_centerX);
+        make.centerY.equalTo(view.mas_centerY);
+        make.width.greaterThanOrEqualTo(@80);
+        make.height.greaterThanOrEqualTo(@80);
+    }];
     [UIView animateWithDuration:0.2 animations:^{
         HUD.alpha = 1.0;
         HUD.transform = CGAffineTransformIdentity;
@@ -61,6 +68,10 @@ typedef enum {
     _text = text;
     [self removeSubviews];
     self.bounds = CGRectMake(0, 0, 60 * n, 60);
+    [self mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.greaterThanOrEqualTo(@60);
+        make.width.greaterThanOrEqualTo(@(60 * n));
+    }];
     _state = S1HUDStateShowText;
     [self setNeedsDisplay];
 }
@@ -108,10 +119,10 @@ typedef enum {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //// Color Declarations
-    UIColor* color = [UIColor colorWithWhite:0.15 alpha:1.0];
-    UIColor* gradientColor = [UIColor colorWithWhite:0.15 alpha:0.80];
-    UIColor* gradientColor2 = [UIColor colorWithWhite:0.15 alpha:0.80];
-    UIColor* textColor = [UIColor colorWithRed: 0.88 green: 0.88 blue: 0.88 alpha: 1];
+    UIColor* color = [[APColorManager sharedInstance] colorForKey:@"hud.border"];
+    UIColor* gradientColor = [[APColorManager sharedInstance] colorForKey:@"hud.background"];
+    UIColor* gradientColor2 = [[APColorManager sharedInstance] colorForKey:@"hud.background"];
+    UIColor* textColor = [[APColorManager sharedInstance] colorForKey:@"hud.text"];
     
     //// Gradient Declarations
     NSArray* gradientColors = [NSArray arrayWithObjects:

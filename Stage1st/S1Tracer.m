@@ -10,6 +10,7 @@
 #import "S1Topic.h"
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
+#import "DatabaseManager.h"
 
 
 @implementation S1Tracer {
@@ -54,98 +55,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)hasViewed:(S1Topic *)topic
-{
-    NSNumber *topicID = topic.topicID;
-    NSString *title = topic.title;
-    NSNumber *replyCount = topic.replyCount;
-    NSNumber *fID = topic.fID;
-    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
-    NSNumber *lastViewedPage = topic.lastViewedPage;
-    NSNumber *lastViewedPosition = topic.lastViewedPosition;
-    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
-    if ([result next]) {
-        NSNumber *visitCount = [[NSNumber alloc] initWithInt:[_db intForQuery:@"SELECT visit_count FROM threads WHERE topic_id = ?;", topicID] + 1];
-        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?, last_viewed_position = ?,visit_count = ? WHERE topic_id = ?;",
-         title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount, topicID];
-    } else {
-        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, visit_count) VALUES (?,?,?,?,?,?,?,?);",
-         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, [NSNumber numberWithInt:1]];
-    }
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
-    if ([historyResult next]) {
-        ;
-    } else {
-        [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
-    }
-    
-    NSLog(@"Tracer has traced:%@", topic);
-}
-
-- (void)removeTopicFromHistory:(NSNumber *)topic_id
-{
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topic_id];
-    if ([historyResult next]) {
-        [_db executeUpdate:@"DELETE FROM history WHERE topic_id = ?;", topic_id];
-    }
-}
-
-
-- (NSMutableArray *)historyObjectsWithLeftCallback:(void (^)(NSMutableArray *))leftTopicsHandler
-{
-    NSMutableArray *historyTopics = [NSMutableArray array];
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM (history INNER JOIN threads ON history.topic_id = threads.topic_id) ORDER BY threads.last_visit_time DESC;"];
-    NSInteger count = 0;
-    while ([historyResult next]) {
-        [historyTopics addObject:[S1Tracer topicFromQueryResult:historyResult]];
-        count += 1;
-        if (count == 100) {
-            break;
-        }
-    }
-    for (S1Topic *topic in historyTopics) {
-        topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_db]];
-        topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_db]];
-    }
-    if (count > 99) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSMutableArray *historyTopicsLeft = [NSMutableArray array];
-            while ([historyResult next]) {
-                [historyTopicsLeft addObject:[S1Tracer topicFromQueryResult:historyResult]];
-            }
-            NSLog(@"History Left count: %lu",(unsigned long)[historyTopicsLeft count] + count);
-            for (S1Topic *topic in historyTopicsLeft) {
-                topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:_backgroundDb]];
-                topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:_backgroundDb]];
-            }
-            leftTopicsHandler(historyTopicsLeft);
-        });
-    }
-    
-    return historyTopics;
-}
-
-- (NSMutableArray *)favoritedObjects
-{
-    NSMutableArray *favoriteTopics = [NSMutableArray array];
-    FMResultSet *favoriteResult = [_db executeQuery:@"SELECT * FROM (favorite INNER JOIN threads ON favorite.topic_id = threads.topic_id) ORDER BY threads.last_visit_time DESC;"];
-    while ([favoriteResult next]) {
-        [favoriteTopics addObject:[S1Tracer topicFromQueryResult:favoriteResult inDatabase:_db]];
-    }
-    NSLog(@"Favorite count: %lu",(unsigned long)[favoriteTopics count]);
-    return favoriteTopics;
-}
-
-- (S1Topic *)tracedTopicByID:(NSNumber *)topicID
-{
-    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;",topicID];
-    if ([result next]) {
-        return [S1Tracer topicFromQueryResult:result inDatabase:_db];
-    } else {
-        return nil;
-    }
-}
 #pragma mark - Static
+
 + (S1Topic *)topicFromQueryResult:(FMResultSet *)result {
     S1Topic *topic = [[S1Topic alloc] init];
     topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
@@ -154,166 +65,34 @@
     topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
     topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
     topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
-    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
     topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
-    return topic;
-}
-+ (S1Topic *)topicFromQueryResult:(FMResultSet *)result inDatabase:(FMDatabase *)database {
-    S1Topic *topic = [[S1Topic alloc] init];
-    topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
-    topic.title = [result stringForColumn:@"title"];
-    topic.replyCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]];
-    topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
-    topic.lastViewedPage = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"last_visit_page"]];
-    topic.lastViewedPosition = [NSNumber numberWithFloat:[result doubleForColumn:@"last_viewed_position"]];
-    topic.visitCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"visit_count"]];
-    topic.favorite = [NSNumber numberWithBool:[S1Tracer topicIsFavorited:topic.topicID inDatabase:database]];
-    topic.history = [NSNumber numberWithBool:[S1Tracer topicIsInHistory:topic.topicID inDatabase:database]];
-    topic.lastViewedDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"last_visit_time"]];
-    return topic;
-}
-
-+ (BOOL)topicIsFavorited:(NSNumber *)topic_id inDatabase:(FMDatabase *)database
-{
-    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
-    if ([historyResult next]) {
-        return YES;
+    topic.favoriteDate = [[NSDate alloc] initWithTimeIntervalSince1970: [result doubleForColumn:@"favorite_time"]];
+    if (![topic.favoriteDate isEqual:[[NSDate alloc] initWithTimeIntervalSince1970:0]]) {
+        topic.favorite = [NSNumber numberWithBool:YES];
     } else {
-        return NO;
+        topic.favorite = [NSNumber numberWithBool:NO];
     }
-    
-}
-
-+ (BOOL)topicIsInHistory:(NSNumber *)topic_id inDatabase:(FMDatabase *)database
-{
-    FMResultSet *historyResult = [database executeQuery:@"SELECT topic_id FROM history WHERE topic_id = ?;",topic_id];
-    if ([historyResult next]) {
-        return YES;
-    } else {
-        return NO;
+    if (topic.title == nil) {
+        topic.title = @"";
     }
-    
+    return topic;
 }
 
 #pragma mark - Archiver
 
 - (void)synchronize
 {
-    [self purgeStaleItem];
+    //[self purgeStaleItem];
 }
-
-- (void)purgeStaleItem
-{
-    NSDate *now = [NSDate date];
-    NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
-    if (duration < 0) {
-        return;
-    }
-    NSTimeInterval dueDate = [now timeIntervalSince1970] - duration;
-    [_db executeUpdate:@"DELETE FROM history WHERE topic_id IN (SELECT history.topic_id FROM history INNER JOIN threads ON history.topic_id = threads.topic_id WHERE threads.last_visit_time < ?);",[[NSNumber alloc] initWithDouble:dueDate]];
-    [_db executeUpdate:@"DELETE FROM threads WHERE topic_id NOT IN (SELECT topic_id FROM history UNION SELECT topic_id FROM favorite);"];
-    
-}
-- (BOOL)topicIsFavorited:(NSNumber *)topic_id
-{
-    return [S1Tracer topicIsFavorited:topic_id inDatabase:_db];
-    
-}
-
-
-
--(void)setTopicFavoriteState:(NSNumber *)topic_id withState:(BOOL)state
-{
-    FMResultSet *historyResult = [_db executeQuery:@"SELECT topic_id FROM favorite WHERE topic_id = ?;",topic_id];
-    if ([historyResult next]) {
-        if (state) {
-            ;
-        } else {
-            [_db executeUpdate:@"DELETE FROM favorite WHERE topic_id = ?;", topic_id]; //topic_id in favorite table and state should be NO
-        }
-    } else {
-        if (state) {
-            [_db executeUpdate:@"INSERT INTO favorite (topic_id, favorite_time) VALUES (?,?);", topic_id, [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]]]; //topic_id not in favorite table and state should be YES
-        } else {
-            ;
-        }
-    }
-}
-
-#pragma mark - Sync Database File
-- (BOOL)syncWithDatabasePath:(NSString *)databasePath {
-    FMDatabase *syncDatabase = [FMDatabase databaseWithPath:databasePath];
-    if (![syncDatabase open]) {
-        NSLog(@"Could not open db.");
-        return NO;
-    }
-    FMResultSet *historyResult = [syncDatabase executeQuery:@"SELECT * FROM threads ORDER BY last_visit_time DESC;"];
-    //use transaction
-    NSInteger counter = 0;
-    [_db beginTransaction];
-    while ([historyResult next]) {
-        S1Topic *topicThere = [S1Tracer topicFromQueryResult:historyResult inDatabase:syncDatabase];
-        S1Topic *topicThis = [self tracedTopicByID:topicThere.topicID];
-        if (topicThis != nil) {
-            if ([topicThis absorbTopic:topicThere]) {
-                [self updateTopic:topicThis];
-                counter += 1;
-            }
-        } else {
-            [self updateTopic:topicThere];
-            counter += 1;
-        }
-    }
-    [_db commit];
-    [syncDatabase close];
-    NSLog(@"%ld Items Updated.", (long)counter);
-    return YES;
-    
-}
-
-- (void)updateTopic:(S1Topic *)topic
-{
-    NSNumber *topicID = topic.topicID;
-    NSString *title = topic.title;
-    NSNumber *replyCount = topic.replyCount;
-    NSNumber *fID = topic.fID;
-    NSNumber *lastViewedDate = [NSNumber numberWithDouble:[topic.lastViewedDate timeIntervalSince1970]];
-    NSNumber *lastViewedPage = topic.lastViewedPage;
-    NSNumber *lastViewedPosition = topic.lastViewedPosition;
-    NSNumber *visitCount = topic.visitCount;
-    //update threads table
-    FMResultSet *result = [_db executeQuery:@"SELECT * FROM threads WHERE topic_id = ?;", topicID];
-    if ([result next]) {
-        [_db executeUpdate:@"UPDATE threads SET title = ?,reply_count = ?,field_id = ?,last_visit_time = ?,last_visit_page = ?, last_viewed_position = ?,visit_count = ? WHERE topic_id = ?;",
-         title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount, topicID];
-    } else {
-        [_db executeUpdate:@"INSERT INTO threads (topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, visit_count) VALUES (?,?,?,?,?,?,?,?);",
-         topicID, title, replyCount, fID, lastViewedDate, lastViewedPage, lastViewedPosition, visitCount];
-    }
-    //update history table
-    if ([topic.history boolValue]) {
-        FMResultSet *historyResult = [_db executeQuery:@"SELECT * FROM history WHERE topic_id = ?;", topicID];
-        if ([historyResult next]) {
-            ;
-        } else {
-            [_db executeUpdate:@"INSERT INTO history (topic_id) VALUES (?);", topicID];
-        }
-    }
-    //update favorite table
-    if ([topic.favorite boolValue]) {
-        [self setTopicFavoriteState:topicID withState:YES];
-    }
-}
-
 
 #pragma mark - Upgrade
 
 + (void)upgradeDatabase
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectory = [paths objectAtIndex:0];
-    NSString *dbPath = [documentDirectory stringByAppendingPathComponent:@"Stage1stReader.db"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
+    NSString *dbPath = [dbPathURL path];
     if ([fileManager fileExistsAtPath:dbPath]) {
         FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
         if (![db open]) {
@@ -332,4 +111,67 @@
     
 }
 
+#pragma mark - Migrate
+
++ (void)migrateDatabase {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+        NSURL *dbPathURL = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
+        NSString *dbPath = [dbPathURL path];
+        if ([fileManager fileExistsAtPath:dbPath]) {
+            FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
+            if (![db open]) {
+                NSLog(@"Could not open db.");
+                return;
+            }
+            NSLog(@"migrateDatabase begin.");
+            // TODO: Should change query to make sure topic that in favorite list but not in history list to be imported.
+            FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
+            __block NSInteger succeedCount = 0;
+            __block NSInteger changeCount = 0;
+            __block NSInteger failCount = 0;
+            __block BOOL allImported = NO;
+            while (!allImported) {
+                [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+                    while ([result next]) {
+                        S1Topic *topic = [S1Tracer topicFromQueryResult:result];
+                        S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
+                        if (tracedTopic) {
+                            tracedTopic = [tracedTopic copy];
+                            [tracedTopic absorbTopic:topic];
+                        } else {
+                            tracedTopic = topic;
+                        }
+                        if (tracedTopic) {
+                            if (tracedTopic.hasChangedProperties) {
+                                //NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
+                                [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
+                                changeCount += 1;
+                            }
+                            succeedCount += 1;
+                        } else {
+                            failCount += 1;
+                        }
+                        if (changeCount % 100 == 1) {
+                            break;
+                        }
+                    }
+                    if (![result hasAnotherRow]) {
+                        allImported = YES;
+                    }
+                }];
+            }
+            NSLog(@"%ld Topics Counted.%ld Topics Changed.(%ld fails)", (long)succeedCount, (long)changeCount, (long)failCount);
+            
+            [db close];
+            NSError *error;
+            [fileManager moveItemAtURL:dbPathURL toURL:[documentDirectory URLByAppendingPathComponent:@"Stage1stReader.databasebackup"] error:&error];
+            if (error) {
+                NSLog(@"Fail to Rename Database: %@",error);
+            }
+        }
+    });
+}
 @end

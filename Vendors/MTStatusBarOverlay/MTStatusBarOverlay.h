@@ -31,16 +31,8 @@
 typedef enum MTStatusBarOverlayAnimation {
 	MTStatusBarOverlayAnimationNone,      // nothing happens
 	MTStatusBarOverlayAnimationShrink,    // the status bar shrinks to the right side and only shows the activity indicator
-	MTStatusBarOverlayAnimationFallDown   // the status bar falls down and displays more information
 } MTStatusBarOverlayAnimation;
 
-
-// Mode of the detail view
-typedef enum MTDetailViewMode {
-	MTDetailViewModeHistory,			// History of messages is recorded and displayed in detailView
-	MTDetailViewModeDetailText,			// a text can be displayed easily
-	MTDetailViewModeCustom				// the detailView can be customized in the way the developer wants
-} MTDetailViewMode;
 
 // indicates the type of a message
 typedef enum MTMessageType {
@@ -78,12 +70,10 @@ typedef enum MTMessageType {
  a detail-view that shows additional information. You can show a history of all the previous
  messages for free by setting historyEnabled to YES
  */
-@interface MTStatusBarOverlay : UIWindow <UITableViewDataSource> 
+@interface MTStatusBarOverlay : UIWindow
 
 // the view that holds all the components of the overlay (except for the detailView)
 @property (nonatomic, strong) UIView *backgroundView;
-// the detailView is shown when animation is set to "FallDown"
-@property (nonatomic, strong) UIView *detailView;
 // the current progress
 @property (nonatomic, assign) double progress;
 // the frame of the status bar when animation is set to "Shrink" and it is shrinked
@@ -100,20 +90,12 @@ typedef enum MTMessageType {
 @property (nonatomic, strong) UIImage *defaultStatusBarImageShrinked;
 // detect if status bar is currently shrinked
 @property (nonatomic, readonly, getter=isShrinked) BOOL shrinked;
-// detect if detailView is currently hidden
-@property (nonatomic, readonly, getter=isDetailViewHidden) BOOL detailViewHidden;
 // all messages that were displayed since the last finish-call
 @property (nonatomic, strong, readonly) NSMutableArray *messageHistory;
-// DEPRECATED: enable/disable history-tracking of messages
-@property (nonatomic, assign, getter=isHistoryEnabled) BOOL historyEnabled;
 // the last message that was visible
 @property (nonatomic, copy) NSString *lastPostedMessage;
 // determines if immediate messages in the queue get removed or stay in the queue, when a new immediate message gets posted
 @property (nonatomic, assign) BOOL canRemoveImmediateMessagesFromQueue;
-// the mode of the detailView
-@property (nonatomic, assign) MTDetailViewMode detailViewMode;
-// the text displayed in the detailView (alternative to history)
-@property (nonatomic, copy) NSString *detailText;
 // the delegate of the overlay
 @property (nonatomic, unsafe_unretained) id<MTStatusBarOverlayDelegate> delegate;
 
@@ -125,7 +107,6 @@ typedef enum MTMessageType {
 
 // Singleton Instance
 + (MTStatusBarOverlay *)sharedInstance;
-+ (MTStatusBarOverlay *)sharedOverlay;
 
 //===========================================================
 #pragma mark -

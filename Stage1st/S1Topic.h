@@ -7,38 +7,46 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CloudKit/CloudKit.h>
+#import "MyDatabaseObject.h"
 
-@interface S1Topic : NSObject <NSCoding>
-//Basic
+@interface S1Topic : MyDatabaseObject<NSCoding, NSCopying>
+// Basic
 @property (nonatomic, copy) NSNumber *topicID;
-//To show in topic list
+// To show in topic list
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSNumber *replyCount;
 @property (nonatomic, copy) NSNumber *lastReplyCount;
 @property (nonatomic, copy) NSNumber *favorite;
-@property (nonatomic, copy) NSNumber *history;
+@property (nonatomic, copy) NSDate *favoriteDate;
 @property (nonatomic, copy) NSDate *lastViewedDate;
 @property (nonatomic, copy) NSNumber *lastViewedPosition;
-@property (nonatomic, copy) NSString *highlight;
-//To generate content page
-@property (nonatomic, copy) NSNumber *authorUserID;
 
-//Used to update page count in content view
-@property (nonatomic, copy) NSNumber *totalPageCount;
-//Not Used
-@property (nonatomic, copy) NSNumber *fID;
+// To generate content page & Search post owner
+@property (nonatomic, copy) NSNumber *authorUserID;
 @property (nonatomic, copy) NSString *authorUserName;
-@property (nonatomic, copy) NSNumber *visitCount;
-//For Reply
+
+// Used to update page count in content view
+@property (nonatomic, copy) NSNumber *totalPageCount;
+// Not Used
+@property (nonatomic, copy) NSNumber *fID;
+
+// For Reply
 @property (nonatomic, copy) NSString *formhash;
 
-//For Tracing
+// For Tracing
 @property (nonatomic, copy) NSNumber *lastViewedPage;
-@property (nonatomic, copy) NSMutableDictionary *floors;
+@property (nonatomic, copy) NSDictionary *floors;
 
 @property (nonatomic, copy) NSString *message;
 
+// Model Version
+@property (nonatomic, copy) NSNumber *modelVersion;
+
+
+- (instancetype)initWithRecord:(CKRecord *)record;
+// Update
 - (void)addDataFromTracedTopic:(S1Topic *)topic;
 - (void)updateFromTopic:(S1Topic *)topic;
-- (BOOL)absorbTopic:(S1Topic *)topic;
+- (void)absorbTopic:(S1Topic *)topic;
 @end

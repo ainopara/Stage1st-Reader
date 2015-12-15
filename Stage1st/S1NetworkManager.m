@@ -14,12 +14,7 @@
 @end
 
 @implementation S1NetworkManager
-
-- (instancetype)init {
-    self = [super init];
-    return self;
-}
-
+#pragma mark - Topic List
 + (void)requestTopicListForKey:(NSString *)keyID
                       withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *, id))success
@@ -39,6 +34,24 @@
     }
 }
 
++ (void)requestTopicListAPIForKey:(NSString *)keyID
+                         withPage:(NSNumber *)page
+                          success:(void (^)(NSURLSessionDataTask *, id))success
+                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/index.php";
+    NSDictionary *params = @{@"module": @"forumdisplay",
+                             @"version": @1,
+                             @"tpp": @50,
+                             @"submodule": @"checkpost",
+                             @"mobile": @"no",
+                             @"fid": keyID,
+                             @"page": page,
+                             @"orderby": @"dblastpost"};
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    
+}
+
+#pragma mark - Content
 + (void)requestTopicContentForID:(NSNumber *)topicID
                       withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *, id))success
@@ -57,37 +70,12 @@
         [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
     }
 }
-#pragma mark - API
 
-+ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *, id))success
-                              failureBlock:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/";
-    NSDictionary *params = @{@"module": @"login"};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
-    
-}
-
-+ (void)requestTopicListAPIForKey:(NSString *)keyID
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *, id))success
-                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/index.php";
-    NSDictionary *params = @{@"module": @"forumdisplay",
-                             @"version": @1,
-                             @"tpp": @50,
-                             @"submodule": @"checkpost",
-                             @"mobile": @"no",
-                             @"fid": keyID,
-                             @"page": page,
-                             @"orderby": @"dblastpost"};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
-
-}
 
 + (void)requestTopicContentAPIForID:(NSNumber *)topicID
-                        withPage:(NSNumber *)page
-                         success:(void (^)(NSURLSessionDataTask *, id))success
-                         failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+                           withPage:(NSNumber *)page
+                            success:(void (^)(NSURLSessionDataTask *, id))success
+                            failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *url = @"api/mobile/index.php";
     NSDictionary *params = @{@"module": @"viewthread",
                              @"version": @1,
@@ -99,18 +87,55 @@
     [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
 }
 
+#pragma mark - Check Login State
+
++ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *, id))success
+                              failureBlock:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/";
+    NSDictionary *params = @{@"module": @"login"};
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    
+}
+
+#pragma mark - Login
+
++ (void)postLoginForUsername:(NSString *)username
+                 andPassword:(NSString *)password
+                     success:(void (^)(NSURLSessionDataTask *, id))success
+                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
+    NSDictionary *params = @{@"fastloginfield" : @"username",
+                             @"username" : username,
+                             @"password" : password,
+                             @"handlekey" : @"ls",
+                             @"quickforward" : @"yes",
+                             @"cookietime" : @"2592000"};
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+}
+
++ (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
+                                        success:(void (^)(NSURLSessionDataTask *, id))success
+                                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"member.php";
+    NSDictionary *params = @{@"mod" : @"logging",
+                             @"action" : @"logout",
+                             @"formhash" : formhash};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+
+
 #pragma mark - Reply
 
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID
-                                        fieldID:(NSNumber *)fieldID
+                                        forumID:(NSNumber *)forumID
                                         success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                                         failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
     NSString *url = @"forum.php";
     NSDictionary *params = @{@"mod": @"post",
                              @"action": @"reply",
-                             @"fid": fieldID,
+                             @"fid": forumID,
                              @"tid": topicID,
                              @"repquote": floorID,
                              @"extra": @"",
@@ -124,50 +149,47 @@
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
                    withPage:(NSNumber *)page
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *, id))success
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%@&tid=%@&replysubmit=yes&inajax=1";
-    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, page, topicID];
+    NSString *url = [NSString stringWithFormat:urlTemplate, forumID, page, topicID];
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
-                    fieldID:(NSNumber *)fieldID
+                    forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *, id))success
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1";
-    NSString *url = [NSString stringWithFormat:urlTemplate, fieldID, topicID];
+    NSString *url = [NSString stringWithFormat:urlTemplate, forumID, topicID];
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
 
-#pragma mark - Login
 
-+ (void)postLoginForUsername:(NSString *)username
-                 andPassword:(NSString *)password
-                     success:(void (^)(NSURLSessionDataTask *, id))success
-                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
-    NSDictionary *params = @{@"fastloginfield" : @"username",
-                            @"username" : username,
-                            @"password" : password,
-                            @"handlekey" : @"ls",
-                            @"quickforward" : @"yes",
-                            @"cookietime" : @"2592000"};
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
-}
-
-+ (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
-                                        success:(void (^)(NSURLSessionDataTask *, id))success
-                                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"member.php";
-    NSDictionary *params = @{@"mod" : @"logging",
-                             @"action" : @"logout",
-                             @"formhash" : formhash};
+#pragma mark - Redirect (Not Finish)
++ (void)findTopicFloor:(NSNumber *)floorID
+             inTopicID:(NSNumber *)topicID
+               success:(void (^)(NSURLSessionDataTask *, id))success
+               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"forum.php";
+    NSDictionary *params = @{@"mod" : @"redirect",
+                             @"goto" : @"findpost",
+                             @"pid" : floorID,
+                             @"ptid" : topicID};
+    [[S1HTTPSessionManager sharedHTTPClient] setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
+        NSLog(@"%@",response);
+        NSLog(@"%@",request);
+        if (request.URL) {
+            ;
+        }
+        return request;
+    }];
     [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
 }
+
 
 #pragma mark - Search
 
@@ -185,8 +207,55 @@
                              @"searchsubmit" : @"true"};
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
 }
+//http://bbs.saraba1st.com/2b/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
++ (void)requestSearchResultPageForSearchID:(NSString *)searchID
+                                  withPage:(NSNumber *)page
+                                   success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                                   failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"search.php";
+    NSDictionary *params = @{@"mod" : @"forum",
+                             @"searchid" : searchID,
+                             @"orderby" : @"lastpost",
+                             @"ascdesc" : @"desc",
+                             @"page" : page,
+                             @"searchsubmit" : @"yes"};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+#pragma mark - User Info
 
++ (void)requestThreadListForID:(NSNumber *)userID
+                       andPage:(NSNumber *)page
+                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"home.php";
+    NSDictionary *params = @{@"mod" : @"space",
+                             @"uid" : userID,
+                             @"do" : @"thread",
+                             @"view" : @"me",
+                             @"from" : @"space",
+                             @"type" : @"thread",
+                             @"page" : page,
+                             @"order" : @"dateline"};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
 
++ (void)requestReplyListForID:(NSNumber *)userID
+                      andPage:(NSNumber *)page
+                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    NSString *url = @"home.php";
+    NSDictionary *params = @{@"mod" : @"space",
+                             @"uid" : userID,
+                             @"do" : @"thread",
+                             @"view" : @"me",
+                             @"from" : @"space",
+                             @"type" : @"reply",
+                             @"page" : page,
+                             @"order" : @"dateline"};
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+}
+
+#pragma mark - Cancel
 + (void) cancelRequest
 {
     [[[S1HTTPSessionManager sharedHTTPClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {

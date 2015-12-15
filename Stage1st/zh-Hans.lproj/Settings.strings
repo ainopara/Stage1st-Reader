@@ -1,75 +1,123 @@
-/* Class = "IBUILabel"; text = "Display Image"; ObjectID = "4y5-0D-ImP"; */
-"4y5-0D-ImP.text" = "显示图片";
 
-/* Class = "IBUITableViewController"; title = "Forum Order"; ObjectID = "6R3-p1-NMf"; */
+/* Class = "UILabel"; text = "Last Error"; ObjectID = "0Lh-c0-gNo"; */
+"0Lh-c0-gNo.text" = "上一次错误编号";
+
+/* Class = "UILabel"; text = "Off"; ObjectID = "174-Ea-QdT"; */
+"174-Ea-QdT.text" = "关闭";
+
+/* Class = "UILabel"; text = "iCloud Sync"; ObjectID = "2Df-Zp-Qy9"; */
+"2Df-Zp-Qy9.text" = "iCloud同步";
+
+/* Class = "UILabel"; text = "Upload Queue"; ObjectID = "2UX-Wg-p1U"; */
+"2UX-Wg-p1U.text" = "上传队列";
+
+/* Class = "UILabel"; text = "显示图片"; ObjectID = "4y5-0D-ImP"; */
+"4y5-0D-ImP.text" = "移动数据下显示图片";
+
+/* Class = "UITableViewController"; title = "板块自定义"; ObjectID = "6R3-p1-NMf"; */
 "6R3-p1-NMf.title" = "板块自定义";
 
-/* Class = "IBUILabel"; text = "Detail"; ObjectID = "8dV-mn-myv"; */
+/* Class = "UILabel"; text = "Detail"; ObjectID = "8dV-mn-myv"; */
 "8dV-mn-myv.text" = "Detail";
 
-/* Class = "IBUITextField"; placeholder = "Username"; ObjectID = "8hF-SF-9fr"; */
+/* Class = "UITextField"; placeholder = "用户名"; ObjectID = "8hF-SF-9fr"; */
 "8hF-SF-9fr.placeholder" = "用户名";
 
-/* Class = "IBUILabel"; text = "Font Size"; ObjectID = "8vS-vt-Air"; */
+/* Class = "UILabel"; text = "字体大小"; ObjectID = "8vS-vt-Air"; */
 "8vS-vt-Air.text" = "字体大小";
 
-/* Class = "IBUILabel"; text = "Use API"; ObjectID = "AMT-Bb-S6D"; */
+/* Class = "UILabel"; text = "使用API"; ObjectID = "AMT-Bb-S6D"; */
 "AMT-Bb-S6D.text" = "使用API";
 
-/* Class = "IBUIBarButtonItem"; title = "Back"; ObjectID = "CV4-G8-ASX"; */
+/* Class = "UITableViewSection"; footerTitle = "启用iCloud同步意味着您的浏览历史、收藏等信息将与您当前登录的iCloud帐号进行同步。"; ObjectID = "Apk-Sc-qdJ"; */
+"Apk-Sc-qdJ.footerTitle" = "启用iCloud同步意味着您的浏览历史、收藏等信息将与您当前登录的iCloud帐号进行同步。";
+
+/* Class = "UITableViewSection"; headerTitle = "iCloud Sync"; ObjectID = "Apk-Sc-qdJ"; */
+"Apk-Sc-qdJ.headerTitle" = "iCloud同步";
+
+/* Class = "UIBarButtonItem"; title = "返回"; ObjectID = "CV4-G8-ASX"; */
 "CV4-G8-ASX.title" = "返回";
 
-/* Class = "IBUILabel"; text = "Keep History"; ObjectID = "DX9-1Q-Yua"; */
+/* Class = "UILabel"; text = "Force Portrait"; ObjectID = "DBM-iT-6OE"; */
+"DBM-iT-6OE.text" = "锁定竖屏";
+
+/* Class = "UILabel"; text = "保存历史记录"; ObjectID = "DX9-1Q-Yua"; */
 "DX9-1Q-Yua.text" = "保存历史记录";
 
-/* Class = "IBUILabel"; text = "Detail"; ObjectID = "E8b-PX-rjK"; */
+/* Class = "UILabel"; text = "Detail"; ObjectID = "E8b-PX-rjK"; */
 "E8b-PX-rjK.text" = "Detail";
 
-/* Class = "IBUILabel"; text = "Detail"; ObjectID = "MDi-8t-5qr"; */
+/* Class = "UITableViewSection"; headerTitle = "CloudKit Status"; ObjectID = "I7y-yo-kbq"; */
+"I7y-yo-kbq.headerTitle" = "CloudKit状态";
+
+/* Class = "UILabel"; text = "Night Mode"; ObjectID = "Iaq-ft-rzy"; */
+"Iaq-ft-rzy.text" = "夜间模式";
+
+/* Class = "UILabel"; text = "Current Sync State"; ObjectID = "KiY-8q-MSH"; */
+"KiY-8q-MSH.text" = "当前同步状态";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "MDi-8t-5qr"; */
 "MDi-8t-5qr.text" = "Detail";
 
-/* Class = "IBUIViewController"; title = "Login"; ObjectID = "Rga-Ra-1eA"; */
+/* Class = "UIViewController"; title = "登录"; ObjectID = "Rga-Ra-1eA"; */
 "Rga-Ra-1eA.title" = "登录";
 
-/* Class = "IBUILabel"; text = "Gabriel & ainopara"; ObjectID = "SWl-nG-F4S"; */
+/* Class = "UILabel"; text = "Gabriel & ainopara"; ObjectID = "SWl-nG-F4S"; */
 "SWl-nG-F4S.text" = "Gabriel & ainopara";
 
-/* Class = "IBUITableViewController"; title = "Settings"; ObjectID = "Z9I-YZ-q2k"; */
+/* Class = "UITableViewController"; title = "设置"; ObjectID = "Z9I-YZ-q2k"; */
 "Z9I-YZ-q2k.title" = "设置";
 
-/* Class = "IBUILabel"; text = "Forum Order"; ObjectID = "ZB5-71-yaj"; */
+/* Class = "UILabel"; text = "板块自定义"; ObjectID = "ZB5-71-yaj"; */
 "ZB5-71-yaj.text" = "板块自定义";
 
-/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "a7E-Z0-WQq"; */
+/* Class = "UILabel"; text = "Enable iCloud Sync"; ObjectID = "ZEt-r3-VHz"; */
+"ZEt-r3-VHz.text" = "开启iCloud同步";
+
+/* Class = "UITextField"; placeholder = "密码"; ObjectID = "a7E-Z0-WQq"; */
 "a7E-Z0-WQq.placeholder" = "密码";
 
-/* Class = "IBUILabel"; text = "Import / Export"; ObjectID = "aUI-B0-MIH"; */
-"aUI-B0-MIH.text" = "导入/导出";
-
-/* Class = "IBUILabel"; text = "Remove Tails"; ObjectID = "afJ-hF-0oG"; */
+/* Class = "UILabel"; text = "去除小尾巴"; ObjectID = "afJ-hF-0oG"; */
 "afJ-hF-0oG.text" = "去除小尾巴";
 
-/* Class = "IBUILabel"; text = "Title"; ObjectID = "con-mD-8cX"; */
+/* Class = "UILabel"; text = "Title"; ObjectID = "con-mD-8cX"; */
 "con-mD-8cX.text" = "Title";
 
-/* Class = "IBUILabel"; text = "Not Login"; ObjectID = "nZs-MV-DJo"; */
+/* Class = "UITableViewSection"; headerTitle = "Credits"; ObjectID = "e4M-E1-pBD"; */
+"e4M-E1-pBD.headerTitle" = "版权信息";
+
+/* Class = "UILabel"; text = "清空云端数据"; ObjectID = "e5P-TU-gZI"; */
+"e5P-TU-gZI.text" = "清空云端数据";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "gBN-o4-LQ9"; */
+"gBN-o4-LQ9.text" = "Detail";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "kc8-ab-2ZD"; */
+"kc8-ab-2ZD.text" = "Detail";
+
+/* Class = "UILabel"; text = "Detail"; ObjectID = "mV7-3q-fFB"; */
+"mV7-3q-fFB.text" = "Detail";
+
+/* Class = "UILabel"; text = "未登录"; ObjectID = "nZs-MV-DJo"; */
 "nZs-MV-DJo.text" = "未登录";
 
-/* Class = "IBUILabel"; text = "Login"; ObjectID = "ng5-KU-SG1"; */
+/* Class = "UILabel"; text = "登录"; ObjectID = "ng5-KU-SG1"; */
 "ng5-KU-SG1.text" = "登录";
 
-/* Class = "IBUILabel"; text = "Version"; ObjectID = "pea-Ap-wK5"; */
+/* Class = "UILabel"; text = "版本"; ObjectID = "pea-Ap-wK5"; */
 "pea-Ap-wK5.text" = "版本";
 
-/* Class = "IBUIButton"; normalTitle = "Login"; ObjectID = "swq-PA-Vhc"; */
+/* Class = "UITableViewSection"; headerTitle = "Syncing"; ObjectID = "q9g-tA-73J"; */
+"q9g-tA-73J.headerTitle" = "同步";
+
+/* Class = "UIButton"; normalTitle = "登录"; ObjectID = "swq-PA-Vhc"; */
 "swq-PA-Vhc.normalTitle" = "登录";
 
-/* Class = "IBUINavigationItem"; title = "Settings"; ObjectID = "u6Z-FP-JaY"; */
+/* Class = "UINavigationItem"; title = "设置"; ObjectID = "u6Z-FP-JaY"; */
 "u6Z-FP-JaY.title" = "设置";
 
-/* Class = "IBUILabel"; text = "Developers"; ObjectID = "yBw-Qf-dtH"; */
+/* Class = "UILabel"; text = "开发者"; ObjectID = "yBw-Qf-dtH"; */
 "yBw-Qf-dtH.text" = "开发者";
 
-/* Class = "IBUILabel"; text = "Precache Next Page"; ObjectID = "zBD-2E-6nE"; */
+/* Class = "UILabel"; text = "预缓存下一页"; ObjectID = "zBD-2E-6nE"; */
 "zBD-2E-6nE.text" = "预缓存下一页";
-
