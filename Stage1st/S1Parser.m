@@ -24,7 +24,7 @@
 + (NSString *)processHTMLString:(NSString *)HTMLString
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    //process images
+    // process images
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
@@ -72,7 +72,7 @@
         
     }
     
-    //process spoiler
+    // process spoiler
     NSArray<NSString *> *spoilerXpathList = @[@"//font[@color='LemonChiffon']",
                                               @"//font[@color='Yellow']",
                                               @"//font[@color='#fffacd']",
@@ -103,6 +103,14 @@
         [containerElement addChild:buttonElement];
         [containerElement addChild:spoilerElement];
         [parentElement insertChild:containerElement atIndex:index];
+    }
+    
+    // process indent
+    NSArray *paragraphs = [xmlDoc nodesForXPath:@"//td[@class='t_f']//p[@style]" error:nil];
+    if (paragraphs != nil) {
+        for(DDXMLElement *paragraph in paragraphs) {
+            [paragraph removeAttributeForName:@"style"];
+        }
     }
     
     
