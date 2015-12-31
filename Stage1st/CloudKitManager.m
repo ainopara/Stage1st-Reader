@@ -897,11 +897,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
     NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+    if (retryDelay) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, retryDelay.integerValue * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.needsResume = YES;
+            [self continueCloudKitFlow];
+        });
+        [Answers logCustomEventWithName:@"CloudKit Rerty Interval" customAttributes:@{@"interval": retryDelay}];
+    }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.needsResume = YES;
-        [self continueCloudKitFlow];
-    });
 }
 
 - (void)reportError:(NSError *)error {
