@@ -14,10 +14,10 @@ extern NSString *const YapDatabaseCloudKitStateChangeNotification;
 typedef enum : NSUInteger {
     CKManagerStateInit, // extension registering
     CKManagerStateSetup, // create zone and create zone subscription
-    CKManagerStateFetch, // fetch server changes
-    CKManagerStateUpload, // upload local changes
+    CKManagerStateFetching, // fetch server changes
+    CKManagerStateUploading, // upload local changes
     CKManagerStateReady, // nothing to do, ready for fetch or upload
-    CKManagerStateRecover, // trying to recover from an error
+    CKManagerStateRecovering, // trying to recover from an error
     CKManagerStateHalt, // failed to recover from an error, will halt until next boot
 } CKManagerState;
 

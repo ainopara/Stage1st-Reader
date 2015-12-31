@@ -271,17 +271,17 @@
             case CKManagerStateSetup:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Setup", @"Setup");
                 break;
-            case CKManagerStateFetch:
+            case CKManagerStateFetching:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Fetch", @"Fetch");
                 break;
-            case CKManagerStateUpload:
+            case CKManagerStateUploading:
                 titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
                 titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Upload", @"Upload") stringByAppendingString:titleString];
                 break;
             case CKManagerStateReady:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Ready", @"Ready");
                 break;
-            case CKManagerStateRecover:
+            case CKManagerStateRecovering:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Recover", @"Recover");
                 break;
             case CKManagerStateHalt:

@@ -444,7 +444,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
 	dispatch_async(fetchQueue, ^{ @autoreleasepool {
-        self.state = CKManagerStateFetch;
+        self.state = CKManagerStateFetching;
         [self postNotificationForCloudKitManagerStateChange];
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
@@ -452,7 +452,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		dispatch_suspend(fetchQueue);
 		
         [self _fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing){
-            if (self.state == CKManagerStateFetch && result != UIBackgroundFetchResultFailed && moreComing == NO) {
+            if (self.state == CKManagerStateFetching && result != UIBackgroundFetchResultFailed && moreComing == NO) {
                 self.state = CKManagerStateReady;
                 [self postNotificationForCloudKitManagerStateChange];
             }
@@ -909,7 +909,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
-    self.state = CKManagerStateRecover;
+    self.state = CKManagerStateRecovering;
     [self postNotificationForCloudKitManagerStateChange];
     NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
     NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
@@ -1049,7 +1049,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
-        self.state = CKManagerStateUpload;
+        self.state = CKManagerStateUploading;
         [self postNotificationForCloudKitManagerStateChange];
     } else if(suspendCount == 0 && inFlightCount + queuedCount == 0) {
         self.state = CKManagerStateReady;
