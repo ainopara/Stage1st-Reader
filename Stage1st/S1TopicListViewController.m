@@ -25,6 +25,7 @@
 #import "YapDatabaseFilteredView.h"
 #import "YapDatabaseSearchResultsView.h"
 #import "NavigationControllerDelegate.h"
+#import <Crashlytics/Answers.h>
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -139,7 +140,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
+    [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setScrollsToTop:YES];
 }

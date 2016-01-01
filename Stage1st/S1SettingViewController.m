@@ -12,6 +12,7 @@
 #import "DatabaseManager.h"
 #import "MTStatusBarOverlay.h"
 #import "CloudKitManager.h"
+#import <Crashlytics/Answers.h>
 
 
 @interface S1SettingViewController ()
@@ -51,6 +52,11 @@
     [self updateiCloudStatus];
     [super viewWillAppear:animated];
     
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [CrashlyticsKit setObjectValue:@"SettingsViewController" forKey:@"lastViewController"];
 }
 
 - (void)viewDidLoad
