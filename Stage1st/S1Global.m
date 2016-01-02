@@ -147,6 +147,9 @@
     return count != 0;
 }
 + (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums {
+    if (string == nil) {
+        return nil;
+    }
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSTextCheckingResult *result = [re firstMatchInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)];
     NSMutableArray *mutableArray = [[NSMutableArray alloc] init];

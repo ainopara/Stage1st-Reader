@@ -197,6 +197,7 @@
                  andFormhash:(NSString *)formhash
                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    if (formhash == nil) { return; }
     NSString *url = @"search.php?searchsubmit=yes";
     NSDictionary *params = @{@"mod" : @"forum",
                              @"formhash" : formhash,
