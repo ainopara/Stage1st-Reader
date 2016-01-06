@@ -217,7 +217,7 @@
             [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
                 [self callFinishHandlerIfExistForKey:key withResult:floorList];
             }];
-            [self callFinishHandlerIfExistForKey:key withResult:floorList];
+
             NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
         } failure:failureHandler];
     }
