@@ -26,6 +26,8 @@
 #import "NavigationControllerDelegate.h"
 #import <Crashlytics/Answers.h>
 
+#define TOP_OFFSET -80.0
+#define BOTTOM_OFFSET 80.0
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
 
@@ -118,17 +120,17 @@
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
     self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
-    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:-80.0];
-    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:60.0];
+    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:TOP_OFFSET];
+    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:BOTTOM_OFFSET];
     self.pullToActionController.delegate = self;
     
-    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)];
     if(_currentPage != 1) {
         self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
-    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
@@ -977,7 +979,7 @@
 #pragma mark Pull To Action
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
-    if (offset < -80 && _finishLoading) {
+    if (offset < TOP_OFFSET && _finishLoading) {
         if (_currentPage != 1) {
             [self back:nil];
         }
@@ -986,14 +988,14 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 60 && _finishLoading) {
+    if (offset > BOTTOM_OFFSET && _finishLoading) {
         [self forward:nil];
     }
 }
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
-    self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 60, contentSize.width - 0, 1);
+    self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width - 0, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width - 0, 1);
     if(_currentPage != 1 && _finishLoading) {
         self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     } else {
