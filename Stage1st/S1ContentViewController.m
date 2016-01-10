@@ -27,7 +27,7 @@
 #import <Crashlytics/Answers.h>
 
 #define TOP_OFFSET -80.0
-#define BOTTOM_OFFSET 80.0
+#define BOTTOM_OFFSET 60.0
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
 
