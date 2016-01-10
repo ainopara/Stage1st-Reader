@@ -30,9 +30,9 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.2.0):
     - CocoaLumberjack/Default
-  - Crashlytics (3.4.1):
+  - Crashlytics (3.5.0):
     - Fabric (~> 1.6.0)
-  - Fabric (1.6.1)
+  - Fabric (1.6.2)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
@@ -96,8 +96,8 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 11f2053085d3088dc1ef9d38a9f11c18b528dd9e
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
-  Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
-  Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
+  Crashlytics: fabfd45d0e8b8dc936c682b97e302b9a49a1c827
+  Fabric: e8296d4a1abb3c5eed770cc86b311c862f51d340
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
