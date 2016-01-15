@@ -102,7 +102,7 @@
         __strong S1MahjongFaceButton *strongButton = weakButton;
         UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
         [strongButton setImage:theImage forState:UIControlStateNormal];
-    } failure:^(NSError *error) {
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
         NSLog(@"Unexpected failure when request mahjong face image:%@", error);
     }];
 }

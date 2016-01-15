@@ -410,6 +410,15 @@
 			name = "Personal Info View Controller";
 			sourceTree = "<group>";
 		};
+		86DE45381C37D341002032C5 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
+				865673171A7A7B190025D22E /* Settings.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -448,6 +457,7 @@
 			isa = PBXGroup;
 			children = (
 				C095875516CA8A43007E0119 /* Resources */,
+				86DE45381C37D341002032C5 /* Storyboards */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
@@ -550,8 +560,6 @@
 				C083351516E34DCF0035C1AA /* ForumKeyMap.plist */,
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
-				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
-				865673171A7A7B190025D22E /* Settings.storyboard */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,

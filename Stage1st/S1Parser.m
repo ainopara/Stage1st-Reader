@@ -24,7 +24,7 @@
 + (NSString *)processHTMLString:(NSString *)HTMLString
 {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    //process images
+    // process images
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
     NSInteger imageCount = 1;
     for (DDXMLElement *image in images) {
@@ -72,7 +72,7 @@
         
     }
     
-    //process spoiler
+    // process spoiler
     NSArray<NSString *> *spoilerXpathList = @[@"//font[@color='LemonChiffon']",
                                               @"//font[@color='Yellow']",
                                               @"//font[@color='#fffacd']",
@@ -103,6 +103,14 @@
         [containerElement addChild:buttonElement];
         [containerElement addChild:spoilerElement];
         [parentElement insertChild:containerElement atIndex:index];
+    }
+    
+    // process indent
+    NSArray *paragraphs = [xmlDoc nodesForXPath:@"//td[@class='t_f']//p[@style]" error:nil];
+    if (paragraphs != nil) {
+        for(DDXMLElement *paragraph in paragraphs) {
+            [paragraph removeAttributeForName:@"style"];
+        }
     }
     
     
@@ -274,7 +282,7 @@
     for (TFHppleElement *element in elements){
         TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
         NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
-        
+        if ([links count] != 3) continue;
         TFHppleElement *titlePart = [links firstObject];
         NSString *titleString = [titlePart recursionText];
         
@@ -322,7 +330,11 @@
         
         DDXMLElement *topicSecondSection = [[topicNode nodesForXPath:@".//a[@class='xg1']" error:nil] firstObject];
         NSString *topicForumIDString = [[topicSecondSection attributeForName:@"href"] stringValue];
-        NSNumber *topicForumID = [NSNumber numberWithInteger:[[[S1Global regexExtractFromString:topicForumIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject] integerValue]];
+        NSNumber *firstObject = [[S1Global regexExtractFromString:topicForumIDString withPattern:@"forum-([0-9]+)" andColums:@[@1]] firstObject];
+        if (firstObject == nil) {
+            continue;
+        }
+        NSNumber *topicForumID = [NSNumber numberWithInteger:[firstObject integerValue]];
         topic.fID = topicForumID;
         DDXMLElement *topicThirdSection = [[topicNode nodesForXPath:@".//a[@class='xi2']" error:nil] firstObject];
         NSNumber *topicReplyCount = [NSNumber numberWithInteger:[[topicThirdSection stringValue] integerValue]];
@@ -708,7 +720,7 @@
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
 {
     NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"<span title=\"共 ([0-9]+) 页\">" andColums:@[@1]];
-    if (result.count != 0) {
+    if (result && result.count != 0) {
         return [((NSString *)[result firstObject]) integerValue];
     } else {
         return 1;
@@ -718,27 +730,29 @@
 + (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
 {
     NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"回复:</span> <span class=\"xi1\">([0-9]+)</span>" andColums:@[@1]];
-    if (result.count != 0) {
+    if (result && result.count != 0) {
         return [((NSString *)[result firstObject]) integerValue];
     } else {
         return 0;
     }
 }
 
-+ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString
++ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)responseString
 {
     NSMutableDictionary *infoDict = [[NSMutableDictionary alloc] init];
     [infoDict setObject:@NO forKey:@"requestSuccess"];
-    
+    if (responseString == nil) {
+        return infoDict;
+    }
     NSString *pattern = @"<input[^>]*name=\"([^>\"]*)\"[^>]*value=\"([^>\"]*)\"";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSArray *results = [re matchesInString:ResponseString options:NSMatchingReportProgress range:NSMakeRange(0, ResponseString.length)];
+    NSArray *results = [re matchesInString:responseString options:NSMatchingReportProgress range:NSMakeRange(0, responseString.length)];
     if ([results count]) {
         [infoDict setObject:@YES forKey:@"requestSuccess"];
     }
     for (NSTextCheckingResult *result in results) {
-        NSString *key = [ResponseString substringWithRange:[result rangeAtIndex:1]];
-        NSString *value = [ResponseString substringWithRange:[result rangeAtIndex:2]];
+        NSString *key = [responseString substringWithRange:[result rangeAtIndex:1]];
+        NSString *value = [responseString substringWithRange:[result rangeAtIndex:2]];
         [infoDict setObject:value forKey:key];
     }
     return infoDict;

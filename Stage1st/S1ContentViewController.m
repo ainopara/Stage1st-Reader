@@ -24,8 +24,10 @@
 #import "S1MahjongFaceViewController.h"
 #import "Masonry.h"
 #import "NavigationControllerDelegate.h"
+#import <Crashlytics/Answers.h>
 
-
+#define TOP_OFFSET -80.0
+#define BOTTOM_OFFSET 60.0
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
 
@@ -112,24 +114,23 @@
     //web view
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    //self.webView.scrollView.delegate = self; // FIXME: Pull to Action Controller also set it's delegate, it seems they all works.
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     
     self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
-    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:-80.0];
-    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:60.0];
+    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:TOP_OFFSET];
+    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:BOTTOM_OFFSET];
     self.pullToActionController.delegate = self;
     
-    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)];
     if(_currentPage != 1) {
         self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     }
     
     [self.webView.scrollView addSubview:self.topDecorateLine];
-    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, -100, self.view.bounds.size.width - 0, 1)];
+    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
     //title label
@@ -260,8 +261,10 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    _presentingContentViewController = NO;
     [super viewDidAppear:animated];
+    _presentingContentViewController = NO;
+    [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -286,7 +289,6 @@
     NSLog(@"Content View Dealloced: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
-    self.webView.scrollView.delegate = nil;
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
 }
@@ -555,7 +557,7 @@
         UIAlertAction *originPageAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_OriginPage", @"Origin") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             _presentingWebViewer = YES;
-            
+            [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
             [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
             [self presentViewController:controller animated:YES completion:nil];
@@ -693,6 +695,7 @@
         // Origin Page
         if (4 == buttonIndex) {
             _presentingWebViewer = YES;
+            [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
             NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
             [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
@@ -708,6 +711,7 @@
 {
     if (1 == buttonIndex) {
         _presentingWebViewer = YES;
+        [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
         NSLog(@"%@", _urlToOpen);
         SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:_urlToOpen.absoluteString];
         [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
@@ -738,6 +742,7 @@
         // Present image
         } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;
+            [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
             NSString *imageID = request.URL.fragment;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
             NSLog(@"%@", imageURL);
@@ -759,6 +764,7 @@
     //Image URL opened in image Viewer
     if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
         _presentingImageViewer = YES;
+        [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
         NSString *imageURL = request.URL.absoluteString;
         NSLog(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
@@ -835,6 +841,7 @@
             UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
             UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                 _presentingWebViewer = YES;
+                [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
                 NSLog(@"%@", request.URL);
                 SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
                 [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
@@ -847,6 +854,7 @@
             UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
             UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                 _presentingWebViewer = YES;
+                [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
                 NSLog(@"%@", request.URL);
                 if (![[UIApplication sharedApplication] openURL:request.URL]) {
                     NSLog(@"%@%@",@"Failed to open url:",[request.URL description]);
@@ -928,9 +936,6 @@
     return 0.3;
 }
 
-#pragma mark UIScrollView
-
-
 #pragma mark Mahjong Face
 
 - (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
@@ -974,7 +979,7 @@
 #pragma mark Pull To Action
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
-    if (offset < -80 && _finishLoading) {
+    if (offset < TOP_OFFSET && _finishLoading) {
         if (_currentPage != 1) {
             [self back:nil];
         }
@@ -983,14 +988,14 @@
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > 60 && _finishLoading) {
+    if (offset > BOTTOM_OFFSET && _finishLoading) {
         [self forward:nil];
     }
 }
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
-    self.topDecorateLine.frame = CGRectMake(0, -80, contentSize.width - 0, 1);
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + 60, contentSize.width - 0, 1);
+    self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width - 0, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width - 0, 1);
     if(_currentPage != 1 && _finishLoading) {
         self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     } else {

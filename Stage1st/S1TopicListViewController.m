@@ -25,6 +25,7 @@
 #import "YapDatabaseFilteredView.h"
 #import "YapDatabaseSearchResultsView.h"
 #import "NavigationControllerDelegate.h"
+#import <Crashlytics/Answers.h>
 
 static NSString * const cellIdentifier = @"TopicCell";
 
@@ -139,7 +140,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
+    [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setScrollsToTop:YES];
 }
@@ -814,21 +815,21 @@ static NSString * const cellIdentifier = @"TopicCell";
         case CKManagerStateSetup:
             titleString = [@"Setup/" stringByAppendingString:titleString];
             break;
-        case CKManagerStateFetch:
+        case CKManagerStateFetching:
             _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
-            titleString = [@"Fetch/" stringByAppendingString:titleString];
+            titleString = [@"Fetching/" stringByAppendingString:titleString];
             break;
-        case CKManagerStateUpload:
+        case CKManagerStateUploading:
             _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
-            titleString = [@"Upload/" stringByAppendingString:titleString];
+            titleString = [@"Uploading/" stringByAppendingString:titleString];
             break;
         case CKManagerStateReady:
             _historyItem.image = [UIImage imageNamed:@"Archive"];
             titleString = [@"Ready/" stringByAppendingString:titleString];
             break;
-        case CKManagerStateRecover:
+        case CKManagerStateRecovering:
             _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
-            titleString = [@"Recover/" stringByAppendingString:titleString];
+            titleString = [@"Recovering/" stringByAppendingString:titleString];
             break;
         case CKManagerStateHalt:
             _historyItem.image = [UIImage imageNamed:@"Archive"];

@@ -444,7 +444,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
 	dispatch_async(fetchQueue, ^{ @autoreleasepool {
-        self.state = CKManagerStateFetch;
+        self.state = CKManagerStateFetching;
         [self postNotificationForCloudKitManagerStateChange];
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
@@ -452,7 +452,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		dispatch_suspend(fetchQueue);
 		
         [self _fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing){
-            if (self.state == CKManagerStateFetch && result != UIBackgroundFetchResultFailed && moreComing == NO) {
+            if (self.state == CKManagerStateFetching && result != UIBackgroundFetchResultFailed && moreComing == NO) {
                 self.state = CKManagerStateReady;
                 [self postNotificationForCloudKitManagerStateChange];
             }
@@ -897,11 +897,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
     NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+    if (retryDelay) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, retryDelay.integerValue * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.needsResume = YES;
+            [self continueCloudKitFlow];
+        });
+        [Answers logCustomEventWithName:@"CloudKit Rerty Interval" customAttributes:@{@"interval": retryDelay}];
+    }
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.needsResume = YES;
-        [self continueCloudKitFlow];
-    });
 }
 
 - (void)reportError:(NSError *)error {
@@ -909,7 +912,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSLog(@"ckError: %@", error);
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
-    self.state = CKManagerStateRecover;
+    self.state = CKManagerStateRecovering;
     [self postNotificationForCloudKitManagerStateChange];
     NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
     NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
@@ -1049,7 +1052,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
-        self.state = CKManagerStateUpload;
+        self.state = CKManagerStateUploading;
         [self postNotificationForCloudKitManagerStateChange];
     } else if(suspendCount == 0 && inFlightCount + queuedCount == 0) {
         self.state = CKManagerStateReady;

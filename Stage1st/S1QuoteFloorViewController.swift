@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Crashlytics
 
 class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
     var htmlString :String?
@@ -28,6 +29,10 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
         // Do any additional setup after loading the view.
     }
 
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

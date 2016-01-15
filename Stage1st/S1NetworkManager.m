@@ -24,13 +24,13 @@
         NSDictionary *params = @{@"mod": @"forumdisplay",
                                  @"mobile": @"no",
                                  @"fid": keyID};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
     } else {
         NSDictionary *params = @{@"mod": @"forumdisplay",
                                  @"mobile": @"no",
                                  @"fid": keyID,
                                  @"page": page};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
     }
 }
 
@@ -47,7 +47,7 @@
                              @"fid": keyID,
                              @"page": page,
                              @"orderby": @"dblastpost"};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
     
 }
 
@@ -61,13 +61,13 @@
         NSDictionary *params = @{@"mod": @"viewthread",
                                  @"mobile": @"no",
                                  @"tid": topicID};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
     } else {
         NSDictionary *params = @{@"mod": @"viewthread",
                                  @"mobile": @"no",
                                  @"tid": topicID,
                                  @"page": page};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
     }
 }
 
@@ -84,7 +84,7 @@
                              @"mobile": @"no",
                              @"tid": topicID,
                              @"page": page};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 #pragma mark - Check Login State
@@ -93,7 +93,7 @@
                               failureBlock:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *url = @"api/mobile/";
     NSDictionary *params = @{@"module": @"login"};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
     
 }
 
@@ -110,7 +110,7 @@
                              @"handlekey" : @"ls",
                              @"quickforward" : @"yes",
                              @"cookietime" : @"2592000"};
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
 
 + (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
@@ -120,7 +120,7 @@
     NSDictionary *params = @{@"mod" : @"logging",
                              @"action" : @"logout",
                              @"formhash" : formhash};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 
@@ -144,7 +144,7 @@
                              @"handlekey": @"reply",
                              @"inajax": @1,
                              @"ajaxtarget": @"fwin_content_reply"};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
@@ -155,7 +155,7 @@
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&infloat=yes&action=reply&fid=%@&extra=page%%3D%@&tid=%@&replysubmit=yes&inajax=1";
     NSString *url = [NSString stringWithFormat:urlTemplate, forumID, page, topicID];
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
 
 + (void)postReplyForTopicID:(NSNumber *)topicID
@@ -165,7 +165,7 @@
                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
     NSString *urlTemplate = @"forum.php?mod=post&action=reply&fid=%@&tid=%@&extra=page%%3D1&replysubmit=yes&infloat=yes&handlekey=fastpost&inajax=1";
     NSString *url = [NSString stringWithFormat:urlTemplate, forumID, topicID];
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
 
 
@@ -187,7 +187,7 @@
         }
         return request;
     }];
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 
@@ -197,6 +197,7 @@
                  andFormhash:(NSString *)formhash
                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
+    if (formhash == nil) { return; }
     NSString *url = @"search.php?searchsubmit=yes";
     NSDictionary *params = @{@"mod" : @"forum",
                              @"formhash" : formhash,
@@ -205,7 +206,7 @@
                              @"srhlocality" : @"forum::index",
                              @"srchtxt" : keyword,
                              @"searchsubmit" : @"true"};
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
 //http://bbs.saraba1st.com/2b/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
 + (void)requestSearchResultPageForSearchID:(NSString *)searchID
@@ -219,7 +220,7 @@
                              @"ascdesc" : @"desc",
                              @"page" : page,
                              @"searchsubmit" : @"yes"};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 #pragma mark - User Info
 
@@ -236,7 +237,7 @@
                              @"type" : @"thread",
                              @"page" : page,
                              @"order" : @"dateline"};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 + (void)requestReplyListForID:(NSNumber *)userID
@@ -252,7 +253,7 @@
                              @"type" : @"reply",
                              @"page" : page,
                              @"order" : @"dateline"};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params success:success failure:failure];
+    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
 #pragma mark - Cancel

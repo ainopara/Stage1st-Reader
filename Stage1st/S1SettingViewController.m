@@ -12,6 +12,7 @@
 #import "DatabaseManager.h"
 #import "MTStatusBarOverlay.h"
 #import "CloudKitManager.h"
+#import <Crashlytics/Answers.h>
 
 
 @interface S1SettingViewController ()
@@ -51,6 +52,11 @@
     [self updateiCloudStatus];
     [super viewWillAppear:animated];
     
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [CrashlyticsKit setObjectValue:@"SettingsViewController" forKey:@"lastViewController"];
 }
 
 - (void)viewDidLoad
@@ -271,17 +277,17 @@
             case CKManagerStateSetup:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Setup", @"Setup");
                 break;
-            case CKManagerStateFetch:
+            case CKManagerStateFetching:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Fetch", @"Fetch");
                 break;
-            case CKManagerStateUpload:
+            case CKManagerStateUploading:
                 titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
                 titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Upload", @"Upload") stringByAppendingString:titleString];
                 break;
             case CKManagerStateReady:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Ready", @"Ready");
                 break;
-            case CKManagerStateRecover:
+            case CKManagerStateRecovering:
                 titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Recover", @"Recover");
                 break;
             case CKManagerStateHalt:

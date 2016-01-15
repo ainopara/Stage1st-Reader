@@ -30,7 +30,7 @@ struct OffsetRange {
 }
 
 public class PullToActionController: NSObject, UIScrollViewDelegate {
-    weak var scrollView : UIScrollView!
+    weak var scrollView : UIScrollView?
     weak var delegate : PullToActionDelagete?
     
     var offset : CGPoint = CGPoint(x: 0, y: 0)
@@ -50,9 +50,10 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
     }
 
     deinit {
-        self.scrollView.removeObserver(self, forKeyPath: "contentOffset")
-        self.scrollView.removeObserver(self, forKeyPath: "contentSize")
-        self.scrollView.removeObserver(self, forKeyPath: "contentInset")
+        self.scrollView?.removeObserver(self, forKeyPath: "contentOffset")
+        self.scrollView?.removeObserver(self, forKeyPath: "contentSize")
+        self.scrollView?.removeObserver(self, forKeyPath: "contentInset")
+        self.scrollView?.delegate = nil
     }
     
     public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
@@ -95,7 +96,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
             return
         }
-        let bottomOffset = self.offset.y + self.scrollView.bounds.height - self.size.height //TODO: consider content inset
+        let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height //TODO: consider content inset
         if bottomOffset > 0 {
             print("end dragging -> \(bottomOffset)", terminator: "")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
@@ -104,17 +105,20 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
     }
     
     private func baseLineOffset(baseLine: OffsetBaseLine) -> Double {
+        guard let scrollView = self.scrollView else {
+            return Double(0)
+        }
         switch baseLine {
         case .Top:
             return Double(self.offset.y)
         case .Bottom:
-            var temp = self.scrollView.bounds.height - self.size.height
+            var temp = scrollView.bounds.height - self.size.height
             if temp > 0 { temp = 0 }
             return Double(self.offset.y + temp)
         case .Left:
             return Double(self.offset.x)
         case .Right:
-            var temp = self.scrollView.bounds.width - self.size.width
+            var temp = scrollView.bounds.width - self.size.width
             if temp > 0 { temp = 0 }
             return Double(self.offset.x + temp)
         }
