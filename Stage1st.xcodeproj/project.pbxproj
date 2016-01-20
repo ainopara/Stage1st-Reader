@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		482266A1EA1BF89064C95BC1 /* libPods-Stage1st.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */; };
+		5F5E910F8BEF033868527631 /* Pods_Stage1st.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8191B09C45E4009F3C4E684 /* Pods_Stage1st.framework */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */; };
@@ -97,7 +97,6 @@
 /* Begin PBXFileReference section */
 		0844F91B1E3B92A5FBC48BD2 /* Pods-Stage1st.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.release.xcconfig"; sourceTree = "<group>"; };
 		0AA94CF87A86E7B921C7DD79 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
-		4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stage1st.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ColorMap.plist; path = Stage1st/ColorMap.plist; sourceTree = "<group>"; };
@@ -189,6 +188,7 @@
 		86E44DDB1A89B611001E0B83 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Stage1st-InfoPlist.strings"; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ReorderForumViewController.m; path = Stage1st/S1ReorderForumViewController.m; sourceTree = "<group>"; };
+		B8191B09C45E4009F3C4E684 /* Pods_Stage1st.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1st.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
 		C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1HTTPSessionManager.h; path = Stage1st/S1HTTPSessionManager.h; sourceTree = "<group>"; };
@@ -252,7 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
-				482266A1EA1BF89064C95BC1 /* libPods-Stage1st.a in Frameworks */,
+				5F5E910F8BEF033868527631 /* Pods_Stage1st.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,7 +492,7 @@
 			isa = PBXGroup;
 			children = (
 				8605734E1B7623A300C70781 /* CloudKit.framework */,
-				4AF8126E1E85DB16FFAD9797 /* libPods-Stage1st.a */,
+				B8191B09C45E4009F3C4E684 /* Pods_Stage1st.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -991,7 +991,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1023,7 +1023,7 @@
 				GCC_PREFIX_HEADER = "Stage1st/Stage1st-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
