@@ -123,10 +123,17 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 #pragma mark - Description
 
 - (NSString *)description {
-    NSString *despString = [NSString stringWithFormat:@"Topic(Version: %@) %@: %lu cloud key changes -> ", self.modelVersion, self.topicID, (unsigned long)[self.changedCloudProperties count]];
+    NSMutableString *despString = [NSMutableString stringWithFormat:@"Topic(Version: %@) %@:", self.modelVersion, self.topicID];
+    [despString appendString:@"\nBasic Information"];
+    [despString appendFormat:@"\nTitle: %@", self.title];
+    [despString appendFormat:@"\nFromhash: %@", self.formhash];
+    
+    [despString appendString:@"\nCloudKit Property"];
+    [despString appendFormat:@"\n%lu cloud key changes ->", (unsigned long)[self.changedCloudProperties count]];
     for (NSString *property in self.changedCloudProperties) {
-        despString = [despString stringByAppendingString:[NSString stringWithFormat:@"\n%@ : %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]]];
+        [despString appendFormat:@"\n%@ : %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]];
     }
+    
     return despString;
 }
 

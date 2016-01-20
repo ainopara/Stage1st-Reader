@@ -84,6 +84,7 @@
                              @"mobile": @"no",
                              @"tid": topicID,
                              @"page": page};
+    NSLog(@"Request Topic Content API:%@-%@",topicID, page);
     [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 

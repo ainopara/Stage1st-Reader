@@ -845,7 +845,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else {
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     }
-    NSLog(@"%@", titleString);
+    CLSNSLog(@"CloudKit | %@", titleString);
     /*
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
         //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
@@ -874,7 +874,9 @@ static NSString * const cellIdentifier = @"TopicCell";
         S1TopicListCell *cell = sender;
         S1ContentViewController *contentViewController = segue.destinationViewController;
         if (![self.currentKey  isEqual: @"History"] && ![self.currentKey  isEqual: @"Favorite"]) {
-            [cell.topic addDataFromTracedTopic:[self.dataCenter tracedTopic:cell.topic.topicID]];
+            S1Topic *mutableTopic = [cell.topic isImmutable] ? [cell.topic copy] : cell.topic;
+            [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
+            cell.topic = mutableTopic;
         }
         [contentViewController setTopic:cell.topic];
         [contentViewController setDataCenter:self.dataCenter];
