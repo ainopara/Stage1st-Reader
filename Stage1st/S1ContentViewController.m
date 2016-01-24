@@ -293,6 +293,7 @@
     // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
+    [self.webView stopLoading];
 }
 
 - (void)didReceiveMemoryWarning
