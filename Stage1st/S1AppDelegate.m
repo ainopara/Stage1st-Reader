@@ -232,6 +232,16 @@ S1AppDelegate *MyAppDelegate;
                     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ForcePortraitForPhone"];
                 }
             }
+            if ([key isEqualToString:@"EnableSync"]) {
+                NSString *value = [queryDict valueForKey:key];
+                if ((!SYSTEM_VERSION_LESS_THAN(@"8")) && [value isEqualToString:@"YES"]) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EnableSync"];
+                }
+                if ([value isEqualToString:@"NO"]) {
+                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"EnableSync"];
+                }
+            }
+            
         }
     }
     
