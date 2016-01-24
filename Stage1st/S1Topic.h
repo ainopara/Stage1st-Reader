@@ -10,7 +10,7 @@
 #import <CloudKit/CloudKit.h>
 #import "MyDatabaseObject.h"
 
-@interface S1Topic : MyDatabaseObject<NSCoding, NSCopying>
+@interface S1Topic : MyDatabaseObject<NSCoding>
 // Basic
 @property (nonatomic, copy) NSNumber *topicID;
 // To show in topic list
