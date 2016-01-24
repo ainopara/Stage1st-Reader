@@ -845,7 +845,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else {
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     }
-    CLSNSLog(@"CloudKit | %@", titleString);
+    CLSLog(@"CloudKit | %@", titleString);
     /*
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
         //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
