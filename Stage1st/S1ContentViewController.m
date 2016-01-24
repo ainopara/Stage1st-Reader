@@ -107,7 +107,7 @@
 //#define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
-    CLSNSLog(@"ContentVC | View Did Load");
+    CLSLog(@"ContentVC | View Did Load");
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
@@ -265,7 +265,7 @@
     [super viewDidAppear:animated];
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
-    CLSNSLog(@"ContentVC | View Did Appear");
+    CLSLog(@"ContentVC | View Did Appear");
     
 }
 
@@ -288,12 +288,13 @@
 }
 
 - (void)dealloc {
-    CLSNSLog(@"ContentVC | Dealloced: %@", self.topic.title);
+    CLSLog(@"ContentVC | Deallocing: %@", self.topic.title);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
     [self.webView stopLoading];
+    CLSLog(@"ContentVC | Dealloced");
 }
 
 - (void)didReceiveMemoryWarning
@@ -320,7 +321,7 @@
     if (_topic.favorite == nil) {
         _topic.favorite = @(NO);
     }
-    CLSNSLog(@"ContentVC | Topic setted: %@", self.topic.topicID);
+    CLSLog(@"ContentVC | Topic setted: %@", self.topic.topicID);
 }
 
 - (UIView *)accessoryView {
