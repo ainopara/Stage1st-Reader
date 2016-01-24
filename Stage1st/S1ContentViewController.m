@@ -820,6 +820,8 @@
                             S1Topic *quoteTopic = [self.topic copy];
                             NSString *htmlString = [S1Parser generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
                             S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
+                            quoteFloorViewController.topic = quoteTopic;
+                            quoteFloorViewController.floors = chainQuoteFloors;
                             quoteFloorViewController.htmlString = htmlString;
                             quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
                             [[self navigationController] pushViewController:quoteFloorViewController animated:YES];

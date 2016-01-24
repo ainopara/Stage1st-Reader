@@ -65,6 +65,7 @@
 		86E44DDA1A89B611001E0B83 /* Stage1st-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86E44DDC1A89B611001E0B83 /* Stage1st-InfoPlist.strings */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
+		86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
 		C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */; };
 		C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F416E2245B0035C1AA /* ODRefreshControl.m */; };
@@ -190,6 +191,7 @@
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ReorderForumViewController.m; path = Stage1st/S1ReorderForumViewController.m; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorCell.swift; path = Stage1st/S1QuoteFloorCell.swift; sourceTree = "<group>"; };
 		B8191B09C45E4009F3C4E684 /* Pods_Stage1st.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1st.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Parser.h; path = Stage1st/S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Parser.m; path = Stage1st/S1Parser.m; sourceTree = "<group>"; };
@@ -364,6 +366,7 @@
 			isa = PBXGroup;
 			children = (
 				866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */,
+				86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */,
 			);
 			name = "Quote Floor View Controller";
 			sourceTree = "<group>";
@@ -833,6 +836,7 @@
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
+				86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */,
 				868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
@@ -948,7 +952,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -972,7 +976,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

@@ -7,25 +7,29 @@
 //
 
 import UIKit
+import JTSImageViewController
 import Crashlytics
+import YYText
 
-class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
-    var htmlString :String?
-    var centerFloorID :Int = 0
-    @IBOutlet weak var webView: UIWebView!
+class S1QuoteFloorViewController: UIViewController {
+    var htmlString: String?
+    var topic: S1Topic?
+    var floors: [S1Floor]?
+    var centerFloorID: Int = 0
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
-        if let theHtmlString = self.htmlString {
-            self.webView.dataDetectorTypes = .None;
-            self.webView.opaque = false;
-            self.webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
-            self.webView.delegate = self
-            self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-            self.webView.loadHTMLString(theHtmlString, baseURL: NSURL())
-        }
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 100.0
+        
         // Do any additional setup after loading the view.
     }
 
@@ -33,43 +37,26 @@ class S1QuoteFloorViewController: UIViewController, UIWebViewDelegate {
         super.viewDidAppear(animated)
         Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+
+}
+    // MARK: - Table View Delegate
+extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
     }
     
-    // MARK: - WebView Delegate
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        guard let URL = request.URL else {
-            return false
-        }
-        if URL.absoluteString == "about:blank" {
-            return true
-        }
-        return false
-    }
-
-    func webViewDidFinishLoad(webView: UIWebView) {
-        var offset = webView.scrollView.contentOffset
-        var computedOffset: CGFloat = positionOfElementWithId(self.centerFloorID) - 32
-        if computedOffset > webView.scrollView.contentSize.height - webView.scrollView.bounds.height {
-            computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height;
-        }
-        if computedOffset < 0 {
-            computedOffset = 0
-        }
-        offset.y = computedOffset
-        webView.scrollView.contentOffset = offset
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.floors?.count ?? 0
     }
     
-    // MARK: - Helper
-    func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
-        let result: String? = self.webView.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
-        print(result, terminator: "")
-        if let result1 = result , let result2 = Double(result1) {
-            return CGFloat(result2)
-        }
-        return 0;
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default,reuseIdentifier:"QuoteCell")
+        let floor = self.floors![indexPath.row]
+        cell.textView.text = floor.content!
+        return cell
     }
-
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 140.0
+    }
 }

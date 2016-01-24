@@ -15,5 +15,6 @@ target "Stage1st" do
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
     pod 'Fabric'
     pod 'Crashlytics'
+    pod 'YYText'
 end
 

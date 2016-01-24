@@ -81,6 +81,7 @@ PODS:
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/Views (2.8.1):
     - YapDatabase/Standard/Core
+  - YYText (0.9.19)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -96,6 +97,7 @@ DEPENDENCIES:
   - Reachability
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YYText
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -137,5 +139,6 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 861c720d5850a59f9e5c0bad0fd95334012b9dc9
+  YYText: b823b71b99b526c4a81029ecb59f3d8172ed5c9a
 
 COCOAPODS: 0.39.0

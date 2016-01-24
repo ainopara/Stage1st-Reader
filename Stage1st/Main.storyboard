@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5pw-r5-r4H">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5pw-r5-r4H">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -157,24 +157,47 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qNN-hj-m1o">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rvv-At-beP">
                                 <rect key="frame" x="0.0" y="20" width="320" height="460"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <dataDetectorType key="dataDetectorTypes"/>
-                            </webView>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="QuoteCell" id="314-lI-xbz" customClass="S1QuoteFloorCell" customModule="Stage1st" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="320" height="100"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="314-lI-xbz" id="T5E-PP-Zfy">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="29i-tL-btd" customClass="YYTextView">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+                                                </scrollView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="29i-tL-btd" secondAttribute="trailing" id="CDx-fP-DtA"/>
+                                                <constraint firstItem="29i-tL-btd" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" id="jyZ-gs-ynr"/>
+                                                <constraint firstAttribute="bottom" secondItem="29i-tL-btd" secondAttribute="bottom" id="xdN-R1-aE7"/>
+                                                <constraint firstItem="29i-tL-btd" firstAttribute="leading" secondItem="T5E-PP-Zfy" secondAttribute="leading" id="zyG-8E-FCU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="textView" destination="29i-tL-btd" id="3ep-DN-FJJ"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" red="0.95999997854232788" green="0.97000002861022949" blue="0.92000001668930054" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="qNN-hj-m1o" firstAttribute="leading" secondItem="TYU-fK-85h" secondAttribute="leading" id="CHT-Zu-D0J"/>
-                            <constraint firstItem="Snh-PT-EJa" firstAttribute="top" secondItem="qNN-hj-m1o" secondAttribute="bottom" id="OIq-AS-Cqr"/>
-                            <constraint firstItem="qNN-hj-m1o" firstAttribute="top" secondItem="TYU-fK-85h" secondAttribute="top" constant="20" id="clE-ex-VgC"/>
-                            <constraint firstAttribute="trailing" secondItem="qNN-hj-m1o" secondAttribute="trailing" id="rQf-6C-Lcb"/>
+                            <constraint firstAttribute="trailing" secondItem="rvv-At-beP" secondAttribute="trailing" id="6EY-FH-qnJ"/>
+                            <constraint firstItem="rvv-At-beP" firstAttribute="leading" secondItem="TYU-fK-85h" secondAttribute="leading" id="8me-f7-4jY"/>
+                            <constraint firstItem="rvv-At-beP" firstAttribute="top" secondItem="ety-cd-Wc1" secondAttribute="bottom" id="Pld-YI-mAe"/>
+                            <constraint firstItem="Snh-PT-EJa" firstAttribute="top" secondItem="rvv-At-beP" secondAttribute="bottom" id="R5t-me-XQt"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
-                        <outlet property="webView" destination="qNN-hj-m1o" id="IOK-s9-3oP"/>
+                        <outlet property="tableView" destination="rvv-At-beP" id="pf0-hW-YeR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FMj-XF-YVk" userLabel="First Responder" sceneMemberID="firstResponder"/>
