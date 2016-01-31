@@ -32,7 +32,7 @@
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		86522CB71BF7551A00BF3379 /* APColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86522CB61BF7551A00BF3379 /* APColorManager.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
-		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */; };
+		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
@@ -139,8 +139,8 @@
 		86522CB61BF7551A00BF3379 /* APColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APColorManager.swift; path = Vendors/APColorManager/APColorManager.swift; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
-		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceViewController.h; path = Stage1st/S1MahjongFaceViewController.h; sourceTree = "<group>"; };
-		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1MahjongFaceViewController.m; path = Stage1st/S1MahjongFaceViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceView.h; path = Stage1st/S1MahjongFaceView.h; sourceTree = "<group>"; };
+		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1MahjongFaceView.m; path = Stage1st/S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
@@ -343,8 +343,8 @@
 			children = (
 				86600FBB1AAD969D004394E6 /* MahjongMap.plist */,
 				86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */,
-				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceViewController.h */,
-				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceViewController.m */,
+				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */,
+				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */,
 				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
 				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
 				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
@@ -876,7 +876,7 @@
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
-				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceViewController.m in Sources */,
+				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
 				8607276A1B37AF2100DA8390 /* APPullToActionController.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,

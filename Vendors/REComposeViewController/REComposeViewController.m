@@ -392,15 +392,6 @@
     return UIInterfaceOrientationMaskAll;
 }
 
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
-{
-    return YES;
-}
 
 - (void)viewOrientationDidChanged:(NSNotification *)notification
 {
