@@ -1,38 +1,41 @@
 //
-//  S1MahjongFaceViewController.m
+//  S1MahjongFaceView.m
 //  Stage1st
 //
 //  Created by Zheng Li on 3/16/15.
 //  Copyright (c) 2015 Renaissance. All rights reserved.
 //
 
-#import "S1MahjongFaceViewController.h"
+#import "S1MahjongFaceView.h"
 #import "S1MahjongFacePageView.h"
 #import "S1MahjongFaceButton.h"
 #import "S1TabBar.h"
 #import "UIButton+AFNetworking.h"
 #import "Masonry.h"
 
-@interface S1MahjongFaceViewController () <UIScrollViewDelegate, S1TabBarDelegate>
+@interface S1MahjongFaceView () <UIScrollViewDelegate, S1TabBarDelegate>
 @property (nonatomic, strong) NSDictionary *mahjongMap;
 @property (nonatomic, strong) NSDictionary *keyTranslation;
 @property (nonatomic, strong) NSArray *mahjongCategoryOrder;
 @property (nonatomic, strong) NSMutableArray *historyArray;
+
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *pageViews;
 @property (nonatomic, strong) S1TabBar *tabBar;
+
 @property (nonatomic, assign) BOOL shouldIngnoreScrollEvent;
 @end
 
 #pragma mark -
 
-@implementation S1MahjongFaceViewController
+@implementation S1MahjongFaceView
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (instancetype)init {
+    self = [super init];
     self.shouldIngnoreScrollEvent = NO;
-    [self.view setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"mahjongface.background"]];
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.background"];
     self.keyTranslation = @{@"history":@"历史",
                             @"face":@"麻将脸",
                             @"dym":@"大姨妈",
@@ -65,11 +68,11 @@
     self.tabBar.tabbarDelegate = self;
     self.tabBar.keys = [self translateKey:self.mahjongCategoryOrder];
     [self.tabBar setSelectedIndex:[self.mahjongCategoryOrder indexOfObject:self.currentCategory]];
-    [self.view addSubview:self.tabBar];
+    [self addSubview:self.tabBar];
     [self.tabBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view.mas_centerX);
-        make.bottom.equalTo(self.view.mas_bottom);
-        make.left.equalTo(self.view.mas_left);
+        make.centerX.equalTo(self.mas_centerX);
+        make.bottom.equalTo(self.mas_bottom);
+        make.left.equalTo(self.mas_left);
         make.height.equalTo(@35.0);
     }];
     // init page control
@@ -80,11 +83,11 @@
     self.pageControl.currentPageIndicatorTintColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.currentpage"];
     [self.pageControl addTarget:self action:@selector(pageChanged:) forControlEvents:UIControlEventValueChanged];
     //self.pageControl.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:self.pageControl];
+    [self addSubview:self.pageControl];
     [self.pageControl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view.mas_centerX);
+        make.centerX.equalTo(self.mas_centerX);
         make.bottom.equalTo(self.tabBar.mas_top);
-        make.left.equalTo(self.view.mas_left);
+        make.left.equalTo(self.mas_left);
         make.height.equalTo(@20.0);
     }];
     // init scroll view
@@ -94,20 +97,21 @@
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.delaysContentTouches = YES;
     self.scrollView.delegate = self;
-    [self.view addSubview:self.scrollView];
+    [self addSubview:self.scrollView];
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view.mas_centerX);
-        make.left.equalTo(self.view.mas_left);
-        make.top.equalTo(self.view.mas_top);
+        make.centerX.equalTo(self.mas_centerX);
+        make.left.equalTo(self.mas_left);
+        make.top.equalTo(self.mas_top);
         make.bottom.equalTo(self.pageControl.mas_top);
     }];
-    //[self.view setNeedsLayout];
-    //[self.view layoutIfNeeded];
+    [self setNeedsLayout];
+    return self;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [self.delegate saveHistoryArray:self.historyArray];//[[NSUserDefaults standardUserDefaults] setObject:self.historyArray forKey:@"MahjongfaceHistory"];
+- (void)dealloc {
+    [self.delegate saveHistoryArray:self.historyArray];
 }
+
 #pragma mark Event
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button
@@ -196,7 +200,28 @@
     NSLog(@"%@",key);
     self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
     self.pageControl.currentPage = 0;
-    [self.view setNeedsLayout];
+    [self setNeedsLayout];
+}
+
+#pragma mark Layout
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    NSLog(@"layout subviews");
+    NSInteger totalPageCount = [self pageCountForCategory:self.currentCategory];
+    NSInteger currentPage = (self.pageControl.currentPage > totalPageCount) ? totalPageCount : self.pageControl.currentPage;
+    self.pageControl.currentPage = currentPage;
+    self.pageControl.numberOfPages = totalPageCount;
+    
+    NSInteger totalPageCountForAllCategory = 0;
+    for (NSString *key in self.mahjongCategoryOrder) {
+        totalPageCountForAllCategory += [self pageCountForCategory:key];
+    }
+    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * totalPageCountForAllCategory, CGRectGetHeight(self.scrollView.bounds));
+    NSLog(@"Total page count: %ld", (long)totalPageCount);
+    self.shouldIngnoreScrollEvent = YES;
+    [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
+    self.shouldIngnoreScrollEvent = NO;
+    [self setPage:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
 }
 
 #pragma mark Helper
@@ -216,7 +241,7 @@
     
     S1MahjongFacePageView *pageView = [[S1MahjongFacePageView alloc] initWithFrame:self.scrollView.frame];
     pageView.index = index;
-    pageView.viewController = self;
+    pageView.containerView = self;
     [self.scrollView addSubview:pageView];
     [self.pageViews addObject:pageView];
     return pageView;
@@ -307,6 +332,7 @@
     NSInteger totalPageCount = (NSUInteger)ceil((float)countInCategory / countPerPage);
     return totalPageCount;
 }
+
 - (NSUInteger)globalIndexForCategory:(NSString *)categoryKey andPage:(NSUInteger)currentPage {
     NSUInteger indexOffset = 0;
     for (NSString *key in self.mahjongCategoryOrder) {
@@ -319,25 +345,6 @@
     return indexOffset + currentPage;
 }
 
-- (void)viewDidLayoutSubviews {
-    NSLog(@"view did layout subviews");
-    NSInteger totalPageCount = [self pageCountForCategory:self.currentCategory];
-    NSInteger currentPage = (self.pageControl.currentPage > totalPageCount) ? totalPageCount : self.pageControl.currentPage;
-    self.pageControl.currentPage = currentPage;
-    self.pageControl.numberOfPages = totalPageCount;
-    
-    NSInteger totalPageCountForAllCategory = 0;
-    for (NSString *key in self.mahjongCategoryOrder) {
-        totalPageCountForAllCategory += [self pageCountForCategory:key];
-    }
-    self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * totalPageCountForAllCategory, CGRectGetHeight(self.scrollView.bounds));
-    NSLog(@"%ld", (long)totalPageCount);
-    self.shouldIngnoreScrollEvent = YES;
-    [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
-    self.shouldIngnoreScrollEvent = NO;
-    [self setPage:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
-}
-
 - (NSArray *)translateKey:(NSArray *)keyArray {
     NSMutableArray *translationResult = [[NSMutableArray alloc] initWithCapacity:[keyArray count]];
     for (NSString *key in keyArray) {
@@ -347,11 +354,6 @@
         }
     }
     return translationResult;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

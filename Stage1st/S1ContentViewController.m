@@ -21,7 +21,7 @@
 #import "ActionSheetStringPicker.h"
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
-#import "S1MahjongFaceViewController.h"
+#import "S1MahjongFaceView.h"
 #import "Masonry.h"
 #import "NavigationControllerDelegate.h"
 #import <Crashlytics/Answers.h>
@@ -29,7 +29,7 @@
 #define TOP_OFFSET -80.0
 #define BOTTOM_OFFSET 60.0
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewControllerDelegate, PullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewDelegate, PullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -49,7 +49,7 @@
 @property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
 @property (nonatomic, weak) REComposeViewController *replyController;
-@property (nonatomic, strong) S1MahjongFaceViewController *mahjongController;
+@property (nonatomic, strong) S1MahjongFaceView *mahjongFaceView;
 @end
 
 @implementation S1ContentViewController {
@@ -585,15 +585,15 @@
 - (void)toggleFace:(id)sender {
     NSLog(@"toggleFace");
     if (self.replyController.inputView == nil) {
-        if (self.mahjongController == nil) {
-            self.mahjongController = [[S1MahjongFaceViewController alloc] init];
+        if (self.mahjongFaceView == nil) {
+            self.mahjongFaceView = [[S1MahjongFaceView alloc] init];
             //[self.mahjongController.view setFrame:CGRectMake(0, 0, 320, 217)];
             //[self.view addSubview:self.mahjongController.view];
-            self.mahjongController.delegate = self;
-            self.mahjongController.historyCountLimit = 99;
+            self.mahjongFaceView.delegate = self;
+            self.mahjongFaceView.historyCountLimit = 99;
         }
         [(UIButton *)sender setImage:[UIImage imageNamed:@"KeyboardButton"] forState:UIControlStateNormal];
-        self.replyController.inputView = self.mahjongController.view;
+        self.replyController.inputView = self.mahjongFaceView;
         [self.replyController reloadInputViews];
     } else {
         [(UIButton *)sender setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
@@ -943,7 +943,7 @@
 
 #pragma mark Mahjong Face
 
-- (void)mahjongFaceViewController:(S1MahjongFaceViewController *)mahjongFaceViewController didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
+- (void)mahjongFaceViewController:(S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
     UITextView *textView = self.replyController.textView;
     if (textView) {
         [textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:attachment] atIndex:textView.selectedRange.location];
@@ -956,7 +956,7 @@
     }
 }
 
-- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceViewController *)mahjongFaceViewController {
+- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceView *)mahjongFaceView {
     UITextView *textView = self.replyController.textView;
     if (textView) {
         NSRange range = textView.selectedRange;
