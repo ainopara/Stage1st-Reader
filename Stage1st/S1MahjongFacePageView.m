@@ -9,7 +9,7 @@
 #import "S1MahjongFacePageView.h"
 #import "S1MahjongFaceButton.h"
 #import "UIButton+AFNetworking.h"
-#import "S1MahjongFaceViewController.h"
+#import "S1MahjongFaceView.h"
 
 @implementation S1MahjongFacePageView
 
@@ -107,13 +107,13 @@
     }];
 }
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button {
-    if (self.viewController) {
-        [self.viewController mahjongFacePressed:button];
+    if (self.containerView) {
+        [self.containerView mahjongFacePressed:button];
     }
 }
 - (void)backspacePressed:(UIButton *)button {
-    if (self.viewController) {
-        [self.viewController backspacePressed:button];
+    if (self.containerView) {
+        [self.containerView backspacePressed:button];
     }
 }
 @end
