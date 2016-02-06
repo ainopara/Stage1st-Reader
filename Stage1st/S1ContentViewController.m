@@ -306,15 +306,14 @@
 
 - (void)setTopic:(S1Topic *)topic
 {
-    // Used to estimate total page number
-    #define _REPLY_PER_PAGE 30
+
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {
         _topic = topic;
     }
     
-    _totalPages = (([topic.replyCount integerValue] + 1) / _REPLY_PER_PAGE) + 1;
+    _totalPages = ([topic.replyCount integerValue] / 30) + 1;
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
