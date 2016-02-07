@@ -122,11 +122,7 @@ S1AppDelegate *MyAppDelegate;
     // Start database & cloudKit (in that order)
     
     [DatabaseManager initialize];
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support CloudKit
-        ;
-    } else {
-        // iOS 8 and more
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         [CloudKitManager initialize];
     }
 
@@ -135,11 +131,7 @@ S1AppDelegate *MyAppDelegate;
         [S1Tracer migrateDatabase];
     });
 
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support CloudKit
-        // Nothing to do.
-    } else {
-        // iOS 8 and more
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // Register for push notifications
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
         [application registerUserNotificationSettings:notificationSettings];
@@ -156,13 +148,6 @@ S1AppDelegate *MyAppDelegate;
 
     // Appearence
     
-    /*
-    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-        ;
-    } else {
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
-    }
-    */
     [[APColorManager sharedInstance] updateGlobalAppearance];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
@@ -234,7 +219,7 @@ S1AppDelegate *MyAppDelegate;
             }
             if ([key isEqualToString:@"EnableSync"]) {
                 NSString *value = [queryDict valueForKey:key];
-                if ((!SYSTEM_VERSION_LESS_THAN(@"8")) && [value isEqualToString:@"YES"]) {
+                if ([value isEqualToString:@"YES"]) {
                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EnableSync"];
                 }
                 if ([value isEqualToString:@"NO"]) {
@@ -265,8 +250,7 @@ S1AppDelegate *MyAppDelegate;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
     NSLog(@"Push received: %@", userInfo);
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         return;
     }
     // iOS 8 and more

@@ -33,7 +33,6 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 
-@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *offsetConstraint;
 @property (assign, nonatomic) CGFloat offset;
 @end
 
@@ -70,11 +69,6 @@
         self.navigationController.view.layer.cornerRadius  = 5.0;
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
-    }
-    if (!SYSTEM_VERSION_LESS_THAN(@"8")) {
-        for (NSLayoutConstraint *constraint in self.offsetConstraint) {
-            constraint.active = NO;
-        }
     }
 
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
@@ -259,7 +253,7 @@
 
 - (void)updateiCloudStatus {
     NSString *titleString;
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         // iOS 7
         titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
     } else {

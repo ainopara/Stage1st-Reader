@@ -23,23 +23,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-        // iOS 7
-        self.iCloudSwitch.on = NO;
-        self.iCloudSwitch.enabled = NO;
-        self.currentStatusLabel.text = @"-";
-        self.uploadQueueLabel.text = @"-";
-        self.clearCloudDataLabel.enabled = NO;
-        self.lastErrorMessageLabel.text = @"-";
+    self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
+    NSError *error = [MyCloudKitManager lastCloudkitError];
+    if (error) {
+        [self updateErrorMessageWithError:error];
     } else {
-        // iOS 8 and more
-        self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
-        NSError *error = [MyCloudKitManager lastCloudkitError];
-        if (error) {
-            [self updateErrorMessageWithError:error];
-        } else {
-            self.lastErrorMessageLabel.text = @"-";
-        }
+        self.lastErrorMessageLabel.text = @"-";
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];

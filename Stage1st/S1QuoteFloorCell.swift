@@ -7,10 +7,9 @@
 //
 
 import UIKit
-import YYText
 
 class S1QuoteFloorCell: UITableViewCell {
-    @IBOutlet weak var textView: YYTextView!
+    @IBOutlet weak var label: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -18,6 +17,6 @@ class S1QuoteFloorCell: UITableViewCell {
     }
     
     func initializeCell() {
-        textView.editable = false
+        self.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
     }
 }

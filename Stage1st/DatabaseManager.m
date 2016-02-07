@@ -206,12 +206,8 @@ DatabaseManager *MyDatabaseManager;
     [self setupArchiveViewExtension];
     [self setupFullTextSearchExtension];
     [self setupSearchResultViewExtension];
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support cloud kit sync
-        ;
-    } else {
-        // iOS 8 and more
-        [self setupCloudKitExtension];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+         [self setupCloudKitExtension];
     }
     
 	[[NSNotificationCenter defaultCenter] addObserver:self

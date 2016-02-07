@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dph-w0-2OJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dph-w0-2OJ">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -111,10 +111,9 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="4y5-0D-ImP" firstAttribute="centerY" secondItem="1p0-zR-jtO" secondAttribute="centerY" id="82p-b8-ykT"/>
-                                                <constraint firstItem="4y5-0D-ImP" firstAttribute="leading" secondItem="1p0-zR-jtO" secondAttribute="leadingMargin" priority="750" id="9hC-lW-TZK"/>
+                                                <constraint firstItem="4y5-0D-ImP" firstAttribute="leading" secondItem="1p0-zR-jtO" secondAttribute="leadingMargin" id="9hC-lW-TZK"/>
                                                 <constraint firstItem="bCf-k2-mDk" firstAttribute="trailing" secondItem="1p0-zR-jtO" secondAttribute="trailing" constant="-12" id="nOx-eM-yug"/>
                                                 <constraint firstItem="bCf-k2-mDk" firstAttribute="centerY" secondItem="1p0-zR-jtO" secondAttribute="centerY" id="rMv-M1-tgu"/>
-                                                <constraint firstItem="4y5-0D-ImP" firstAttribute="leading" secondItem="1p0-zR-jtO" secondAttribute="leading" constant="15" id="tjW-c2-lyN"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -165,8 +164,7 @@
                                             <constraints>
                                                 <constraint firstItem="NjD-eD-vbp" firstAttribute="centerY" secondItem="Qnn-b3-TXZ" secondAttribute="centerY" id="AL2-RI-kIL"/>
                                                 <constraint firstItem="NjD-eD-vbp" firstAttribute="trailing" secondItem="Qnn-b3-TXZ" secondAttribute="trailing" constant="-12" id="GP9-mO-i73"/>
-                                                <constraint firstItem="afJ-hF-0oG" firstAttribute="leading" secondItem="Qnn-b3-TXZ" secondAttribute="leadingMargin" priority="750" id="NQ6-IT-0Uq"/>
-                                                <constraint firstItem="afJ-hF-0oG" firstAttribute="leading" secondItem="Qnn-b3-TXZ" secondAttribute="leading" constant="15" id="bGC-By-wZh"/>
+                                                <constraint firstItem="afJ-hF-0oG" firstAttribute="leading" secondItem="Qnn-b3-TXZ" secondAttribute="leadingMargin" id="NQ6-IT-0Uq"/>
                                                 <constraint firstItem="afJ-hF-0oG" firstAttribute="centerY" secondItem="Qnn-b3-TXZ" secondAttribute="centerY" id="xI4-nW-AYm"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -193,9 +191,8 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="zBD-2E-6nE" firstAttribute="centerY" secondItem="dhg-ze-qnm" secondAttribute="centerY" id="dJs-ub-zKD"/>
-                                                <constraint firstItem="zBD-2E-6nE" firstAttribute="leading" secondItem="dhg-ze-qnm" secondAttribute="leading" constant="15" id="h0V-2u-oea"/>
                                                 <constraint firstItem="oV5-7T-ny7" firstAttribute="centerY" secondItem="dhg-ze-qnm" secondAttribute="centerY" id="nBv-6B-9z0"/>
-                                                <constraint firstItem="zBD-2E-6nE" firstAttribute="leading" secondItem="dhg-ze-qnm" secondAttribute="leadingMargin" priority="750" id="oIa-SK-vj4"/>
+                                                <constraint firstItem="zBD-2E-6nE" firstAttribute="leading" secondItem="dhg-ze-qnm" secondAttribute="leadingMargin" id="oIa-SK-vj4"/>
                                                 <constraint firstItem="oV5-7T-ny7" firstAttribute="trailing" secondItem="dhg-ze-qnm" secondAttribute="trailing" constant="-12" id="xnq-UY-4gz"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -222,8 +219,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="AMT-Bb-S6D" firstAttribute="centerY" secondItem="E4y-b5-0p3" secondAttribute="centerY" id="BaF-92-Cn9"/>
-                                                <constraint firstItem="AMT-Bb-S6D" firstAttribute="leading" secondItem="E4y-b5-0p3" secondAttribute="leading" constant="15" id="Ecj-O8-xC0"/>
-                                                <constraint firstItem="AMT-Bb-S6D" firstAttribute="leading" secondItem="E4y-b5-0p3" secondAttribute="leadingMargin" priority="750" id="Sd2-k4-Yol"/>
+                                                <constraint firstItem="AMT-Bb-S6D" firstAttribute="leading" secondItem="E4y-b5-0p3" secondAttribute="leadingMargin" id="Sd2-k4-Yol"/>
                                                 <constraint firstItem="BuD-0p-Vi4" firstAttribute="centerY" secondItem="E4y-b5-0p3" secondAttribute="centerY" id="kal-Tf-zat"/>
                                                 <constraint firstItem="BuD-0p-Vi4" firstAttribute="trailing" secondItem="E4y-b5-0p3" secondAttribute="trailing" constant="-12" id="nWV-vG-a4H"/>
                                             </constraints>
@@ -243,7 +239,7 @@
                                                     </connections>
                                                 </switch>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Force Portrait" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DBM-iT-6OE">
-                                                    <rect key="frame" x="15" y="12" width="100" height="20"/>
+                                                    <rect key="frame" x="15" y="12.5" width="99.5" height="19.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -251,10 +247,9 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="u2d-Y9-NiZ" firstAttribute="trailing" secondItem="NJC-aX-Ha8" secondAttribute="trailing" constant="-12" id="0NM-H4-63n"/>
-                                                <constraint firstItem="DBM-iT-6OE" firstAttribute="leading" secondItem="NJC-aX-Ha8" secondAttribute="leading" constant="15" id="3ap-5a-3Xg"/>
                                                 <constraint firstItem="u2d-Y9-NiZ" firstAttribute="centerY" secondItem="NJC-aX-Ha8" secondAttribute="centerY" id="ECG-Qg-DTf"/>
                                                 <constraint firstItem="DBM-iT-6OE" firstAttribute="centerY" secondItem="NJC-aX-Ha8" secondAttribute="centerY" id="ieN-hG-PHW"/>
-                                                <constraint firstItem="DBM-iT-6OE" firstAttribute="leading" secondItem="NJC-aX-Ha8" secondAttribute="leadingMargin" priority="750" id="jYX-0l-d1O"/>
+                                                <constraint firstItem="DBM-iT-6OE" firstAttribute="leading" secondItem="NJC-aX-Ha8" secondAttribute="leadingMargin" id="jYX-0l-d1O"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -280,9 +275,8 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="rMC-JB-vnF" firstAttribute="trailing" secondItem="nbd-Z6-P0s" secondAttribute="trailing" constant="-12" id="3vv-DB-Meg"/>
-                                                <constraint firstItem="Iaq-ft-rzy" firstAttribute="leading" secondItem="nbd-Z6-P0s" secondAttribute="leading" constant="15" id="9wP-9v-6zP"/>
                                                 <constraint firstItem="Iaq-ft-rzy" firstAttribute="centerY" secondItem="nbd-Z6-P0s" secondAttribute="centerY" id="eaB-S4-EyH"/>
-                                                <constraint firstItem="Iaq-ft-rzy" firstAttribute="leading" secondItem="nbd-Z6-P0s" secondAttribute="leadingMargin" priority="750" id="nw3-bR-xi2"/>
+                                                <constraint firstItem="Iaq-ft-rzy" firstAttribute="leading" secondItem="nbd-Z6-P0s" secondAttribute="leadingMargin" id="nw3-bR-xi2"/>
                                                 <constraint firstItem="rMC-JB-vnF" firstAttribute="centerY" secondItem="nbd-Z6-P0s" secondAttribute="centerY" id="tUU-kk-LAL"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -401,12 +395,6 @@
                         <outlet property="useAPISwitch" destination="BuD-0p-Vi4" id="2d8-oP-fWN"/>
                         <outlet property="usernameDetail" destination="nZs-MV-DJo" id="0ph-I0-JDx"/>
                         <outlet property="versionDetail" destination="8dV-mn-myv" id="Azo-55-gVa"/>
-                        <outletCollection property="offsetConstraint" destination="tjW-c2-lyN" id="tUm-g9-C1r"/>
-                        <outletCollection property="offsetConstraint" destination="bGC-By-wZh" id="RPz-aJ-k9a"/>
-                        <outletCollection property="offsetConstraint" destination="Ecj-O8-xC0" id="AQc-Vk-2At"/>
-                        <outletCollection property="offsetConstraint" destination="9wP-9v-6zP" id="1LQ-xX-sF2"/>
-                        <outletCollection property="offsetConstraint" destination="h0V-2u-oea" id="ZtR-yM-Ukv"/>
-                        <outletCollection property="offsetConstraint" destination="3ap-5a-3Xg" id="rrZ-P9-Gyc"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TYH-ks-FAg" userLabel="First Responder" sceneMemberID="firstResponder"/>
