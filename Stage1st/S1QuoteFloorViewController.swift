@@ -9,7 +9,6 @@
 import UIKit
 import JTSImageViewController
 import Crashlytics
-import YYText
 
 class S1QuoteFloorViewController: UIViewController {
     var htmlString: String?
@@ -18,13 +17,14 @@ class S1QuoteFloorViewController: UIViewController {
     var centerFloorID: Int = 0
     
     @IBOutlet weak var tableView: UITableView!
-    
+
     
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        self.tableView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -53,10 +53,7 @@ extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default,reuseIdentifier:"QuoteCell")
         let floor = self.floors![indexPath.row]
-        cell.textView.text = floor.content!
+        cell.label.text = floor.content!
         return cell
-    }
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 140.0
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5pw-r5-r4H">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5pw-r5-r4H">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
         <!--Topic List View Controller-->
@@ -168,19 +168,22 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="29i-tL-btd" customClass="YYTextView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
-                                                </scrollView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V2h-aG-hRg">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="29i-tL-btd" secondAttribute="trailing" id="CDx-fP-DtA"/>
-                                                <constraint firstItem="29i-tL-btd" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" id="jyZ-gs-ynr"/>
-                                                <constraint firstAttribute="bottom" secondItem="29i-tL-btd" secondAttribute="bottom" id="xdN-R1-aE7"/>
-                                                <constraint firstItem="29i-tL-btd" firstAttribute="leading" secondItem="T5E-PP-Zfy" secondAttribute="leading" id="zyG-8E-FCU"/>
+                                                <constraint firstItem="V2h-aG-hRg" firstAttribute="leading" secondItem="T5E-PP-Zfy" secondAttribute="leading" id="0iW-s1-jah"/>
+                                                <constraint firstAttribute="bottom" secondItem="V2h-aG-hRg" secondAttribute="bottom" id="JJc-xe-nME"/>
+                                                <constraint firstItem="V2h-aG-hRg" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" id="aEZ-ax-mdC"/>
+                                                <constraint firstAttribute="trailing" secondItem="V2h-aG-hRg" secondAttribute="trailing" id="sax-pS-OmT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="textView" destination="29i-tL-btd" id="3ep-DN-FJJ"/>
+                                            <outlet property="label" destination="V2h-aG-hRg" id="KPI-yu-tHO"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
