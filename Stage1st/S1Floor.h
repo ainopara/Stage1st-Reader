@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "mantle.h"
+#import <Mantle/Mantle.h>
 
 @interface S1Floor : MTLModel
 
