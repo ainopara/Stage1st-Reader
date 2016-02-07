@@ -26,7 +26,7 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.6.0):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.4)
+  - Fabric (1.6.5)
   - FMDB (2.6):
     - FMDB/standard (= 2.6)
   - FMDB/standard (2.6)
@@ -81,7 +81,6 @@ PODS:
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/Views (2.8.1):
     - YapDatabase/Standard/Core
-  - YYText (0.9.19)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -97,7 +96,6 @@ DEPENDENCIES:
   - Reachability
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
-  - YYText
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -130,7 +128,7 @@ SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
   Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
-  Fabric: ed41fd62173c6bdea24ab02c9d7707161eabb750
+  Fabric: 338ffd3c2afcab120638907b4251189de9ad17b3
   FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
@@ -139,6 +137,5 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 861c720d5850a59f9e5c0bad0fd95334012b9dc9
-  YYText: b823b71b99b526c4a81029ecb59f3d8172ed5c9a
 
 COCOAPODS: 0.39.0
