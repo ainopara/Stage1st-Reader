@@ -17,6 +17,7 @@
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "DDTTYLogger.h"
+#import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
@@ -120,11 +121,15 @@ S1AppDelegate *MyAppDelegate;
     }
     
     // Start database & cloudKit (in that order)
-    
     [DatabaseManager initialize];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         [CloudKitManager initialize];
     }
+    
+    // Preload floor cache database
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [S1CacheDatabaseManager sharedInstance];
+    });
 
     // Migrate Database
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
