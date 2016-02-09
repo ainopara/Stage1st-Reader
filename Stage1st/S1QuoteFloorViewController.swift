@@ -19,7 +19,6 @@ class S1QuoteFloorViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
     
-    
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +27,7 @@ class S1QuoteFloorViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.separatorStyle = .None
         self.tableView.estimatedRowHeight = 100.0
         
         // Do any additional setup after loading the view.
@@ -53,7 +53,9 @@ extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default,reuseIdentifier:"QuoteCell")
         let floor = self.floors![indexPath.row]
-        cell.label.text = floor.content!
+        let viewModel = FloorViewModel(floorModel: floor, topicModel: self.topic!)
+        cell.updateWithViewModel(viewModel)
+
         return cell
     }
 }

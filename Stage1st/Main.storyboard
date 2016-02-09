@@ -168,21 +168,32 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V2h-aG-hRg">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V2h-aG-hRg">
+                                                    <rect key="frame" x="0.0" y="22" width="320" height="77.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cl9-91-VdL">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="V2h-aG-hRg" firstAttribute="leading" secondItem="T5E-PP-Zfy" secondAttribute="leading" id="0iW-s1-jah"/>
+                                                <constraint firstItem="cl9-91-VdL" firstAttribute="leading" secondItem="T5E-PP-Zfy" secondAttribute="leading" id="F9v-hy-6qO"/>
                                                 <constraint firstAttribute="bottom" secondItem="V2h-aG-hRg" secondAttribute="bottom" id="JJc-xe-nME"/>
-                                                <constraint firstItem="V2h-aG-hRg" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" id="aEZ-ax-mdC"/>
+                                                <constraint firstItem="V2h-aG-hRg" firstAttribute="top" secondItem="cl9-91-VdL" secondAttribute="bottom" constant="1" id="KSV-dC-fAm"/>
+                                                <constraint firstAttribute="trailing" secondItem="cl9-91-VdL" secondAttribute="trailing" id="MWY-sV-3Oi"/>
+                                                <constraint firstItem="cl9-91-VdL" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" id="PSg-8J-NdV"/>
+                                                <constraint firstItem="V2h-aG-hRg" firstAttribute="top" secondItem="T5E-PP-Zfy" secondAttribute="top" constant="22" id="aEZ-ax-mdC"/>
                                                 <constraint firstAttribute="trailing" secondItem="V2h-aG-hRg" secondAttribute="trailing" id="sax-pS-OmT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="authorLabel" destination="cl9-91-VdL" id="Kxz-4r-W3Y"/>
                                             <outlet property="label" destination="V2h-aG-hRg" id="KPI-yu-tHO"/>
                                         </connections>
                                     </tableViewCell>

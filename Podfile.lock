@@ -26,6 +26,17 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.6.0):
     - Fabric (~> 1.6.3)
+  - DTCoreText (1.6.17):
+    - DTFoundation/Core (~> 1.7.5)
+    - DTFoundation/DTAnimatedGIF (~> 1.7.5)
+    - DTFoundation/DTHTMLParser (~> 1.7.5)
+    - DTFoundation/UIKit (~> 1.7.5)
+  - DTFoundation/Core (1.7.9)
+  - DTFoundation/DTAnimatedGIF (1.7.9)
+  - DTFoundation/DTHTMLParser (1.7.9):
+    - DTFoundation/Core
+  - DTFoundation/UIKit (1.7.9):
+    - DTFoundation/Core
   - Fabric (1.6.5)
   - FMDB (2.6):
     - FMDB/standard (= 2.6)
@@ -87,6 +98,7 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking
   - Crashlytics
+  - DTCoreText
   - Fabric
   - FMDB
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
@@ -128,6 +140,8 @@ SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
   Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
+  DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
+  DTFoundation: 70a0765e3596f82dd421832e95c65e2166eb3102
   Fabric: 338ffd3c2afcab120638907b4251189de9ad17b3
   FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608

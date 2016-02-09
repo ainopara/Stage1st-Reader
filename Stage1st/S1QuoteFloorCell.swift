@@ -11,6 +11,7 @@ import UIKit
 class S1QuoteFloorCell: UITableViewCell {
     @IBOutlet weak var label: UILabel!
     
+    @IBOutlet weak var authorLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         initializeCell()
@@ -18,5 +19,10 @@ class S1QuoteFloorCell: UITableViewCell {
     
     func initializeCell() {
         self.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
+    }
+    
+    func updateWithViewModel(viewModel: FloorViewModel) {
+        authorLabel.attributedText = viewModel.author
+        label.attributedText = viewModel.attributeContent
     }
 }
