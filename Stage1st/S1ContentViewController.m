@@ -29,7 +29,7 @@
 #define TOP_OFFSET -80.0
 #define BOTTOM_OFFSET 60.0
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, S1MahjongFaceViewDelegate, PullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, PullToActionDelagete>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
@@ -52,7 +52,6 @@
 
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
 @property (nonatomic, weak) REComposeViewController *replyController;
-@property (nonatomic, strong) S1MahjongFaceView *mahjongFaceView;
 @end
 
 @implementation S1ContentViewController {
@@ -442,56 +441,7 @@
 
     
 }
-#pragma mark Accessory View
-- (void)toggleFace:(id)sender {
-    NSLog(@"toggleFace");
-    if (self.replyController.inputView == nil) {
-        if (self.mahjongFaceView == nil) {
-            self.mahjongFaceView = [[S1MahjongFaceView alloc] init];
-            //[self.mahjongController.view setFrame:CGRectMake(0, 0, 320, 217)];
-            //[self.view addSubview:self.mahjongController.view];
-            self.mahjongFaceView.delegate = self;
-            self.mahjongFaceView.historyCountLimit = 99;
-        }
-        [(UIButton *)sender setImage:[UIImage imageNamed:@"KeyboardButton"] forState:UIControlStateNormal];
-        self.replyController.inputView = self.mahjongFaceView;
-        [self.replyController reloadInputViews];
-    } else {
-        [(UIButton *)sender setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
-        self.replyController.inputView = nil;
-        [self.replyController reloadInputViews];
-    }
-}
 
-- (void)insertSpoilerMark:(id)sender {
-    [self insertMarkWithAPart:@"[color=LemonChiffon]" andBPart:@"[/color]"];
-}
-
-- (void)insertQuoteMark:(id)sender {
-    [self insertMarkWithAPart:@"[quote]" andBPart:@"[/quote]"];
-}
-
-- (void)insertBoldMark:(id)sender {
-    [self insertMarkWithAPart:@"[b]" andBPart:@"[/b]"];
-}
-- (void)insertMarkWithAPart:(NSString *)aPart andBPart:(NSString *)bPart {
-    NSLog(@"insert %@ %@ %lu", aPart, bPart, (unsigned long)[aPart length]);
-    if (self.replyController.textView != nil) {
-        NSRange selectRange = self.replyController.textView.selectedRange;
-        NSUInteger aPartLenght = [aPart length];
-        if (selectRange.length == 0) {
-            NSString *wholeMark = [aPart stringByAppendingString:bPart];
-            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:wholeMark] atIndex:selectRange.location];
-            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
-        } else {
-            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:bPart] atIndex:selectRange.location + selectRange.length];
-            [self.replyController.textView.textStorage insertAttributedString:[[NSAttributedString alloc] initWithString:aPart] atIndex:selectRange.location];
-            self.replyController.textView.selectedRange = NSMakeRange(selectRange.location + aPartLenght, selectRange.length);
-        }
-        
-        [self resetTextViewStyle:self.replyController.textView];
-    }
-}
 
 #pragma mark UIWebView
 
@@ -698,46 +648,6 @@
     return 0.3;
 }
 
-#pragma mark Mahjong Face
-
-- (void)mahjongFaceViewController:(S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment {
-    UITextView *textView = self.replyController.textView;
-    if (textView) {
-        [textView.textStorage insertAttributedString:[NSAttributedString attributedStringWithAttachment:attachment] atIndex:textView.selectedRange.location];
-        
-        //Move selection location
-        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location + 1, self.replyController.textView.selectedRange.length);
-        
-        //Reset Text Style
-        [self resetTextViewStyle:textView];
-    }
-}
-
-- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceView *)mahjongFaceView {
-    UITextView *textView = self.replyController.textView;
-    if (textView) {
-        NSRange range = textView.selectedRange;
-        if (range.length == 0) {
-            if (range.location > 0) {
-                range.location -= 1;
-                range.length = 1;
-            }
-        }
-        textView.selectedRange = range;
-        [textView.textStorage deleteCharactersInRange:textView.selectedRange];
-        textView.selectedRange = NSMakeRange(self.replyController.textView.selectedRange.location, 0);
-        
-    }
-}
-
-- (void)saveHistoryArray:(NSMutableArray *)historyArray {
-    self.dataCenter.mahjongFaceHistoryArray = historyArray;
-}
-
-- (NSMutableArray *)restoreHistoryArray {
-    return self.dataCenter.mahjongFaceHistoryArray;
-}
-
 #pragma mark Pull To Action
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
@@ -939,8 +849,8 @@
     
     replyController.delegate = self;
     [replyController setAttributedText:self.attributedReplyDraft];
-    replyController.accessoryView = [self accessoryView];
-    [self resetTextViewStyle:replyController.textView];
+    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35) withComposeVC:self.replyController];
+    [ReplyAccessoryView resetTextViewStyle:replyController.textView];
      
     [replyController presentFromViewController:self];
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
@@ -1137,16 +1047,6 @@
     return result;
 }
 
-- (void)resetTextViewStyle:(UITextView *)textView {
-    NSRange wholeRange = NSMakeRange(0, textView.textStorage.length);
-    [textView.textStorage removeAttribute:NSFontAttributeName range:wholeRange];
-    [textView.textStorage addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:17.0f] range:wholeRange];
-    [textView.textStorage removeAttribute:NSForegroundColorAttributeName range:wholeRange];
-    [textView.textStorage addAttribute:NSForegroundColorAttributeName value:[[APColorManager sharedInstance] colorForKey:@"reply.text"] range:wholeRange];
-    [textView setFont:[UIFont systemFontOfSize:17.0f]];
-    [textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
-}
-
 
 #pragma mark - Getters and Setters
 
@@ -1230,53 +1130,5 @@
     }
     CLS_LOG(@"ContentVC | Topic setted: %@", self.topic.topicID);
 }
-
-- (UIView *)accessoryView {
-    //setup accessory view
-    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35)];
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
-    
-    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [faceButton setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
-    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
-    
-    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [spoilerButton setTitle:@"H" forState:UIControlStateNormal];
-    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
-    /*
-     UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-     [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
-     //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-     [quoteButton setTitle:@"「-」" forState:UIControlStateNormal];
-     [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
-     UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
-     
-     UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
-     [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
-     //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-     [boldButton setTitle:@"B" forState:UIControlStateNormal];
-     [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
-     UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
-     */
-    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem.width = 26.0f;
-    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [toolbar setItems:@[flexItem, spoilerItem, fixItem, faceItem, flexItem]];
-    [accessoryView addSubview:toolbar];
-    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(accessoryView.mas_left);
-        make.right.equalTo(accessoryView.mas_right);
-        make.top.equalTo(accessoryView.mas_top);
-        make.bottom.equalTo(accessoryView.mas_bottom);
-    }];
-    return accessoryView;
-}
-
-
 
 @end

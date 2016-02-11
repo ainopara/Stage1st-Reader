@@ -48,6 +48,7 @@ PODS:
   - Mantle/extobjc (2.0.6)
   - Masonry (0.6.4)
   - Reachability (3.2)
+  - SnapKit (0.19.1)
   - SVWebViewController (1.0)
   - YapDatabase (2.8.1):
     - YapDatabase/Standard (= 2.8.1)
@@ -106,6 +107,7 @@ DEPENDENCIES:
   - Mantle
   - Masonry
   - Reachability
+  - SnapKit
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
 
@@ -149,6 +151,7 @@ SPEC CHECKSUMS:
   Mantle: 299966b00759634931699f69cb6a30b9239b944d
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 861c720d5850a59f9e5c0bad0fd95334012b9dc9
 

@@ -16,5 +16,6 @@ target "Stage1st" do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'DTCoreText'
+    pod 'SnapKit'
 end
 
