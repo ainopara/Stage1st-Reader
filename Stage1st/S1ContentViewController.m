@@ -34,19 +34,22 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic, strong) PullToActionController *pullToActionController;
+
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, strong) UILabel *pageLabel;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
+
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *topDecorateLine;
 @property (nonatomic, strong) UIView *bottomDecorateLine;
+
 @property (nonatomic, weak) JTSImageViewController *imageViewer;
 
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
 @property (nonatomic, strong) NSMutableDictionary *cachedViewPosition;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
-@property (nonatomic, strong) UIButton *backButton;
-@property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
 @property (nonatomic, weak) REComposeViewController *replyController;
 @property (nonatomic, strong) S1MahjongFaceView *mahjongFaceView;
@@ -63,26 +66,8 @@
     BOOL _presentingWebViewer;
     BOOL _presentingContentViewController;
     BOOL _shouldRestoreViewPosition;
-    NSURL *_urlToOpen; // iOS7 Only
 }
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil // not used
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-        _currentPage = 1;
-        _needToScrollToBottom = NO;
-        _needToLoadLastPosition = YES;
-        _finishLoading = NO;
-        _presentingImageViewer = NO;
-        _presentingWebViewer = NO;
-        _presentingContentViewController = NO;
-        _shouldRestoreViewPosition = NO;
-        _cachedViewPosition = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
+#pragma mark - Life Cycle
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -303,74 +288,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-#pragma mark - Setters and Getters
 
-- (void)setTopic:(S1Topic *)topic
-{
-
-    if ([topic isImmutable]) {
-        _topic = [topic copy];
-    } else {
-        _topic = topic;
-    }
-    
-    _totalPages = ([topic.replyCount integerValue] / 30) + 1;
-    if (topic.lastViewedPage) {
-        _currentPage = [topic.lastViewedPage integerValue];
-    }
-    if (_topic.favorite == nil) {
-        _topic.favorite = @(NO);
-    }
-    CLS_LOG(@"ContentVC | Topic setted: %@", self.topic.topicID);
-}
-
-- (UIView *)accessoryView {
-    //setup accessory view
-    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35)];
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
-    
-    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [faceButton setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
-    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
-    
-    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
-    [spoilerButton setTitle:@"H" forState:UIControlStateNormal];
-    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
-    /*
-    UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
-    //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [quoteButton setTitle:@"「-」" forState:UIControlStateNormal];
-    [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
-    
-    UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
-    //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
-    [boldButton setTitle:@"B" forState:UIControlStateNormal];
-    [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
-    */
-    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem.width = 26.0f;
-    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    [toolbar setItems:@[flexItem, spoilerItem, fixItem, faceItem, flexItem]];
-    [accessoryView addSubview:toolbar];
-    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(accessoryView.mas_left);
-        make.right.equalTo(accessoryView.mas_right);
-        make.top.equalTo(accessoryView.mas_top);
-        make.bottom.equalTo(accessoryView.mas_bottom);
-    }];
-    return accessoryView;
-}
-
-#pragma mark - Bar Button Actions
+#pragma mark - TabBar Actions
 
 - (void)back:(id)sender
 {
@@ -1273,5 +1192,137 @@
     [textView setFont:[UIFont systemFontOfSize:17.0f]];
     [textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
 }
+
+
+#pragma mark - Getters and Setters
+
+- (UIButton *)backButton {
+    if (_backButton == nil) {
+        _backButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_backButton setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
+        _backButton.frame = CGRectMake(0, 0, 40, 30);
+        _backButton.imageView.clipsToBounds = NO;
+        _backButton.imageView.contentMode = UIViewContentModeCenter;
+        [_backButton addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
+        [_backButton setTag:99];
+        UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
+        backLongPressGR.minimumPressDuration = 0.5;
+        [_backButton addGestureRecognizer:backLongPressGR];
+    }
+    return _backButton;
+}
+
+- (UIButton *)forwardButton {
+    if (_forwardButton == nil) {
+        _forwardButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        if (_currentPage == _totalPages) {
+            [_forwardButton setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+        } else {
+            [_forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+        }
+        
+        _forwardButton.frame = CGRectMake(0, 0, 40, 30);
+        _forwardButton.imageView.clipsToBounds = NO;
+        _forwardButton.imageView.contentMode = UIViewContentModeCenter;
+        [_forwardButton addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
+        [_forwardButton setTag:100];
+        UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
+        forwardLongPressGR.minimumPressDuration = 0.5;
+        [_forwardButton addGestureRecognizer:forwardLongPressGR];
+    }
+    return _forwardButton;
+}
+
+- (UILabel *)pageLabel {
+    if (_pageLabel == nil) {
+        //Page Label
+        _pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
+        _pageLabel.font = [UIFont systemFontOfSize:13.0f];
+        _pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
+        _pageLabel.backgroundColor = [UIColor clearColor];
+        _pageLabel.textAlignment = NSTextAlignmentCenter;
+        _pageLabel.userInteractionEnabled = YES;
+        UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
+        [_pageLabel addGestureRecognizer:pickPageGR];
+        UILongPressGestureRecognizer *forceRefreshGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forceRefreshPressed:)];
+        forceRefreshGR.minimumPressDuration = 0.5;
+        [_pageLabel addGestureRecognizer:forceRefreshGR];
+    }
+    return _pageLabel;
+}
+
+- (UIBarButtonItem *)actionBarButtonItem {
+    if (_actionBarButtonItem == nil) {
+        _actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
+    }
+    return _actionBarButtonItem;
+}
+
+- (void)setTopic:(S1Topic *)topic
+{
+    
+    if ([topic isImmutable]) {
+        _topic = [topic copy];
+    } else {
+        _topic = topic;
+    }
+    
+    _totalPages = ([topic.replyCount integerValue] / 30) + 1;
+    if (topic.lastViewedPage) {
+        _currentPage = [topic.lastViewedPage integerValue];
+    }
+    if (_topic.favorite == nil) {
+        _topic.favorite = @(NO);
+    }
+    CLS_LOG(@"ContentVC | Topic setted: %@", self.topic.topicID);
+}
+
+- (UIView *)accessoryView {
+    //setup accessory view
+    UIView *accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:accessoryView.bounds];
+    
+    UIButton *faceButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [faceButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [faceButton setImage:[UIImage imageNamed:@"MahjongFaceButton"] forState:UIControlStateNormal];
+    [faceButton addTarget:self action:@selector(toggleFace:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *faceItem = [[UIBarButtonItem alloc] initWithCustomView:faceButton];
+    
+    UIButton *spoilerButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [spoilerButton setFrame:CGRectMake(0, 0, 44, 35)];
+    [spoilerButton setTitle:@"H" forState:UIControlStateNormal];
+    [spoilerButton addTarget:self action:@selector(insertSpoilerMark:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *spoilerItem = [[UIBarButtonItem alloc] initWithCustomView:spoilerButton];
+    /*
+     UIButton *quoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+     [quoteButton setFrame:CGRectMake(0, 0, 44, 35)];
+     //[quoteButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+     [quoteButton setTitle:@"「-」" forState:UIControlStateNormal];
+     [quoteButton addTarget:self action:@selector(insertQuoteMark:) forControlEvents:UIControlEventTouchUpInside];
+     UIBarButtonItem *quoteItem = [[UIBarButtonItem alloc] initWithCustomView:quoteButton];
+     
+     UIButton *boldButton = [UIButton buttonWithType:UIButtonTypeSystem];
+     [boldButton setFrame:CGRectMake(0, 0, 44, 35)];
+     //[boldButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+     [boldButton setTitle:@"B" forState:UIControlStateNormal];
+     [boldButton addTarget:self action:@selector(insertBoldMark:) forControlEvents:UIControlEventTouchUpInside];
+     UIBarButtonItem *boldItem = [[UIBarButtonItem alloc] initWithCustomView:boldButton];
+     */
+    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixItem.width = 26.0f;
+    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    [toolbar setItems:@[flexItem, spoilerItem, fixItem, faceItem, flexItem]];
+    [accessoryView addSubview:toolbar];
+    [toolbar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(accessoryView.mas_left);
+        make.right.equalTo(accessoryView.mas_right);
+        make.top.equalTo(accessoryView.mas_top);
+        make.bottom.equalTo(accessoryView.mas_bottom);
+    }];
+    return accessoryView;
+}
+
+
 
 @end
