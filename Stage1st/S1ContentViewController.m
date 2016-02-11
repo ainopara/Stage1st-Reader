@@ -60,7 +60,7 @@
     NSInteger _totalPages;
     
     BOOL _needToScrollToBottom;
-    BOOL _needToLoadLastPosition;
+    BOOL _needToLoadLastPositionFromModel;
     BOOL _finishLoading;
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
@@ -76,7 +76,7 @@
         // Custom initialization
         _currentPage = 1;
         _needToScrollToBottom = NO;
-        _needToLoadLastPosition = YES;
+        _needToLoadLastPositionFromModel = YES;
         _finishLoading = NO;
         _presentingImageViewer = NO;
         _presentingWebViewer = NO;
@@ -294,7 +294,7 @@
 - (void)back:(id)sender
 {
     [self cancelRequest];
-    _needToLoadLastPosition = NO;
+    _needToLoadLastPositionFromModel = NO;
     [self saveViewPosition];
     if (_currentPage - 1 >= 1) {
         _currentPage -= 1;
@@ -307,7 +307,7 @@
 - (void)forward:(id)sender
 {
     [self cancelRequest];
-    _needToLoadLastPosition = NO;
+    _needToLoadLastPositionFromModel = NO;
     [self saveViewPosition];
     if (_currentPage + 1 <= _totalPages) {
         _currentPage += 1;
@@ -329,7 +329,7 @@
         if (_currentPage > 1) {
             _currentPage = 1;
             [self cancelRequest];
-            _needToLoadLastPosition = NO;
+            _needToLoadLastPositionFromModel = NO;
             [self fetchContent];
         }
     }
@@ -342,7 +342,7 @@
         if (_currentPage < _totalPages) {
             _currentPage = _totalPages;
             [self cancelRequest];
-            _needToLoadLastPosition = NO;
+            _needToLoadLastPositionFromModel = NO;
             [self fetchContent];
         }
     }
@@ -365,7 +365,7 @@
                                            [self saveViewPosition];
                                            
                                            [self cancelRequest];
-                                           _needToLoadLastPosition = NO;
+                                           _needToLoadLastPositionFromModel = NO;
                                            if (_currentPage != selectedIndex + 1) {
                                                _currentPage = selectedIndex + 1;
                                                [self fetchContent];
@@ -392,7 +392,7 @@
     if (gr.state == UIGestureRecognizerStateBegan) {
         NSLog(@"forceRefresh pressed");
         [self cancelRequest];
-        _needToLoadLastPosition = NO;
+        _needToLoadLastPositionFromModel = NO;
         [self saveViewPosition];
         [self fetchContentAndForceUpdate:YES];
     }
@@ -692,11 +692,11 @@
 {
     CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
-    if (_needToLoadLastPosition) {
+    if (_needToLoadLastPositionFromModel) {
         if (self.topic.lastViewedPosition != 0) {
             [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
         }
-        _needToLoadLastPosition = NO;
+        _needToLoadLastPositionFromModel = NO;
     }
 
     // Restore last view position from cached position in this view controller.
@@ -1074,7 +1074,7 @@
     self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
     self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
 
-    _needToLoadLastPosition = NO;
+    _needToLoadLastPositionFromModel = NO;
     [self saveViewPosition];
     [self fetchContentAndForceUpdate:NO];
 }
