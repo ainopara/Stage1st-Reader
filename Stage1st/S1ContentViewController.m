@@ -146,55 +146,25 @@
         make.width.equalTo(self.view.mas_width).with.offset(-24);
     }];
 
-    UIButton *button = nil;
-    
-    //Backward Button
+    UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:self.forwardButton];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:self.backButton];
 
+    UIButton *button = nil;
+    // Favorite Button
     button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:[UIImage imageNamed:@"Back"] forState:UIControlStateNormal];
-    button.frame = CGRectMake(0, 0, 40, 30);
-    button.imageView.clipsToBounds = NO;
-    button.imageView.contentMode = UIViewContentModeCenter;
-    [button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTag:99];
-    UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
-    backLongPressGR.minimumPressDuration = 0.5;
-    [button addGestureRecognizer:backLongPressGR];
-    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:button];    
-    self.backButton = button;
-    
-    
-    //Forward Button
-    button = [UIButton buttonWithType:UIButtonTypeSystem];
-    if (_currentPage == _totalPages) {
-        [button setImage:[UIImage imageNamed:@"Refresh_black"] forState:UIControlStateNormal];
+    if ([self.topic.favorite boolValue]) {
+        [button setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
     } else {
-        [button setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
     }
-    
     button.frame = CGRectMake(0, 0, 40, 30);
     button.imageView.clipsToBounds = NO;
     button.imageView.contentMode = UIViewContentModeCenter;
-    [button addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTag:100];
-    UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
-    forwardLongPressGR.minimumPressDuration = 0.5;
-    [button addGestureRecognizer:forwardLongPressGR];
-    UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-    self.forwardButton = button;
+    [button addTarget:self action:@selector(toggleFavoriteAction:) forControlEvents:UIControlEventTouchUpInside];
+    [button setTag:99];
+    UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     
-    //Page Label
-    self.pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-    self.pageLabel.font = [UIFont systemFontOfSize:13.0f];
-    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
-    self.pageLabel.backgroundColor = [UIColor clearColor];
-    self.pageLabel.textAlignment = NSTextAlignmentCenter;
-    self.pageLabel.userInteractionEnabled = YES;
-    UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
-    [self.pageLabel addGestureRecognizer:pickPageGR];
-    UILongPressGestureRecognizer *forceRefreshGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forceRefreshPressed:)];
-    forceRefreshGR.minimumPressDuration = 0.5;
-    [self.pageLabel addGestureRecognizer:forceRefreshGR];
+    
     
     //disable this function for now
     //UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
@@ -204,13 +174,13 @@
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
     labelItem.width = 80;
     
-    
-    self.actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixItem.width = 26.0f;
+    UIBarButtonItem *fixItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixItem2.width = 42.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, self.actionBarButtonItem]];
+    [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -398,36 +368,19 @@
     }
     
 }
-- (void)panPageLabel:(UIPanGestureRecognizer *)gr {
-    
-    CGFloat distance = [gr translationInView:self.view].x;
-    NSInteger offset = distance / 50.0;
-    NSInteger destinationPage = _currentPage + offset;
-    while (destinationPage <= 0) {
-        destinationPage += _totalPages;
+
+- (void)toggleFavoriteAction:(UIButton *)sender {
+    self.topic.favorite = [NSNumber numberWithBool:![self.topic.favorite boolValue]];
+    if ([self.topic.favorite boolValue]) {
+        self.topic.favoriteDate = [NSDate date];
     }
-    while (destinationPage > _totalPages) {
-        destinationPage -= _totalPages;
-    }
-    //NSLog(@"%f %ld", distance, (long)offset);
-    if (gr.state == UIGestureRecognizerStateBegan || gr.state == UIGestureRecognizerStateChanged) {
-        self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)destinationPage, (long)_totalPages];
-    } else if (gr.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"open %ld", (long)destinationPage);
-        if (_currentPage != destinationPage) {
-            [self saveViewPosition];
-            _currentPage = destinationPage;
-            [self cancelRequest];
-            _needToLoadLastPosition = NO;
-            [self fetchContent];
-        }
+    if ([self.topic.favorite boolValue]) {
+        [sender setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
     } else {
-        NSLog(@"unexpected state:%ld", (long)gr.state);
-        [self updatePageLabel];
+        [sender setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
     }
-    
-    
 }
+
 - (void)action:(id)sender
 {
 
