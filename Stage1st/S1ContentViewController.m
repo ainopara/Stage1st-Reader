@@ -208,6 +208,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
+    _presentingContentViewController = NO;
     
     [UIApplication sharedApplication].statusBarHidden = NO;
     
