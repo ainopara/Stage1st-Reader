@@ -538,7 +538,7 @@
                         if ([chainQuoteFloors count] > 0) {
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.topic copy];
-                            NSString *htmlString = [S1Parser generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
+                            NSString *htmlString = [S1ContentViewModel generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
                             S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
                             quoteFloorViewController.topic = quoteTopic;
                             quoteFloorViewController.floors = chainQuoteFloors;
