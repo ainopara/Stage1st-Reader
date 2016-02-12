@@ -8,10 +8,6 @@
 
 #import "S1TabBar.h"
 
-@interface S1TabBar ()
-
-@end
-
 @implementation S1TabBar {
     NSMutableArray *_buttons;
     NSInteger _index;
@@ -39,6 +35,7 @@
     }
     return self;
 }
+
 //Init from Storyboard
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -60,9 +57,6 @@
     }
     return self;
 }
-
-
-
 
 - (void)setKeys:(NSArray *)keys
 {
