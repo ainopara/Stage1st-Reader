@@ -28,7 +28,6 @@
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
-		864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		86522CB71BF7551A00BF3379 /* APColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86522CB61BF7551A00BF3379 /* APColorManager.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
@@ -137,8 +136,6 @@
 		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
 		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
 		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
-		864B128A1A4F9C4200247F72 /* S1DatabaseListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseListCell.h; path = Stage1st/S1DatabaseListCell.h; sourceTree = "<group>"; };
-		864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseListCell.m; path = Stage1st/S1DatabaseListCell.m; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		86522CB61BF7551A00BF3379 /* APColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APColorManager.swift; path = Vendors/APColorManager/APColorManager.swift; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
@@ -308,6 +305,10 @@
 				86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */,
 				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
+				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
+				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
+				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
+				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
 			);
 			name = "Topic List View Controller";
 			sourceTree = "<group>";
@@ -321,19 +322,6 @@
 				C095878A16CA993A007E0119 /* S1ContentViewController.m */,
 			);
 			name = "Content View Controller";
-			sourceTree = "<group>";
-		};
-		864B128D1A4FC4E000247F72 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
-				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
-				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
-				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
-				864B128A1A4F9C4200247F72 /* S1DatabaseListCell.h */,
-				864B128B1A4F9C4200247F72 /* S1DatabaseListCell.m */,
-			);
-			name = Cells;
 			sourceTree = "<group>";
 		};
 		864B128E1A4FC4EF00247F72 /* Animation */ = {
@@ -598,7 +586,6 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				864B128D1A4FC4E000247F72 /* Cells */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
@@ -890,7 +877,6 @@
 				86522CB71BF7551A00BF3379 /* APColorManager.swift in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
 				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
-				864B128C1A4F9C4200247F72 /* S1DatabaseListCell.m in Sources */,
 				86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */,
 				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				C083353A16E503F60035C1AA /* S1LoginViewController.m in Sources */,
