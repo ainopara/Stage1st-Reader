@@ -12,17 +12,20 @@
 @protocol S1MahjongFaceViewDelegate;
 
 @interface S1MahjongFaceView : UIView
-@property (nonatomic, strong) NSString *currentCategory;
+
+@property (nonatomic, strong) NSString * _Nonnull currentCategory;
 @property (nonatomic, assign) NSUInteger historyCountLimit;
+@property (nonatomic, strong) NSMutableArray * _Nonnull historyArray;
 @property (weak, nonatomic) id<S1MahjongFaceViewDelegate> delegate;
 
-- (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
-- (void)backspacePressed:(UIButton *)button;
+- (void)mahjongFacePressed:(nonnull S1MahjongFaceButton *)button;
+- (void)backspacePressed:(nonnull UIButton *)button;
+
 @end
 
 @protocol S1MahjongFaceViewDelegate <NSObject>
-- (void)mahjongFaceViewController:(S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment;
-- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceView *)mahjongFaceViewController;
-- (NSMutableArray *)restoreHistoryArray;
-- (void)saveHistoryArray:(NSMutableArray *)historyArray;
+
+- (void)mahjongFaceViewController:(nonnull S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(nonnull S1MahjongFaceTextAttachment *)attachment;
+- (void)mahjongFaceViewControllerDidPressBackSpace:(nonnull S1MahjongFaceView *)mahjongFaceViewController;
+
 @end

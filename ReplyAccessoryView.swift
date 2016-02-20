@@ -52,6 +52,14 @@ class ReplyAccessoryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        if let historyArray = self.mahjongFaceView?.historyArray {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray = historyArray
+            }
+        }
+    }
+    
     // MARK: Actions
     func toggleFace(button: UIButton) {
         guard let composeViewController = composeViewController else {
@@ -62,6 +70,7 @@ class ReplyAccessoryView: UIView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
+                newMahjongfaceView.historyArray = S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray
                 mahjongFaceView = newMahjongfaceView
             }
             button.setImage(UIImage(named: "KeyboardButton"), forState: .Normal)
@@ -96,7 +105,7 @@ class ReplyAccessoryView: UIView {
 //MARK: S1MahjongFaceViewDelegate
 extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
 
-    func mahjongFaceViewController(mahjongFaceView: S1MahjongFaceView!, didFinishWithResult attachment: S1MahjongFaceTextAttachment!) {
+    func mahjongFaceViewController(mahjongFaceView: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
         guard let textView = composeViewController?.textView else {
             return
         }
@@ -108,7 +117,7 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
         ReplyAccessoryView.resetTextViewStyle(textView)
     }
     
-    func mahjongFaceViewControllerDidPressBackSpace(mahjongFaceViewController: S1MahjongFaceView!) {
+    func mahjongFaceViewControllerDidPressBackSpace(mahjongFaceViewController: S1MahjongFaceView) {
         guard let textView = composeViewController?.textView else {
             return
         }
@@ -122,16 +131,10 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
         textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
     }
     
-    func saveHistoryArray(historyArray: NSMutableArray!) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray = historyArray
-        }
+    func saveHistoryArray(historyArray: NSMutableArray) {
+        
     }
-    
-    func restoreHistoryArray() -> NSMutableArray! {
-        return S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray
-    }
-    
+  
 }
 
 // MARK: Helper

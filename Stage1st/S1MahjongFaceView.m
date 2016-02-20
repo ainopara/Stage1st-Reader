@@ -17,8 +17,6 @@
 @property (nonatomic, strong) NSDictionary *mahjongMap;
 @property (nonatomic, strong) NSDictionary *keyTranslation;
 @property (nonatomic, strong) NSArray *mahjongCategoryOrder;
-@property (nonatomic, strong) NSMutableArray *historyArray;
-
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -56,11 +54,9 @@
     NSMutableArray *mutableOrder = [self.mahjongCategoryOrder mutableCopy];
     [mutableOrder insertObject:@"history" atIndex:0];
     self.mahjongCategoryOrder = [mutableOrder copy];
-    self.historyArray = [self.delegate restoreHistoryArray];//[NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"MahjongfaceHistory"]];
-    if (self.historyArray == nil) {
-        self.historyArray = [NSMutableArray array];
-    }
+    self.historyArray = [NSMutableArray array];
     self.currentCategory = @"history";
+    
     // init tab bar
     self.tabBar = [[S1TabBar alloc] init];
     self.tabBar.minButtonWidth = @60.0;
@@ -106,10 +102,6 @@
     }];
     [self setNeedsLayout];
     return self;
-}
-
-- (void)dealloc {
-    [self.delegate saveHistoryArray:self.historyArray];
 }
 
 #pragma mark Event

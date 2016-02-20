@@ -65,6 +65,7 @@
     BOOL _presentingWebViewer;
     BOOL _presentingContentViewController;
     BOOL _shouldRestoreViewPosition;
+    BOOL _presentingFavoriteInToolBar;
 }
 #pragma mark - Life Cycle
 
@@ -81,6 +82,7 @@
         _presentingWebViewer = NO;
         _presentingContentViewController = NO;
         _shouldRestoreViewPosition = NO;
+        _presentingFavoriteInToolBar = YES;
         _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -176,8 +178,16 @@
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixItem.width = 26.0f;
     UIBarButtonItem *fixItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem2.width = 42.0f;
+    fixItem2.width = 48.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    // Hide Favorite button when device do not have enough space for it.
+    if (fabs(self.view.bounds.size.width - 320.0) < 0.1) {
+        favoriteItem.customView.bounds = CGRectZero;
+        favoriteItem.customView.hidden = YES;
+        fixItem2.width = 0.0;
+        _presentingFavoriteInToolBar = NO;
+    }
     
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
     
@@ -431,7 +441,9 @@
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
     
     [moreActionSheet addAction:replyAction];
-    [moreActionSheet addAction:favoriteAction];
+    if (!_presentingFavoriteInToolBar) {
+        [moreActionSheet addAction:favoriteAction];
+    }
     [moreActionSheet addAction:shareAction];
     [moreActionSheet addAction:copyLinkAction];
     [moreActionSheet addAction:originPageAction];
@@ -806,9 +818,31 @@
 
 #pragma mark - Layout
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    NSLog(@"viewWillTransitionToSize: w%f,h%f ",size.width, size.height);
     CGRect frame = self.view.frame;
     frame.size = size;
     self.view.frame = frame;
+    
+    // Update Toolbar Layout
+    if (self.view.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        NSArray *items = self.toolBar.items;
+        UIBarButtonItem *favoriteItem = items[6];
+        UIBarButtonItem *fixItem2 = items[7];
+        if (fabs(size.width - 320.0) < 0.1) {
+            favoriteItem.customView.bounds = CGRectZero;
+            favoriteItem.customView.hidden = YES;
+            fixItem2.width = 0.0;
+            _presentingFavoriteInToolBar = NO;
+        } else {
+            favoriteItem.customView.bounds = CGRectMake(0, 0, 30, 40);
+            favoriteItem.customView.hidden = NO;
+            fixItem2.width = 48.0;
+            _presentingFavoriteInToolBar = YES;
+        }
+        self.toolBar.items = items;
+    }
+    
 }
 
 #pragma mark - Reply
