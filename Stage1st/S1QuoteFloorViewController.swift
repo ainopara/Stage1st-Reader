@@ -89,6 +89,7 @@ extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource
         return cell
     }
 }
+
 // MARK: - WebView Delegate
 extension S1QuoteFloorViewController: UIWebViewDelegate {
 
