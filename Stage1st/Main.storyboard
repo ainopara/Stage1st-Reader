@@ -111,6 +111,7 @@
                             <constraint firstItem="QiY-0d-ChP" firstAttribute="top" secondItem="ICo-tY-83d" secondAttribute="bottom" id="BVY-0j-nJc"/>
                             <constraint firstItem="QiY-0d-ChP" firstAttribute="bottom" secondItem="Ov5-lb-lqV" secondAttribute="top" id="F3F-RX-eAk"/>
                             <constraint firstAttribute="trailing" secondItem="QiY-0d-ChP" secondAttribute="trailing" id="FVy-Md-JQI"/>
+                            <constraint firstItem="QiY-0d-ChP" firstAttribute="top" secondItem="ICo-tY-83d" secondAttribute="bottom" id="cKr-aw-a1p"/>
                             <constraint firstItem="sgX-gl-SYq" firstAttribute="top" secondItem="QiY-0d-ChP" secondAttribute="bottom" id="cP7-FQ-lcK"/>
                             <constraint firstAttribute="trailing" secondItem="Ov5-lb-lqV" secondAttribute="trailing" id="egv-kP-t49"/>
                             <constraint firstItem="sgX-gl-SYq" firstAttribute="top" secondItem="Ov5-lb-lqV" secondAttribute="bottom" id="gXw-ac-eqK"/>
@@ -121,6 +122,7 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="BVY-0j-nJc"/>
+                                <exclude reference="vpr-sy-Anw"/>
                                 <exclude reference="cP7-FQ-lcK"/>
                                 <exclude reference="wxm-Zu-Ybp"/>
                             </mask>
