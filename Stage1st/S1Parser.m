@@ -22,9 +22,6 @@
 @implementation S1Parser
 # pragma mark - Process Data
 
-
-
-
 + (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
     NSMutableString *mutableContent = [content mutableCopy];
     //process message
@@ -149,8 +146,7 @@
         TFHppleElement *replyCountPart = [[xpathParserForRow searchWithXPathQuery:@"//p[@class='xg1']"] firstObject];
         NSString *replyCountString = [[[replyCountPart text] componentsSeparatedByString:@" "] firstObject];
         NSNumber *replyCount = [NSNumber numberWithInteger:[replyCountString integerValue]];
-        
-        
+
         S1Topic *topic = [[S1Topic alloc] init];
         [topic setTopicID:topicID];
         [topic setTitle:titleString];
@@ -264,11 +260,9 @@
                 }
                 [floor setImageAttachmentList:imageAttachmentList];
             }
-
             [floorList addObject:floor];
         }
     }
-    
     return floorList;
 }
 
@@ -305,11 +299,6 @@
     return floorList;
 }
 
-
-
-
-
-
 #pragma mark - Pick Information
 
 + (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData andPage:(NSNumber *)page{
@@ -334,7 +323,7 @@
             [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
         }
     }
-    
+
     // update total page
     NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
     if (parsedTotalPages != 0) {
@@ -358,14 +347,12 @@
 }
 
 
-+ (NSString *)formhashFromPage:(NSString *)HTMLString
-{
++ (NSString *)formhashFromPage:(NSString *)HTMLString {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
     return [[S1Global regexExtractFromString:HTMLString withPattern:pattern andColums:@[@1]] firstObject];
 }
 
-+ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString
-{
++ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString {
     NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"<span title=\"共 ([0-9]+) 页\">" andColums:@[@1]];
     if (result && result.count != 0) {
         return [((NSString *)[result firstObject]) integerValue];
@@ -374,8 +361,7 @@
     }
 }
 
-+ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString
-{
++ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString {
     NSArray *result = [S1Global regexExtractFromString:HTMLString withPattern:@"回复:</span> <span class=\"xi1\">([0-9]+)</span>" andColums:@[@1]];
     if (result && result.count != 0) {
         return [((NSString *)[result firstObject]) integerValue];
@@ -384,8 +370,7 @@
     }
 }
 
-+ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)responseString
-{
++ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)responseString {
     NSMutableDictionary *infoDict = [[NSMutableDictionary alloc] init];
     [infoDict setObject:@NO forKey:@"requestSuccess"];
     if (responseString == nil) {
@@ -425,8 +410,7 @@
     
 }
 
-+ (NSString *)loginUserName:(NSString *)HTMLString
-{
++ (NSString *)loginUserName:(NSString *)HTMLString {
     NSString *username = [[S1Global regexExtractFromString:HTMLString withPattern:@"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>" andColums:@[@1]] firstObject];
     return [username isEqualToString:@""]?nil:username;
 }
@@ -441,10 +425,9 @@
     return nil;
 }
 
-
 #pragma mark - Extract From Link
-+ (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString
-{
+
++ (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString {
     S1Topic *topic = [[S1Topic alloc] init];
     // Current Html Scheme
     NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
