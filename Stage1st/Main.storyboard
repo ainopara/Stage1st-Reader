@@ -14,27 +14,27 @@
                         <viewControllerLayoutGuide type="bottom" id="pBo-x7-1XC"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Poc-BZ-jTj">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dFj-Mp-w3w" customClass="S1TabBar">
-                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="lXa-uD-MJ2"/>
                                 </constraints>
                             </scrollView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="FgY-9G-L1c">
-                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="FgY-9G-L1c">
+                                <rect key="frame" x="0.0" y="56" width="320" height="0.0"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="TopicCell" id="4eD-eu-0hs" customClass="S1TopicListCell">
-                                        <rect key="frame" x="0.0" y="22" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4eD-eu-0hs" id="bdT-vm-xdj">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="hIV-MS-iAu" customClass="S1TopicListCellSubView">
+                                                <view contentMode="redraw" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hIV-MS-iAu" customClass="S1TopicListCellSubView">
                                                     <rect key="frame" x="0.0" y="0.5" width="600" height="43.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </view>
@@ -72,6 +72,7 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="Ux6-eJ-elK"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="scrollTabBar" destination="dFj-Mp-w3w" id="yFG-8e-5tw"/>
                         <outlet property="tableView" destination="FgY-9G-L1c" id="gxt-iM-Rl2"/>
@@ -79,7 +80,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vIU-Oh-3EL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="407" y="223"/>
+            <point key="canvasLocation" x="47" y="223"/>
         </scene>
         <!--Content View Controller-->
         <scene sceneID="RzG-Fa-bNd">
@@ -132,7 +133,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bew-fI-rNI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1223" y="223"/>
+            <point key="canvasLocation" x="495" y="223"/>
         </scene>
         <!--Quote Floor View Controller-->
         <scene sceneID="sR4-bE-FCi">
@@ -152,12 +153,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FMj-XF-YVk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1693" y="223"/>
+            <point key="canvasLocation" x="965" y="223"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="2dh-B4-gfR">
             <objects>
                 <navigationController navigationBarHidden="YES" id="5pw-r5-r4H" sceneMemberID="viewController">
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="200" height="200"/>
                     <navigationBar key="navigationBar" hidden="YES" contentMode="scaleToFill" id="E3T-vR-voV">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

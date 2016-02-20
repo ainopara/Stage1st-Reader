@@ -379,6 +379,8 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="600"/>
                     <connections>
                         <outlet property="displayImageSwitch" destination="bCf-k2-mDk" id="Jg2-0m-1dg"/>
                         <outlet property="fontSizeCell" destination="mMi-Ax-Ued" id="rF1-ZR-trL"/>
@@ -689,6 +691,8 @@
         <scene sceneID="mvP-Cs-VOt">
             <objects>
                 <navigationController storyboardIdentifier="SettingsNavigation" modalPresentationStyle="formSheet" id="dph-w0-2OJ" sceneMemberID="viewController">
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="200" height="200"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="b8k-l2-njz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
