@@ -53,7 +53,6 @@
 		86A8AEFF1B5BDC92007597AE /* color.css in Resources */ = {isa = PBXBuildFile; fileRef = 86A8AEFE1B5BDC92007597AE /* color.css */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
-		86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette2.plist */; };
 		86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BA383C1C0A106E00D508AC /* S1Application.swift */; };
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
@@ -174,8 +173,6 @@
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
 		86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+MahjongFaceExtension.m"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.m"; sourceTree = "<group>"; };
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+MahjongFaceExtension.h"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
-		86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DatabaseManageViewController.h; path = Stage1st/S1DatabaseManageViewController.h; sourceTree = "<group>"; };
-		86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DatabaseManageViewController.m; path = Stage1st/S1DatabaseManageViewController.m; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette2.plist; path = Stage1st/DarkPalette2.plist; sourceTree = "<group>"; };
 		86BA383C1C0A106E00D508AC /* S1Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Application.swift; sourceTree = "<group>"; };
 		86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFacePageView.h; path = Stage1st/S1MahjongFacePageView.h; sourceTree = "<group>"; };
@@ -625,8 +622,6 @@
 				C083353916E503F60035C1AA /* S1LoginViewController.m */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
-				86B480761A4586FA0012CC69 /* S1DatabaseManageViewController.h */,
-				86B480771A4586FA0012CC69 /* S1DatabaseManageViewController.m */,
 				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
 				8605636D1B88222100E1D63E /* S1CloudKitViewController.m */,
 			);
@@ -853,7 +848,6 @@
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
-				86B480781A4586FA0012CC69 /* S1DatabaseManageViewController.m in Sources */,
 				869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
