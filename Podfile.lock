@@ -1,6 +1,6 @@
 PODS:
-  - 1PasswordExtension (1.7)
-  - ActionSheetPicker-3.0 (2.0.4)
+  - 1PasswordExtension (1.8)
+  - ActionSheetPicker-3.0 (2.0.5)
   - AFNetworking (3.0.4):
     - AFNetworking/NSURLSession (= 3.0.4)
     - AFNetworking/Reachability (= 3.0.4)
@@ -24,9 +24,9 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.2.0):
     - CocoaLumberjack/Default
-  - Crashlytics (3.6.0):
+  - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.4)
+  - Fabric (1.6.6)
   - FMDB (2.6):
     - FMDB/standard (= 2.6)
   - FMDB/standard (2.6)
@@ -123,12 +123,12 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: a22573ad528dd63bd79c1f3b3813b17c2f86b91b
-  ActionSheetPicker-3.0: 860466cb4a66854e6acb590071ecee404b48f49d
+  1PasswordExtension: 627d5aecf210c7636968faf5a4c3546c9531385b
+  ActionSheetPicker-3.0: 8312778b6815578e6a86d630fbcf31dc94c534e7
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
-  Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
-  Fabric: ed41fd62173c6bdea24ab02c9d7707161eabb750
+  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  Fabric: 1abc1e59f11fa39ede6f690ef7309d8563e3ec59
   FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
