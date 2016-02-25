@@ -14,7 +14,7 @@ class S1QuoteFloorViewController: UIViewController {
     var htmlString: String?
     var topic: S1Topic?
     var floors: [S1Floor]?
-    var useTableView: Bool = true
+    var useTableView: Bool = false
     var centerFloorID: Int = 0
     
     var tableView: UITableView?
