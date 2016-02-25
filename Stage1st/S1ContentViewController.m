@@ -760,6 +760,9 @@
     
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong typeof(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
         [strongSelf updatePageLabel];
         if (_shouldRestoreViewPosition) {
             [strongSelf saveViewPosition];
