@@ -107,7 +107,7 @@
 //#define _STATUS_BAR_HEIGHT 20.0f
     
     [super viewDidLoad];
-    CLSLog(@"ContentVC | View Did Load");
+    CLS_LOG(@"ContentVC | View Did Load");
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
@@ -265,7 +265,7 @@
     [super viewDidAppear:animated];
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
-    CLSLog(@"ContentVC | View Did Appear");
+    CLS_LOG(@"ContentVC | View Did Appear");
     
 }
 
@@ -288,13 +288,16 @@
 }
 
 - (void)dealloc {
-    CLSLog(@"ContentVC | Deallocing: %@", self.topic.title);
+    CLS_LOG(@"ContentVC | Deallocing");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
+    CLS_LOG(@"ContentVC | Pull Controller set nil");
+    self.webView.delegate = nil;
+    self.webView.scrollView.delegate = nil;
     [self.webView stopLoading];
-    CLSLog(@"ContentVC | Dealloced");
+    CLS_LOG(@"ContentVC | Dealloced");
 }
 
 - (void)didReceiveMemoryWarning
@@ -306,22 +309,21 @@
 
 - (void)setTopic:(S1Topic *)topic
 {
-    // Used to estimate total page number
-    #define _REPLY_PER_PAGE 30
+
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {
         _topic = topic;
     }
     
-    _totalPages = (([topic.replyCount integerValue] + 1) / _REPLY_PER_PAGE) + 1;
+    _totalPages = ([topic.replyCount integerValue] / 30) + 1;
     if (topic.lastViewedPage) {
         _currentPage = [topic.lastViewedPage integerValue];
     }
     if (_topic.favorite == nil) {
         _topic.favorite = @(NO);
     }
-    CLSLog(@"ContentVC | Topic setted: %@", self.topic.topicID);
+    CLS_LOG(@"ContentVC | Topic setted: %@", self.topic.topicID);
 }
 
 - (UIView *)accessoryView {
@@ -1084,6 +1086,9 @@
     
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong typeof(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
         [strongSelf updatePageLabel];
         if (_shouldRestoreViewPosition) {
             [strongSelf saveViewPosition];
