@@ -8,3 +8,4 @@
 #import "S1DataCenter.h"
 #import "REComposeViewController.h"
 #import "S1MahjongFaceView.h"
+#import "S1MahjongFaceTextAttachment.h"

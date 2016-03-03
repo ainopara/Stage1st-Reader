@@ -238,7 +238,7 @@ S1AppDelegate *MyAppDelegate;
     return YES;
 }
 
-#pragma mark - Push Notification For Sync (iOS 8)
+#pragma mark - Push Notification For Sync
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     NSLog(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
@@ -283,7 +283,7 @@ S1AppDelegate *MyAppDelegate;
 }
 */
 
-#pragma mark - Hand Off (iOS 8)
+#pragma mark - Hand Off
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;

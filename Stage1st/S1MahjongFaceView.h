@@ -7,25 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "S1MahjongFaceTextAttachment.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
 @class S1MahjongFaceButton;
+@class S1MahjongFaceTextAttachment;
 @protocol S1MahjongFaceViewDelegate;
 
 @interface S1MahjongFaceView : UIView
 
-@property (nonatomic, strong) NSString * _Nonnull currentCategory;
+@property (nonatomic, strong) NSString * currentCategory;
 @property (nonatomic, assign) NSUInteger historyCountLimit;
-@property (nonatomic, strong) NSMutableArray * _Nonnull historyArray;
-@property (weak, nonatomic) id<S1MahjongFaceViewDelegate> delegate;
+@property (nonatomic, strong) NSMutableArray * historyArray;
+@property (weak, nonatomic, nullable) id<S1MahjongFaceViewDelegate> delegate;
 
-- (void)mahjongFacePressed:(nonnull S1MahjongFaceButton *)button;
-- (void)backspacePressed:(nonnull UIButton *)button;
+- (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
+- (void)backspacePressed:(UIButton *)button;
 
 @end
 
 @protocol S1MahjongFaceViewDelegate <NSObject>
 
-- (void)mahjongFaceViewController:(nonnull S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(nonnull S1MahjongFaceTextAttachment *)attachment;
-- (void)mahjongFaceViewControllerDidPressBackSpace:(nonnull S1MahjongFaceView *)mahjongFaceViewController;
+- (void)mahjongFaceViewController:(S1MahjongFaceView *)mahjongFaceView didFinishWithResult:(S1MahjongFaceTextAttachment *)attachment;
+- (void)mahjongFaceViewControllerDidPressBackSpace:(S1MahjongFaceView *)mahjongFaceViewController;
 
 @end
+
+NS_ASSUME_NONNULL_END

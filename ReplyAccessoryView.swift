@@ -102,7 +102,7 @@ class ReplyAccessoryView: UIView {
     }
 }
 
-//MARK: S1MahjongFaceViewDelegate
+//MARK: - S1MahjongFaceViewDelegate
 extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
 
     func mahjongFaceViewController(mahjongFaceView: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
@@ -130,14 +130,9 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
         textView.textStorage.deleteCharactersInRange(textView.selectedRange)
         textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
     }
-    
-    func saveHistoryArray(historyArray: NSMutableArray) {
-        
-    }
-  
 }
 
-// MARK: Helper
+// MARK: - Helper
 extension ReplyAccessoryView {
     func insertMarkWithAPart(aPart: NSString, andBPart bPart: NSString) {
         guard let textView = composeViewController?.textView else {
