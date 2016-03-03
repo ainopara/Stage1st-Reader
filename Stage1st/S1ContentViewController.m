@@ -31,8 +31,8 @@
 
 @interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, PullToActionDelagete>
 
-@property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) UIToolbar *toolBar;
+@property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) PullToActionController *pullToActionController;
 
 @property (nonatomic, strong) UIButton *backButton;
@@ -69,9 +69,8 @@
 }
 #pragma mark - Life Cycle
 
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         _currentPage = 1;
@@ -88,23 +87,33 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
-//#define _STATUS_BAR_HEIGHT 20.0f
-    
+- (void)viewDidLoad {
     [super viewDidLoad];
     CLS_LOG(@"ContentVC | View Did Load");
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
-    
+
+    self.toolBar = [[UIToolbar alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.toolBar];
+    [self.toolBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.and.trailing.equalTo(self.view);
+        make.bottom.equalTo(self.view.mas_bottom);
+    }];
     //web view
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    [self.view addSubview:self.webView];
+    [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.leading.and.trailing.equalTo(self.view);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
+        make.bottom.equalTo(self.toolBar.mas_top);
+    }];
     
     self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
     [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:TOP_OFFSET];
@@ -164,12 +173,7 @@
     [button addTarget:self action:@selector(toggleFavoriteAction:) forControlEvents:UIControlEventTouchUpInside];
     [button setTag:99];
     UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-    
-    
-    
-    //disable this function for now
-    //UIPanGestureRecognizer *panGR =[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panPageLabel:)];
-    //[self.pageLabel addGestureRecognizer:panGR];
+
     [self updatePageLabel];
     
     UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
@@ -215,13 +219,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
     _presentingContentViewController = NO;
     
     [UIApplication sharedApplication].statusBarHidden = NO;
-    
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -229,7 +232,6 @@
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
     CLS_LOG(@"ContentVC | View Did Appear");
-    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -261,12 +263,6 @@
     self.webView.scrollView.delegate = nil;
     [self.webView stopLoading];
     CLS_LOG(@"ContentVC | Dealloced");
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - TabBar Actions
@@ -338,24 +334,18 @@
             [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
         }
     }
-    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:@""
-                                            rows:array
-                                initialSelection:_currentPage - 1
-                                       doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                           [self saveViewPosition];
-                                           
-                                           [self cancelRequest];
-                                           _needToLoadLastPositionFromModel = NO;
-                                           if (_currentPage != selectedIndex + 1) {
-                                               _currentPage = selectedIndex + 1;
-                                               [self fetchContent];
-                                           } else {
-                                               [self fetchContentAndForceUpdate:YES];
-                                           }
-                                           
-                                       }
-                                     cancelBlock:nil
-                                          origin:self.pageLabel];
+    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:@"" rows:array initialSelection:_currentPage - 1 doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
+        [self saveViewPosition];
+        [self cancelRequest];
+        _needToLoadLastPositionFromModel = NO;
+        if (_currentPage != selectedIndex + 1) {
+            _currentPage = selectedIndex + 1;
+            [self fetchContent];
+        } else {
+            [self fetchContentAndForceUpdate:YES];
+        }
+
+    } cancelBlock:nil origin:self.pageLabel];
     picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -363,9 +353,7 @@
     picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
                                     NSFontAttributeName: [UIFont systemFontOfSize:19.0],
                                     NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"],};
-    
     [picker showActionSheetPicker];
-
 }
 
 - (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
@@ -376,7 +364,6 @@
         [self saveViewPosition];
         [self fetchContentAndForceUpdate:YES];
     }
-    
 }
 
 - (void)toggleFavoriteAction:(UIButton *)sender {
@@ -393,7 +380,6 @@
 
 - (void)action:(id)sender
 {
-
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     // Reply Action
     UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -450,16 +436,11 @@
     [moreActionSheet addAction:cancelAction];
     [moreActionSheet.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
     [self presentViewController:moreActionSheet animated:YES completion:nil];
-
-    
 }
-
 
 #pragma mark UIWebView
 
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     // Load
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
@@ -485,10 +466,7 @@
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
             imageInfo.referenceRect = [self positionOfElementWithId:imageID];
             imageInfo.referenceView = self.webView;
-            JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
-                                                   initWithImageInfo:imageInfo
-                                                   mode:JTSImageViewControllerMode_Image
-                                                   backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
+            JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
             [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
@@ -504,10 +482,7 @@
         NSLog(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = request.URL;
-        JTSImageViewController *imageViewer = [[JTSImageViewController alloc]
-                                               initWithImageInfo:imageInfo
-                                               mode:JTSImageViewControllerMode_Image
-                                               backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
+        JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
         [UIApplication sharedApplication].statusBarHidden = YES;
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
@@ -551,7 +526,7 @@
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.topic copy];
                             NSString *htmlString = [S1ContentViewModel generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
-                            S1QuoteFloorViewController *quoteFloorViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"QuoteFloor"];
+                            S1QuoteFloorViewController *quoteFloorViewController = [[S1QuoteFloorViewController alloc] initWithNibName:nil bundle:nil];
                             quoteFloorViewController.topic = quoteTopic;
                             quoteFloorViewController.floors = chainQuoteFloors;
                             quoteFloorViewController.htmlString = htmlString;
@@ -559,11 +534,9 @@
                             [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
                             return NO;
                         }
-                        
                     }
                 }
             }
-            
         }
     }
     
@@ -602,10 +575,7 @@
     return NO;
 }
 
-
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
     CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPositionFromModel) {
@@ -693,7 +663,6 @@
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
-    
     // When page not finish loading, no animation should be presented.
     if (!_finishLoading) {
         if (_currentPage >= _totalPages) {
@@ -734,8 +703,7 @@
     [self fetchContentAndForceUpdate:NO];
 }
 
-- (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate
-{
+- (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate {
     [self updatePageLabel];
     __weak typeof(self) weakSelf = self;
 
@@ -813,13 +781,12 @@
     }];
 }
 
--(void) cancelRequest
-{
+-(void) cancelRequest {
     [self.dataCenter cancelRequest];
-    
 }
 
 #pragma mark - Layout
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     NSLog(@"viewWillTransitionToSize: w%f,h%f ",size.width, size.height);
@@ -845,12 +812,11 @@
         }
         self.toolBar.items = items;
     }
-    
 }
 
 #pragma mark - Reply
-- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor
-{
+
+- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor {
     //check in login state.
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
@@ -1019,8 +985,7 @@
     self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
 
-- (UIImage *)screenShot
-{
+- (UIImage *)screenShot {
     if (IS_RETINA) {
         UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
     } else {
@@ -1038,8 +1003,7 @@
 
 
 
-- (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message
-{
+- (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
     [alert addAction:defaultAction];
@@ -1151,7 +1115,6 @@
 
 - (void)setTopic:(S1Topic *)topic
 {
-    
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {

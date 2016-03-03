@@ -23,8 +23,8 @@
                                     <constraint firstAttribute="height" constant="44" id="lXa-uD-MJ2"/>
                                 </constraints>
                             </scrollView>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="FgY-9G-L1c">
-                                <rect key="frame" x="0.0" y="56" width="320" height="0.0"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="FgY-9G-L1c">
+                                <rect key="frame" x="0.0" y="64" width="320" height="372"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="TopicCell" id="4eD-eu-0hs" customClass="S1TopicListCell">
@@ -34,8 +34,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="redraw" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hIV-MS-iAu" customClass="S1TopicListCellSubView">
-                                                    <rect key="frame" x="0.0" y="0.5" width="600" height="43.5"/>
+                                                <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="hIV-MS-iAu" customClass="S1TopicListCellSubView">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </view>
                                             </subviews>
@@ -48,7 +48,6 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="drawingSubview" destination="hIV-MS-iAu" id="YMO-OM-OwT"/>
-                                            <segue destination="2TD-41-MRx" kind="show" identifier="Show Content" id="BLm-fy-yOl"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -81,79 +80,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vIU-Oh-3EL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="47" y="223"/>
-        </scene>
-        <!--Content View Controller-->
-        <scene sceneID="RzG-Fa-bNd">
-            <objects>
-                <viewController storyboardIdentifier="Content" automaticallyAdjustsScrollViewInsets="NO" id="2TD-41-MRx" customClass="S1ContentViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ICo-tY-83d"/>
-                        <viewControllerLayoutGuide type="bottom" id="sgX-gl-SYq"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="yXh-JJ-q5e">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QiY-0d-ChP">
-                                <rect key="frame" x="0.0" y="20" width="320" height="416"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </webView>
-                            <toolbar clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ov5-lb-lqV">
-                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="oaw-oh-0Y7"/>
-                                </constraints>
-                                <items/>
-                            </toolbar>
-                        </subviews>
-                        <color key="backgroundColor" red="0.95999997854232788" green="0.97000002861022949" blue="0.92000001668930054" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="QiY-0d-ChP" firstAttribute="leading" secondItem="yXh-JJ-q5e" secondAttribute="leading" id="6DU-gE-Ax7"/>
-                            <constraint firstItem="QiY-0d-ChP" firstAttribute="bottom" secondItem="Ov5-lb-lqV" secondAttribute="top" id="F3F-RX-eAk"/>
-                            <constraint firstAttribute="trailing" secondItem="QiY-0d-ChP" secondAttribute="trailing" id="FVy-Md-JQI"/>
-                            <constraint firstItem="QiY-0d-ChP" firstAttribute="top" secondItem="ICo-tY-83d" secondAttribute="bottom" id="cKr-aw-a1p"/>
-                            <constraint firstAttribute="trailing" secondItem="Ov5-lb-lqV" secondAttribute="trailing" id="egv-kP-t49"/>
-                            <constraint firstItem="sgX-gl-SYq" firstAttribute="top" secondItem="Ov5-lb-lqV" secondAttribute="bottom" id="gXw-ac-eqK"/>
-                            <constraint firstItem="Ov5-lb-lqV" firstAttribute="leading" secondItem="yXh-JJ-q5e" secondAttribute="leading" id="qnV-3G-b2J"/>
-                        </constraints>
-                        <variation key="heightClass=compact">
-                            <mask key="subviews">
-                                <exclude reference="Ov5-lb-lqV"/>
-                            </mask>
-                            <mask key="constraints">
-                                <exclude reference="F3F-RX-eAk"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
-                    <connections>
-                        <outlet property="toolBar" destination="Ov5-lb-lqV" id="gqg-vM-4Ro"/>
-                        <outlet property="webView" destination="QiY-0d-ChP" id="rg4-T8-pM4"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bew-fI-rNI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="495" y="223"/>
-        </scene>
-        <!--Quote Floor View Controller-->
-        <scene sceneID="sR4-bE-FCi">
-            <objects>
-                <viewController storyboardIdentifier="QuoteFloor" id="xHO-zI-IFM" customClass="S1QuoteFloorViewController" customModule="Stage1st" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ety-cd-Wc1"/>
-                        <viewControllerLayoutGuide type="bottom" id="Snh-PT-EJa"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="TYU-fK-85h">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.95999997854232788" green="0.97000002861022949" blue="0.92000001668930054" alpha="1" colorSpace="calibratedRGB"/>
-                    </view>
-                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FMj-XF-YVk" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="965" y="223"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="2dh-B4-gfR">

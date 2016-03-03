@@ -17,7 +17,7 @@ class ReplyAccessoryView: UIView {
     weak var composeViewController: REComposeViewController?
     var mahjongFaceView: S1MahjongFaceView?
     
-    // MARK: Life Cycle
+    // MARK: - Life Cycle
     init(frame: CGRect, withComposeVC composeVC: REComposeViewController) {
         toolBar = UIToolbar(frame: frame)
         faceButton = UIButton(type: .System)
@@ -60,7 +60,7 @@ class ReplyAccessoryView: UIView {
         }
     }
     
-    // MARK: Actions
+    // MARK: - Actions
     func toggleFace(button: UIButton) {
         guard let composeViewController = composeViewController else {
             return

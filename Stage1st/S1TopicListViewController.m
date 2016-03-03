@@ -205,24 +205,15 @@ static NSString * const cellIdentifier = @"TopicCell";
         case 0:
             [self presentInternalListForType:S1TopicListHistory];
             break;
-            
         case 1:
             [self presentInternalListForType:S1TopicListFavorite];
             break;
-            
         default:
             break;
     }
 }
 
-
-
-
-
-
-
 #pragma mark - UITableView Delegate and Data Source
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
@@ -266,6 +257,20 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
+
+    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+        [contentViewController setTopic:[self topicAtIndexPath:indexPath]];
+    } else {
+        S1Topic *topic = self.topics[indexPath.row];
+        S1Topic *mutableTopic = [topic isImmutable] ? [topic copy] : topic;
+        [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
+        topic = mutableTopic;
+        [contentViewController setTopic:topic];
+    }
+    [contentViewController setDataCenter:self.dataCenter];
+    [self.navigationController pushViewController:contentViewController animated:YES];
+
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -858,33 +863,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     }*/
 }
 
-- (NSArray *)keys
-{
+- (NSArray *)keys {
     return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
 }
 
--(void) cancelRequest
-{
+-(void) cancelRequest {
     [self.dataCenter cancelRequest];
-    
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"Show Content"]) {
-        S1TopicListCell *cell = sender;
-        S1ContentViewController *contentViewController = segue.destinationViewController;
-        if (![self.currentKey  isEqual: @"History"] && ![self.currentKey  isEqual: @"Favorite"]) {
-            S1Topic *mutableTopic = [cell.topic isImmutable] ? [cell.topic copy] : cell.topic;
-            [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
-            cell.topic = mutableTopic;
-        }
-        [contentViewController setTopic:cell.topic];
-        [contentViewController setDataCenter:self.dataCenter];
-    }
-}
-
-- (void)presentInternalListForType:(S1InternalTopicListType)type
-{
+- (void)presentInternalListForType:(S1InternalTopicListType)type {
     if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
         [self cancelRequest];
         self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
@@ -902,11 +889,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView setContentOffset:CGPointZero animated:NO];
     
     [self.scrollTabBar deselectAll];
-    
 }
 
-- (void)initializeMappings
-{
+- (void)initializeMappings {
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         
         if ([transaction ext:Ext_searchResultView_Archive])
@@ -926,14 +911,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     }];
 }
 
-- (S1Topic *)topicAtIndexPath:(NSIndexPath *)indexPath
-{
+- (S1Topic *)topicAtIndexPath:(NSIndexPath *)indexPath {
     __block S1Topic *topic = nil;
     [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        
         topic = [[transaction ext:Ext_searchResultView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
     }];
-    
     return topic;
 }
 
