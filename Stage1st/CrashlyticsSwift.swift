@@ -15,8 +15,7 @@ func CLS_LOG_SWIFT(format: String = "",
     _ args:[CVarArgType] = [],
     file: String = __FILE__,
     function: String = __FUNCTION__,
-    line: Int = __LINE__)
-{
+    line: Int = __LINE__) {
     let filename = NSURL(string:file)?.lastPathComponent?.componentsSeparatedByString(".").first
     
     #if SWIFT_DEBUG
