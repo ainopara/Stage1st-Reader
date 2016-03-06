@@ -92,7 +92,7 @@
     [[OnePasswordExtension sharedExtension] findLoginForURLString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
         if (!loginDict) {
             if (error.code != AppExtensionErrorCodeCancelledByUser) {
-                NSLog(@"Error invoking 1Password App Extension for find login: %@", error);
+                DDLogWarn(@"Error invoking 1Password App Extension for find login: %@", error);
             }
             return;
         }
@@ -121,8 +121,8 @@
             
             [S1NetworkManager postLoginForUsername:self.usernameField.text andPassword:self.passwordField.text success:^(NSURLSessionDataTask *task, id responseObject) {
                 NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                NSLog(@"Login Response: %@", result);
-                NSLog(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
+                DDLogDebug(@"[LoginVC] Login response: %@", result);
+                DDLogVerbose(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
                 __strong typeof(self) strongMe = weakSelf;
                 NSRange failureMsgRange = [result rangeOfString:@"window.location.href"];
                 if (failureMsgRange.location != NSNotFound) {
@@ -142,7 +142,7 @@
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 [strongMe.loginButton setEnabled:YES];
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                NSLog(@"%@", error);
+                DDLogError(@"[LoginVC] Login failure: %@", error);
                 __strong typeof(self) strongMe = weakSelf;
                 [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                 [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];

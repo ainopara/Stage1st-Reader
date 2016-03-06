@@ -29,12 +29,12 @@
     
     _db = [FMDatabase databaseWithPath:databasePath];
     if (![_db open]) {
-        NSLog(@"Could not open db.");
+        DDLogError(@"Could not open db.");
         return nil;
     }
     _backgroundDb = [FMDatabase databaseWithPath:databasePath];
     if (![_backgroundDb open]) {
-        NSLog(@"Could not open background db.");
+        DDLogError(@"Could not open background db.");
         return nil;
     }
     [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position FLOAT, visit_count INTEGER);"];
@@ -49,7 +49,7 @@
 
 - (void)dealloc
 {
-    NSLog(@"Database closed.");
+    DDLogDebug(@"Database closed.");
     [_db close];
     [_backgroundDb close];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -96,14 +96,14 @@
     if ([fileManager fileExistsAtPath:dbPath]) {
         FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
         if (![db open]) {
-            NSLog(@"Could not open db.");
+            DDLogError(@"Could not open db.");
             return;
         }
         FMResultSet *result = [db executeQuery:@"SELECT last_viewed_position FROM threads;"];
         if (result) {
             ;
         } else {
-            NSLog(@"Database does not have last_viewed_position column.");
+            DDLogInfo(@"Database does not have last_viewed_position column.");
             [db executeUpdate:@"ALTER TABLE threads ADD COLUMN last_viewed_position FLOAT;"];
         }
         [db close];
@@ -133,7 +133,7 @@
                 }
                 if (tracedTopic) {
                     if (tracedTopic.hasChangedProperties) {
-                        //NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
+                        //DDLogDebug(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
                         [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
                         changeCount += 1;
                     }
@@ -150,7 +150,7 @@
             }
         }];
     }
-    NSLog(@"%ld / %ld Changed.(%ld new) %ld fails.", (long)changeCount, (long)succeedCount, (long)newCount, (long)failCount);
+    DDLogDebug(@"%ld / %ld Changed.(%ld new) %ld fails.", (long)changeCount, (long)succeedCount, (long)newCount, (long)failCount);
 }
 
 + (void)importDatabaseAtPath:(NSURL *)dbPathURL {
@@ -159,20 +159,20 @@
     NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
     FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
     if (![db open]) {
-        NSLog(@"Could not open db.");
+        DDLogError(@"Could not open db.");
         return;
     }
-    NSLog(@"migrateDatabase begin.");
+    DDLogDebug(@"migrateDatabase begin.");
     FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     result = [db executeQuery:@"SELECT threads.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM (threads JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     [db close];
-    NSLog(@"migrateDatabase finish.");
+    DDLogDebug(@"migrateDatabase finish.");
     NSError *error;
     [fileManager moveItemAtURL:dbPathURL toURL:[documentDirectory URLByAppendingPathComponent:@"Stage1stReader.dbbackup"] error:&error];
     if (error) {
-        NSLog(@"Fail to Rename Database: %@",error);
+        DDLogError(@"Fail to Rename Database: %@",error);
     }
 }
 

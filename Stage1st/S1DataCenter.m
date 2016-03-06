@@ -168,15 +168,15 @@
 }
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
-    NSLog(@"Precache:%@-%@ begin.", topic.topicID, page);
+    DDLogDebug(@"[Network] Precache %@-%@ begin", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
-        NSLog(@"Precache:%@-%@ canceled.", topic.topicID, page);
+        DDLogDebug(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
     void (^failureHandler)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
         [self.cacheFinishHandlers setValue:nil forKey:key];
-        NSLog(@"Precache:%@-%@ failed.", topic.topicID, page);
+        DDLogError(@"[Network] Precache %@-%@ failed", topic.topicID, page);
     };
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -199,7 +199,7 @@
                 [self callFinishHandlerIfExistForKey:key withResult:floorList];
             }];
             
-            NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
+            DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
         } failure:failureHandler];
     } else {
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
@@ -218,7 +218,7 @@
                 [self callFinishHandlerIfExistForKey:key withResult:floorList];
             }];
 
-            NSLog(@"Precache:%@-%@ finish.", topic.topicID, page);
+            DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
         } failure:failureHandler];
     }
 }
@@ -258,7 +258,7 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-            NSLog(@"Finish Fetch:%f",-timeInterval);
+            DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
             
             //Update Topic
             NSDictionary *responseDict = responseObject;
@@ -284,7 +284,7 @@
     } else {
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-            NSLog(@"Finish Fetch:%f",-timeInterval);
+            DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
             
             //Update Topic
             [topic updateFromTopic:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
@@ -433,7 +433,7 @@
         if ([page integerValue] > 1) {
             for (S1Topic *compareTopic in self.topicListCache[keyID]) {
                 if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
-                    NSLog(@"Remove duplicate topic: %@", topic.title);
+                    DDLogDebug(@"Remove duplicate topic: %@", topic.title);
                     NSInteger index = [self.topicListCache[keyID] indexOfObject:compareTopic];
                     [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:topic];
                     topicIsDuplicated = YES;

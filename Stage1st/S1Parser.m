@@ -60,7 +60,7 @@
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
     NSMutableArray *topics = [NSMutableArray array];
     
-    NSLog(@"Topic count: %lu",(unsigned long)[elements count]);
+    DDLogDebug(@"Topic count: %lu",(unsigned long)[elements count]);
     if ([elements count]) {
         for (TFHppleElement *element in elements){
             if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
@@ -106,7 +106,7 @@
             NSDictionary *theTopic = [rawTopicList objectAtIndex:i];
             if ([rawTopic[@"dblastpost"] integerValue] < [theTopic[@"dblastpost"] integerValue]) {
                 isStickThread = YES;
-                //NSLog(@"remove stick subject:%@", topic.title);
+                //DDLogDebug(@"remove stick subject:%@", topic.title);
                 break;
             }
         }
@@ -122,7 +122,7 @@
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
     NSMutableArray *topics = [NSMutableArray array];
     
-    NSLog(@"Topic count: %lu",(unsigned long)[elements count]);
+    DDLogDebug(@"Topic count: %lu",(unsigned long)[elements count]);
     for (TFHppleElement *element in elements){
         TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
         NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
@@ -167,7 +167,7 @@
         DDXMLElement *topicFirstSection = [[topicNode nodesForXPath:@".//th/a" error:nil] firstObject];
         NSString *topicHref = [[topicFirstSection attributeForName:@"href"] stringValue];
         NSString *topicTitle = [topicFirstSection stringValue];
-        NSLog(@"%@, %@", topicHref, topicTitle);
+        DDLogDebug(@"%@, %@", topicHref, topicTitle);
         S1Topic *topic = [S1Parser extractTopicInfoFromLink:topicHref];
         topic.title = topicTitle;
         
@@ -181,7 +181,7 @@
         topic.fID = topicForumID;
         DDXMLElement *topicThirdSection = [[topicNode nodesForXPath:@".//a[@class='xi2']" error:nil] firstObject];
         NSNumber *topicReplyCount = [NSNumber numberWithInteger:[[topicThirdSection stringValue] integerValue]];
-        NSLog(@"%@, %@", topicForumIDString, topicReplyCount);
+        DDLogDebug(@"%@, %@", topicForumIDString, topicReplyCount);
         topic.replyCount = topicReplyCount;
         [mutableArray addObject:topic];
     }
@@ -190,13 +190,13 @@
 
 + (NSArray *) contentsFromHTMLData:(NSData *)rawData
 {
-    // NSLog(@"Begin Parsing.");
+    // DDLogDebug(@"Begin Parsing.");
     // NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
 
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
-    // NSLog(@"Floor count: %lu",(unsigned long)[elements count]);
+    // DDLogDebug(@"Floor count: %lu",(unsigned long)[elements count]);
     
     if ([elements count]) {
 
@@ -417,7 +417,7 @@
 
 + (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {
     NSString *urlString = [[S1Global regexExtractFromString:floorString withPattern:@"<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"" andColums:@[@1]] firstObject];
-    //NSLog(@"First Quote URL: %@",urlString);
+    //DDLogDebug(@"First Quote URL: %@",urlString);
     if (urlString) {
         NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
         return [NSNumber numberWithInteger:[resultDict[@"pid"] integerValue]];
@@ -453,7 +453,7 @@
     }
     topic.topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
-    NSLog(@"%@", topic);
+    DDLogDebug(@"%@", topic);
     return topic;
 }
 

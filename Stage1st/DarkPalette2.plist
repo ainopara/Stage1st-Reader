@@ -29,7 +29,7 @@
 	<key>12</key>
 	<string></string>
 	<key>13</key>
-	<string>#FF000000</string>
+	<string>#00000000</string>
 	<key>14</key>
 	<string>#333333</string>
 	<key>15</key>
@@ -47,10 +47,10 @@
 	<key>21</key>
 	<string>#9B9B9B</string>
 	<key>22</key>
-	<string>#33333333</string>
+	<string>#CC333333</string>
 	<key>23</key>
 	<string>#E6E6E6</string>
 	<key>24</key>
-	<string>#B21F2733</string>
+	<string>#4E1F2733</string>
 </dict>
 </plist>

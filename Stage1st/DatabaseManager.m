@@ -153,7 +153,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupDatabase
 {
 	NSString *databasePath = [[self class] databasePath];
-	// NSLog(@"databasePath: %@", databasePath);
+	// DDLogDebug(@"databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".
@@ -270,7 +270,7 @@ DatabaseManager *MyDatabaseManager;
 	
     [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_View_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_View_Archive);
         }
     }];
 }
@@ -305,7 +305,7 @@ DatabaseManager *MyDatabaseManager;
     YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
     [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
@@ -315,7 +315,7 @@ DatabaseManager *MyDatabaseManager;
     YapDatabaseSearchResultsView *searchResultView = [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive parentViewName:Ext_View_Archive versionTag:@"1" options:options];
     [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
@@ -428,18 +428,18 @@ DatabaseManager *MyDatabaseManager;
             NSDate *remoteLastUpdateDate = [remoteRecord valueForKey:@"lastViewedDate"];
             NSDate *localLastUpdateDate = topic.lastViewedDate;
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] != 0) {
-                NSLog(@"Merge: Remote Change");
+                DDLogDebug(@"Merge: Remote Change");
                 for (NSString *key in remoteChangedKeys) {
-                    NSLog(@"%@ : %@", key, [remoteRecord valueForKey:key]);
+                    DDLogDebug(@"%@ : %@", key, [remoteRecord valueForKey:key]);
                 }
-                NSLog(@"Merge: Local Change");
+                DDLogDebug(@"Merge: Local Change");
                 for (NSString *key in localChangedKeys) {
-                    NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+                    DDLogDebug(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
                 }
             }
             
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] > 0) {
-                NSLog(@"Merge: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Merge: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 topic = [topic copy]; // make mutable copy
                 for (NSString *remoteChangedKey in remoteChangedKeys) {
                     id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
@@ -448,7 +448,7 @@ DatabaseManager *MyDatabaseManager;
                 }
                 [transaction setObject:topic forKey:key inCollection:collection];
             } else if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] < 0){
-                NSLog(@"Merge: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Merge: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *localChangedKey in localChangedKeys)
                 {
                     id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
@@ -459,12 +459,12 @@ DatabaseManager *MyDatabaseManager;
                 // But last update date is not enough to make sure all keys of them have same value.
                 // Since favorite state is important, It's batter to make those who favorite is ture win.
                 if ([[remoteRecord valueForKey:@"favorite"] boolValue] == YES && [topic.favorite boolValue] == NO) {
-                    NSLog(@"Merge: Draw -- favorite mismatch -- update local value to fit cloud state");
+                    DDLogDebug(@"Merge: Draw -- favorite mismatch -- update local value to fit cloud state");
                     topic = [topic copy]; // make mutable copy
                     topic.favorite = @YES;
                     [transaction setObject:topic forKey:key inCollection:collection];
                 } else if ([[remoteRecord valueForKey:@"favorite"] boolValue] == NO && [topic.favorite boolValue] == YES) {
-                    NSLog(@"Merge: Draw -- favorite mismatch -- update cloud value to fit local state");
+                    DDLogDebug(@"Merge: Draw -- favorite mismatch -- update cloud value to fit local state");
                     [mergeInfo.updatedPendingLocalRecord setObject:@YES forKey:@"favorite"];
                 }
             }
@@ -524,9 +524,9 @@ DatabaseManager *MyDatabaseManager;
 	
 	[database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
 		if (!ready) {
-			NSLog(@"Error registering %@ !!!", Ext_CloudKit);
+			DDLogDebug(@"Error registering %@ !!!", Ext_CloudKit);
         } else {
-            NSLog(@"Registering %@ finished.", Ext_CloudKit);
+            DDLogDebug(@"Registering %@ finished.", Ext_CloudKit);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
         }
 	}];
@@ -561,7 +561,7 @@ DatabaseManager *MyDatabaseManager;
 #pragma mark Helper
 - (void)unregisterCloudKitExtension {
     [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
-        NSLog(@"Exrension %@ unregistered.",Ext_CloudKit);
+        DDLogDebug(@"Exrension %@ unregistered.",Ext_CloudKit);
     }];
 }
 @end

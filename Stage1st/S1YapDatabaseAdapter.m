@@ -20,7 +20,7 @@
     [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         if (tracedTopic == nil) {
-            NSLog(@"Traced: \n%@",topic);
+            DDLogDebug(@"[Database] Save Topic: \n%@",topic);
             S1Topic *topicCopy = [topic copy]; // do not change topic's value since it's shared with topiclist view controller.
             topicCopy.lastReplyCount = nil;
             [transaction setObject:topicCopy forKey:[topicCopy.topicID stringValue] inCollection:Collection_Topics];
@@ -55,7 +55,7 @@
             }
             tracedTopic.lastReplyCount = nil;
             tracedTopic.lastViewedDate = [NSDate date];
-            NSLog(@"Traced: \n%@",tracedTopic);
+            DDLogDebug(@"[Database] Update Topic: \n%@",tracedTopic);
             [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
         }
     }];
@@ -116,7 +116,7 @@
                 [keysToRemove addObject:key];
             }
         }];
-        NSLog(@"%lu keys removed from topic history",(unsigned long)[keysToRemove count]);
+        DDLogDebug(@"%lu keys removed from topic history",(unsigned long)[keysToRemove count]);
         for (NSString *key in keysToRemove) {
             [transaction removeObjectForKey:key inCollection:Collection_Topics];
         }

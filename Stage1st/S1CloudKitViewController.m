@@ -80,7 +80,6 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSLog(@"%@",indexPath);
     if (indexPath.section == 1 && indexPath.row == 2) {
         if (MyCloudKitManager.lastCloudkitError == nil) {
             return;
@@ -99,13 +98,6 @@
                          otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
         
         [alertView show];
-    } else if (indexPath.section == 2 && indexPath.row == 0) {
-        NSLog(@"Suspend");
-        [MyDatabaseManager.cloudKitExtension suspend];
-        
-    } else if (indexPath.section == 2 && indexPath.row == 1) {
-        NSLog(@"Resume");
-        [MyDatabaseManager.cloudKitExtension resume];
     }
 }
 

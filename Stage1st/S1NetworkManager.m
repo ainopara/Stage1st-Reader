@@ -84,7 +84,7 @@
                              @"mobile": @"no",
                              @"tid": topicID,
                              @"page": page};
-    NSLog(@"Request Topic Content API:%@-%@",topicID, page);
+    DDLogDebug(@"[Network] Request Topic Content API:%@-%@",topicID, page);
     [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
@@ -181,8 +181,8 @@
                              @"pid" : floorID,
                              @"ptid" : topicID};
     [[S1HTTPSessionManager sharedHTTPClient] setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
-        NSLog(@"%@",response);
-        NSLog(@"%@",request);
+        DDLogDebug(@"%@",response);
+        DDLogDebug(@"%@",request);
         if (request.URL) {
             ;
         }
@@ -261,7 +261,7 @@
 + (void) cancelRequest
 {
     [[[S1HTTPSessionManager sharedHTTPClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
+        // DDLogDebug(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];
         }
@@ -271,7 +271,7 @@
     }];
     
     [[[S1HTTPSessionManager sharedJSONClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // NSLog(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
+        // DDLogDebug(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];
         }

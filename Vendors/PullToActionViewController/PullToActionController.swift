@@ -55,7 +55,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         self.scrollView?.removeObserver(self, forKeyPath: "contentSize")
         self.scrollView?.removeObserver(self, forKeyPath: "contentInset")
         self.scrollView?.delegate = nil
-        DDLogDebug("PullToAction | Scroll View delegate set nil")
+        DDLogDebug("[PullToAction] Scroll View delegate set nil")
     }
     
     public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
@@ -94,13 +94,13 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
     
     public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if self.offset.y < 0 {
-            print("end dragging <- \(self.offset.y)", terminator: "")
+            DDLogDebug("[PullToAction] End dragging <- \(self.offset.y)")
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
             return
         }
         let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height //TODO: consider content inset
         if bottomOffset > 0 {
-            print("end dragging -> \(bottomOffset)", terminator: "")
+            DDLogDebug("[PullToAction] End dragging -> \(bottomOffset)")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
             return
         }

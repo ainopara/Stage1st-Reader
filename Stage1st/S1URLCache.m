@@ -36,7 +36,7 @@
                                                      data:imageData];
             return cachedResponse;
         } else {
-            NSLog(@"smiley not cached: %@", URLString);
+            DDLogWarn(@"[URLCache] Smiley not cached: %@", URLString);
             return [super cachedResponseForRequest:request];
         }
     } else if ([URLString hasSuffix:placeholder]) {

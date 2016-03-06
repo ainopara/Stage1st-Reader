@@ -141,7 +141,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [super viewDidAppear:animated];
     [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
-    DDLogDebug(@"viewDidAppear");
+    DDLogDebug(@"[TopicListVC] viewDidAppear");
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setScrollsToTop:YES];
 }
@@ -157,7 +157,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)dealloc
 {
-    NSLog(@"Topic List View Dealloced.");
+    DDLogDebug(@"Topic List View Dealloced.");
     [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
     [self.tableView removeObserver:self forKeyPath:@"contentInset"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -337,7 +337,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             return;
         }
         self.tableView.tableFooterView = [self footerView];
-        NSLog(@"Reach last topic, load more.");
+        DDLogDebug(@"Reach last topic, load more.");
         _loadingMore = YES;
         __weak typeof(self) weakSelf = self;
         [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
@@ -354,7 +354,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 strongSelf.tableView.tableFooterView = nil;
                 _loadingMore = NO;
             });
-            NSLog(@"fail to load more...");
+            DDLogDebug(@"fail to load more...");
         }];
     }
 }
@@ -395,14 +395,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
     NSDate *lastRefreshDateForKey = [self.cachedLastRefreshTime valueForKey:key];
-    //NSLog(@"cache: %@, date: %@",self.cachedLastRefreshTime, lastRefreshDateForKey);
-    //NSLog(@"diff: %f", [[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey]);
+    //DDLogDebug(@"cache: %@, date: %@",self.cachedLastRefreshTime, lastRefreshDateForKey);
+    //DDLogDebug(@"diff: %f", [[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey]);
     if (lastRefreshDateForKey && ([[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey] <= 20.0)) {
         if (![self.currentKey isEqualToString:key]) {
-            NSLog(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            DDLogDebug(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
             [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
         } else { //press the key that selected currently
-            NSLog(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
+            DDLogDebug(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
             [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
         }
     } else {
@@ -428,7 +428,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
     NSString *query = [NSString stringWithFormat:@"favorite:%@ title:%@*", [currentKey isEqualToString:@"Favorite"] ? @"FY":@"F*", searchText];
-    NSLog(@"%@",query);
+    DDLogDebug(@"[TopicListVC] Update filter: %@", query);
     [self.searchQueue enqueueQuery:query];
     [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
         [[transaction ext:Ext_searchResultView_Archive] performSearchWithQueue:self.searchQueue];
@@ -483,7 +483,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             _loadingFlag = NO;
         } failure:^(NSError *error) {
             if (error.code == -999) {
-                NSLog(@"Code -999 may means user want to cancel this request.");
+                DDLogDebug(@"Code -999 may means user want to cancel this request.");
                 [HUD hideWithDelay:0];
             } else {
                 [HUD setText:@"Request Failed" withWidthMultiplier:2];
@@ -536,7 +536,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         return;
     }
-    NSLog(@"h%f,w%f",size.height, size.width);
+    DDLogDebug(@"h%f,w%f",size.height, size.width);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"S1ViewWillTransitionToSizeNotification" object:[NSValue valueWithCGSize:size]];
     CGRect frame = self.view.frame;
     frame.size = size;
@@ -607,7 +607,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } failure:^(NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
         if (error.code == -999) {
-            NSLog(@"Code -999 may means user want to cancel this request.");
+            DDLogDebug(@"Code -999 may means user want to cancel this request.");
             [HUD hideWithDelay:0];
             //others
             strongSelf.scrollTabBar.enabled = YES;
@@ -629,7 +629,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             //hud hide
             if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
                 if (error.code == -999) {
-                    NSLog(@"Code -999 may means user want to cancel this request.");
+                    DDLogDebug(@"Code -999 may means user want to cancel this request.");
                     [HUD hideWithDelay:0];
                 } else {
                     [HUD setText:@"Request Failed" withWidthMultiplier:2];
@@ -702,7 +702,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
-    // NSLog(@"databaseConnectionDidUpdate");
+    // DDLogDebug(@"databaseConnectionDidUpdate");
     if (self.mappings == nil)
     {
         [self initializeMappings];
@@ -733,7 +733,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         NSNumber *count = [self.currentKey isEqual: @"History"] ? [self.dataCenter numberOfTopics] : [self.dataCenter numberOfFavorite];
         self.searchBar.placeholder = [NSString stringWithFormat: NSLocalizedString(@"TopicListView_SearchBar_Detail_Hint", @"Search"), count];
         /*
-        NSLog(@"rowChange:%lu,sectionChange: %lu",(unsigned long)[rowChanges count], (unsigned long)[sectionChanges count]);
+        DDLogDebug(@"rowChange:%lu,sectionChange: %lu",(unsigned long)[rowChanges count], (unsigned long)[sectionChanges count]);
         NSArray *sectionChanges = nil;
         NSArray *rowChanges = nil;
         [[self.databaseConnection ext:Ext_FilteredView_Archive] getSectionChanges:&sectionChanges
@@ -851,7 +851,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     } else {
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     }
-    CLS_LOG(@"CloudKit | %@", titleString);
+    DDLogDebug(@"[CloudKit] %@", titleString);
     /*
     if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
         //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
@@ -932,7 +932,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 [self.searchBar becomeFirstResponder];
             }
         }
-        //NSLog(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
+        //DDLogDebug(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
         return;
     }
 }

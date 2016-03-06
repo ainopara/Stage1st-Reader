@@ -35,6 +35,10 @@ S1AppDelegate *MyAppDelegate;
 
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
+        [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(194, 99, 107) backgroundColor:nil forFlag:DDLogFlagError];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
 #else
         [DDLog addLogger:[CrashlyticsLogger sharedInstance]];
 #endif
@@ -100,7 +104,7 @@ S1AppDelegate *MyAppDelegate;
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
     if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
-        NSLog(@"Update Order List");
+        DDLogDebug(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
         [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
@@ -163,7 +167,6 @@ S1AppDelegate *MyAppDelegate;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
-    DDLogVerbose(@"asdf");
     
     return YES;
 }
@@ -199,7 +202,7 @@ S1AppDelegate *MyAppDelegate;
 
 #pragma mark - URL Scheme
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    NSLog(@"%@ from %@", url, sourceApplication);
+    DDLogDebug(@"%@ from %@", url, sourceApplication);
     
     //Open Specific Topic Case
     NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];
@@ -248,20 +251,20 @@ S1AppDelegate *MyAppDelegate;
 #pragma mark - Push Notification For Sync
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    NSLog(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
+    DDLogDebug(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
     [application registerForRemoteNotifications];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSLog(@"Registered for Push notifications with token: %@", deviceToken);
+    DDLogDebug(@"Registered for Push notifications with token: %@", deviceToken);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    NSLog(@"Push subscription failed: %@", error);
+    DDLogDebug(@"Push subscription failed: %@", error);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    NSLog(@"Push received: %@", userInfo);
+    DDLogDebug(@"Push received: %@", userInfo);
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         return;
     }
@@ -296,7 +299,7 @@ S1AppDelegate *MyAppDelegate;
     return YES;
 }
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    NSLog(@"Receive Hand Off: %@", userActivity.userInfo);
+    DDLogDebug(@"Receive Hand Off: %@", userActivity.userInfo);
     NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
     if (topicID) {
         S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
@@ -342,9 +345,9 @@ S1AppDelegate *MyAppDelegate;
 - (void)reachabilityChanged:(NSNotification *)notification {
     Reachability *reachability = notification.object;
     if ([reachability isReachableViaWiFi]) {
-        NSLog(@"%@",@"display picture");
+        DDLogDebug(@"%@",@"display picture");
     } else {
-        NSLog(@"%@",@"display placeholder");
+        DDLogDebug(@"%@",@"display placeholder");
     }
 }
 

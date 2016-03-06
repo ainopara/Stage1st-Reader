@@ -108,7 +108,7 @@
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button
 {
-    NSLog(@"%@", button.mahjongFaceKey);
+    DDLogDebug(@"%@", button.mahjongFaceKey);
     
     if (self.delegate) {
         S1MahjongFaceTextAttachment *mahjongFaceTextAttachment = [S1MahjongFaceTextAttachment new];
@@ -147,14 +147,14 @@
     }
 }
 - (void)backspacePressed:(UIButton *)button {
-    NSLog(@"backspace");
+    DDLogDebug(@"backspace");
     if (self.delegate) {
         [self.delegate mahjongFaceViewControllerDidPressBackSpace:self];
     }
 }
 
 - (void)pageChanged:(UIPageControl *)pageControl {
-    NSLog(@"pageChanged: %ld", (long)self.pageControl.currentPage);
+    DDLogDebug(@"pageChanged: %ld", (long)self.pageControl.currentPage);
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:self.pageControl.currentPage]];
     [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:self.pageControl.currentPage]];
 }
@@ -189,7 +189,7 @@
 }
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
-    NSLog(@"%@",key);
+    DDLogDebug(@"%@",key);
     self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
     self.pageControl.currentPage = 0;
     [self setNeedsLayout];
@@ -198,7 +198,7 @@
 #pragma mark Layout
 - (void)layoutSubviews {
     [super layoutSubviews];
-    NSLog(@"layout subviews");
+    DDLogDebug(@"layout subviews");
     NSInteger totalPageCount = [self pageCountForCategory:self.currentCategory];
     NSInteger currentPage = (self.pageControl.currentPage > totalPageCount) ? totalPageCount : self.pageControl.currentPage;
     self.pageControl.currentPage = currentPage;
@@ -209,7 +209,7 @@
         totalPageCountForAllCategory += [self pageCountForCategory:key];
     }
     self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.scrollView.bounds) * totalPageCountForAllCategory, CGRectGetHeight(self.scrollView.bounds));
-    NSLog(@"Total page count: %ld", (long)totalPageCount);
+    DDLogDebug(@"Total page count: %ld", (long)totalPageCount);
     self.shouldIngnoreScrollEvent = YES;
     [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
     self.shouldIngnoreScrollEvent = NO;
@@ -253,7 +253,7 @@
     if (categoryForThisPage == nil || localIndex >= [self pageCountForCategory:categoryForThisPage]) {
         return;
     }
-    NSLog(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
+    DDLogDebug(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
     
     S1MahjongFacePageView *pageView = [self usableMahjongFacePageViewForIndex:globalIndex];
     
@@ -285,7 +285,7 @@
 }
 
 - (void)setPage:(NSInteger)page {
-    NSLog(@"Global Index:%ld", (long)page);
+    DDLogDebug(@"Global Index:%ld", (long)page);
     [self setMahjongFacePageViewInScrollView:self.scrollView atIndex:page - 1];
     [self setMahjongFacePageViewInScrollView:self.scrollView atIndex:page];
     [self setMahjongFacePageViewInScrollView:self.scrollView atIndex:page + 1];

@@ -405,7 +405,7 @@
     if (processedString) {
         return [processedString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
     } else {
-        NSLog(@"Report Fail to modify image");
+        DDLogError(@"[ContentViewModel] Report Fail to modify image");
         return HTMLString;
     }
 }

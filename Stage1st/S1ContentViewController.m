@@ -89,7 +89,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    CLS_LOG(@"ContentVC | View Did Load");
+    DDLogDebug(@"[ContentVC] View Did Load");
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
@@ -231,14 +231,14 @@
     [super viewDidAppear:animated];
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
-    CLS_LOG(@"ContentVC | View Did Appear");
+    DDLogDebug(@"[ContentVC] View Did Appear");
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
-    //NSLog(@"Content View did disappear");
+    //DDLogDebug(@"Content View did disappear");
     [self cancelRequest];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self saveTopicViewedState:nil];
@@ -253,16 +253,13 @@
 }
 
 - (void)dealloc {
-    CLS_LOG(@"ContentVC | Deallocing");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    // TempFix: Try to resolve crash issue in UIKit, not sure if this will work.
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
-    CLS_LOG(@"ContentVC | Pull Controller set nil");
     self.webView.delegate = nil;
     self.webView.scrollView.delegate = nil;
     [self.webView stopLoading];
-    CLS_LOG(@"ContentVC | Dealloced");
+    DDLogDebug(@"[ContentVC] Dealloced");
 }
 
 #pragma mark - TabBar Actions
@@ -358,7 +355,7 @@
 
 - (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
     if (gr.state == UIGestureRecognizerStateBegan) {
-        NSLog(@"forceRefresh pressed");
+        DDLogDebug(@"forceRefresh pressed");
         [self cancelRequest];
         _needToLoadLastPositionFromModel = NO;
         [self saveViewPosition];
@@ -403,7 +400,7 @@
         }
         [self presentViewController:activityController animated:YES completion:nil];
         [activityController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-            NSLog(@"finish:%@",activityType);
+            DDLogDebug(@"finish:%@",activityType);
         }];
     }];
     // Copy Link
@@ -452,7 +449,7 @@
             NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             S1Floor *floor = [self.topic.floors valueForKey:decodedQuery];
             if (floor != nil) {
-                NSLog(@"%@", floor.author);
+                DDLogDebug(@"%@", floor.author);
                 [self presentReplyViewWithAppendText:@"" reply:floor];
             }
         // Present image
@@ -461,7 +458,7 @@
             [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
             NSString *imageID = request.URL.fragment;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
-            NSLog(@"%@", imageURL);
+            DDLogDebug(@"%@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
             imageInfo.referenceRect = [self positionOfElementWithId:imageID];
@@ -479,7 +476,7 @@
         _presentingImageViewer = YES;
         [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
         NSString *imageURL = request.URL.absoluteString;
-        NSLog(@"%@", imageURL);
+        DDLogDebug(@"%@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = request.URL;
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
@@ -509,13 +506,13 @@
         // Open Quote Link
         NSDictionary *quarys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
         if (quarys) {
-            NSLog(@"%@",quarys);
+            DDLogDebug(@"%@",quarys);
             if ([[quarys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
                 /*
                 [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
-                    NSLog(@"finish");
+                    DDLogDebug(@"finish");
                 } failure:^(NSError *error) {
-                    NSLog(@"%@",error);
+                    DDLogDebug(@"%@",error);
                 }];*/
                 if ([[quarys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
                     NSInteger tid = [[quarys valueForKey:@"ptid"] integerValue];
@@ -548,7 +545,7 @@
         UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             _presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
-            NSLog(@"%@", request.URL);
+            DDLogDebug(@"%@", request.URL);
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
             [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
             //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
@@ -561,9 +558,9 @@
         UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             _presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
-            NSLog(@"%@", request.URL);
+            DDLogDebug(@"%@", request.URL);
             if (![[UIApplication sharedApplication] openURL:request.URL]) {
-                NSLog(@"%@%@",@"Failed to open url:",[request.URL description]);
+                DDLogDebug(@"%@%@",@"Failed to open url:",[request.URL description]);
             }
         }];
         [alert addAction:cancelAction];
@@ -716,7 +713,7 @@
     }
     //Set up HUD
     if (![self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]]) {
-        NSLog(@"Show HUD");
+        DDLogDebug(@"[ContentVC] Show HUD");
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
         [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
@@ -768,12 +765,12 @@
         
     } failure:^(NSError *error) {
         if (error.code == -999) {
-            NSLog(@"request cancelled.");
+            DDLogDebug(@"request cancelled.");
             if (HUD != nil) {
                 [HUD hideWithDelay:0.3];
             }
         } else {
-            NSLog(@"%@", error);
+            DDLogDebug(@"%@", error);
             if (HUD != nil) {
                 [HUD showRefreshButton];
             }
@@ -789,7 +786,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    NSLog(@"viewWillTransitionToSize: w%f,h%f ",size.width, size.height);
+    DDLogDebug(@"viewWillTransitionToSize: w%f,h%f ",size.width, size.height);
     CGRect frame = self.view.frame;
     frame.size = size;
     self.view.frame = frame;
@@ -884,7 +881,7 @@
             void (^failureBlock)() = ^(NSError *error) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error.code == -999) {
-                    NSLog(@"Code -999 may means user want to cancel this request.");
+                    DDLogDebug(@"Code -999 may means user want to cancel this request.");
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else if (error.code == -998){
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
@@ -1019,7 +1016,7 @@
 }
 
 - (void)updateUserActivityState:(NSUserActivity *)activity {
-    NSLog(@"Hand Off Activity Updated");
+    DDLogDebug(@"[ContentVC] Hand Off Activity Updated");
     activity.userInfo = @{@"topicID": self.topic.topicID,
                           @"page": [NSNumber numberWithInteger:_currentPage]};
     self.userActivity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
@@ -1128,7 +1125,7 @@
     if (_topic.favorite == nil) {
         _topic.favorite = @(NO);
     }
-    CLS_LOG(@"ContentVC | Topic setted: %@", self.topic.topicID);
+    DDLogDebug(@"[ContentVC] Topic setted: %@", self.topic.topicID);
 }
 
 @end
