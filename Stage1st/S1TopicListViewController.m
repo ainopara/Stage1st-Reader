@@ -141,6 +141,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 {
     [super viewDidAppear:animated];
     [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
+    DDLogDebug(@"viewDidAppear");
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setScrollsToTop:YES];
 }
@@ -701,7 +702,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
-    NSLog(@"databaseConnectionDidUpdate");
+    // NSLog(@"databaseConnectionDidUpdate");
     if (self.mappings == nil)
     {
         [self initializeMappings];

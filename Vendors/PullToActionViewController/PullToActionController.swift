@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 @objc public protocol PullToActionDelagete {
     optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset : CGFloat)
@@ -54,7 +55,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         self.scrollView?.removeObserver(self, forKeyPath: "contentSize")
         self.scrollView?.removeObserver(self, forKeyPath: "contentInset")
         self.scrollView?.delegate = nil
-        CLS_LOG_SWIFT("PullToAction | Scroll View delegate set nil")
+        DDLogDebug("PullToAction | Scroll View delegate set nil")
     }
     
     public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {

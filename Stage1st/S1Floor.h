@@ -7,9 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Mantle/Mantle.h>
 
-@interface S1Floor : MTLModel
+@interface S1Floor : NSObject
 
 @property (nonatomic, copy) NSNumber *floorID;
 @property (nonatomic, copy) NSString *indexMark;

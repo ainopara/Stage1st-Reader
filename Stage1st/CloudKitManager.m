@@ -123,7 +123,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 **/
 - (void)configureCloudKit
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	// Set initial values
 	// (by checking database to see if we've flagged them as complete from previous app run)
@@ -147,7 +147,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)continueCloudKitFlow
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
     if (self.needsCreateZone)
 	{
 		[self createZone];
@@ -286,7 +286,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	{
 		if (operationError)
 		{
-			NSLog(@"Error creating zone: %@", operationError);
+			DDLogDebug(@"Error creating zone: %@", operationError);
 			
 			BOOL isNotAuthenticatedError = NO;
 			
@@ -315,7 +315,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		}
 		else
 		{
-			NSLog(@"Successfully created zones: %@", savedRecordZones);
+			DDLogDebug(@"Successfully created zones: %@", savedRecordZones);
 			
 			// Create zone complete.
 			self.needsCreateZone = NO;
@@ -376,11 +376,11 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	{
 		if (operationError)
 		{
-			NSLog(@"Error creating subscription: %@", operationError);
+			DDLogDebug(@"Error creating subscription: %@", operationError);
 		}
 		else
 		{
-			NSLog(@"Successfully created subscription: %@", savedSubscriptions);
+			DDLogDebug(@"Successfully created subscription: %@", savedSubscriptions);
 			
 			// Create zone subscription complete.
 			self.needsCreateZoneSubscription = NO;
@@ -409,7 +409,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 **/
 - (void)fetchRecordChangesAfterAppLaunch
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	if (self.needsFetchRecordChangesAfterAppLaunch == NO) return;
 	
@@ -510,10 +510,10 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	operation.fetchRecordChangesCompletionBlock =
 	^(CKServerChangeToken *newServerChangeToken, NSData *clientChangeTokenData, NSError *operationError){
 		
-		NSLog(@"CKFetchRecordChangesOperation.fetchRecordChangesCompletionBlock");
+		DDLogDebug(@"CKFetchRecordChangesOperation.fetchRecordChangesCompletionBlock");
 		
-		NSLog(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
-		NSLog(@"CKFetchRecordChangesOperation: clientChangeTokenData: %@", clientChangeTokenData);
+		DDLogDebug(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
+		DDLogDebug(@"CKFetchRecordChangesOperation: clientChangeTokenData: %@", clientChangeTokenData);
 		
 		// Edge Case:
 		//
@@ -549,7 +549,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			//
 			// - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
 			
-			NSLog(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
+			DDLogDebug(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
             [self reportError:operationError];
 			NSInteger ckErrorCode = operationError.code;
 			
@@ -573,7 +573,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		}
 		else if (!hasChanges && !moreComing)
 		{
-			NSLog(@"CKFetchRecordChangesOperation: !hasChanges && !moreComing");
+			DDLogDebug(@"CKFetchRecordChangesOperation: !hasChanges && !moreComing");
 			
 			// Just to be safe, we're going to go ahead and save the newServerChangeToken.
 			//
@@ -596,8 +596,8 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		}
 		else // if (hasChanges || moreComing)
 		{
-			NSLog(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
-			//NSLog(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
+			DDLogDebug(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
+			//DDLogDebug(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
 			
 			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
@@ -733,7 +733,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	operation.perRecordCompletionBlock = ^(CKRecord *record, CKRecordID *recordID, NSError *error) {
 		
 		if (error) {
-			NSLog(@"CKFetchRecordsOperation.perRecordCompletionBlock: %@ -> %@", recordID, error);
+			DDLogDebug(@"CKFetchRecordsOperation.perRecordCompletionBlock: %@ -> %@", recordID, error);
 		}
 	};
 	
@@ -747,7 +747,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		}
 		else
 		{
-			NSLog(@"CKFetchRecordsOperation: recordsByRecordID: %@", recordsByRecordID);
+			DDLogDebug(@"CKFetchRecordsOperation: recordsByRecordID: %@", recordsByRecordID);
 			
 			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
@@ -780,7 +780,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 **/
 - (void)handleNetworkError
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	// When the YapDatabaseCloudKitOperationErrorBlock is invoked,
 	// the extension has already automatically suspended itself.
@@ -805,7 +805,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 **/
 - (void)handlePartialFailure
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	// When the YapDatabaseCloudKitOperationErrorBlock is invoked,
 	// the extension has already automatically suspended itself.
@@ -896,7 +896,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
-    NSLog(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+    DDLogDebug(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
     if (retryDelay) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, retryDelay.integerValue * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.needsResume = YES;
@@ -908,8 +908,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 }
 
 - (void)reportError:(NSError *)error {
-    NSLog(@"ckErrorCode: %ld", (long)error.code);
-    NSLog(@"ckError: %@", error);
+
     self.lastCloudkitError = error;
     [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
     self.state = CKManagerStateRecovering;
@@ -934,11 +933,13 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
     [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
                                                                          @"description": errorDescription}];
+    DDLogDebug(@"[CloudKit] ckErrorCode: %ld", (long)code);
+    DDLogDebug(@"[CloudKit] description: %@", errorDescription);
 }
 
 - (void)_refetchMissedRecordIDs
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension currentChangeSet];
 	NSArray *recordIDs = failedChangeSet.recordIDsToSave;
@@ -978,7 +979,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)_fetchRecordChanges
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	[self fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing) {
 		
@@ -1010,7 +1011,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	if (self.needsCreateZone || self.needsCreateZoneSubscription || self.needsFetchRecordChangesAfterAppLaunch)
 	{
@@ -1033,14 +1034,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	[self continueCloudKitFlow];
 }
 
 - (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	NSString *changeSetUUID = [notification.userInfo objectForKey:@"uuid"];
 	
@@ -1063,11 +1064,11 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-	//NSLog(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	Reachability *reachability = notification.object;
 	
-	//NSLog(@"%@ - reachability.isReachable = %@", THIS_FILE, (reachability.isReachable ? @"YES" : @"NO"));
+	//DDLogDebug(@"%@ - reachability.isReachable = %@", THIS_FILE, (reachability.isReachable ? @"YES" : @"NO"));
 	if (reachability.isReachable)
 	{
         //self.state = CKManagerStateReady;

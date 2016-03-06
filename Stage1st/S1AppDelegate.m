@@ -16,10 +16,12 @@
 #import "S1DataCenter.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "DDTTYLogger.h"
+#import "CrashlyticsLogger.h"
 #import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+
+
 
 S1AppDelegate *MyAppDelegate;
 
@@ -30,7 +32,13 @@ S1AppDelegate *MyAppDelegate;
         // Store global reference
         MyAppDelegate = self;
         // Configure logging
-        //[DDLog addLogger:[DDTTYLogger sharedInstance]];
+
+#ifdef DEBUG
+        [DDLog addLogger:[DDTTYLogger sharedInstance]];
+#else
+        [DDLog addLogger:[CrashlyticsLogger sharedInstance]];
+#endif
+
     }
     return self;
 }
@@ -38,8 +46,6 @@ S1AppDelegate *MyAppDelegate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Flurry
-    // [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
     // Crashlytics
     [Fabric with:@[[Crashlytics class]]];
 
@@ -157,6 +163,7 @@ S1AppDelegate *MyAppDelegate;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
+    DDLogVerbose(@"asdf");
     
     return YES;
 }

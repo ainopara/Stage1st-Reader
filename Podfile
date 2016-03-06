@@ -1,6 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "8.0"
 use_frameworks!
+
 target "Stage1st" do
     pod 'FMDB'
     pod 'AFNetworking'
@@ -9,10 +10,10 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'SVWebViewController', :git => 'https://github.com/ainopara/SVWebViewController.git'
     pod '1PasswordExtension'
-    pod 'Mantle'
     pod 'Masonry'
     pod 'Reachability'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
+    pod 'CocoaLumberjack/Swift'
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'DTCoreText'
