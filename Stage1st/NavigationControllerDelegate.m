@@ -16,7 +16,7 @@
 
 @interface NavigationControllerDelegate () <UIGestureRecognizerDelegate>
 
-@property (weak, nonatomic) IBOutlet UINavigationController *navigationController;
+@property (weak, nonatomic) UINavigationController *navigationController;
 @property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *popAnimator;
 @property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *pushAnimator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
@@ -27,14 +27,19 @@
 
 @implementation NavigationControllerDelegate
 
-- (void)awakeFromNib {
-    self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    [self.navigationController.view addGestureRecognizer:self.panRecognizer];
-    self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
-    self.colorPanRecognizer.delegate = self;
-    [self.navigationController.view addGestureRecognizer:self.colorPanRecognizer];
-    self.popAnimator = [S1PopAnimator new];
-    self.pushAnimator = [S1PushAnimator new];
+- (instancetype)initWithNavigationController:(UINavigationController *)navigationController {
+    self = [super init];
+    if (self) {
+        self.navigationController = navigationController;
+        self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        [self.navigationController.view addGestureRecognizer:self.panRecognizer];
+        self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
+        self.colorPanRecognizer.delegate = self;
+        [self.navigationController.view addGestureRecognizer:self.colorPanRecognizer];
+        self.popAnimator = [S1PopAnimator new];
+        self.pushAnimator = [S1PushAnimator new];
+    }
+    return self;
 }
 
 

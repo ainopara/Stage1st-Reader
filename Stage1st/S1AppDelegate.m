@@ -8,6 +8,7 @@
 
 #import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
+#import "NavigationControllerDelegate.h"
 #import "S1ContentViewController.h"
 #import "S1URLCache.h"
 #import "S1Topic.h"
@@ -167,7 +168,15 @@ S1AppDelegate *MyAppDelegate;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
-    
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
+    self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
+    navigationController.delegate = self.navigationDelegate;
+    navigationController.viewControllers = @[[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
+    navigationController.navigationBarHidden = YES;
+    self.window.rootViewController = navigationController;
     return YES;
 }
 
@@ -355,7 +364,7 @@ S1AppDelegate *MyAppDelegate;
 - (void)presentContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]]) {
-        S1ContentViewController *contentViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Content"];
+        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
         [contentViewController setTopic:topic];
         [contentViewController setDataCenter:[S1DataCenter sharedDataCenter]];
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];

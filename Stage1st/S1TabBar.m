@@ -16,30 +16,9 @@
     BOOL _needRecalculateButtonWidth;
 }
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        _index = -1;
-        _lastFrameWidth = 0;
-        _enabled = YES;
-        _needRecalculateButtonWidth = YES;
-        _minButtonWidth = [NSNumber numberWithDouble:80.0];
-        _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
-        self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"tabbar.background"];
-        self.canCancelContentTouches = YES;
-        self.bounces = NO;
-        self.showsHorizontalScrollIndicator = NO;
-        self.scrollsToTop = NO;
-        self.delegate = self;
-        //self.decelerationRate = UIScrollViewDecelerationRateFast;
-    }
-    return self;
-}
-
-//Init from Storyboard
-- (instancetype)initWithCoder:(NSCoder *)coder
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super initWithCoder:coder];
+    self = [super initWithFrame:frame];
     if (self) {
         _index = -1;
         _lastFrameWidth = 0;
@@ -159,6 +138,10 @@
 }
 
 #pragma mark - Layout
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(UIViewNoIntrinsicMetric, 44.0);
+}
 
 - (void)layoutSubviews {
     if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {

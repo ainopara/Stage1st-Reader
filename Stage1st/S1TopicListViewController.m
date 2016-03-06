@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
+#import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
 #import "S1ContentViewController.h"
 #import "S1SettingViewController.h"
@@ -44,10 +45,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSArray *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) UISearchBar *searchBar;
-@property (weak, nonatomic) IBOutlet S1TabBar *scrollTabBar;
+@property (nonatomic, strong) S1TabBar *scrollTabBar;
 // Model
 @property (nonatomic, strong) S1DataCenter *dataCenter;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
@@ -76,8 +77,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark - Life Cycle
 
-- (instancetype)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _loadingFlag = NO;
         _loadingMore = NO;
@@ -97,34 +98,26 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     //Setup Navigation Bar
     [self.view addSubview:self.navigationBar];
-    
+    [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top);
+        make.leading.with.trailing.equalTo(self.view);
+        make.height.equalTo(@64);
+    }];
+
     //Setup Table View
-    self.tableView.rowHeight = 54.0f;
-    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    //[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    self.tableView.separatorColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
-    self.tableView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
-    if (self.tableView.backgroundView) {
-        self.tableView.backgroundView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
-    }
-    self.tableView.hidden = YES;
-    self.tableView.tableHeaderView = self.searchBar;
-    [self.tableView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
-    
-    //self.definesPresentationContext = YES;
-    
-    self.refreshControl = [[ODRefreshControl alloc] initInScrollView:self.tableView];
-    self.refreshControl.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    
-    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-    [self.tableView addObserver:self forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew context:nil];
+    [self.view addSubview:self.tableView];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.navigationBar.mas_bottom);
+        make.leading.with.trailing.equalTo(self.view);
+    }];
     
     //Setup Tab Bar
-    self.scrollTabBar.keys = [self keys];
-    self.scrollTabBar.tabbarDelegate = self;
+    [self.view addSubview:self.scrollTabBar];
+    [self.scrollTabBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.tableView.mas_bottom);
+        make.leading.with.trailing.equalTo(self.view);
+        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
+    }];
 
     self.databaseConnection = MyDatabaseManager.uiDatabaseConnection;
     [self initializeMappings];
@@ -157,7 +150,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)dealloc
 {
-    DDLogDebug(@"Topic List View Dealloced.");
+    DDLogDebug(@"[TopicListVC] Dealloced");
     [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
     [self.tableView removeObserver:self forKeyPath:@"contentInset"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -448,7 +441,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 topic = [[S1Topic alloc] init];
                 topic.topicID = topicID;
             }
-            S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
             [contentViewController setTopic:topic];
             [contentViewController setDataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
@@ -536,7 +529,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         return;
     }
-    DDLogDebug(@"h%f,w%f",size.height, size.width);
+    DDLogDebug(@"[TopicListVC] View Will Change To Size: h%f,w%f",size.height, size.width);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"S1ViewWillTransitionToSizeNotification" object:[NSValue valueWithCGSize:size]];
     CGRect frame = self.view.frame;
     frame.size = size;
@@ -942,8 +935,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UINavigationBar *)navigationBar {
     if (!_navigationBar) {
         _navigationBar = [[UINavigationBar alloc] init];
-        _navigationBar.frame = CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
-        _navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _navigationBar.frame = CGRectZero; // CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
+        _navigationBar.translatesAutoresizingMaskIntoConstraints = NO;
         [_navigationBar pushNavigationItem:self.naviItem animated:NO];
     }
     return _navigationBar;
@@ -1029,6 +1022,36 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _settingsItem;
 }
 
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _tableView.rowHeight = 54.0f;
+        [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+        //[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+        _tableView.separatorColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
+        _tableView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+        if (_tableView.backgroundView) {
+            _tableView.backgroundView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
+        }
+        _tableView.hidden = YES;
+        _tableView.tableHeaderView = self.searchBar;
+        [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
+
+        //self.definesPresentationContext = YES;
+
+        self.refreshControl = [[ODRefreshControl alloc] initInScrollView:_tableView];
+        self.refreshControl.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
+        [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+
+        [_tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+        [_tableView addObserver:self forKeyPath:@"contentInset" options:NSKeyValueObservingOptionNew context:nil];
+    }
+    return _tableView;
+}
+
 - (UISearchBar *)searchBar {
     if (!_searchBar) {
         _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
@@ -1065,6 +1088,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _segControl;
 }
 
+- (S1TabBar *)scrollTabBar {
+    if (!_scrollTabBar) {
+        _scrollTabBar = [[S1TabBar alloc] initWithFrame:CGRectZero];
+        _scrollTabBar.keys = [self keys];
+        _scrollTabBar.tabbarDelegate = self;
+    }
+    return _scrollTabBar;
+}
+
 - (NSDictionary *)forumKeyMap
 {
     if (!_forumKeyMap) {
@@ -1090,11 +1122,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (UIView *)footerView {
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 30.0)];
     [footerView setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"]];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 44)];
-    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:16.0], NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]}];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 30.0)];
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:16.0],
+                                 NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]
+                                 };
+    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:attributes];
     [label setAttributedText:labelTitle];
     label.backgroundColor = [UIColor clearColor];
     [footerView addSubview:label];

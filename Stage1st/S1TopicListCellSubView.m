@@ -10,15 +10,15 @@
 #import "S1Topic.h"
 @implementation S1TopicListCellSubView
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
     if (self) {
         _selected = NO;
         _highlighted = NO;
     }
     return self;
 }
-     
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     _selected = selected;

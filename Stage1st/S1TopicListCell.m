@@ -8,19 +8,25 @@
 
 #import "S1TopicListCell.h"
 #import "S1TopicListCellSubView.h"
+#import <Masonry/Masonry.h>
+
 @interface S1TopicListCell ()
 
-@property (weak, nonatomic) IBOutlet S1TopicListCellSubView *drawingSubview;
+@property (strong, nonatomic) S1TopicListCellSubView *drawingSubview;
 
 @end
 
 @implementation S1TopicListCell
 
-- (instancetype)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
+-(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        //Fix bug in iPad that set background color for cell not work. Set it manually in delegate.
-        //self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
+        self.drawingSubview = [[S1TopicListCellSubView alloc] initWithFrame:CGRectZero];
+        self.drawingSubview.contentMode = UIViewContentModeRedraw;
+        [self.contentView addSubview:self.drawingSubview];
+        [self.drawingSubview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.contentView);
+        }];
     }
     return self;
 }

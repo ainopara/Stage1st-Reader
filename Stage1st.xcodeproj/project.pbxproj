@@ -21,7 +21,6 @@
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
-		861513001A0E7B1200BAC814 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861512FF1A0E7B1200BAC814 /* Main.storyboard */; };
 		8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8627EAB01A204EF80063617C /* S1PushAnimator.m */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
 		862DB79A1C8891070068F75F /* S1UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* S1UserViewController.swift */; };
@@ -123,7 +122,6 @@
 		860573571B762C3B00C70781 /* MyDatabaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDatabaseObject.h; path = Stage1st/MyDatabaseObject.h; sourceTree = "<group>"; };
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
-		861512FF1A0E7B1200BAC814 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Stage1st/Main.storyboard; sourceTree = "<group>"; };
 		8627EAAF1A204EF80063617C /* S1PushAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PushAnimator.h; path = Stage1st/S1PushAnimator.h; sourceTree = "<group>"; };
 		8627EAB01A204EF80063617C /* S1PushAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PushAnimator.m; path = Stage1st/S1PushAnimator.m; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
@@ -412,15 +410,6 @@
 			name = "Personal Info View Controller";
 			sourceTree = "<group>";
 		};
-		86DE45381C37D341002032C5 /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-				861512FF1A0E7B1200BAC814 /* Main.storyboard */,
-				865673171A7A7B190025D22E /* Settings.storyboard */,
-			);
-			name = Storyboards;
-			sourceTree = "<group>";
-		};
 		C08334F216E2245B0035C1AA /* ODRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -459,7 +448,6 @@
 			isa = PBXGroup;
 			children = (
 				C095875516CA8A43007E0119 /* Resources */,
-				86DE45381C37D341002032C5 /* Storyboards */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
@@ -546,6 +534,7 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				865673171A7A7B190025D22E /* Settings.storyboard */,
 				86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */,
 				86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */,
 				86BA383A1C0635EC00D508AC /* DarkPalette2.plist */,
@@ -738,7 +727,6 @@
 				86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */,
 				C0B1919716F0A80F0053E0C5 /* content_ipad_18px.css in Resources */,
 				86040B7919DE1E27004BF2BC /* jquery-2.1.1.min.js in Resources */,
-				861513001A0E7B1200BAC814 /* Main.storyboard in Resources */,
 				86A8AEFF1B5BDC92007597AE /* color.css in Resources */,
 				C083351616E34DCF0035C1AA /* ForumKeyMap.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,

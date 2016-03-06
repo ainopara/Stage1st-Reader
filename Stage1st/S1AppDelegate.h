@@ -9,14 +9,15 @@
 #import <Reachability/Reachability.h>
 
 @class S1AppDelegate;
+@class NavigationControllerDelegate;
 
 extern S1AppDelegate *MyAppDelegate;
-
-
 
 @interface S1AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+@property (strong, nonatomic) NavigationControllerDelegate *navigationDelegate;
 
 @property (nonatomic, strong, readonly) Reachability *reachability;
 @end

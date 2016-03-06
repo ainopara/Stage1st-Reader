@@ -91,11 +91,7 @@
     _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     _containerView.alpha = 0;
     
-    NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-        offset *= 2;
-    }
-    _backView = [[UIView alloc] initWithFrame:CGRectMake(offset, 0, self.currentWidth - offset*2, 202)];
+    _backView = [[UIView alloc] initWithFrame:CGRectZero];
     _backView.layer.cornerRadius = _cornerRadius;
     _backView.layer.rasterizationScale = [UIScreen mainScreen].scale;
     
@@ -130,7 +126,7 @@
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.containerView.alpha = 1;
         self.backgroundView.alpha = 1;
-        [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+        [self layoutWithWidth:self.view.frame.size.width height:self.view.frame.size.height];
         [self.sheetView.textView becomeFirstResponder];
     } completion:nil];
 
@@ -156,7 +152,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)layoutWithOrientation:(UIInterfaceOrientation)interfaceOrientation width:(NSInteger)width height:(NSInteger)height
+- (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height
 {
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
@@ -175,9 +171,6 @@
     _containerView.frame = frame;
     _containerView.clipsToBounds = YES;
     // decide backview's frame(x position and width)
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation) && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        offset *= 2;
-    }
     if (width - offset * 2.0 < minimumComposeViewWidth) {
         offset = (width - minimumComposeViewWidth) / 2.0;
         if (offset < 4.0) {
@@ -395,7 +388,7 @@
 
 - (void)viewOrientationDidChanged:(NSNotification *)notification
 {
-    [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+    [self layoutWithWidth:self.view.frame.size.width height:self.view.frame.size.height];
 }
 
 - (void)updateKeyboardFrame:(NSNotification *)notification
@@ -406,7 +399,7 @@
     if (_keyboardHeight != kbSize.height) {
         _keyboardHeight = kbSize.height;
         [UIView animateWithDuration:0.4 animations:^{
-            [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
+            [self layoutWithWidth:self.view.frame.size.width height:self.view.frame.size.height];
         }];
     }
     

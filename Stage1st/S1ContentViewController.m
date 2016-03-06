@@ -44,14 +44,11 @@
 @property (nonatomic, strong) UIView *topDecorateLine;
 @property (nonatomic, strong) UIView *bottomDecorateLine;
 
-@property (nonatomic, weak) JTSImageViewController *imageViewer;
-
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
 @property (nonatomic, strong) NSMutableDictionary *cachedViewPosition;
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
-@property (nonatomic, weak) REComposeViewController *replyController;
 @end
 
 @implementation S1ContentViewController {
@@ -98,13 +95,14 @@
     [self.view addSubview:self.toolBar];
     [self.toolBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.and.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.view.mas_bottom);
+        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
     //web view
     self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
@@ -152,7 +150,6 @@
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.webView.scrollView.subviews[1].mas_top);
         make.centerX.equalTo(self.view.mas_centerX);
-        make.height.equalTo(@64);
         make.width.equalTo(self.view.mas_width).with.offset(-24);
     }];
 
@@ -497,7 +494,7 @@
                 topic.lastViewedPage = lastViewedPage;
             }
             _presentingContentViewController = YES;
-            S1ContentViewController *contentViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Content"];
+            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
             [contentViewController setTopic:topic];
             [contentViewController setDataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
@@ -600,18 +597,15 @@
 
 #pragma mark JTSImageViewController
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
-    self.imageViewer = imageViewer;
     UIAlertController *imageActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    __weak typeof(self) myself = self;
     UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        __strong typeof(self) strongMyself = myself;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            UIImageWriteToSavedPhotosAlbum(strongMyself.imageViewer.image, nil, nil, nil);
+            UIImageWriteToSavedPhotosAlbum(imageViewer.image, nil, nil, nil);
         });
     }];
     UIAlertAction *copyURLAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_CopyURL", @"Copy URL") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.string = self.imageViewer.imageInfo.imageURL.absoluteString;
+        pasteboard.string = imageViewer.imageInfo.imageURL.absoluteString;
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
     [imageActionSheet addAction:saveAction];
@@ -836,7 +830,6 @@
     [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];
     [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
     [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
-    self.replyController = replyController;
     [replyController.view setFrame:self.view.bounds];
     // set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
@@ -849,7 +842,7 @@
     
     replyController.delegate = self;
     [replyController setAttributedText:self.attributedReplyDraft];
-    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, self.replyController.view.bounds.size.width, 35) withComposeVC:self.replyController];
+    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, replyController.view.bounds.size.width, 35) withComposeVC:replyController];
     [ReplyAccessoryView resetTextViewStyle:replyController.textView];
      
     [replyController presentFromViewController:self];
