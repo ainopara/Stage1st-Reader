@@ -453,7 +453,7 @@
     }
     topic.topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
-    DDLogDebug(@"%@", topic);
+    DDLogDebug(@"[Parser] Extract Topic: %@", topic);
     return topic;
 }
 

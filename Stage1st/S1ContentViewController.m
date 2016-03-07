@@ -228,14 +228,14 @@
     [super viewDidAppear:animated];
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
-    DDLogDebug(@"[ContentVC] View Did Appear");
+    DDLogDebug(@"[ContentVC] View did appear");
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
-    //DDLogDebug(@"Content View did disappear");
+    DDLogDebug(@"[ContentVC] View did disappear");
     [self cancelRequest];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self saveTopicViewedState:nil];
@@ -352,7 +352,7 @@
 
 - (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
     if (gr.state == UIGestureRecognizerStateBegan) {
-        DDLogDebug(@"forceRefresh pressed");
+        DDLogDebug(@"[ContentVC] Force refresh pressed");
         [self cancelRequest];
         _needToLoadLastPositionFromModel = NO;
         [self saveViewPosition];
@@ -501,19 +501,19 @@
             return NO;
         }
         // Open Quote Link
-        NSDictionary *quarys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
-        if (quarys) {
-            DDLogDebug(@"%@",quarys);
-            if ([[quarys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
+        NSDictionary *querys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
+        if (querys) {
+            DDLogDebug(@"[ContentVC] Extract query: %@",querys);
+            if ([[querys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
                 /*
                 [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
                     DDLogDebug(@"finish");
                 } failure:^(NSError *error) {
                     DDLogDebug(@"%@",error);
                 }];*/
-                if ([[quarys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
-                    NSInteger tid = [[quarys valueForKey:@"ptid"] integerValue];
-                    NSInteger pid = [[quarys valueForKey:@"pid"] integerValue];
+                if ([[querys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
+                    NSInteger tid = [[querys valueForKey:@"ptid"] integerValue];
+                    NSInteger pid = [[querys valueForKey:@"pid"] integerValue];
                     if (tid == [self.topic.topicID integerValue]) {
                         NSArray *chainQuoteFloors = [self chainSearchQuoteByFirstFloorID:@(pid)];
                         if ([chainQuoteFloors count] > 0) {

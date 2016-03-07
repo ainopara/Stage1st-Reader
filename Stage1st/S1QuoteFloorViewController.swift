@@ -9,6 +9,7 @@
 import UIKit
 import JTSImageViewController
 import Crashlytics
+import CocoaLumberjack
 
 class S1QuoteFloorViewController: UIViewController {
     var htmlString: String?
@@ -117,7 +118,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     // MARK: Helper
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
         let result: String? = self.webView?.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
-        print(result, terminator: "")
+        DDLogDebug("[QuoteFloorVC] Touch element ID: \(elementID)")
         if let result1 = result , let result2 = Double(result1) {
             return CGFloat(result2)
         }
