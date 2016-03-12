@@ -92,6 +92,7 @@
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
 
     self.toolBar = [[UIToolbar alloc] initWithFrame:CGRectZero];
+    self.toolBar.translucent = NO;
     [self.view addSubview:self.toolBar];
     [self.toolBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.and.trailing.equalTo(self.view);
