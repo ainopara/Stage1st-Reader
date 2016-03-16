@@ -354,6 +354,18 @@
 			name = S1MahjongFaceViewController;
 			sourceTree = "<group>";
 		};
+		865C251B1C99110C0075B303 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				863580111A945DED007B21AD /* Topic List View Controller */,
+				863580121A945DFF007B21AD /* Content View Controller */,
+				866CDB951B526C4800FBB133 /* Quote Floor View Controller */,
+				86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */,
+				C09587A316CB6218007E0119 /* Settings View Controller */,
+			);
+			name = "View Controller";
+			sourceTree = "<group>";
+		};
 		866CDB951B526C4800FBB133 /* Quote Floor View Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -449,11 +461,7 @@
 			children = (
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
-				863580111A945DED007B21AD /* Topic List View Controller */,
-				863580121A945DFF007B21AD /* Content View Controller */,
-				866CDB951B526C4800FBB133 /* Quote Floor View Controller */,
-				86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */,
-				C09587A316CB6218007E0119 /* Settings View Controller */,
+				865C251B1C99110C0075B303 /* View Controller */,
 				C095877A16CA8DB0007E0119 /* Model */,
 				C08A440D16DA775F003BF44C /* Networking */,
 				86A5AD871B56BAAE00E80790 /* Database */,

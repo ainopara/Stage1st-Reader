@@ -165,7 +165,7 @@ S1AppDelegate *MyAppDelegate;
     // Appearence
     
     [[APColorManager sharedInstance] updateGlobalAppearance];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
 
@@ -296,6 +296,7 @@ S1AppDelegate *MyAppDelegate;
 }
 
 #pragma mark - Background Sync
+
 /*
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
  

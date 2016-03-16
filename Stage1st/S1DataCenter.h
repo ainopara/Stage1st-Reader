@@ -16,7 +16,10 @@
 
 + (S1DataCenter *)sharedDataCenter;
 
-//For topic list View Controller
+// Mahjong Face
+@property (strong, nonatomic) NSMutableArray *mahjongFaceHistoryArray;
+
+// For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 
 - (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
@@ -27,7 +30,7 @@
 
 - (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
-//For Content View Controller
+// For Content View Controller
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate;
@@ -44,7 +47,7 @@
 
 - (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;
 
-//Database
+// Database
 
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
@@ -54,15 +57,13 @@
 - (NSNumber *)numberOfTopics;
 - (NSNumber *)numberOfFavorite;
 
-//About Network
+// About Network
 - (void)cancelRequest;
 
+// Cleaning
 - (void)clearTopicListCache;
-
 - (void)cleaning;
 
-// Mahjong Face
-@property (strong, nonatomic) NSMutableArray *mahjongFaceHistoryArray;
 @end
 
 @protocol S1Backend <NSObject>
@@ -74,4 +75,5 @@
 - (NSNumber *)numberOfTopicsInDatabse;
 - (NSNumber *)numberOfFavoriteTopicsInDatabse;
 - (void)removeTopicBeforeDate:(NSDate *)date;
+
 @end

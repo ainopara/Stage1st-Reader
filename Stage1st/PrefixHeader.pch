@@ -18,14 +18,11 @@
 #import "S1Global.h"
 #import "Stage1st-Swift.h"
 
-#ifndef DEBUG
-    #define NSLog(...);
-#endif
-
 #ifdef DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #else
 static const DDLogLevel ddLogLevel = DDLogLevelInfo;
+#define NSLog(...);
 #endif
 
 #endif /* PrefixHeader_pch */

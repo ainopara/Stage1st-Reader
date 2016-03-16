@@ -29,7 +29,7 @@
 #define TOP_OFFSET -80.0
 #define BOTTOM_OFFSET 60.0
 
-@interface S1ContentViewController () <UIWebViewDelegate, UIScrollViewDelegate, UIActionSheetDelegate, UIAlertViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, PullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, PullToActionDelagete>
 
 @property (nonatomic, strong) UIToolbar *toolBar;
 @property (nonatomic, strong) UIWebView *webView;
@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *forwardButton;
 @property (nonatomic, strong) UILabel *pageLabel;
+@property (nonatomic, strong) UIButton *favoriteButton;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -110,7 +111,7 @@
     [self.view addSubview:self.webView];
     [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.and.trailing.equalTo(self.view);
-        make.top.equalTo(self.mas_topLayoutGuideBottom);
+        make.top.equalTo(self.view.mas_top).with.offset(20.0);
         make.bottom.equalTo(self.toolBar.mas_top);
     }];
     
@@ -128,9 +129,9 @@
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
+
     //title label
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-    
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -150,27 +151,25 @@
     
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.webView.scrollView.subviews[1].mas_top);
-        make.centerX.equalTo(self.view.mas_centerX);
-        make.width.equalTo(self.view.mas_width).with.offset(-24);
+        make.centerX.equalTo(self.webView.mas_centerX);
+        make.width.equalTo(self.webView.mas_width).with.offset(-24);
     }];
 
     UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:self.forwardButton];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:self.backButton];
 
-    UIButton *button = nil;
     // Favorite Button
-    button = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     if ([self.topic.favorite boolValue]) {
-        [button setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
     } else {
-        [button setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
     }
-    button.frame = CGRectMake(0, 0, 40, 30);
-    button.imageView.clipsToBounds = NO;
-    button.imageView.contentMode = UIViewContentModeCenter;
-    [button addTarget:self action:@selector(toggleFavoriteAction:) forControlEvents:UIControlEventTouchUpInside];
-    [button setTag:99];
-    UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    self.favoriteButton.frame = CGRectMake(0, 0, 40, 30);
+    self.favoriteButton.imageView.clipsToBounds = NO;
+    self.favoriteButton.imageView.contentMode = UIViewContentModeCenter;
+    [self.favoriteButton addTarget:self action:@selector(toggleFavoriteAction:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:self.favoriteButton];
 
     [self updatePageLabel];
     
@@ -198,12 +197,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     
     //Set up Activity for Hand Off
-
     NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
     activity.title = self.topic.title;
     activity.userInfo = @{@"topicID": self.topic.topicID,
                           @"page": [NSNumber numberWithInteger:_currentPage]};
     activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
+
     //iOS 9 Search api
     if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
         activity.eligibleForSearch = YES;
@@ -211,8 +210,6 @@
     }
     self.userActivity = activity;
 
-    
-    
     [self fetchContentAndForceUpdate:_currentPage == _totalPages];
 }
 
@@ -571,6 +568,9 @@
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    if (self == nil || self.webView != webView) {
+        return;
+    }
     CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPositionFromModel) {
@@ -597,6 +597,7 @@
 }
 
 #pragma mark JTSImageViewController
+
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     UIAlertController *imageActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ImageViewer_ActionSheet_Save", @"Save") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -642,16 +643,8 @@
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width - 0, 1);
     self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width - 0, 1);
-    if(_currentPage != 1 && _finishLoading) {
-        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
-    } else {
-        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
-    }
-    if (_finishLoading) {
-        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
-    } else {
-        self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
-    }
+    self.topDecorateLine.hidden = !(_currentPage != 1 && _finishLoading);
+    self.bottomDecorateLine.hidden = !_finishLoading;
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
@@ -874,7 +867,7 @@
             };
             void (^failureBlock)() = ^(NSError *error) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error.code == -999) {
+                if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"Code -999 may means user want to cancel this request.");
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else if (error.code == -998){
@@ -909,9 +902,9 @@
 }
 
 - (void)deviceOrientationDidChange:(id)sender {
-    if (self.titleLabel) {
-        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-    }
+//    if (self.titleLabel) {
+//        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
+//    }
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
@@ -939,30 +932,29 @@
 
 #pragma mark - Helpers
 
-- (void)scrollToBottomAnimated:(BOOL)animated
-{
+- (void)scrollToBottomAnimated:(BOOL)animated {
     [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height-self.webView.scrollView.bounds.size.height) animated:animated];
 }
 
-- (BOOL)atBottom
-{
+- (BOOL)atBottom {
     UIScrollView *scrollView = self.webView.scrollView;
     return (scrollView.contentOffset.y >= (scrollView.contentSize.height - self.webView.bounds.size.height));
 }
 
-- (void)updatePageLabel
-{
+- (void)updatePageLabel {
     //update page label
     if (self.topic.totalPageCount) {
         _totalPages = [self.topic.totalPageCount integerValue];
     }
     self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
+
     //update forward button
     if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward-Cached"] forState:UIControlStateNormal];
     } else {
         [self.forwardButton setImage:[UIImage imageNamed:@"Forward"] forState:UIControlStateNormal];
     }
+
     //update back button
     if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage - 1)]) {
         [self.backButton setImage:[UIImage imageNamed:@"Back-Cached"] forState:UIControlStateNormal];
@@ -991,8 +983,6 @@
     CGImageRelease(imageRef);
     return viewImage;
 }
-
-
 
 - (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -1039,7 +1029,6 @@
     return result;
 }
 
-
 #pragma mark - Getters and Setters
 
 - (UIButton *)backButton {
@@ -1050,7 +1039,6 @@
         _backButton.imageView.clipsToBounds = NO;
         _backButton.imageView.contentMode = UIViewContentModeCenter;
         [_backButton addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];
-        [_backButton setTag:99];
         UILongPressGestureRecognizer *backLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(backLongPressed:)];
         backLongPressGR.minimumPressDuration = 0.5;
         [_backButton addGestureRecognizer:backLongPressGR];
@@ -1071,7 +1059,6 @@
         _forwardButton.imageView.clipsToBounds = NO;
         _forwardButton.imageView.contentMode = UIViewContentModeCenter;
         [_forwardButton addTarget:self action:@selector(forward:) forControlEvents:UIControlEventTouchUpInside];
-        [_forwardButton setTag:100];
         UILongPressGestureRecognizer *forwardLongPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forwardLongPressed:)];
         forwardLongPressGR.minimumPressDuration = 0.5;
         [_forwardButton addGestureRecognizer:forwardLongPressGR];
@@ -1104,8 +1091,7 @@
     return _actionBarButtonItem;
 }
 
-- (void)setTopic:(S1Topic *)topic
-{
+- (void)setTopic:(S1Topic *)topic {
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {

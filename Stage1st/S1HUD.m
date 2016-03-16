@@ -19,10 +19,8 @@ typedef enum {
     S1HUDState _state;
 }
 
-+ (S1HUD *)showHUDInView:(UIView *)view
-{
-    S1HUD *HUD = [[self alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
-    HUD.center = CGPointMake(roundf(CGRectGetMidX(view.bounds)), roundf(CGRectGetMidY(view.bounds)));
++ (S1HUD *)showHUDInView:(UIView *)view {
+    S1HUD *HUD = [[self alloc] initWithFrame:CGRectZero];
     HUD.alpha = 0.0;
     HUD.transform = CGAffineTransformMakeScale(0.85, 0.85);
     HUD.parentView = view;
@@ -40,31 +38,17 @@ typedef enum {
     return HUD;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
         _state = S1HUDStateShowControl;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     return self;
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)deviceOrientationDidChange:(id)sender {
-    if (self.parentView) {
-        self.center = CGPointMake(roundf(CGRectGetMidX(self.parentView.bounds)), roundf(CGRectGetMidY(self.parentView.bounds)));
-    }
-    
-}
-
-- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n
-{
+- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n {
     _text = text;
     [self removeSubviews];
     self.bounds = CGRectMake(0, 0, 60 * n, 60);
@@ -77,18 +61,18 @@ typedef enum {
 }
 
 
-- (void)showActivityIndicator
-{
+- (void)showActivityIndicator {
     [self removeSubviews];
     UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    indicatorView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     [self addSubview:indicatorView];
+    [indicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+      make.center.equalTo(self);
+    }];
     _state = S1HUDStateShowControl;
     [indicatorView startAnimating];
 }
 
-- (void)showRefreshButton
-{
+- (void)showRefreshButton {
     [self removeSubviews];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.alpha = 0.8;
@@ -104,16 +88,14 @@ typedef enum {
     _state = S1HUDStateShowControl;
 }
 
-- (void)removeSubviews
-{
+- (void)removeSubviews {
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIView *view = obj;
         [view removeFromSuperview];
     }];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     //// General Declarations
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -178,16 +160,14 @@ typedef enum {
     CGColorSpaceRelease(colorSpace);
 }
 
-- (void)hideWithDelay:(NSTimeInterval)delay
-{
-    [UIView animateWithDuration:0.2 delay:delay options:UIViewAnimationOptionCurveLinear
-                     animations:^{
-                         self.alpha = 0.0;
-                         self.transform = CGAffineTransformMakeScale(1.2, 1.2);
-                     }
-                     completion:^(BOOL finished) {
-                         [self removeFromSuperview];
-                     }];
+- (void)hideWithDelay:(NSTimeInterval)delay {
+    [UIView animateWithDuration:0.2 delay:delay options:UIViewAnimationOptionCurveLinear animations:^{
+        self.alpha = 0.0;
+        self.transform = CGAffineTransformMakeScale(1.2, 1.2);
+    }
+    completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
 }
 
 @end
