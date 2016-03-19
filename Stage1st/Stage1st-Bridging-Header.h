@@ -9,3 +9,4 @@
 #import "REComposeViewController.h"
 #import "S1MahjongFaceView.h"
 #import "S1MahjongFaceTextAttachment.h"
+#import "S1TopicListViewController.h"

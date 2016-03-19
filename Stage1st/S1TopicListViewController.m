@@ -121,6 +121,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     self.databaseConnection = MyDatabaseManager.uiDatabaseConnection;
     [self initializeMappings];
+
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
@@ -210,7 +211,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark - UITableView Delegate and Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         return [self.mappings numberOfSections];
     }
 
@@ -218,7 +219,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         return [self.mappings numberOfItemsInSection:section];
     }
     
@@ -234,11 +235,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         [cell setTopic:[self topicAtIndexPath:indexPath]];
         cell.highlight = self.searchBar.text;
         return cell;
-    } else if ([self.currentKey isEqual: @"Search"]) {
+    } else if ([self isPresentingSearchList:self.currentKey]) {
         [cell setTopic:self.topics[indexPath.row]];
         cell.highlight = self.searchKeyword;
         return cell;
@@ -253,7 +254,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
 
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         [contentViewController setTopic:[self topicAtIndexPath:indexPath]];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
@@ -268,11 +269,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return YES if you want the specified item to be editable.
-    return ([self.currentKey  isEqual: @"History"] || [self.currentKey  isEqual: @"Favorite"])?YES:NO;
+    return [self isPresentingDatabaseList:self.currentKey];
 }
 
-// Override to support editing the table view.
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //add code here for when you hit delete
@@ -284,40 +284,18 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
             topic = [[transaction extension:Ext_searchResultView_Archive] objectAtIndex:groupIndex inGroup:group];
         }];
-        if ([self.currentKey  isEqual: @"History"]) {
+        if ([self.currentKey isEqualToString: @"History"]) {
             [self.dataCenter removeTopicFromHistory:topic.topicID];
         }
-        if ([self.currentKey  isEqual: @"Favorite"]) {
+        if ([self.currentKey isEqualToString: @"Favorite"]) {
             [self.dataCenter removeTopicFromFavorite:topic.topicID];
         }
-        //[self.topics[indexPath.section] removeObjectAtIndex:indexPath.row];
-        //[self.tableView reloadData];
-        
     }
-}
-/*
-- (NSArray *)tableView:(UITableView *)sender editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.currentKey  isEqual: @"History"]) {
-        UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-             S1Topic *topic = [self topicAtIndexPath:indexPath];
-             
-             YapDatabaseConnection *rwDatabaseConnection = MyDatabaseManager.bgDatabaseConnection;
-             [rwDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-                 [transaction removeObjectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
-             } completionBlock:^{
-               }];
-         }];
-        
-        return @[ deleteAction ];
-    }
-    return @[];
 }
 
-*/
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *) cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         return;
     }
     if (_loadingFlag || _loadingMore) {
@@ -353,7 +331,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
         [view setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.background"]];
         
@@ -369,7 +347,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return nil;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         return 20;
     }
     return 0;
@@ -408,7 +386,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark UISearchBar Delegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         [self updateFilter:searchText withCurrentKey:self.currentKey];
         for (S1TopicListCell *cell in [self.tableView visibleCells]) {
             cell.highlight = searchText;
@@ -430,7 +408,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         [self.searchBar resignFirstResponder];
         NSString *text = searchBar.text;
         NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
@@ -455,7 +433,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         S1HUD *HUD;
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
-        if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+        if (self.currentKey && [self isPresentingForumList:self.currentKey]) {
             [self cancelRequest];
             self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
         }
@@ -475,8 +453,8 @@ static NSString * const cellIdentifier = @"TopicCell";
             [HUD hideWithDelay:0.3];
             _loadingFlag = NO;
         } failure:^(NSError *error) {
-            if (error.code == -999) {
-                DDLogDebug(@"Code -999 may means user want to cancel this request.");
+            if (error.code == NSURLErrorCancelled) {
+                DDLogDebug(@"[Network] NSURLErrorCancelled");
                 [HUD hideWithDelay:0];
             } else {
                 [HUD setText:@"Request Failed" withWidthMultiplier:2];
@@ -554,7 +532,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         dispatch_async(dispatch_get_main_queue(), ^{
             __strong typeof(self) strongSelf = weakSelf;
             if (topicList.count > 0) {
-                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
                     strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
                 }
                 strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -574,7 +552,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 }
                 [self.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
             } else {
-                if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+                if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
                     strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
                 }
                 strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -599,8 +577,8 @@ static NSString * const cellIdentifier = @"TopicCell";
         });
     } failure:^(NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
-        if (error.code == -999) {
-            DDLogDebug(@"Code -999 may means user want to cancel this request.");
+        if (error.code == NSURLErrorCancelled) {
+            DDLogDebug(@"[Network] NSURLErrorCancelled");
             [HUD hideWithDelay:0];
             //others
             strongSelf.scrollTabBar.enabled = YES;
@@ -610,7 +588,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             _loadingFlag = NO;
         } else {
             //reload data
-            if (strongSelf.currentKey && (![strongSelf.currentKey  isEqual: @"History"]) && (![strongSelf.currentKey  isEqual: @"Favorite"])) {
+            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -621,10 +599,11 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             //hud hide
             if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-                if (error.code == -999) {
-                    DDLogDebug(@"Code -999 may means user want to cancel this request.");
+                if (error.code == NSURLErrorCancelled) {
+                    DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [HUD hideWithDelay:0];
                 } else {
+                    DDLogWarn(@"[Network] error: %ld", error.code);
                     [HUD setText:@"Request Failed" withWidthMultiplier:2];
                     [HUD hideWithDelay:0.3];
                 }
@@ -645,7 +624,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)updateTabbar:(NSNotification *)notification {
     [self.scrollTabBar setKeys:[self keys]];
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         self.cachedContentOffset = nil;
     } else {
         self.tableView.hidden = YES;
@@ -659,7 +638,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)reloadTableData:(NSNotification *)notification {
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         ;
     } else {
         [self.tableView reloadData];
@@ -718,7 +697,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     
-    if ([self.currentKey isEqual: @"History"] || [self.currentKey isEqual: @"Favorite"]) {
+    if ([self isPresentingDatabaseList:self.currentKey]) {
         [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction){
             [self.mappings updateWithTransaction:transaction];
         }];
@@ -866,12 +845,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)presentInternalListForType:(S1InternalTopicListType)type {
-    if (self.currentKey && (![self.currentKey  isEqual: @"History"]) && (![self.currentKey  isEqual: @"Favorite"])) {
+    if (self.currentKey && [self isPresentingForumList:self.currentKey]) {
         [self cancelRequest];
         self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
     }
     self.previousKey = self.currentKey;
-    self.currentKey = type == S1TopicListHistory ? @"History":@"Favorite";
+    self.currentKey = type == S1TopicListHistory ? @"History" : @"Favorite";
     if (self.tableView.hidden == YES) {
         self.tableView.hidden = NO;
     }
@@ -920,7 +899,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         return;
     }
     if ([keyPath isEqualToString:@"contentOffset"]) {
-        if ([self.currentKey isEqualToString:@"History"] || [self.currentKey isEqualToString:@"Favorite"]) {
+        if ([self isPresentingDatabaseList:self.currentKey]) {
             if ([[change objectForKey:@"new"] CGPointValue].y < -10) {
                 [self.searchBar becomeFirstResponder];
             }

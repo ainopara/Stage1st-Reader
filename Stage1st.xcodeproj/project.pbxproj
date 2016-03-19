@@ -28,6 +28,7 @@
 		862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A11C8AB0000068F75F /* PullToActionController.swift */; };
 		862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */; };
 		862DB7AA1C8AB1870068F75F /* S1User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A91C8AB1870068F75F /* S1User.swift */; };
+		862EA3AF1C9D5D5600AE2522 /* S1TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862EA3AE1C9D5D5600AE2522 /* S1TopicListViewController.swift */; };
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
@@ -133,6 +134,7 @@
 		862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
 		862DB7A91C8AB1870068F75F /* S1User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1User.swift; path = Stage1st/S1User.swift; sourceTree = "<group>"; };
 		862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		862EA3AE1C9D5D5600AE2522 /* S1TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1TopicListViewController.swift; path = Stage1st/S1TopicListViewController.swift; sourceTree = "<group>"; };
 		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
 		862F51B8189136000038A289 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Vendors/TFHpple/TFHpple.m; sourceTree = "<group>"; };
 		862F51B9189136000038A289 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHppleElement.h; path = Vendors/TFHpple/TFHppleElement.h; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
 				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
 				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
+				862EA3AE1C9D5D5600AE2522 /* S1TopicListViewController.swift */,
 			);
 			name = "Topic List View Controller";
 			sourceTree = "<group>";
@@ -866,6 +869,7 @@
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
+				862EA3AF1C9D5D5600AE2522 /* S1TopicListViewController.swift in Sources */,
 				862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */,
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,

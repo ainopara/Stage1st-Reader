@@ -752,7 +752,7 @@
         }
         
     } failure:^(NSError *error) {
-        if (error.code == -999) {
+        if (error.code == NSURLErrorCancelled) {
             DDLogDebug(@"request cancelled.");
             if (HUD != nil) {
                 [HUD hideWithDelay:0.3];
@@ -868,7 +868,7 @@
             void (^failureBlock)() = ^(NSError *error) {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 if (error.code == NSURLErrorCancelled) {
-                    DDLogDebug(@"Code -999 may means user want to cancel this request.");
+                    DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else if (error.code == -998){
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
