@@ -109,7 +109,6 @@
     } else {
         NSInteger horizontalClass = self.traitCollection.horizontalSizeClass;
         //NSInteger verticalClass = self.traitCollection.verticalSizeClass;
-        //NSLog(@"%ld %ld",(long)horizontalClass, (long)verticalClass);
         switch (horizontalClass) {
             case UIUserInterfaceSizeClassCompact:
                 roundRectangleRect = CGRectMake(19, 18, 37, 19);

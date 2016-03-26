@@ -8,7 +8,7 @@
 
 import UIKit
 
-class S1UserViewController : UIViewController {
+class S1UserViewController: UIViewController {
     private let user: S1User
 
     // MARK: - Life Cycle

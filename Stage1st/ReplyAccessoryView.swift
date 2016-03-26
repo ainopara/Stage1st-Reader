@@ -13,10 +13,10 @@ class ReplyAccessoryView: UIView {
     private var toolBar: UIToolbar
     private var faceButton: UIButton
     private var spoilerButton: UIButton
-    
+
     weak var composeViewController: REComposeViewController?
     var mahjongFaceView: S1MahjongFaceView?
-    
+
     // MARK: - Life Cycle
     init(frame: CGRect, withComposeVC composeVC: REComposeViewController) {
         toolBar = UIToolbar(frame: frame)
@@ -24,24 +24,24 @@ class ReplyAccessoryView: UIView {
         spoilerButton = UIButton(type: .System)
         composeViewController = composeVC
         super.init(frame: frame)
-        
+
         //Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
         faceButton.setImage(UIImage(named: "MahjongFaceButton"), forState: .Normal)
-        faceButton.addTarget(self, action: "toggleFace:", forControlEvents: .TouchUpInside)
+        faceButton.addTarget(self, action: #selector(ReplyAccessoryView.toggleFace(_:)), forControlEvents: .TouchUpInside)
         let faceItem = UIBarButtonItem(customView: faceButton)
-        
+
         //Setup spoilerButton
         spoilerButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
         spoilerButton.setTitle("H", forState: .Normal)
-        spoilerButton.addTarget(self, action: "insertSpoilerMark:", forControlEvents: .TouchUpInside)
+        spoilerButton.addTarget(self, action: #selector(ReplyAccessoryView.insertSpoilerMark(_:)), forControlEvents: .TouchUpInside)
         let spoilerItem = UIBarButtonItem(customView: spoilerButton)
-        
+
         //Setup toolBar
         let fixItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
         fixItem.width = 26.0
         let flexItem = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        toolBar.setItems([flexItem, spoilerItem,fixItem, faceItem, flexItem], animated: false)
+        toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
         self.addSubview(toolBar)
         toolBar.snp_makeConstraints { (make) -> Void in
             make.edges.equalTo(self)
@@ -51,7 +51,7 @@ class ReplyAccessoryView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     deinit {
         if let historyArray = self.mahjongFaceView?.historyArray {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -59,7 +59,7 @@ class ReplyAccessoryView: UIView {
             }
         }
     }
-    
+
     // MARK: - Actions
     func toggleFace(button: UIButton) {
         guard let composeViewController = composeViewController else {
@@ -84,19 +84,19 @@ class ReplyAccessoryView: UIView {
             composeViewController.reloadInputViews()
         }
     }
-    
+
     func insertSpoilerMark(button: UIButton) {
         self.insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
     }
-    
+
     func insertQuoteMark(button: UIButton) {
         self.insertMarkWithAPart("[quote]", andBPart: "[/quote]")
     }
-    
+
     func insertBoldMark(button: UIButton) {
         self.insertMarkWithAPart("[b]", andBPart: "[/b]")
     }
-    
+
     func insertDeleteMark(button: UIButton) {
         self.insertMarkWithAPart("[s]", andBPart: "[/s]")
     }
@@ -116,14 +116,14 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
         //Reset Text Style
         ReplyAccessoryView.resetTextViewStyle(textView)
     }
-    
+
     func mahjongFaceViewControllerDidPressBackSpace(mahjongFaceViewController: S1MahjongFaceView) {
         guard let textView = composeViewController?.textView else {
             return
         }
         var range = textView.selectedRange
         if range.length == 0 && range.location > 0 {
-            range.location -= 1;
+            range.location -= 1
             range.length = 1
         }
         textView.selectedRange = range
@@ -138,7 +138,7 @@ extension ReplyAccessoryView {
         guard let textView = composeViewController?.textView else {
             return
         }
-        
+
         let selectedRange = textView.selectedRange
         let aPartLenght = aPart.length
         if selectedRange.length == 0 {
@@ -151,7 +151,7 @@ extension ReplyAccessoryView {
         textView.selectedRange = NSRange(location: selectedRange.location + aPartLenght, length: selectedRange.length)
         ReplyAccessoryView.resetTextViewStyle(textView)
     }
-    
+
     static func resetTextViewStyle(textView: UITextView) {
         let allTextRange = NSRange(location: 0, length: textView.textStorage.length)
         textView.textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)

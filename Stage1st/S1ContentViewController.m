@@ -389,7 +389,8 @@
     }];
     // Share Action
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], [self screenShot]] applicationActivities:nil];
+        UIImage *screenShot = [S1Utility screenShot:self.view];
+        UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], screenShot] applicationActivities:nil];
         if ([activityController respondsToSelector:@selector(popoverPresentationController)]) {
             [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
         }
@@ -513,7 +514,7 @@
                     NSInteger tid = [[querys valueForKey:@"ptid"] integerValue];
                     NSInteger pid = [[querys valueForKey:@"pid"] integerValue];
                     if (tid == [self.topic.topicID integerValue]) {
-                        NSArray *chainQuoteFloors = [self chainSearchQuoteByFirstFloorID:@(pid)];
+                        NSArray *chainQuoteFloors = [self.viewModel chainSearchQuoteFloorInCache:pid];
                         if ([chainQuoteFloors count] > 0) {
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.topic copy];
@@ -569,13 +570,14 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (self == nil || self.webView != webView) {
+        DDLogWarn(@"[ContentVC] webView delegate unexpected called.");
         return;
     }
-    CGFloat maxOffset = self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height;
+    CGFloat maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPositionFromModel) {
         if (self.topic.lastViewedPosition != 0) {
-            [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
+            [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
         }
         _needToLoadLastPositionFromModel = NO;
     }
@@ -583,7 +585,7 @@
     // Restore last view position from cached position in this view controller.
     NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
     if (positionForPage) {
-        [self.webView.scrollView setContentOffset:CGPointMake(self.webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
+        [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
     }
     
     // User want to scroll to bottom.
@@ -592,7 +594,7 @@
         [self scrollToBottomAnimated:YES];
     } else {
         // clear the decelerating by animate to scroll to the same position.
-        [self.webView.scrollView setContentOffset:self.webView.scrollView.contentOffset animated:YES];
+        [webView.scrollView setContentOffset:webView.scrollView.contentOffset animated:YES];
     }
 }
 
@@ -804,7 +806,7 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor {
     //check in login state.
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-        [self presentAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
+        [self presentAlertView:@"" message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
         return;
     }
     
@@ -901,12 +903,6 @@
     [self.dataCenter hasViewed:self.topic];
 }
 
-- (void)deviceOrientationDidChange:(id)sender {
-//    if (self.titleLabel) {
-//        [self.titleLabel setFrame:CGRectMake(12, -64, self.view.bounds.size.width - 24, 64)];
-//    }
-}
-
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
@@ -968,30 +964,6 @@
     self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
 
-- (UIImage *)screenShot {
-    if (IS_RETINA) {
-        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, NO, [UIScreen mainScreen].scale);
-    } else {
-        UIGraphicsBeginImageContext(self.view.bounds.size);
-    }
-    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    //clip
-    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
-    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
-    CGImageRelease(imageRef);
-    return viewImage;
-}
-
-- (void)presentAlertViewWithTitle:(NSString *)title andMessage:(NSString *)message {
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-    [alert addAction:defaultAction];
-    [self presentViewController:alert animated:YES completion:nil];
-
-}
-
 - (CGRect)positionOfElementWithId:(NSString *)elementID {
     NSString *js = @"function f(){ var r = document.getElementById('%@').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();";
     NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:js, elementID]];
@@ -1010,23 +982,6 @@
     if (self.webView.scrollView.contentOffset.y != 0) {
         [self.cachedViewPosition setObject:[NSNumber numberWithDouble:self.webView.scrollView.contentOffset.y] forKey:[NSNumber numberWithInteger:_currentPage]];
     }
-}
-
-- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
-    if (floorID == nil) {
-        return nil;
-    }
-    return [self.dataCenter searchFloorInCacheByFloorID:floorID];
-}
-
-- (NSMutableArray *)chainSearchQuoteByFirstFloorID:(NSNumber *)floorID {
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    S1Floor *floor = [self searchFloorInCacheByFloorID:floorID];
-    while (floor) {
-        [result insertObject:floor atIndex:0];
-        floor = [self searchFloorInCacheByFloorID:floor.firstQuoteReplyFloorID];
-    }
-    return result;
 }
 
 #pragma mark - Getters and Setters

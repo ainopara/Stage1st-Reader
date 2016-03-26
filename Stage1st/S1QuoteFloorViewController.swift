@@ -17,15 +17,15 @@ class S1QuoteFloorViewController: UIViewController {
     var floors: [S1Floor]?
     var useTableView: Bool = false
     var centerFloorID: Int = 0
-    
+
     var tableView: UITableView?
     var webView: UIWebView?
-    
+
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
-        if (self.useTableView) {
+        if self.useTableView {
             let tableView = UITableView()
             self.tableView = tableView
             tableView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
@@ -43,8 +43,8 @@ class S1QuoteFloorViewController: UIViewController {
         } else {
             let webView = UIWebView()
             self.webView = webView
-            webView.dataDetectorTypes = .None;
-            webView.opaque = false;
+            webView.dataDetectorTypes = .None
+            webView.opaque = false
             webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
             webView.delegate = self
             webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
@@ -65,7 +65,6 @@ class S1QuoteFloorViewController: UIViewController {
         super.viewDidAppear(animated)
         Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
     }
-    
 
 }
 
@@ -74,13 +73,11 @@ extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.floors?.count ?? 0
     }
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default,reuseIdentifier:"QuoteCell")
+        let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default, reuseIdentifier: "QuoteCell")
         let floor = self.floors![indexPath.row]
         let viewModel = FloorViewModel(floorModel: floor, topicModel: self.topic!)
         cell.updateWithViewModel(viewModel)
@@ -106,7 +103,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
         var offset = webView.scrollView.contentOffset
         var computedOffset: CGFloat = positionOfElementWithId(self.centerFloorID) - 32
         if computedOffset > webView.scrollView.contentSize.height - webView.scrollView.bounds.height {
-            computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height;
+            computedOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
         }
         if computedOffset < 0 {
             computedOffset = 0
@@ -119,9 +116,9 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
         let result: String? = self.webView?.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
         DDLogDebug("[QuoteFloorVC] Touch element ID: \(elementID)")
-        if let result1 = result , let result2 = Double(result1) {
+        if let result1 = result, let result2 = Double(result1) {
             return CGFloat(result2)
         }
-        return 0;
+        return 0
     }
 }

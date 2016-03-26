@@ -13,6 +13,8 @@
 
 @interface S1ContentViewModel : NSObject
 
+@property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
+
 - (id)initWithDataCenter:(S1DataCenter *)dataCenter;
 
 - (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *contents, NSNumber *shouldRefetch))success  failure:(void (^)(NSError *error))failure;

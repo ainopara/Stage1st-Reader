@@ -43,7 +43,6 @@ S1AppDelegate *MyAppDelegate;
 #else
         [DDLog addLogger:[CrashlyticsLogger sharedInstance]];
 #endif
-
     }
     return self;
 }

@@ -147,7 +147,6 @@
     if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {
         return;
     }
-    // NSLog(@"Tabbar layout for width:%.1f", self.frame.size.width);
     CGFloat widthPerItem = [self determineWidthPerItem];
     NSInteger maxIndex = 0;
     for(UIButton *button in _buttons) {

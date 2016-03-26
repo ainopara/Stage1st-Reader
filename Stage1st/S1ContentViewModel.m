@@ -17,8 +17,6 @@
 
 @interface S1ContentViewModel ()
 
-@property (nonatomic, strong) S1DataCenter *dataCenter;
-
 @end
 
 
@@ -28,7 +26,7 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.dataCenter = dataCenter;
+        _dataCenter = dataCenter;
     }
     return self;
 }

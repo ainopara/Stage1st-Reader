@@ -9,22 +9,22 @@
 import Foundation
 import UIKit
 
-@objc public enum PaletteType : NSInteger {
+@objc public enum PaletteType: NSInteger {
     case Day
     case Night
 }
 
 
-public class APColorManager : NSObject {
+public class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
     let fallbackColor = UIColor.blackColor()
     let defaultPaletteURL = NSBundle.mainBundle().URLForResource("DarkPalette2", withExtension: "plist")
-    
+
     public static let sharedInstance = {
         return APColorManager()
     }()
-    
+
     override init () {
         let paletteName = NSUserDefaults.standardUserDefaults().boolForKey("NightMode") == true ? "DarkPalette2": "DefaultPalette"
         let palettePath = NSBundle.mainBundle().pathForResource(paletteName, ofType: "plist")
@@ -39,13 +39,13 @@ public class APColorManager : NSObject {
         }
         super.init()
     }
-    
+
     func switchPalette(type: PaletteType) {
         let paletteName: String = type == .Night ? "DarkPalette2" : "DefaultPalette"
         let paletteURL = NSBundle.mainBundle().URLForResource(paletteName, withExtension: "plist")
         self.loadPaletteByURL(paletteURL, shouldPushNotification: true)
     }
-    
+
     func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
         guard let paletteURL = paletteURL,
             palette = NSDictionary(contentsOfURL: paletteURL) else {
@@ -53,18 +53,18 @@ public class APColorManager : NSObject {
         }
         self.palette = palette
         self.updateGlobalAppearance()
-        if (shouldPush) {
+        if shouldPush {
             NSNotificationCenter.defaultCenter().postNotificationName("S1PaletteDidChangeNotification", object: nil)
         }
     }
     func htmlColorStringWithID(paletteID: String) -> String {
         return (self.palette.valueForKey(paletteID) as? String) ?? ""
     }
-    
+
     func isDarkTheme() -> Bool {
         return self.palette.valueForKey("Dark")?.boolValue ?? false
     }
-    
+
     func updateGlobalAppearance() {
         UIToolbar.appearance().barTintColor = self.colorForKey("appearance.toolbar.bartint")
         UIToolbar.appearance().tintColor = self.colorForKey("appearance.toolbar.tint")
@@ -82,8 +82,8 @@ public class APColorManager : NSObject {
         UITextField.appearance().keyboardAppearance = self.isDarkTheme() ? .Dark : .Default
         UIApplication.sharedApplication().statusBarStyle = self.isDarkTheme() ? .LightContent : .Default
     }
-    
-    func colorInPaletteWithID(paletteID : String) -> UIColor {
+
+    func colorInPaletteWithID(paletteID: String) -> UIColor {
         let colorString = self.palette.valueForKey(paletteID) as? String
         if let colorString = colorString,
         let color = S1Global.colorFromHexString(colorString) {
@@ -91,11 +91,10 @@ public class APColorManager : NSObject {
         } else {
             return self.fallbackColor
         }
-        
     }
-    
+
     func colorForKey(key: String) -> UIColor {
-        let paletteID : String = (self.colorMap.valueForKey(key) as? String) ?? "default"
+        let paletteID: String = (self.colorMap.valueForKey(key) as? String) ?? "default"
         return self.colorInPaletteWithID(paletteID)
     }
 }

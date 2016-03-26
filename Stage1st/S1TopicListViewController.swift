@@ -9,7 +9,7 @@
 import UIKit
 
 enum TopicListPresentationType {
-  case History,Favorite
+  case History, Favorite
   case Search
   case Forum(key : String)
   case Blank
