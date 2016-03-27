@@ -34,6 +34,7 @@
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
 		862F51BF189136000038A289 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BC189136000038A289 /* XPathQuery.m */; };
+		86319B411CA69EEB004F7586 /* S1Floor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86319B401CA69EEB004F7586 /* S1Floor.swift */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
@@ -61,6 +62,7 @@
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
 		86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */; };
+		86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */; };
 		86D4A8FA189186A400CA93FD /* FloorTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F8189186A400CA93FD /* FloorTemplate.html */; };
 		86D4A8FB189186A400CA93FD /* ThreadTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = 86D4A8F9189186A400CA93FD /* ThreadTemplate.html */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
@@ -145,6 +147,7 @@
 		862F51BA189136000038A289 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Vendors/TFHpple/TFHppleElement.m; sourceTree = "<group>"; };
 		862F51BB189136000038A289 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Vendors/TFHpple/XPathQuery.h; sourceTree = "<group>"; };
 		862F51BC189136000038A289 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Vendors/TFHpple/XPathQuery.m; sourceTree = "<group>"; };
+		86319B401CA69EEB004F7586 /* S1Floor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Floor.swift; path = Stage1st/S1Floor.swift; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stage1st/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
@@ -187,6 +190,8 @@
 		86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceButton.h; path = Stage1st/S1MahjongFaceButton.h; sourceTree = "<group>"; };
 		86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceButton.m; path = Stage1st/S1MahjongFaceButton.m; sourceTree = "<group>"; };
 		86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongCategoryOrder.plist; path = Stage1st/MahjongCategoryOrder.plist; sourceTree = "<group>"; };
+		86D20FE01CA6B638003F2691 /* DDErrorLevelFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDErrorLevelFormatter.h; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.h; sourceTree = "<group>"; };
+		86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDErrorLevelFormatter.m; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.m; sourceTree = "<group>"; };
 		86D4A8F8189186A400CA93FD /* FloorTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = FloorTemplate.html; path = Stage1st/FloorTemplate.html; sourceTree = "<group>"; };
 		86D4A8F9189186A400CA93FD /* ThreadTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = ThreadTemplate.html; path = Stage1st/ThreadTemplate.html; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
@@ -422,6 +427,17 @@
 			name = FloorCache;
 			sourceTree = "<group>";
 		};
+		86D20FE31CA6B64A003F2691 /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				86E5F1DC1C8BDD4100DFFF12 /* CrashlyticsLogger.h */,
+				86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */,
+				86D20FE01CA6B638003F2691 /* DDErrorLevelFormatter.h */,
+				86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */,
+			);
+			name = Logger;
+			sourceTree = "<group>";
+		};
 		86D27BE81A9DFBE6000A3D7F /* Personal Info View Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -532,8 +548,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				86E5F1DC1C8BDD4100DFFF12 /* CrashlyticsLogger.h */,
-				86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */,
+				86D20FE31CA6B64A003F2691 /* Logger */,
 				862DB7A01C8AB0000068F75F /* ColorManager.swift */,
 				862DB7A11C8AB0000068F75F /* PullToActionController.swift */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
@@ -585,6 +600,7 @@
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
 				862CECE318D34611006CA29F /* S1Floor.h */,
+				86319B401CA69EEB004F7586 /* S1Floor.swift */,
 				862CECE418D34611006CA29F /* S1Floor.m */,
 				862DB7A91C8AB1870068F75F /* S1User.swift */,
 			);
@@ -860,6 +876,7 @@
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
+				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,
 				86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
 				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
@@ -873,6 +890,7 @@
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
+				86319B411CA69EEB004F7586 /* S1Floor.swift in Sources */,
 				869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
@@ -1035,8 +1053,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Stage1st/Stage1st.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

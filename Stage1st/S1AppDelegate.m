@@ -18,6 +18,7 @@
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "CrashlyticsLogger.h"
+#import "DDErrorLevelFormatter.h"
 #import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -35,14 +36,16 @@ S1AppDelegate *MyAppDelegate;
         // Configure logging
 
 #ifdef DEBUG
-        [DDLog addLogger:[DDTTYLogger sharedInstance]];
+        id <DDLogger> logger = [DDTTYLogger sharedInstance];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(194, 99, 107) backgroundColor:nil forFlag:DDLogFlagError];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
 #else
-        [DDLog addLogger:[CrashlyticsLogger sharedInstance]];
+        id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
 #endif
+        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
+        [DDLog addLogger:logger];
     }
     return self;
 }
