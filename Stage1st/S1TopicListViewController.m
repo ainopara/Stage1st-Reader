@@ -603,7 +603,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [HUD hideWithDelay:0];
                 } else {
-                    DDLogWarn(@"[Network] error: %ld", error.code);
+                    DDLogWarn(@"[Network] error: %ld", (long)error.code);
                     [HUD setText:@"Request Failed" withWidthMultiplier:2];
                     [HUD hideWithDelay:0.3];
                 }

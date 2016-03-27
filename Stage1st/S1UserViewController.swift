@@ -9,10 +9,10 @@
 import UIKit
 
 class S1UserViewController: UIViewController {
-    private let user: S1User
+    private let user: User
 
     // MARK: - Life Cycle
-    init(user: S1User) {
+    init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
     }

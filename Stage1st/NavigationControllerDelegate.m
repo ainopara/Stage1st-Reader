@@ -82,19 +82,19 @@
         CGFloat screenWidth = screenRect.size.width;
         if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX >= -100) {
             self.interactionController.completionSpeed = 0.3 / fmin((screenWidth - fmin(translation.x, 0)) / fabs(velocityX), 0.3);
-            DDLogVerbose(@"Finish Speed: %f", self.interactionController.completionSpeed);
+            DDLogVerbose(@"[NavPan] Finish Speed: %f", self.interactionController.completionSpeed);
             [self.interactionController finishInteractiveTransition];
             if (self.navigationController.viewControllers.count == 1) {
                 self.panRecognizer.enabled = NO;
             }
         } else {
             self.interactionController.completionSpeed = 0.3 / fmin(fabs(translation.x / velocityX), 0.3);
-            DDLogVerbose(@"Cancel Speed: %f", self.interactionController.completionSpeed);
+            DDLogVerbose(@"[NavPan] Cancel Speed: %f", self.interactionController.completionSpeed);
             [self.interactionController cancelInteractiveTransition];
         }
         self.interactionController = nil;
     } else {
-        DDLogVerbose(@"Other Interaction Event:%ld", (long)recognizer.state);
+        DDLogWarn(@"[NavPan] Other Interaction Event:%ld", (long)recognizer.state);
         [self.interactionController cancelInteractiveTransition];
         self.interactionController = nil;
     }

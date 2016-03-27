@@ -896,7 +896,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
     NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
-    DDLogDebug(@"Cloudkit Operation Should Retry after %@ seconds",retryDelay);
+    DDLogInfo(@"Cloudkit Operation Should Retry after %@ seconds", retryDelay);
     if (retryDelay) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, retryDelay.integerValue * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.needsResume = YES;
@@ -933,6 +933,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
     [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
                                                                          @"description": errorDescription}];
+    [[Crashlytics sharedInstance] recordError:error];
     DDLogDebug(@"[CloudKit] ckErrorCode: %ld", (long)code);
     DDLogDebug(@"[CloudKit] description: %@", errorDescription);
 }

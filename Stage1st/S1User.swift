@@ -8,7 +8,7 @@
 
 import Foundation
 
-class S1User {
+class User {
     var ID: Int = 0
     var name: String = ""
     var avatarURL: NSURL? = nil

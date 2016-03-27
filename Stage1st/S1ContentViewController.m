@@ -104,7 +104,6 @@
     self.webView.delegate = self;
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
@@ -181,7 +180,7 @@
     UIBarButtonItem *fixItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     fixItem2.width = 48.0f;
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
+
     // Hide Favorite button when device do not have enough space for it.
     if (fabs(self.view.bounds.size.width - 320.0) < 0.1) {
         favoriteItem.customView.bounds = CGRectZero;
@@ -193,23 +192,31 @@
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
-    
-    //Set up Activity for Hand Off
-    NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
-    activity.title = self.topic.title;
-    activity.userInfo = @{@"topicID": self.topic.topicID,
-                          @"page": [NSNumber numberWithInteger:_currentPage]};
-    activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]];
 
-    //iOS 9 Search api
-    if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
-        activity.eligibleForSearch = YES;
-        activity.requiredUserInfoKeys = [NSSet setWithObjects:@"topicID", nil];
-    }
-    self.userActivity = activity;
 
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        //Set up Activity for Hand Off
+        NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:@"Stage1st.view-topic"];
+        activity.title = strongSelf.topic.title;
+        activity.userInfo = @{@"topicID": strongSelf.topic.topicID,
+                              @"page": [NSNumber numberWithInteger:strongSelf->_currentPage]};
+        activity.webpageURL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], strongSelf.topic.topicID, (long)strongSelf->_currentPage]];
+
+        //iOS 9 Search api
+        if (!SYSTEM_VERSION_LESS_THAN(@"9")) {
+            activity.eligibleForSearch = YES;
+            activity.requiredUserInfoKeys = [NSSet setWithObjects:@"topicID", nil];
+        }
+        strongSelf.userActivity = activity;
+    });
+
+    DDLogDebug(@"[ContentVC] View Did Load 9");
     [self fetchContentAndForceUpdate:_currentPage == _totalPages];
 }
 
@@ -224,37 +231,47 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
     _presentingContentViewController = NO;
     [CrashlyticsKit setObjectValue:@"ContentViewController" forKey:@"lastViewController"];
     DDLogDebug(@"[ContentVC] View did appear");
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+
     if (_presentingImageViewer || _presentingWebViewer || _presentingContentViewController) {
         return;
     }
+
     DDLogDebug(@"[ContentVC] View did disappear");
     [self cancelRequest];
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self saveTopicViewedState:nil];
-        self.topic.floors = [[NSMutableDictionary alloc] init]; //clear cache floors to reduce memory useage
+        __strong typeof(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+
+        [strongSelf saveTopicViewedState:nil];
+        strongSelf.topic.floors = [[NSMutableDictionary alloc] init]; //clear cache floors to reduce memory useage
         dispatch_async(dispatch_get_main_queue(), ^{
             NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         });
     });
-    
-    [super viewDidDisappear:animated];
+
 }
 
 - (void)dealloc {
+    DDLogInfo(@"[ContentVC] Dealloc Begin");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.pullToActionController.delegate = nil;
     self.pullToActionController = nil;
     self.webView.delegate = nil;
     self.webView.scrollView.delegate = nil;
     [self.webView stopLoading];
-    DDLogDebug(@"[ContentVC] Dealloced");
+    DDLogInfo(@"[ContentVC] Dealloced");
 }
 
 #pragma mark - TabBar Actions
@@ -281,7 +298,7 @@
         _currentPage += 1;
         [self fetchContent];
     } else {
-        if (![self atBottom]) {
+        if (![self.webView atBottom]) {
             [self scrollToBottomAnimated:YES];
         } else {
             //_needToScrollToBottom = YES;
@@ -504,12 +521,6 @@
         if (querys) {
             DDLogDebug(@"[ContentVC] Extract query: %@",querys);
             if ([[querys valueForKey:@"mod"] isEqualToString:@"redirect"]) {
-                /*
-                [self.dataCenter findTopicFloor:[NSNumber numberWithInteger:[[quarys valueForKey:@"pid"] integerValue]] inTopicID:[NSNumber numberWithInteger:[[quarys valueForKey:@"ptid"] integerValue]] success:^{
-                    DDLogDebug(@"finish");
-                } failure:^(NSError *error) {
-                    DDLogDebug(@"%@",error);
-                }];*/
                 if ([[querys valueForKey:@"ptid"] integerValue] == [self.topic.topicID integerValue]) {
                     NSInteger tid = [[querys valueForKey:@"ptid"] integerValue];
                     NSInteger pid = [[querys valueForKey:@"pid"] integerValue];
@@ -536,33 +547,35 @@
     // Open link
 
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction* continueAction = nil;
+
+    __weak typeof(self) weakSelf = self;
     if (SYSTEM_VERSION_LESS_THAN(@"9")) {
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-        UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            _presentingWebViewer = YES;
+        __strong typeof(self) strongSelf = weakSelf;
+        continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            strongSelf->_presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
-            DDLogDebug(@"%@", request.URL);
+            DDLogDebug(@"[ContentVC] Open in WebView: %@", request.URL);
             SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
             [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
-            //[self rootViewController].modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:controller animated:YES completion:nil];
+            [strongSelf presentViewController:controller animated:YES completion:nil];
         }];
-        [alert addAction:cancelAction];
-        [alert addAction:continueAction];
     } else {
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
-        UIAlertAction* continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            _presentingWebViewer = YES;
+        __strong typeof(self) strongSelf = weakSelf;
+        continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            strongSelf->_presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
-            DDLogDebug(@"%@", request.URL);
+            DDLogDebug(@"[ContentVC] Open in Safari: %@", request.URL);
             if (![[UIApplication sharedApplication] openURL:request.URL]) {
-                DDLogDebug(@"%@%@",@"Failed to open url:",[request.URL description]);
+                DDLogWarn(@"Failed to open url: %@", request.URL);
             }
         }];
-        [alert addAction:cancelAction];
-        [alert addAction:continueAction];
     }
-    
+
+    [alert addAction:cancelAction];
+    [alert addAction:continueAction];
+
     [self presentViewController:alert animated:YES completion:nil];
 
     return NO;
@@ -573,6 +586,7 @@
         DDLogWarn(@"[ContentVC] webView delegate unexpected called.");
         return;
     }
+    DDLogInfo(@"[ContentVC] webViewDidFinishLoad");
     CGFloat maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.size.height;
     // Restore last view position when this content view first be loaded.
     if (_needToLoadLastPositionFromModel) {
@@ -702,6 +716,7 @@
         [self.dataCenter removePrecachedFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]];
     }
     //Set up HUD
+    DDLogInfo(@"[ContentVC] check precache exist");
     if (![self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]]) {
         DDLogDebug(@"[ContentVC] Show HUD");
         HUD = [S1HUD showHUDInView:self.view];
@@ -891,16 +906,19 @@
 #pragma mark - Notificatons
 
 - (void)saveTopicViewedState:(id)sender {
+    DDLogInfo(@"[ContentView] Save Topic View State Begin.");
     if (_finishLoading) {
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
-        //if last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded. Then the unfinished new page's last view position should be 0.
+        // If last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded.
+        // Then the unfinish loaded new page's last view position should be 0.
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
     }
     [self.topic setLastViewedPage:[NSNumber numberWithInteger: _currentPage]];
     self.topic.lastViewedDate = [NSDate date];
     [self.topic setLastReplyCount:self.topic.replyCount];
     [self.dataCenter hasViewed:self.topic];
+    DDLogInfo(@"[ContentView] Save Topic View State Finish.");
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
@@ -930,11 +948,6 @@
 
 - (void)scrollToBottomAnimated:(BOOL)animated {
     [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height-self.webView.scrollView.bounds.size.height) animated:animated];
-}
-
-- (BOOL)atBottom {
-    UIScrollView *scrollView = self.webView.scrollView;
-    return (scrollView.contentOffset.y >= (scrollView.contentSize.height - self.webView.bounds.size.height));
 }
 
 - (void)updatePageLabel {

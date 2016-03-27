@@ -50,7 +50,7 @@ class S1QuoteFloorViewController: UIViewController {
             webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
             self.view.addSubview(webView)
             webView.snp_makeConstraints(closure: { (make) -> Void in
-                make.top.equalTo(self.view.snp_top)
+                make.top.equalTo(self.snp_topLayoutGuideBottom)
                 make.bottom.equalTo(self.snp_bottomLayoutGuideTop)
                 make.leading.trailing.equalTo(self.view)
             })

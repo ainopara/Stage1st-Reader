@@ -23,7 +23,11 @@ extension S1ContentViewModel {
         var floor = self.searchFloorInCache(firstFloorID)
         while floor != nil {
             result.insert(floor!, atIndex: 0)
-            floor = self.searchFloorInCache(floor!.firstQuoteReplyFloorID as Int)
+            let firstQuoteFloorID: NSNumber! = floor!.firstQuoteReplyFloorID
+            if firstQuoteFloorID == nil {
+                break
+            }
+            floor = self.searchFloorInCache(firstQuoteFloorID as Int)
         }
         return result
     }

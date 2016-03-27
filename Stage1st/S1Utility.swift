@@ -46,3 +46,11 @@ extension UIViewController {
         self.presentViewController(alert, animated:true, completion:nil)
     }
 }
+
+extension UIWebView {
+    func atBottom() -> Bool {
+        let offsetY = self.scrollView.contentOffset.y
+        let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
+        return offsetY >= maxOffsetY
+    }
+}
