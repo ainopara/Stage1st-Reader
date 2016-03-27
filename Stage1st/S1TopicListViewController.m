@@ -39,9 +39,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
-@property (nonatomic, strong) UIImageView *archiveImageView;
+@property (nonatomic, strong) AnimationView *archiveAnimationView;
 @property (nonatomic, strong) UIButton *archiveButton;
-@property (nonatomic, strong) CAKeyframeAnimation *archiveSyncAnimation;
 @property (nonatomic, strong) NSArray *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
@@ -124,7 +123,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1ContentViewWillDisappearNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1TopicUpdateNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseConnectionDidUpdate:) name:UIDatabaseConnectionDidUpdateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
@@ -134,18 +133,20 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
+
     DDLogDebug(@"[TopicListVC] viewDidAppear");
+    [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
+
     [self.tableView setUserInteractionEnabled:YES];
     [self.tableView setScrollsToTop:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+
     [self.tableView setUserInteractionEnabled:NO];
     [self.tableView setScrollsToTop:NO];
-
-    [super viewWillDisappear:animated];
 }
 
 
@@ -638,9 +639,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)reloadTableData:(NSNotification *)notification {
-    if ([self isPresentingDatabaseList:self.currentKey]) {
-        ;
-    } else {
+    if (![self isPresentingDatabaseList:self.currentKey]) {
         [self.tableView reloadData];
     }
 }
@@ -671,6 +670,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+    self.archiveAnimationView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+    if ([self.archiveAnimationView isPlayingAnimation]) {
+        [self.archiveAnimationView reloadAnimation];
+    }
+    self.archiveButton.imageView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
@@ -794,23 +798,28 @@ static NSString * const cellIdentifier = @"TopicCell";
             titleString = [@"Setup/" stringByAppendingString:titleString];
             break;
         case CKManagerStateFetching:
-            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            [self.archiveButton setImage:nil forState:UIControlStateNormal];
+            [self.archiveAnimationView reloadAnimation];
             titleString = [@"Fetching/" stringByAppendingString:titleString];
             break;
         case CKManagerStateUploading:
-            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            [self.archiveButton setImage:nil forState:UIControlStateNormal];
+            [self.archiveAnimationView reloadAnimation];
             titleString = [@"Uploading/" stringByAppendingString:titleString];
             break;
         case CKManagerStateReady:
-            _historyItem.image = [UIImage imageNamed:@"Archive"];
+            [self.archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
+            [self.archiveAnimationView removeAllAnimations];
             titleString = [@"Ready/" stringByAppendingString:titleString];
             break;
         case CKManagerStateRecovering:
-            _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
+            [self.archiveButton setImage:nil forState:UIControlStateNormal];
+            [self.archiveAnimationView reloadAnimation];
             titleString = [@"Recovering/" stringByAppendingString:titleString];
             break;
         case CKManagerStateHalt:
-            _historyItem.image = [UIImage imageNamed:@"Archive"];
+            [self.archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
+            [self.archiveAnimationView removeAllAnimations];
             titleString = [@"Halt/" stringByAppendingString:titleString];
             break;
             
@@ -824,16 +833,14 @@ static NSString * const cellIdentifier = @"TopicCell";
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     }
     DDLogDebug(@"[CloudKit] %@", titleString);
-    /*
-    if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
-        //if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
-        //    [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
-        //}
-        _historyItem.image = [UIImage imageNamed:@"Archive-Syncing 1"];
-    } else {
-        _historyItem.image = [UIImage imageNamed:@"Archive"];
-        //[_archiveImageView.layer removeAllAnimations];
-    }*/
+
+//    if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
+//        if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
+//            [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
+//        }
+//    } else {
+//        [_archiveImageView.layer removeAnimationForKey:@"syncAnimation"];
+//    }
 }
 
 - (NSArray *)keys {
@@ -904,7 +911,6 @@ static NSString * const cellIdentifier = @"TopicCell";
                 [self.searchBar becomeFirstResponder];
             }
         }
-        //DDLogDebug(@"%f",[[change objectForKey:@"new"] CGPointValue].y);
         return;
     }
 }
@@ -913,9 +919,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UINavigationBar *)navigationBar {
     if (!_navigationBar) {
-        _navigationBar = [[UINavigationBar alloc] init];
-        _navigationBar.frame = CGRectZero; // CGRectMake(0, 0, self.view.bounds.size.width, _UPPER_BAR_HEIGHT);
-        _navigationBar.translatesAutoresizingMaskIntoConstraints = NO;
+        _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
         [_navigationBar pushNavigationItem:self.naviItem animated:NO];
     }
     return _navigationBar;
@@ -923,7 +927,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UINavigationItem *)naviItem {
     if (!_naviItem) {
-        _naviItem = [[UINavigationItem alloc] init];
+        _naviItem = [[UINavigationItem alloc] initWithTitle:@""];
         _naviItem.titleView = self.titleLabel;
         _naviItem.leftBarButtonItem = self.settingsItem;
         _naviItem.rightBarButtonItem = self.historyItem;
@@ -933,9 +937,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
-        _titleLabel = [[UILabel alloc] init];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         _titleLabel.text = @"Stage1st";
-        _titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
+        _titleLabel.font = [UIFont systemFontOfSize:17.0];
         _titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
         [_titleLabel sizeToFit];
     }
@@ -944,9 +948,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIBarButtonItem *)historyItem {
     if (!_historyItem) {
-        //_historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveButton];
-        _historyItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Archive"] style:UIBarButtonItemStylePlain target:self action:@selector(archive:)];
-        [self updateArchiveIcon];
+        _historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveButton];
     }
     return _historyItem;
 }
@@ -955,31 +957,26 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_archiveButton) {
         _archiveButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _archiveButton.frame = CGRectMake(0, 0, 44, 44);
+        [_archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
+        _archiveButton.imageView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
         [_archiveButton addTarget:self action:@selector(archive:) forControlEvents:UIControlEventTouchUpInside];
-        [_archiveButton addSubview:self.archiveImageView];
+        [_archiveButton addSubview:self.archiveAnimationView];
+
+        [self.archiveAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(_archiveButton);
+        }];
     }
     return _archiveButton;
 }
 
-- (UIImageView *)archiveImageView {
-    if (!_archiveImageView) {
-        _archiveImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Archive"]];
+- (AnimationView *)archiveAnimationView {
+    if (!_archiveAnimationView) {
+        _archiveAnimationView = [[AnimationView alloc] initWithFrame:CGRectZero];
+        _archiveAnimationView.images = [self archiveSyncImages];
+        _archiveAnimationView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+        [_archiveAnimationView reloadAnimation];
     }
-    return _archiveImageView;
-}
-
-- (CAKeyframeAnimation *)archiveSyncAnimation {
-    if (!_archiveSyncAnimation) {
-        _archiveSyncAnimation = [[CAKeyframeAnimation alloc] init];
-        [_archiveSyncAnimation setKeyPath:@"contents"];
-        //_archiveSyncAnimation.calculationMode = kCAAnimationDiscrete;
-        _archiveSyncAnimation.duration = 3.0;
-        _archiveSyncAnimation.values = self.archiveSyncImages;
-        _archiveSyncAnimation.repeatCount = HUGE_VALF;
-        _archiveSyncAnimation.removedOnCompletion = false;
-        _archiveSyncAnimation.fillMode = kCAFillModeForwards;
-    }
-    return _archiveSyncAnimation;
+    return _archiveAnimationView;
 }
 
 - (NSArray *)archiveSyncImages {
@@ -987,7 +984,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (NSInteger i = 1; i <= 36; i++) {
             UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"Archive-Syncing %ld", (long)i]];
-            [array addObject:(id)[image CGImage]];
+            [array addObject:image];
         }
         _archiveSyncImages = array;
     }
@@ -1004,12 +1001,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.rowHeight = 54.0f;
-        [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        _tableView.rowHeight = 54.0;
+        _tableView.separatorInset = UIEdgeInsetsZero;
         _tableView.delegate = self;
         _tableView.dataSource = self;
-        _tableView.translatesAutoresizingMaskIntoConstraints = NO;
-        //[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
         _tableView.separatorColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.separator"];
         _tableView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.background"];
         if (_tableView.backgroundView) {
@@ -1018,8 +1013,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         _tableView.hidden = YES;
         _tableView.tableHeaderView = self.searchBar;
         [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
-
-        //self.definesPresentationContext = YES;
 
         self.refreshControl = [[ODRefreshControl alloc] initInScrollView:_tableView];
         self.refreshControl.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.refreshcontrol.tint"];
@@ -1041,7 +1034,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         _searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
         _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
-        //[_searchBar setSearchFieldBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] color4] size:CGSizeMake(self.view.bounds.size.width, 32)] forState:UIControlStateNormal];
+
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [_searchBar addGestureRecognizer:gestureRecognizer];
@@ -1078,7 +1071,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSDictionary *)forumKeyMap
 {
-    if (!_forumKeyMap) {
+    if (_forumKeyMap == nil) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"ForumKeyMap" ofType:@"plist"];
         _forumKeyMap = [NSDictionary dictionaryWithContentsOfFile:path];
     }
@@ -1087,31 +1080,32 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSMutableDictionary *)cachedContentOffset
 {
-    if(!_cachedContentOffset) {
+    if(_cachedContentOffset == nil) {
         _cachedContentOffset = [NSMutableDictionary dictionary];
     }
     return _cachedContentOffset;
 }
 
 - (NSMutableDictionary *)cachedLastRefreshTime {
-    if (!_cachedLastRefreshTime) {
+    if (_cachedLastRefreshTime == nil) {
         _cachedLastRefreshTime = [NSMutableDictionary dictionary];
     }
     return _cachedLastRefreshTime;
 }
 
 - (UIView *)footerView {
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 30.0)];
-    [footerView setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"]];
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 40.0)];
+    footerView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.background"];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 30.0)];
-    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:16.0],
-                                 NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]
-                                 };
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    NSDictionary *attributes = @{
+        NSFontAttributeName: [UIFont systemFontOfSize:16.0],
+        NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.footer.text"]
+    };
     NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:attributes];
-    [label setAttributedText:labelTitle];
-    label.backgroundColor = [UIColor clearColor];
+    label.attributedText = labelTitle;
     [footerView addSubview:label];
+
     [label mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(footerView.mas_centerX);
         make.centerY.equalTo(footerView.mas_centerY);

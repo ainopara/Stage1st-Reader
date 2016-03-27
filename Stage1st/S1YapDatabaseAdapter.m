@@ -58,6 +58,10 @@
             DDLogDebug(@"[Database] Update Topic: \n%@",tracedTopic);
             [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotification *notification = [NSNotification notificationWithName:@"S1TopicUpdateNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
+        });
     }];
 }
 

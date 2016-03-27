@@ -54,3 +54,18 @@ extension UIWebView {
         return offsetY >= maxOffsetY
     }
 }
+
+extension UIImage {
+    func tintWithColor(color: UIColor) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.mainScreen().scale)
+
+        let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)
+        self.drawInRect(rect)
+        color.setFill()
+        UIRectFillUsingBlendMode(rect, CGBlendMode.SourceAtop)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+}

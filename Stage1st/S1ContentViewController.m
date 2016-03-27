@@ -244,23 +244,10 @@
         return;
     }
 
-    DDLogDebug(@"[ContentVC] View did disappear");
+    DDLogDebug(@"[ContentVC] View did disappear begin");
     [self cancelRequest];
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __strong typeof(self) strongSelf = weakSelf;
-        if (strongSelf == nil) {
-            return;
-        }
-
-        [strongSelf saveTopicViewedState:nil];
-        strongSelf.topic.floors = [[NSMutableDictionary alloc] init]; //clear cache floors to reduce memory useage
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSNotification *notification = [NSNotification notificationWithName:@"S1ContentViewWillDisappearNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotification:notification];
-        });
-    });
-
+    [self saveTopicViewedState:nil];
+    DDLogDebug(@"[ContentVC] View did disappear end");
 }
 
 - (void)dealloc {

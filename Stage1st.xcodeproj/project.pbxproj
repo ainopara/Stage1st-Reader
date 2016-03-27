@@ -50,6 +50,7 @@
 		867EECAD1A104D8E00E0DE6F /* content_17px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECA91A104D8E00E0DE6F /* content_17px.css */; };
 		867EECAE1A104D8E00E0DE6F /* content_19px.css in Resources */ = {isa = PBXBuildFile; fileRef = 867EECAA1A104D8E00E0DE6F /* content_19px.css */; };
 		868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */; };
+		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
@@ -169,6 +170,7 @@
 		867EECAA1A104D8E00E0DE6F /* content_19px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_19px.css; path = Stage1st/content_19px.css; sourceTree = "<group>"; };
 		868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1CacheDatabaseManager.h; path = Stage1st/S1CacheDatabaseManager.h; sourceTree = "<group>"; };
 		868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1CacheDatabaseManager.m; path = Stage1st/S1CacheDatabaseManager.m; sourceTree = "<group>"; };
+		868A98041CA7F22500498C38 /* AnimationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnimationButton.swift; path = Stage1st/AnimationButton.swift; sourceTree = "<group>"; };
 		8693431819E5A074008F7A58 /* S1ContentViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewModel.h; path = Stage1st/S1ContentViewModel.h; sourceTree = "<group>"; };
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
@@ -559,6 +561,7 @@
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
 				86221B851CA65E3600015522 /* S1Utility.swift */,
+				868A98041CA7F22500498C38 /* AnimationButton.swift */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -895,6 +898,7 @@
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,
+				868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */,
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
