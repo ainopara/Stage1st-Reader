@@ -62,8 +62,6 @@
 {
     [super viewDidLoad];
     
-    //[[MTStatusBarOverlay sharedInstance] postImmediateMessage:@"test" duration:3.0 animated:YES];
-    //[[MTStatusBarOverlay sharedInstance] postMessage:@"测试Overlay" animated:YES];
     if (IS_IPAD) {
         //UIDropShadowView has a fixed corner radius.
         self.navigationController.view.layer.cornerRadius  = 5.0;
@@ -169,7 +167,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%@", indexPath);
+    NSLog(@"[Settings] select: %@", indexPath);
     
     if (indexPath.section == 0 && indexPath.row == 2) {
         NSArray *keys;
@@ -187,7 +185,7 @@
     }
     if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"),NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"),NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"),NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
+        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"), NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"), NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
         
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:selectedKey];
         controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
@@ -196,11 +194,7 @@
         }];
         [self.navigationController pushViewController:controller animated:YES];
     }
-    /*
-    if (indexPath.section == 0 && indexPath.row == 7) {
-        S1DatabaseManageViewController *databaseManageViewController = [[S1DatabaseManageViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        [self.navigationController pushViewController:databaseManageViewController animated:YES];
-    }*/
+
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 #pragma mark - Actions

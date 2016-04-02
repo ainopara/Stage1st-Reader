@@ -893,7 +893,7 @@
 #pragma mark - Notificatons
 
 - (void)saveTopicViewedState:(id)sender {
-    DDLogInfo(@"[ContentView] Save Topic View State Begin.");
+    DDLogInfo(@"[ContentVC] Save Topic View State Begin.");
     if (_finishLoading) {
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
@@ -905,7 +905,7 @@
     self.topic.lastViewedDate = [NSDate date];
     [self.topic setLastReplyCount:self.topic.replyCount];
     [self.dataCenter hasViewed:self.topic];
-    DDLogInfo(@"[ContentView] Save Topic View State Finish.");
+    DDLogInfo(@"[ContentVC] Save Topic View State Finish.");
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {

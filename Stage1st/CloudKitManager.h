@@ -24,7 +24,7 @@ typedef enum : NSUInteger {
 
 @interface CloudKitManager : NSObject
 
-@property (atomic, readwrite) CKManagerState state;
+@property (nonatomic, assign) CKManagerState state;
 
 @property (strong, atomic) NSError *lastCloudkitError;
 

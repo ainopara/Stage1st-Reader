@@ -153,7 +153,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupDatabase
 {
 	NSString *databasePath = [[self class] databasePath];
-	// DDLogDebug(@"databasePath: %@", databasePath);
+	DDLogDebug(@"databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".
@@ -475,33 +475,36 @@ DatabaseManager *MyDatabaseManager;
 	YapDatabaseCloudKitOperationErrorBlock opErrorBlock =
 	  ^(NSString *databaseIdentifier, NSError *operationError)
 	{
-		NSInteger ckErrorCode = operationError.code;
-        [MyCloudKitManager reportError:operationError];
-        
-		if (ckErrorCode == CKErrorNetworkUnavailable ||
-		    ckErrorCode == CKErrorNetworkFailure      ) {
-			[MyCloudKitManager handleNetworkError];
-		}
-		else if (ckErrorCode == CKErrorPartialFailure) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [MyCloudKitManager handlePartialFailure];
-            });
-		}
-		else if (ckErrorCode == CKErrorNotAuthenticated) {
-			[MyCloudKitManager handleNotAuthenticated];
-        }
-        else if (ckErrorCode == CKErrorRequestRateLimited ||
-                 ckErrorCode == CKErrorServiceUnavailable  ) {
-            [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
-        }
-        else if (ckErrorCode == CKErrorUserDeletedZone) {
-            [MyCloudKitManager handleUserDeletedZone];
-        }
-		else if (ckErrorCode == CKErrorChangeTokenExpired) {
-            [MyCloudKitManager handleChangeTokenExpired];
-		}
-        else {
-            [MyCloudKitManager handleOtherErrors];
+        if ([operationError.domain isEqualToString:CKErrorDomain]) {
+            NSInteger ckErrorCode = operationError.code;
+            [MyCloudKitManager reportError:operationError];
+
+            if (ckErrorCode == CKErrorNetworkUnavailable ||
+                ckErrorCode == CKErrorNetworkFailure      ) {
+                [MyCloudKitManager handleNetworkError];
+            }
+            else if (ckErrorCode == CKErrorPartialFailure) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [MyCloudKitManager handlePartialFailure];
+                });
+            }
+            else if (ckErrorCode == CKErrorNotAuthenticated) {
+                [MyCloudKitManager handleNotAuthenticated];
+            }
+            else if (ckErrorCode == CKErrorRequestRateLimited ||
+                     ckErrorCode == CKErrorServiceUnavailable  ) {
+//                [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
+                [MyCloudKitManager handleOtherErrors];
+            }
+            else if (ckErrorCode == CKErrorUserDeletedZone) {
+                [MyCloudKitManager handleUserDeletedZone];
+            }
+            else if (ckErrorCode == CKErrorChangeTokenExpired) {
+                [MyCloudKitManager handleChangeTokenExpired];
+            }
+            else {
+                [MyCloudKitManager handleOtherErrors];
+            }
         }
 	};
 	

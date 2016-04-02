@@ -54,7 +54,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         self.scrollView?.removeObserver(self, forKeyPath: "contentSize")
         self.scrollView?.removeObserver(self, forKeyPath: "contentInset")
         self.scrollView?.delegate = nil
-        DDLogDebug("[PullToAction] Scroll View delegate set nil")
+        DDLogDebug("[PullToAction] deinit")
     }
 
     public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {

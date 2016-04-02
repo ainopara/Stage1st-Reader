@@ -674,7 +674,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self.archiveAnimationView isPlayingAnimation]) {
         [self.archiveAnimationView reloadAnimation];
     }
-    self.archiveButton.imageView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+    self.archiveButton.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
@@ -955,10 +955,10 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIButton *)archiveButton {
     if (!_archiveButton) {
-        _archiveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _archiveButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _archiveButton.frame = CGRectMake(0, 0, 44, 44);
         [_archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
-        _archiveButton.imageView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+        _archiveButton.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
         [_archiveButton addTarget:self action:@selector(archive:) forControlEvents:UIControlEventTouchUpInside];
         [_archiveButton addSubview:self.archiveAnimationView];
 
@@ -974,7 +974,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         _archiveAnimationView = [[AnimationView alloc] initWithFrame:CGRectZero];
         _archiveAnimationView.images = [self archiveSyncImages];
         _archiveAnimationView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
-        [_archiveAnimationView reloadAnimation];
     }
     return _archiveAnimationView;
 }
