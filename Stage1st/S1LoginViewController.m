@@ -88,7 +88,7 @@
 }
 
 - (IBAction)findLoginFrom1Password:(UIButton *)sender {
-    __weak typeof (self) miniMe = self;
+    __weak __typeof__(self) weakSelf = self;
     [[OnePasswordExtension sharedExtension] findLoginForURLString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
         if (!loginDict) {
             if (error.code != AppExtensionErrorCodeCancelledByUser) {
@@ -97,9 +97,9 @@
             return;
         }
         
-        __strong typeof(self) strongMe = miniMe;
-        strongMe.usernameField.text = loginDict[AppExtensionUsernameKey];
-        strongMe.passwordField.text = loginDict[AppExtensionPasswordKey];
+        __strong __typeof__(self) strongSelf = weakSelf;
+        strongSelf.usernameField.text = loginDict[AppExtensionUsernameKey];
+        strongSelf.passwordField.text = loginDict[AppExtensionPasswordKey];
     }];
 }
 
@@ -117,13 +117,13 @@
         if (self.usernameField.text.length > 0 && self.passwordField.text.length > 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [self.loginButton setEnabled:NO];
-            __weak typeof (self) weakSelf = self;
+            __weak __typeof__(self) weakSelf = self;
             
             [S1NetworkManager postLoginForUsername:self.usernameField.text andPassword:self.passwordField.text success:^(NSURLSessionDataTask *task, id responseObject) {
                 NSString *result = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                 DDLogDebug(@"[LoginVC] Login response: %@", result);
                 DDLogVerbose(@"%@", [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]);
-                __strong typeof(self) strongMe = weakSelf;
+                __strong __typeof__(self) strongMe = weakSelf;
                 NSRange failureMsgRange = [result rangeOfString:@"window.location.href"];
                 if (failureMsgRange.location != NSNotFound) {
                     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
@@ -143,7 +143,7 @@
                 [strongMe.loginButton setEnabled:YES];
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 DDLogError(@"[LoginVC] Login failure: %@", error);
-                __strong typeof(self) strongMe = weakSelf;
+                __strong __typeof__(self) strongMe = weakSelf;
                 [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                 [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
                 [strongMe clearCookiers];

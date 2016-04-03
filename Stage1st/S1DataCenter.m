@@ -78,11 +78,11 @@
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
-    __weak typeof(self) myself = self;
+    __weak __typeof__(self) myself = self;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
         [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __strong typeof(self) strongMyself = myself;
+                __strong __typeof__(self) strongMyself = myself;
                 NSDictionary *responseDict = responseObject;
                 
                 //check login state
@@ -111,7 +111,7 @@
     } else {
         [S1NetworkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __strong typeof(self) strongMyself = myself;
+                __strong __typeof__(self) strongMyself = myself;
                 NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                 
                 //check login state
@@ -143,9 +143,9 @@
 }
 
 - (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    __weak typeof(self) myself = self;
+    __weak __typeof__(self) myself = self;
     [S1NetworkManager postSearchForKeyword:keyword andFormhash:self.formhash success:^(NSURLSessionDataTask *task, id responseObject) {
-        __strong typeof(self) strongMyself = myself;
+        __strong __typeof__(self) strongMyself = myself;
         //parse topics
         NSArray *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
         

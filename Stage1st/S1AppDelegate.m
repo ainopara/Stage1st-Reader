@@ -40,7 +40,7 @@ S1AppDelegate *MyAppDelegate;
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(194, 99, 107) backgroundColor:nil forFlag:DDLogFlagError];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
-      [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagInfo];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(118, 164, 211) backgroundColor:nil forFlag:DDLogFlagInfo];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
@@ -58,85 +58,83 @@ S1AppDelegate *MyAppDelegate;
     [Fabric with:@[[Crashlytics class]]];
 
     // Setup User Defaults
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if (![userDefaults valueForKey:@"Order"]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [userDefaults setObject:order forKey:@"Order"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
+    if ([userDefaults objectForKey:@"Display"] == nil) {
+        [userDefaults setBool:YES forKey:@"Display"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+    if ([userDefaults objectForKey:@"BaseURL"] == nil) {
+        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
+    if ([userDefaults objectForKey:@"FontSize"] == nil) {
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+            [userDefaults setObject:@"18px" forKey:@"FontSize"];
         } else {
-            [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
+            [userDefaults setObject:@"17px" forKey:@"FontSize"];
         }
-        
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@-1 forKey:@"HistoryLimit"];
+    if ([userDefaults objectForKey:@"HistoryLimit"] == nil) {
+        [userDefaults setObject:@-1 forKey:@"HistoryLimit"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
+    if ([userDefaults objectForKey:@"ReplyIncrement"] == nil) {
+        [userDefaults setBool:YES forKey:@"ReplyIncrement"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"RemoveTails"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RemoveTails"];
+    if ([userDefaults objectForKey:@"RemoveTails"] == nil) {
+        [userDefaults setBool:YES forKey:@"RemoveTails"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UseAPI"];
+    if ([userDefaults objectForKey:@"UseAPI"] == nil) {
+        [userDefaults setBool:YES forKey:@"UseAPI"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"PrecacheNextPage"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"PrecacheNextPage"];
+    if ([userDefaults objectForKey:@"PrecacheNextPage"] == nil) {
+        [userDefaults setBool:YES forKey:@"PrecacheNextPage"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ForcePortraitForPhone"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
+    if ([userDefaults objectForKey:@"ForcePortraitForPhone"] == nil) {
+        [userDefaults setBool:YES forKey:@"ForcePortraitForPhone"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"NightMode"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
+    if ([userDefaults objectForKey:@"NightMode"] == nil) {
+        [userDefaults setBool:NO forKey:@"NightMode"];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"EnableSync"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"EnableSync"];
+    if ([userDefaults objectForKey:@"EnableSync"] == nil) {
+        [userDefaults setBool:NO forKey:@"EnableSync"];
     }
     
     // Migrate to v3.4.0
-    NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
+    NSArray *array = [userDefaults valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
     if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
         DDLogDebug(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserID"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserPassword"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [userDefaults setObject:order forKey:@"Order"];
+        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+        [userDefaults removeObjectForKey:@"UserID"];
+        [userDefaults removeObjectForKey:@"UserPassword"];
     }
-    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+    if (![[userDefaults objectForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
+        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     
     // Migrate to v3.6
     [S1Tracer upgradeDatabase];
     
     // Migrate to v3.7
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[userDefaults objectForKey:@"FontSize"] isEqualToString:@"17px"]) {
+        [userDefaults setObject:@"18px" forKey:@"FontSize"];
     }
     // Migrate to v3.8
     if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
         NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
+        [userDefaults setValue:order forKey:@"Order"];
     }
     
     // Start database & cloudKit (in that order)
     [DatabaseManager initialize];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+    if ([userDefaults boolForKey:@"EnableSync"]) {
         [CloudKitManager initialize];
     }
     
@@ -150,7 +148,7 @@ S1AppDelegate *MyAppDelegate;
         [S1Tracer migrateDatabase];
     });
 
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+    if ([userDefaults boolForKey:@"EnableSync"]) {
         // Register for push notifications
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
         [application registerUserNotificationSettings:notificationSettings];

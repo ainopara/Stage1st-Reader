@@ -311,9 +311,9 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.tableView.tableFooterView = [self footerView];
         DDLogDebug(@"Reach last topic, load more.");
         _loadingMore = YES;
-        __weak typeof(self) weakSelf = self;
+        __weak __typeof__(self) weakSelf = self;
         [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
-            __strong typeof(self) strongSelf = weakSelf;
+            __strong __typeof__(self) strongSelf = weakSelf;
             strongSelf.topics = [topicList mutableCopy];
             dispatch_async(dispatch_get_main_queue(), ^{
                 strongSelf.tableView.tableFooterView = nil;
@@ -321,7 +321,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 _loadingMore = NO;
             });
         } failure:^(NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
+            __strong __typeof__(self) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^{
                 strongSelf.tableView.tableFooterView = nil;
                 _loadingMore = NO;
@@ -527,11 +527,11 @@ static NSString * const cellIdentifier = @"TopicCell";
         [HUD showActivityIndicator];
     }
     
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     [self.viewModel topicListForKey:self.forumKeyMap[key] shouldRefresh:refresh success:^(NSArray *topicList) {
         //reload data
         dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(self) strongSelf = weakSelf;
+            __strong __typeof__(self) strongSelf = weakSelf;
             if (topicList.count > 0) {
                 if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
                     strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
@@ -577,7 +577,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             _loadingFlag = NO;
         });
     } failure:^(NSError *error) {
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         if (error.code == NSURLErrorCancelled) {
             DDLogDebug(@"[Network] NSURLErrorCancelled");
             [HUD hideWithDelay:0];

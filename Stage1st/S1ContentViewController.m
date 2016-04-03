@@ -195,9 +195,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
 
 
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
             return;
         }
@@ -537,9 +537,9 @@
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:nil];
     UIAlertAction* continueAction = nil;
 
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
     if (SYSTEM_VERSION_LESS_THAN(@"9")) {
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             strongSelf->_presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
@@ -549,7 +549,7 @@
             [strongSelf presentViewController:controller animated:YES completion:nil];
         }];
     } else {
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
             strongSelf->_presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
@@ -693,7 +693,7 @@
 
 - (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate {
     [self updatePageLabel];
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
 
     self.userActivity.needsSave = YES;
    
@@ -709,14 +709,14 @@
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
         [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
-            __strong typeof(self) strongSelf = weakSelf;
+            __strong __typeof__(self) strongSelf = weakSelf;
             [aHUD hideWithDelay:0.0];
             [strongSelf fetchContent];
         }];
     }
     
     [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
             return;
         }
@@ -732,7 +732,7 @@
         if (_currentPage < _totalPages) {
             NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:_currentPage + 1];
             [strongSelf.dataCenter setFinishHandlerForTopic:strongSelf.topic withPage:cachePage andHandler:^(NSArray *floorList) {
-                __strong typeof(self) strongSelf = weakSelf;
+                __strong __typeof__(self) strongSelf = weakSelf;
                 [strongSelf updatePageLabel];
             }];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
@@ -858,9 +858,9 @@
         if (composeViewController.text.length > 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
-            __weak typeof(self) weakSelf = self;
+            __weak __typeof__(self) weakSelf = self;
             void (^successBlock)() = ^{
-                __strong typeof(self) strongSelf = weakSelf;
+                __strong __typeof__(self) strongSelf = weakSelf;
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                 strongSelf.attributedReplyDraft = nil;

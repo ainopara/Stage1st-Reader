@@ -32,7 +32,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    __weak typeof(self) myself = self;
+    __weak __typeof__(self) myself = self;
     [self addSection:^(GSSection *section) {
         [myself.keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             [section addRow:^(GSRow *row) {

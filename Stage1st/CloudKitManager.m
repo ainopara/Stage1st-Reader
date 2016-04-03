@@ -441,9 +441,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 - (void)fetchRecordChangesWithCompletionHandler:
         (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
 	dispatch_async(fetchQueue, ^{ @autoreleasepool {
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
         strongSelf.state = CKManagerStateFetching;
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
@@ -505,10 +505,10 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	};
 	
 	__weak CKFetchRecordChangesOperation *weakOperation = operation;
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof__(self) weakSelf = self;
 	operation.fetchRecordChangesCompletionBlock =
 	^(CKServerChangeToken *newServerChangeToken, NSData *clientChangeTokenData, NSError *operationError){
-        __strong typeof(self) strongSelf = weakSelf;
+        __strong __typeof__(self) strongSelf = weakSelf;
 		DDLogDebug(@"CKFetchRecordChangesOperation.fetchRecordChangesCompletionBlock");
 		
 		DDLogDebug(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
