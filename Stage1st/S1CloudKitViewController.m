@@ -135,22 +135,15 @@
 
 - (void)updateErrorMessageWithError:(NSError *)error {
     NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
-    NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
-    NSString *subErrorDescription = nil;
-    if (errorDescription == nil) {
-        errorDescription = @"Unknown";
-    }
+
     NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
     for (NSError *subError in allErrors) {
         if (subError.code != 22) {
-            subErrorDescription = [subError localizedDescription];
             code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
             break;
         }
     }
-    if (subErrorDescription != nil) {
-        errorDescription = subErrorDescription;
-    }
+
     self.lastErrorMessageLabel.text = code;
 }
 @end
