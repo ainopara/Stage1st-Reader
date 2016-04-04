@@ -42,8 +42,6 @@
     return self;
 }
 
-
-
 - (void)colorPan:(UIPanGestureRecognizer *)recognizer {
     UIView* view = self.navigationController.view;
     CGPoint translation = [recognizer translationInView:view];

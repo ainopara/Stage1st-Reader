@@ -134,7 +134,9 @@
         }
     }
     if ([self.currentCategory isEqualToString:@"history"]) {
-        [self.historyArray insertObject:thePackage atIndex:0];
+        if (thePackage != nil) {
+            [self.historyArray insertObject:thePackage atIndex:0];
+        }
     } else {
         [self.historyArray insertObject:@[button.mahjongFaceKey, button.category, [self URLForKey:button.mahjongFaceKey inCategory:button.category]] atIndex:0];
     }

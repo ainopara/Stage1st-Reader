@@ -10,7 +10,6 @@
 
 @implementation S1URLCache
 
-
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request
 {
     NSString *URLString = [[request URL] absoluteString];

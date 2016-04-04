@@ -400,16 +400,20 @@
     self.topicListCache = [[NSMutableDictionary alloc] init];
     self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
+
 #pragma mark - Cleaning
+
 - (void)cleaning {
-    [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2*7*24*3600]];
+    [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 3600]];
     NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
     if (duration < 0) {
         return;
     }
     [self.tracer removeTopicBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-duration]];
 }
+
 #pragma mark - Mahjongface History
+
 - (NSMutableArray *)mahjongFaceHistoryArray {
     return [[S1CacheDatabaseManager sharedInstance] mahjongFaceHistory];
 }
@@ -419,6 +423,7 @@
 }
 
 #pragma mark - Helper
+
 - (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
     NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
     for (S1Topic *topic in topics) {
