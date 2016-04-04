@@ -13,12 +13,15 @@ CloudKitManager *MyCloudKitManager;
 static NSString *const Key_HasZone             = @"hasZone";
 static NSString *const Key_HasZoneSubscription = @"hasZoneSubscription";
 static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
+static NSString *const Key_CloudKitManagerVersion = @"CloudKitManagerVersion";
+
 NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"S1YDBCK_UnhandledErrorOccurred";
 NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChange";
 
 @interface CloudKitManager ()
 
 // Initial setup
+@property (atomic, readwrite) BOOL needsUpgrade;
 @property (atomic, readwrite) BOOL needsCreateZone;
 @property (atomic, readwrite) BOOL needsCreateZoneSubscription;
 @property (atomic, readwrite) BOOL needsFetchRecordChangesAfterAppLaunch;
@@ -41,6 +44,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	dispatch_queue_t fetchQueue;
 	
 	NSString *lastChangeSetUUID;
+    NSUInteger currentVersion;
 }
 
 + (void)initialize
@@ -76,12 +80,15 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		
 		dispatch_suspend(setupQueue);
 		dispatch_suspend(fetchQueue);
-        
+
+        currentVersion = 1;
+
         self.state = CKManagerStateInit;
+        self.needsUpgrade = YES;
 		self.needsCreateZone = YES;
 		self.needsCreateZoneSubscription = YES;
 		self.needsFetchRecordChangesAfterAppLaunch = YES;
-		
+
 		[self configureCloudKit];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -122,13 +129,20 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 **/
 - (void)configureCloudKit
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	// Set initial values
 	// (by checking database to see if we've flagged them as complete from previous app run)
 	
 	[databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-		
+        NSUInteger databaseCloudKitManagerVersion = 0;
+        if ([transaction hasObjectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit]) {
+            databaseCloudKitManagerVersion = [[transaction objectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit] unsignedIntegerValue];
+        }
+        if (databaseCloudKitManagerVersion >= currentVersion) {
+            self.needsUpgrade = NO;
+            [MyDatabaseManager.cloudKitExtension resume];
+        }
 		if ([transaction hasObjectForKey:Key_HasZone inCollection:Collection_CloudKit])
 		{
 			self.needsCreateZone = NO;
@@ -146,8 +160,13 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)continueCloudKitFlow
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
-    if (self.needsCreateZone)
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+
+    if (self.needsUpgrade)
+    {
+        [self upgradeManager];
+    }
+    else if (self.needsCreateZone)
 	{
 		[self createZone];
 	}
@@ -252,6 +271,59 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 #pragma mark App Launch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void)upgradeManager
+{
+    dispatch_async(setupQueue, ^{ @autoreleasepool {
+        // Suspend the queue.
+        // We will resume it upon completion of the operation.
+        // This ensures that there is only one outstanding operation at a time.
+        dispatch_suspend(setupQueue);
+
+        [self _upgradeManager];
+    }});
+}
+
+- (void)_upgradeManager
+{
+    if (self.needsUpgrade == NO) {
+        DDLogError(@"[CloudKitManager] error state: no more needs upgrade database but ever need");
+        dispatch_resume(setupQueue);
+        return;
+    }
+    __block NSUInteger databaseCloudKitManagerVersion = 0;
+    [databaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * _Nonnull transaction) {
+        if ([transaction hasObjectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit]) {
+            databaseCloudKitManagerVersion = [[transaction objectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit] unsignedIntegerValue];
+        }
+    }];
+
+    if (databaseCloudKitManagerVersion < 1) {
+        [databaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * _Nonnull transaction) {
+            [transaction removeObjectForKey:Key_HasZoneSubscription inCollection:Collection_CloudKit];
+        }];
+        if (self.needsCreateZoneSubscription == NO) {
+            self.needsCreateZoneSubscription = YES;
+            [MyDatabaseManager.cloudKitExtension suspend];
+        }
+    }
+    // Add other upgrade code here.
+
+    self.needsUpgrade = NO;
+
+    // Decrement suspend count.
+    [MyDatabaseManager.cloudKitExtension resume];
+
+    // Update database version
+    [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+        [transaction setObject:@(currentVersion) forKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit];
+    }];
+
+    // Continue setup
+    [self continueCloudKitFlow];
+
+    dispatch_resume(setupQueue);
+}
+
 
 - (void)createZone
 {
@@ -270,6 +342,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 {
 	if (self.needsCreateZone == NO)
 	{
+        DDLogError(@"[CloudKitManager] error state: no more needs create zone but ever need");
 		dispatch_resume(setupQueue);
 		return;
 	}
@@ -355,6 +428,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 {
 	if (self.needsCreateZoneSubscription == NO)
 	{
+        DDLogError(@"[CloudKitManager] error state: no more needs create zone subscription but ever need");
 		dispatch_resume(setupQueue);
 		return;
 	}
@@ -364,6 +438,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	
 	CKSubscription *subscription =
 	  [[CKSubscription alloc] initWithZoneID:recordZoneID subscriptionID:CloudKitZoneName options:0];
+    CKNotificationInfo *notificationInfo = [[CKNotificationInfo alloc] init];
+    notificationInfo.shouldSendContentAvailable = YES;
+    subscription.notificationInfo = notificationInfo;
 	
 	CKModifySubscriptionsOperation *modifySubscriptionsOperation =
 	  [[CKModifySubscriptionsOperation alloc] initWithSubscriptionsToSave:@[ subscription ]
@@ -390,6 +467,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				[transaction setObject:@(YES) forKey:Key_HasZoneSubscription inCollection:Collection_CloudKit];
+                [transaction setObject:@(1) forKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit];
 			}];
 			
 			// Continue setup
@@ -568,7 +646,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			if (completionHandler) {
 				completionHandler(UIBackgroundFetchResultFailed, NO);
 			}
-			dispatch_resume(fetchQueue);
+			dispatch_resume(strongSelf->fetchQueue);
 		}
 		else if (!hasChanges && !moreComing)
 		{
@@ -581,7 +659,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			// - Comparing two serverChangeToken's via isEqual doesn't work
 			// - Archiving two serverChangeToken's into NSData, and comparing that doesn't work either
 			
-			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+			[strongSelf->databaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				[transaction setObject:newServerChangeToken
 				                forKey:Key_ServerChangeToken
@@ -591,14 +669,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			if (completionHandler) {
 				completionHandler(UIBackgroundFetchResultNoData, NO);
 			}
-			dispatch_resume(fetchQueue);
+			dispatch_resume(strongSelf->fetchQueue);
 		}
 		else // if (hasChanges || moreComing)
 		{
 			DDLogDebug(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
 			DDLogDebug(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
 			
-			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+			[strongSelf->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				// Remove the items that were deleted (by another device)
 				for (CKRecordID *recordID in deletedRecordIDs)
@@ -685,7 +763,8 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 				          inCollection:Collection_CloudKit];
 				
 			} completionBlock:^{
-				
+                __strong __typeof__(self) strongSelf = weakSelf;
+
 				if (completionHandler)
 				{
 					if (hasChanges)
@@ -695,7 +774,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 				}
 				
 				if (moreComing) {
-					[self _fetchRecordChangesWithCompletionHandler:completionHandler];
+					[strongSelf _fetchRecordChangesWithCompletionHandler:completionHandler];
 				}
 				else {
 					dispatch_resume(fetchQueue);

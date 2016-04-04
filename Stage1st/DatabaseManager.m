@@ -520,7 +520,8 @@ DatabaseManager *MyDatabaseManager;
 	                                                            versionTag:@"1"
 	                                                           versionInfo:nil
 	                                                               options:options];
-	
+
+	[cloudKitExtension suspend]; // Upgrade
 	[cloudKitExtension suspend]; // Create zone(s)
 	[cloudKitExtension suspend]; // Create zone subscription(s)
 	[cloudKitExtension suspend]; // Initial fetchRecordChanges operation

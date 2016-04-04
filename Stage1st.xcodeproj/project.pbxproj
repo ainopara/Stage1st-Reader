@@ -39,6 +39,7 @@
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
+		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
 		8664D3E71A87A973006575B3 /* content_ipad_22px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E51A87A973006575B3 /* content_ipad_22px.css */; };
 		866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */; };
@@ -155,6 +156,7 @@
 		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceView.h; path = Stage1st/S1MahjongFaceView.h; sourceTree = "<group>"; };
 		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1MahjongFaceView.m; path = Stage1st/S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
+		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
 		8664D3E51A87A973006575B3 /* content_ipad_22px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_22px.css; path = Stage1st/content_ipad_22px.css; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorViewController.swift; path = Stage1st/S1QuoteFloorViewController.swift; sourceTree = "<group>"; };
@@ -340,8 +342,6 @@
 		864B128E1A4FC4EF00247F72 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
-				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
-				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 				869CAF121A18839900EB2BF4 /* S1PopAnimator.h */,
 				869CAF131A18839900EB2BF4 /* S1PopAnimator.m */,
 				8627EAAF1A204EF80063617C /* S1PushAnimator.h */,
@@ -372,6 +372,8 @@
 		865C251B1C99110C0075B303 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
+				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
+				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
 				866CDB951B526C4800FBB133 /* Quote Floor View Controller */,
@@ -525,26 +527,19 @@
 		C095873D16CA8A36007E0119 /* Stage1st */ = {
 			isa = PBXGroup;
 			children = (
-				865616821AC6C48C00CFD773 /* Stage1st.entitlements */,
 				C095874616CA8A36007E0119 /* S1AppDelegate.h */,
 				C095874716CA8A36007E0119 /* S1AppDelegate.m */,
+				8661263B1CB289EF00180C6A /* S1AppDelegate.swift */,
 				860223501895051400A3E66E /* S1Global.h */,
 				860223511895051400A3E66E /* S1Global.m */,
 				862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */,
+				862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */,
+				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
+				865616821AC6C48C00CFD773 /* Stage1st.entitlements */,
+				C095874316CA8A36007E0119 /* main.m */,
 				86BA383C1C0A106E00D508AC /* S1Application.swift */,
-				C095873E16CA8A36007E0119 /* Supporting Files */,
 			);
 			path = Stage1st;
-			sourceTree = "<group>";
-		};
-		C095873E16CA8A36007E0119 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
-				C095874316CA8A36007E0119 /* main.m */,
-				862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		C095875416CA8A3E007E0119 /* Vendors */ = {
@@ -899,6 +894,7 @@
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,
 				868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */,
+				8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */,
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,

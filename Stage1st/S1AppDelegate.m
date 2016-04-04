@@ -44,8 +44,8 @@ S1AppDelegate *MyAppDelegate;
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
-#endif
         [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
+#endif
         [DDLog addLogger:logger];
     }
     return self;
@@ -101,8 +101,14 @@ S1AppDelegate *MyAppDelegate;
     if ([userDefaults objectForKey:@"EnableSync"] == nil) {
         [userDefaults setBool:NO forKey:@"EnableSync"];
     }
-    
-    // Migrate to v3.4.0
+
+    // Start database & cloudKit (in that order)
+    [DatabaseManager initialize];
+    if ([userDefaults boolForKey:@"EnableSync"]) {
+        [CloudKitManager initialize];
+    }
+
+    // Migrate to v3.4
     NSArray *array = [userDefaults valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
@@ -131,46 +137,35 @@ S1AppDelegate *MyAppDelegate;
         NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
         [userDefaults setValue:order forKey:@"Order"];
     }
-    
-    // Start database & cloudKit (in that order)
-    [DatabaseManager initialize];
-    if ([userDefaults boolForKey:@"EnableSync"]) {
-        [CloudKitManager initialize];
-    }
+
+    [self migrate];
     
     // Preload floor cache database
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [S1CacheDatabaseManager sharedInstance];
     });
 
-    // Migrate Database
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [S1Tracer migrateToYapDatabase];
-    });
-
     if ([userDefaults boolForKey:@"EnableSync"]) {
         // Register for push notifications
-        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge + UIUserNotificationTypeSound + UIUserNotificationTypeAlert categories:nil];
         [application registerUserNotificationSettings:notificationSettings];
     }
-    
-    
+
     // Reachability
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+
     // URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:100 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
     // Appearence
-    
     [[APColorManager sharedInstance] updateGlobalAppearance];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    
+
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
 
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[UIWindow alloc] init];
     [self.window makeKeyAndVisible];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
@@ -211,8 +206,9 @@ S1AppDelegate *MyAppDelegate;
 }
 
 #pragma mark - URL Scheme
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    DDLogDebug(@"%@ from %@", url, sourceApplication);
+    DDLogDebug(@"[URL Scheme] %@ from %@", url, sourceApplication);
     
     //Open Specific Topic Case
     NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];
@@ -261,24 +257,26 @@ S1AppDelegate *MyAppDelegate;
 #pragma mark - Push Notification For Sync
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    DDLogDebug(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
+    DDLogDebug(@"[APS] application:didRegisterUserNotificationSettings: %@", notificationSettings);
     [application registerForRemoteNotifications];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    DDLogDebug(@"Registered for Push notifications with token: %@", deviceToken);
+    DDLogDebug(@"[APS] Registered for Push notifications with token: %@", deviceToken);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    DDLogDebug(@"Push subscription failed: %@", error);
+    DDLogWarn(@"[APS] Push subscription failed: %@", error);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    DDLogDebug(@"Push received: %@", userInfo);
+    DDLogDebug(@"[APS] Push received: %@", userInfo);
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        DDLogDebug(@"[APS] push notification received when user do not enable sync feature.");
+        completionHandler(UIBackgroundFetchResultNoData);
         return;
     }
-    // iOS 8 and more
+
     __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
     
     [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
@@ -298,17 +296,18 @@ S1AppDelegate *MyAppDelegate;
 
 #pragma mark - Background Sync
 
-/*
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
- 
+    DDLogInfo(@"[Backgournd Fetch] fetch called");
+    completionHandler(UIBackgroundFetchResultNoData);
+    // user forum notification can be fetched here, then send a local notification to user.
 }
-*/
 
 #pragma mark - Hand Off
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
 }
+
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
     DDLogDebug(@"Receive Hand Off: %@", userActivity.userInfo);
     NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
@@ -351,18 +350,20 @@ S1AppDelegate *MyAppDelegate;
     }
     return NO;
 }
+
 #pragma mark - Reachability
 
 - (void)reachabilityChanged:(NSNotification *)notification {
     Reachability *reachability = notification.object;
     if ([reachability isReachableViaWiFi]) {
-        DDLogDebug(@"%@",@"display picture");
+        DDLogDebug(@"[Reachability] WIFI: display picture");
     } else {
-        DDLogDebug(@"%@",@"display placeholder");
+        DDLogDebug(@"[Reachability] WWAN: display placeholder");
     }
 }
 
 #pragma mark - Helper
+
 - (void)presentContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]]) {
@@ -372,4 +373,5 @@ S1AppDelegate *MyAppDelegate;
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
     }
 }
+
 @end

@@ -45,7 +45,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4743</string>
+	<string>4747</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -79,6 +79,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
@@ -93,8 +94,6 @@
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -108,8 +107,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
