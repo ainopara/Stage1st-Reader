@@ -225,8 +225,6 @@
     _presentingImageViewer = NO;
     _presentingWebViewer = NO;
     _presentingContentViewController = NO;
-    
-    [UIApplication sharedApplication].statusBarHidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -435,7 +433,7 @@
     [self presentViewController:moreActionSheet animated:YES completion:nil];
 }
 
-#pragma mark UIWebView
+#pragma mark - UIWebView
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     // Load
@@ -464,7 +462,6 @@
             imageInfo.referenceRect = [self positionOfElementWithId:imageID];
             imageInfo.referenceView = self.webView;
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
-            [UIApplication sharedApplication].statusBarHidden = YES;
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
             [imageViewer setOptionsDelegate:self];
@@ -480,7 +477,6 @@
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = request.URL;
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
-        [UIApplication sharedApplication].statusBarHidden = YES;
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
         return NO;
@@ -926,6 +922,8 @@
     self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
     self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
 
+    [self setNeedsStatusBarAppearanceUpdate];
+
     _needToLoadLastPositionFromModel = NO;
     [self saveViewPosition];
     [self fetchContentAndForceUpdate:NO];
@@ -1060,7 +1058,7 @@
     if (_topic.favorite == nil) {
         _topic.favorite = @(NO);
     }
-    DDLogDebug(@"[ContentVC] Topic setted: %@", self.topic.topicID);
+    DDLogInfo(@"[ContentVC] Topic setted: %@", self.topic.topicID);
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "YapDatabaseQuery.h"
 #import "YapDatabaseFullTextSearchTransaction.h"
 #import "S1Topic.h"
+#import <YapDatabase/YapDatabase.h>
 
 @implementation S1YapDatabaseAdapter
 

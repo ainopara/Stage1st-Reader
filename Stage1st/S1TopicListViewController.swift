@@ -54,3 +54,7 @@ extension S1TopicListViewController {
     }
   }
 }
+
+extension S1TopicListViewController {
+
+}

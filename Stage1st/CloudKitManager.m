@@ -2,7 +2,8 @@
 #import "DatabaseManager.h"
 #import "S1AppDelegate.h"
 #import "S1Topic.h"
-
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseCloudKit.h>
 
 #import <CloudKit/CloudKit.h>
 #import <Reachability/Reachability.h>
@@ -971,13 +972,13 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 }
 
 - (void)handleRequestRateLimitedAndServiceUnavailableWithError:(NSError *)error {
-    NSNumber *retryDelay = error.userInfo[@"CKErrorRetryAfterKey"];
+    NSNumber *retryDelay = error.userInfo[CKErrorRetryAfterKey];
     DDLogInfo(@"Cloudkit Operation Should Retry after %@ seconds", retryDelay);
     if (retryDelay != nil) {
+        self.state = CKManagerStateRecovering;
         NSInteger delaySeconds = MAX(retryDelay.integerValue, 100);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySeconds * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.needsResume = YES;
-            [self continueCloudKitFlow];
         });
         [Answers logCustomEventWithName:@"CloudKit Rerty Interval" customAttributes:@{@"interval": retryDelay}];
     } else {

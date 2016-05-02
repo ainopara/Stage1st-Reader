@@ -11,6 +11,7 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "DatabaseManager.h"
+#import <YapDatabase/YapDatabase.h>
 
 
 @implementation S1Tracer

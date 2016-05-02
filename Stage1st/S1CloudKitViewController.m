@@ -9,6 +9,8 @@
 #import "S1CloudKitViewController.h"
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseCloudKit.h>
 
 @interface S1CloudKitViewController ()
 @property (weak, nonatomic) IBOutlet UISwitch *iCloudSwitch;

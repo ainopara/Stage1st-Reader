@@ -1,9 +1,8 @@
 #import <Foundation/Foundation.h>
 
-#import "YapDatabase.h"
-#import "YapDatabaseView.h"
-#import "YapDatabaseCloudKit.h"
-
+@class YapDatabase;
+@class YapDatabaseCloudKit;
+@class YapDatabaseConnection;
 @class DatabaseManager;
 
 /**

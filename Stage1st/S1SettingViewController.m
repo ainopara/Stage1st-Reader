@@ -7,15 +7,13 @@
 //
 
 #import "S1SettingViewController.h"
-#import "S1TopicListViewController.h"
 #import "GSStaticTableViewBuilder.h"
-#import "DatabaseManager.h"
-#import "MTStatusBarOverlay.h"
 #import "CloudKitManager.h"
 #import <Crashlytics/Answers.h>
-
+#import <YapDatabase/YapDatabaseCloudKit.h>
 
 @interface S1SettingViewController ()
+
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
@@ -34,29 +32,13 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 
 @property (assign, nonatomic) CGFloat offset;
+@property (nonatomic, strong) PullToActionController *pullManager;
+
 @end
 
-
 @implementation S1SettingViewController
-#pragma mark - Life Cycle
-- (void)viewWillAppear:(BOOL)animated {
-    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    if (inLoginStateID) {
-        self.usernameDetail.text = inLoginStateID;
-    }
-    
-    self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-    
-    self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-    [self updateiCloudStatus];
-    [super viewWillAppear:animated];
-    
-}
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [CrashlyticsKit setObjectValue:@"SettingsViewController" forKey:@"lastViewController"];
-}
+#pragma mark - Life Cycle
 
 - (void)viewDidLoad
 {
@@ -89,16 +71,15 @@
     self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
     self.nightModeSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"];
     
-    self.versionDetail.text = [NSString stringWithFormat:@"%@ (%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+    self.versionDetail.text = [self applicationVersion];
 
     self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
     
-    //
     self.fontSizeCell.textLabel.text = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
     self.fontSizeCell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.fontSizeCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.fontSizeCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    //}
+
     self.keepHistoryCell.textLabel.text = NSLocalizedString(@"SettingView_HistoryLimit", @"History Limit");
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
@@ -109,9 +90,29 @@
     self.offset = 0;
     self.tableView.delegate = self;
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-    
+//    self.pullManager = [[PullToActionController alloc] initWithScrollView:self.tableView];
+//    [self.pullManager add]
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    if (inLoginStateID) {
+        self.usernameDetail.text = inLoginStateID;
+    }
+
+    self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
+
+    self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+    [self updateiCloudStatus];
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [CrashlyticsKit setObjectValue:@"SettingsViewController" forKey:@"lastViewController"];
 }
 
 - (void)dealloc {
@@ -126,12 +127,10 @@
     }
 }
 
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"contentOffset"]) {
         self.offset = [[change objectForKey:@"new"] CGPointValue].y + 64;
-        //NSLog(@"%f",self.offset);
     }
 }
 
@@ -223,11 +222,8 @@
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ForcePortraitForPhone"];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-}
-
 #pragma mark - Notification
+
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
     [self.displayImageSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.removeTailsSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
@@ -239,20 +235,20 @@
     [self.navigationController.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                  NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)cloudKitStateChanged:(NSNotification *)notification {
     [self updateiCloudStatus];
 }
+
 #pragma mark - Helper
 
 - (void)updateiCloudStatus {
     NSString *titleString;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7
         titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
     } else {
-        // iOS 8 and more
         NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
         
         NSUInteger inFlightCount = 0;

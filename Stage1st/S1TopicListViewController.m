@@ -23,14 +23,18 @@
 #import "MTStatusBarOverlay.h"
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
-#import "YapDatabaseFilteredView.h"
-#import "YapDatabaseSearchResultsView.h"
+
 #import "NavigationControllerDelegate.h"
 #import <Crashlytics/Answers.h>
 
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseFilteredView.h>
+#import <YapDatabase/YapDatabaseSearchResultsView.h>
+#import <YapDatabase/YapDatabaseView.h>
+#import <YapDatabase/YapDatabaseCloudKit.h>
+
 static NSString * const cellIdentifier = @"TopicCell";
 
-#define _UPPER_BAR_HEIGHT 64.0f
 #define _SEARCH_BAR_HEIGHT 40.0f
 
 @interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, S1TabBarDelegate>
@@ -483,26 +487,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 
-#pragma mark - Orientation
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            return UIInterfaceOrientationMaskPortrait;
-        }
-    }
-    return [super supportedInterfaceOrientations];
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-            return UIInterfaceOrientationPortrait;
-        }
-    }
-    return [super preferredInterfaceOrientationForPresentation];
-}
+#pragma mark - Layout
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
@@ -621,7 +606,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }];
 }
 
-#pragma mark Notification Handler
+#pragma mark Notification
 
 - (void)updateTabbar:(NSNotification *)notification {
     [self.scrollTabBar setKeys:[self keys]];
@@ -660,10 +645,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     self.searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
     self.searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
-    // TempFix: Fix for a crash found in a iOS7.0.4 device.
-    if ([self.searchBar respondsToSelector:@selector(setKeyboardAppearance:)]) {
-        self.searchBar.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-    }
+    self.searchBar.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
     [self.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.bartint"]];
@@ -675,6 +658,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.archiveAnimationView reloadAnimation];
     }
     self.archiveButton.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
@@ -781,6 +765,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)cloudKitStateChanged:(NSNotification *)notification {
     [self updateArchiveIcon];
 }
+
 #pragma mark Helpers
 
 - (void)updateArchiveIcon {

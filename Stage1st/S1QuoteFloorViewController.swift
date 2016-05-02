@@ -25,6 +25,7 @@ class S1QuoteFloorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        self.automaticallyAdjustsScrollViewInsets = false
         if self.useTableView {
             let tableView = UITableView()
             self.tableView = tableView
@@ -64,6 +65,10 @@ class S1QuoteFloorViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
+    }
+
+    deinit {
+        DDLogInfo("[QuoteFloorVC] dealloc")
     }
 
 }
@@ -120,5 +125,11 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
             return CGFloat(result2)
         }
         return 0
+    }
+}
+// MARK: - Style
+extension S1QuoteFloorViewController {
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
     }
 }

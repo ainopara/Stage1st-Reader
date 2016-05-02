@@ -1,13 +1,15 @@
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
 #import "S1AppDelegate.h"
-#import "YapDatabaseFilteredView.h"
-#import "YapDatabaseFullTextSearch.h"
-#import "YapDatabaseSearchResultsView.h"
 #import "MyDatabaseObject.h"
 #import "S1Topic.h"
-
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseCloudKit.h>
+#import <YapDatabase/YapDatabaseFilteredView.h>
+#import <YapDatabase/YapDatabaseFullTextSearch.h>
+#import <YapDatabase/YapDatabaseSearchResultsView.h>
 #import <Reachability/Reachability.h>
+
 
 NSString *const UIDatabaseConnectionWillUpdateNotification = @"UIDatabaseConnectionWillUpdateNotification";
 NSString *const UIDatabaseConnectionDidUpdateNotification  = @"UIDatabaseConnectionDidUpdateNotification";
@@ -493,8 +495,7 @@ DatabaseManager *MyDatabaseManager;
             }
             else if (ckErrorCode == CKErrorRequestRateLimited ||
                      ckErrorCode == CKErrorServiceUnavailable  ) {
-//                [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
-                [MyCloudKitManager handleOtherErrors];
+                [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
             }
             else if (ckErrorCode == CKErrorUserDeletedZone) {
                 [MyCloudKitManager handleUserDeletedZone];

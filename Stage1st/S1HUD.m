@@ -76,7 +76,7 @@ typedef enum {
     [self removeSubviews];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.alpha = 0.8;
-    [button setImage:[UIImage imageNamed:@"Refresh.png"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"Refresh"] forState:UIControlStateNormal];
     [button addEventHandler:^(id sender, UIEvent *event) {
         if (self.refreshEventHandler) {
             self.refreshEventHandler(self);

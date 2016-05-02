@@ -6,14 +6,12 @@
 //  Copyright © 2015 Renaissance. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 @objc public enum PaletteType: NSInteger {
     case Day
     case Night
 }
-
 
 public class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
@@ -27,14 +25,13 @@ public class APColorManager: NSObject {
 
     override init () {
         let paletteName = NSUserDefaults.standardUserDefaults().boolForKey("NightMode") == true ? "DarkPalette2": "DefaultPalette"
+
         let palettePath = NSBundle.mainBundle().pathForResource(paletteName, ofType: "plist")
-        let colorMapPath = NSBundle.mainBundle().pathForResource("ColorMap", ofType: "plist")
-        if let palettePath = palettePath,
-        let palette = NSDictionary(contentsOfFile: palettePath) {
+        if let palettePath = palettePath, let palette = NSDictionary(contentsOfFile: palettePath) {
             self.palette = palette
         }
-        if let colorMapPath = colorMapPath,
-        let colorMap = NSDictionary(contentsOfFile: colorMapPath) {
+        let colorMapPath = NSBundle.mainBundle().pathForResource("ColorMap", ofType: "plist")
+        if let colorMapPath = colorMapPath, let colorMap = NSDictionary(contentsOfFile: colorMapPath) {
             self.colorMap = colorMap
         }
         super.init()
@@ -46,19 +43,8 @@ public class APColorManager: NSObject {
         self.loadPaletteByURL(paletteURL, shouldPushNotification: true)
     }
 
-    func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
-        guard let paletteURL = paletteURL,
-            palette = NSDictionary(contentsOfURL: paletteURL) else {
-            return
-        }
-        self.palette = palette
-        self.updateGlobalAppearance()
-        if shouldPush {
-            NSNotificationCenter.defaultCenter().postNotificationName("S1PaletteDidChangeNotification", object: nil)
-        }
-    }
     func htmlColorStringWithID(paletteID: String) -> String {
-        return (self.palette.valueForKey(paletteID) as? String) ?? ""
+        return (self.palette.valueForKey(paletteID) as? String) ?? "#000000"
     }
 
     func isDarkTheme() -> Bool {
@@ -83,18 +69,30 @@ public class APColorManager: NSObject {
         UIApplication.sharedApplication().statusBarStyle = self.isDarkTheme() ? .LightContent : .Default
     }
 
+    func colorForKey(key: String) -> UIColor {
+        let paletteID: String = (self.colorMap.valueForKey(key) as? String) ?? "default"
+        return self.colorInPaletteWithID(paletteID)
+    }
+}
+// MARK: Private
+private extension APColorManager {
+    func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
+        guard let paletteURL = paletteURL, palette = NSDictionary(contentsOfURL: paletteURL) else {
+            return
+        }
+        self.palette = palette
+        self.updateGlobalAppearance()
+        if shouldPush {
+            NSNotificationCenter.defaultCenter().postNotificationName("S1PaletteDidChangeNotification", object: nil)
+        }
+    }
+
     func colorInPaletteWithID(paletteID: String) -> UIColor {
         let colorString = self.palette.valueForKey(paletteID) as? String
-        if let colorString = colorString,
-        let color = S1Global.colorFromHexString(colorString) {
+        if let colorString = colorString, let color = S1Global.colorFromHexString(colorString) {
             return color
         } else {
             return self.fallbackColor
         }
-    }
-
-    func colorForKey(key: String) -> UIColor {
-        let paletteID: String = (self.colorMap.valueForKey(key) as? String) ?? "default"
-        return self.colorInPaletteWithID(paletteID)
     }
 }

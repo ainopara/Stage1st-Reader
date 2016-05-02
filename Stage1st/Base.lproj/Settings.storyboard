@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -426,24 +425,12 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YkQ-3y-geh" userLabel="1Password">
-                                <rect key="frame" x="349" y="221" width="27" height="27"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="YkQ-3y-geh" secondAttribute="height" multiplier="1:1" id="FKd-6P-n8O"/>
-                                    <constraint firstAttribute="height" constant="27" id="Rwl-Y9-V0n"/>
-                                </constraints>
-                                <state key="normal" image="OnePasswordButton">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="312" y="127" width="32" height="32"/>
-                                </variation>
-                                <connections>
-                                    <action selector="findLoginFrom1Password:" destination="Rga-Ra-1eA" eventType="touchUpInside" id="c0w-uB-uv3"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="swq-PA-Vhc">
-                                <rect key="frame" x="281" y="220" width="38" height="30"/>
+                                <rect key="frame" x="240" y="304" width="120" height="30"/>
+                                <color key="backgroundColor" red="0.74400001764297485" green="0.77600002288818359" blue="0.69599997997283936" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="p1k-E7-adk"/>
+                                </constraints>
                                 <state key="normal" title="Login">
                                     <color key="titleColor" white="0.15000000596046448" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -466,22 +453,41 @@
                                     <rect key="frame" x="98" y="128" width="200" height="30"/>
                                 </variation>
                             </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Answer" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OzC-gm-NUf">
+                                <rect key="frame" x="150" y="250" width="300" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="lDw-o4-wb2"/>
+                                    <constraint firstAttribute="height" constant="30" id="zKD-sf-hSC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="22p-kE-TvI">
+                                <rect key="frame" x="150" y="208" width="300" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="bmz-Vl-FQ9"/>
+                                </constraints>
+                                <state key="normal" title="Question"/>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.82200002670288086" green="0.8529999852180481" blue="0.75599998235702515" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="8hF-SF-9fr" firstAttribute="centerX" secondItem="xrK-7t-YiZ" secondAttribute="centerX" id="3jb-sC-gQy"/>
+                            <constraint firstItem="22p-kE-TvI" firstAttribute="top" secondItem="a7E-Z0-WQq" secondAttribute="bottom" constant="8" id="5FI-Ew-C0F"/>
                             <constraint firstItem="8hF-SF-9fr" firstAttribute="top" secondItem="Pio-bT-UGi" secondAttribute="bottom" constant="64" id="8se-4h-yXA"/>
                             <constraint firstItem="a7E-Z0-WQq" firstAttribute="centerX" secondItem="8hF-SF-9fr" secondAttribute="centerX" id="ETb-cu-old"/>
-                            <constraint firstItem="YkQ-3y-geh" firstAttribute="centerY" secondItem="swq-PA-Vhc" secondAttribute="centerY" id="HhQ-iT-e0N"/>
-                            <constraint firstItem="YkQ-3y-geh" firstAttribute="leading" secondItem="swq-PA-Vhc" secondAttribute="trailing" constant="30" id="RgA-TV-3SR"/>
+                            <constraint firstItem="OzC-gm-NUf" firstAttribute="top" secondItem="22p-kE-TvI" secondAttribute="bottom" constant="12" id="Tb8-AH-a0u"/>
                             <constraint firstItem="swq-PA-Vhc" firstAttribute="centerX" secondItem="a7E-Z0-WQq" secondAttribute="centerX" id="cLR-nJ-rPx"/>
+                            <constraint firstItem="OzC-gm-NUf" firstAttribute="centerX" secondItem="22p-kE-TvI" secondAttribute="centerX" id="fsa-rY-dli"/>
+                            <constraint firstItem="swq-PA-Vhc" firstAttribute="top" secondItem="OzC-gm-NUf" secondAttribute="bottom" constant="24" id="kUs-vk-7Vm"/>
+                            <constraint firstItem="22p-kE-TvI" firstAttribute="centerX" secondItem="a7E-Z0-WQq" secondAttribute="centerX" id="td8-6e-68r"/>
                             <constraint firstItem="a7E-Z0-WQq" firstAttribute="top" secondItem="8hF-SF-9fr" secondAttribute="bottom" constant="12" id="vcX-YI-pFv"/>
-                            <constraint firstItem="swq-PA-Vhc" firstAttribute="top" secondItem="a7E-Z0-WQq" secondAttribute="bottom" constant="20" id="wLo-bY-Tis"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="loginButton" destination="swq-PA-Vhc" id="fax-G1-1pu"/>
-                        <outlet property="onepasswordSigninButton" destination="YkQ-3y-geh" id="GC1-Cg-cE3"/>
                         <outlet property="passwordField" destination="a7E-Z0-WQq" id="gD3-ys-c23"/>
                         <outlet property="usernameField" destination="8hF-SF-9fr" id="eLV-6t-gCS"/>
                     </connections>
@@ -706,7 +712,4 @@
             <point key="canvasLocation" x="315" y="384"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="OnePasswordButton" width="27" height="27"/>
-    </resources>
 </document>
