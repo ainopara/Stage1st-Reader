@@ -81,7 +81,9 @@ extension AnimationView {
         self.startAnimation(animation)
     }
 }
+
 // MARK: - override
+
 extension AnimationView {
     override func intrinsicContentSize() -> CGSize {
         if let firstImage = self.images.first {
@@ -151,6 +153,10 @@ class AnimationButton: UIButton {
         self.setStaticImage(self.image)
     }
 
+    /**
+     When button is animating and removed from a navigation bar, animation will be stopped.
+     Call this method when you decided to show the button again.
+     */
     func recover() {
         if isPlayingAnimation {
             self.startAnimation()

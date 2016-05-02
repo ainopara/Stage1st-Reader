@@ -824,7 +824,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
 }
 
--(void) cancelRequest {
+-(void)cancelRequest {
     [self.dataCenter cancelRequest];
 }
 
@@ -962,6 +962,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         _tableView.rowHeight = 54.0;
+        _tableView.cellLayoutMarginsFollowReadableWidth = NO;
         _tableView.separatorInset = UIEdgeInsetsZero;
         _tableView.delegate = self;
         _tableView.dataSource = self;
