@@ -90,3 +90,77 @@ extension AnimationView {
         return CGSize(width: UIViewNoIntrinsicMetric, height: UIViewNoIntrinsicMetric)
     }
 }
+
+class AnimationButton: UIButton {
+    private let image: UIImage
+    private let animationView: AnimationView = AnimationView(frame: CGRect.zero)
+    var isPlayingAnimation: Bool {
+        return animationView.isPlayingAnimation
+    }
+    private var previousHighlighted: Bool = false
+    override var highlighted: Bool {
+        didSet {
+            if highlighted != previousHighlighted {
+                if highlighted {
+                    animationView.tintColor = self.tintColor.colorWithAlphaComponent(0.25)
+                } else {
+                    animationView.tintColor = self.tintColor
+                }
+                if animationView.isPlayingAnimation {
+                    animationView.reloadAnimation()
+                }
+                previousHighlighted = highlighted
+            }
+        }
+    }
+    override var tintColor: UIColor! {
+        didSet {
+            if highlighted {
+                animationView.tintColor = self.tintColor.colorWithAlphaComponent(0.25)
+            } else {
+                animationView.tintColor = self.tintColor
+            }
+            self.recover()
+        }
+    }
+
+    init(frame: CGRect, image: UIImage, images: [UIImage]) {
+        self.image = image
+        super.init(frame: frame)
+
+        self.animationView.images = images
+        self.setStaticImage(self.image)
+
+        self.addSubview(animationView)
+        animationView.snp_makeConstraints { (make) in
+            make.center.equalTo(self)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func startAnimation() {
+        self.animationView.reloadAnimation()
+        self.setStaticImage(nil)
+    }
+
+    func stopAnimation() {
+        self.animationView.removeAllAnimations()
+        self.setStaticImage(self.image)
+    }
+
+    func recover() {
+        if isPlayingAnimation {
+            self.startAnimation()
+        } else {
+            self.stopAnimation()
+        }
+    }
+
+    private func setStaticImage(image: UIImage?) {
+        self.setImage(image?.tintWithColor(self.tintColor), forState: .Normal)
+        self.setImage(image?.tintWithColor(self.tintColor.colorWithAlphaComponent(0.25)), forState: .Highlighted)
+    }
+}

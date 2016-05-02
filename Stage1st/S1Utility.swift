@@ -58,11 +58,10 @@ extension UIWebView {
 extension UIImage {
     func tintWithColor(color: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.mainScreen().scale)
-
-        let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)
-        self.drawInRect(rect)
         color.setFill()
-        UIRectFillUsingBlendMode(rect, CGBlendMode.SourceAtop)
+        let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)
+        UIRectFill(rect)
+        self.drawInRect(rect, blendMode: .SourceIn, alpha: 1.0)
 
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

@@ -43,8 +43,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
-@property (nonatomic, strong) AnimationView *archiveAnimationView;
-@property (nonatomic, strong) UIButton *archiveButton;
+@property (nonatomic, strong) AnimationButton *archiveButton;
 @property (nonatomic, strong) NSArray *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
@@ -368,6 +367,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     _loadingMore = NO;
     [self cancelRequest];
     [self.naviItem setRightBarButtonItem:self.historyItem];
+    [self.archiveButton recover];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
     NSDate *lastRefreshDateForKey = [self.cachedLastRefreshTime valueForKey:key];
@@ -653,10 +653,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
-    self.archiveAnimationView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
-    if ([self.archiveAnimationView isPlayingAnimation]) {
-        [self.archiveAnimationView reloadAnimation];
-    }
     self.archiveButton.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -780,31 +776,27 @@ static NSString * const cellIdentifier = @"TopicCell";
             titleString = [@"Init/" stringByAppendingString:titleString];
             break;
         case CKManagerStateSetup:
+            [self.archiveButton stopAnimation];
             titleString = [@"Setup/" stringByAppendingString:titleString];
             break;
         case CKManagerStateFetching:
-            [self.archiveButton setImage:nil forState:UIControlStateNormal];
-            [self.archiveAnimationView reloadAnimation];
+            [self.archiveButton startAnimation];
             titleString = [@"Fetching/" stringByAppendingString:titleString];
             break;
         case CKManagerStateUploading:
-            [self.archiveButton setImage:nil forState:UIControlStateNormal];
-            [self.archiveAnimationView reloadAnimation];
+            [self.archiveButton startAnimation];
             titleString = [@"Uploading/" stringByAppendingString:titleString];
             break;
         case CKManagerStateReady:
-            [self.archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
-            [self.archiveAnimationView removeAllAnimations];
+            [self.archiveButton stopAnimation];
             titleString = [@"Ready/" stringByAppendingString:titleString];
             break;
         case CKManagerStateRecovering:
-            [self.archiveButton setImage:nil forState:UIControlStateNormal];
-            [self.archiveAnimationView reloadAnimation];
+            [self.archiveButton stopAnimation];
             titleString = [@"Recovering/" stringByAppendingString:titleString];
             break;
         case CKManagerStateHalt:
-            [self.archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
-            [self.archiveAnimationView removeAllAnimations];
+            [self.archiveButton stopAnimation];
             titleString = [@"Halt/" stringByAppendingString:titleString];
             break;
             
@@ -938,29 +930,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _historyItem;
 }
 
-- (UIButton *)archiveButton {
+- (AnimationButton *)archiveButton {
     if (!_archiveButton) {
-        _archiveButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        _archiveButton.frame = CGRectMake(0, 0, 44, 44);
-        [_archiveButton setImage:[UIImage imageNamed:@"Archive"] forState:UIControlStateNormal];
+        _archiveButton = [[AnimationButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44) image:[UIImage imageNamed:@"Archive"] images:[self archiveSyncImages]];
         _archiveButton.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
         [_archiveButton addTarget:self action:@selector(archive:) forControlEvents:UIControlEventTouchUpInside];
-        [_archiveButton addSubview:self.archiveAnimationView];
-
-        [self.archiveAnimationView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(_archiveButton);
-        }];
     }
     return _archiveButton;
-}
-
-- (AnimationView *)archiveAnimationView {
-    if (!_archiveAnimationView) {
-        _archiveAnimationView = [[AnimationView alloc] initWithFrame:CGRectZero];
-        _archiveAnimationView.images = [self archiveSyncImages];
-        _archiveAnimationView.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.navigationbar.titlelabel"];
-    }
-    return _archiveAnimationView;
 }
 
 - (NSArray *)archiveSyncImages {
