@@ -819,12 +819,12 @@
         self.attributedReplyDraft = [[NSMutableAttributedString alloc] init];
     }
     
-    REComposeViewController *replyController = [[REComposeViewController alloc] init];
+    REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
     [replyController setKeyboardAppearance:[[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
     [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];
     [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
     [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
-    [replyController.view setFrame:self.view.bounds];
+
     // set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
@@ -836,10 +836,11 @@
     
     replyController.delegate = self;
     [replyController setAttributedText:self.attributedReplyDraft];
-    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, replyController.view.bounds.size.width, 35) withComposeVC:replyController];
+    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(replyController.view.bounds), 35) withComposeViewController:replyController];
     [ReplyAccessoryView resetTextViewStyle:replyController.textView];
-     
-    [replyController presentFromViewController:self];
+
+    [self presentViewController:replyController animated:YES completion:NULL];
+
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
     navigationDelegate.panRecognizer.enabled = NO;
 }
@@ -849,7 +850,7 @@
     navigationDelegate.panRecognizer.enabled = YES;
     self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
     if (result == REComposeResultCancelled) {
-        [composeViewController dismissViewControllerAnimated:YES completion:nil];
+        [composeViewController dismissViewControllerAnimated:YES completion:NULL];
     } else if (result == REComposeResultPosted) {
         if (composeViewController.text.length > 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];

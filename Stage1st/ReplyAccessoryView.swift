@@ -18,11 +18,11 @@ class ReplyAccessoryView: UIView {
     var mahjongFaceView: S1MahjongFaceView?
 
     // MARK: - Life Cycle
-    init(frame: CGRect, withComposeVC composeVC: REComposeViewController) {
+    init(frame: CGRect, withComposeViewController composeViewController: REComposeViewController) {
         toolBar = UIToolbar(frame: frame)
         faceButton = UIButton(type: .System)
         spoilerButton = UIButton(type: .System)
-        composeViewController = composeVC
+        self.composeViewController = composeViewController
         super.init(frame: frame)
 
         //Setup faceButton
@@ -70,7 +70,7 @@ class ReplyAccessoryView: UIView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray
+                newMahjongfaceView.historyArray = S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray ?? NSMutableArray()
                 mahjongFaceView = newMahjongfaceView
             }
             button.setImage(UIImage(named: "KeyboardButton"), forState: .Normal)

@@ -26,6 +26,7 @@
 #import "REComposeSheetView.h"
 #import "REComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Masonry/Masonry.h>
 
 @implementation REComposeSheetView
 
@@ -36,54 +37,35 @@
         self.backgroundColor = [UIColor whiteColor];
         
         _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
-        _navigationBar.autoresizingMask = UIViewAutoresizingFlexibleWidth
-        | UIViewAutoresizingFlexibleBottomMargin
-        | UIViewAutoresizingFlexibleRightMargin;
-        
+        [self addSubview:_navigationBar];
+        [_navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(@44.0);
+            make.top.leading.trailing.equalTo(self);
+        }];
+
         _navigationItem = [[UINavigationItem alloc] initWithTitle:@""];
         _navigationBar.items = @[_navigationItem];
         
         UIBarButtonItem *cancelButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"REComposeSheetView_Cancel", nil, [NSBundle mainBundle], @"Cancel", @"Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancelButtonPressed)];
         
         UIBarButtonItem *postButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"REComposeSheetView_Post", nil, [NSBundle mainBundle], @"Post", @"Post") style:UIBarButtonItemStyleDone target:self action:@selector(postButtonPressed)];
-        
-        
+
         UIBarButtonItem *leftSeperator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
         leftSeperator.width = 5.0;
         UIBarButtonItem *rightSeperator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
         rightSeperator.width = 5.0;
         _navigationItem.leftBarButtonItems = @[leftSeperator, cancelButtonItem];
         _navigationItem.rightBarButtonItems = @[rightSeperator, postButtonItem];
-        
-        
-        _textViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height - 44)];
-        _textViewContainer.clipsToBounds = YES;
-        _textViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        _textView = [[DEComposeTextView alloc] initWithFrame:CGRectMake(8, 0, frame.size.width - 100, frame.size.height - 47)];
+
+        _textView = [[DEComposeTextView alloc] initWithFrame:CGRectZero];
         _textView.backgroundColor = [UIColor clearColor];
         _textView.font = [UIFont systemFontOfSize: 17];
-        _textView.contentInset = UIEdgeInsetsMake(0, 0, 20, 0);
         _textView.bounces = YES;
-        
-        [_textViewContainer addSubview:_textView];
-        [self addSubview:_textViewContainer];
-        
-        _attachmentView = [[UIView alloc] initWithFrame:CGRectMake(frame.size.width - 84, 54, 84, 79)];
-        [self addSubview:_attachmentView];
-        
-        _attachmentImageView = [[UIImageView alloc] initWithFrame:CGRectMake(2, 2, 72, 72)];
-        _attachmentImageView.layer.masksToBounds = YES;
-        [_attachmentView addSubview:_attachmentImageView];
-        
-        _attachmentContainerView = [[UIImageView alloc] initWithFrame:_attachmentView.bounds];
-        [_attachmentView addSubview:_attachmentContainerView];
-        _attachmentView.hidden = YES;
-      
-        _attachmentViewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _attachmentViewButton.frame = _attachmentView.bounds;
-        [_attachmentView addSubview:_attachmentViewButton];
-    
-        [self addSubview:_navigationBar];
+
+        [self insertSubview:_textView belowSubview:_navigationBar];
+        [_textView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
     }
     return self;
 }
@@ -92,21 +74,22 @@
 {
     [super layoutSubviews];
     if (_delegate) {
-        UIViewController *delegate = _delegate;
-        _navigationItem.title = delegate.title;
+        _navigationItem.title = _delegate.title;
     }
+    _textView.contentInset = UIEdgeInsetsMake(CGRectGetHeight(_navigationBar.frame), 0.0, 0.0, 0.0);
+    _textView.scrollIndicatorInsets = _textView.contentInset;
 }
 
 - (void)cancelButtonPressed
 {
-    id<REComposeSheetViewDelegate> localDelegate = _delegate;
+    id <REComposeSheetViewDelegate> localDelegate = _delegate;
     if ([localDelegate respondsToSelector:@selector(cancelButtonPressed)])
         [localDelegate cancelButtonPressed];
 }
 
 - (void)postButtonPressed
 {
-    id<REComposeSheetViewDelegate> localDelegate = _delegate;
+    id <REComposeSheetViewDelegate> localDelegate = _delegate;
     if ([localDelegate respondsToSelector:@selector(postButtonPressed)])
         [localDelegate postButtonPressed];
 }

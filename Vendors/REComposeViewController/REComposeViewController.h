@@ -28,45 +28,32 @@
 
 @class REComposeViewController;
 
-typedef enum _REComposeResult {
+typedef NS_ENUM(NSUInteger, REComposeResult) {
     REComposeResultCancelled,
     REComposeResultPosted
-} REComposeResult;
+};
 
 typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController *composeViewController, REComposeResult result);
 
 @protocol REComposeViewControllerDelegate;
 
-@interface REComposeViewController : UIViewController <REComposeSheetViewDelegate> {
-    REComposeSheetView *_sheetView;
-    UIView *_backgroundView;
-    UIView *_backView;
-    UIView *_containerView;
-    UIImageView *_paperclipView;
-}
+@interface REComposeViewController : UIViewController
 
-@property (copy, readwrite, nonatomic) REComposeViewControllerCompletionHandler completionHandler;
-@property (weak, readwrite, nonatomic) id<REComposeViewControllerDelegate> delegate;
-@property (assign, readwrite, nonatomic) NSInteger cornerRadius;
-@property (assign, readwrite, nonatomic) BOOL hasAttachment;
-@property (assign, readonly, nonatomic) BOOL userUpdatedAttachment;
-@property (strong, readwrite, nonatomic) NSString *text;
-@property (strong, readwrite, nonatomic) NSAttributedString *attributedText;
+@property (copy, nonatomic) REComposeViewControllerCompletionHandler completionHandler;
+@property (weak, nonatomic) id<REComposeViewControllerDelegate> delegate;
+@property (assign, nonatomic) NSInteger cornerRadius;
+@property (strong, nonatomic) NSString *text;
+@property (strong, nonatomic) NSAttributedString *attributedText;
+@property (strong, nonatomic) NSString *placeholderText;
 @property (strong, readonly, nonatomic) DEComposeTextView *textView;
-@property (strong, readwrite, nonatomic) NSString *placeholderText;
 @property (strong, readonly, nonatomic) UINavigationBar *navigationBar;
 @property (strong, readonly, nonatomic) UINavigationItem *navigationItem;
-@property (strong, readwrite, nonatomic) UIColor *tintColor;
-@property (strong, readwrite, nonatomic) UIImage *attachmentImage;
-@property (weak, readonly, nonatomic) UIViewController *rootViewController;
-@property (strong, readwrite, nonatomic) UIView *accessoryView;
-@property (strong, readwrite, nonatomic) UIView *inputView;
+@property (strong, nonatomic) UIColor *tintColor;
+@property (strong, nonatomic) UIView *accessoryView;
+@property (strong, nonatomic) UIView *inputView;
 
 - (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance;
 - (void)setTextViewTintColor:(UIColor *)color;
-
-- (void)presentFromRootViewController;
-- (void)presentFromViewController:(UIViewController *)controller;
 
 @end
 

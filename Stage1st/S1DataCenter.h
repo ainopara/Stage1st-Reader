@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class S1Tracer;
 @class S1Topic;
 @class S1Floor;
@@ -17,7 +19,7 @@
 + (S1DataCenter *)sharedDataCenter;
 
 // Mahjong Face
-@property (strong, nonatomic) NSMutableArray *mahjongFaceHistoryArray;
+@property (strong, nonatomic, nullable) NSMutableArray *mahjongFaceHistoryArray;
 
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
@@ -77,3 +79,5 @@
 - (void)removeTopicBeforeDate:(NSDate *)date;
 
 @end
+
+NS_ASSUME_NONNULL_END
