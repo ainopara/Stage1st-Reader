@@ -18,5 +18,8 @@ target "Stage1st" do
     pod 'Crashlytics'
     pod 'DTCoreText'
     pod 'SnapKit'
+    pod 'Reveal-iOS-SDK', :configurations => ['Debug']
+    pod 'Alamofire'
+    pod 'AlamofireImage'
 end
 

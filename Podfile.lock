@@ -1,30 +1,33 @@
 PODS:
-  - 1PasswordExtension (1.8)
+  - 1PasswordExtension (1.8.1)
   - ActionSheetPicker-3.0 (2.0.5)
-  - AFNetworking (3.0.4):
-    - AFNetworking/NSURLSession (= 3.0.4)
-    - AFNetworking/Reachability (= 3.0.4)
-    - AFNetworking/Security (= 3.0.4)
-    - AFNetworking/Serialization (= 3.0.4)
-    - AFNetworking/UIKit (= 3.0.4)
-  - AFNetworking/NSURLSession (3.0.4):
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.0.4)
-  - AFNetworking/Security (3.0.4)
-  - AFNetworking/Serialization (3.0.4)
-  - AFNetworking/UIKit (3.0.4):
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - CocoaLumberjack (2.2.0):
-    - CocoaLumberjack/Default (= 2.2.0)
-    - CocoaLumberjack/Extensions (= 2.2.0)
-  - CocoaLumberjack/Core (2.2.0)
-  - CocoaLumberjack/Default (2.2.0):
+  - Alamofire (3.3.1)
+  - AlamofireImage (2.4.0):
+    - Alamofire (~> 3.3)
+  - CocoaLumberjack (2.3.0):
+    - CocoaLumberjack/Default (= 2.3.0)
+    - CocoaLumberjack/Extensions (= 2.3.0)
+  - CocoaLumberjack/Core (2.3.0)
+  - CocoaLumberjack/Default (2.3.0):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.2.0):
+  - CocoaLumberjack/Extensions (2.3.0):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (2.2.0):
+  - CocoaLumberjack/Swift (2.3.0):
     - CocoaLumberjack/Extensions
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
@@ -33,21 +36,22 @@ PODS:
     - DTFoundation/DTAnimatedGIF (~> 1.7.5)
     - DTFoundation/DTHTMLParser (~> 1.7.5)
     - DTFoundation/UIKit (~> 1.7.5)
-  - DTFoundation/Core (1.7.9)
-  - DTFoundation/DTAnimatedGIF (1.7.9)
-  - DTFoundation/DTHTMLParser (1.7.9):
+  - DTFoundation/Core (1.7.10)
+  - DTFoundation/DTAnimatedGIF (1.7.10)
+  - DTFoundation/DTHTMLParser (1.7.10):
     - DTFoundation/Core
-  - DTFoundation/UIKit (1.7.9):
+  - DTFoundation/UIKit (1.7.10):
     - DTFoundation/Core
-  - Fabric (1.6.6)
-  - FMDB (2.6):
-    - FMDB/standard (= 2.6)
-  - FMDB/standard (2.6)
+  - Fabric (1.6.7)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
-  - Masonry (0.6.4)
+  - Masonry (1.0.0)
   - Reachability (3.2)
-  - SnapKit (0.19.1)
+  - Reveal-iOS-SDK (1.6.2)
+  - SnapKit (0.20.0)
   - SVWebViewController (1.0)
   - YapDatabase (2.8.3):
     - YapDatabase/Standard (= 2.8.3)
@@ -97,6 +101,8 @@ DEPENDENCIES:
   - 1PasswordExtension
   - ActionSheetPicker-3.0
   - AFNetworking
+  - Alamofire
+  - AlamofireImage
   - CocoaLumberjack/Swift
   - Crashlytics
   - DTCoreText
@@ -106,6 +112,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
+  - Reveal-iOS-SDK
   - SnapKit
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
@@ -136,20 +143,23 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 627d5aecf210c7636968faf5a4c3546c9531385b
+  1PasswordExtension: 00d6f4caae77c19ba33045b8569fbeb9689f0d1d
   ActionSheetPicker-3.0: 8312778b6815578e6a86d630fbcf31dc94c534e7
-  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
-  CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
+  AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
+  CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
-  DTFoundation: 70a0765e3596f82dd421832e95c65e2166eb3102
-  Fabric: 1abc1e59f11fa39ede6f690ef7309d8563e3ec59
-  FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
+  DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
+  Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
+  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
+  SnapKit: 5fce3c1bbbf1fbd31de9aa92f33eb9fa03f15650
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 15b6867a07ff30eac3af28794cd2262b4d0ca4ca
 
