@@ -8,6 +8,7 @@
 
 #import "S1NetworkManager.h"
 #import "S1HTTPSessionManager.h"
+#import <AFNetworking/AFURLRequestSerialization.h>
 
 @interface S1NetworkManager ()
 
@@ -124,6 +125,56 @@
     [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
 }
 
+#pragma mark - Login with seccode
+
++ (void)getSechashSuccess:(void (^)(NSURLSessionDataTask *, id))success
+                  failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/index.php";
+    NSDictionary *params = @{@"module": @"secure",
+                             @"version": @1,
+                             @"mobile": @"no",
+                             @"type": @"login"};
+    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
+}
+
++ (void)getSeccodeImageWithSechash:(NSString *)sechash
+                           Success:(void (^)(NSURLSessionDataTask *, id))success
+                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSString *url = @"api/mobile/index.php";
+    NSDictionary *params = @{@"module": @"seccode",
+                             @"version": @1,
+                             @"mobile": @"no",
+                             @"sechash": sechash};
+    [[S1HTTPSessionManager sharedImageClient] GET:url parameters:params progress:nil success:success failure:failure];
+
+}
+
++ (void)postLoginForUsername:(NSString *)username
+                    password:(NSString *)password
+                  questionID:(NSNumber *)questionID
+                      answer:(NSString *)answer
+                    formhash:(NSString *)formhash
+                     sechash:(NSString *)sechash
+                  andSeccode:(NSString *)seccode
+                     success:(void (^)(NSURLSessionDataTask *, id))success
+                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
+    NSDictionary *queryParams = @{@"module": @"login",
+                                  @"version": @1,
+                                  @"loginsubmit": @"yes",
+                                  @"loginfield": @"auto",
+                                  @"seccodeverify": seccode,
+                                  @"sechash": sechash,
+                                  @"mobile": @"no"};
+    AFHTTPRequestSerializer *serilizer = [AFHTTPRequestSerializer serializer];
+    NSMutableURLRequest *request = [serilizer requestWithMethod:@"GET" URLString:@"api/mobile/index.php" parameters:queryParams error:nil];
+    NSDictionary *params = @{@"username": username,
+                             @"password": password,
+                             @"questionid": questionID,
+                             @"answer": answer,
+                             @"formhash": formhash};
+    NSString *url = [[request URL] absoluteString];
+    [[S1HTTPSessionManager sharedJSONClient] POST:url parameters:params progress:nil success:success failure:failure];
+}
 
 #pragma mark - Reply
 

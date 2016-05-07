@@ -9,23 +9,27 @@
 #import "S1LoginViewController.h"
 #import "S1NetworkManager.h"
 #import "AFNetworkActivityIndicatorManager.h"
-#import "OnePasswordExtension.h"
-
-#define _DEFAULT_TEXT_FIELD_RECT (CGRect){{120.0f, 11.0f}, {170.0f, 21.0f}}
+#import <OnePasswordExtension/OnePasswordExtension.h>
 
 @interface S1LoginViewController () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
-@property (weak, nonatomic) IBOutlet UIButton *onepasswordSigninButton;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
+
+@property (nonatomic, strong) UIButton *onepasswordSigninButton;
+
+@property (nonatomic, strong) UIButton *questionSelectButton;
+@property (nonatomic, strong) UITextField *answerField;
+
+@property (nonatomic, strong) UIImageView *seccodeImageView;
+@property (nonatomic, strong) UITextField *seccodeField;
 
 @end
 
 @implementation S1LoginViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -33,23 +37,25 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     [self.usernameField setDelegate:self];
     self.usernameField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserIDCached"];
     [self.passwordField setDelegate:self];
-    
+
+    self.onepasswordSigninButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.onepasswordSigninButton setImage:[UIImage imageNamed:@"OnePasswordButton"] forState:UIControlStateNormal];
+    [self.onepasswordSigninButton addTarget:self action:@selector(findLoginFrom1Password:) forControlEvents:UIControlEventTouchUpInside];
+    self.passwordField.rightView = self.onepasswordSigninButton;
+
     [self updateUI];
 }
 
 
 #pragma mark - UITextField Delegate
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if ([textField.placeholder isEqualToString:NSLocalizedString(@"LoginView_Username", @"Username")]) {
         [self.passwordField becomeFirstResponder];
     } else if ([textField.placeholder isEqualToString:NSLocalizedString(@"LoginView_Password", @"Password")]) {
@@ -59,10 +65,24 @@
     return YES;
 }
 
-#pragma mark - Helper
+- (void)updateUI {
+  NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
 
-- (void)clearCookiers
-{
+  if (inLoginStateID) {
+    [self.usernameField setEnabled:NO];
+    [self.passwordField setHidden:YES];
+    [self.loginButton setTitle:NSLocalizedString(@"SettingView_Logout", @"Logout") forState:UIControlStateNormal];
+  } else {
+    [self.usernameField setEnabled:YES];
+    [self.passwordField setHidden:NO];
+    [self.loginButton setTitle:NSLocalizedString(@"SettingView_Login", @"Login") forState:UIControlStateNormal];
+    [self.onepasswordSigninButton setHidden:![[OnePasswordExtension sharedExtension] isAppExtensionAvailable]];
+  }
+}
+
+#pragma mark - Action
+
+- (void)clearCookies {
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSArray *cookies = [cookieStorage cookies];
     [cookies enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -71,28 +91,12 @@
     }];
 }
 
-- (void)updateUI {
-    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    
-    if (inLoginStateID) {
-        [self.usernameField setEnabled:NO];
-        [self.passwordField setHidden:YES];
-        [self.loginButton setTitle:NSLocalizedString(@"SettingView_Logout", @"Logout") forState:UIControlStateNormal];
-        [self.onepasswordSigninButton setHidden:YES];
-    } else {
-        [self.usernameField setEnabled:YES];
-        [self.passwordField setHidden:NO];
-        [self.loginButton setTitle:NSLocalizedString(@"SettingView_Login", @"Login") forState:UIControlStateNormal];
-        [self.onepasswordSigninButton setHidden:![[OnePasswordExtension sharedExtension] isAppExtensionAvailable]];
-    }
-}
-
-- (IBAction)findLoginFrom1Password:(UIButton *)sender {
+- (void)findLoginFrom1Password:(UIButton *)sender {
     __weak __typeof__(self) weakSelf = self;
     [[OnePasswordExtension sharedExtension] findLoginForURLString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
         if (!loginDict) {
             if (error.code != AppExtensionErrorCodeCancelledByUser) {
-                DDLogWarn(@"Error invoking 1Password App Extension for find login: %@", error);
+                DDLogInfo(@"Error invoking 1Password App Extension for find login: %@", error);
             }
             return;
         }
@@ -107,7 +111,7 @@
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
         //Logout
-        [self clearCookiers];
+        [self clearCookies];
         [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
         [self updateUI];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Logout", @"") message:NSLocalizedString(@"LoginView_Logout_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
@@ -135,7 +139,7 @@
                 } else {
                     [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                     [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
-                    [strongMe clearCookiers];
+                    [strongMe clearCookies];
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                     [alertView show];
                 }
@@ -146,7 +150,7 @@
                 __strong __typeof__(self) strongMe = weakSelf;
                 [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"InLoginStateID"];
                 [[NSUserDefaults standardUserDefaults] setValue:strongMe.usernameField.text forKey:@"UserIDCached"];
-                [strongMe clearCookiers];
+                [strongMe clearCookies];
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SettingView_Login", @"") message:NSLocalizedString(@"LoginView_Get_Login_Status_Failure_Message", @"") delegate:nil cancelButtonTitle:NSLocalizedString(@"Message_OK", @"") otherButtonTitles:nil];
                 [alertView show];
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];

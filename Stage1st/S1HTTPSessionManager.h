@@ -14,4 +14,6 @@
 
 + (S1HTTPSessionManager *)sharedJSONClient;
 
++ (S1HTTPSessionManager *)sharedImageClient;
+
 @end
