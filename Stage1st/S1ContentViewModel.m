@@ -142,7 +142,8 @@
     }
     NSString *colorCSS = [S1ContentViewModel renderColorCSS];
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
+    NSString *fastClickPath = [[NSBundle mainBundle] pathForResource:@"fastclick" ofType:@"js"];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, finalString, jqueryPath, fastClickPath];
     return threadPage;
 }
 
@@ -235,7 +236,8 @@
     }
     NSString *colorCSS = [S1ContentViewModel renderColorCSS];
     NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, jqueryPath, finalString];
+    NSString *fastClickPath = [[NSBundle mainBundle] pathForResource:@"fastclick" ofType:@"js"];
+    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, finalString, jqueryPath, fastClickPath];
     return threadPage;
 }
 

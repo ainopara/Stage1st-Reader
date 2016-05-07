@@ -38,6 +38,7 @@
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
+		865F522E1CDE087B001EA74D /* fastclick.js in Resources */ = {isa = PBXBuildFile; fileRef = 865F522D1CDE087B001EA74D /* fastclick.js */; };
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		8664D3E61A87A973006575B3 /* content_ipad_20px.css in Resources */ = {isa = PBXBuildFile; fileRef = 8664D3E41A87A973006575B3 /* content_ipad_20px.css */; };
@@ -158,6 +159,7 @@
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Stage1st/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceView.h; path = Stage1st/S1MahjongFaceView.h; sourceTree = "<group>"; };
 		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1MahjongFaceView.m; path = Stage1st/S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		865F522D1CDE087B001EA74D /* fastclick.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fastclick.js; sourceTree = "<group>"; };
 		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		8664D3E41A87A973006575B3 /* content_ipad_20px.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = content_ipad_20px.css; path = Stage1st/content_ipad_20px.css; sourceTree = "<group>"; };
@@ -588,6 +590,7 @@
 				8664D3E41A87A973006575B3 /* content_ipad_20px.css */,
 				8664D3E51A87A973006575B3 /* content_ipad_22px.css */,
 				86040B7819DE1E27004BF2BC /* jquery-2.1.1.min.js */,
+				865F522D1CDE087B001EA74D /* fastclick.js */,
 				C083351516E34DCF0035C1AA /* ForumKeyMap.plist */,
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
@@ -748,6 +751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */,
+				865F522E1CDE087B001EA74D /* fastclick.js in Resources */,
 				86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */,
