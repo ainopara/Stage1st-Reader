@@ -40,9 +40,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="Rga-Ra-1eA" kind="show" id="YGp-xg-8ZC"/>
-                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="ZB5-71-yaj" style="IBUITableViewCellStyleDefault" id="qM9-kQ-VM0">
                                         <rect key="frame" x="0.0" y="143" width="600" height="44"/>
@@ -402,59 +399,6 @@
             </objects>
             <point key="canvasLocation" x="1135" y="384"/>
         </scene>
-        <!--Login-->
-        <scene sceneID="xnn-MK-X1t">
-            <objects>
-                <viewController title="Login" id="Rga-Ra-1eA" customClass="S1LoginViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Pio-bT-UGi"/>
-                        <viewControllerLayoutGuide type="bottom" id="sYV-ak-Yg2"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="xrK-7t-YiZ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a7E-Z0-WQq">
-                                <rect key="frame" x="150" y="170" width="300" height="30"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <color key="textColor" red="0.21960784494876862" green="0.32941177487373352" blue="0.52941179275512695" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
-                            </textField>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8hF-SF-9fr">
-                                <rect key="frame" x="150" y="128" width="300" height="30"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <color key="textColor" red="0.21960784494876862" green="0.32941177487373352" blue="0.52941179275512695" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="98" y="128" width="200" height="30"/>
-                                </variation>
-                            </textField>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="swq-PA-Vhc">
-                                <rect key="frame" x="240" y="229" width="120" height="30"/>
-                                <color key="backgroundColor" red="0.74400001764297485" green="0.77600002288818359" blue="0.69599997997283936" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Login">
-                                    <color key="titleColor" white="0.15000000596046448" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="login:" destination="Rga-Ra-1eA" eventType="touchUpInside" id="mcU-AS-1y1"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.82200002670288086" green="0.8529999852180481" blue="0.75599998235702515" alpha="1" colorSpace="calibratedRGB"/>
-                    </view>
-                    <connections>
-                        <outlet property="loginButton" destination="swq-PA-Vhc" id="fax-G1-1pu"/>
-                        <outlet property="passwordField" destination="a7E-Z0-WQq" id="gD3-ys-c23"/>
-                        <outlet property="usernameField" destination="8hF-SF-9fr" id="eLV-6t-gCS"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HWb-S9-a1u" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1863" y="32"/>
-        </scene>
         <!--Forum Order-->
         <scene sceneID="Kz2-0v-joz">
             <objects>
@@ -491,7 +435,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EF1-lH-RXY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1863" y="730"/>
+            <point key="canvasLocation" x="1847" y="384"/>
         </scene>
         <!--Cloud Kit View Controller-->
         <scene sceneID="VSd-a8-K5k">
