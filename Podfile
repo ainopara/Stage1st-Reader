@@ -21,5 +21,6 @@ target "Stage1st" do
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
     pod 'Alamofire'
     pod 'AlamofireImage'
+    pod 'JASON'
 end
 

@@ -46,6 +46,7 @@ PODS:
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
+  - JASON (2.2)
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
   - Masonry (1.0.0)
@@ -108,6 +109,7 @@ DEPENDENCIES:
   - DTCoreText
   - Fabric
   - FMDB
+  - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
@@ -154,6 +156,7 @@ SPEC CHECKSUMS:
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: b529bb169217897b6354d4b56b1fada6d475b13d

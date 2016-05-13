@@ -9,4 +9,18 @@
 
 @interface S1LoginViewController : UIViewController
 
+@property (nonatomic, strong) UITextField *usernameField;
+@property (nonatomic, strong) UITextField *passwordField;
+@property (nonatomic, strong) UIButton *loginButton;
+
+@property (nonatomic, strong) UIButton *onepasswordSigninButton;
+
+@property (nonatomic, strong) UIButton *questionSelectButton;
+@property (nonatomic, strong) UITextField *answerField;
+
+@property (nonatomic, strong) UIImageView *seccodeImageView;
+@property (nonatomic, strong) UITextField *seccodeField;
+
+- (void)updateUI;
+
 @end

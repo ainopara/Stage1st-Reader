@@ -18,7 +18,7 @@
 #import "REComposeViewController.h"
 #import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
-#import "ActionSheetStringPicker.h"
+#import <ActionSheetPicker_3_0/ActionSheetStringPicker.h>
 #import "JTSSimpleImageDownloader.h"
 #import "JTSImageViewController.h"
 #import "S1MahjongFaceView.h"

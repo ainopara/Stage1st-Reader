@@ -30,6 +30,8 @@
 		862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A11C8AB0000068F75F /* PullToActionController.swift */; };
 		862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */; };
 		862DB7AA1C8AB1870068F75F /* S1User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A91C8AB1870068F75F /* S1User.swift */; };
+		862DC5571CDF6EB20094AF9F /* JASON+Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DC5561CDF6EB20094AF9F /* JASON+Alamofire.swift */; };
+		862DC5591CDF7DF70094AF9F /* S1LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DC5581CDF7DF70094AF9F /* S1LoginViewController.swift */; };
 		862EA3AF1C9D5D5600AE2522 /* S1TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862EA3AE1C9D5D5600AE2522 /* S1TopicListViewController.swift */; };
 		862F51BD189136000038A289 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51B8189136000038A289 /* TFHpple.m */; };
 		862F51BE189136000038A289 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 862F51BA189136000038A289 /* TFHppleElement.m */; };
@@ -75,6 +77,7 @@
 		86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */; };
+		86FEACE61CDF5F5B00ECD694 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* LoginManager.swift */; };
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
 		86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */; };
 		86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3271CB95F1500EF742A /* ContentViewController.swift */; };
@@ -146,6 +149,8 @@
 		862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
 		862DB7A91C8AB1870068F75F /* S1User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1User.swift; path = Stage1st/S1User.swift; sourceTree = "<group>"; };
 		862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		862DC5561CDF6EB20094AF9F /* JASON+Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JASON+Alamofire.swift"; sourceTree = "<group>"; };
+		862DC5581CDF7DF70094AF9F /* S1LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1LoginViewController.swift; sourceTree = "<group>"; };
 		862EA3AE1C9D5D5600AE2522 /* S1TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1TopicListViewController.swift; path = Stage1st/S1TopicListViewController.swift; sourceTree = "<group>"; };
 		862F51B7189136000038A289 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Vendors/TFHpple/TFHpple.h; sourceTree = "<group>"; };
 		862F51B8189136000038A289 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Vendors/TFHpple/TFHpple.m; sourceTree = "<group>"; };
@@ -214,6 +219,7 @@
 		86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorViewModel.swift; path = Stage1st/FloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorCell.swift; path = Stage1st/S1QuoteFloorCell.swift; sourceTree = "<group>"; };
+		86FEACE51CDF5F5B00ECD694 /* LoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginManager.swift; path = Stage1st/LoginManager.swift; sourceTree = "<group>"; };
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Stage1st/SettingsViewController.swift; sourceTree = "<group>"; };
 		86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TopicListViewController.swift; path = Stage1st/TopicListViewController.swift; sourceTree = "<group>"; };
 		86FFD3271CB95F1500EF742A /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentViewController.swift; path = Stage1st/ContentViewController.swift; sourceTree = "<group>"; };
@@ -585,9 +591,12 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				86D20FE31CA6B64A003F2691 /* Logger */,
+				862DC5561CDF6EB20094AF9F /* JASON+Alamofire.swift */,
+				86221B851CA65E3600015522 /* S1Utility.swift */,
 				862DB7A01C8AB0000068F75F /* ColorManager.swift */,
 				862DB7A11C8AB0000068F75F /* PullToActionController.swift */,
+				868A98041CA7F22500498C38 /* AnimationButton.swift */,
+				86D20FE31CA6B64A003F2691 /* Logger */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,
@@ -595,8 +604,6 @@
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
-				86221B851CA65E3600015522 /* S1Utility.swift */,
-				868A98041CA7F22500498C38 /* AnimationButton.swift */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -671,8 +678,10 @@
 				C09587A416CB623E007E0119 /* S1SettingViewController.h */,
 				C09587A516CB623E007E0119 /* S1SettingViewController.m */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
+				86FEACE51CDF5F5B00ECD694 /* LoginManager.swift */,
 				C083353816E503F60035C1AA /* S1LoginViewController.h */,
 				C083353916E503F60035C1AA /* S1LoginViewController.m */,
+				862DC5581CDF7DF70094AF9F /* S1LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
 				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
@@ -932,6 +941,8 @@
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86221B861CA65E3600015522 /* S1Utility.swift in Sources */,
+				86FEACE61CDF5F5B00ECD694 /* LoginManager.swift in Sources */,
+				862DC5591CDF7DF70094AF9F /* S1LoginViewController.swift in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
@@ -943,6 +954,7 @@
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				862EA3AF1C9D5D5600AE2522 /* S1TopicListViewController.swift in Sources */,
+				862DC5571CDF6EB20094AF9F /* JASON+Alamofire.swift in Sources */,
 				862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */,
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
