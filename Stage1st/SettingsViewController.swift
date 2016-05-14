@@ -15,8 +15,9 @@ extension S1SettingViewController {
 
 extension S1SettingViewController {
     func applicationVersion() -> String {
-        guard let shortVersionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString"),
-            let versionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") else {
+        guard let
+            shortVersionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString"),
+            versionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") else {
                 return "?"
         }
         return "\(shortVersionString) (\(versionString))"

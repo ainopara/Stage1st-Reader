@@ -8,7 +8,7 @@
 
 #import "S1LoginViewController.h"
 #import "S1NetworkManager.h"
-#import "AFNetworkActivityIndicatorManager.h"
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <OnePasswordExtension/OnePasswordExtension.h>
 #import <ActionSheetPicker_3_0/ActionSheetStringPicker.h>
 #import <Masonry/Masonry.h>

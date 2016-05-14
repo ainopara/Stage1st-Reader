@@ -54,48 +54,20 @@ PODS:
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (0.21.0)
   - SVWebViewController (1.0)
-  - YapDatabase (2.8.3):
-    - YapDatabase/Standard (= 2.8.3)
-  - YapDatabase/Standard (2.8.3):
-    - YapDatabase/Standard/Core (= 2.8.3)
-    - YapDatabase/Standard/Extensions (= 2.8.3)
-  - YapDatabase/Standard/Core (2.8.3):
+  - YapDatabase/Standard/Core (2.9.1):
     - CocoaLumberjack (~> 2)
-  - YapDatabase/Standard/Extensions (2.8.3):
+  - YapDatabase/Standard/Extensions/CloudKit (2.9.1):
     - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/CloudKit (= 2.8.3)
-    - YapDatabase/Standard/Extensions/ConnectionProxy (= 2.8.3)
-    - YapDatabase/Standard/Extensions/FilteredViews (= 2.8.3)
-    - YapDatabase/Standard/Extensions/FullTextSearch (= 2.8.3)
-    - YapDatabase/Standard/Extensions/Hooks (= 2.8.3)
-    - YapDatabase/Standard/Extensions/Relationships (= 2.8.3)
-    - YapDatabase/Standard/Extensions/RTreeIndex (= 2.8.3)
-    - YapDatabase/Standard/Extensions/SearchResults (= 2.8.3)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.8.3)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.8.3)
-    - YapDatabase/Standard/Extensions/Views (= 2.8.3)
-  - YapDatabase/Standard/Extensions/CloudKit (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionProxy (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/FilteredViews (2.8.3):
+  - YapDatabase/Standard/Extensions/FilteredViews (2.9.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/FullTextSearch (2.8.3):
+  - YapDatabase/Standard/Extensions/FullTextSearch (2.9.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Hooks (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Relationships (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/RTreeIndex (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/SearchResults (2.8.3):
+  - YapDatabase/Standard/Extensions/SearchResults (2.9.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/FullTextSearch
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/SecondaryIndex (2.8.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Views (2.8.3):
+  - YapDatabase/Standard/Extensions/Views (2.9.1):
     - YapDatabase/Standard/Core
 
 DEPENDENCIES:
@@ -117,7 +89,9 @@ DEPENDENCIES:
   - Reveal-iOS-SDK
   - SnapKit
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
-  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YapDatabase/Standard/Extensions/CloudKit (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YapDatabase/Standard/Extensions/FilteredViews (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YapDatabase/Standard/Extensions/SearchResults (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -141,7 +115,7 @@ CHECKOUT OPTIONS:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :commit: b175bcac51c2c72b271723cb793039cb749b7d7e
+    :commit: 486a9982476317764c3b5c10d3158018ddf8ab2c
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -164,8 +138,8 @@ SPEC CHECKSUMS:
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
-  YapDatabase: 15b6867a07ff30eac3af28794cd2262b4d0ca4ca
+  YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: feaf83cd16d075095fc03cc56a477068ae5762ec
+PODFILE CHECKSUM: 9fb0770ad0dac27ce594690d89020c37132ffaa9
 
 COCOAPODS: 1.0.0

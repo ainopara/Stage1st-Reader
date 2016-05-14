@@ -25,7 +25,9 @@ final class LoginManager: NSObject {
 
     let baseURL = "http://bbs.saraba1st.com/2b"
 
-    func checkLoginType(noSechashBlock noSechashBlock: () -> Void, hasSeccodeBlock: (sechash: String) -> Void, failureBlock: (error: NSError) -> Void) {
+    func checkLoginType(noSechashBlock noSechashBlock: () -> Void,
+                                       hasSeccodeBlock: (sechash: String) -> Void,
+                                       failureBlock: (error: NSError) -> Void) {
         clearCookies()
         let parameters: [String: AnyObject] = ["module": "secure", "version": 1, "mobile": "no", "type": "login"]
         Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
@@ -43,7 +45,12 @@ final class LoginManager: NSObject {
         }
     }
 
-    func login(username: String, password: String, secureQuestionNumber: Int, secureQuestionAnswer: String, successBlock: (message: String?) -> Void, failureBlock: (error: NSError) -> Void) {
+    func login(username: String,
+               password: String,
+               secureQuestionNumber: Int,
+               secureQuestionAnswer: String,
+               successBlock: (message: String?) -> Void,
+               failureBlock: (error: NSError) -> Void) {
         let parameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
         Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)

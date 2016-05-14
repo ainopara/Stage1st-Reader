@@ -22,7 +22,7 @@ class S1Utility: NSObject {
     }
 
     class func screenShot(view: UIView, rect: CGRect) -> UIImage? {
-        guard let originalScreenShot = self.screenShot(view), let processingCGImage = CGImageCreateWithImageInRect(originalScreenShot.CGImage, rect) else {
+        guard let originalScreenShot = self.screenShot(view), processingCGImage = CGImageCreateWithImageInRect(originalScreenShot.CGImage, rect) else {
             return nil
         }
         return UIImage(CGImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)

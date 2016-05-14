@@ -121,7 +121,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
         let result: String? = self.webView?.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
         DDLogDebug("[QuoteFloorVC] Touch element ID: \(elementID)")
-        if let result1 = result, let result2 = Double(result1) {
+        if let result1 = result, result2 = Double(result1) {
             return CGFloat(result2)
         }
         return 0

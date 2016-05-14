@@ -10,7 +10,7 @@ import UIKit
 
 extension S1LoginViewController {
     func tryLogin() {
-        guard let username = self.usernameField.text, let password = self.passwordField.text where username != "" && password != "" else {
+        guard let username = self.usernameField.text, password = self.passwordField.text where username != "" && password != "" else {
             self.alertMessage("用户名和密码不能为空")
             return
         }
@@ -34,7 +34,10 @@ extension S1LoginViewController {
             self.alertMessage(error.localizedDescription)
         })
     }
+}
 
+// MARK: Helper
+extension S1LoginViewController {
     private func alertMessage(message: String) {
         let alertController = UIAlertController(title: NSLocalizedString("SettingView_Login", comment:""), message: message, preferredStyle: .Alert)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: nil))

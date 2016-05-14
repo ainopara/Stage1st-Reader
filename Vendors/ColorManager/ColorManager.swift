@@ -27,11 +27,11 @@ public class APColorManager: NSObject {
         let paletteName = NSUserDefaults.standardUserDefaults().boolForKey("NightMode") == true ? "DarkPalette2": "DefaultPalette"
 
         let palettePath = NSBundle.mainBundle().pathForResource(paletteName, ofType: "plist")
-        if let palettePath = palettePath, let palette = NSDictionary(contentsOfFile: palettePath) {
+        if let palettePath = palettePath, palette = NSDictionary(contentsOfFile: palettePath) {
             self.palette = palette
         }
         let colorMapPath = NSBundle.mainBundle().pathForResource("ColorMap", ofType: "plist")
-        if let colorMapPath = colorMapPath, let colorMap = NSDictionary(contentsOfFile: colorMapPath) {
+        if let colorMapPath = colorMapPath, colorMap = NSDictionary(contentsOfFile: colorMapPath) {
             self.colorMap = colorMap
         }
         super.init()
@@ -89,7 +89,7 @@ private extension APColorManager {
 
     func colorInPaletteWithID(paletteID: String) -> UIColor {
         let colorString = self.palette.valueForKey(paletteID) as? String
-        if let colorString = colorString, let color = S1Global.colorFromHexString(colorString) {
+        if let colorString = colorString, color = S1Global.colorFromHexString(colorString) {
             return color
         } else {
             return self.fallbackColor
