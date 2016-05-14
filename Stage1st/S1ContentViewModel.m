@@ -103,7 +103,7 @@
         }
         
         //generate page
-        NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
+        NSString *floorTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
         
@@ -115,34 +115,34 @@
         finalString = [finalString stringByAppendingString:output];
     }
     finalString = [S1ContentViewModel processHTMLString:finalString];
-    NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSString *threadTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
     NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
     NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
     //CSS
-    NSString *baseCSS = [[NSBundle mainBundle] pathForResource:@"content_base" ofType:@"css"];
+    NSString *baseCSS = [[S1ContentViewModel templateBundle] pathForResource:@"content_base" ofType:@"css"];
     NSString *cssPath = nil;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"15px"]) {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_15px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_15px" ofType:@"css"];
         } else if ([fontSizeKey isEqualToString:@"17px"]){
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_17px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_17px" ofType:@"css"];
         } else {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_19px" ofType:@"css"];
         }
     } else {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"18px"]) {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
         } else if ([fontSizeKey isEqualToString:@"20px"]){
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
         } else {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
         }
     }
     NSString *colorCSS = [S1ContentViewModel renderColorCSS];
-    NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *fastClickPath = [[NSBundle mainBundle] pathForResource:@"fastclick" ofType:@"js"];
+    NSString *jqueryPath = [[S1ContentViewModel templateBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
+    NSString *fastClickPath = [[S1ContentViewModel templateBundle] pathForResource:@"fastclick" ofType:@"js"];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, finalString, jqueryPath, fastClickPath];
     return threadPage;
 }
@@ -197,7 +197,7 @@
         }
         
         //generate page
-        NSString *floorTemplatePath = [[NSBundle mainBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
+        NSString *floorTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
         NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
         NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
         
@@ -209,34 +209,34 @@
         finalString = [finalString stringByAppendingString:output];
     }
     finalString = [S1ContentViewModel processHTMLString:finalString];
-    NSString *threadTemplatePath = [[NSBundle mainBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
+    NSString *threadTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
     NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
     NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
     //CSS
-    NSString *baseCSS = [[NSBundle mainBundle] pathForResource:@"content_base" ofType:@"css"];
+    NSString *baseCSS = [[S1ContentViewModel templateBundle] pathForResource:@"content_base" ofType:@"css"];
     NSString *cssPath = nil;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"15px"]) {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_15px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_15px" ofType:@"css"];
         } else if ([fontSizeKey isEqualToString:@"17px"]){
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_17px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_17px" ofType:@"css"];
         } else {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_19px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_19px" ofType:@"css"];
         }
     } else {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"18px"]) {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
         } else if ([fontSizeKey isEqualToString:@"20px"]){
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
         } else {
-            cssPath = [[NSBundle mainBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
+            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
         }
     }
     NSString *colorCSS = [S1ContentViewModel renderColorCSS];
-    NSString *jqueryPath = [[NSBundle mainBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *fastClickPath = [[NSBundle mainBundle] pathForResource:@"fastclick" ofType:@"js"];
+    NSString *jqueryPath = [[S1ContentViewModel templateBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
+    NSString *fastClickPath = [[S1ContentViewModel templateBundle] pathForResource:@"fastclick" ofType:@"js"];
     NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, finalString, jqueryPath, fastClickPath];
     return threadPage;
 }
@@ -297,7 +297,7 @@
 }
 
 + (NSString *)renderColorCSS {
-    NSString *CSSTemplatePath = [[NSBundle mainBundle] pathForResource:@"color" ofType:@"css"];
+    NSString *CSSTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"color" ofType:@"css"];
     NSData *CSSTemplateData = [NSData dataWithContentsOfFile:CSSTemplatePath];
     NSString *CSSTemplate = [[NSString alloc] initWithData:CSSTemplateData  encoding:NSUTF8StringEncoding];
     CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[APColorManager sharedInstance] htmlColorStringWithID:@"5"]];

@@ -3,10 +3,14 @@ platform :ios, "8.0"
 use_frameworks!
 
 target "Stage1st" do
+
     # Network
     pod 'AFNetworking'
     pod 'Alamofire'
     pod 'AlamofireImage'
+
+    # Model
+    pod 'JASON'
 
     # UI
     pod 'ActionSheetPicker-3.0'
@@ -20,14 +24,10 @@ target "Stage1st" do
 
     # Database
     pod 'FMDB'
-    pod 'YapDatabase/Standard/Extensions/SearchResults', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
-    pod 'YapDatabase/Standard/Extensions/FilteredViews', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
-    pod 'YapDatabase/Standard/Extensions/CloudKit', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
-
-    # Model
-    pod 'JASON'
+    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
 
     # Debug
+    pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
     pod 'Fabric'
     pod 'Crashlytics'

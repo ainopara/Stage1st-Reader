@@ -31,4 +31,9 @@ extension S1ContentViewModel {
         }
         return result
     }
+
+    static func templateBundle() -> NSBundle {
+        let templateBundleURL = NSBundle.mainBundle().URLForResource("WebTemplate", withExtension: "bundle")!
+        return NSBundle.init(URL: templateBundleURL)!
+    }
 }
