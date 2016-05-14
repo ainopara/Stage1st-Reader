@@ -21,7 +21,6 @@
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* S1ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* S1Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* S1Utility.swift */; };
-		8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8627EAB01A204EF80063617C /* S1PushAnimator.m */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
 		862DB79A1C8891070068F75F /* S1UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* S1UserViewController.swift */; };
 		862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A01C8AB0000068F75F /* ColorManager.swift */; };
@@ -49,7 +48,6 @@
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
-		869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF131A18839900EB2BF4 /* S1PopAnimator.m */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette2.plist */; };
@@ -63,6 +61,7 @@
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
+		86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EBF1F01CE720FB00641A2D /* S1Animator.swift */; };
 		86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */; };
@@ -125,8 +124,6 @@
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* S1ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1ContentViewModel.swift; path = Stage1st/S1ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* S1Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Utility.swift; path = Stage1st/S1Utility.swift; sourceTree = "<group>"; };
-		8627EAAF1A204EF80063617C /* S1PushAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PushAnimator.h; path = Stage1st/S1PushAnimator.h; sourceTree = "<group>"; };
-		8627EAB01A204EF80063617C /* S1PushAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PushAnimator.m; path = Stage1st/S1PushAnimator.m; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
 		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* S1UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1UserViewController.swift; path = Stage1st/S1UserViewController.swift; sourceTree = "<group>"; };
@@ -169,8 +166,6 @@
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
 		869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationControllerDelegate.m; path = Stage1st/NavigationControllerDelegate.m; sourceTree = "<group>"; };
-		869CAF121A18839900EB2BF4 /* S1PopAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1PopAnimator.h; path = Stage1st/S1PopAnimator.h; sourceTree = "<group>"; };
-		869CAF131A18839900EB2BF4 /* S1PopAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1PopAnimator.m; path = Stage1st/S1PopAnimator.m; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
@@ -194,6 +189,7 @@
 		86E5F1DC1C8BDD4100DFFF12 /* CrashlyticsLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CrashlyticsLogger.h; path = Vendors/CrashlyticsLogger/CrashlyticsLogger.h; sourceTree = "<group>"; };
 		86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashlyticsLogger.m; path = Vendors/CrashlyticsLogger/CrashlyticsLogger.m; sourceTree = "<group>"; };
 		86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = WebTemplate.bundle; path = Stage1st/WebTemplate.bundle; sourceTree = "<group>"; };
+		86EBF1F01CE720FB00641A2D /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Animator.swift; path = Stage1st/S1Animator.swift; sourceTree = "<group>"; };
 		86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorViewModel.swift; path = Stage1st/FloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorCell.swift; path = Stage1st/S1QuoteFloorCell.swift; sourceTree = "<group>"; };
@@ -333,17 +329,6 @@
 			name = "Content View Controller";
 			sourceTree = "<group>";
 		};
-		864B128E1A4FC4EF00247F72 /* Animation */ = {
-			isa = PBXGroup;
-			children = (
-				869CAF121A18839900EB2BF4 /* S1PopAnimator.h */,
-				869CAF131A18839900EB2BF4 /* S1PopAnimator.m */,
-				8627EAAF1A204EF80063617C /* S1PushAnimator.h */,
-				8627EAB01A204EF80063617C /* S1PushAnimator.m */,
-			);
-			name = Animation;
-			sourceTree = "<group>";
-		};
 		865BE0E91AB6F03B0097BB59 /* S1MahjongFaceViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -366,8 +351,6 @@
 		865C251B1C99110C0075B303 /* View Controller */ = {
 			isa = PBXGroup;
 			children = (
-				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
-				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
 				863580111A945DED007B21AD /* Topic List View Controller */,
 				863580121A945DFF007B21AD /* Content View Controller */,
 				866CDB951B526C4800FBB133 /* Quote Floor View Controller */,
@@ -502,7 +485,9 @@
 				C05286C216D3428E000B0DBD /* S1Parser.m */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
-				864B128E1A4FC4EF00247F72 /* Animation */,
+				869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */,
+				869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */,
+				86EBF1F01CE720FB00641A2D /* S1Animator.swift */,
 				C095877B16CA8DBE007E0119 /* View */,
 				C095873D16CA8A36007E0119 /* Stage1st */,
 				C095873616CA8A36007E0119 /* Frameworks */,
@@ -877,7 +862,6 @@
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
 				86319B411CA69EEB004F7586 /* S1Floor.swift in Sources */,
-				869CAF141A18839900EB2BF4 /* S1PopAnimator.m in Sources */,
 				C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */,
 				867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,
@@ -907,7 +891,6 @@
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
-				8627EAB11A204EF80063617C /* S1PushAnimator.m in Sources */,
 				86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */,
 				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */,
@@ -915,6 +898,7 @@
 				86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
+				86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,

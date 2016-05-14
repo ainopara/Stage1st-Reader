@@ -7,8 +7,6 @@
 //
 
 #import "NavigationControllerDelegate.h"
-#import "S1PopAnimator.h"
-#import "S1PushAnimator.h"
 
 #define _TRIGGER_THRESHOLD 60.0f
 #define _TRIGGER_VELOCITY_THRESHOLD 500.0f
@@ -36,8 +34,8 @@
         self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
         self.colorPanRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.colorPanRecognizer];
-        self.popAnimator = [S1PopAnimator new];
-        self.pushAnimator = [S1PushAnimator new];
+        self.popAnimator = [[S1Animator alloc] initWithDirection:TransitionDirectionPop];
+        self.pushAnimator = [[S1Animator alloc] initWithDirection:TransitionDirectionPush];
     }
     return self;
 }
