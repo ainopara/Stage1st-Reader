@@ -56,7 +56,7 @@ final class LoginManager: NSObject {
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
-                if let messageValue = json["Message"]["messageval"].string where messageValue == "login_succeed" {
+                if let messageValue = json["Message"]["messageval"].string where messageValue.containsString("ogin_succeed") {
                     successBlock(message: json["Message"]["messagestr"].string)
                 } else {
                     let error = NSError(domain: "Stage1stReaderDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])

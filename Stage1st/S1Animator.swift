@@ -35,7 +35,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
         // TODO: remove this workaround once it is no more necessary
         toViewController.view.frame = containerView.bounds
 
-        // FIXME: will take no effect if toViewController clipsToBounds == true
+        // FIXME: will take no effect if toViewController clipsToBounds == true, maybe add the effect to a temp view
         toViewController.view.layer.shadowOpacity = 0.5
         toViewController.view.layer.shadowRadius = 5.0
         toViewController.view.layer.shadowOffset = CGSize(width: -3.0, height: 0.0)

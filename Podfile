@@ -20,6 +20,8 @@ target "Stage1st" do
     pod 'Masonry'
     pod 'SnapKit'
 
+    pod 'pop'
+
     pod 'DTCoreText'
 
     # Database

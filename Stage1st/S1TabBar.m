@@ -16,8 +16,7 @@
     BOOL _needRecalculateButtonWidth;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         _index = -1;
@@ -37,8 +36,7 @@
     return self;
 }
 
-- (void)setKeys:(NSArray *)keys
-{
+- (void)setKeys:(NSArray *)keys {
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [(UIView *)obj removeFromSuperview];
     }];
@@ -54,8 +52,7 @@
     }
 }
 
-- (void)addItems
-{
+- (void)addItems {
     if (_keys.count == 0) return;
     
     __block CGFloat width = 0.0;
@@ -93,8 +90,7 @@
     _lastContentOffset = scrollView.contentOffset.x;
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         CGPoint offset = [self decideOffset:scrollView.contentOffset];
         [scrollView setContentOffset:offset animated:YES];
@@ -105,21 +101,18 @@
     _lastContentOffset = scrollView.contentOffset.x;
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGPoint offset = [self decideOffset:scrollView.contentOffset];
     [scrollView setContentOffset:offset animated:YES];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
     [aScrollView setContentOffset: CGPointMake(aScrollView.contentOffset.x, 0.0f)];
 }
 
 #pragma mark - Action
 
-- (void)tapped:(UIButton *)sender
-{
+- (void)tapped:(UIButton *)sender {
     if (!_enabled) return;
     if (_index >= 0)
         [_buttons[_index] setSelected:NO];
@@ -129,8 +122,7 @@
     return;
 }
 
-- (void)deselectAll
-{
+- (void)deselectAll {
     if (_index >= 0) {
         [[_buttons objectAtIndex:_index] setSelected:NO];
         _index = -1;
@@ -194,8 +186,7 @@
     return offset;
 }
 
-- (CGFloat) determineWidthPerItem
-{
+- (CGFloat) determineWidthPerItem {
     CGFloat screenWidth = self.bounds.size.width;
     CGFloat keyCountWidth = screenWidth / [_keys count];
     CGFloat expectWidth = fmaxf([self.minButtonWidth doubleValue], screenWidth / [self.expectPresentingButtonCount integerValue]);
@@ -219,7 +210,6 @@
     return YES;
 }
 
-
 - (void)updateColor {
     self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"tabbar.background"];
     for (UIButton *btn in _buttons) {
@@ -228,7 +218,6 @@
         [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
         [btn setTitleColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
     }
-    
-    
 }
+
 @end

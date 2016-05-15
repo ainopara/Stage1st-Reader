@@ -181,8 +181,7 @@
             [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];
         }];
         [self.navigationController pushViewController:controller animated:YES];
-    }
-    if (indexPath.section == 0 && indexPath.row == 4) {
+    } else if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
         NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"), NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"), NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
         
@@ -192,6 +191,9 @@
             [[NSUserDefaults standardUserDefaults] setValue:[S1Global HistoryLimitString2Number:key] forKey:@"HistoryLimit"];
         }];
         [self.navigationController pushViewController:controller animated:YES];
+    } else if (indexPath.section == 0 && indexPath.row == 0) {
+        S1LoginViewController *viewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
+        [self presentViewController:viewController animated:YES completion:NULL];
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
