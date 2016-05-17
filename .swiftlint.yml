@@ -1,6 +1,8 @@
 disabled_rules: # rule identifiers to exclude from running
   - line_length
   - missing_docs
+  - function_body_length
+  - function_parameter_count 
   - todo
 included: # paths to include during linting. `--path` is ignored if present.
   - Stage1st
