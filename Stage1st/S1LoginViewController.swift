@@ -30,6 +30,12 @@ final class S1LoginViewController: UIViewController {
     let seccodeImageView = UIImageView(image: nil)
     let seccodeField = UITextField(frame: CGRect.zero)
 
+    var dynamicAnimator: UIDynamicAnimator?
+    var snapBehavior: UISnapBehavior?
+    var dynamicBehavior: UIDynamicBehavior?
+    var attachmentBehavior: UIAttachmentBehavior?
+    var dragGesture: UIPanGestureRecognizer?
+
     private var state: LoginViewControllerState = .NotLogin {
         didSet {
             switch state {
@@ -171,12 +177,30 @@ final class S1LoginViewController: UIViewController {
         }
 
         containerView.snp_makeConstraints { (make) in
-            make.width.equalTo(self.view.snp_width).offset(-10.0)
-            make.centerX.equalTo(self.view.snp_centerX)
-            make.top.equalTo(self.snp_topLayoutGuideBottom).offset(10.0)
+            make.width.equalTo(self.usernameField.snp_width).offset(10.0)
         }
 
+        dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+        if let dynamicAnimator = self.dynamicAnimator {
+            self.view.setNeedsLayout()
+            self.view.layoutIfNeeded()
+            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.center.x, y: self.view.center.y))
+            dynamicAnimator.addBehavior(snapBehavior)
+        }
+        dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
+        self.view.addGestureRecognizer(dragGesture!)
+
         state = self.inLoginState() ? .Login : .NotLogin
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let dynamicAnimator = self.dynamicAnimator {
+            dynamicAnimator.removeAllBehaviors()
+            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.bounds.width / 2.0, y: self.view.bounds.height / 2.0))
+            dynamicAnimator.addBehavior(snapBehavior)
+        }
     }
 
 }
@@ -301,6 +325,21 @@ extension S1LoginViewController {
             }
         }, cancelBlock: nil, origin: button)
         picker.showActionSheetPicker()
+    }
+
+    func pan(gesture: UIPanGestureRecognizer) {
+        if gesture.state == .Began {
+            dynamicAnimator?.removeAllBehaviors()
+            attachmentBehavior = UIAttachmentBehavior(item: containerView, attachedToAnchor: gesture.translationInView(self.view))
+            dynamicAnimator?.addBehavior(attachmentBehavior!)
+        } else if gesture.state == .Changed {
+            attachmentBehavior?.anchorPoint = gesture.translationInView(self.view)
+        } else if gesture.state == .Ended {
+            dynamicAnimator?.removeAllBehaviors()
+            if let snapBehavior = snapBehavior {
+                dynamicAnimator?.addBehavior(snapBehavior)
+            }
+        }
     }
 
     func dismiss() {
