@@ -35,25 +35,48 @@ final class S1LoginViewController: UIViewController {
     var dynamicBehavior: UIDynamicBehavior?
     var attachmentBehavior: UIAttachmentBehavior?
     var dragGesture: UIPanGestureRecognizer?
+    var tapGesture: UITapGestureRecognizer?
+
+    var loginButtonTopConstraint: Constraint?
 
     private var state: LoginViewControllerState = .NotLogin {
         didSet {
             switch state {
             case .NotLogin:
                 usernameField.enabled = true
-                passwordField.hidden = false
+                passwordField.alpha = 1.0
+                questionSelectButton.alpha = 1.0
                 answerField.alpha = 0.0
+
                 passwordField.returnKeyType = .Go
                 loginButton.setTitle(NSLocalizedString("SettingView_Login", comment: "Login"), forState: .Normal)
-                passwordField.rightViewMode = OnePasswordExtension.sharedExtension().isAppExtensionAvailable() ? .Always : .Never
+                loginButtonTopConstraint?.uninstall()
+                loginButton.snp_makeConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(questionSelectButton.snp_bottom).offset(12.0).constraint
+                }
             case .NotLoginWithAnswerField:
-                passwordField.returnKeyType = .Next
+                usernameField.enabled = true
+                passwordField.alpha = 1.0
+                questionSelectButton.alpha = 1.0
                 answerField.alpha = 1.0
-                break
+
+                passwordField.returnKeyType = .Next
+                loginButton.setTitle(NSLocalizedString("SettingView_Login", comment: "Login"), forState: .Normal)
+                loginButtonTopConstraint?.uninstall()
+                loginButton.snp_updateConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(answerField.snp_bottom).offset(12.0).constraint
+                }
             case .Login:
                 usernameField.enabled = false
-                passwordField.hidden = true
+                passwordField.alpha = 0.0
+                questionSelectButton.alpha = 0.0
+                answerField.alpha = 0.0
+
                 loginButton.setTitle(NSLocalizedString("SettingView_Logout", comment: "Logout"), forState: .Normal)
+                loginButtonTopConstraint?.uninstall()
+                loginButton.snp_updateConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(usernameField.snp_bottom).offset(12.0).constraint
+                }
             }
         }
     }
@@ -105,7 +128,8 @@ final class S1LoginViewController: UIViewController {
 
         usernameField.snp_makeConstraints { (make) in
             make.width.equalTo(300.0)
-            make.top.equalTo(containerView.snp_top).offset(30.0)
+            make.height.equalTo(25.0)
+            make.top.equalTo(containerView.snp_top).offset(20.0)
             make.centerX.equalTo(containerView.snp_centerX)
         }
 
@@ -119,6 +143,7 @@ final class S1LoginViewController: UIViewController {
 
         passwordField.snp_makeConstraints { (make) in
             make.width.equalTo(usernameField.snp_width)
+            make.height.equalTo(25.0)
             make.centerX.equalTo(usernameField.snp_centerX)
             make.top.equalTo(usernameField.snp_bottom).offset(12.0)
         }
@@ -139,7 +164,7 @@ final class S1LoginViewController: UIViewController {
             make.trailing.equalTo(buttonContainer).offset(-4.0)
         }
         passwordField.rightView = buttonContainer
-        passwordField.rightViewMode = .Always
+        passwordField.rightViewMode = OnePasswordExtension.sharedExtension().isAppExtensionAvailable() ? .Always : .Never
 
         questionSelectButton.setTitle("安全提问（未设置请忽略）", forState: .Normal)
         questionSelectButton.addTarget(self, action: #selector(S1LoginViewController.selectSecureQuestion(_:)), forControlEvents: .TouchUpInside)
@@ -147,6 +172,7 @@ final class S1LoginViewController: UIViewController {
 
         self.questionSelectButton.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
+            make.height.equalTo(25.0)
             make.top.equalTo(self.passwordField.snp_bottom).offset(12.0)
         }
 
@@ -161,6 +187,7 @@ final class S1LoginViewController: UIViewController {
 
         answerField.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.questionSelectButton)
+            make.height.equalTo(25.0)
             make.top.equalTo(self.questionSelectButton.snp_bottom).offset(12.0)
         }
 
@@ -172,7 +199,8 @@ final class S1LoginViewController: UIViewController {
 
         loginButton.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
-            make.top.equalTo(self.answerField.snp_bottom).offset(12.0)
+            make.height.equalTo(34.0)
+//            make.top.equalTo(self.answerField.snp_bottom).offset(12.0)
             make.bottom.equalTo(self.containerView.snp_bottom).offset(-12.0)
         }
 
@@ -180,17 +208,26 @@ final class S1LoginViewController: UIViewController {
             make.width.equalTo(self.usernameField.snp_width).offset(10.0)
         }
 
-        dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
-        if let dynamicAnimator = self.dynamicAnimator {
-            self.view.setNeedsLayout()
-            self.view.layoutIfNeeded()
-            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.center.x, y: self.view.center.y))
-            dynamicAnimator.addBehavior(snapBehavior)
-        }
-        dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
-        self.view.addGestureRecognizer(dragGesture!)
-
         state = self.inLoginState() ? .Login : .NotLogin
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(S1LoginViewController.dismiss))
+        self.tapGesture = tapGesture
+        self.view.addGestureRecognizer(tapGesture)
+
+        let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
+        let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.center.x, y: self.view.center.y))
+        dynamicAnimator.addBehavior(snapBehavior)
+
+        self.dynamicAnimator = dynamicAnimator
+
+        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
+        self.view.addGestureRecognizer(dragGesture)
+        self.dragGesture = dragGesture
+
+
     }
 
     override func viewDidLayoutSubviews() {
