@@ -235,7 +235,7 @@ final class S1LoginViewController: UIViewController {
 
         if let dynamicAnimator = self.dynamicAnimator {
             dynamicAnimator.removeAllBehaviors()
-            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.bounds.width / 2.0, y: self.view.bounds.height / 2.0))
+            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.bounds.width / 2.0, y: self.view.bounds.height / 2.0)) // FIXME: should be center of visibleLayoutGuide i.e. the space not covered by keyboard.
             dynamicAnimator.addBehavior(snapBehavior)
         }
     }
@@ -353,7 +353,7 @@ extension S1LoginViewController {
         DDLogDebug("debug secure question")
         self.view.endEditing(true)
         // FIXME: Make action sheet picker a view controller to avoid keyboard overlay.
-        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: 0, doneBlock: { (pciker, selectedIndex, selectedValue) in
+        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
             button.setTitle(selectedValue as? String ?? "??", forState: .Normal)
             if selectedIndex == 0 {
                 self.state = .NotLogin
