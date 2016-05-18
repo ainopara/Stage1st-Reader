@@ -804,7 +804,8 @@
 - (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor {
     //check in login state.
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-        [self presentAlertView:@"" message:NSLocalizedString(@"ContentView_Reply_Need_Login_Message", @"Need Login in Settings")];
+        S1LoginViewController *loginViewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
+        [self presentViewController:loginViewController animated:YES completion:NULL];
         return;
     }
     
