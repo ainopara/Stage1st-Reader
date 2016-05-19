@@ -987,33 +987,35 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 }
 
 - (void)reportError:(NSError *)error {
+    if ([error.domain isEqualToString:CKErrorDomain]) {
+        self.lastCloudkitError = error;
+        [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
+        self.state = CKManagerStateRecovering;
 
-    self.lastCloudkitError = error;
-    [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:error];
-    self.state = CKManagerStateRecovering;
-    NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
-    NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
-    if (errorDescription == nil) {
-        errorDescription = @"Unknown";
-    }
-    NSString *subErrorDescription = nil;
-    NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
-    for (NSError *subError in allErrors) {
-        if (subError.code != 22) {
-            subErrorDescription = [[subError userInfo] valueForKey:@"ServerErrorDescription"];
-            code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
-            break;
+        NSString *code = [NSString stringWithFormat:@"%ld", (long)[error code]];
+        NSString *errorDescription = [[error userInfo] valueForKey:@"CKErrorDescription"];
+        if (errorDescription == nil) {
+            errorDescription = @"Unknown";
         }
+        NSString *subErrorDescription = nil;
+        NSArray *allErrors = [(NSDictionary *)[[error userInfo] valueForKey:@"CKPartialErrors"] allValues];
+        for (NSError *subError in allErrors) {
+            if (subError.code != CKErrorBatchRequestFailed) {
+                subErrorDescription = [[subError userInfo] valueForKey:@"ServerErrorDescription"];
+                code = [code stringByAppendingString:[NSString stringWithFormat:@"/%ld", (long)[subError code]]];
+                break;
+            }
+        }
+        if (subErrorDescription != nil) {
+            errorDescription = subErrorDescription;
+        }
+        code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
+        [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
+                                                                             @"description": errorDescription}];
+        DDLogDebug(@"[CloudKit] ckErrorCode:%ld description:%@", (long)code, errorDescription);
     }
-    if (subErrorDescription != nil) {
-        errorDescription = subErrorDescription;
-    }
-    code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
-    [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
-                                                                         @"description": errorDescription}];
+
     [[Crashlytics sharedInstance] recordError:error];
-    DDLogDebug(@"[CloudKit] ckErrorCode: %ld", (long)code);
-    DDLogDebug(@"[CloudKit] description: %@", errorDescription);
 }
 
 - (void)_refetchMissedRecordIDs
