@@ -94,6 +94,7 @@ extension AnimationView {
 }
 
 class AnimationButton: UIButton {
+    var hightlightAlpha: CGFloat = 0.4
     private let image: UIImage
     private let animationView: AnimationView = AnimationView(frame: CGRect.zero)
     var isPlayingAnimation: Bool {
@@ -104,7 +105,7 @@ class AnimationButton: UIButton {
         didSet {
             if highlighted != previousHighlighted {
                 if highlighted {
-                    animationView.tintColor = self.tintColor.colorWithAlphaComponent(0.25)
+                    animationView.tintColor = self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)
                 } else {
                     animationView.tintColor = self.tintColor
                 }
@@ -118,7 +119,7 @@ class AnimationButton: UIButton {
     override var tintColor: UIColor! {
         didSet {
             if highlighted {
-                animationView.tintColor = self.tintColor.colorWithAlphaComponent(0.25)
+                animationView.tintColor = self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)
             } else {
                 animationView.tintColor = self.tintColor
             }
@@ -167,6 +168,6 @@ class AnimationButton: UIButton {
 
     private func setStaticImage(image: UIImage?) {
         self.setImage(image?.tintWithColor(self.tintColor), forState: .Normal)
-        self.setImage(image?.tintWithColor(self.tintColor.colorWithAlphaComponent(0.25)), forState: .Highlighted)
+        self.setImage(image?.tintWithColor(self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)), forState: .Highlighted)
     }
 }

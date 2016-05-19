@@ -56,8 +56,9 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
 
         blurBackgroundView.contentView.addSubview(vibrancyEffectView)
         vibrancyEffectView.snp_makeConstraints { (make) in
-            make.leading.trailing.equalTo(blurBackgroundView.contentView)
-            make.top.equalTo(blurBackgroundView.contentView.snp_top).offset(20.0) // TODO: adjust in viewDidLayoutSubviews()
+            make.leading.equalTo(blurBackgroundView.contentView.snp_leading).offset(10.0)
+            make.trailing.equalTo(blurBackgroundView.contentView.snp_trailing).offset(-10.0)
+            make.top.equalTo(blurBackgroundView.contentView.snp_top).offset(20.0 + 10.0) // TODO: adjust in viewDidLayoutSubviews()
         }
 
         titleLabel.numberOfLines = 0
