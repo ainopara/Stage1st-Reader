@@ -71,6 +71,10 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self != nil) {
         // Custom initialization
+
+        [self setTopic:topic];
+        _dataCenter = dataCenter;
+
         _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPositionFromModel = YES;
