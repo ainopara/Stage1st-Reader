@@ -263,7 +263,7 @@
     DDLogInfo(@"[ContentVC] Dealloced");
 }
 
-#pragma mark - TabBar Actions
+#pragma mark - Actions
 
 - (void)back:(id)sender
 {
@@ -437,7 +437,7 @@
     [self presentViewController:moreActionSheet animated:YES completion:nil];
 }
 
-#pragma mark - UIWebView
+#pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     // Load
@@ -597,7 +597,7 @@
     }
 }
 
-#pragma mark JTSImageViewController
+#pragma mark JTSImageViewControllerInteractionsDelegate
 
 - (void)imageViewerDidLongPress:(JTSImageViewController *)imageViewer atRect:(CGRect)rect {
     UIAlertController *imageActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -620,11 +620,13 @@
     
 }
 
+#pragma mark JTSImageViewControllerOptionsDelegate
+
 - (CGFloat)alphaForBackgroundDimmingOverlayInImageViewer:(JTSImageViewController *)imageViewer {
     return 0.3;
 }
 
-#pragma mark Pull To Action
+#pragma mark PullToActionDelegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
     if (offset < TOP_OFFSET && _finishLoading) {
@@ -680,6 +682,50 @@
         self.backButton.imageView.layer.transform = CATransform3DRotate(CATransform3DIdentity, M_PI_2 * topProgress, 0, 0, 1);
     } else {
         self.backButton.imageView.layer.transform = CATransform3DIdentity;
+    }
+}
+
+#pragma mark REComposeViewControllerDelegate
+
+- (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
+    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
+    navigationDelegate.panRecognizer.enabled = YES;
+    self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
+    if (result == REComposeResultCancelled) {
+        [composeViewController dismissViewControllerAnimated:YES completion:NULL];
+    } else if (result == REComposeResultPosted) {
+        if (composeViewController.text.length > 0) {
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
+            __weak __typeof__(self) weakSelf = self;
+            void (^successBlock)() = ^{
+                __strong __typeof__(self) strongSelf = weakSelf;
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                strongSelf.attributedReplyDraft = nil;
+                if (strongSelf->_currentPage == strongSelf->_totalPages) {
+                    strongSelf->_needToScrollToBottom = YES;
+                    [strongSelf fetchContentAndForceUpdate:YES];
+                }
+            };
+            void (^failureBlock)() = ^(NSError *error) {
+                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                if (error.code == NSURLErrorCancelled) {
+                    DDLogDebug(@"[Network] NSURLErrorCancelled");
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                } else if (error.code == -998){
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
+                } else {
+                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                }
+            };
+            if (self.replyTopicFloor) {
+                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success: successBlock failure:failureBlock];
+            } else {
+                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:successBlock failure:failureBlock];
+            }
+            [composeViewController dismissViewControllerAnimated:YES completion:nil];
+        }
     }
 }
 
@@ -846,48 +892,6 @@
 
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
     navigationDelegate.panRecognizer.enabled = NO;
-}
-
-- (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
-    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
-    navigationDelegate.panRecognizer.enabled = YES;
-    self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
-    if (result == REComposeResultCancelled) {
-        [composeViewController dismissViewControllerAnimated:YES completion:NULL];
-    } else if (result == REComposeResultPosted) {
-        if (composeViewController.text.length > 0) {
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
-            __weak __typeof__(self) weakSelf = self;
-            void (^successBlock)() = ^{
-                __strong __typeof__(self) strongSelf = weakSelf;
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                strongSelf.attributedReplyDraft = nil;
-                if (strongSelf->_currentPage == strongSelf->_totalPages) {
-                    strongSelf->_needToScrollToBottom = YES;
-                    [strongSelf fetchContentAndForceUpdate:YES];
-                }
-            };
-            void (^failureBlock)() = ^(NSError *error) {
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error.code == NSURLErrorCancelled) {
-                    DDLogDebug(@"[Network] NSURLErrorCancelled");
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                } else if (error.code == -998){
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
-                } else {
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                }
-            };
-            if (self.replyTopicFloor) {
-                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success: successBlock failure:failureBlock];
-            } else {
-                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:successBlock failure:failureBlock];
-            }
-            [composeViewController dismissViewControllerAnimated:YES completion:nil];
-        }
-    }
 }
 
 #pragma mark - Notificatons

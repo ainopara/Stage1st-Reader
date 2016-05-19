@@ -217,7 +217,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
 }
 
-#pragma mark - UITableView Delegate and Data Source
+#pragma mark - UITableViewDelegate & UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self isPresentingDatabaseList:self.currentKey]) {
