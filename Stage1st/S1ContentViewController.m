@@ -160,7 +160,7 @@
     // Favorite Button
     self.favoriteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     if ([self.topic.favorite boolValue]) {
-        [self.favoriteButton setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[UIImage imageNamed:@"Favorited"] forState:UIControlStateNormal];
     } else {
         [self.favoriteButton setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
     }
@@ -366,7 +366,7 @@
         self.topic.favoriteDate = [NSDate date];
     }
     if ([self.topic.favorite boolValue]) {
-        [sender setImage:[UIImage imageNamed:@"Favorite2"] forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageNamed:@"Favorited"] forState:UIControlStateNormal];
     } else {
         [sender setImage:[UIImage imageNamed:@"Favorite"] forState:UIControlStateNormal];
     }
