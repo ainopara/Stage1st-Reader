@@ -74,7 +74,7 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
                 progress.updateValue(progressValue, forKey: name)
             }
             delegateFunction(progress)
-            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
+//            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
         }
 
         if keyPath == "contentSize" {
