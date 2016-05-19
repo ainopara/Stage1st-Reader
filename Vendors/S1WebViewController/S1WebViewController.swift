@@ -13,9 +13,12 @@ import CocoaLumberjack
 class S1WebViewController: UIViewController, UIWebViewDelegate {
     var URLToOpen: NSURL
 
-    let blurBackgroundView = UIVisualEffectView(effect:UIBlurEffect(style: .Light))
+    let blurBackgroundView = UIVisualEffectView(effect:nil)
+
+    let titleLabel = UILabel(frame: CGRect.zero)
+    let vibrancyEffectView = UIVisualEffectView(effect:nil)
     let webView = UIWebView(frame: CGRect.zero)
-    let statusBarOverlayView = UIVisualEffectView(effect:UIBlurEffect(style: .ExtraLight))
+    let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: CGRect.zero)
     let toolBar = UIToolbar(frame: CGRect.zero)
     var backButtonItem: UIBarButtonItem?
@@ -49,6 +52,20 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
         self.view.addSubview(blurBackgroundView)
         blurBackgroundView.snp_makeConstraints { (make) in
             make.edges.equalTo(self.view)
+        }
+
+        blurBackgroundView.contentView.addSubview(vibrancyEffectView)
+        vibrancyEffectView.snp_makeConstraints { (make) in
+            make.leading.trailing.equalTo(blurBackgroundView.contentView)
+            make.top.equalTo(blurBackgroundView.contentView.snp_top).offset(20.0) // TODO: adjust in viewDidLayoutSubviews()
+        }
+
+        titleLabel.numberOfLines = 0
+        titleLabel.font = UIFont.systemFontOfSize(12.0)  // need a better solution
+        titleLabel.textAlignment = .Center
+        vibrancyEffectView.contentView.addSubview(titleLabel)
+        titleLabel.snp_makeConstraints { (make) in
+            make.edges.equalTo(vibrancyEffectView.contentView)
         }
 
         toolBar.barTintColor = nil
@@ -110,10 +127,16 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
     // MARK: UIWebViewDelegate
     func webViewDidStartLoad(webView: UIWebView) {
         updateBarItems()
+        backButtonItem?.enabled = webView.canGoBack
+        forwardButtonItem?.enabled = webView.canGoForward
+        titleLabel.text = currentValidURL().absoluteString
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {
         updateBarItems()
+        backButtonItem?.enabled = webView.canGoBack
+        forwardButtonItem?.enabled = webView.canGoForward
+        titleLabel.text = currentValidURL().absoluteString
     }
 
     // MARK: Toolbar
@@ -152,29 +175,39 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
 
     func stop() {
         webView.stopLoading()
+
+        updateBarItems()
     }
 
     func openInSafari() {
-        let URLToOpenInSafari: NSURL
-        if let URL = webView.request?.URL where URL.absoluteString != "" {
-            URLToOpenInSafari = URL
-        } else {
-            URLToOpenInSafari = self.URLToOpen
-        }
-
+        let URLToOpenInSafari = currentValidURL()
         DDLogDebug("[WebViewController] open in safari:\(URLToOpenInSafari)")
         if UIApplication.sharedApplication().openURL(URLToOpenInSafari) != true {
             DDLogError("[WebViewController] failed to open \(URLToOpenInSafari) in safari")
         }
     }
 
+    private func currentValidURL() -> NSURL {
+        if let URL = webView.request?.URL where URL.absoluteString != "" {
+            return URL
+        } else {
+            return self.URLToOpen
+        }
+    }
+
     func didReceivePaletteChangeNotification(notification: NSNotification) {
+        statusBarSeparatorView.backgroundColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
+
         if APColorManager.sharedInstance.isDarkTheme() {
-            blurBackgroundView.effect = UIBlurEffect(style: .Dark)
-            statusBarOverlayView.effect = UIBlurEffect(style: .Dark)
+            let darkBlurEffect = UIBlurEffect(style: .Dark)
+            blurBackgroundView.effect = darkBlurEffect
+            vibrancyEffectView.effect = UIVibrancyEffect(forBlurEffect: darkBlurEffect)
+            statusBarOverlayView.effect = darkBlurEffect
             toolBar.barStyle = .Black
         } else {
-            blurBackgroundView.effect = UIBlurEffect(style: .Light)
+            let lightBlurEffect = UIBlurEffect(style: .ExtraLight)
+            blurBackgroundView.effect = lightBlurEffect
+            vibrancyEffectView.effect = UIVibrancyEffect(forBlurEffect: lightBlurEffect)
             statusBarOverlayView.effect = UIBlurEffect(style: .ExtraLight)
             toolBar.barStyle = .Default
         }
