@@ -67,9 +67,9 @@
 }
 #pragma mark - Life Cycle
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+- (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self != nil) {
         // Custom initialization
         _currentPage = 1;
         _needToScrollToBottom = NO;
@@ -393,12 +393,10 @@
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIImage *screenShot = [S1Utility screenShot:self.view];
         UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], screenShot] applicationActivities:nil];
-        if ([activityController respondsToSelector:@selector(popoverPresentationController)]) {
-            [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
-        }
+        [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
         [self presentViewController:activityController animated:YES completion:nil];
         [activityController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-            DDLogDebug(@"finish:%@",activityType);
+            DDLogDebug(@"[Activity] finish with activity type: %@",activityType);
         }];
     }];
     // Copy Link
@@ -414,9 +412,11 @@
         NSString *pageAddress = [NSString stringWithFormat:@"%@thread-%@-%ld-1.html",[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage];
         _presentingWebViewer = YES;
         [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
-        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-        [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
+        S1WebViewController *controller = [[S1WebViewController alloc] initWithURL:[[NSURL alloc] initWithString:pageAddress]];
         [self presentViewController:controller animated:YES completion:nil];
+//        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
+//        [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
+//        [self presentViewController:controller animated:YES completion:nil];
     }];
     // Cancel Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
@@ -493,9 +493,7 @@
                 topic.lastViewedPage = lastViewedPage;
             }
             _presentingContentViewController = YES;
-            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
-            [contentViewController setTopic:topic];
-            [contentViewController setDataCenter:self.dataCenter];
+            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
             return NO;
         }

@@ -10,10 +10,16 @@
 
 @class S1Topic, S1DataCenter;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1ContentViewController : UIViewController
 
-@property (nonatomic, strong) S1Topic *topic;
+@property (nonatomic, strong, readonly) S1Topic *topic;
 
-@property (nonatomic, strong) S1DataCenter *dataCenter;
+@property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
+
+- (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
 
 @end
+
+NS_ASSUME_NONNULL_END

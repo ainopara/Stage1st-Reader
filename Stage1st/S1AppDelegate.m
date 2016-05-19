@@ -347,9 +347,7 @@ S1AppDelegate *MyAppDelegate;
 - (void)presentContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]]) {
-        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
-        [contentViewController setTopic:topic];
-        [contentViewController setDataCenter:[S1DataCenter sharedDataCenter]];
+        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[S1DataCenter sharedDataCenter]];
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
     }
 }

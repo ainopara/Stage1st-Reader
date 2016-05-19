@@ -161,7 +161,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark - Item Actions
+#pragma mark - Actions
 
 - (void)settings:(id)sender
 {
@@ -212,6 +212,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
+- (void)clearSearchBarText:(UISwipeGestureRecognizer *)gestureRecognizer {
+    self.searchBar.text = @"";
+    [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
+}
+
 #pragma mark - UITableView Delegate and Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -256,18 +261,18 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
 
+    S1ContentViewController *contentViewController;
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        [contentViewController setTopic:[self topicAtIndexPath:indexPath]];
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:[self topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
         S1Topic *mutableTopic = [topic isImmutable] ? [topic copy] : topic;
         [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
         topic = mutableTopic;
-        [contentViewController setTopic:topic];
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
     }
-    [contentViewController setDataCenter:self.dataCenter];
+
     [self.navigationController pushViewController:contentViewController animated:YES];
 
 }
@@ -357,7 +362,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return 0;
 }
 
-#pragma mark Tab Bar Delegate
+#pragma mark S1TabBarDelegate
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
 {
@@ -388,7 +393,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     
 }
 
-#pragma mark UISearchBar Delegate
+#pragma mark UISearchBarDelegate
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self isPresentingDatabaseList:self.currentKey]) {
@@ -400,15 +405,6 @@ static NSString * const cellIdentifier = @"TopicCell";
             //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
     }
-}
-
-- (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
-    NSString *query = [NSString stringWithFormat:@"favorite:%@ title:%@*", [currentKey isEqualToString:@"Favorite"] ? @"FY":@"F*", searchText];
-    DDLogDebug(@"[TopicListVC] Update filter: %@", query);
-    [self.searchQueue enqueueQuery:query];
-    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
-        [[transaction ext:Ext_searchResultView_Archive] performSearchWithQueue:self.searchQueue];
-    }];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -424,19 +420,15 @@ static NSString * const cellIdentifier = @"TopicCell";
                 topic = [[S1Topic alloc] init];
                 topic.topicID = topicID;
             }
-            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithNibName:nil bundle:nil];
-            [contentViewController setTopic:topic];
-            [contentViewController setDataCenter:self.dataCenter];
+            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
             return;
-            
         }
     } else { // search topics
         [self.searchBar resignFirstResponder];
         _loadingFlag = YES;
         self.scrollTabBar.enabled = NO;
-        S1HUD *HUD;
-        HUD = [S1HUD showHUDInView:self.view];
+        S1HUD *HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
         if (self.currentKey && [self isPresentingForumList:self.currentKey]) {
             [self cancelRequest];
@@ -474,18 +466,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
+#pragma mark UIScrollViewDelegate
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.tableView.contentOffset.y > 0) {
         [self.searchBar resignFirstResponder];
     }
-    
 }
-
-- (void)clearSearchBarText:(UISwipeGestureRecognizer *)gestureRecognizer {
-    self.searchBar.text = @"";
-    [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
-}
-
 
 #pragma mark - Layout
 
@@ -493,7 +480,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone && [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         return;
     }
-    DDLogDebug(@"[TopicListVC] View Will Change To Size: h%f,w%f",size.height, size.width);
+
+    DDLogDebug(@"[TopicListVC] View Will Change To Size: h%f, w%f",size.height, size.width);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"S1ViewWillTransitionToSizeNotification" object:[NSValue valueWithCGSize:size]];
     CGRect frame = self.view.frame;
     frame.size = size;
@@ -874,6 +862,15 @@ static NSString * const cellIdentifier = @"TopicCell";
         topic = [[transaction ext:Ext_searchResultView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
     }];
     return topic;
+}
+
+- (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
+    NSString *query = [NSString stringWithFormat:@"favorite:%@ title:%@*", [currentKey isEqualToString:@"Favorite"] ? @"FY":@"F*", searchText];
+    DDLogDebug(@"[TopicListVC] Update filter: %@", query);
+    [self.searchQueue enqueueQuery:query];
+    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
+        [[transaction ext:Ext_searchResultView_Archive] performSearchWithQueue:self.searchQueue];
+    }];
 }
 
 #pragma mark - Observer
