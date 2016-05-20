@@ -113,6 +113,8 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        self.webView.stopLoading()
+        self.webView.delegate = nil
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -140,6 +142,10 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
         titleLabel.text = currentValidURL().absoluteString
     }
 
+    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
+        updateBarItems()
+    }
+
     // MARK: Toolbar
     func updateBarItems() {
         guard let
@@ -149,12 +155,10 @@ class S1WebViewController: UIViewController, UIWebViewDelegate {
             stop = self.stopButtonItem,
             close = self.closeButtonItem,
             safari = self.safariButtonItem else { return }
+
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        if webView.loading {
-            toolBar.setItems([close, flexSpace, back, flexSpace, stop, flexSpace, forward, flexSpace, safari], animated: true)
-        } else {
-            toolBar.setItems([close, flexSpace, back, flexSpace, refresh, flexSpace, forward, flexSpace, safari], animated: true)
-        }
+        let refreshOrStopItem = webView.loading ? stop : refresh
+        toolBar.setItems([close, flexSpace, back, flexSpace, refreshOrStopItem, flexSpace, forward, flexSpace, safari], animated: true)
     }
 
     // MARK: Actions
