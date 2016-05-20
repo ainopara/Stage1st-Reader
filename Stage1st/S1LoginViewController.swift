@@ -128,7 +128,7 @@ final class S1LoginViewController: UIViewController {
 
         usernameField.snp_makeConstraints { (make) in
             make.width.equalTo(300.0)
-            make.height.equalTo(25.0)
+            make.height.equalTo(30.0)
             make.top.equalTo(containerView.snp_top).offset(20.0)
             make.centerX.equalTo(containerView.snp_centerX)
         }
@@ -143,7 +143,7 @@ final class S1LoginViewController: UIViewController {
 
         passwordField.snp_makeConstraints { (make) in
             make.width.equalTo(usernameField.snp_width)
-            make.height.equalTo(25.0)
+            make.height.equalTo(30.0)
             make.centerX.equalTo(usernameField.snp_centerX)
             make.top.equalTo(usernameField.snp_bottom).offset(12.0)
         }
@@ -172,7 +172,7 @@ final class S1LoginViewController: UIViewController {
 
         self.questionSelectButton.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
-            make.height.equalTo(25.0)
+            make.height.equalTo(30.0)
             make.top.equalTo(self.passwordField.snp_bottom).offset(12.0)
         }
 
@@ -187,7 +187,7 @@ final class S1LoginViewController: UIViewController {
 
         answerField.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.questionSelectButton)
-            make.height.equalTo(25.0)
+            make.height.equalTo(30.0)
             make.top.equalTo(self.questionSelectButton.snp_bottom).offset(12.0)
         }
 
