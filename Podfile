@@ -40,3 +40,7 @@ target "Stage1st" do
     pod '1PasswordExtension'
     pod 'Reachability'
 end
+
+target "Stage1stTests" do
+    pod 'FBSnapshotTestCase'
+end

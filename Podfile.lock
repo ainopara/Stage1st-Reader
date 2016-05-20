@@ -43,6 +43,11 @@ PODS:
   - DTFoundation/UIKit (1.7.10):
     - DTFoundation/Core
   - Fabric (1.6.7)
+  - FBSnapshotTestCase (2.1.0):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.0)
+  - FBSnapshotTestCase/Core (2.1.0)
+  - FBSnapshotTestCase/SwiftSupport (2.1.0):
+    - FBSnapshotTestCase/Core
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -117,6 +122,7 @@ DEPENDENCIES:
   - Crashlytics
   - DTCoreText
   - Fabric
+  - FBSnapshotTestCase
   - FMDB
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
@@ -165,6 +171,7 @@ SPEC CHECKSUMS:
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
+  FBSnapshotTestCase: 366ecd378511d7716c79991cd8067d1eed23578d
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
@@ -177,6 +184,6 @@ SPEC CHECKSUMS:
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: 534d0e1c55cc4ae6b70061452144e5d94bc80913
+PODFILE CHECKSUM: f3cbb83180d3b2f67885b1f1cb300629c54664d7
 
 COCOAPODS: 1.0.0
