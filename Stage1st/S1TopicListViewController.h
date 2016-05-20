@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    S1TopicListHistory,
+    S1TopicListFavorite
+} S1InternalTopicListType;
+
 @interface S1TopicListViewController : UIViewController
 
 @end

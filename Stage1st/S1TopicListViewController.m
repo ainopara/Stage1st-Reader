@@ -15,7 +15,6 @@
 #import "S1Topic.h"
 #import "S1TabBar.h"
 #import "S1DataCenter.h"
-#import "S1TopicListViewModel.h"
 #import "Masonry.h"
 
 #import "ODRefreshControl.h"
@@ -44,7 +43,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
 @property (nonatomic, strong) AnimationButton *archiveButton;
-@property (nonatomic, strong) NSArray *archiveSyncImages;
+@property (nonatomic, strong) NSArray<UIImage *> *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
@@ -54,19 +53,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 // Model
 @property (nonatomic, strong) S1DataCenter *dataCenter;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
-@property (nonatomic, strong) YapDatabaseViewMappings *mappings;
-@property (nonatomic, strong) YapDatabaseConnection *databaseConnection;
-@property (nonatomic, strong) YapDatabaseSearchQueue *searchQueue;
+
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSString *searchKeyword;
-@property (nonatomic, strong) NSMutableArray *topics;
+@property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
 
 @property (nonatomic, strong) NSMutableDictionary *cachedContentOffset;
 @property (nonatomic, strong) NSMutableDictionary *cachedLastRefreshTime;
 @property (nonatomic, strong) NSDictionary *forumKeyMap;
-
-@property (nonatomic, strong) S1Topic *clipboardTopic;
 
 @end
 
@@ -90,8 +85,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     self.dataCenter = [S1DataCenter sharedDataCenter];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
@@ -121,9 +115,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    self.databaseConnection = MyDatabaseManager.uiDatabaseConnection;
-    [self initializeMappings];
-
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1TopicUpdateNotification" object:nil];
@@ -133,8 +124,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
     DDLogDebug(@"[TopicListVC] viewDidAppear");
@@ -144,8 +134,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView setScrollsToTop:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
     [self.tableView setUserInteractionEnabled:NO];
@@ -153,8 +142,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 
-- (void)dealloc
-{
+- (void)dealloc {
     DDLogDebug(@"[TopicListVC] Dealloced");
     [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
     [self.tableView removeObserver:self forKeyPath:@"contentInset"];
@@ -163,16 +151,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark - Actions
 
-- (void)settings:(id)sender
-{
+- (void)settings:(id)sender {
     NSString * storyboardName = @"Settings";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
     UIViewController * controllerToPresent = [storyboard instantiateViewControllerWithIdentifier:@"SettingsNavigation"];
     [self presentViewController:controllerToPresent animated:YES completion:nil];
 }
 
-- (void)archive:(id)sender
-{
+- (void)archive:(id)sender {
     [self.naviItem setRightBarButtonItems:@[]];
     [self cancelRequest];
     self.naviItem.titleView = self.segControl;
@@ -183,8 +169,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
-- (void)refresh:(id)sender
-{
+- (void)refresh:(id)sender {
     if (self.refreshControl.hidden) {
         [self.refreshControl endRefreshing];
         return;
@@ -197,8 +182,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 }
 
--(void)segSelected:(UISegmentedControl *)seg
-{
+-(void)segSelected:(UISegmentedControl *)seg {
     self.searchBar.text = @"";
     switch (seg.selectedSegmentIndex) {
         case 0:
@@ -221,7 +205,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        return [self.mappings numberOfSections];
+        return [self.viewModel numberOfSections];
     }
 
     return 1;
@@ -229,7 +213,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        return [self.mappings numberOfItemsInSection:section];
+        return [self.viewModel numberOfItemsInSection:section];
     }
     
     return [self.topics count];
@@ -245,7 +229,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     cell.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.cell.background.normal"];
     
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        [cell setTopic:[self topicAtIndexPath:indexPath]];
+        [cell setTopic:[self.viewModel topicAtIndexPath:indexPath]];
         cell.highlight = self.searchBar.text;
         return cell;
     } else if ([self isPresentingSearchList:self.currentKey]) {
@@ -264,13 +248,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     S1ContentViewController *contentViewController;
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        contentViewController = [[S1ContentViewController alloc] initWithTopic:[self topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:[self.viewModel topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
         S1Topic *mutableTopic = [topic isImmutable] ? [topic copy] : topic;
         [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
-        topic = mutableTopic;
-        contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:mutableTopic dataCenter:self.dataCenter];
     }
 
     [self.navigationController pushViewController:contentViewController animated:YES];
@@ -284,26 +267,16 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        //add code here for when you hit delete
-        NSString *group = nil;
-        NSUInteger groupIndex = 0;
-
-        [self.mappings getGroup:&group index:&groupIndex forIndexPath:indexPath];
-        __block S1Topic *topic = nil;
-        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-            topic = [[transaction extension:Ext_searchResultView_Archive] objectAtIndex:groupIndex inGroup:group];
-        }];
         if ([self.currentKey isEqualToString: @"History"]) {
-            [self.dataCenter removeTopicFromHistory:topic.topicID];
+            [self.viewModel deleteTopicAtIndexPath:indexPath];
         }
         if ([self.currentKey isEqualToString: @"Favorite"]) {
-            [self.dataCenter removeTopicFromFavorite:topic.topicID];
+            [self.viewModel unfavoriteTopicAtIndexPath:indexPath];
         }
     }
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *) cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *) cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self isPresentingDatabaseList:self.currentKey]) {
         return;
     }
@@ -345,7 +318,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [view setBackgroundColor:[[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.background"]];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 20)];
-        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.mappings groupForSection:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.text"]}];
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.viewModel.viewMappings groupForSection:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"topiclist.tableview.header.text"]}];
         [label setAttributedText:labelTitle];
         label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
@@ -364,8 +337,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark S1TabBarDelegate
 
-- (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key
-{
+- (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     self.naviItem.titleView = self.titleLabel;
     self.searchBar.text = @"";
     self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
@@ -397,18 +369,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        [self updateFilter:searchText withCurrentKey:self.currentKey];
+        [self.viewModel updateFilter:searchText key:self.currentKey];
         for (S1TopicListCell *cell in [self.tableView visibleCells]) {
             cell.highlight = searchText;
-        }
-        if (self.topics && self.topics.count > 0) {
-            //[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
     }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    
     if ([self isPresentingDatabaseList:self.currentKey]) {
         [self.searchBar resignFirstResponder];
         NSString *text = searchBar.text;
@@ -490,8 +458,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark Networking
 
-- (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop
-{
+- (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop {
     _loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD;
@@ -501,7 +468,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     __weak __typeof__(self) weakSelf = self;
-    [self.viewModel topicListForKey:self.forumKeyMap[key] shouldRefresh:refresh success:^(NSArray *topicList) {
+    [self.viewModel topicListForKey:self.forumKeyMap[key] refresh:refresh success:^(NSArray *topicList) {
         //reload data
         dispatch_async(dispatch_get_main_queue(), ^{
             __strong __typeof__(self) strongSelf = weakSelf;
@@ -646,104 +613,23 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
-    // DDLogDebug(@"databaseConnectionDidUpdate");
-    if (self.mappings == nil)
-    {
-        [self initializeMappings];
-        [self.tableView reloadData];
+    if (self.viewModel.viewMappings == nil) {
+        [self.viewModel initializeMappings];
         
         return;
     }
-    
-    //NSArray *notifications = [notification.userInfo objectForKey:kNotificationsKey];
-    
+
+    [self.viewModel updateMappings];
+
     // If the view isn't visible, we might decide to skip the UI animation stuff.
-    if (!(self.isViewLoaded && self.view.window))
-    {
-        // Since we moved our databaseConnection to a new commit,
-        // we need to update the mappings too.
-        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction){
-            [self.mappings updateWithTransaction:transaction];
-        }];
+    if (!(self.isViewLoaded && self.view.window)) {
         return;
     }
-    
-    
+
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction){
-            [self.mappings updateWithTransaction:transaction];
-        }];
         [self.tableView reloadData];
-        NSNumber *count = [self.currentKey isEqual: @"History"] ? [self.dataCenter numberOfTopics] : [self.dataCenter numberOfFavorite];
-        self.searchBar.placeholder = [NSString stringWithFormat: NSLocalizedString(@"TopicListView_SearchBar_Detail_Hint", @"Search"), count];
-        /*
-        DDLogDebug(@"rowChange:%lu,sectionChange: %lu",(unsigned long)[rowChanges count], (unsigned long)[sectionChanges count]);
-        NSArray *sectionChanges = nil;
-        NSArray *rowChanges = nil;
-        [[self.databaseConnection ext:Ext_FilteredView_Archive] getSectionChanges:&sectionChanges
-                                                                       rowChanges:&rowChanges
-                                                                 forNotifications:notifications
-                                                                     withMappings:self.mappings];
-        
-        if ([rowChanges count] == 0 && [sectionChanges count] == 0)
-        {
-            // There aren't any changes that affect our tableView
-            return;
-        }*/
-        /*
-        
-        [self.tableView beginUpdates];
-        
-        for (YapDatabaseViewSectionChange *sectionChange in sectionChanges) {
-            switch (sectionChange.type) {
-                case YapDatabaseViewChangeInsert:
-                    [self.tableView insertSections:[[NSIndexSet alloc] initWithIndex:sectionChange.index] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                case YapDatabaseViewChangeDelete:
-                    [self.tableView deleteSections:[[NSIndexSet alloc] initWithIndex:sectionChange.index] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        for (YapDatabaseViewRowChange *rowChange in rowChanges)
-        {
-            switch (rowChange.type)
-            {
-                case YapDatabaseViewChangeDelete :
-                {
-                    [self.tableView deleteRowsAtIndexPaths:@[ rowChange.indexPath ]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                }
-                case YapDatabaseViewChangeInsert :
-                {
-                    [self.tableView insertRowsAtIndexPaths:@[ rowChange.newIndexPath ]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                }
-                case YapDatabaseViewChangeMove :
-                {
-                    [self.tableView deleteRowsAtIndexPaths:@[ rowChange.indexPath ]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView insertRowsAtIndexPaths:@[ rowChange.newIndexPath ]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                }
-                case YapDatabaseViewChangeUpdate :
-                {
-                    [self.tableView reloadRowsAtIndexPaths:@[ rowChange.indexPath ]
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                }
-            }
-        }
-        
-        [self.tableView endUpdates];
-         */
+        self.searchBar.placeholder = [self.viewModel searchBarPlaceholderStringForCurrentKey:self.currentKey];
     }
-    
 }
 
 - (void)cloudKitStateChanged:(NSNotification *)notification {
@@ -798,14 +684,6 @@ static NSString * const cellIdentifier = @"TopicCell";
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Resumed - InFlight(%lu), Queued(%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     }
     DDLogDebug(@"[CloudKit] %@", titleString);
-
-//    if (suspendCount == 0 && inFlightCount + queuedCount > 0) {
-//        if ([_archiveImageView.layer animationForKey:@"syncAnimation"] == nil) {
-//            [_archiveImageView.layer addAnimation:self.archiveSyncAnimation forKey:@"syncAnimation"];
-//        }
-//    } else {
-//        [_archiveImageView.layer removeAnimationForKey:@"syncAnimation"];
-//    }
 }
 
 - (NSArray *)keys {
@@ -829,48 +707,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.refreshControl.hidden = YES;
     
     [self.tableView reloadData];
-    [self updateFilter:self.searchBar.text withCurrentKey:self.currentKey];
+    [self.viewModel updateFilter:self.searchBar.text key:self.currentKey];
     
     [self.tableView setContentOffset:CGPointZero animated:NO];
     
     [self.scrollTabBar deselectAll];
-}
-
-- (void)initializeMappings {
-    [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        
-        if ([transaction ext:Ext_searchResultView_Archive])
-        {
-            self.mappings = [[YapDatabaseViewMappings alloc] initWithGroupFilterBlock:^BOOL(NSString *group, YapDatabaseReadTransaction *transaction) {
-                return YES;
-            } sortBlock:^NSComparisonResult(NSString *group1, NSString *group2, YapDatabaseReadTransaction *transaction) {
-                return [[S1Formatter sharedInstance] compareDateString:group1 withDateString:group2];
-            } view:Ext_searchResultView_Archive];
-            [self.mappings updateWithTransaction:transaction];
-        }
-        else
-        {
-            // The view isn't ready yet.
-            // We'll try again when we get a databaseConnectionDidUpdate notification.
-        }
-    }];
-}
-
-- (S1Topic *)topicAtIndexPath:(NSIndexPath *)indexPath {
-    __block S1Topic *topic = nil;
-    [self.databaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
-        topic = [[transaction ext:Ext_searchResultView_Archive] objectAtIndexPath:indexPath withMappings:self.mappings];
-    }];
-    return topic;
-}
-
-- (void)updateFilter:(NSString *)searchText withCurrentKey:(NSString *)currentKey {
-    NSString *query = [NSString stringWithFormat:@"favorite:%@ title:%@*", [currentKey isEqualToString:@"Favorite"] ? @"FY":@"F*", searchText];
-    DDLogDebug(@"[TopicListVC] Update filter: %@", query);
-    [self.searchQueue enqueueQuery:query];
-    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * transaction) {
-        [[transaction ext:Ext_searchResultView_Archive] performSearchWithQueue:self.searchQueue];
-    }];
 }
 
 #pragma mark - Observer
@@ -936,7 +777,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _archiveButton;
 }
 
-- (NSArray *)archiveSyncImages {
+- (NSArray<UIImage *> *)archiveSyncImages {
     if (!_archiveSyncImages) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (NSInteger i = 1; i <= 36; i++) {
@@ -1000,13 +841,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _searchBar;
 }
 
-- (YapDatabaseSearchQueue *)searchQueue {
-    if (!_searchQueue) {
-        _searchQueue = [[YapDatabaseSearchQueue alloc] init];
-    }
-    return _searchQueue;
-}
-
 - (UISegmentedControl *)segControl {
     if (!_segControl) {
         _segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
@@ -1027,8 +861,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _scrollTabBar;
 }
 
-- (NSDictionary *)forumKeyMap
-{
+- (NSDictionary *)forumKeyMap {
     if (_forumKeyMap == nil) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"ForumKeyMap" ofType:@"plist"];
         _forumKeyMap = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -1036,8 +869,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _forumKeyMap;
 }
 
-- (NSMutableDictionary *)cachedContentOffset
-{
+- (NSMutableDictionary *)cachedContentOffset {
     if(_cachedContentOffset == nil) {
         _cachedContentOffset = [NSMutableDictionary dictionary];
     }

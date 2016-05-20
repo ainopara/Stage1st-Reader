@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
-		86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */; };
 		86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B7F19DE3A74004BF2BC /* S1DataCenter.m */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
 		8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605636D1B88222100E1D63E /* S1CloudKitViewController.m */; };
@@ -46,6 +45,7 @@
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		8694BCD61CEC42C200756C4A /* S1WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD51CEC42C200756C4A /* S1WebViewController.swift */; };
+		8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
@@ -103,8 +103,6 @@
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = ColorMap.plist; path = Stage1st/ColorMap.plist; sourceTree = "<group>"; };
-		86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListViewModel.h; path = Stage1st/S1TopicListViewModel.h; sourceTree = "<group>"; };
-		86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListViewModel.m; path = Stage1st/S1TopicListViewModel.m; sourceTree = "<group>"; };
 		86040B7E19DE3A74004BF2BC /* S1DataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1DataCenter.h; path = Stage1st/S1DataCenter.h; sourceTree = "<group>"; };
 		86040B7F19DE3A74004BF2BC /* S1DataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1DataCenter.m; path = Stage1st/S1DataCenter.m; sourceTree = "<group>"; };
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1NetworkManager.h; path = Stage1st/S1NetworkManager.h; sourceTree = "<group>"; };
@@ -161,6 +159,7 @@
 		8693431819E5A074008F7A58 /* S1ContentViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewModel.h; path = Stage1st/S1ContentViewModel.h; sourceTree = "<group>"; };
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
 		8694BCD51CEC42C200756C4A /* S1WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1WebViewController.swift; path = Vendors/S1WebViewController/S1WebViewController.swift; sourceTree = "<group>"; };
+		8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1TopicListViewModel.swift; path = Stage1st/S1TopicListViewModel.swift; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCellSubView.h; path = Stage1st/S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
@@ -302,8 +301,7 @@
 				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
 				86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */,
-				86040B7B19DE3355004BF2BC /* S1TopicListViewModel.h */,
-				86040B7C19DE3355004BF2BC /* S1TopicListViewModel.m */,
+				8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */,
 				C08DB46716DE3152002B4A92 /* S1TopicListCell.h */,
 				C08DB46816DE3152002B4A92 /* S1TopicListCell.m */,
 				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
@@ -821,7 +819,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C095874416CA8A36007E0119 /* main.m in Sources */,
-				86040B7D19DE3355004BF2BC /* S1TopicListViewModel.m in Sources */,
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
@@ -856,6 +853,7 @@
 				8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */,
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
+				8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */,
 				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,

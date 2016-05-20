@@ -7,55 +7,70 @@
 //
 import UIKit
 
-enum TopicListPresentationType {
+public enum TopicListPresentationType {
     case History, Favorite
     case Search
     case Forum(key : String)
     case Blank
+
+    init(key: String) {
+        switch key {
+        case "History":
+            self = .History
+        case "Favorite":
+            self = .Favorite
+        case "Search":
+            self = .Search
+        case "":
+            self = .Blank
+        default:
+            self = .Forum(key: key)
+        }
+    }
 }
 
 extension S1TopicListViewController {
-    func presentationTypeForKey(key: String) -> TopicListPresentationType {
-        switch key {
-        case "History": return .History
-        case "Favorite": return .Favorite
-        case "Search": return .Search
-        case "": return .Blank
-        default: return .Forum(key: key)
-        }
-    }
 
     func isPresentingDatabaseList(key: String) -> Bool {
-        switch presentationTypeForKey(key) {
-        case .Favorite, .History: return true
-        default: return false
+        switch TopicListPresentationType(key: key) {
+        case .Favorite, .History:
+            return true
+        default:
+            return false
         }
     }
 
     func isPresentingSearchList(key: String) -> Bool {
-        switch presentationTypeForKey(key) {
-        case .Search: return true
-        default: return false
+        switch TopicListPresentationType(key: key) {
+        case .Search:
+            return true
+        default:
+            return false
         }
     }
 
     func isPresentingForumList(key: String) -> Bool {
-        switch presentationTypeForKey(key) {
-        case .Forum: return true
-        default: return false
+        switch TopicListPresentationType(key: key) {
+        case .Forum:
+            return true
+        default:
+            return false
         }
     }
 
     func isPresentingBlankList(key: String) -> Bool {
-        switch presentationTypeForKey(key) {
-        case .Blank: return true
-        default: return false
+        switch TopicListPresentationType(key: key) {
+        case .Blank:
+            return true
+        default:
+            return false
         }
     }
 }
 
 // MARK: Style
 extension S1TopicListViewController {
+
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
     }
