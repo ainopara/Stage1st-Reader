@@ -28,7 +28,6 @@
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
 @end
 
-
 @implementation S1DataCenter
 
 -(instancetype)init {
@@ -57,7 +56,7 @@
 
 #pragma mark - Network (Topic List)
 
-- (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray<S1Topic *> *))success failure:(void (^)(NSError *))failure {
     if (refresh || self.topicListCache[keyID] == nil) {
         [self fetchTopicsForKeyFromServer:keyID withPage:@1 success:success failure:failure];
     } else {

@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 
-- (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
 
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
 
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 - (void)removeTopicFromFavorite:(NSNumber *)topicID;
 
-- (S1Topic *)tracedTopic:(NSNumber *)topicID;
+- (S1Topic * _Nullable)tracedTopic:(NSNumber *)topicID;
 - (NSNumber *)numberOfTopics;
 - (NSNumber *)numberOfFavorite;
 
@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 - (void)removeTopicFromFavorite:(NSNumber *)topicID;
-- (S1Topic *)topicByID:(NSNumber *)topicID;
+- (S1Topic * _Nullable)topicByID:(NSNumber *)topicID;
 - (NSNumber *)numberOfTopicsInDatabse;
 - (NSNumber *)numberOfFavoriteTopicsInDatabse;
 - (void)removeTopicBeforeDate:(NSDate *)date;

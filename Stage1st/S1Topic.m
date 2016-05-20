@@ -25,6 +25,16 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 @implementation S1Topic : MyDatabaseObject
 
+- (instancetype)initWithTopicID:(NSNumber *)topicID {
+    self = [super init];
+    if (self != nil) {
+        _topicID = topicID;
+        _favorite = @(NO);
+        _modelVersion = @1;
+    }
+    return self;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -141,6 +151,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 #pragma mark - Update
 
 - (void)addDataFromTracedTopic:(S1Topic *)topic {
+    NSAssert(NO, @"should always change from traced topic to ensure change tag correct");
     if (self.topicID == nil && topic.topicID != nil) {
         self.topicID = topic.topicID;
     }
@@ -162,10 +173,10 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     self.lastReplyCount = topic.replyCount;
     self.lastViewedPage = topic.lastViewedPage;
     self.lastViewedPosition = topic.lastViewedPosition;
-    
 }
 
 - (void)updateFromTopic:(S1Topic *)topic {
+    NSAssert(!self.isImmutable, @"should be mutable to call this method");
     if (topic.title != nil) {
         self.title = topic.title;
     }
@@ -190,6 +201,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 }
 
 - (void)absorbTopic:(S1Topic *)topic {
+    NSAssert(!self.isImmutable, @"should be mutable to call this method");
     if ([topic.topicID isEqualToNumber:self.topicID]) {
         if ([topic.lastViewedDate timeIntervalSince1970] > [self.lastViewedDate timeIntervalSince1970]) {
             if (topic.title != nil && (![self.title isEqualToString:topic.title])) {
@@ -220,14 +232,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
         }
     }
 }
-/*
-+ (NSValueTransformer *)lastViewedDateEntityAttributeTransformer {
-    return [MTLValueTransformer reversibleTransformerWithForwardBlock:^(NSNumber *seconds) {
-        return [[NSDate alloc] initWithTimeIntervalSince1970: [seconds doubleValue]];
-    } reverseBlock:^(NSDate *date) {
-        return [NSNumber numberWithDouble:[date timeIntervalSince1970]];
-    }];
-}*/
 
 #pragma mark - MyDatabaseObject overrides
 
