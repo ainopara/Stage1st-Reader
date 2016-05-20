@@ -7,9 +7,9 @@
 //
 
 import XCTest
-import FBSnapshotTestCase
+//import FBSnapshotTestCase
 
-class Stage1stTests: FBSnapshotTestCase {
+class Stage1stTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

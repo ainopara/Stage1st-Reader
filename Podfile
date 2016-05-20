@@ -43,4 +43,5 @@ end
 
 target "Stage1stTests" do
     pod 'FBSnapshotTestCase'
+    pod 'KIF', :configurations => ['Debug']
 end
