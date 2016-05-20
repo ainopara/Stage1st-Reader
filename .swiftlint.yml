@@ -1,6 +1,7 @@
 disabled_rules: # rule identifiers to exclude from running
   - line_length
   - missing_docs
+  - file_length
   - function_body_length
   - function_parameter_count 
   - todo
