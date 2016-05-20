@@ -663,7 +663,7 @@
 			attributes = {
 				CLASSPREFIX = S1;
 				LastSwiftMigration = 0710;
-				LastSwiftUpdateCheck = 0710;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Renaissance;
 				TargetAttributes = {

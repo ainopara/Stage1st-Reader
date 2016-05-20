@@ -18,7 +18,7 @@
 
 @implementation S1TopicListCell
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.drawingSubview = [[S1TopicListCellSubView alloc] initWithFrame:CGRectZero];
@@ -39,7 +39,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    [self.drawingSubview setSelected:selected];
+    [self.drawingSubview setHighlighted:selected];
     [self updateSubview];
     // Configure the view for the selected state
 }
