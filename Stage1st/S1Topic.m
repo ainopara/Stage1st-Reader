@@ -11,7 +11,7 @@
 /**
  * Keys for encoding / decoding (to avoid typos)
  **/
-static NSString *const k_version = @"version"; // not used for now
+static NSString *const k_version = @"version";
 static NSString *const k_topicID = @"topicID";
 static NSString *const k_title  = @"title";
 static NSString *const k_replyCount = @"replyCount";
@@ -23,7 +23,7 @@ static NSString *const k_lastViewedPosition = @"lastViewedPosition";
 static NSString *const k_favorite = @"favorite";
 static NSString *const k_favoriteDate = @"favoriteDate";
 
-@implementation S1Topic : MyDatabaseObject
+@implementation S1Topic
 
 - (instancetype)initWithTopicID:(NSNumber *)topicID {
     self = [super init];
@@ -35,6 +35,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     return self;
 }
 
+// TODO: This method is deprecated because it allows topicID to be nil.
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -44,8 +45,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     return self;
 }
 
-- (instancetype)initWithRecord:(CKRecord *)record
-{
+- (instancetype)initWithRecord:(CKRecord *)record {
     if (![record.recordType isEqualToString:@"topic"])
     {
         NSAssert(NO, @"Attempting to create topic from non-topic record"); // For debug builds
@@ -72,8 +72,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     return self;
 }
 
-
-#pragma mark - Coding
+#pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if ((self = [super init])) {
@@ -106,9 +105,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [aCoder encodeObject:_modelVersion forKey:k_version];
 }
 
-#pragma mark - Copying
-- (id)copyWithZone:(NSZone *)zone
-{
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone {
     S1Topic *copy = [super copyWithZone:zone]; // Be sure to invoke [MyDatabaseObject copyWithZone:] !
     copy->_topicID = _topicID;
     copy->_title = _title;
@@ -133,73 +132,22 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 #pragma mark - Description
 
 - (NSString *)description {
-    NSMutableString *despString = [NSMutableString stringWithFormat:@"Topic(Version: %@) %@:", self.modelVersion, self.topicID];
-    [despString appendString:@"\nBasic Information"];
+    NSMutableString *despString = [NSMutableString stringWithFormat:@"Topic(Version: %@) ID: %@:", self.modelVersion, self.topicID];
+    [despString appendString:@"\n[Basic Information]"];
     [despString appendFormat:@"\nTitle: %@", self.title];
     [despString appendFormat:@"\nFromhash: %@", self.formhash];
     
-    [despString appendString:@"\nCloudKit Property"];
-    [despString appendFormat:@"\n%lu cloud key changes ->", (unsigned long)[self.changedCloudProperties count]];
+    [despString appendFormat:@"\n[Changed CloudKit Property] Count: %lu", (unsigned long)[self.changedCloudProperties count]];
     for (NSString *property in self.changedCloudProperties) {
-        [despString appendFormat:@"\n%@ : %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]];
+        [despString appendFormat:@"\n%@: %@ -> %@", property, [self.originalCloudValues valueForKey:property], [self valueForKey:property]];
     }
-    
+
     return despString;
 }
 
-
 #pragma mark - Update
 
-- (void)addDataFromTracedTopic:(S1Topic *)topic {
-    NSAssert(NO, @"should always change from traced topic to ensure change tag correct");
-    if (self.topicID == nil && topic.topicID != nil) {
-        self.topicID = topic.topicID;
-    }
-    if (self.title == nil && topic.title != nil) {
-        self.title = topic.title;
-    }
-    if (self.replyCount == nil && topic.replyCount != nil) {
-        self.replyCount = topic.replyCount;
-    }
-    if (self.fID == nil && topic.fID != nil) {
-        self.fID = topic.fID;
-    }
-    if (topic.favorite != nil) {
-        self.favorite = topic.favorite;
-    }
-    if (self.favorite == nil) {
-        self.favorite = @(NO);
-    }
-    self.lastReplyCount = topic.replyCount;
-    self.lastViewedPage = topic.lastViewedPage;
-    self.lastViewedPosition = topic.lastViewedPosition;
-}
-
-- (void)updateFromTopic:(S1Topic *)topic {
-    NSAssert(!self.isImmutable, @"should be mutable to call this method");
-    if (topic.title != nil) {
-        self.title = topic.title;
-    }
-    if (topic.replyCount != nil) {
-        self.replyCount = topic.replyCount;
-    }
-    if (topic.totalPageCount != nil) {
-        self.totalPageCount = topic.totalPageCount;
-    }
-    if (topic.authorUserID != nil) {
-        self.authorUserID = topic.authorUserID;
-    }
-    if (topic.authorUserName != nil) {
-        self.authorUserName = topic.authorUserName;
-    }
-    if (topic.formhash != nil) {
-        self.formhash = topic.formhash;
-    }
-    if (topic.message != nil) {
-        self.message = topic.message;
-    }
-}
-
+// To resolve merge conflict
 - (void)absorbTopic:(S1Topic *)topic {
     NSAssert(!self.isImmutable, @"should be mutable to call this method");
     if ([topic.topicID isEqualToNumber:self.topicID]) {
@@ -235,13 +183,11 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 #pragma mark - MyDatabaseObject overrides
 
-+ (BOOL)storesOriginalCloudValues
-{
++ (BOOL)storesOriginalCloudValues {
     return YES;
 }
 
-+ (NSMutableDictionary *)mappings_localKeyToCloudKey
-{
++ (NSMutableDictionary *)mappings_localKeyToCloudKey {
     NSMutableDictionary *mappings_localKeyToCloudKey = [super mappings_localKeyToCloudKey];
     [mappings_localKeyToCloudKey removeObjectForKey:@"formhash"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"totalPageCount"];
@@ -253,8 +199,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     
 }
 
-- (id)cloudValueForCloudKey:(NSString *)cloudKey
-{
+- (id)cloudValueForCloudKey:(NSString *)cloudKey {
     // Override me if needed.
     // For example:
     //
@@ -276,8 +221,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     return [super cloudValueForCloudKey:cloudKey];
 }
 
-- (void)setLocalValueFromCloudValue:(id)cloudValue forCloudKey:(NSString *)cloudKey
-{
+- (void)setLocalValueFromCloudValue:(id)cloudValue forCloudKey:(NSString *)cloudKey {
     // Override me if needed.
     // For example:
     //
@@ -302,11 +246,8 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 
 #pragma mark KVO overrides
 
-- (void)setNilValueForKey:(NSString *)key
-{
+- (void)setNilValueForKey:(NSString *)key {
     [super setNilValueForKey:key];
-
 }
-
 
 @end

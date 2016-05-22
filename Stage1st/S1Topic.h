@@ -16,43 +16,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface S1Topic : MyDatabaseObject<NSCoding>
 // Basic
-@property (nonatomic, copy) NSNumber *topicID;
-// To show in topic list
-@property (nonatomic, copy, nullable) NSString *title;
-@property (nonatomic, copy, nullable) NSNumber *replyCount;
+@property (nonatomic, copy) NSNumber *topicID; // traced
+
+@property (nonatomic, copy, nullable) NSString *title; // traced
+@property (nonatomic, copy, nullable) NSNumber *replyCount; // traced
+@property (nonatomic, copy, nullable) NSNumber *authorUserID; // traced
+
+@property (nonatomic, copy, nullable) NSNumber *favorite; // traced
+@property (nonatomic, copy, nullable) NSDate *favoriteDate; // traced
+
+@property (nonatomic, copy, nullable) NSDate *lastViewedDate; // traced
+@property (nonatomic, copy, nullable) NSNumber *lastViewedPage; // traced
+@property (nonatomic, copy, nullable) NSNumber *lastViewedPosition; // traced
+
+@property (nonatomic, copy, nullable) NSNumber *fID; // traced
+
+@property (nonatomic, copy, nullable) NSNumber *modelVersion; // traced
+
 @property (nonatomic, copy, nullable) NSNumber *lastReplyCount;
-@property (nonatomic, copy, nullable) NSNumber *favorite;
-@property (nonatomic, copy, nullable) NSDate *favoriteDate;
-@property (nonatomic, copy, nullable) NSDate *lastViewedDate;
-@property (nonatomic, copy, nullable) NSNumber *lastViewedPosition;
-
-// To generate content page & Search post owner
-@property (nonatomic, copy, nullable) NSNumber *authorUserID;
-@property (nonatomic, copy, nullable) NSString *authorUserName;
-
-// Used to update page count in content view
 @property (nonatomic, copy, nullable) NSNumber *totalPageCount;
-// Not Used
-@property (nonatomic, copy, nullable) NSNumber *fID;
-
-// For Reply
+@property (nonatomic, copy, nullable) NSString *authorUserName;
 @property (nonatomic, copy, nullable) NSString *formhash;
-
-// For Tracing
-@property (nonatomic, copy, nullable) NSNumber *lastViewedPage;
-@property (nonatomic, copy, nullable) NSDictionary<NSString *, S1Floor *> *floors; // indexMark : floor
-
 @property (nonatomic, copy, nullable) NSString *message;
-
-// Model Version
-@property (nonatomic, copy, nullable) NSNumber *modelVersion;
+@property (nonatomic, copy, nullable) NSDictionary<NSString *, S1Floor *> *floors; // indexMark : floor
 
 - (instancetype)initWithTopicID:(NSNumber *)topicID;
 - (instancetype)initWithRecord:(CKRecord *)record;
 
 // Update
-- (void)addDataFromTracedTopic:(S1Topic *)topic;
-- (void)updateFromTopic:(S1Topic *)topic;
 - (void)absorbTopic:(S1Topic *)topic;
 
 @end

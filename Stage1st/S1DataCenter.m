@@ -99,7 +99,7 @@
                 //get topics
                 NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
                 
-                [strongMyself processTopics:topics withKeyID:keyID andPage:page];
+                [strongMyself processAndCacheTopics:topics withKeyID:keyID andPage:page];
                 
                 success(strongMyself.topicListCache[keyID]);
             });
@@ -125,7 +125,7 @@
                 //parse topics
                 NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": keyID}] mutableCopy];
                 
-                [strongMyself processTopics:topics withKeyID:keyID andPage:page];
+                [strongMyself processAndCacheTopics:topics withKeyID:keyID andPage:page];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     success(strongMyself.topicListCache[keyID]);
@@ -147,15 +147,20 @@
         __strong __typeof__(self) strongMyself = myself;
         //parse topics
         NSArray *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
+
+        NSMutableArray<S1Topic *> *processedTopics = [[NSMutableArray alloc] init];
         
         //append tracer message to topics
         for (S1Topic *topic in topics) {
-            S1Topic *tempTopic = [strongMyself tracedTopic:topic.topicID];
-            if (tempTopic) {
-                [topic addDataFromTracedTopic:tempTopic];
+            S1Topic *tracedTopic = [[strongMyself tracedTopic:topic.topicID] copy];
+            if (tracedTopic) {
+                [tracedTopic update:topic];
+                [processedTopics addObject:tracedTopic];
+            } else {
+                [processedTopics addObject:topic];
             }
         }
-        success(topics);
+        success(processedTopics);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
     }];
@@ -182,7 +187,7 @@
             
             //Update Topic
             NSDictionary *responseDict = responseObject;
-            [topic updateFromTopic:[S1Parser topicInfoFromAPI:responseDict]];
+            [topic update:[S1Parser topicInfoFromAPI:responseDict]];
             
             //Check Login State
             NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
@@ -204,7 +209,7 @@
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
             //Update Topic
-            [topic updateFromTopic:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
+            [topic update:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
             
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -261,7 +266,7 @@
             
             //Update Topic
             NSDictionary *responseDict = responseObject;
-            [topic updateFromTopic:[S1Parser topicInfoFromAPI:responseDict]];
+            [topic update:[S1Parser topicInfoFromAPI:responseDict]];
             
             //Check Login State
             NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
@@ -286,7 +291,7 @@
             DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
             
             //Update Topic
-            [topic updateFromTopic:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
+            [topic update:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
             
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -423,34 +428,39 @@
 
 #pragma mark - Helper
 
-- (void)processTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
-    NSMutableArray *processedTopics = [[NSMutableArray alloc] init];
+- (void)processAndCacheTopics:(NSMutableArray *)topics withKeyID:(NSString *)keyID andPage:(NSNumber *)page {
+    NSMutableArray<S1Topic *> *processedTopics = [[NSMutableArray alloc] init];
+
+    // Append tracer message to topics
     for (S1Topic *topic in topics) {
-        
-        //append tracer message to topics
-        S1Topic *tempTopic = [self tracedTopic:topic.topicID];
-        if (tempTopic) {
-            [topic addDataFromTracedTopic:tempTopic];
+        S1Topic *tracedTopic = [[self tracedTopic:topic.topicID] copy];
+        S1Topic *processedTopic;
+        if (tracedTopic != nil) {
+            [tracedTopic update:topic];
+            processedTopic = tracedTopic;
+        } else {
+            processedTopic = topic;
         }
+
         BOOL topicIsDuplicated = NO;
         // remove duplicate topics
         if ([page integerValue] > 1) {
             for (S1Topic *compareTopic in self.topicListCache[keyID]) {
-                if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
-                    DDLogDebug(@"Remove duplicate topic: %@", topic.title);
+                if ([processedTopic.topicID isEqualToNumber:compareTopic.topicID]) {
+                    DDLogDebug(@"[DataCenter] Remove duplicate topic: %@", topic.title);
                     NSInteger index = [self.topicListCache[keyID] indexOfObject:compareTopic];
-                    [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:topic];
+                    [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:processedTopic];
                     topicIsDuplicated = YES;
                     break;
                 }
             }
         }
         if (!topicIsDuplicated) {
-            [processedTopics addObject:topic];
+            [processedTopics addObject:processedTopic];
         }
-        
     }
-    
+
+    // Cache topic list
     if (topics.count > 0) {
         if ([page isEqualToNumber:@1]) {
             self.topicListCache[keyID] = processedTopics;

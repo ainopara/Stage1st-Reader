@@ -251,9 +251,15 @@ static NSString * const cellIdentifier = @"TopicCell";
         contentViewController = [[S1ContentViewController alloc] initWithTopic:[self.viewModel topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
-        S1Topic *mutableTopic = [topic isImmutable] ? [topic copy] : topic;
-        [mutableTopic addDataFromTracedTopic:[self.dataCenter tracedTopic:mutableTopic.topicID]];
-        contentViewController = [[S1ContentViewController alloc] initWithTopic:mutableTopic dataCenter:self.dataCenter];
+        S1Topic *tracedTopic = [[self.dataCenter tracedTopic:topic.topicID] copy];
+        S1Topic *processedTopic;
+        if (tracedTopic != nil) {
+            [tracedTopic update:topic];
+            processedTopic = tracedTopic;
+        } else {
+            processedTopic = topic;
+        }
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:processedTopic dataCenter:self.dataCenter];
     }
 
     [self.navigationController pushViewController:contentViewController animated:YES];
