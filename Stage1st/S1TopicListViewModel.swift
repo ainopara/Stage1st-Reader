@@ -51,7 +51,7 @@ public final class S1TopicListViewModel: NSObject {
 
     func topicWithTracedDataForTopic(topic: S1Topic) -> S1Topic {
         if let tracedTopic = self.dataCenter.tracedTopic(topic.topicID)?.copy() as? S1Topic {
-            tracedTopic.absorbTopic(topic)
+            tracedTopic.update(topic)
             return tracedTopic
         } else {
             return topic

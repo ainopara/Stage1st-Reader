@@ -251,14 +251,9 @@ static NSString * const cellIdentifier = @"TopicCell";
         contentViewController = [[S1ContentViewController alloc] initWithTopic:[self.viewModel topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
-        S1Topic *tracedTopic = [[self.dataCenter tracedTopic:topic.topicID] copy];
-        S1Topic *processedTopic;
-        if (tracedTopic != nil) {
-            [tracedTopic update:topic];
-            processedTopic = tracedTopic;
-        } else {
-            processedTopic = topic;
-        }
+        S1Topic *processedTopic = [self.viewModel topicWithTracedDataForTopic:topic];
+        [self.topics replaceObjectAtIndex:indexPath.row withObject:processedTopic];
+
         contentViewController = [[S1ContentViewController alloc] initWithTopic:processedTopic dataCenter:self.dataCenter];
     }
 
@@ -619,6 +614,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
+    DDLogVerbose(@"[TopicListVC] database connection did update.");
     if (self.viewModel.viewMappings == nil) {
         [self.viewModel initializeMappings];
         
