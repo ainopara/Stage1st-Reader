@@ -385,9 +385,27 @@ extension S1LoginViewController {
             DDLogDebug("[LoginVC] pan location \(gesture.locationInView(self.view))")
             attachmentBehavior?.anchorPoint = gesture.locationInView(self.view)
         default:
-            dynamicAnimator.removeAllBehaviors()
-            if let snapBehavior = self.snapBehavior {
-                dynamicAnimator.addBehavior(snapBehavior)
+            let velocity = gesture.velocityInView(self.view)
+            DDLogVerbose("[LoginVC] pan velocity: \(velocity)")
+            if velocity.x * velocity.x + velocity.y * velocity.y > 1000000 {
+                if let attachmentBehavior = attachmentBehavior {
+                    dynamicAnimator.removeBehavior(attachmentBehavior)
+                }
+                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(dynamicItemBehavior?.linearVelocityForItem(containerView))")
+                dynamicItemBehavior?.addLinearVelocity(velocity, forItem: containerView)
+                dynamicItemBehavior?.action = { [weak self] in
+                    guard let strongSelf = self else { return }
+                    if let items = strongSelf.dynamicAnimator?.itemsInRect(strongSelf.view.bounds) where items.count == 0 {
+                        if !strongSelf.isBeingDismissed() {
+                            strongSelf.dismiss()
+                        }
+                    }
+                }
+            } else {
+                dynamicAnimator.removeAllBehaviors()
+                if let snapBehavior = self.snapBehavior {
+                    dynamicAnimator.addBehavior(snapBehavior)
+                }
             }
         }
     }
