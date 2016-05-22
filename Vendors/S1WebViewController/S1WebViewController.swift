@@ -8,10 +8,10 @@
 
 import UIKit
 import SnapKit
-import NJKWebViewProgress
+import SwiftWebViewProgress
 import CocoaLumberjack
 
-class S1WebViewController: UIViewController, UIWebViewDelegate, NJKWebViewProgressDelegate {
+class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressDelegate {
     var URLToOpen: NSURL
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
@@ -19,7 +19,7 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, NJKWebViewProgre
     let titleLabel = UILabel(frame: CGRect.zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
     let webView = UIWebView(frame: CGRect.zero)
-    let progressView = NJKWebViewProgressView(frame: CGRect.zero)
+    let progressView = WebViewProgressView(frame: CGRect.zero)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: CGRect.zero)
     let toolBar = UIToolbar(frame: CGRect.zero)
@@ -30,7 +30,7 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, NJKWebViewProgre
     var safariButtonItem: UIBarButtonItem?
     var closeButtonItem: UIBarButtonItem?
 
-    let progressManager = NJKWebViewProgress()
+    let progressManager = WebViewProgress()
 
     // MARK: -
     init(URL: NSURL) {
@@ -190,13 +190,13 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, NJKWebViewProgre
         forwardButtonItem?.enabled = webView.canGoForward
         titleLabel.text = currentValidURL().absoluteString
     }
-    
-    // MARK: NJKWebViewProgressDelegate
+
+
     func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
         updateBarItems()
     }
-
-    func webViewProgress(webViewProgress: NJKWebViewProgress!, updateProgress progress: Float) {
+    // MARK: NJKWebViewProgressDelegate
+    func webViewProgress(webViewProgress: WebViewProgress, updateProgress progress: Float) {
         DDLogDebug("[WebVC] loading progress: \(progress)")
         progressView.setProgress(progress, animated: true)
     }

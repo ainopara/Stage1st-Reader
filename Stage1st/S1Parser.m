@@ -333,7 +333,11 @@
 }
 
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict {
-    S1Topic *topic = [[S1Topic alloc] init];
+    NSNumber *topicID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"tid"] integerValue]];
+    if (topicID == nil) {
+        return nil;
+    }
+    S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
     //Update Topic
     topic.title = [(NSString *)responseDict[@"Variables"][@"thread"][@"subject"] gtm_stringByUnescapingFromHTML];
     topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];

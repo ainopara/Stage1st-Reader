@@ -43,31 +43,19 @@ PODS:
   - DTFoundation/UIKit (1.7.10):
     - DTFoundation/Core
   - Fabric (1.6.7)
-  - FBSnapshotTestCase (2.1.0):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.0)
-  - FBSnapshotTestCase/Core (2.1.0)
-  - FBSnapshotTestCase/SwiftSupport (2.1.0):
-    - FBSnapshotTestCase/Core
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - JASON (2.2)
   - JTSImageViewController (1.5)
-  - KIF (3.4.2):
-    - KIF/Core (= 3.4.2)
-  - KIF/Core (3.4.2)
   - KissXML (5.1.2)
   - Masonry (1.0.0)
-  - NJKWebViewProgress (0.2.3):
-    - NJKWebViewProgress/Core (= 0.2.3)
-    - NJKWebViewProgress/ProgressView (= 0.2.3)
-  - NJKWebViewProgress/Core (0.2.3)
-  - NJKWebViewProgress/ProgressView (0.2.3)
   - pop (1.0.9)
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (0.21.0)
   - SVWebViewController (1.0)
+  - SwiftWebViewProgress (0.1.0)
   - YapDatabase (2.9.1):
     - YapDatabase/Standard (= 2.9.1)
   - YapDatabase/Standard (2.9.1):
@@ -130,19 +118,17 @@ DEPENDENCIES:
   - Crashlytics
   - DTCoreText
   - Fabric
-  - FBSnapshotTestCase
   - FMDB
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
-  - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
-  - NJKWebViewProgress
   - pop
   - Reachability
   - Reveal-iOS-SDK
   - SnapKit
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
+  - SwiftWebViewProgress
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
 
 EXTERNAL SOURCES:
@@ -181,21 +167,19 @@ SPEC CHECKSUMS:
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
-  FBSnapshotTestCase: 366ecd378511d7716c79991cd8067d1eed23578d
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  KIF: b518c9831453abea5afdbbde3908ec47832d6d56
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
-  NJKWebViewProgress: f481fd424cb5ecc27eacae11b5397db92fba9a4d
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
+  SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: 084229f50f31e93c0a26d79a4a9eac1ccb042f58
+PODFILE CHECKSUM: cb993e4c76e8ba5899036c12dd78ed9d233c058e
 
 COCOAPODS: 1.0.0

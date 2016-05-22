@@ -3,7 +3,6 @@ platform :ios, "8.0"
 use_frameworks!
 
 target "Stage1st" do
-
     # Network
     pod 'AFNetworking'
     pod 'Alamofire'
@@ -39,10 +38,10 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod '1PasswordExtension'
     pod 'Reachability'
-    pod 'NJKWebViewProgress'
+    pod 'SwiftWebViewProgress'
 end
 
 target "Stage1stTests" do
-    pod 'FBSnapshotTestCase'
-    pod 'KIF', :configurations => ['Debug']
+    # pod 'FBSnapshotTestCase'
+    # pod 'KIF', :configurations => ['Debug']
 end
