@@ -72,10 +72,11 @@
     if (self != nil) {
         // Custom initialization
 
+        _currentPage = 1;
+
         [self setTopic:topic];
         _dataCenter = dataCenter;
 
-        _currentPage = 1;
         _needToScrollToBottom = NO;
         _needToLoadLastPositionFromModel = YES;
         _finishLoading = NO;
@@ -1053,6 +1054,8 @@
 }
 
 - (void)setTopic:(S1Topic *)topic {
+    NSAssert(![topic isImmutable], @"topic should not be immutable");
+
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {
