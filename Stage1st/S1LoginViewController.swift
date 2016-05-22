@@ -32,7 +32,7 @@ final class S1LoginViewController: UIViewController {
 
     var dynamicAnimator: UIDynamicAnimator?
     var snapBehavior: UISnapBehavior?
-    var dynamicBehavior: UIDynamicBehavior?
+    var dynamicItemBehavior: UIDynamicItemBehavior?
     var attachmentBehavior: UIAttachmentBehavior?
     var dragGesture: UIPanGestureRecognizer?
     var tapGesture: UITapGestureRecognizer?
@@ -92,7 +92,7 @@ final class S1LoginViewController: UIViewController {
         "驾驶执照最后四位数字"
     ]
 
-    // MARK: - Life Cycle
+    // MARK: -
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .OverFullScreen
@@ -191,7 +191,7 @@ final class S1LoginViewController: UIViewController {
             make.top.equalTo(self.questionSelectButton.snp_bottom).offset(12.0)
         }
 
-        loginButton.addTarget(self, action: #selector(S1LoginViewController.login(_:)), forControlEvents: .TouchUpInside)
+        loginButton.addTarget(self, action: #selector(S1LoginViewController.logIn(_:)), forControlEvents: .TouchUpInside)
         loginButton.backgroundColor = UIColor.blueColor()
         loginButton.tintColor = UIColor.blackColor()
 
@@ -200,7 +200,6 @@ final class S1LoginViewController: UIViewController {
         loginButton.snp_makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
             make.height.equalTo(34.0)
-//            make.top.equalTo(self.answerField.snp_bottom).offset(12.0)
             make.bottom.equalTo(self.containerView.snp_bottom).offset(-12.0)
         }
 
@@ -215,12 +214,6 @@ final class S1LoginViewController: UIViewController {
         self.view.addGestureRecognizer(tapGesture)
 
         let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
-
-        self.view.setNeedsLayout()
-        self.view.layoutIfNeeded()
-        let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.center.x, y: self.view.center.y))
-        dynamicAnimator.addBehavior(snapBehavior)
-
         self.dynamicAnimator = dynamicAnimator
 
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
@@ -233,16 +226,79 @@ final class S1LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        containerView.center = centerOfContainerView()
         if let dynamicAnimator = self.dynamicAnimator {
-            dynamicAnimator.removeAllBehaviors()
-            let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: CGPoint(x: self.view.bounds.width / 2.0, y: self.view.bounds.height / 2.0)) // FIXME: should be center of visibleLayoutGuide i.e. the space not covered by keyboard.
-            dynamicAnimator.addBehavior(snapBehavior)
+            // update snap point
+            if #available(iOS 9, *) {
+                if let snapBehavior = self.snapBehavior {
+                    snapBehavior.snapPoint = centerOfContainerView()
+                } else {
+                    let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: centerOfContainerView())
+                    dynamicAnimator.addBehavior(snapBehavior)
+                    self.snapBehavior = snapBehavior
+                }
+            } else {
+                dynamicAnimator.removeAllBehaviors()
+                let snapBehavior = UISnapBehavior(item: containerView, snapToPoint: centerOfContainerView())
+                dynamicAnimator.addBehavior(snapBehavior)
+                self.snapBehavior = snapBehavior
+            }
         }
     }
 
+    // MARK: - Actions
+    func logIn(sender: UIButton) {
+        if self.inLoginState() {
+            self.logoutAction()
+        } else {
+            self.loginAction()
+        }
+    }
+
+    func findLoginFromOnePassword(button: UIButton) {
+        OnePasswordExtension.sharedExtension().findLoginForURLString(NSUserDefaults.standardUserDefaults().objectForKey("BaseURL") as? String ?? "", forViewController: self, sender: button) { [weak self] (loginDict, error) in
+            guard let strongSelf = self else {
+                return
+            }
+            guard let loginDict = loginDict else {
+                return
+            }
+            if let error = error where error.code != Int(AppExtensionErrorCodeCancelledByUser) {
+                DDLogInfo("Error invoking 1Password App Extension for find login: \(error)")
+                return
+            }
+
+            strongSelf.usernameField.text = loginDict[AppExtensionUsernameKey] as? String ?? ""
+            strongSelf.passwordField.text = loginDict[AppExtensionPasswordKey] as? String ?? ""
+        }
+    }
+
+    func selectSecureQuestion(button: UIButton) {
+        DDLogDebug("debug secure question")
+        self.view.endEditing(true)
+        // FIXME: Make action sheet picker a view controller to avoid keyboard overlay.
+        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
+                button.setTitle(selectedValue as? String ?? "??", forState: .Normal)
+                if selectedIndex == 0 {
+                    self.state = .NotLogin
+                } else {
+                    self.state = .NotLoginWithAnswerField
+                }
+            }, cancelBlock: nil, origin: button)
+
+        picker.showActionSheetPicker()
+    }
+
+    func dismiss() {
+        if let presentingViewController = self.presentingViewController {
+            presentingViewController.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
 }
 
-// MARK: UITextFieldDelegate
+// MARK: - UITextFieldDelegate
 extension S1LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == self.usernameField {
@@ -251,7 +307,7 @@ extension S1LoginViewController: UITextFieldDelegate {
             switch state {
             case .NotLogin:
                 textField.resignFirstResponder()
-                self.login(self.loginButton)
+                self.logIn(self.loginButton)
             case .NotLoginWithAnswerField:
                 answerField.becomeFirstResponder()
             case .Login:
@@ -259,7 +315,7 @@ extension S1LoginViewController: UITextFieldDelegate {
             }
         } else if textField == self.answerField {
             textField.resignFirstResponder()
-            self.login(self.loginButton)
+            self.logIn(self.loginButton)
         }
         return true
     }
@@ -267,14 +323,6 @@ extension S1LoginViewController: UITextFieldDelegate {
 
 // MARK: Login Logic
 extension S1LoginViewController {
-
-    func login(sender: UIButton) {
-        if self.inLoginState() {
-            self.logoutAction()
-        } else {
-            self.loginAction()
-        }
-    }
 
     func loginAction() {
         guard let username = self.usernameField.text, password = self.passwordField.text where username != "" && password != "" else {
@@ -319,72 +367,38 @@ extension S1LoginViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
 
-    private func inLoginStateID() -> String? {
-        return NSUserDefaults.standardUserDefaults().objectForKey("InLoginStateID") as? String
-    }
-
-    private func cachedUserID() -> String? {
-        return NSUserDefaults.standardUserDefaults().objectForKey("InLoginStateID") as? String
-    }
-
-    private func inLoginState() -> Bool {
-        return self.inLoginStateID() != nil
-    }
-
-    func findLoginFromOnePassword(button: UIButton) {
-        OnePasswordExtension.sharedExtension().findLoginForURLString(NSUserDefaults.standardUserDefaults().objectForKey("BaseURL") as? String ?? "", forViewController: self, sender: button) { [weak self] (loginDict, error) in
-            guard let strongSelf = self else {
-                return
-            }
-            guard let loginDict = loginDict else {
-                return
-            }
-            if let error = error where error.code != Int(AppExtensionErrorCodeCancelledByUser) {
-                DDLogInfo("Error invoking 1Password App Extension for find login: \(error)")
-                return
-            }
-
-            strongSelf.usernameField.text = loginDict[AppExtensionUsernameKey] as? String ?? ""
-            strongSelf.passwordField.text = loginDict[AppExtensionPasswordKey] as? String ?? ""
-        }
-    }
-
-    func selectSecureQuestion(button: UIButton) {
-        DDLogDebug("debug secure question")
-        self.view.endEditing(true)
-        // FIXME: Make action sheet picker a view controller to avoid keyboard overlay.
-        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
-            button.setTitle(selectedValue as? String ?? "??", forState: .Normal)
-            if selectedIndex == 0 {
-                self.state = .NotLogin
-            } else {
-                self.state = .NotLoginWithAnswerField
-            }
-        }, cancelBlock: nil, origin: button)
-        picker.showActionSheetPicker()
-    }
-
     func pan(gesture: UIPanGestureRecognizer) {
-        if gesture.state == .Began {
-            dynamicAnimator?.removeAllBehaviors()
-            attachmentBehavior = UIAttachmentBehavior(item: containerView, attachedToAnchor: gesture.translationInView(self.view))
-            dynamicAnimator?.addBehavior(attachmentBehavior!)
-        } else if gesture.state == .Changed {
-            attachmentBehavior?.anchorPoint = gesture.translationInView(self.view)
-        } else if gesture.state == .Ended {
-            dynamicAnimator?.removeAllBehaviors()
-            if let snapBehavior = snapBehavior {
-                dynamicAnimator?.addBehavior(snapBehavior)
+        guard let dynamicAnimator = dynamicAnimator else { return }
+
+        switch gesture.state {
+        case .Began:
+            dynamicAnimator.removeAllBehaviors()
+            DDLogDebug("[LoginVC] pan location begin \(gesture.locationInView(self.view))")
+            attachmentBehavior = UIAttachmentBehavior(item: containerView,
+                                                       offsetFromCenter: offsetFromCenter(gesture.locationInView(view), viewCenter: containerView.center),
+                                                       attachedToAnchor: gesture.locationInView(self.view))
+            dynamicAnimator.addBehavior(attachmentBehavior!)
+            dynamicItemBehavior = UIDynamicItemBehavior(items: [containerView])
+            dynamicAnimator.addBehavior(dynamicItemBehavior!)
+
+        case .Changed:
+            DDLogDebug("[LoginVC] pan location \(gesture.locationInView(self.view))")
+            attachmentBehavior?.anchorPoint = gesture.locationInView(self.view)
+        default:
+            dynamicAnimator.removeAllBehaviors()
+            if let snapBehavior = self.snapBehavior {
+                dynamicAnimator.addBehavior(snapBehavior)
             }
         }
     }
 
-    func dismiss() {
-        if let presentingViewController = self.presentingViewController {
-            presentingViewController.dismissViewControllerAnimated(true, completion: nil)
-        } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
+    private func centerOfContainerView() -> CGPoint {
+        // FIXME: should be center of visibleLayoutGuide i.e. the space not covered by keyboard.
+        return CGPoint(x: self.view.center.x, y: self.view.center.y)
+    }
+
+    private func offsetFromCenter(touchPointInView: CGPoint, viewCenter: CGPoint) -> UIOffset {
+        return UIOffset(horizontal: touchPointInView.x - viewCenter.x, vertical: touchPointInView.y - viewCenter.y)
     }
 }
 
@@ -404,5 +418,17 @@ extension S1LoginViewController {
         } else {
             return self.answerField.text ?? ""
         }
+    }
+
+    private func inLoginStateID() -> String? {
+        return NSUserDefaults.standardUserDefaults().objectForKey("InLoginStateID") as? String
+    }
+
+    private func cachedUserID() -> String? {
+        return NSUserDefaults.standardUserDefaults().objectForKey("InLoginStateID") as? String
+    }
+
+    private func inLoginState() -> Bool {
+        return self.inLoginStateID() != nil
     }
 }
