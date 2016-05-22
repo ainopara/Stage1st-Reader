@@ -24,8 +24,6 @@
             make.trailing.equalTo(self).offset(-20.0);
             make.centerY.equalTo(self.mas_centerY);
         }];
-
-        [_titleLabel setAttributedText:[self attributedTopicTitle]];
     }
     return self;
 }
@@ -194,6 +192,10 @@
     }
 
     return titleContent;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    _titleLabel.attributedText = [self attributedTopicTitle];
 }
 
 @end
