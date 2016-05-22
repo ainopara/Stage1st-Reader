@@ -128,7 +128,7 @@ DEPENDENCIES:
   - Reveal-iOS-SDK
   - SnapKit
   - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
-  - SwiftWebViewProgress
+  - SwiftWebViewProgress (from `https://github.com/ainopara/SwiftWebViewProgress.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
 
 EXTERNAL SOURCES:
@@ -138,6 +138,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/KissXML.git
   SVWebViewController:
     :git: https://github.com/ainopara/SVWebViewController.git
+  SwiftWebViewProgress:
+    :git: https://github.com/ainopara/SwiftWebViewProgress.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
@@ -152,6 +154,9 @@ CHECKOUT OPTIONS:
   SVWebViewController:
     :commit: 92f562d46c00ddff80237338250b4eba7010377e
     :git: https://github.com/ainopara/SVWebViewController.git
+  SwiftWebViewProgress:
+    :commit: 06554214253bab9018896ab5dfa2c212b8feb47a
+    :git: https://github.com/ainopara/SwiftWebViewProgress.git
   YapDatabase:
     :commit: 486a9982476317764c3b5c10d3158018ddf8ab2c
     :git: https://github.com/ainopara/YapDatabase.git
@@ -180,6 +185,6 @@ SPEC CHECKSUMS:
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: cb993e4c76e8ba5899036c12dd78ed9d233c058e
+PODFILE CHECKSUM: b4d8b292a3267a9aee03f5d3a1867997a1cc5eef
 
 COCOAPODS: 1.0.0
