@@ -8,7 +8,6 @@
 
 #import "S1Floor.h"
 
-static NSString *const k_version = @"version"; // not used for now
 static NSString *const k_floorID = @"floorID";
 static NSString *const k_indexMark  = @"indexMark";
 static NSString *const k_author = @"author";
@@ -51,7 +50,6 @@ static NSString *const k_firstQuoteReplyFloorID = @"firstQuoteReplyFloorID";
     [aCoder encodeObject:_message forKey:k_message];
     [aCoder encodeObject:_imageAttachmentList forKey:k_imageAttachmentList];
     [aCoder encodeObject:_firstQuoteReplyFloorID forKey:k_firstQuoteReplyFloorID];
-    // [aCoder encodeObject:_modelVersion forKey:k_version];
 }
 
 @end

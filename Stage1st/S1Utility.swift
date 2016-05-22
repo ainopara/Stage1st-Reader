@@ -27,6 +27,13 @@ class S1Utility: NSObject {
         }
         return UIImage(CGImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
     }
+    //    - (UIImage *)screenShot {
+    //    //clip
+    //    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
+    //    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
+    //    CGImageRelease(imageRef);
+    //    return viewImage;
+    //    }
 
     class func valuesAreEqual(value1: AnyObject?, _ value2: AnyObject?) -> Bool {
 
@@ -38,15 +45,6 @@ class S1Utility: NSObject {
         }
         return false
     }
-
-//    - (UIImage *)screenShot {
-//    //clip
-//    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
-//    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
-//    CGImageRelease(imageRef);
-//    return viewImage;
-//    }
-
 }
 
 extension UIViewController {

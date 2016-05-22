@@ -9,12 +9,11 @@
 import Foundation
 
 class User {
-    var ID: Int = 0
-    var name: String = ""
-    var avatarURL: NSURL? = nil
+    let ID: Int
+    var name: String?
+    var avatarURL: NSURL?
 
     init(ID: Int) {
         self.ID = ID
     }
-
 }
