@@ -58,6 +58,11 @@ PODS:
   - KIF/Core (3.4.2)
   - KissXML (5.1.2)
   - Masonry (1.0.0)
+  - NJKWebViewProgress (0.2.3):
+    - NJKWebViewProgress/Core (= 0.2.3)
+    - NJKWebViewProgress/ProgressView (= 0.2.3)
+  - NJKWebViewProgress/Core (0.2.3)
+  - NJKWebViewProgress/ProgressView (0.2.3)
   - pop (1.0.9)
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.6.2)
@@ -132,6 +137,7 @@ DEPENDENCIES:
   - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
+  - NJKWebViewProgress
   - pop
   - Reachability
   - Reveal-iOS-SDK
@@ -182,6 +188,7 @@ SPEC CHECKSUMS:
   KIF: b518c9831453abea5afdbbde3908ec47832d6d56
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
+  NJKWebViewProgress: f481fd424cb5ecc27eacae11b5397db92fba9a4d
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
@@ -189,6 +196,6 @@ SPEC CHECKSUMS:
   SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: 1e5b74d5b169868a998a4b5c4af743fd9f4a14f3
+PODFILE CHECKSUM: 084229f50f31e93c0a26d79a4a9eac1ccb042f58
 
 COCOAPODS: 1.0.0

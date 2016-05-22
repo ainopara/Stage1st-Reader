@@ -39,6 +39,7 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod '1PasswordExtension'
     pod 'Reachability'
+    pod 'NJKWebViewProgress'
 end
 
 target "Stage1stTests" do
