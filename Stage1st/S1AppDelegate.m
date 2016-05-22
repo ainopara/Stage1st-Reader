@@ -23,8 +23,6 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 
-
-
 S1AppDelegate *MyAppDelegate;
 
 @implementation S1AppDelegate
@@ -47,6 +45,7 @@ S1AppDelegate *MyAppDelegate;
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
         [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
 #endif
+        [self setLogLevelForSwift];
         [DDLog addLogger:logger];
     }
     return self;

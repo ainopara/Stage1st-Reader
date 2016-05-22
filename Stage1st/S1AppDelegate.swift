@@ -7,10 +7,20 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 // MARK: Migration
 extension S1AppDelegate {
 
+    func setLogLevelForSwift() {
+        #if DEBUG
+            defaultDebugLevel = .Verbose
+        #else
+            defaultDebugLevel = .Info
+        #endif
+    }
+
     func migrate() {
+
     }
 }
