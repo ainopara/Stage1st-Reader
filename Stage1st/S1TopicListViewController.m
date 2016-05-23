@@ -59,9 +59,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) NSString *searchKeyword;
 @property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
 
-@property (nonatomic, strong) NSMutableDictionary *cachedContentOffset;
-@property (nonatomic, strong) NSMutableDictionary *cachedLastRefreshTime;
-@property (nonatomic, strong) NSDictionary *forumKeyMap;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
+@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
 
 @end
 
@@ -124,6 +124,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self updateArchiveIcon];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
@@ -140,7 +146,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView setUserInteractionEnabled:NO];
     [self.tableView setScrollsToTop:NO];
 }
-
 
 - (void)dealloc {
     DDLogDebug(@"[TopicListVC] Dealloced");
@@ -291,7 +296,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             return;
         }
         self.tableView.tableFooterView = [self footerView];
-        DDLogDebug(@"Reach last topic, load more.");
+        DDLogDebug(@"[TopicListVC] Reach (almost) last topic, load more.");
         _loadingMore = YES;
         __weak __typeof__(self) weakSelf = self;
         [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
@@ -308,7 +313,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 strongSelf.tableView.tableFooterView = nil;
                 _loadingMore = NO;
             });
-            DDLogDebug(@"fail to load more...");
+            DDLogDebug(@"[TopicListVC] Fail to load more...");
         }];
     }
 }
@@ -650,6 +655,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     switch ([MyCloudKitManager state]) {
         case CKManagerStateInit:
             titleString = [@"Init/" stringByAppendingString:titleString];
+            [self.archiveButton stopAnimation];
             break;
         case CKManagerStateSetup:
             [self.archiveButton stopAnimation];
