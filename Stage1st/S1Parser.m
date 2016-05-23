@@ -75,15 +75,17 @@
             TFHppleElement *authorPart = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='by'][1]/cite/a"] firstObject];
             NSString *authorName = [authorPart text];
             NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
-            
-            S1Topic *topic = [[S1Topic alloc] init];
-            [topic setTopicID:[NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]]];
-            [topic setTitle:content];
-            [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
-            [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
-            [topic setAuthorUserID:[NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
-            [topic setAuthorUserName:authorName];
-            [topics addObject:topic];
+
+            NSNumber *topicID = [NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]];
+            if (topicID != nil) {
+                S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
+                [topic setTitle:content];
+                [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
+                [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
+                [topic setAuthorUserID:[NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
+                [topic setAuthorUserName:authorName];
+                [topics addObject:topic];
+            }
         }
     }
 
@@ -94,8 +96,7 @@
     NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
     NSMutableArray *topics = [[NSMutableArray alloc] init];
     for (NSDictionary *rawTopic in rawTopicList) {
-        S1Topic *topic = [[S1Topic alloc] init];
-        topic.topicID = [NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]];
+        S1Topic *topic = [[S1Topic alloc] initWithTopicID:[NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]]];
         topic.title = [(NSString *)rawTopic[@"subject"] gtm_stringByUnescapingFromHTML];
         topic.replyCount = [NSNumber numberWithInteger:[rawTopic[@"replies"] integerValue]];
         topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
@@ -123,7 +124,7 @@
     NSMutableArray *topics = [NSMutableArray array];
     
     DDLogDebug(@"Topic count: %lu",(unsigned long)[elements count]);
-    for (TFHppleElement *element in elements){
+    for (TFHppleElement *element in elements) {
         TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
         NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
         if ([links count] != 3) continue;
@@ -147,18 +148,19 @@
         NSString *replyCountString = [[[replyCountPart text] componentsSeparatedByString:@" "] firstObject];
         NSNumber *replyCount = [NSNumber numberWithInteger:[replyCountString integerValue]];
 
-        S1Topic *topic = [[S1Topic alloc] init];
-        [topic setTopicID:topicID];
-        [topic setTitle:titleString];
-        [topic setReplyCount:replyCount];
-        [topic setFID:fid];
-        [topic setAuthorUserID:authorUserID];
-        [topic setAuthorUserName:authorName];
-        [topics addObject:topic];
+        if (topicID != nil) {
+            S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
+            [topic setTitle:titleString];
+            [topic setReplyCount:replyCount];
+            [topic setFID:fid];
+            [topic setAuthorUserID:authorUserID];
+            [topic setAuthorUserName:authorName];
+            [topics addObject:topic];
+        }
     }
     return topics;
-    
 }
+
 + (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
     NSArray *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
@@ -188,7 +190,7 @@
     return mutableArray;
 }
 
-+ (NSArray *) contentsFromHTMLData:(NSData *)rawData
++ (NSArray *)contentsFromHTMLData:(NSData *)rawData
 {
     // DDLogDebug(@"Begin Parsing.");
     // NSDate *start = [NSDate date];
@@ -266,8 +268,6 @@
     return floorList;
 }
 
-
-
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict {
     NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
@@ -301,8 +301,8 @@
 
 #pragma mark - Pick Information
 
-+ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData andPage:(NSNumber *)page{
-    S1Topic *topic = [[S1Topic alloc] init];
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData page:(NSNumber *)page withTopicID:(NSNumber *)topicID {
+    S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
     //update title
     NSString *title = [S1Parser topicTitleFromPage:rawData];
     if (title != nil) {
@@ -432,7 +432,6 @@
 #pragma mark - Extract From Link
 
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString {
-    S1Topic *topic = [[S1Topic alloc] init];
     // Current Html Scheme
     NSArray *result = [S1Global regexExtractFromString:URLString withPattern:@"thread-([0-9]+)-([0-9]+)-[0-9]+\\.html" andColums:@[@1,@2]];
     NSString *topicIDString = [result firstObject];
@@ -455,7 +454,7 @@
     if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
         return nil;
     }
-    topic.topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
+    S1Topic *topic = [[S1Topic alloc] initWithTopicID:[NSNumber numberWithInteger:[topicIDString integerValue]]];
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
     DDLogDebug(@"[Parser] Extract Topic: %@", topic);
     return topic;

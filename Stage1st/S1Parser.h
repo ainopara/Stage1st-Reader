@@ -30,7 +30,7 @@
 + (NSString *)topicTitleFromPage:(NSData *)rawData;
 + (NSString *)messageFromPage:(NSData *)rawData;
 
-+ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  andPage:(NSNumber *)page;
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  page:(NSNumber *)page withTopicID:(NSNumber *)topicID;
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;

@@ -208,9 +208,8 @@ S1AppDelegate *MyAppDelegate;
         if (topicIDString) {
             NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
             S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
-            if (topic == nil) {
-                topic = [[S1Topic alloc] init];
-                topic.topicID = topicID;
+            if (topic == nil && topicID != nil) {
+                topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
             [self presentContentViewControllerForTopic:topic];
             return YES;
@@ -301,17 +300,16 @@ S1AppDelegate *MyAppDelegate;
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
     DDLogDebug(@"Receive Hand Off: %@", userActivity.userInfo);
     NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
-    if (topicID) {
+    if (topicID != nil) {
         S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
-        if (topic) {
+        if (topic != nil) {
             NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
             if (lastViewedPage) {
                 topic = [topic copy];
                 topic.lastViewedPage = lastViewedPage;
             }
         } else {
-            topic = [[S1Topic alloc] init];
-            topic.topicID = topicID;
+            topic = [[S1Topic alloc] initWithTopicID:topicID];
             NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
             if (lastViewedPage) {
                 topic.lastViewedPage = lastViewedPage;

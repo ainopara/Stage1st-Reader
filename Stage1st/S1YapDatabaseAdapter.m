@@ -27,9 +27,7 @@
             [transaction setObject:topicCopy forKey:[topicCopy.topicID stringValue] inCollection:Collection_Topics];
         } else {
             tracedTopic = [tracedTopic copy]; // make mutable
-            if (topic.topicID != nil && (tracedTopic.topicID == nil || (tracedTopic.topicID != nil && (![tracedTopic.topicID isEqualToNumber:topic.topicID])))) {
-                tracedTopic.topicID = topic.topicID;
-            }
+
             if (topic.title != nil && (tracedTopic.title == nil || (tracedTopic.title != nil && (![tracedTopic.title isEqualToString:topic.title])))) {
                 tracedTopic.title = topic.title;
             }

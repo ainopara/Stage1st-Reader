@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface S1Topic : MyDatabaseObject<NSCoding>
 // Basic
-@property (nonatomic, copy) NSNumber *topicID; // traced
+@property (nonatomic, copy, readonly) NSNumber *topicID; // traced
 
 @property (nonatomic, copy, nullable) NSString *title; // traced
 @property (nonatomic, copy, nullable) NSNumber *replyCount; // traced

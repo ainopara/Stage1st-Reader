@@ -209,7 +209,7 @@
         [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
             //Update Topic
-            [topic update:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
+            [topic update:[S1Parser topicInfoFromThreadPage:responseObject page:page withTopicID:topic.topicID]];
             
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -291,7 +291,7 @@
             DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
             
             //Update Topic
-            [topic update:[S1Parser topicInfoFromThreadPage:responseObject andPage:page]];
+            [topic update:[S1Parser topicInfoFromThreadPage:responseObject page:page withTopicID:topic.topicID]];
             
             //check login state
             NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];

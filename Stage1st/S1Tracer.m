@@ -48,8 +48,7 @@
 #pragma mark - Static
 
 + (S1Topic *)topicFromQueryResult:(FMResultSet *)result {
-    S1Topic *topic = [[S1Topic alloc] init];
-    topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
+    S1Topic *topic = [[S1Topic alloc] initWithTopicID:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]]];
     topic.title = [result stringForColumn:@"title"];
     topic.replyCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]];
     topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];

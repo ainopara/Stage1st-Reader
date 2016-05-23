@@ -35,16 +35,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     return self;
 }
 
-// TODO: This method is deprecated because it allows topicID to be nil.
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        _favorite = @(NO);
-        _modelVersion = @1;
-    }
-    return self;
-}
-
 - (instancetype)initWithRecord:(CKRecord *)record {
     if (![record.recordType isEqualToString:@"topic"])
     {

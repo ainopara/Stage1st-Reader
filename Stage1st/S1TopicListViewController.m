@@ -386,13 +386,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self isPresentingDatabaseList:self.currentKey]) {
         [self.searchBar resignFirstResponder];
         NSString *text = searchBar.text;
-        NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
-        NSNumber *topicID = [nf numberFromString:text];
+        NSNumber *topicID = [[[NSNumberFormatter alloc] init] numberFromString:text];
         if (topicID != nil) {
             S1Topic *topic = [self.dataCenter tracedTopic:topicID];
             if (topic == nil) {
-                topic = [[S1Topic alloc] init];
-                topic.topicID = topicID;
+                topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
             S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
