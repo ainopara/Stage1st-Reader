@@ -1054,8 +1054,7 @@
 }
 
 - (void)setTopic:(S1Topic *)topic {
-    NSAssert(![topic isImmutable], @"topic should not be immutable");
-
+    // Make mutable copy for topics from internal list.
     if ([topic isImmutable]) {
         _topic = [topic copy];
     } else {
