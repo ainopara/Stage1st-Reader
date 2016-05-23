@@ -12,4 +12,4 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
   - Pods
 variable_name:
-  min_length: 2 # only min_length
+  min_length: 2 # only min_length to make ID valid

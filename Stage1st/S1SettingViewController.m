@@ -98,6 +98,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
     if (inLoginStateID) {
         self.usernameDetail.text = inLoginStateID;
@@ -107,11 +109,11 @@
 
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     [self updateiCloudStatus];
-    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
     [CrashlyticsKit setObjectValue:@"SettingsViewController" forKey:@"lastViewController"];
 }
 

@@ -531,6 +531,7 @@
 				86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */,
 				C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */,
 				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
+				86FEACE51CDF5F5B00ECD694 /* LoginManager.swift */,
 				C08A440E16DA779E003BF44C /* S1URLCache.h */,
 				C08A440F16DA779E003BF44C /* S1URLCache.m */,
 			);
@@ -690,7 +691,6 @@
 				C09587A416CB623E007E0119 /* S1SettingViewController.h */,
 				C09587A516CB623E007E0119 /* S1SettingViewController.m */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
-				86FEACE51CDF5F5B00ECD694 /* LoginManager.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
 				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
