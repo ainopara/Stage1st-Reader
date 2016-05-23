@@ -23,9 +23,9 @@ final class S1LoginViewController: UIViewController {
     let containerView = UIView(frame: CGRect.zero)
     let usernameField = UITextField(frame: CGRect.zero)
     let passwordField = UITextField(frame: CGRect.zero)
-    let loginButton = UIButton(frame: CGRect.zero)
-    let onepasswordButton = UIButton(frame: CGRect.zero)
-    let questionSelectButton = UIButton(frame: CGRect.zero)
+    let loginButton = UIButton(type: .System)
+    let onepasswordButton = UIButton(type: .System)
+    let questionSelectButton = UIButton(type: .System)
     let answerField = UITextField(frame: CGRect.zero)
     let seccodeImageView = UIImageView(image: nil)
     let seccodeField = UITextField(frame: CGRect.zero)
@@ -113,7 +113,7 @@ final class S1LoginViewController: UIViewController {
             make.edges.equalTo(self.view)
         }
 
-        containerView.backgroundColor = UIColor.blackColor()
+        containerView.backgroundColor = APColorManager.sharedInstance.colorForKey("login.background")
         containerView.layer.cornerRadius = 4.0
         containerView.clipsToBounds = true
         self.view.addSubview(containerView)
@@ -169,6 +169,7 @@ final class S1LoginViewController: UIViewController {
         passwordField.rightViewMode = OnePasswordExtension.sharedExtension().isAppExtensionAvailable() ? .Always : .Never
 
         questionSelectButton.setTitle("安全提问（未设置请忽略）", forState: .Normal)
+        questionSelectButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
         questionSelectButton.addTarget(self, action: #selector(S1LoginViewController.selectSecureQuestion(_:)), forControlEvents: .TouchUpInside)
         containerView.addSubview(questionSelectButton)
 
@@ -194,8 +195,8 @@ final class S1LoginViewController: UIViewController {
         }
 
         loginButton.addTarget(self, action: #selector(S1LoginViewController.logIn(_:)), forControlEvents: .TouchUpInside)
-        loginButton.backgroundColor = UIColor.blueColor()
-        loginButton.tintColor = UIColor.blackColor()
+        loginButton.backgroundColor = APColorManager.sharedInstance.colorForKey("login.button")
+        loginButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
 
         containerView.addSubview(loginButton)
 

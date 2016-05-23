@@ -117,7 +117,7 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
 
         progressView.snp_makeConstraints { (make) in
             make.leading.trailing.equalTo(toolBar)
-            make.bottom.equalTo(toolBar.snp_top)
+            make.top.equalTo(toolBar.snp_top)
             make.height.equalTo(2.0)
         }
 
@@ -228,6 +228,7 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
     // MARK: - Notification
     func didReceivePaletteChangeNotification(notification: NSNotification) {
         statusBarSeparatorView.backgroundColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
+        progressView.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
 
         if APColorManager.sharedInstance.isDarkTheme() {
             let darkBlurEffect = UIBlurEffect(style: .Dark)

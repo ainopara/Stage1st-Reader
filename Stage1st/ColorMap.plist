@@ -6,6 +6,8 @@
 	<string>1</string>
 	<key>default.text.tint</key>
 	<string>3</string>
+	<key>default.bar.tint</key>
+	<string>1</string>
 	<key>appearance.toolbar.bartint</key>
 	<string>1</string>
 	<key>appearance.toolbar.tint</key>
@@ -117,6 +119,12 @@
 	<key>overlay.background</key>
 	<string>6</string>
 	<key>overlay.text</key>
+	<string>3</string>
+	<key>login.background</key>
+	<string>1</string>
+	<key>login.button</key>
+	<string>4</string>
+	<key>login.text</key>
 	<string>3</string>
 </dict>
 </plist>
