@@ -207,12 +207,13 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
             back = self.backButtonItem,
             forward = self.forwardButtonItem,
             refresh = self.refreshButtonItem,
-            stop = self.stopButtonItem,
+//            stop = self.stopButtonItem,
             close = self.closeButtonItem,
             safari = self.safariButtonItem else { return }
 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        let refreshOrStopItem = webView.loading ? stop : refresh
+//        let refreshOrStopItem = webView.loading ? stop : refresh
+        let refreshOrStopItem = refresh // always show refresh button until we have a new icon for stop item.
         toolBar.setItems([close, flexSpace, back, flexSpace, refreshOrStopItem, flexSpace, forward, flexSpace, safari], animated: true)
     }
 
