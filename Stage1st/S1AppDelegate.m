@@ -22,8 +22,15 @@
 #import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+//#import <FBMemoryProfiler/FBMemoryProfiler.h>
 
 S1AppDelegate *MyAppDelegate;
+
+//@interface S1AppDelegate () {
+//    FBMemoryProfiler *_memoryProfiler;
+//}
+//
+//@end
 
 @implementation S1AppDelegate
 
@@ -47,6 +54,10 @@ S1AppDelegate *MyAppDelegate;
 #endif
         [self setLogLevelForSwift];
         [DDLog addLogger:logger];
+
+//        FBMemoryProfiler *memoryProfiler = [FBMemoryProfiler new];
+//        [memoryProfiler enable];
+//        _memoryProfiler = memoryProfiler;
     }
     return self;
 }

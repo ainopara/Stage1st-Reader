@@ -33,6 +33,7 @@ target "Stage1st" do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
+    pod 'FBMemoryProfiler'
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
@@ -42,6 +43,7 @@ target "Stage1st" do
 end
 
 target "Stage1stTests" do
+    pod 'GYHttpMock'
     # pod 'FBSnapshotTestCase'
     # pod 'KIF', :configurations => ['Debug']
 end

@@ -43,9 +43,15 @@ PODS:
   - DTFoundation/UIKit (1.7.10):
     - DTFoundation/Core
   - Fabric (1.6.7)
+  - FBAllocationTracker (0.1.5)
+  - FBMemoryProfiler (0.1.3):
+    - FBAllocationTracker (~> 0.1)
+    - FBRetainCycleDetector (~> 0.1)
+  - FBRetainCycleDetector (0.1.2)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
+  - GYHttpMock (1.0.0)
   - JASON (2.2)
   - JTSImageViewController (1.5)
   - KissXML (5.1.2)
@@ -118,7 +124,9 @@ DEPENDENCIES:
   - Crashlytics
   - DTCoreText
   - Fabric
+  - FBMemoryProfiler
   - FMDB
+  - GYHttpMock
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
@@ -172,7 +180,11 @@ SPEC CHECKSUMS:
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
+  FBAllocationTracker: dfdca3f71aceca6a85e95e3c6ec76a9785eba0f1
+  FBMemoryProfiler: 623fc5f8a61f7d02ec75c87e3b97c90f621d8b02
+  FBRetainCycleDetector: 45462f9ed1af0cd77224a4cc4e6dacaca47371b4
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  GYHttpMock: d138c4197d0a133c1dca26d802f84266d3903eac
   JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
@@ -185,6 +197,6 @@ SPEC CHECKSUMS:
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: b4d8b292a3267a9aee03f5d3a1867997a1cc5eef
+PODFILE CHECKSUM: 294709b039e085ea0fdf4de8ef739148679887f4
 
 COCOAPODS: 1.0.0
