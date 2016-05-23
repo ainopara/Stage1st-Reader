@@ -12,9 +12,7 @@
 
 @interface S1TopicListCellSubView : UIView
 
-@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) S1Topic *topic;
-@property (nonatomic, strong) NSString *highlight;
 @property (nonatomic, assign) BOOL highlighted;
 
 @end
