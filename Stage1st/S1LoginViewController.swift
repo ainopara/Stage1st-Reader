@@ -219,8 +219,6 @@ final class S1LoginViewController: UIViewController {
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
         self.view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
-
-
     }
 
     override func viewDidLayoutSubviews() {
@@ -333,21 +331,26 @@ extension S1LoginViewController {
         let secureQuestionNumber = self.currentSecureQuestionNumber()
         let secureQuestionAnswer = self.currentSecureQuestionAnswer()
 
+        loginButton.enabled = false
         LoginManager.sharedInstance.checkLoginType(noSechashBlock: {
             LoginManager.sharedInstance.login(username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, successBlock: { (message) in
+                self.loginButton.enabled = true
                 NSUserDefaults.standardUserDefaults().setObject(username, forKey: "InLoginStateID")
                 self.state = .Login
                 let alertController = UIAlertController(title: NSLocalizedString("SettingView_Login", comment:""), message: message ?? "登录成功", preferredStyle: .Alert)
                 alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: { action in
-                    self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismiss()
                 }))
                 self.presentViewController(alertController, animated: true, completion: nil)
                 }, failureBlock: { (error) in
+                    self.loginButton.enabled = true
                     self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: error.localizedDescription)
             })
         }, hasSeccodeBlock: { (sechash) in
+            self.loginButton.enabled = true
             self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: "尚未实现验证码登录功能")
         }, failureBlock: { (error) in
+            self.loginButton.enabled = true
             self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: error.localizedDescription)
         })
     }
