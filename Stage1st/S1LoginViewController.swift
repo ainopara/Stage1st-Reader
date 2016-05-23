@@ -30,6 +30,8 @@ final class S1LoginViewController: UIViewController {
     let seccodeImageView = UIImageView(image: nil)
     let seccodeField = UITextField(frame: CGRect.zero)
 
+    let visibleLayoutGuide = UIView(frame: CGRect.zero)
+
     var dynamicAnimator: UIDynamicAnimator?
     var snapBehavior: UISnapBehavior?
     var dynamicItemBehavior: UIDynamicItemBehavior?
@@ -207,6 +209,12 @@ final class S1LoginViewController: UIViewController {
             make.width.equalTo(self.usernameField.snp_width).offset(10.0)
         }
 
+        self.view.insertSubview(visibleLayoutGuide, atIndex: 0)
+        visibleLayoutGuide.userInteractionEnabled = false
+        visibleLayoutGuide.snp_makeConstraints { (make) in
+            make.edges.equalTo(self.view)
+        }
+
         state = self.inLoginState() ? .Login : .NotLogin
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(S1LoginViewController.dismiss))
@@ -219,6 +227,12 @@ final class S1LoginViewController: UIViewController {
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
         self.view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(S1LoginViewController.keyboardFrameWillChange(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+    }
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     override func viewDidLayoutSubviews() {
@@ -274,7 +288,7 @@ final class S1LoginViewController: UIViewController {
     func selectSecureQuestion(button: UIButton) {
         DDLogDebug("debug secure question")
         self.view.endEditing(true)
-        // FIXME: Make action sheet picker a view controller to avoid keyboard overlay.
+        // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
         let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
                 button.setTitle(selectedValue as? String ?? "??", forState: .Normal)
                 if selectedIndex == 0 {
@@ -292,6 +306,16 @@ final class S1LoginViewController: UIViewController {
             presentingViewController.dismissViewControllerAnimated(true, completion: nil)
         } else {
             self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+
+    func keyboardFrameWillChange(notification: NSNotification) {
+        guard let userInfo = notification.userInfo, endFrame = userInfo[UIKeyboardFrameEndUserInfoKey]?.CGRectValue() else { return }
+
+        let keyboardHeightInView = self.view.bounds.maxY - endFrame.minY
+        DDLogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
+        visibleLayoutGuide.snp_updateConstraints { (make) in
+            make.bottom.equalTo(self.view).offset(-keyboardHeightInView)
         }
     }
 }
@@ -414,8 +438,7 @@ extension S1LoginViewController {
     }
 
     private func centerOfContainerView() -> CGPoint {
-        // FIXME: should be center of visibleLayoutGuide i.e. the space not covered by keyboard.
-        return CGPoint(x: self.view.center.x, y: self.view.center.y)
+        return CGPoint(x: self.visibleLayoutGuide.center.x, y: self.visibleLayoutGuide.center.y)
     }
 
     private func offsetFromCenter(touchPointInView: CGPoint, viewCenter: CGPoint) -> UIOffset {
