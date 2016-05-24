@@ -40,6 +40,11 @@ a:visited {
     color: {{borderText}};
 }
 
+a.user {
+    color: {{borderText}};
+    text-decoration: none;
+}
+
 .attachment {
     border-top: {{border}} 1px solid;
 }

@@ -450,6 +450,10 @@
                 DDLogDebug(@"%@", floor.author);
                 [self presentReplyViewWithAppendText:@"" reply:floor];
             }
+        // Present User
+        } else if ([request.URL.path isEqualToString:@"/user"]) {
+            NSNumber *userID = [NSNumber numberWithInteger:[request.URL.query integerValue]];
+            [self showUserViewController:userID];
         // Present image
         } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;

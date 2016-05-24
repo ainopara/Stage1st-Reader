@@ -12,3 +12,10 @@ extension S1ContentViewController {
         return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
     }
 }
+
+extension S1ContentViewController {
+    func showUserViewController(userID: NSNumber) {
+        let userViewController = S1UserViewController(user: User(ID: userID.integerValue))
+        self.navigationController?.pushViewController(userViewController, animated: true)
+    }
+}

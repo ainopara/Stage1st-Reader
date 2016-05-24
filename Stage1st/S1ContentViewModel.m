@@ -62,6 +62,7 @@
         if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
             floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
         }
+        floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"/user?%@\">%@</a>", topicFloor.authorID, floorAuthor];
         
         //process time
         NSString *floorPostTime = [S1ContentViewModel translateDateTimeString:topicFloor.postTime];
