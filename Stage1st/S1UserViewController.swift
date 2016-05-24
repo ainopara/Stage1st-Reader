@@ -8,8 +8,8 @@
 
 import UIKit
 
-class S1UserViewController: UIViewController {
-    private let user: User
+final class S1UserViewController: UIViewController {
+    let user: User
 
     // MARK: - Life Cycle
     init(user: User) {
@@ -23,8 +23,5 @@ class S1UserViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
-
-
 }

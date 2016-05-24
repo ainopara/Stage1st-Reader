@@ -8,7 +8,7 @@
 
 import Foundation
 
-class User {
+struct User {
     let ID: Int
     var name: String?
     var avatarURL: NSURL?
