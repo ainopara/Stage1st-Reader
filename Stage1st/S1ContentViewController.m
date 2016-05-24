@@ -113,7 +113,7 @@
     [self.view addSubview:self.webView];
     [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.and.trailing.equalTo(self.view);
-        make.top.equalTo(self.view.mas_top).with.offset(20.0);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
         make.bottom.equalTo(self.toolBar.mas_top);
     }];
     
