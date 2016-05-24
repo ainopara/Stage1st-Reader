@@ -220,7 +220,7 @@ final class S1LoginViewController: UIViewController {
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(S1LoginViewController.dismiss))
         self.tapGesture = tapGesture
-        self.view.addGestureRecognizer(tapGesture)
+        self.backgroundBlurView.addGestureRecognizer(tapGesture)
 
         let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
         self.dynamicAnimator = dynamicAnimator
