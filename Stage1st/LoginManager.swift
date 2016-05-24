@@ -69,7 +69,7 @@ final class LoginManager: NSObject {
                successBlock: (message: String?) -> Void,
                failureBlock: (error: NSError) -> Void) {
         let parameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
-        Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
+        Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&cookietime=2592000&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
