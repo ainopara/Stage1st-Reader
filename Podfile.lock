@@ -60,7 +60,6 @@ PODS:
   - Reachability (3.2)
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (0.21.0)
-  - SVWebViewController (1.0)
   - SwiftWebViewProgress (0.1.0)
   - YapDatabase (2.9.1):
     - YapDatabase/Standard (= 2.9.1)
@@ -135,7 +134,6 @@ DEPENDENCIES:
   - Reachability
   - Reveal-iOS-SDK
   - SnapKit
-  - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
   - SwiftWebViewProgress (from `https://github.com/ainopara/SwiftWebViewProgress.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
 
@@ -144,8 +142,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  SVWebViewController:
-    :git: https://github.com/ainopara/SVWebViewController.git
   SwiftWebViewProgress:
     :git: https://github.com/ainopara/SwiftWebViewProgress.git
   YapDatabase:
@@ -159,9 +155,6 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
-  SVWebViewController:
-    :commit: 92f562d46c00ddff80237338250b4eba7010377e
-    :git: https://github.com/ainopara/SVWebViewController.git
   SwiftWebViewProgress:
     :commit: 06554214253bab9018896ab5dfa2c212b8feb47a
     :git: https://github.com/ainopara/SwiftWebViewProgress.git
@@ -193,10 +186,9 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
-  SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: 294709b039e085ea0fdf4de8ef739148679887f4
+PODFILE CHECKSUM: e405987105a25ecbb5e91b8be6e18ea095ba5d78
 
 COCOAPODS: 1.0.0

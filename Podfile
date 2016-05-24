@@ -14,7 +14,6 @@ target "Stage1st" do
     # UI
     pod 'ActionSheetPicker-3.0'
     pod 'JTSImageViewController', :git => 'https://github.com/ainopara/JTSImageViewController.git'
-    pod 'SVWebViewController', :git => 'https://github.com/ainopara/SVWebViewController.git'
 
     pod 'Masonry'
     pod 'SnapKit'

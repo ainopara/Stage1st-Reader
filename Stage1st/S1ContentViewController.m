@@ -7,7 +7,6 @@
 //
 
 
-#import <Social/Social.h>
 #import "S1ContentViewController.h"
 #import "S1ContentViewModel.h"
 #import "S1Topic.h"
@@ -16,7 +15,6 @@
 #import "S1DataCenter.h"
 #import "S1HUD.h"
 #import "REComposeViewController.h"
-#import "SVModalWebViewController.h"
 #import "MTStatusBarOverlay.h"
 #import <ActionSheetPicker_3_0/ActionSheetStringPicker.h>
 #import "JTSSimpleImageDownloader.h"
@@ -419,9 +417,6 @@
         [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
         S1WebViewController *controller = [[S1WebViewController alloc] initWithURL:[[NSURL alloc] initWithString:pageAddress]];
         [self presentViewController:controller animated:YES completion:nil];
-//        SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:pageAddress];
-//        [controller.view setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
-//        [self presentViewController:controller animated:YES completion:nil];
     }];
     // Cancel Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
@@ -543,9 +538,8 @@
             strongSelf->_presentingWebViewer = YES;
             [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
             DDLogDebug(@"[ContentVC] Open in WebView: %@", request.URL);
-            SVModalWebViewController *controller = [[SVModalWebViewController alloc] initWithAddress:request.URL.absoluteString];
-            [[controller view] setTintColor:[[APColorManager sharedInstance] colorForKey:@"content.tint"]];
-            [strongSelf presentViewController:controller animated:YES completion:nil];
+            S1WebViewController *webViewController = [[S1WebViewController alloc] initWithURL:request.URL];
+            [strongSelf presentViewController:webViewController animated:YES completion:nil];
         }];
     } else {
         __strong __typeof__(self) strongSelf = weakSelf;
