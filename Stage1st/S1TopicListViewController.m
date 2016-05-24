@@ -97,7 +97,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top);
         make.leading.with.trailing.equalTo(self.view);
-        make.height.equalTo(@64);
+        make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
     }];
 
     //Setup Table View
