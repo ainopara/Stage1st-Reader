@@ -41,6 +41,8 @@ final class S1LoginViewController: UIViewController {
 
     var loginButtonTopConstraint: Constraint?
 
+    let networkManager: DiscuzAPIManager
+
     private var state: LoginViewControllerState = .NotLogin {
         didSet {
             switch state {
@@ -96,9 +98,12 @@ final class S1LoginViewController: UIViewController {
 
     // MARK: -
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        self.networkManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .OverFullScreen
         self.modalTransitionStyle = .CrossDissolve
+
+
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -357,8 +362,8 @@ extension S1LoginViewController {
         let secureQuestionAnswer = self.currentSecureQuestionAnswer()
 
         loginButton.enabled = false
-        LoginManager.sharedInstance.checkLoginType(noSechashBlock: {
-            LoginManager.sharedInstance.login(username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, successBlock: { (message) in
+        networkManager.checkLoginType(noSechashBlock: {
+            self.networkManager.logIn(username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, successBlock: { (message) in
                 self.loginButton.enabled = true
                 NSUserDefaults.standardUserDefaults().setObject(username, forKey: "InLoginStateID")
                 self.state = .Login
@@ -381,7 +386,7 @@ extension S1LoginViewController {
     }
 
     func logoutAction() {
-        LoginManager.sharedInstance.logout()
+        self.networkManager.logOut()
         self.state = .NotLogin
         self.alert(title: NSLocalizedString("SettingView_Logout", comment:""), message: NSLocalizedString("LoginView_Logout_Message", comment:""))
     }

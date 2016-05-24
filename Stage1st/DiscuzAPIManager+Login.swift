@@ -1,8 +1,8 @@
 //
-//  LoginManager.swift
+//  DiscuzAPIManager+Login.swift
 //  Stage1st
 //
-//  Created by Zheng Li on 5/8/16.
+//  Created by Zheng Li on 5/24/16.
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
@@ -18,13 +18,7 @@ enum LoginProgress {
     case InLogin
 }
 
-final class LoginManager: NSObject {
-    static let sharedInstance = { // TODO: LoginManager should not be a singleton, it should be a property of current context
-        return LoginManager()
-    }()
-
-    let baseURL = "http://bbs.saraba1st.com/2b" // TODO: Replace to configured by a singleton
-
+extension DiscuzAPIManager {
     /**
      A check request should be sent to a discuz! server to make sure whether a seccode is necessary for login.
 
@@ -35,7 +29,7 @@ final class LoginManager: NSObject {
     func checkLoginType(noSechashBlock noSechashBlock: () -> Void,
                                        hasSeccodeBlock: (sechash: String) -> Void,
                                        failureBlock: (error: NSError) -> Void) {
-        logout()
+        logOut()
         let parameters: [String: AnyObject] = ["module": "secure", "version": 1, "mobile": "no", "type": "login"]
         Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
@@ -62,7 +56,7 @@ final class LoginManager: NSObject {
      - parameter successBlock:         Executed if login request finished without network error.
      - parameter failureBlock:         Executed if login request not finished due to network error.
      */
-    func login(username: String,
+    func logIn(username: String,
                password: String,
                secureQuestionNumber: Int,
                secureQuestionAnswer: String,
@@ -85,7 +79,7 @@ final class LoginManager: NSObject {
         }
     }
 
-    func logout(finishBlock: () -> Void = {}) {
+    func logOut(finishBlock: () -> Void = {}) {
         func clearCookies() {
             let cookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
             if let cookies = cookieStorage.cookies {
