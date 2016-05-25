@@ -90,7 +90,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    DDLogDebug(@"[ContentVC] View Did Load");
+
     self.viewModel = [[S1ContentViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
@@ -102,21 +102,25 @@
         make.leading.and.trailing.equalTo(self.view);
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
+    DDLogDebug(@"[ContentVC] View Did Load2");
     //web view
     self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     self.webView.delegate = self;
+    DDLogDebug(@"[ContentVC] Why so slow on iPhone 5s?");
     self.webView.dataDetectorTypes = UIDataDetectorTypeNone;
+    DDLogDebug(@"[ContentVC] Why so slow on iPhone 5s?");
     self.webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     [self.webView.scrollView.panGestureRecognizer requireGestureRecognizerToFail:[(NavigationControllerDelegate *)self.navigationController.delegate colorPanRecognizer]];
     self.webView.opaque = NO;
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
     [self.view addSubview:self.webView];
+
     [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.and.trailing.equalTo(self.view);
         make.top.equalTo(self.mas_topLayoutGuideBottom);
         make.bottom.equalTo(self.toolBar.mas_top);
     }];
-    
+
     self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
     [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:TOP_OFFSET];
     [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:BOTTOM_OFFSET];
@@ -586,7 +590,7 @@
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    if (self == nil || self.webView != webView) {
+    if (self.webView != webView) {
         DDLogWarn(@"[ContentVC] webView delegate unexpected called.");
         return;
     }
@@ -716,9 +720,13 @@
             [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
             __weak __typeof__(self) weakSelf = self;
             void (^successBlock)() = ^{
-                __strong __typeof__(self) strongSelf = weakSelf;
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                 [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                __strong __typeof__(self) strongSelf = weakSelf;
+                if (strongSelf == nil) {
+                    return;
+                }
+
                 strongSelf.attributedReplyDraft = nil;
                 if (strongSelf->_currentPage == strongSelf->_totalPages) {
                     strongSelf->_needToScrollToBottom = YES;
@@ -730,14 +738,13 @@
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                } else if (error.code == -998){
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请刷新当前页）" duration:2.5 animated:YES];
                 } else {
                     [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                 }
             };
+
             if (self.replyTopicFloor) {
-                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage ] withText:composeViewController.text success: successBlock failure:failureBlock];
+                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage] withText:composeViewController.text success: successBlock failure:failureBlock];
             } else {
                 [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:successBlock failure:failureBlock];
             }
@@ -771,8 +778,10 @@
         [HUD showActivityIndicator];
         [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
             __strong __typeof__(self) strongSelf = weakSelf;
-            [aHUD hideWithDelay:0.0];
-            [strongSelf fetchContent];
+            if (strongSelf != nil) {
+                [aHUD hideWithDelay:0.0];
+                [strongSelf fetchContent];
+            }
         }];
     }
     
@@ -874,7 +883,12 @@
         [self presentViewController:loginViewController animated:YES completion:NULL];
         return;
     }
-    
+
+    if (self.topic.fID == nil || self.topic.formhash == nil) {
+        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请尝试刷新当前页）" duration:2.5 animated:YES];
+        return;
+    }
+
     REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
     [replyController setKeyboardAppearance:[[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
     [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];

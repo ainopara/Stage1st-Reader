@@ -8,14 +8,14 @@
 
 import UIKit
 import Alamofire
-import AlamofireImage
+import Kingfisher
 
 final class S1UserViewController: UIViewController {
     private(set) var user: User {
         didSet {
             self.usernameLabel.text = user.name
             if let avatarURL = user.avatarURL {
-                self.avatarView.af_setImageWithURL(avatarURL)
+                self.avatarView.kf_setImageWithURL(avatarURL)
             }
             self.customStatusLabel.text = user.customStatus
             self.infoLabel.text = "\(user.lastVisitDateString)\n\(user.registerDateString)\n\(user.threadCount)\n\(user.postCount)\n\(user.sigHTML)\n"

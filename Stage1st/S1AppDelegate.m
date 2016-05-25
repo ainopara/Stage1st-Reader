@@ -175,14 +175,15 @@ S1AppDelegate *MyAppDelegate;
 
     //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
 
-    self.window = [[UIWindow alloc] init];
-    [self.window makeKeyAndVisible];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
     navigationController.delegate = self.navigationDelegate;
     navigationController.viewControllers = @[[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
     navigationController.navigationBarHidden = YES;
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navigationController;
+    [self.window makeKeyAndVisible];
 
 #ifdef DEBUG
     DDLogVerbose(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);

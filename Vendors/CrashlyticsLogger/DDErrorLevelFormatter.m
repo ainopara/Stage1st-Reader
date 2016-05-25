@@ -29,6 +29,6 @@
         default                : logLevel = @"V"; break;
     }
     NSString *dateString = logMessage->_timestamp == nil ? @"" : [_dateFormatter stringFromDate:logMessage->_timestamp];
-    return [NSString stringWithFormat:@"%@ |%@| %@", dateString, logLevel, logMessage->_message];
+    return [NSString stringWithFormat:@"%@ @(%@)|%@| %@", dateString, logMessage->_threadName, logLevel, logMessage->_message];
 }
 @end

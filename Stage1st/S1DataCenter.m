@@ -78,7 +78,7 @@
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
     __weak __typeof__(self) myself = self;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
         [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 __strong __typeof__(self) strongMyself = myself;
@@ -182,7 +182,7 @@
         [self.cacheFinishHandlers setValue:nil forKey:key];
         DDLogError(@"[Network] Precache %@-%@ failed", topic.topicID, page);
     };
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             
             //Update Topic
@@ -259,7 +259,7 @@
     }
     
     NSDate *start = [NSDate date];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
         [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
             NSTimeInterval timeInterval = [start timeIntervalSinceNow];
             DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
@@ -337,12 +337,6 @@
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *))failure {
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-    NSString *formhash = topic.formhash;
-    if (formhash == nil) {
-        NSError *error = [[NSError alloc] initWithDomain:@"formhash is nil" code:-998 userInfo:nil];
-        failure(error);
-        return;
-    }
     NSDictionary *params = @{@"posttime":timestamp,
                              @"formhash":topic.formhash,
                              @"usesig":@"1",

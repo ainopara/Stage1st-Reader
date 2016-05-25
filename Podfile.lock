@@ -17,8 +17,6 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - Alamofire (3.4.0)
-  - AlamofireImage (2.4.0):
-    - Alamofire (~> 3.3)
   - CocoaLumberjack (2.3.0):
     - CocoaLumberjack/Default (= 2.3.0)
     - CocoaLumberjack/Extensions (= 2.3.0)
@@ -31,23 +29,7 @@ PODS:
     - CocoaLumberjack/Extensions
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
-  - DTCoreText (1.6.17):
-    - DTFoundation/Core (~> 1.7.5)
-    - DTFoundation/DTAnimatedGIF (~> 1.7.5)
-    - DTFoundation/DTHTMLParser (~> 1.7.5)
-    - DTFoundation/UIKit (~> 1.7.5)
-  - DTFoundation/Core (1.7.10)
-  - DTFoundation/DTAnimatedGIF (1.7.10)
-  - DTFoundation/DTHTMLParser (1.7.10):
-    - DTFoundation/Core
-  - DTFoundation/UIKit (1.7.10):
-    - DTFoundation/Core
   - Fabric (1.6.7)
-  - FBAllocationTracker (0.1.5)
-  - FBMemoryProfiler (0.1.3):
-    - FBAllocationTracker (~> 0.1)
-    - FBRetainCycleDetector (~> 0.1)
-  - FBRetainCycleDetector (0.1.2)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -57,6 +39,7 @@ PODS:
   - KIF (3.4.2):
     - KIF/Core (= 3.4.2)
   - KIF/Core (3.4.2)
+  - Kingfisher (2.4.1)
   - KissXML (5.1.2)
   - Masonry (1.0.0)
   - pop (1.0.9)
@@ -120,18 +103,16 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
-  - AlamofireImage
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
-  - DTCoreText
   - Fabric
-  - FBMemoryProfiler
   - FMDB
   - GYHttpMock
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
+  - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - pop
@@ -171,20 +152,15 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 8312778b6815578e6a86d630fbcf31dc94c534e7
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
-  AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
-  DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
-  DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
-  FBAllocationTracker: dfdca3f71aceca6a85e95e3c6ec76a9785eba0f1
-  FBMemoryProfiler: 623fc5f8a61f7d02ec75c87e3b97c90f621d8b02
-  FBRetainCycleDetector: 45462f9ed1af0cd77224a4cc4e6dacaca47371b4
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GYHttpMock: d138c4197d0a133c1dca26d802f84266d3903eac
   JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: b518c9831453abea5afdbbde3908ec47832d6d56
+  Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
@@ -194,6 +170,6 @@ SPEC CHECKSUMS:
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
 
-PODFILE CHECKSUM: c4cacb6198f1550e62b5a82c1479671c1d5a0457
+PODFILE CHECKSUM: ddc41c73f43728a8b494d1b1ce777c72c074ef5a
 
 COCOAPODS: 1.0.0

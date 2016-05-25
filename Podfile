@@ -6,7 +6,7 @@ target "Stage1st" do
     # Network
     pod 'AFNetworking'
     pod 'Alamofire'
-    pod 'AlamofireImage'
+    pod 'Kingfisher'
 
     # Model
     pod 'JASON'
@@ -20,7 +20,7 @@ target "Stage1st" do
 
     pod 'pop'
 
-    pod 'DTCoreText'
+    # pod 'DTCoreText'
 
     # Database
     pod 'FMDB'
@@ -32,7 +32,7 @@ target "Stage1st" do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
-    pod 'FBMemoryProfiler'
+    # pod 'FBMemoryProfiler'
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'

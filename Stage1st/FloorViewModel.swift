@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DTCoreText
+//import DTCoreText
 
 struct FloorViewModel {
     let attributeContent: NSAttributedString = NSAttributedString()

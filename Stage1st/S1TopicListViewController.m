@@ -808,7 +808,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         _tableView.rowHeight = 54.0;
-        _tableView.cellLayoutMarginsFollowReadableWidth = NO;
+        if (!SYSTEM_VERSION_LESS_THAN(@"9.0")) {
+            _tableView.cellLayoutMarginsFollowReadableWidth = NO;
+        }
+
         _tableView.separatorInset = UIEdgeInsetsZero;
         _tableView.delegate = self;
         _tableView.dataSource = self;

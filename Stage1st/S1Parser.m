@@ -334,7 +334,7 @@
 
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict {
     NSNumber *topicID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"tid"] integerValue]];
-    if (topicID == nil) {
+    if (topicID == nil || [topicID isEqualToNumber:@0]) {
         return nil;
     }
     S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
@@ -343,9 +343,10 @@
     topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];
     topic.authorUserName = responseDict[@"Variables"][@"thread"][@"author"];
     topic.formhash = responseDict[@"Variables"][@"formhash"];
+    topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"fid"] integerValue]];
     topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
-    double postPerPage = [responseDict[@"Variables"][@"ppp"] doubleValue];
-    topic.totalPageCount = [NSNumber numberWithDouble: ceil( ([topic.replyCount doubleValue] + 1) / postPerPage )];
+    double postPerPage = [responseDict[@"Variables"][@"ppp"] integerValue];
+    topic.totalPageCount = [NSNumber numberWithInteger:([topic.replyCount integerValue] / postPerPage) + 1];
     topic.message = responseDict[@"Message"][@"messagestr"];
     return topic;
 }
