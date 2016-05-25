@@ -771,6 +771,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (UIBarButtonItem *)historyItem {
     if (!_historyItem) {
         _historyItem = [[UIBarButtonItem alloc] initWithCustomView:self.archiveButton];
+        _historyItem.accessibilityLabel = @"Archive";
     }
     return _historyItem;
 }
@@ -844,6 +845,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [_searchBar addGestureRecognizer:gestureRecognizer];
+        _searchBar.accessibilityLabel = @"Search Bar";
     }
     return _searchBar;
 }

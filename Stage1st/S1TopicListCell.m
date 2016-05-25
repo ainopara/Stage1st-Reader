@@ -115,5 +115,4 @@
     _titleLabel.attributedText = [self attributedTopicTitle];
 }
 
-
 @end

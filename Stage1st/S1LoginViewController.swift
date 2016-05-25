@@ -263,8 +263,10 @@ final class S1LoginViewController: UIViewController {
             }
         }
     }
+}
 
-    // MARK: - Actions
+// MARK: - Actions
+extension S1LoginViewController {
     func logIn(sender: UIButton) {
         if self.inLoginState() {
             self.logoutAction()

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import KIF
 @testable import Stage1st
 //import FBSnapshotTestCase
 
@@ -90,4 +91,33 @@ class S1TopicTests: XCTestCase {
         }
     }
     
+}
+
+extension XCTestCase {
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
+    }
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
+    }
+}
+
+extension KIFTestActor {
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
+    }
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
+    }
+}
+
+class S1UITexts: KIFTestCase {
+    func testArchive() {
+        tester().tapViewWithAccessibilityLabel("Archive", traits: UIAccessibilityTraitButton)
+        tester().tapViewWithAccessibilityLabel("Favorite", traits: UIAccessibilityTraitButton)
+//        tester().tapViewWithAccessibilityLabel("Search Bar", traits: UIAccessibilityTraitSearchField)
+//        tester().waitForKeyInputReady()
+    }
 }

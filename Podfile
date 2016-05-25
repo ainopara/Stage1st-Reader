@@ -44,5 +44,5 @@ end
 target "Stage1stTests" do
     pod 'GYHttpMock'
     # pod 'FBSnapshotTestCase'
-    # pod 'KIF', :configurations => ['Debug']
+    pod 'KIF', :configurations => ['Debug']
 end
