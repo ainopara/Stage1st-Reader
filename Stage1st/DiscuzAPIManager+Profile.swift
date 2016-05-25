@@ -12,6 +12,6 @@ import JASON
 
 extension DiscuzAPIManager {
     func profile(userID: Int) {
-        
+
     }
 }

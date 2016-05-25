@@ -17,8 +17,8 @@
 
 - (id)initWithDataCenter:(S1DataCenter *)dataCenter;
 
-- (void)contentPageForTopic:(S1Topic *)topic withPage:(NSUInteger)page success:(void (^)(NSString *contents, NSNumber *shouldRefetch))success  failure:(void (^)(NSError *error))failure;
+- (void)contentPageForTopic:(S1Topic *)topic page:(NSUInteger)page success:(void (^)(NSString *contents, NSNumber *shouldRefetch))success  failure:(void (^)(NSError *error))failure;
 
-+ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic;
++ (NSString *)generateQuotePage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic;
 
 @end

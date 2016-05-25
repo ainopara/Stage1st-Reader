@@ -20,20 +20,25 @@ extension S1ContentViewModel {
 
     func chainSearchQuoteFloorInCache(firstFloorID: Int) -> [S1Floor] {
         var result: [S1Floor] = []
-        var floor = self.searchFloorInCache(firstFloorID)
-        while floor != nil {
-            result.insert(floor!, atIndex: 0)
-            let firstQuoteFloorID: NSNumber! = floor!.firstQuoteReplyFloorID
-            if firstQuoteFloorID == nil {
-                break
+        var nextFloorID = firstFloorID
+        while let floor = self.searchFloorInCache(nextFloorID) {
+            result.insert(floor, atIndex: 0)
+            if let quoteFloorID = floor.firstQuoteReplyFloorID as? Int {
+                nextFloorID = quoteFloorID
+            } else {
+                return result
             }
-            floor = self.searchFloorInCache(firstQuoteFloorID as Int)
         }
+
         return result
     }
 
     static func templateBundle() -> NSBundle {
         let templateBundleURL = NSBundle.mainBundle().URLForResource("WebTemplate", withExtension: "bundle")!
         return NSBundle.init(URL: templateBundleURL)!
+    }
+
+    static func baseURL() -> NSURL {
+        return self.templateBundle().URLForResource("ThreadTemplate", withExtension: "html", subdirectory: "html")!
     }
 }

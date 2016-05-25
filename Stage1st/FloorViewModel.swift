@@ -10,15 +10,15 @@ import UIKit
 import DTCoreText
 
 struct FloorViewModel {
-    let attributeContent: NSAttributedString
-    let author: NSAttributedString
+    let attributeContent: NSAttributedString = NSAttributedString()
+    let author: NSAttributedString = NSAttributedString()
 
     init(floorModel: S1Floor, topicModel: S1Topic) {
-        attributeContent = NSAttributedString(HTMLData: floorModel.content!.dataUsingEncoding(NSUTF8StringEncoding), options: [DTUseiOS6Attributes: true], documentAttributes: nil)
-        if topicModel.authorUserID == nil {
-            author = NSAttributedString(string: floorModel.author)
-        } else {
-            author = NSAttributedString(string: floorModel.author + "(Author)")
-        }
+//        attributeContent = NSAttributedString(HTMLData: floorModel.content!.dataUsingEncoding(NSUTF8StringEncoding), options: [DTUseiOS6Attributes: true], documentAttributes: nil)
+//        if topicModel.authorUserID == nil {
+//            author = NSAttributedString(string: floorModel.author)
+//        } else {
+//            author = NSAttributedString(string: floorModel.author + "(Author)")
+//        }
     }
 }

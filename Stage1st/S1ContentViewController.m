@@ -440,6 +440,9 @@
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
         return YES;
     }
+    if ([request.URL.absoluteString hasPrefix:@"file://"]) {
+        return YES;
+    }
     
     if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
         // Reply
@@ -758,7 +761,7 @@
         }];
     }
     
-    [self.viewModel contentPageForTopic:self.topic withPage:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
+    [self.viewModel contentPageForTopic:self.topic page:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
         __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
             return;
@@ -768,7 +771,8 @@
             [strongSelf saveViewPosition];
             _shouldRestoreViewPosition = NO;
         }
-        [strongSelf.webView loadHTMLString:contents baseURL:nil];
+
+        [strongSelf.webView loadHTMLString:contents baseURL:[S1ContentViewModel baseURL]];
         [strongSelf updateTitleLabelWithTitle:strongSelf.topic.title];
         _finishLoading = YES;
         // prepare next page

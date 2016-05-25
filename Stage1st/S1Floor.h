@@ -8,18 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1Floor : NSObject
 
 @property (nonatomic, copy) NSNumber *floorID;
-@property (nonatomic, copy) NSString *indexMark;
-@property (nonatomic, copy) NSString *author;
-@property (nonatomic, copy) NSNumber *authorID;
-@property (nonatomic, copy) NSDate *postTime;
-@property (nonatomic, copy) NSString *content;
-@property (nonatomic, copy) NSString *poll;
-@property (nonatomic, copy) NSString *message;
-@property (nonatomic, copy) NSArray *imageAttachmentList;
+@property (nonatomic, copy, nullable) NSString *indexMark;
+@property (nonatomic, copy, nullable) NSString *author;
+@property (nonatomic, copy, nullable) NSNumber *authorID;
+@property (nonatomic, copy, nullable) NSDate *postTime;
+@property (nonatomic, copy, nullable) NSString *content;
+@property (nonatomic, copy, nullable) NSString *poll;
+@property (nonatomic, copy, nullable) NSString *message;
+@property (nonatomic, copy, nullable) NSArray *imageAttachmentList;
 
-@property (nonatomic, copy) NSNumber *firstQuoteReplyFloorID;
+@property (nonatomic, copy, nullable) NSNumber *firstQuoteReplyFloorID;
 
 @end
+
+NS_ASSUME_NONNULL_END

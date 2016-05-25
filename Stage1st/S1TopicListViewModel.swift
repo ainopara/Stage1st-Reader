@@ -6,7 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import CocoaLumberjack
 import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
