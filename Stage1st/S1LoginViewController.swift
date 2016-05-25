@@ -53,7 +53,7 @@ final class S1LoginViewController: UIViewController {
                 answerField.alpha = 0.0
 
                 passwordField.returnKeyType = .Go
-                loginButton.setTitle(NSLocalizedString("SettingView_Login", comment: "Login"), forState: .Normal)
+                loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), forState: .Normal)
                 loginButtonTopConstraint?.uninstall()
                 loginButton.snp_makeConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(questionSelectButton.snp_bottom).offset(12.0).constraint
@@ -65,7 +65,7 @@ final class S1LoginViewController: UIViewController {
                 answerField.alpha = 1.0
 
                 passwordField.returnKeyType = .Next
-                loginButton.setTitle(NSLocalizedString("SettingView_Login", comment: "Login"), forState: .Normal)
+                loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), forState: .Normal)
                 loginButtonTopConstraint?.uninstall()
                 loginButton.snp_updateConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(answerField.snp_bottom).offset(12.0).constraint
@@ -76,7 +76,7 @@ final class S1LoginViewController: UIViewController {
                 questionSelectButton.alpha = 0.0
                 answerField.alpha = 0.0
 
-                loginButton.setTitle(NSLocalizedString("SettingView_Logout", comment: "Logout"), forState: .Normal)
+                loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), forState: .Normal)
                 loginButtonTopConstraint?.uninstall()
                 loginButton.snp_updateConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(usernameField.snp_bottom).offset(12.0).constraint
@@ -354,7 +354,7 @@ extension S1LoginViewController {
 
     func loginAction() {
         guard let username = self.usernameField.text, password = self.passwordField.text where username != "" && password != "" else {
-            self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: "用户名和密码不能为空")
+            self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "用户名和密码不能为空")
             return
         }
         NSUserDefaults.standardUserDefaults().setObject(username, forKey: "UserIDCached")
@@ -367,28 +367,28 @@ extension S1LoginViewController {
                 self.loginButton.enabled = true
                 NSUserDefaults.standardUserDefaults().setObject(username, forKey: "InLoginStateID")
                 self.state = .Login
-                let alertController = UIAlertController(title: NSLocalizedString("SettingView_Login", comment:""), message: message ?? "登录成功", preferredStyle: .Alert)
+                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .Alert)
                 alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: { action in
                     self.dismiss()
                 }))
                 self.presentViewController(alertController, animated: true, completion: nil)
                 }, failureBlock: { (error) in
                     self.loginButton.enabled = true
-                    self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: error.localizedDescription)
+                    self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
             })
         }, hasSeccodeBlock: { (sechash) in
             self.loginButton.enabled = true
-            self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: "尚未实现验证码登录功能")
+            self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "尚未实现验证码登录功能")
         }, failureBlock: { (error) in
             self.loginButton.enabled = true
-            self.alert(title: NSLocalizedString("SettingView_Login", comment:""), message: error.localizedDescription)
+            self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
         })
     }
 
     func logoutAction() {
         self.networkManager.logOut()
         self.state = .NotLogin
-        self.alert(title: NSLocalizedString("SettingView_Logout", comment:""), message: NSLocalizedString("LoginView_Logout_Message", comment:""))
+        self.alert(title: NSLocalizedString("SettingView_LogOut", comment:""), message: NSLocalizedString("LoginView_Logout_Message", comment:""))
     }
 }
 
