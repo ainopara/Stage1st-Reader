@@ -460,6 +460,7 @@
         if ([request.URL.path isEqualToString:@"/user"]) {
             NSNumber *userID = [NSNumber numberWithInteger:[request.URL.query integerValue]];
             [self showUserViewController:userID];
+            [Answers logCustomEventWithName:@"[Content] User" customAttributes:nil];
             return NO;
 
         }
@@ -479,6 +480,7 @@
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
             [imageViewer setOptionsDelegate:self];
+            [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"processed"}];
             return NO;
         }
     }
@@ -494,6 +496,7 @@
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
         [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
+        [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"hijack"}];
         return NO;
     }
     
@@ -512,6 +515,7 @@
             _presentingContentViewController = YES;
             S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
+            [Answers logCustomEventWithName:@"[Content] Topic Link" customAttributes:nil];
             return NO;
         }
 
@@ -536,6 +540,7 @@
                             quoteFloorViewController.pageURL = [S1ContentViewModel baseURL];
                             quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
                             [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
+                            [Answers logCustomEventWithName:@"[Content] Quote Link" customAttributes:nil];
                             return NO;
                         }
                     }
