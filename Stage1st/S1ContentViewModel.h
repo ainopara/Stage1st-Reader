@@ -20,5 +20,6 @@
 - (void)contentPageForTopic:(S1Topic *)topic page:(NSUInteger)page success:(void (^)(NSString *contents, NSNumber *shouldRefetch))success  failure:(void (^)(NSError *error))failure;
 
 + (NSString *)generateQuotePage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic;
++ (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic;
 
 @end

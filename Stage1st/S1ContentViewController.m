@@ -380,7 +380,7 @@
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     // Reply Action
     UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self presentReplyViewWithAppendText:@"" reply:nil];
+        [self presentReplyViewToFloor:nil];
     }];
     // Favorite Action
     UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.topic.favorite boolValue]?NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -441,24 +441,31 @@
         return YES;
     }
     if ([request.URL.absoluteString hasPrefix:@"file://"]) {
-        return YES;
-    }
-    
-    if ([request.URL.absoluteString hasPrefix:@"applewebdata://"]) {
+        if ([request.URL.absoluteString hasSuffix:@"html"]) {
+            return YES;
+        }
+
         // Reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
-            NSString *decodedQuery = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            S1Floor *floor = [self.topic.floors valueForKey:decodedQuery];
+            NSString *floorID = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            S1Floor *floor = [self.viewModel searchFloorInCache:[floorID integerValue]];
             if (floor != nil) {
-                DDLogDebug(@"%@", floor.author);
-                [self presentReplyViewWithAppendText:@"" reply:floor];
+                DDLogDebug(@"[ContentVC] Reply to %@", floor.author);
+                [self presentReplyViewToFloor:floor];
             }
+            return NO;
+        }
+
         // Present User
-        } else if ([request.URL.path isEqualToString:@"/user"]) {
+        if ([request.URL.path isEqualToString:@"/user"]) {
             NSNumber *userID = [NSNumber numberWithInteger:[request.URL.query integerValue]];
             [self showUserViewController:userID];
+            return NO;
+
+        }
+
         // Present image
-        } else if ([request.URL.path hasPrefix:@"/present-image:"]) {
+        if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;
             [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
             NSString *imageID = request.URL.fragment;
@@ -472,9 +479,10 @@
             [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
             [imageViewer setOptionsDelegate:self];
+            return NO;
         }
-        return NO;
     }
+
     //Image URL opened in image Viewer
     if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
         _presentingImageViewer = YES;
@@ -489,8 +497,10 @@
         return NO;
     }
     
-    // Open S1 topic
+
     if ([request.URL.absoluteString hasPrefix:[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseURL"]]) {
+
+        // Open S1 topic
         S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
         if (topic.topicID != nil) {
             S1Topic *tracedTopic = [self.dataCenter tracedTopic:topic.topicID];
@@ -504,6 +514,7 @@
             [[self navigationController] pushViewController:contentViewController animated:YES];
             return NO;
         }
+
         // Open Quote Link
         NSDictionary *querys = [S1Parser extractQuerysFromURLString:request.URL.absoluteString];
         if (querys) {
@@ -517,11 +528,12 @@
                         if ([chainQuoteFloors count] > 0) {
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.topic copy];
-                            NSString *htmlString = [S1ContentViewModel generateQuotePage:chainQuoteFloors withTopic:quoteTopic];
+                            NSString *htmlString = [S1ContentViewModel generateContentPage:chainQuoteFloors withTopic:quoteTopic];
                             S1QuoteFloorViewController *quoteFloorViewController = [[S1QuoteFloorViewController alloc] initWithNibName:nil bundle:nil];
                             quoteFloorViewController.topic = quoteTopic;
                             quoteFloorViewController.floors = chainQuoteFloors;
                             quoteFloorViewController.htmlString = htmlString;
+                            quoteFloorViewController.pageURL = [S1ContentViewModel baseURL];
                             quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
                             [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
                             return NO;
@@ -619,7 +631,6 @@
     [imageActionSheet.popoverPresentationController setSourceView:imageViewer.view];
     [imageActionSheet.popoverPresentationController setSourceRect:rect];
     [imageViewer presentViewController:imageActionSheet animated:YES completion:nil];
-    
 }
 
 #pragma mark JTSImageViewControllerOptionsDelegate
@@ -636,7 +647,6 @@
             [self back:nil];
         }
     }
-    
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
@@ -852,23 +862,12 @@
 
 #pragma mark - Reply
 
-- (void)presentReplyViewWithAppendText: (NSString *)text reply: (S1Floor *)topicFloor {
-    //check in login state.
+- (void)presentReplyViewToFloor: (S1Floor *)topicFloor {
+    // Check in login state.
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         S1LoginViewController *loginViewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:loginViewController animated:YES completion:NULL];
         return;
-    }
-    
-    if (self.attributedReplyDraft) {
-        if (text) {
-            [self.attributedReplyDraft appendAttributedString:[[NSAttributedString alloc] initWithString:text attributes:nil]];
-        }
-    } else {
-        if (text) {
-            self.attributedReplyDraft = [[NSMutableAttributedString alloc] initWithString:text];
-        }
-        self.attributedReplyDraft = [[NSMutableAttributedString alloc] init];
     }
     
     REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
@@ -877,7 +876,7 @@
     [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
     [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
 
-    // set title
+    // Set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
         replyController.title = [@"@" stringByAppendingString:topicFloor.author];
@@ -885,9 +884,12 @@
     } else {
         self.replyTopicFloor = nil;
     }
-    
+
+    if (self.attributedReplyDraft != nil) {
+        [replyController setAttributedText:self.attributedReplyDraft];
+    }
+
     replyController.delegate = self;
-    [replyController setAttributedText:self.attributedReplyDraft];
     replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(replyController.view.bounds), 35) withComposeViewController:replyController];
     [ReplyAccessoryView resetTextViewStyle:replyController.textView];
 
