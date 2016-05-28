@@ -12,6 +12,16 @@ import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
 import YapDatabase.YapDatabaseFilteredView
 
+func ensureMainThread(block: () -> Void) {
+    if NSThread.currentThread().isMainThread {
+        block()
+    } else {
+        dispatch_async(dispatch_get_main_queue(), {
+            block()
+        })
+    }
+}
+
 public final class S1TopicListViewModel: NSObject {
     public let dataCenter: S1DataCenter
     var viewMappings: YapDatabaseViewMappings?
@@ -26,7 +36,26 @@ public final class S1TopicListViewModel: NSObject {
     }
 
     func topicListForKey(key: String, refresh: Bool, success: (topicList: [S1Topic]) -> Void, failure: (error: NSError) -> Void) {
-        self.dataCenter.topicsForKey(key, shouldRefresh: refresh, success: success, failure: failure)
+        self.dataCenter.topicsForKey(key, shouldRefresh: refresh, success: { [weak self] (topicList) in
+            guard let strongSelf = self else { return }
+            var processedList = [S1Topic]()
+            for topic in topicList {
+                if let tracedTopic = strongSelf.dataCenter.tracedTopic(topic.topicID)?.copy() as? S1Topic {
+                    tracedTopic.update(topic)
+                    processedList.append(tracedTopic)
+                } else {
+                    processedList.append(topic)
+                }
+            }
+            ensureMainThread({
+                success(topicList: processedList)
+            })
+
+        }, failure: { (error) in
+            ensureMainThread({
+                failure(error: error)
+            })
+        })
     }
 
     func numberOfSections() -> UInt {

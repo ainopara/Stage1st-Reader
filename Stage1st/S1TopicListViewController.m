@@ -43,7 +43,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
 @property (nonatomic, strong) AnimationButton *archiveButton;
-@property (nonatomic, strong) NSArray<UIImage *> *archiveSyncImages;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
 @property (nonatomic, strong) UITableView *tableView;
@@ -475,52 +474,51 @@ static NSString * const cellIdentifier = @"TopicCell";
     __weak __typeof__(self) weakSelf = self;
     [self.viewModel topicListForKey:self.forumKeyMap[key] refresh:refresh success:^(NSArray *topicList) {
         //reload data
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong __typeof__(self) strongSelf = weakSelf;
-            if (topicList.count > 0) {
-                if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
-                    strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
-                }
-                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
-                strongSelf.currentKey = key;
-                
-                strongSelf.topics = [topicList mutableCopy];
-                [strongSelf.tableView reloadData];
-                if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
-                if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
-                    [strongSelf.tableView setContentOffset:[strongSelf.cachedContentOffset[key] CGPointValue] animated:NO];
-                } else {
-                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                }
-                //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
-                if (strongSelf.tableView.contentOffset.y < 0) {
-                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-                }
-                [self.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
-            } else {
-                if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
-                    strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
-                }
-                strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
-                strongSelf.currentKey = key;
-                if (![key isEqualToString:strongSelf.previousKey]) {
-                    strongSelf.topics = [[NSMutableArray alloc] init];
-                    [strongSelf.tableView reloadData];
-                }
+        __strong __typeof__(self) strongSelf = weakSelf;
+        if (topicList.count > 0) {
+            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
+                strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
-            //hud hide
-            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-                [HUD hideWithDelay:0.3];
-            }
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
+            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+            strongSelf.currentKey = key;
             
-            [strongSelf.searchBar setHidden: ([strongSelf.dataCenter canMakeSearchRequest] == NO)];
-            _loadingFlag = NO;
-        });
+            strongSelf.topics = [topicList mutableCopy];
+            [strongSelf.tableView reloadData];
+            if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
+            if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
+                [strongSelf.tableView setContentOffset:[strongSelf.cachedContentOffset[key] CGPointValue] animated:NO];
+            } else {
+                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            }
+            //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+            if (strongSelf.tableView.contentOffset.y < 0) {
+                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            }
+            [self.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
+        } else {
+            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
+                strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+            }
+            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+            strongSelf.currentKey = key;
+            if (![key isEqualToString:strongSelf.previousKey]) {
+                strongSelf.topics = [[NSMutableArray alloc] init];
+                [strongSelf.tableView reloadData];
+            }
+        }
+        //hud hide
+        if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+            [HUD hideWithDelay:0.3];
+        }
+        //others
+        strongSelf.scrollTabBar.enabled = YES;
+        if (strongSelf.refreshControl.refreshing) {
+            [strongSelf.refreshControl endRefreshing];
+        }
+        
+        strongSelf.searchBar.hidden = ![strongSelf.dataCenter canMakeSearchRequest];
+        _loadingFlag = NO;
+
     } failure:^(NSError *error) {
         __strong __typeof__(self) strongSelf = weakSelf;
         if (error.code == NSURLErrorCancelled) {
@@ -554,7 +552,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                     [HUD hideWithDelay:0.3];
                 }
             }
-            
+
             //others
             strongSelf.scrollTabBar.enabled = YES;
             if (strongSelf.refreshControl.refreshing) {
@@ -562,7 +560,6 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             _loadingFlag = NO;
         }
-        
     }];
 }
 
@@ -789,15 +786,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (NSArray<UIImage *> *)archiveSyncImages {
-    if (!_archiveSyncImages) {
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (NSInteger i = 1; i <= 36; i++) {
-            UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"Archive-Syncing %ld", (long)i]];
-            [array addObject:image];
-        }
-        _archiveSyncImages = array;
+    NSMutableArray<UIImage *> *array = [[NSMutableArray<UIImage *> alloc] init];
+    for (NSInteger i = 1; i <= 36; i++) {
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"Archive-Syncing %ld", (long)i]];
+        [array addObject:image];
     }
-    return _archiveSyncImages;
+    return array;
 }
 
 - (UIBarButtonItem *)settingsItem {

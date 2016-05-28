@@ -65,6 +65,7 @@
     BOOL _shouldRestoreViewPosition;
     BOOL _presentingFavoriteInToolBar;
 }
+
 #pragma mark - Life Cycle
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {

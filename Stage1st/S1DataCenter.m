@@ -427,30 +427,21 @@
 
     // Append tracer message to topics
     for (S1Topic *topic in topics) {
-        S1Topic *tracedTopic = [[self tracedTopic:topic.topicID] copy];
-        S1Topic *processedTopic;
-        if (tracedTopic != nil) {
-            [tracedTopic update:topic];
-            processedTopic = tracedTopic;
-        } else {
-            processedTopic = topic;
-        }
-
         BOOL topicIsDuplicated = NO;
         // remove duplicate topics
         if ([page integerValue] > 1) {
             for (S1Topic *compareTopic in self.topicListCache[keyID]) {
-                if ([processedTopic.topicID isEqualToNumber:compareTopic.topicID]) {
+                if ([topic.topicID isEqualToNumber:compareTopic.topicID]) {
                     DDLogDebug(@"[DataCenter] Remove duplicate topic: %@", topic.title);
                     NSInteger index = [self.topicListCache[keyID] indexOfObject:compareTopic];
-                    [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:processedTopic];
+                    [self.topicListCache[keyID] replaceObjectAtIndex:index withObject:topic];
                     topicIsDuplicated = YES;
                     break;
                 }
             }
         }
         if (!topicIsDuplicated) {
-            [processedTopics addObject:processedTopic];
+            [processedTopics addObject:topic];
         }
     }
 
