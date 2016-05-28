@@ -28,12 +28,6 @@
 - (void)contentPageForTopic:(S1Topic *)topic page:(NSUInteger)page success:(void (^)(NSString *, NSNumber *))success failure:(void (^)(NSError *))failure {
     [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList, BOOL fromCache) {
         NSString *page = [S1ContentViewModel generateContentPage:floorList withTopic:topic];
-        //Set Floors
-        NSMutableDictionary *floors = [[NSMutableDictionary alloc] initWithCapacity:[floorList count]];
-        for (S1Floor *floor in floorList) {
-            [floors setValue:floor forKey:floor.indexMark];
-        }
-        topic.floors = floors;
         success(page, @(fromCache && [floorList count] != 30)); // FIXME: 30 should not be hard coded.
     } failure:^(NSError *error) {
         failure(error);
@@ -156,100 +150,8 @@
     return threadPage;
 }
 
-+ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic {
-    NSString *finalString = [[NSString alloc] init];
-    for (S1Floor *topicFloor in floorList) {
-        //process indexmark
-        NSString *floorIndexMark = topicFloor.indexMark;
-        if (![floorIndexMark isEqualToString:@"楼主"]) {
-            floorIndexMark = [@"#" stringByAppendingString:topicFloor.indexMark];
-        }
-        
-        //process author
-        NSString *floorAuthor = topicFloor.author;
-        if (topic.authorUserID && [topic.authorUserID isEqualToNumber:topicFloor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
-            floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
-        }
-        
-        //process time
-        NSString *floorPostTime = [S1ContentViewModel translateDateTimeString:topicFloor.postTime];
-        
-        //process reply Button
-        NSString *replyLinkString = @"";
-        
-        //process poll
-        NSString *pollContentString = @"";
-        
-        //process content
-        NSString *contentString = topicFloor.content;
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"]) {
-            contentString = [S1ContentViewModel stripTails:contentString];
-        }
-        
-        //work when the floor's author is blocked and s1reader using parse mode
-        if (contentString == nil && topicFloor.message != nil) {
-            contentString = [NSString stringWithFormat:@"<td class=\"t_f\"><div class=\"s1-alert\">%@</div></td>", topicFloor.message];
-        }
-        
-        //process attachment
-        NSString *floorAttachment = @"";
-        if (topicFloor.imageAttachmentList) {
-            for (NSString *imageURLString in topicFloor.imageAttachmentList) {
-                NSString *processedImageURLString = [[NSString alloc] initWithString:imageURLString];
-                if ([topicFloor.imageAttachmentList indexOfObject:imageURLString] != 0) {
-                    processedImageURLString = [@"<br /><br />" stringByAppendingString:imageURLString];
-                }
-                floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
-            }
-            floorAttachment = [NSString stringWithFormat:@"<div class='attachment'>%@</div>", floorAttachment];
-        }
-        
-        //generate page
-        NSString *floorTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"FloorTemplate" ofType:@"html"];
-        NSData *floorTemplateData = [NSData dataWithContentsOfFile:floorTemplatePath];
-        NSString *floorTemplate = [[NSString alloc] initWithData:floorTemplateData  encoding:NSUTF8StringEncoding];
-        
-        NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, pollContentString, contentString, floorAttachment];
-        
-        if ([floorList indexOfObject:topicFloor] != 0) {
-            output = [@"<br />" stringByAppendingString:output];
-        }
-        finalString = [finalString stringByAppendingString:output];
-    }
-    finalString = [S1ContentViewModel processHTMLString:finalString];
-    NSString *threadTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"ThreadTemplate" ofType:@"html"];
-    NSData *threadTemplateData = [NSData dataWithContentsOfFile:threadTemplatePath];
-    NSString *threadTemplate = [[NSString alloc] initWithData:threadTemplateData  encoding:NSUTF8StringEncoding];
-    //CSS
-    NSString *baseCSS = [[S1ContentViewModel templateBundle] pathForResource:@"content_base" ofType:@"css"];
-    NSString *cssPath = nil;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-        if ([fontSizeKey isEqualToString:@"15px"]) {
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_15px" ofType:@"css"];
-        } else if ([fontSizeKey isEqualToString:@"17px"]){
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_17px" ofType:@"css"];
-        } else {
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_19px" ofType:@"css"];
-        }
-    } else {
-        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-        if ([fontSizeKey isEqualToString:@"18px"]) {
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_18px" ofType:@"css"];
-        } else if ([fontSizeKey isEqualToString:@"20px"]){
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_20px" ofType:@"css"];
-        } else {
-            cssPath = [[S1ContentViewModel templateBundle] pathForResource:@"content_ipad_22px" ofType:@"css"];
-        }
-    }
-    NSString *colorCSS = [S1ContentViewModel renderColorCSS];
-    NSString *jqueryPath = [[S1ContentViewModel templateBundle] pathForResource:@"jquery-2.1.1.min" ofType:@"js"];
-    NSString *fastClickPath = [[S1ContentViewModel templateBundle] pathForResource:@"fastclick" ofType:@"js"];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, baseCSS, cssPath, colorCSS, finalString, jqueryPath, fastClickPath];
-    return threadPage;
-}
-
 # pragma mark - Helper
+
 + (NSString *)translateDateTimeString:(NSDate *)date
 {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

@@ -38,7 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *authorUserName;
 @property (nonatomic, copy, nullable) NSString *formhash;
 @property (nonatomic, copy, nullable) NSString *message;
-@property (nonatomic, copy, nullable) NSDictionary<NSString *, S1Floor *> *floors; // indexMark : floor
 
 - (instancetype)initWithTopicID:(NSNumber *)topicID;
 - (instancetype)initWithRecord:(CKRecord *)record;

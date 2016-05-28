@@ -114,7 +114,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     copy->_formhash = _formhash;
     copy->_lastViewedPage = _lastViewedPage;
     copy->_message = _message;
-    copy->_floors = _floors;
     copy->_modelVersion = _modelVersion;
     return copy;
 }

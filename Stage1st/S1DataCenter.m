@@ -250,7 +250,7 @@
 }
 
 #pragma mark - Network (Content)
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray *, BOOL))success failure:(void (^)(NSError *))failure {
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<S1Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
     if (floorList) {
