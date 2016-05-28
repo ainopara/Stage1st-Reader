@@ -113,7 +113,7 @@ extension KIFTestActor {
     }
 }
 
-class S1UITexts: KIFTestCase {
+class S1UITests: KIFTestCase {
     func testArchive() {
         tester().tapViewWithAccessibilityLabel("Archive", traits: UIAccessibilityTraitButton)
         tester().tapViewWithAccessibilityLabel("Favorite", traits: UIAccessibilityTraitButton)
