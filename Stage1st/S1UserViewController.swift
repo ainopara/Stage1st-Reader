@@ -61,7 +61,7 @@ final class S1UserViewController: UIViewController {
         avatarView.snp_makeConstraints { (make) in
             make.leading.equalTo(self.containerView.snp_leading).offset(10.0)
             make.top.equalTo(self.containerView.snp_top).offset(10.0)
-            make.width.height.equalTo(50.0)
+            make.width.height.equalTo(80.0)
         }
 
         containerView.addSubview(usernameLabel)
@@ -94,7 +94,7 @@ final class S1UserViewController: UIViewController {
                 guard let user = User(json: json) else { return }
                 self?.user = user
             case .Failure(let error):
-                self?.presentAlertView("Error", message: error.description)
+                self?.s1_presentAlertView("Error", message: error.description)
             }
         }
     }

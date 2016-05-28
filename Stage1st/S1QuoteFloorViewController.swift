@@ -111,20 +111,20 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {
-        let computedOffset: CGFloat = positionOfElementWithId(self.centerFloorID) - 32
+        let computedOffset: CGFloat = topPositionOfMessageWithId(self.centerFloorID) - 32
         var offset = webView.scrollView.contentOffset
         offset.y = computedOffset.limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
         webView.scrollView.contentOffset = offset
     }
 
     // MARK: Helper
-    func positionOfElementWithId(elementID: NSNumber) -> CGFloat {
-        let result: String? = self.webView.stringByEvaluatingJavaScriptFromString("function f(){ var r = document.getElementById('postmessage_\(elementID)').getBoundingClientRect(); return r.top; } f();")
-        DDLogDebug("[QuoteFloorVC] Touch element ID: \(elementID)")
-        if let result1 = result, result2 = Double(result1) {
-            return CGFloat(result2)
+    func topPositionOfMessageWithId(elementID: Int) -> CGFloat {
+        if let rect = webView.s1_positionOfElementWithId("postmessage_\(elementID)") {
+            return rect.minY
+        } else {
+            DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
+            return 0.0
         }
-        return 0
     }
 }
 

@@ -70,6 +70,7 @@
 		86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */; };
+		86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD82771CF9A75600C9700E /* S1FoundationTests.swift */; };
 		86FEACE61CDF5F5B00ECD694 /* DiscuzAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* DiscuzAPIManager.swift */; };
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
 		86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */; };
@@ -213,6 +214,7 @@
 		86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorViewModel.swift; path = Stage1st/FloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorCell.swift; path = Stage1st/S1QuoteFloorCell.swift; sourceTree = "<group>"; };
+		86FD82771CF9A75600C9700E /* S1FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1FoundationTests.swift; sourceTree = "<group>"; };
 		86FEACE51CDF5F5B00ECD694 /* DiscuzAPIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DiscuzAPIManager.swift; path = Stage1st/DiscuzAPIManager.swift; sourceTree = "<group>"; };
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Stage1st/SettingsViewController.swift; sourceTree = "<group>"; };
 		86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TopicListViewController.swift; path = Stage1st/TopicListViewController.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 			isa = PBXGroup;
 			children = (
 				8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */,
+				86FD82771CF9A75600C9700E /* S1FoundationTests.swift */,
 				8681E6C01CEF61ED004269D3 /* Info.plist */,
 			);
 			path = Stage1stTests;
@@ -953,6 +956,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */,
 				8681E6BF1CEF61ED004269D3 /* Stage1stTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

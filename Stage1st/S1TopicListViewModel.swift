@@ -12,16 +12,6 @@ import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
 import YapDatabase.YapDatabaseFilteredView
 
-func ensureMainThread(block: () -> Void) {
-    if NSThread.currentThread().isMainThread {
-        block()
-    } else {
-        dispatch_async(dispatch_get_main_queue(), {
-            block()
-        })
-    }
-}
-
 public final class S1TopicListViewModel: NSObject {
     public let dataCenter: S1DataCenter
     var viewMappings: YapDatabaseViewMappings?

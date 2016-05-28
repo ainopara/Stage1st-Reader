@@ -7,34 +7,19 @@
 //
 
 import Foundation
+import UIKit
+
+func ensureMainThread(block: () -> Void) {
+    if NSThread.currentThread().isMainThread {
+        block()
+    } else {
+        dispatch_async(dispatch_get_main_queue(), {
+            block()
+        })
+    }
+}
 
 class S1Utility: NSObject {
-    class func screenShot(view: UIView) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, UIScreen.mainScreen().scale)
-        guard let currentContext = UIGraphicsGetCurrentContext() else {
-            return nil
-        }
-
-        view.layer.renderInContext(currentContext)
-        let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return viewScreenShot
-    }
-
-    class func screenShot(view: UIView, rect: CGRect) -> UIImage? {
-        guard let originalScreenShot = self.screenShot(view), processingCGImage = CGImageCreateWithImageInRect(originalScreenShot.CGImage, rect) else {
-            return nil
-        }
-        return UIImage(CGImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
-    }
-    //    - (UIImage *)screenShot {
-    //    //clip
-    //    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
-    //    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
-    //    CGImageRelease(imageRef);
-    //    return viewImage;
-    //    }
-
     class func valuesAreEqual(value1: AnyObject?, _ value2: AnyObject?) -> Bool {
 
         if let value1 = value1, value2 = value2 {
@@ -47,8 +32,39 @@ class S1Utility: NSObject {
     }
 }
 
+extension UIView {
+    func s1_screenShot() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.mainScreen().scale)
+        guard let currentContext = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+
+        self.layer.renderInContext(currentContext)
+        let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return viewScreenShot
+    }
+
+    func s1_screenShot(rect: CGRect) -> UIImage? {
+        guard let
+            originalScreenShot = self.s1_screenShot(),
+            processingCGImage = CGImageCreateWithImageInRect(originalScreenShot.CGImage, rect) else {
+            return nil
+        }
+        return UIImage(CGImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
+    }
+    // TODO:
+    //    - (UIImage *)screenShot {
+    //    //clip
+    //    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
+    //    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
+    //    CGImageRelease(imageRef);
+    //    return viewImage;
+    //    }
+}
+
 extension UIViewController {
-    func presentAlertView(title: String, message: String?) {
+    func s1_presentAlertView(title: String, message: String?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         let defaultAction = UIAlertAction(title: NSLocalizedString("Message_OK", comment: "OK"), style: .Default, handler: nil)
         alert.addAction(defaultAction)
@@ -57,7 +73,17 @@ extension UIViewController {
 }
 
 extension UIWebView {
-    func atBottom() -> Bool {
+    func s1_positionOfElementWithId(elementID: String) -> CGRect? {
+        let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
+        if let result = self.stringByEvaluatingJavaScriptFromString(script) {
+            let rect = CGRectFromString(result)
+            return rect == CGRect.zero ? nil : rect
+        } else {
+            return nil
+        }
+    }
+
+    func s1_atBottom() -> Bool {
         let offsetY = self.scrollView.contentOffset.y
         let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
         return offsetY >= maxOffsetY
@@ -65,7 +91,7 @@ extension UIWebView {
 }
 
 extension UIImage {
-    func tintWithColor(color: UIColor) -> UIImage {
+    func s1_tintWithColor(color: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.mainScreen().scale)
         color.setFill()
         let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)

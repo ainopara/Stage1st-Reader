@@ -35,4 +35,5 @@
 
 + (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
 + (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString;
+
 @end

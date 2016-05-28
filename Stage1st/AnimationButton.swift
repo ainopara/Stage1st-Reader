@@ -20,7 +20,7 @@ class AnimationView: UIView {
             })
         }
         return images.flatMap({ templateImage in
-            return templateImage.tintWithColor(self.tintColor).CGImage
+            return templateImage.s1_tintWithColor(self.tintColor).CGImage
         })
     }
 
@@ -167,7 +167,7 @@ class AnimationButton: UIButton {
     }
 
     private func setStaticImage(image: UIImage?) {
-        self.setImage(image?.tintWithColor(self.tintColor), forState: .Normal)
-        self.setImage(image?.tintWithColor(self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)), forState: .Highlighted)
+        self.setImage(image?.s1_tintWithColor(self.tintColor), forState: .Normal)
+        self.setImage(image?.s1_tintWithColor(self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)), forState: .Highlighted)
     }
 }

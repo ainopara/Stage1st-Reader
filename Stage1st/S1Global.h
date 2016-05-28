@@ -24,10 +24,13 @@
 
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSMutableDictionary *dateCache;
+
 - (NSString *)headerForDate:(NSDate *)date;
 - (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2;
+
 @end
 
+// TODO: some method in this should be extension style.
 @interface S1Global : NSObject
 
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;

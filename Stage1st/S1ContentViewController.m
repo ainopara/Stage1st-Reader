@@ -293,7 +293,7 @@
         _currentPage += 1;
         [self fetchContent];
     } else {
-        if (![self.webView atBottom]) {
+        if (![self.webView s1_atBottom]) {
             [self scrollToBottomAnimated:YES];
         } else {
             //_needToScrollToBottom = YES;
@@ -401,7 +401,7 @@
     }];
     // Share Action
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImage *screenShot = [S1Utility screenShot:self.view];
+        UIImage *screenShot = [self.view s1_screenShot];
         UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:@"%@ #Stage1st Reader#", self.topic.title], [NSURL URLWithString:[NSString stringWithFormat:@"%@thread-%@-%ld-1.html", [[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"], self.topic.topicID, (long)_currentPage]], screenShot] applicationActivities:nil];
         [activityController.popoverPresentationController setBarButtonItem:self.actionBarButtonItem];
         [self presentViewController:activityController animated:YES completion:nil];
