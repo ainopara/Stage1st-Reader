@@ -711,11 +711,11 @@
 - (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
     NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
     navigationDelegate.panRecognizer.enabled = YES;
-    self.attributedReplyDraft = [composeViewController.attributedText mutableCopy];
+    self.attributedReplyDraft = [composeViewController.textView.attributedText mutableCopy];
     if (result == REComposeResultCancelled) {
         [composeViewController dismissViewControllerAnimated:YES completion:NULL];
     } else if (result == REComposeResultPosted) {
-        if (composeViewController.text.length > 0) {
+        if (composeViewController.plainText.length > 0) {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
             __weak __typeof__(self) weakSelf = self;
@@ -744,9 +744,9 @@
             };
 
             if (self.replyTopicFloor) {
-                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage] withText:composeViewController.text success: successBlock failure:failureBlock];
+                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.topic atPage:[NSNumber numberWithUnsignedInteger:_currentPage] withText:composeViewController.plainText success: successBlock failure:failureBlock];
             } else {
-                [self.dataCenter replyTopic:self.topic withText:composeViewController.text success:successBlock failure:failureBlock];
+                [self.dataCenter replyTopic:self.topic withText:composeViewController.plainText success:successBlock failure:failureBlock];
             }
             [composeViewController dismissViewControllerAnimated:YES completion:nil];
         }
@@ -890,10 +890,10 @@
     }
 
     REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
-    [replyController setKeyboardAppearance:[[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark:UIKeyboardAppearanceDefault];
-    [replyController setTextViewTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.tint"]];
-    [replyController setTintColor:[[APColorManager sharedInstance] colorForKey:@"reply.background"]];
-    [replyController.textView setTextColor:[[APColorManager sharedInstance] colorForKey:@"reply.text"]];
+    replyController.textView.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    replyController.sheetBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"reply.background"];
+    replyController.textView.tintColor = [[APColorManager sharedInstance] colorForKey:@"reply.tint"];
+    replyController.textView.textColor = [[APColorManager sharedInstance] colorForKey:@"reply.text"];
 
     // Set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
@@ -905,7 +905,7 @@
     }
 
     if (self.attributedReplyDraft != nil) {
-        [replyController setAttributedText:self.attributedReplyDraft];
+        [replyController.textView setAttributedText:self.attributedReplyDraft];
     }
 
     replyController.delegate = self;

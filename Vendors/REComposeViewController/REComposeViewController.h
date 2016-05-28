@@ -26,34 +26,24 @@
 #import <UIKit/UIKit.h>
 #import "REComposeSheetView.h"
 
-@class REComposeViewController;
+@protocol REComposeViewControllerDelegate;
 
 typedef NS_ENUM(NSUInteger, REComposeResult) {
     REComposeResultCancelled,
     REComposeResultPosted
 };
 
-typedef void (^REComposeViewControllerCompletionHandler)(REComposeViewController *composeViewController, REComposeResult result);
-
-@protocol REComposeViewControllerDelegate;
-
 @interface REComposeViewController : UIViewController
 
-@property (copy, nonatomic) REComposeViewControllerCompletionHandler completionHandler;
-@property (weak, nonatomic) id<REComposeViewControllerDelegate> delegate;
+@property (weak, nonatomic) id <REComposeViewControllerDelegate> delegate;
 @property (assign, nonatomic) NSInteger cornerRadius;
-@property (strong, nonatomic) NSString *text;
-@property (strong, nonatomic) NSAttributedString *attributedText;
-@property (strong, nonatomic) NSString *placeholderText;
-@property (strong, readonly, nonatomic) DEComposeTextView *textView;
-@property (strong, readonly, nonatomic) UINavigationBar *navigationBar;
-@property (strong, readonly, nonatomic) UINavigationItem *navigationItem;
-@property (strong, nonatomic) UIColor *tintColor;
-@property (strong, nonatomic) UIView *accessoryView;
-@property (strong, nonatomic) UIView *inputView;
-
-- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance;
-- (void)setTextViewTintColor:(UIColor *)color;
+@property (nonatomic, strong, readonly) NSString *plainText;
+@property (nonatomic, strong, readonly) DEComposeTextView *textView;
+@property (nonatomic, strong, readonly) UINavigationBar *navigationBar;
+@property (nonatomic, strong, readonly) UINavigationItem *navigationItem;
+@property (nonatomic, strong) UIColor *sheetBackgroundColor;
+@property (nonatomic, strong) UIView *accessoryView;
+@property (nonatomic, strong) UIView *inputView;
 
 @end
 

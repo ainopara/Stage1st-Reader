@@ -29,7 +29,6 @@
 #import "NSAttributedString+MahjongFaceExtension.h"
 
 @interface REComposeViewController () <REComposeSheetViewDelegate> {
-    REComposeSheetView *_sheetView;
     UIView *_backgroundView;
     UIView *_backView;
     UIView *_containerView;
@@ -37,13 +36,13 @@
 }
 
 @property (assign, readwrite, nonatomic) BOOL userUpdatedAttachment;
+@property (nonatomic, strong) REComposeSheetView *sheetView;
 
 @end
 
 @implementation REComposeViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _cornerRadius = 6;
@@ -54,8 +53,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor clearColor];
@@ -79,14 +77,8 @@
     _backView.layer.cornerRadius = _cornerRadius;
     _backView.layer.rasterizationScale = [UIScreen mainScreen].scale;
 
-    _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectZero];
-    _sheetView.layer.cornerRadius = _cornerRadius;
-    _sheetView.clipsToBounds = YES;
-    _sheetView.delegate = self;
-    _sheetView.backgroundColor = self.tintColor;
-
-    [_backView addSubview:_sheetView];
-    [_sheetView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_backView addSubview:self.sheetView];
+    [self.sheetView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(_backView);
     }];
 
@@ -105,15 +97,14 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    [_sheetView.textView becomeFirstResponder];
+    [self.sheetView.textView becomeFirstResponder];
     [UIView animateWithDuration:0.3 animations:^{
         _containerView.alpha = 1;
         _backgroundView.alpha = 1;
     }];
 }
 
-- (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height
-{
+- (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height {
     DDLogInfo(@"layout:w%ld, h%ld",(long)width, (long)height);
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
@@ -142,9 +133,8 @@
     _containerView.frame = frame;
 }
 
-- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
-{
-    [_sheetView.textView endEditing:YES];
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    [self.sheetView.textView endEditing:YES];
 
     [UIView animateWithDuration:0.4 animations:^{
         _containerView.alpha = 0;
@@ -171,100 +161,73 @@
 
 #pragma mark - Accessors
 
-- (UINavigationItem *)navigationItem
-{
-    return _sheetView.navigationItem;
+- (UINavigationItem *)navigationItem {
+    return self.sheetView.navigationItem;
 }
 
-- (UINavigationBar *)navigationBar
-{
-    return _sheetView.navigationBar;
+- (UINavigationBar *)navigationBar {
+    return self.sheetView.navigationBar;
 }
 
-- (NSString *)text
-{
-    return [_sheetView.textView.attributedText getPlainString];
+- (NSString *)plainText {
+    return [self.sheetView.textView.attributedText getPlainString];
 }
 
-- (void)setText:(NSString *)text
-{
-    _sheetView.textView.text = text;
+- (void)setSheetBackgroundColor:(UIColor *)sheetBackgroundColor {
+    self.sheetView.backgroundColor = sheetBackgroundColor;
 }
 
-- (NSAttributedString *)attributedText
-{
-    return _sheetView.textView.attributedText;
+- (UIColor *)sheetBackgroundColor {
+    return self.sheetView.backgroundColor;
 }
 
-- (void)setAttributedText:(NSAttributedString *)text
-{
-    _sheetView.textView.attributedText = text;
-}
-
-
-- (NSString *)placeholderText
-{
-    return _sheetView.textView.placeholder;
-}
-
-- (void)setPlaceholderText:(NSString *)placeholderText
-{
-    _sheetView.textView.placeholder = placeholderText;
-}
-
-- (void)setTintColor:(UIColor *)tintColor
-{
-    _tintColor = tintColor;
-    _sheetView.backgroundColor = tintColor;
-}
-
-- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance {
-    _sheetView.textView.keyboardAppearance = appearance;
-}
-
-- (void)setTextViewTintColor:(UIColor *)color {
-    _sheetView.textView.tintColor = color;
+- (REComposeSheetView *)sheetView {
+    if (_sheetView == nil) {
+        _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectZero];
+        _sheetView.layer.cornerRadius = _cornerRadius;
+        _sheetView.clipsToBounds = YES;
+        _sheetView.delegate = self;
+    }
+    return _sheetView;
 }
 
 #pragma mark - Input View and Accessory View
 
 - (DEComposeTextView *)textView {
-    return _sheetView.textView;
+    return self.sheetView.textView;
 }
 
 - (void)setAccessoryView:(UIView *)view {
-    _sheetView.textView.inputAccessoryView = view;
+    self.sheetView.textView.inputAccessoryView = view;
 }
 
 - (UIView *)accessoryView {
-    return _sheetView.textView.inputAccessoryView;
+    return self.sheetView.textView.inputAccessoryView;
 }
 
 - (void)setInputView:(UIView *)view {
-    _sheetView.textView.inputView = view;
+    self.sheetView.textView.inputView = view;
 }
 
 - (UIView *)inputView {
-    return _sheetView.textView.inputView;
+    return self.sheetView.textView.inputView;
 }
 
 - (void)reloadInputViews {
     [super reloadInputViews];
-    [_sheetView.textView reloadInputViews];
+    [self.sheetView.textView reloadInputViews];
 }
 
 #pragma mark - REComposeSheetViewDelegate
 
-- (void)cancelButtonPressed
-{
+- (void)cancelButtonPressed {
     id<REComposeViewControllerDelegate> localDelegate = _delegate;
     if (localDelegate && [localDelegate respondsToSelector:@selector(composeViewController:didFinishWithResult:)]) {
         [localDelegate composeViewController:self didFinishWithResult:REComposeResultCancelled];
     }
 }
 
-- (void)postButtonPressed
-{
+- (void)postButtonPressed {
     id<REComposeViewControllerDelegate> localDelegate = _delegate;
     if (localDelegate && [localDelegate respondsToSelector:@selector(composeViewController:didFinishWithResult:)]) {
         [localDelegate composeViewController:self didFinishWithResult:REComposeResultPosted];
@@ -273,8 +236,7 @@
 
 #pragma mark - Notification
 
-- (void)updateKeyboardFrame:(NSNotification *)notification
-{
+- (void)updateKeyboardFrame:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     CGFloat keyboardHeight = CGRectGetHeight([[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue]);
     NSTimeInterval timeInterval = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
