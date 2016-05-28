@@ -549,7 +549,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [HUD hideWithDelay:0];
                 } else {
-                    DDLogWarn(@"[Network] error: %ld", (long)error.code);
+                    DDLogWarn(@"[Network] error: %ld (%@)", (long)error.code, error.description);
                     [HUD setText:@"Request Failed" withWidthMultiplier:2];
                     [HUD hideWithDelay:0.3];
                 }
@@ -606,6 +606,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.searchBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.tint"];
     self.searchBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"topiclist.searchbar.bartint"];
     self.searchBar.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    if ([self.searchBar isFirstResponder]) {
+        [self.searchBar reloadInputViews];
+    }
 
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
