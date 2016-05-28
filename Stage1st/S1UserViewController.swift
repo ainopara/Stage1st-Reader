@@ -18,7 +18,7 @@ final class S1UserViewController: UIViewController {
                 self.avatarView.kf_setImageWithURL(avatarURL)
             }
             self.customStatusLabel.text = user.customStatus
-            self.infoLabel.text = "\(user.lastVisitDateString)\n\(user.registerDateString)\n\(user.threadCount)\n\(user.postCount)\n\(user.sigHTML)\n"
+            self.infoLabel.attributedText = infoLabelAttributedText(user)
         }
     }
 
@@ -97,5 +97,25 @@ final class S1UserViewController: UIViewController {
                 self?.presentAlertView("Error", message: error.description)
             }
         }
+    }
+
+    private func infoLabelAttributedText(user: User) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString()
+        if let lastVisitDateString = user.lastVisitDateString {
+            attributedString.appendAttributedString(NSAttributedString(string: "最后访问：\n\(lastVisitDateString)\n"))
+        }
+        if let registerDateString = user.registerDateString {
+            attributedString.appendAttributedString(NSAttributedString(string: "注册日期：\n\(registerDateString)\n"))
+        }
+        if let threadCount = user.threadCount {
+            attributedString.appendAttributedString(NSAttributedString(string: "发帖数：\n\(threadCount)\n"))
+        }
+        if let postCount = user.postCount {
+            attributedString.appendAttributedString(NSAttributedString(string: "回复数：\n\(postCount)\n"))
+        }
+        if let sigHTML = user.sigHTML {
+            attributedString.appendAttributedString(NSAttributedString(string: "签名：\n\(sigHTML)\n"))
+        }
+        return attributedString
     }
 }
