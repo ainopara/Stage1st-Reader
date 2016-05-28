@@ -33,9 +33,11 @@
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) PullToActionController *pullToActionController;
 
+@property (nonatomic, weak) S1HUD *refreshHUD;
+
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *forwardButton;
-@property (nonatomic, strong) UILabel *pageLabel;
+@property (nonatomic, strong) UIButton *pageButton;
 @property (nonatomic, strong) UIButton *favoriteButton;
 @property (nonatomic, strong) UIBarButtonItem *actionBarButtonItem;
 
@@ -177,9 +179,9 @@
     [self.favoriteButton addTarget:self action:@selector(toggleFavoriteAction:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:self.favoriteButton];
 
-    [self updatePageLabel];
+    [self updatePageButton];
     
-    UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageLabel];
+    UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageButton];
     labelItem.width = 80;
     
     UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
@@ -346,7 +348,7 @@
             [self fetchContentAndForceUpdate:YES];
         }
 
-    } cancelBlock:nil origin:self.pageLabel];
+    } cancelBlock:nil origin:self.pageButton];
     picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -760,7 +762,7 @@
 }
 
 - (void)fetchContentAndForceUpdate:(BOOL)shouldUpdate {
-    [self updatePageLabel];
+    [self updatePageButton];
     __weak __typeof__(self) weakSelf = self;
 
     self.userActivity.needsSave = YES;
@@ -774,6 +776,9 @@
     DDLogInfo(@"[ContentVC] check precache exist");
     if (![self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:_currentPage]]) {
         DDLogDebug(@"[ContentVC] Show HUD");
+        if (self.refreshHUD != nil) {
+            [self.refreshHUD hideWithDelay:0.0];
+        }
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
         [HUD setRefreshEventHandler:^(S1HUD *aHUD) {
@@ -783,6 +788,7 @@
                 [strongSelf fetchContent];
             }
         }];
+        self.refreshHUD = HUD;
     }
     
     [self.viewModel contentPageForTopic:self.topic page:_currentPage success:^(NSString *contents, NSNumber *shouldRefetch) {
@@ -790,7 +796,7 @@
         if (strongSelf == nil) {
             return;
         }
-        [strongSelf updatePageLabel];
+        [strongSelf updatePageButton];
         if (_shouldRestoreViewPosition) {
             [strongSelf saveViewPosition];
             _shouldRestoreViewPosition = NO;
@@ -804,7 +810,7 @@
             NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:_currentPage + 1];
             [strongSelf.dataCenter setFinishHandlerForTopic:strongSelf.topic withPage:cachePage andHandler:^(NSArray *floorList) {
                 __strong __typeof__(self) strongSelf = weakSelf;
-                [strongSelf updatePageLabel];
+                [strongSelf updatePageButton];
             }];
             if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
                 [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.topic withPage:cachePage shouldUpdate:NO];
@@ -950,7 +956,7 @@
         self.titleLabel.text = self.topic.title;
         self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
     }
-    self.pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
+    [self.pageButton setTitleColor:[[APColorManager sharedInstance] colorForKey:@"content.pagebutton.text"] forState:UIControlStateNormal];
     self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
     self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
 
@@ -967,12 +973,12 @@
     [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height-self.webView.scrollView.bounds.size.height) animated:animated];
 }
 
-- (void)updatePageLabel {
+- (void)updatePageButton {
     //update page label
     if (self.topic.totalPageCount) {
         _totalPages = [self.topic.totalPageCount integerValue];
     }
-    self.pageLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages];
+    [self.pageButton setTitle:[NSString stringWithFormat:@"%ld/%ld", (long)_currentPage, _currentPage>_totalPages?(long)_currentPage:(long)_totalPages] forState:UIControlStateNormal];
 
     //update forward button
     if ([self.dataCenter hasPrecacheFloorsForTopic:self.topic withPage:@(_currentPage + 1)]) {
@@ -1051,22 +1057,22 @@
     return _forwardButton;
 }
 
-- (UILabel *)pageLabel {
-    if (_pageLabel == nil) {
+- (UIButton *)pageButton {
+    if (_pageButton == nil) {
         //Page Label
-        _pageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-        _pageLabel.font = [UIFont systemFontOfSize:13.0f];
-        _pageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.pagelabel.text"];
-        _pageLabel.backgroundColor = [UIColor clearColor];
-        _pageLabel.textAlignment = NSTextAlignmentCenter;
-        _pageLabel.userInteractionEnabled = YES;
-        UITapGestureRecognizer *pickPageGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickPage:)];
-        [_pageLabel addGestureRecognizer:pickPageGR];
+        _pageButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        _pageButton.frame = CGRectMake(0, 0, 80, 30);
+        _pageButton.titleLabel.font = [UIFont systemFontOfSize:13.0f];
+        [_pageButton setTitleColor:[[APColorManager sharedInstance] colorForKey:@"content.pagebutton.text"] forState:UIControlStateNormal];
+        _pageButton.backgroundColor = [UIColor clearColor];
+        _pageButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        _pageButton.userInteractionEnabled = YES;
+        [_pageButton addTarget:self action:@selector(pickPage:) forControlEvents:UIControlEventTouchUpInside];
         UILongPressGestureRecognizer *forceRefreshGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(forceRefreshPressed:)];
         forceRefreshGR.minimumPressDuration = 0.5;
-        [_pageLabel addGestureRecognizer:forceRefreshGR];
+        [_pageButton addGestureRecognizer:forceRefreshGR];
     }
-    return _pageLabel;
+    return _pageButton;
 }
 
 - (UIBarButtonItem *)actionBarButtonItem {
