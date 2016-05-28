@@ -15,11 +15,8 @@
 #import "GTMNSString+HTML.h"
 #import "S1AppDelegate.h"
 
-
-@interface S1Parser()
-@end
-
 @implementation S1Parser
+
 # pragma mark - Process Data
 
 + (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
@@ -54,6 +51,7 @@
 }
 
 #pragma mark - Page Parsing
+
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
 {
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];

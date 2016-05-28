@@ -26,6 +26,7 @@
 @property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
 
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
+
 @end
 
 @implementation S1DataCenter
@@ -226,6 +227,7 @@
         } failure:failureHandler];
     }
 }
+
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key];
@@ -250,6 +252,7 @@
 }
 
 #pragma mark - Network (Content)
+
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<S1Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
