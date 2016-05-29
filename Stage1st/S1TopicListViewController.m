@@ -9,7 +9,7 @@
 #import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
 #import "S1ContentViewController.h"
-#import "S1SettingViewController.h"
+#import "SettingsViewController.h"
 #import "S1TopicListCell.h"
 #import "S1HUD.h"
 #import "S1Topic.h"

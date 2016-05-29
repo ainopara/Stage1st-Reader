@@ -100,7 +100,7 @@
 		C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879716CB61FC007E0119 /* GSSingleSelectionTableViewController.m */; };
 		C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879A16CB61FC007E0119 /* GSStaticTableViewController.m */; };
 		C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879C16CB61FC007E0119 /* UIControl+BlockWrapper.m */; };
-		C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C09587A516CB623E007E0119 /* S1SettingViewController.m */; };
+		C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C09587A516CB623E007E0119 /* SettingsViewController.m */; };
 		C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */; };
 /* End PBXBuildFile section */
 
@@ -267,8 +267,8 @@
 		C095879A16CB61FC007E0119 /* GSStaticTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSStaticTableViewController.m; sourceTree = "<group>"; };
 		C095879B16CB61FC007E0119 /* UIControl+BlockWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+BlockWrapper.h"; sourceTree = "<group>"; };
 		C095879C16CB61FC007E0119 /* UIControl+BlockWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+BlockWrapper.m"; sourceTree = "<group>"; };
-		C09587A416CB623E007E0119 /* S1SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1SettingViewController.h; path = Stage1st/S1SettingViewController.h; sourceTree = "<group>"; };
-		C09587A516CB623E007E0119 /* S1SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1SettingViewController.m; path = Stage1st/S1SettingViewController.m; sourceTree = "<group>"; };
+		C09587A416CB623E007E0119 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = Stage1st/SettingsViewController.h; sourceTree = "<group>"; };
+		C09587A516CB623E007E0119 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = Stage1st/SettingsViewController.m; sourceTree = "<group>"; };
 		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
 		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MTStatusBarOverlay.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CC2DA46B733F2DE1887C78AE /* Pods-Stage1stTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1stTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1stTests/Pods-Stage1stTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -668,8 +668,8 @@
 		C09587A316CB6218007E0119 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				C09587A416CB623E007E0119 /* S1SettingViewController.h */,
-				C09587A516CB623E007E0119 /* S1SettingViewController.m */,
+				C09587A416CB623E007E0119 /* SettingsViewController.h */,
+				C09587A516CB623E007E0119 /* SettingsViewController.m */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
@@ -1004,7 +1004,7 @@
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
 				8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */,
-				C09587A616CB623E007E0119 /* S1SettingViewController.m in Sources */,
+				C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,

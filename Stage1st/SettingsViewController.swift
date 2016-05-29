@@ -7,13 +7,13 @@
 //
 import UIKit
 
-extension S1SettingViewController {
+extension SettingsViewController {
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
     }
 }
 
-extension S1SettingViewController {
+extension SettingsViewController {
     func applicationVersion() -> String {
         guard let
             shortVersionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString"),

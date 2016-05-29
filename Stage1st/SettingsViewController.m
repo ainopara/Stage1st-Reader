@@ -1,18 +1,18 @@
 //
-//  S1SettingViewController.m
+//  SettingsViewController.m
 //  Stage1st
 //
 //  Created by Suen Gabriel on 2/13/13.
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import "S1SettingViewController.h"
+#import "SettingsViewController.h"
 #import "GSStaticTableViewBuilder.h"
 #import "CloudKitManager.h"
 #import <Crashlytics/Answers.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
 
-@interface S1SettingViewController ()
+@interface SettingsViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation S1SettingViewController
+@implementation SettingsViewController
 
 #pragma mark - Life Cycle
 

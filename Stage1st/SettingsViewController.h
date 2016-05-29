@@ -1,5 +1,5 @@
 //
-//  S1SettingViewController.h
+//  SettingsViewController.h
 //  Stage1st
 //
 //  Created by Suen Gabriel on 2/13/13.
@@ -7,6 +7,6 @@
 //
 
 
-@interface S1SettingViewController : UITableViewController
+@interface SettingsViewController : UITableViewController
 
 @end
