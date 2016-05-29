@@ -105,7 +105,7 @@
 }
 
 - (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height {
-    DDLogInfo(@"layout:w%ld, h%ld",(long)width, (long)height);
+    DDLogDebug(@"layout:w%ld, h%ld",(long)width, (long)height);
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
     NSInteger minimumComposeViewWidth = 320;

@@ -928,7 +928,7 @@
 #pragma mark - Notificatons
 
 - (void)saveTopicViewedState:(id)sender {
-    DDLogInfo(@"[ContentVC] Save Topic View State Begin.");
+    DDLogDebug(@"[ContentVC] Save Topic View State Begin.");
     if (_finishLoading) {
         [self.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
     } else if ((self.topic.lastViewedPosition == nil) || (![self.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: _currentPage]])) {
