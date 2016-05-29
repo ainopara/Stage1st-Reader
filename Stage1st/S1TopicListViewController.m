@@ -299,20 +299,16 @@ static NSString * const cellIdentifier = @"TopicCell";
         DDLogDebug(@"[TopicListVC] Reach (almost) last topic, load more.");
         _loadingMore = YES;
         __weak __typeof__(self) weakSelf = self;
-        [self.dataCenter loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray *topicList) {
+        [self.viewModel loadNextPageForKey:self.forumKeyMap[self.currentKey] success:^(NSArray<S1Topic *> *topicList) {
             __strong __typeof__(self) strongSelf = weakSelf;
             strongSelf.topics = [topicList mutableCopy];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                strongSelf.tableView.tableFooterView = nil;
-                [strongSelf.tableView reloadData];
-                _loadingMore = NO;
-            });
+            strongSelf.tableView.tableFooterView = nil;
+            [strongSelf.tableView reloadData];
+            strongSelf->_loadingMore = NO;
         } failure:^(NSError *error) {
             __strong __typeof__(self) strongSelf = weakSelf;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                strongSelf.tableView.tableFooterView = nil;
-                _loadingMore = NO;
-            });
+            strongSelf.tableView.tableFooterView = nil;
+            strongSelf->_loadingMore = NO;
             DDLogDebug(@"[TopicListVC] Fail to load more...");
         }];
     }

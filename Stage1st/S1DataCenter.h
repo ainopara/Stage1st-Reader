@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
 
-- (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
 
 - (BOOL)canMakeSearchRequest;
 

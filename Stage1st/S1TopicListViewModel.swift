@@ -30,17 +30,29 @@ public final class S1TopicListViewModel: NSObject {
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
             for topic in topicList {
-                if let tracedTopic = strongSelf.dataCenter.tracedTopic(topic.topicID)?.copy() as? S1Topic {
-                    tracedTopic.update(topic)
-                    processedList.append(tracedTopic)
-                } else {
-                    processedList.append(topic)
-                }
+                processedList.append(strongSelf.topicWithTracedDataForTopic(topic))
             }
             ensureMainThread({
                 success(topicList: processedList)
             })
 
+        }, failure: { (error) in
+            ensureMainThread({
+                failure(error: error)
+            })
+        })
+    }
+
+    func loadNextPageForKey(key: String, success: (topicList: [S1Topic]) -> Void, failure: (error: NSError) -> Void) {
+        self.dataCenter.loadNextPageForKey(key, success: { [weak self] (topicList) in
+            guard let strongSelf = self else { return }
+            var processedList = [S1Topic]()
+            for topic in topicList {
+                processedList.append(strongSelf.topicWithTracedDataForTopic(topic))
+            }
+            ensureMainThread({
+                success(topicList: processedList)
+            })
         }, failure: { (error) in
             ensureMainThread({
                 failure(error: error)
