@@ -121,7 +121,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseConnectionDidUpdate:) name:UIDatabaseConnectionDidUpdateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
 
+- (void)dealloc {
+    DDLogDebug(@"[TopicListVC] Dealloced");
+    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+    [self.tableView removeObserver:self forKeyPath:@"contentInset"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -145,13 +151,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     [self.tableView setUserInteractionEnabled:NO];
     [self.tableView setScrollsToTop:NO];
-}
-
-- (void)dealloc {
-    DDLogDebug(@"[TopicListVC] Dealloced");
-    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
-    [self.tableView removeObserver:self forKeyPath:@"contentInset"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Actions
@@ -224,7 +223,6 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [self.topics count];
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     S1TopicListCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
@@ -269,7 +267,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self isPresentingDatabaseList:self.currentKey];
 }
-
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -330,6 +327,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     
     return nil;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if ([self isPresentingDatabaseList:self.currentKey]) {
         return 20;
@@ -459,16 +457,20 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark Networking
 
 - (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop {
+    NSString *forumID = self.forumKeyMap[key];
+    if (forumID == nil) {
+        return;
+    }
     _loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
     S1HUD *HUD;
-    if (refresh || ![self.dataCenter hasCacheForKey:self.forumKeyMap[key]]) {
+    if (refresh || ![self.dataCenter hasCacheForKey:forumID]) {
         HUD = [S1HUD showHUDInView:self.view];
         [HUD showActivityIndicator];
     }
     
     __weak __typeof__(self) weakSelf = self;
-    [self.viewModel topicListForKey:self.forumKeyMap[key] refresh:refresh success:^(NSArray *topicList) {
+    [self.viewModel topicListForKey:forumID refresh:refresh success:^(NSArray *topicList) {
         //reload data
         __strong __typeof__(self) strongSelf = weakSelf;
         if (topicList.count > 0) {
@@ -649,8 +651,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     NSString *titleString = @"";
     switch ([MyCloudKitManager state]) {
         case CKManagerStateInit:
-            titleString = [@"Init/" stringByAppendingString:titleString];
             [self.archiveButton stopAnimation];
+            titleString = [@"Init/" stringByAppendingString:titleString];
             break;
         case CKManagerStateSetup:
             [self.archiveButton stopAnimation];
@@ -693,7 +695,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     return [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Order"] objectAtIndex:0];
 }
 
--(void)cancelRequest {
+- (void)cancelRequest {
     [self.dataCenter cancelRequest];
 }
 
