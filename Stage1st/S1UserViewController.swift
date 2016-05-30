@@ -87,14 +87,15 @@ final class S1UserViewController: UIViewController {
             make.trailing.equalTo(usernameLabel.snp_trailing)
         }
 
-        let parameters: [String: AnyObject] = ["module": "profile", "version": 1, "uid": self.user.ID, "mobile": "no"]
-        Alamofire.request(.GET, "http://bbs.saraba1st.com/2b/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { [weak self] (response) in
-            switch response.result {
-            case .Success(let json):
-                guard let user = User(json: json) else { return }
-                self?.user = user
+        // FIXME: base URL should not be hard coded.
+        let apiManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
+        apiManager.profile(self.user.ID) { [weak self] (result) in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .Success(let user):
+                strongSelf.user = user
             case .Failure(let error):
-                self?.s1_presentAlertView("Error", message: error.description)
+                strongSelf.s1_presentAlertView("Error", message: error.description)
             }
         }
     }
