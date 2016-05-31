@@ -18,3 +18,4 @@
 #import "S1ContentViewModel.h"
 #import "S1Appdelegate.h"
 #import "NavigationControllerDelegate.h"
+#import "S1TabBar.h"

@@ -39,10 +39,11 @@ target "Stage1st" do
     pod '1PasswordExtension'
     pod 'Reachability'
     pod 'SwiftWebViewProgress', :git => 'https://github.com/ainopara/SwiftWebViewProgress.git'
+    pod 'ReactiveCocoa'
 end
 
 target "Stage1stTests" do
     pod 'GYHttpMock'
-    # pod 'FBSnapshotTestCase'
+    pod 'FBSnapshotTestCase', :git => 'https://github.com/facebook/ios-snapshot-test-case.git'
     pod 'KIF', :configurations => ['Debug']
 end

@@ -30,6 +30,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
             toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey),
             fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey),
             containerView = transitionContext.containerView() else {
+                assert(false)
                 return
         }
         // TODO: remove this workaround once it is no more necessary

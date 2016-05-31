@@ -19,6 +19,7 @@ private enum LoginViewControllerState {
 }
 
 final class S1LoginViewController: UIViewController {
+
     let backgroundBlurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
     let containerView = UIView(frame: CGRect.zero)
     let usernameField = UITextField(frame: CGRect.zero)
@@ -102,8 +103,6 @@ final class S1LoginViewController: UIViewController {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .OverFullScreen
         self.modalTransitionStyle = .CrossDissolve
-
-
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -267,6 +266,7 @@ final class S1LoginViewController: UIViewController {
 
 // MARK: - Actions
 extension S1LoginViewController {
+
     func logIn(sender: UIButton) {
         if self.inLoginState() {
             self.logoutAction()
@@ -330,6 +330,7 @@ extension S1LoginViewController {
 
 // MARK: - UITextFieldDelegate
 extension S1LoginViewController: UITextFieldDelegate {
+
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == self.usernameField {
             passwordField.becomeFirstResponder()
@@ -354,7 +355,7 @@ extension S1LoginViewController: UITextFieldDelegate {
 // MARK: Login Logic
 extension S1LoginViewController {
 
-    func loginAction() {
+    private func loginAction() {
         guard let username = self.usernameField.text, password = self.passwordField.text where username != "" && password != "" else {
             self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "用户名和密码不能为空")
             return
@@ -387,7 +388,7 @@ extension S1LoginViewController {
         })
     }
 
-    func logoutAction() {
+    private func logoutAction() {
         self.networkManager.logOut()
         self.state = .NotLogin
         self.alert(title: NSLocalizedString("SettingView_LogOut", comment:""), message: NSLocalizedString("LoginView_Logout_Message", comment:""))
@@ -396,6 +397,7 @@ extension S1LoginViewController {
 
 // MARK: Helper
 extension S1LoginViewController {
+
     private func alert(title title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: nil))
@@ -456,6 +458,7 @@ extension S1LoginViewController {
 
 // MARK: View Model
 extension S1LoginViewController {
+
     private func currentSecureQuestionNumber() -> Int {
         if let text = questionSelectButton.currentTitle, index = self.secureQuestionChoices.indexOf(text) {
             return index

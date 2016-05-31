@@ -1,4 +1,4 @@
-.DS_Store
+*.DS_Store
 xcuserdata
 *.xccheckout
 *.xcworkspace
@@ -7,3 +7,4 @@ Pods
 ObjcUML
 fastlane
 
+ReferenceImages*
