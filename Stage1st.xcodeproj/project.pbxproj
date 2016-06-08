@@ -52,8 +52,7 @@
 		8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
-		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Login.swift */; };
-		86AF9E3D1CF4358B008C7E8D /* DiscuzAPIManager+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3C1CF4358B008C7E8D /* DiscuzAPIManager+Profile.swift */; };
+		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette2.plist */; };
@@ -188,8 +187,7 @@
 		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
 		869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationControllerDelegate.m; path = Stage1st/NavigationControllerDelegate.m; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Login.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Login.swift"; path = "Stage1st/DiscuzAPIManager+Login.swift"; sourceTree = "<group>"; };
-		86AF9E3C1CF4358B008C7E8D /* DiscuzAPIManager+Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Profile.swift"; path = "Stage1st/DiscuzAPIManager+Profile.swift"; sourceTree = "<group>"; };
+		86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Teleport.swift"; path = "Stage1st/DiscuzAPIManager+Teleport.swift"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
 		86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+MahjongFaceExtension.m"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.m"; sourceTree = "<group>"; };
@@ -523,8 +521,7 @@
 				C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */,
 				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
 				86FEACE51CDF5F5B00ECD694 /* DiscuzAPIManager.swift */,
-				86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Login.swift */,
-				86AF9E3C1CF4358B008C7E8D /* DiscuzAPIManager+Profile.swift */,
+				86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */,
 				C08A440E16DA779E003BF44C /* S1URLCache.h */,
 				C08A440F16DA779E003BF44C /* S1URLCache.m */,
 			);
@@ -976,12 +973,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86AF9E3D1CF4358B008C7E8D /* DiscuzAPIManager+Profile.swift in Sources */,
 				C095874416CA8A36007E0119 /* main.m in Sources */,
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
-				86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Login.swift in Sources */,
+				86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */,
 				86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */,

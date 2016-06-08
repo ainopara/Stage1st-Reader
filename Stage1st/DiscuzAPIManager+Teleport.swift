@@ -18,6 +18,7 @@ enum LoginProgress {
     case InLogin
 }
 
+// MARK: - Login
 extension DiscuzAPIManager {
     /**
      A check request should be sent to a discuz! server to make sure whether a seccode is necessary for login.
@@ -25,13 +26,15 @@ extension DiscuzAPIManager {
      - parameter noSechashBlock:  Executed if seccode is disabled on this server.
      - parameter hasSeccodeBlock: Executed if seccode is enabled on this server.
      - parameter failureBlock:    Executed if this request failed.
+
+     - returns: Request object.
      */
     func checkLoginType(noSechashBlock noSechashBlock: () -> Void,
                                        hasSeccodeBlock: (sechash: String) -> Void,
-                                       failureBlock: (error: NSError) -> Void) {
+                                       failureBlock: (error: NSError) -> Void) -> Request {
         logOut()
         let parameters: [String: AnyObject] = ["module": "secure", "version": 1, "mobile": "no", "type": "login"]
-        Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
+        return Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
@@ -55,15 +58,17 @@ extension DiscuzAPIManager {
      - parameter secureQuestionAnswer: Answer of secure question of account.
      - parameter successBlock:         Executed if login request finished without network error.
      - parameter failureBlock:         Executed if login request not finished due to network error.
+
+     - returns: Request object.
      */
     func logIn(username: String,
                password: String,
                secureQuestionNumber: Int,
                secureQuestionAnswer: String,
                successBlock: (message: String?) -> Void,
-               failureBlock: (error: NSError) -> Void) {
+               failureBlock: (error: NSError) -> Void) -> Request {
         let parameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
-        Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&cookietime=2592000&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
+        return Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&cookietime=2592000&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
@@ -96,5 +101,25 @@ extension DiscuzAPIManager {
     func isInLogin() -> Bool { // TODO: check cookies rather than a global state.
         let loginID: String? = NSUserDefaults.standardUserDefaults().objectForKey("InLoginStateID") as? String
         return loginID == nil
+    }
+}
+
+// MARK: - Profile
+extension DiscuzAPIManager {
+    func profile(userID: Int, responseBlock:(result: Result<User, NSError>) -> Void) -> Request {
+        let parameters: [String: AnyObject] = ["module": "profile", "version": 1, "uid": userID, "mobile": "no"]
+        return Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
+            switch response.result {
+            case .Success(let json):
+                guard let user = User(json: json) else {
+                    let error = NSError(domain: "Stage1stReaderDomain", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
+                    responseBlock(result: .Failure(error))
+                    return
+                }
+                responseBlock(result: .Success(user))
+            case .Failure(let error):
+                responseBlock(result: .Failure(error))
+            }
+        }
     }
 }
