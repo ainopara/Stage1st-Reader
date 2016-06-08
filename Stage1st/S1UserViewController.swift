@@ -7,20 +7,12 @@
 //
 
 import UIKit
+//import ReactiveCocoa
 import Alamofire
 import Kingfisher
 
 final class S1UserViewController: UIViewController {
-    private(set) var user: User {
-        didSet {
-            self.usernameLabel.text = user.name
-            if let avatarURL = user.avatarURL {
-                self.avatarView.kf_setImageWithURL(avatarURL)
-            }
-            self.customStatusLabel.text = user.customStatus
-            self.infoLabel.attributedText = infoLabelAttributedText(user)
-        }
-    }
+    private(set) var viewModel: S1UserViewModel
 
     private let scrollView = UIScrollView(frame: CGRect.zero)
     private let containerView = UIView(frame: CGRect.zero)
@@ -30,8 +22,8 @@ final class S1UserViewController: UIViewController {
     private let infoLabel = UILabel(frame: CGRect.zero)
 
     // MARK: - Life Cycle
-    init(user: User) {
-        self.user = user
+    init(viewModel: S1UserViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
 //        self.modalPresentationStyle = .Popover
     }
@@ -87,36 +79,19 @@ final class S1UserViewController: UIViewController {
             make.trailing.equalTo(usernameLabel.snp_trailing)
         }
 
-        // FIXME: base URL should not be hard coded.
-        let apiManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
-        apiManager.profile(self.user.ID) { [weak self] (result) in
+        self.viewModel.updateCurrentUserProfile { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case .Success(let user):
-                strongSelf.user = user
+                strongSelf.usernameLabel.text = user.name
+                if let avatarURL = user.avatarURL {
+                    strongSelf.avatarView.kf_setImageWithURL(avatarURL)
+                }
+                strongSelf.customStatusLabel.text = user.customStatus
+                strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()
             case .Failure(let error):
                 strongSelf.s1_presentAlertView("Error", message: error.description)
             }
         }
-    }
-
-    private func infoLabelAttributedText(user: User) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
-        if let lastVisitDateString = user.lastVisitDateString {
-            attributedString.appendAttributedString(NSAttributedString(string: "最后访问：\n\(lastVisitDateString)\n"))
-        }
-        if let registerDateString = user.registerDateString {
-            attributedString.appendAttributedString(NSAttributedString(string: "注册日期：\n\(registerDateString)\n"))
-        }
-        if let threadCount = user.threadCount {
-            attributedString.appendAttributedString(NSAttributedString(string: "发帖数：\n\(threadCount)\n"))
-        }
-        if let postCount = user.postCount {
-            attributedString.appendAttributedString(NSAttributedString(string: "回复数：\n\(postCount)\n"))
-        }
-        if let sigHTML = user.sigHTML {
-            attributedString.appendAttributedString(NSAttributedString(string: "签名：\n\(sigHTML)\n"))
-        }
-        return attributedString
     }
 }

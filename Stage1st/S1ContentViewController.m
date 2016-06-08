@@ -27,7 +27,7 @@
 #define TOP_OFFSET -80.0
 #define BOTTOM_OFFSET 60.0
 
-@interface S1ContentViewController () <UIWebViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate,REComposeViewControllerDelegate, PullToActionDelagete>
+@interface S1ContentViewController () <UIWebViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate, REComposeViewControllerDelegate, PullToActionDelagete>
 
 @property (nonatomic, strong) UIToolbar *toolBar;
 @property (nonatomic, strong) UIWebView *webView;
@@ -59,11 +59,13 @@
     BOOL _needToScrollToBottom;
     BOOL _needToLoadLastPositionFromModel;
     BOOL _finishLoading;
+    BOOL _shouldRestoreViewPosition;
+    BOOL _pullUpForNext;
+    BOOL _pullDownForPrevious;
+
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
     BOOL _presentingContentViewController;
-    BOOL _shouldRestoreViewPosition;
-    BOOL _presentingFavoriteInToolBar;
 }
 
 #pragma mark - Life Cycle
@@ -78,14 +80,8 @@
         [self setTopic:topic];
         _dataCenter = dataCenter;
 
-        _needToScrollToBottom = NO;
         _needToLoadLastPositionFromModel = YES;
-        _finishLoading = NO;
-        _presentingImageViewer = NO;
-        _presentingWebViewer = NO;
-        _presentingContentViewController = NO;
-        _shouldRestoreViewPosition = NO;
-        _presentingFavoriteInToolBar = YES;
+
         _cachedViewPosition = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -130,10 +126,8 @@
     self.pullToActionController.delegate = self;
     
     self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)];
-    if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
-    }
-    
+    self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+
     [self.webView.scrollView addSubview:self.topDecorateLine];
     self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
@@ -192,11 +186,10 @@
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 
     // Hide Favorite button when device do not have enough space for it.
-    if (fabs(self.view.bounds.size.width - 320.0) < 0.1) {
+    if (![self shouldPresentingFavoriteButtonOnToolBar]) {
         favoriteItem.customView.bounds = CGRectZero;
         favoriteItem.customView.hidden = YES;
         fixItem2.width = 0.0;
-        _presentingFavoriteInToolBar = NO;
     }
     
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
@@ -296,7 +289,6 @@
         if (![self.webView s1_atBottom]) {
             [self scrollToBottomAnimated:YES];
         } else {
-            //_needToScrollToBottom = YES;
             [self fetchContentAndForceUpdate:YES];
         }
     }
@@ -429,7 +421,7 @@
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
     
     [moreActionSheet addAction:replyAction];
-    if (!_presentingFavoriteInToolBar) {
+    if (![self shouldPresentingFavoriteButtonOnToolBar]) {
         [moreActionSheet addAction:favoriteAction];
     }
     [moreActionSheet addAction:shareAction];
@@ -465,29 +457,30 @@
 
         // Present User
         if ([request.URL.path isEqualToString:@"/user"]) {
+            [Answers logCustomEventWithName:@"[Content] User" customAttributes:nil];
             NSNumber *userID = [NSNumber numberWithInteger:[request.URL.query integerValue]];
             [self showUserViewController:userID];
-            [Answers logCustomEventWithName:@"[Content] User" customAttributes:nil];
             return NO;
-
         }
 
         // Present image
         if ([request.URL.path hasPrefix:@"/present-image:"]) {
             _presentingImageViewer = YES;
             [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
+            [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"processed"}];
+
             NSString *imageID = request.URL.fragment;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
-            DDLogDebug(@"%@", imageURL);
+            DDLogDebug(@"JTS View Image: %@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
             imageInfo.referenceRect = [self positionOfElementWithId:imageID];
             imageInfo.referenceView = self.webView;
+
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
-            [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             [imageViewer setInteractionsDelegate:self];
             [imageViewer setOptionsDelegate:self];
-            [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"processed"}];
+            [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOriginalPosition];
             return NO;
         }
     }
@@ -496,14 +489,17 @@
     if ([request.URL.path hasSuffix:@".jpg"] || [request.URL.path hasSuffix:@".gif"]) {
         _presentingImageViewer = YES;
         [CrashlyticsKit setObjectValue:@"ImageViewController" forKey:@"lastViewController"];
+        [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"hijack"}];
+
         NSString *imageURL = request.URL.absoluteString;
-        DDLogDebug(@"%@", imageURL);
+        DDLogDebug(@"JTS View Image: %@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = request.URL;
+
         JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
-        [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         [imageViewer setInteractionsDelegate:self];
-        [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"hijack"}];
+        [imageViewer setOptionsDelegate:self];
+        [imageViewer showFromViewController:self transition:JTSImageViewControllerTransition_FromOffscreen];
         return NO;
     }
     
@@ -560,29 +556,23 @@
 
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Title", @"") message:request.URL.absoluteString preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Cancel", @"") style:UIAlertActionStyleDefault handler:nil];
-    UIAlertAction* continueAction = nil;
 
     __weak __typeof__(self) weakSelf = self;
-    if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+    UIAlertAction *continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
         __strong __typeof__(self) strongSelf = weakSelf;
-        continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            strongSelf->_presentingWebViewer = YES;
-            [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
+        strongSelf->_presentingWebViewer = YES;
+        [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
+        if (SYSTEM_VERSION_LESS_THAN(@"9")) {
             DDLogDebug(@"[ContentVC] Open in WebView: %@", request.URL);
             S1WebViewController *webViewController = [[S1WebViewController alloc] initWithURL:request.URL];
             [strongSelf presentViewController:webViewController animated:YES completion:nil];
-        }];
-    } else {
-        __strong __typeof__(self) strongSelf = weakSelf;
-        continueAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_WebView_Open_Link_Alert_Open", @"") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            strongSelf->_presentingWebViewer = YES;
-            [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
+        } else {
             DDLogDebug(@"[ContentVC] Open in Safari: %@", request.URL);
             if (![[UIApplication sharedApplication] openURL:request.URL]) {
                 DDLogWarn(@"Failed to open url: %@", request.URL);
             }
-        }];
-    }
+        }
+    }];
 
     [alert addAction:cancelAction];
     [alert addAction:continueAction];
@@ -598,25 +588,42 @@
         return;
     }
     DDLogInfo(@"[ContentVC] webViewDidFinishLoad");
-    CGFloat maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.size.height;
-    // Restore last view position when this content view first be loaded.
-    if (_needToLoadLastPositionFromModel) {
+    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
+    NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
+
+    // Set position
+    if (_pullUpForNext) {
+        [webView.scrollView setContentOffset:CGPointMake(0.0, -CGRectGetHeight(webView.bounds)) animated:NO];
+    } else if (_pullDownForPrevious) {
+        [webView.scrollView setContentOffset:CGPointMake(0.0, webView.scrollView.contentSize.height) animated:NO];
+    } else if (positionForPage != nil) {
+        // Restore last view position from cached position in this view controller.
+        [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
+    } else if (_needToLoadLastPositionFromModel) {
+        // Restore last view position when this content view first be loaded.s
+        _needToLoadLastPositionFromModel = NO;
         if (self.topic.lastViewedPosition != 0) {
             [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.topic.lastViewedPosition doubleValue]), 0.0))];
         }
-        _needToLoadLastPositionFromModel = NO;
     }
 
-    // Restore last view position from cached position in this view controller.
-    NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithInteger:_currentPage]];
-    if (positionForPage) {
-        [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
-    }
-    
-    // User want to scroll to bottom.
+    // Animated scroll
     if (_needToScrollToBottom) {
+        // User want to scroll to bottom.
         _needToScrollToBottom = NO;
-        [self scrollToBottomAnimated:YES];
+        [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:YES];
+    } else if (_pullUpForNext) {
+        _pullUpForNext = NO;
+        [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
+            webView.scrollView.alpha = 1.0;
+        } completion:NULL];
+    } else if (_pullDownForPrevious) {
+        _pullDownForPrevious = NO;
+        [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [webView.scrollView setContentOffset:CGPointMake(0.0, maxOffset) animated:NO];
+            webView.scrollView.alpha = 1.0;
+        } completion:NULL];
     } else {
         // clear the decelerating by animate to scroll to the same position.
         [webView.scrollView setContentOffset:webView.scrollView.contentOffset animated:YES];
@@ -656,22 +663,41 @@
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
     if (offset < TOP_OFFSET && _finishLoading) {
         if (_currentPage != 1) {
-            [self back:nil];
+            CGPoint currentContentOffset = self.webView.scrollView.contentOffset;
+            currentContentOffset.y = -CGRectGetHeight(self.webView.bounds);
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                    [self.webView.scrollView setContentOffset:currentContentOffset animated:NO];
+                    self.webView.scrollView.alpha = 0.0;
+                } completion:^(BOOL finished) {
+                    self->_pullDownForPrevious = YES;
+                    [self back:nil];
+                }];
+            });
         }
     }
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
     if (offset > BOTTOM_OFFSET && _finishLoading) {
-        [self forward:nil];
+        CGPoint currentContentOffset = self.webView.scrollView.contentOffset;
+        currentContentOffset.y = self.webView.scrollView.contentSize.height;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+                [self.webView.scrollView setContentOffset:currentContentOffset animated:NO];
+                self.webView.scrollView.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                self->_pullUpForNext = YES;
+                [self forward:nil];
+            }];
+        });
     }
 }
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
-    self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width - 0, 1);
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width - 0, 1);
-    self.topDecorateLine.hidden = !(_currentPage != 1 && _finishLoading);
-    self.bottomDecorateLine.hidden = !_finishLoading;
+    [self updateDecorationLines:contentSize];
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
@@ -862,23 +888,19 @@
     self.view.frame = frame;
     
     // Update Toolbar Layout
-    if (self.view.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        NSArray *items = self.toolBar.items;
-        UIBarButtonItem *favoriteItem = items[6];
-        UIBarButtonItem *fixItem2 = items[7];
-        if (fabs(size.width - 320.0) < 0.1) {
-            favoriteItem.customView.bounds = CGRectZero;
-            favoriteItem.customView.hidden = YES;
-            fixItem2.width = 0.0;
-            _presentingFavoriteInToolBar = NO;
-        } else {
-            favoriteItem.customView.bounds = CGRectMake(0, 0, 30, 40);
-            favoriteItem.customView.hidden = NO;
-            fixItem2.width = 48.0;
-            _presentingFavoriteInToolBar = YES;
-        }
-        self.toolBar.items = items;
+    NSArray *items = self.toolBar.items;
+    UIBarButtonItem *favoriteItem = items[6];
+    UIBarButtonItem *fixItem2 = items[7];
+    if (size.width <= 321.0) {
+        favoriteItem.customView.bounds = CGRectZero;
+        favoriteItem.customView.hidden = YES;
+        fixItem2.width = 0.0;
+    } else {
+        favoriteItem.customView.bounds = CGRectMake(0, 0, 30, 40);
+        favoriteItem.customView.hidden = NO;
+        fixItem2.width = 48.0;
     }
+    self.toolBar.items = items;
 }
 
 #pragma mark - Reply
@@ -946,9 +968,8 @@
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
     self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
     self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
-    if(_currentPage != 1) {
-        self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
-    }
+
+    self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     if (self.topic.title == nil || [self.topic.title isEqualToString:@""]) {
         self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.topic.topicID];
@@ -1001,6 +1022,13 @@
     self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
 }
 
+- (void)updateDecorationLines:(CGSize)contentSize {
+    self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width, 1);
+    self.topDecorateLine.hidden = !(_currentPage != 1 && _finishLoading);
+    self.bottomDecorateLine.hidden = !_finishLoading;
+}
+
 - (CGRect)positionOfElementWithId:(NSString *)elementID {
     NSString *js = @"function f(){ var r = document.getElementById('%@').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();";
     NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:js, elementID]];
@@ -1019,6 +1047,10 @@
     if (self.webView.scrollView.contentOffset.y != 0) {
         [self.cachedViewPosition setObject:[NSNumber numberWithDouble:self.webView.scrollView.contentOffset.y] forKey:[NSNumber numberWithInteger:_currentPage]];
     }
+}
+
+- (BOOL)shouldPresentingFavoriteButtonOnToolBar {
+    return CGRectGetWidth(self.view.bounds) > 321.0;
 }
 
 #pragma mark - Getters and Setters

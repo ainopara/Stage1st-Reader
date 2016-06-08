@@ -37,6 +37,7 @@
 		86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86600FBB1AAD969D004394E6 /* MahjongMap.plist */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */; };
+		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
@@ -162,6 +163,7 @@
 		86600FBB1AAD969D004394E6 /* MahjongMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongMap.plist; path = Stage1st/MahjongMap.plist; sourceTree = "<group>"; };
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorViewController.swift; path = Stage1st/S1QuoteFloorViewController.swift; sourceTree = "<group>"; };
+		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewModel.swift; path = Stage1st/UserViewModel.swift; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
 		867C7F511899420D00DF55E8 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		867C7F561899420D00DF55E8 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
@@ -387,7 +389,7 @@
 				C09587A316CB6218007E0119 /* Settings */,
 				8694BCD51CEC42C200756C4A /* S1WebViewController.swift */,
 				868799221CE629D700F5C75C /* S1LoginViewController.swift */,
-				862DB7991C8891070068F75F /* S1UserViewController.swift */,
+				8671E56F1CFDEB1800F4A854 /* User */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -400,6 +402,15 @@
 				86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */,
 			);
 			name = "Quote Floor";
+			sourceTree = "<group>";
+		};
+		8671E56F1CFDEB1800F4A854 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */,
+				862DB7991C8891070068F75F /* S1UserViewController.swift */,
+			);
+			name = User;
 			sourceTree = "<group>";
 		};
 		867C7F4D1899420D00DF55E8 /* REComposeViewController */ = {
@@ -978,6 +989,7 @@
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
+				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
 				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,

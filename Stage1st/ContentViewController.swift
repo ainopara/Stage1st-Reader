@@ -15,7 +15,8 @@ extension S1ContentViewController {
 
 extension S1ContentViewController {
     func showUserViewController(userID: NSNumber) {
-        let userViewController = S1UserViewController(user: User(ID: userID.integerValue))
+        let viewModel = S1UserViewModel(user: User(ID: userID.integerValue))
+        let userViewController = S1UserViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(userViewController, animated: true)
     }
 }

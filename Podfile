@@ -20,7 +20,8 @@ target "Stage1st" do
 
     pod 'pop'
 
-    # pod 'DTCoreText'
+    pod 'DTCoreText'
+    pod 'YYKit'
 
     # Database
     pod 'FMDB'
@@ -44,6 +45,6 @@ end
 
 target "Stage1stTests" do
     pod 'GYHttpMock'
-    pod 'FBSnapshotTestCase', :git => 'https://github.com/facebook/ios-snapshot-test-case.git'
+    pod 'FBSnapshotTestCase'
     pod 'KIF', :configurations => ['Debug']
 end

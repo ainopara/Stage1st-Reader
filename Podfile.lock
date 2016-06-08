@@ -1,6 +1,6 @@
 PODS:
-  - 1PasswordExtension (1.8.1)
-  - ActionSheetPicker-3.0 (2.0.5)
+  - 1PasswordExtension (1.8.2)
+  - ActionSheetPicker-3.0 (2.1.0)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
     - AFNetworking/Reachability (= 3.1.0)
@@ -29,6 +29,17 @@ PODS:
     - CocoaLumberjack/Extensions
   - Crashlytics (3.7.0):
     - Fabric (~> 1.6.3)
+  - DTCoreText (1.6.17):
+    - DTFoundation/Core (~> 1.7.5)
+    - DTFoundation/DTAnimatedGIF (~> 1.7.5)
+    - DTFoundation/DTHTMLParser (~> 1.7.5)
+    - DTFoundation/UIKit (~> 1.7.5)
+  - DTFoundation/Core (1.7.10)
+  - DTFoundation/DTAnimatedGIF (1.7.10)
+  - DTFoundation/DTHTMLParser (1.7.10):
+    - DTFoundation/Core
+  - DTFoundation/UIKit (1.7.10):
+    - DTFoundation/Core
   - Fabric (1.6.7)
   - FBSnapshotTestCase (2.1.1):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.1)
@@ -46,7 +57,7 @@ PODS:
   - KIF/Core (3.4.2)
   - Kingfisher (2.4.1)
   - KissXML (5.1.2)
-  - Masonry (1.0.0)
+  - Masonry (1.0.1)
   - pop (1.0.9)
   - Reachability (3.2)
   - ReactiveCocoa (4.1.0):
@@ -114,6 +125,9 @@ PODS:
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/Views (2.9.1):
     - YapDatabase/Standard/Core
+  - YYKit (1.0.6):
+    - YYKit/no-arc (= 1.0.6)
+  - YYKit/no-arc (1.0.6)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -123,8 +137,9 @@ DEPENDENCIES:
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
+  - DTCoreText
   - Fabric
-  - FBSnapshotTestCase (from `https://github.com/facebook/ios-snapshot-test-case.git`)
+  - FBSnapshotTestCase
   - FMDB
   - GYHttpMock
   - JASON
@@ -140,10 +155,9 @@ DEPENDENCIES:
   - SnapKit
   - SwiftWebViewProgress (from `https://github.com/ainopara/SwiftWebViewProgress.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YYKit
 
 EXTERNAL SOURCES:
-  FBSnapshotTestCase:
-    :git: https://github.com/facebook/ios-snapshot-test-case.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -155,9 +169,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
-  FBSnapshotTestCase:
-    :commit: 5a4ee79ed96dd0d2f3766ffd22ecb04ef73c2c82
-    :git: https://github.com/facebook/ios-snapshot-test-case.git
   JTSImageViewController:
     :commit: 8e9eced2e517f3f9303a218a79e1b3aa6e4d693a
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -172,14 +183,16 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 00d6f4caae77c19ba33045b8569fbeb9689f0d1d
-  ActionSheetPicker-3.0: 8312778b6815578e6a86d630fbcf31dc94c534e7
+  1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
+  ActionSheetPicker-3.0: db66605feb85689279d328206c61f0e4f398df92
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
   Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
+  DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
-  FBSnapshotTestCase: ec0ed7378d617e4b787e6cf9899d22cb86010b94
+  FBSnapshotTestCase: 432afd8d059ccef7f207225894840a03fbcf7474
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GYHttpMock: d138c4197d0a133c1dca26d802f84266d3903eac
   JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
@@ -187,7 +200,7 @@ SPEC CHECKSUMS:
   KIF: b518c9831453abea5afdbbde3908ec47832d6d56
   Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
+  Masonry: a1a931a0d08870ed8ae415a2ea5ea68ebcac77df
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: d70004d7a366a7b8e87e60ce2347182c77701949
@@ -196,7 +209,8 @@ SPEC CHECKSUMS:
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
+  YYKit: a80c77ab7be226ebe539ef1495dfc25d5766d61e
 
-PODFILE CHECKSUM: 12a8dd82ddda662e472ac6101c5c02caf8e763e9
+PODFILE CHECKSUM: e1ce949b351d717cede500b7dc79b139c41fdb9f
 
 COCOAPODS: 1.0.0
