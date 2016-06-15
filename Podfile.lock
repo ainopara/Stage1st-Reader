@@ -16,7 +16,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - Alamofire (3.4.0)
+  - Alamofire (3.4.1)
   - CocoaLumberjack (2.3.0):
     - CocoaLumberjack/Default (= 2.3.0)
     - CocoaLumberjack/Extensions (= 2.3.0)
@@ -27,7 +27,7 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (2.3.0):
     - CocoaLumberjack/Extensions
-  - Crashlytics (3.7.0):
+  - Crashlytics (3.7.1):
     - Fabric (~> 1.6.3)
   - DTCoreText (1.6.17):
     - DTFoundation/Core (~> 1.7.5)
@@ -50,7 +50,7 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - GYHttpMock (1.0.0)
-  - JASON (2.2)
+  - JASON (2.2.1)
   - JTSImageViewController (1.5)
   - KIF (3.4.2):
     - KIF/Core (= 3.4.2)
@@ -125,9 +125,9 @@ PODS:
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/Views (2.9.1):
     - YapDatabase/Standard/Core
-  - YYKit (1.0.6):
-    - YYKit/no-arc (= 1.0.6)
-  - YYKit/no-arc (1.0.6)
+  - YYKit (1.0.7):
+    - YYKit/no-arc (= 1.0.7)
+  - YYKit/no-arc (1.0.7)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -186,16 +186,16 @@ SPEC CHECKSUMS:
   1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
   ActionSheetPicker-3.0: db66605feb85689279d328206c61f0e4f398df92
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
+  Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
-  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
+  Crashlytics: 3cdd4c9655be68032a0cf0379e0fb5ef6af22cad
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   FBSnapshotTestCase: 432afd8d059ccef7f207225894840a03fbcf7474
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GYHttpMock: d138c4197d0a133c1dca26d802f84266d3903eac
-  JASON: 0daa2c3ed902ccbfa94d6bb4cb356d252b9607ce
+  JASON: 2fdba956dfbf8663369b81a8176e6fcb225ebf10
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: b518c9831453abea5afdbbde3908ec47832d6d56
   Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
@@ -209,7 +209,7 @@ SPEC CHECKSUMS:
   SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
   SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
-  YYKit: a80c77ab7be226ebe539ef1495dfc25d5766d61e
+  YYKit: 843d1b26e20b82c695790c9a89907eaa1e99907f
 
 PODFILE CHECKSUM: e1ce949b351d717cede500b7dc79b139c41fdb9f
 
