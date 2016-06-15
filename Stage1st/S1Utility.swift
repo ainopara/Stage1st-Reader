@@ -32,6 +32,39 @@ class S1Utility: NSObject {
     }
 }
 
+extension NSDate {
+    func s1_gracefulDateTimeString() -> String {
+        let interval = -self.timeIntervalSinceNow
+        if interval < 60 { return "刚刚" }
+        if interval < 60 * 60 { return "\(UInt(interval / 60.0))分钟前" }
+        if interval < 60 * 60 * 2 { return "1小时前" }
+        if interval < 60 * 60 * 3 { return "2小时前" }
+        if interval < 60 * 60 * 4 { return "3小时前" }
+
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "yyyy-M-d"
+        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: 0.0)) {
+            formatter.dateFormat = "HH:mm"
+            return formatter.stringFromDate(self)
+        }
+        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: -60 * 60 * 24.0)) {
+            formatter.dateFormat = "昨天HH:mm"
+            return formatter.stringFromDate(self)
+        }
+        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: -60 * 60 * 24 * 2.0)) {
+            formatter.dateFormat = "前天HH:mm"
+            return formatter.stringFromDate(self)
+        }
+        formatter.dateFormat = "yyyy"
+        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: 0.0)) {
+            formatter.dateFormat = "M-d HH:mm"
+            return formatter.stringFromDate(self)
+        }
+        formatter.dateFormat = "yyyy-M-d HH:mm"
+        return formatter.stringFromDate(self)
+    }
+}
+
 extension UIView {
     func s1_screenShot() -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.mainScreen().scale)
