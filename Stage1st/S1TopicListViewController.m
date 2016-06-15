@@ -47,6 +47,8 @@ static NSString * const cellIdentifier = @"TopicCell";
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) S1TabBar *scrollTabBar;
+
+@property (nonatomic, strong) S1HUD *refreshHUD;
 // Model
 @property (nonatomic, strong) S1DataCenter *dataCenter;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
@@ -110,6 +112,11 @@ static NSString * const cellIdentifier = @"TopicCell";
         make.top.equalTo(self.tableView.mas_bottom);
         make.leading.with.trailing.equalTo(self.view);
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
+    }];
+
+    [self.view addSubview:self.refreshHUD];
+    [self.refreshHUD mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
     }];
 
     //Notifications
@@ -392,8 +399,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         [self.searchBar resignFirstResponder];
         _loadingFlag = YES;
         self.scrollTabBar.enabled = NO;
-        S1HUD *HUD = [S1HUD showHUDInView:self.view];
-        [HUD showActivityIndicator];
+        [self.refreshHUD showActivityIndicator];
         if (self.currentKey && [self isPresentingForumList:self.currentKey]) {
             [self cancelRequest];
             self.cachedContentOffset[self.currentKey] = [NSValue valueWithCGPoint:self.tableView.contentOffset];
@@ -411,15 +417,15 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             [self.scrollTabBar deselectAll];
             self.scrollTabBar.enabled = YES;
-            [HUD hideWithDelay:0.3];
+            [self.refreshHUD hideWithDelay:0.3];
             _loadingFlag = NO;
         } failure:^(NSError *error) {
             if (error.code == NSURLErrorCancelled) {
                 DDLogDebug(@"[Network] NSURLErrorCancelled");
-                [HUD hideWithDelay:0];
+                [self.refreshHUD hideWithDelay:0];
             } else {
-                [HUD setText:@"Request Failed" withWidthMultiplier:2];
-                [HUD hideWithDelay:0.3];
+                [self.refreshHUD showMessage:@"Request Failed"];
+                [self.refreshHUD hideWithDelay:0.3];
             }
             self.scrollTabBar.enabled = YES;
             if (self.refreshControl.refreshing) {
@@ -461,10 +467,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     _loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
-    S1HUD *HUD;
     if (refresh || ![self.dataCenter hasCacheForKey:forumID]) {
-        HUD = [S1HUD showHUDInView:self.view];
-        [HUD showActivityIndicator];
+        [self.refreshHUD showActivityIndicator];
     }
     
     __weak __typeof__(self) weakSelf = self;
@@ -504,7 +508,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         //hud hide
         if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-            [HUD hideWithDelay:0.3];
+            [self.refreshHUD hideWithDelay:0.3];
         }
         //others
         strongSelf.scrollTabBar.enabled = YES;
@@ -519,7 +523,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         __strong __typeof__(self) strongSelf = weakSelf;
         if (error.code == NSURLErrorCancelled) {
             DDLogDebug(@"[Network] NSURLErrorCancelled");
-            [HUD hideWithDelay:0];
+            [self.refreshHUD hideWithDelay:0];
             //others
             strongSelf.scrollTabBar.enabled = YES;
             if (strongSelf.refreshControl.refreshing) {
@@ -541,11 +545,11 @@ static NSString * const cellIdentifier = @"TopicCell";
             if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
-                    [HUD hideWithDelay:0];
+                    [self.refreshHUD hideWithDelay:0];
                 } else {
                     DDLogWarn(@"[Network] error: %ld (%@)", (long)error.code, error.description);
-                    [HUD setText:@"Request Failed" withWidthMultiplier:2];
-                    [HUD hideWithDelay:0.3];
+                    [self.refreshHUD showMessage:@"Request Failed"];
+                    [self.refreshHUD hideWithDelay:0.3];
                 }
             }
 
@@ -908,4 +912,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     return footerView;
 }
 
+- (S1HUD *)refreshHUD {
+    if (_refreshHUD == nil) {
+        _refreshHUD = [[S1HUD alloc] initWithFrame:CGRectZero];
+    }
+    return _refreshHUD;
+}
 @end

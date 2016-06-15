@@ -8,17 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@class S1Topic, S1DataCenter;
+@class S1Topic, S1DataCenter, S1ContentViewModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface S1ContentViewController : UIViewController
+
+@property (nonatomic, strong) S1ContentViewModel *viewModel;
 
 @property (nonatomic, strong, readonly) S1Topic *topic;
 
 @property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
+
+- (instancetype)initWithViewModel:(S1ContentViewModel *)viewModel;
 
 @end
 
