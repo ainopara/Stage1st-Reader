@@ -74,6 +74,7 @@ public class APColorManager: NSObject {
         return self.colorInPaletteWithID(paletteID)
     }
 }
+
 // MARK: Private
 private extension APColorManager {
     func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
