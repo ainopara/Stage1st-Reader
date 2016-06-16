@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
 
-@property (nonatomic, strong, readonly) S1Topic *topic;
-
 @property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;

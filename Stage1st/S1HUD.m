@@ -24,6 +24,9 @@ typedef enum {
 @property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UIButton *refreshButton;
 
+@property (nonatomic, strong) MASConstraint *widthConstraint;
+@property (nonatomic, strong) MASConstraint *heightConstraint;
+
 @end
 
 @implementation S1HUD
@@ -37,7 +40,8 @@ typedef enum {
         self.layer.cornerRadius = 3.0;
         self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"hud.background"];
         [self mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.height.greaterThanOrEqualTo(@60);
+            self.widthConstraint = make.width.greaterThanOrEqualTo(@60);
+            self.heightConstraint = make.height.greaterThanOrEqualTo(@60);
         }];
 
         _type = S1HUDStateShowNothing;
@@ -59,8 +63,8 @@ typedef enum {
             make.center.equalTo(self);
             make.leading.greaterThanOrEqualTo(self.mas_leading).offset(8.0);
             make.trailing.lessThanOrEqualTo(self.mas_trailing).offset(-8.0);
-            make.top.greaterThanOrEqualTo(self);
-            make.bottom.lessThanOrEqualTo(self);
+            make.top.greaterThanOrEqualTo(self).offset(4.0);
+            make.bottom.lessThanOrEqualTo(self).offset(-4.0);
         }];
 
         self.refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -82,6 +86,8 @@ typedef enum {
     _text = message;
     self.type = S1HUDStateShowMessage;
     [self showIfCurrentlyHiding];
+    [self.widthConstraint deactivate];
+    [self.heightConstraint deactivate];
     [UIView animateWithDuration:0.2 animations:^{
         self.refreshButton.alpha = 0.0;
         self.indicatorView.alpha = 0.0;
@@ -95,6 +101,8 @@ typedef enum {
 - (void)showActivityIndicator {
     self.type = S1HUDStateShowActivityIndicator;
     [self showIfCurrentlyHiding];
+    [self.widthConstraint activate];
+    [self.heightConstraint activate];
     [UIView animateWithDuration:0.2 animations:^{
         self.refreshButton.alpha = 0.0;
         self.indicatorView.alpha = 1.0;
@@ -108,6 +116,8 @@ typedef enum {
 - (void)showRefreshButton {
     self.type = S1HUDStateShowRefreshButton;
     [self showIfCurrentlyHiding];
+    [self.widthConstraint activate];
+    [self.heightConstraint activate];
     [UIView animateWithDuration:0.2 animations:^{
         self.refreshButton.alpha = 0.8;
         self.indicatorView.alpha = 0.0;

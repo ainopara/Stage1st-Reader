@@ -90,7 +90,8 @@ NSString *const Metadata_LastUsed = @"lastUsed";
     return hasCache;
 }
 
-- (void)removeCacheForKey:(NSString *)key {
+- (void)removeCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
+    NSString *key = [NSString stringWithFormat:@"%@:%@", topicID, page];
     [self.backgroundCacheConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
         [transaction removeObjectForKey:key inCollection:Collection_TopicFloors];
     }];

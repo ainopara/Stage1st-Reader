@@ -13,22 +13,55 @@
 #import "S1Parser.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 @implementation S1ContentViewModel
 
-- (id)initWithDataCenter:(S1DataCenter *)dataCenter {
+- (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
     self = [super init];
-    if (self) {
+    if (self != nil) {
         // Initialization code
+        if ([topic isImmutable]) {
+            _topic = [topic copy];
+        } else {
+            _topic = topic;
+        }
+
+        if (topic.lastViewedPage != nil) {
+            _currentPage = [topic.lastViewedPage unsignedIntegerValue];
+        } else {
+            _currentPage = 1;
+        }
+
+        _totalPages = ([topic.replyCount unsignedIntegerValue] / 30) + 1;
+
+        if (_topic.favorite == nil) {
+            _topic.favorite = @(NO);
+        }
+
+        DDLogInfo(@"[ContentVM] Initialize with TopicID: %@", _topic.topicID);
+
         _dataCenter = dataCenter;
+
+        [RACObserve(self, currentPage) subscribeNext:^(id x) {
+            DDLogInfo(@"[ContentVM] Current page changed to: %@", x);
+        }];
+
+        [RACObserve(self.topic, replyCount) subscribeNext:^(id x) {
+            DDLogInfo(@"[ContentVM] reply count changed: %@", x);
+            self.totalPages = ([x unsignedIntegerValue] / 30) + 1;
+        }];
     }
+
     return self;
 }
 
-- (void)contentPageForTopic:(S1Topic *)topic page:(NSUInteger)page success:(void (^)(NSString *, NSNumber *))success failure:(void (^)(NSError *))failure {
-    [self.dataCenter floorsForTopic:topic withPage:[NSNumber numberWithUnsignedInteger:page] success:^(NSArray *floorList, BOOL fromCache) {
-        NSString *page = [S1ContentViewModel generateContentPage:floorList withTopic:topic];
-        success(page, @(fromCache && [floorList count] != 30)); // FIXME: 30 should not be hard coded.
+- (void)contentPageWithSuccess:(void (^)(NSString *, bool))success
+                       failure:(void (^)(NSError *))failure {
+    [self.dataCenter floorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:self.currentPage] success:^(NSArray *floorList, BOOL fromCache) {
+        NSString *renderedPage = [S1ContentViewModel generateContentPage:floorList withTopic:self.topic];
+        BOOL notLastPage = self.currentPage < self.totalPages;
+        success(renderedPage, fromCache && [floorList count] != 30 && notLastPage); // FIXME: 30 should not be hard coded.
     } failure:^(NSError *error) {
         failure(error);
     }];
@@ -152,8 +185,8 @@
 
 # pragma mark - Helper
 
-+ (NSString *)translateDateTimeString:(NSDate *)date
-{
+// TODO: This method should only used for test.
++ (NSString *)translateDateTimeString:(NSDate *)date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     NSTimeInterval interval = -[date timeIntervalSinceNow];
     if (interval<60) {

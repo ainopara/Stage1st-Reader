@@ -229,8 +229,7 @@
 }
 
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    [[S1CacheDatabaseManager sharedInstance] removeCacheForKey:key];
+    [[S1CacheDatabaseManager sharedInstance] removeCacheForTopicID:topic.topicID withPage:page];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {

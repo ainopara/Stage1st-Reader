@@ -15,7 +15,7 @@
 - (void)setFloorArray:(NSArray *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
 - (NSArray *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 - (BOOL)hasCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
-- (void)removeCacheForKey:(NSString *)key;
+- (void)removeCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 
 - (S1Floor *)findFloorByID:(NSNumber *)floorID;
 

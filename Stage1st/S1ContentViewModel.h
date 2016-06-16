@@ -11,14 +11,23 @@
 @class S1DataCenter;
 @class S1Topic;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1ContentViewModel : NSObject
 
+@property (nonatomic, strong, readonly) S1Topic *topic;
 @property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
 
-- (id)initWithDataCenter:(S1DataCenter *)dataCenter;
+@property (nonatomic, assign) NSUInteger currentPage;
+@property (nonatomic, assign) NSUInteger totalPages;
 
-- (void)contentPageForTopic:(S1Topic *)topic page:(NSUInteger)page success:(void (^)(NSString *contents, NSNumber *shouldRefetch))success failure:(void (^)(NSError *error))failure;
+- (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
+
+- (void)contentPageWithSuccess:(void (^)(NSString *contents, bool shouldRefetch))success
+                       failure:(void (^)(NSError *error))failure;
 
 + (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic;
-
++ (NSString *)translateDateTimeString:(NSDate *)date;
 @end
+
+NS_ASSUME_NONNULL_END
