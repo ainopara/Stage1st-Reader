@@ -7,19 +7,19 @@
 //
 
 import UIKit
+import WebKit
 import SnapKit
-import SwiftWebViewProgress
 import CocoaLumberjack
 
-class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressDelegate {
+class S1WebViewController: UIViewController, WKNavigationDelegate {
     var URLToOpen: NSURL
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
 
     let titleLabel = UILabel(frame: CGRect.zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
-    let webView = UIWebView(frame: CGRect.zero)
-    let progressView = WebViewProgressView(frame: CGRect.zero)
+    let webView = WKWebView(frame: CGRect.zero, configuration: WKWebViewConfiguration())
+    let progressView = UIProgressView(progressViewStyle: .Bar)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: CGRect.zero)
     let toolBar = UIToolbar(frame: CGRect.zero)
@@ -29,8 +29,6 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
     var stopButtonItem: UIBarButtonItem?
     var safariButtonItem: UIBarButtonItem?
     var closeButtonItem: UIBarButtonItem?
-
-    let progressManager = WebViewProgress()
 
     // MARK: -
     init(URL: NSURL) {
@@ -48,12 +46,11 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
 
         view.backgroundColor = nil
 
-        progressManager.progressDelegate = self
-        progressManager.webViewProxyDelegate = self
-
-        webView.backgroundColor = nil
-        webView.delegate = progressManager
-        webView.scalesPageToFit = true
+        webView.backgroundColor = .clearColor()
+        webView.scrollView.backgroundColor = .clearColor()
+        webView.opaque = false
+        webView.navigationDelegate = self
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
 
         statusBarSeparatorView.backgroundColor = UIColor.blackColor()
 
@@ -118,8 +115,9 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
         progressView.snp_makeConstraints { (make) in
             make.leading.trailing.equalTo(toolBar)
             make.top.equalTo(toolBar.snp_top)
-            make.height.equalTo(2.0)
+            make.height.equalTo(1.0)
         }
+
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: "S1PaletteDidChangeNotification", object: nil)
 
@@ -128,8 +126,9 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        self.webView.removeObserver(self, forKeyPath: "estimatedProgress", context: nil)
         self.webView.stopLoading()
-        self.webView.delegate = nil
+//        self.webView.delegate = nil
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -177,28 +176,43 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
     }
 
     // MARK: - UIWebViewDelegate
-    func webViewDidStartLoad(webView: UIWebView) {
+    func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+        DDLogDebug("[WebViewController] didCommit")
         updateBarItems()
         backButtonItem?.enabled = webView.canGoBack
         forwardButtonItem?.enabled = webView.canGoForward
         titleLabel.text = currentValidURL().absoluteString
     }
 
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        DDLogDebug("[WebViewController] didFinish")
         updateBarItems()
         backButtonItem?.enabled = webView.canGoBack
         forwardButtonItem?.enabled = webView.canGoForward
         titleLabel.text = currentValidURL().absoluteString
     }
 
-
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+        DDLogDebug("[WebViewController] didFail")
         updateBarItems()
     }
-    // MARK: NJKWebViewProgressDelegate
-    func webViewProgress(webViewProgress: WebViewProgress, updateProgress progress: Float) {
-        DDLogDebug("[WebVC] loading progress: \(progress)")
-        progressView.setProgress(progress, animated: true)
+
+    // MARK: KVO
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        guard let newProgress = change?[NSKeyValueChangeNewKey] as? Float else { return }
+        DDLogVerbose("[WebViewController] Loading progress: \(newProgress)")
+
+        if newProgress == 1.0 {
+            UIView.animateWithDuration(0.3, animations: {
+                self.progressView.setProgress(newProgress, animated: false)
+                self.progressView.alpha = 0.0
+            }, completion: { finished in
+                self.progressView.setProgress(0.0, animated: false)
+            })
+        } else {
+            self.progressView.setProgress(newProgress, animated: true)
+            self.progressView.alpha = 1.0
+        }
     }
 
     // MARK: - Helper
@@ -218,7 +232,7 @@ class S1WebViewController: UIViewController, UIWebViewDelegate, WebViewProgressD
     }
 
     private func currentValidURL() -> NSURL {
-        if let URL = webView.request?.URL where URL.absoluteString != "" {
+        if let URL = webView.URL where URL.absoluteString != "" {
             return URL
         } else {
             return self.URLToOpen
