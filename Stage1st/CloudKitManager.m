@@ -359,7 +359,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	{
 		if (operationError)
 		{
-			DDLogDebug(@"Error creating zone: %@", operationError);
+			DDLogWarn(@"Error creating zone: %@", operationError);
 			
 			BOOL isNotAuthenticatedError = NO;
 			
@@ -452,7 +452,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	{
 		if (operationError)
 		{
-			DDLogDebug(@"Error creating subscription: %@", operationError);
+			DDLogWarn(@"Error creating subscription: %@", operationError);
 		}
 		else
 		{
@@ -491,7 +491,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	if (self.needsFetchRecordChangesAfterAppLaunch == NO) return;
 	
 	[self fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing) {
-		
+		// Note: This handler may be called multiple times.
 		if ((result != UIBackgroundFetchResultFailed) && !moreComing)
 		{
 			if (self.needsFetchRecordChangesAfterAppLaunch)
@@ -506,9 +506,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	}];
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #pragma mark Fetching
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /**
  * This method uses CKFetchRecordChangesOperation to fetch changes.
@@ -592,6 +592,52 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		
 		DDLogDebug(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
 		DDLogDebug(@"CKFetchRecordChangesOperation: clientChangeTokenData: %@", clientChangeTokenData);
+
+        if (operationError)
+        {
+            // I've seen:
+            //
+            // - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
+
+            DDLogInfo(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
+            if (operationError.domain != CKErrorDomain) {
+                if (completionHandler) {
+                    completionHandler(UIBackgroundFetchResultFailed, NO);
+                }
+                dispatch_resume(strongSelf->fetchQueue);
+                return;
+            }
+
+            NSInteger ckErrorCode = operationError.code;
+
+            if (ckErrorCode == CKErrorChangeTokenExpired)
+            {
+                // CKErrorChangeTokenExpired:
+                //   The previousServerChangeToken value is too old and the client must re-sync from scratch.
+                [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+                    [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
+                } completionBlock:^{
+                    if (completionHandler) {
+                        completionHandler(UIBackgroundFetchResultFailed, NO);
+                    }
+                    dispatch_resume(strongSelf->fetchQueue);
+                }];
+                return;
+            } else if (ckErrorCode == CKErrorZoneNotFound) {
+                [strongSelf handleZoneNotFound];
+            } else if (ckErrorCode == CKErrorUserDeletedZone) {
+                [strongSelf handleUserDeletedZone];
+            } else if (ckErrorCode == CKErrorRequestRateLimited) {
+
+            } else {
+                [strongSelf reportError:operationError];
+            }
+            if (completionHandler) {
+                completionHandler(UIBackgroundFetchResultFailed, NO);
+            }
+            dispatch_resume(strongSelf->fetchQueue);
+            return;
+        }
 		
 		// Edge Case:
 		//
@@ -609,47 +655,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		// then we fail to properly fetch what's on the server.
 		
 		BOOL moreComing = weakOperation.moreComing;
-		
 		BOOL hasChanges = NO;
-		if (!operationError)
-		{
-			if (deletedRecordIDs.count > 0)
-				hasChanges = YES;
-			else if (changedRecords.count > 0)
-				hasChanges = YES;
-			
-			strongSelf.lastSuccessfulFetchResultWasNoData = (!hasChanges && !moreComing);
-		}
-		
-		if (operationError)
-		{
-			// I've seen:
-			//
-			// - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
-			
-			DDLogDebug(@"CKFetchRecordChangesOperation: operationError: %@", operationError);
-            [strongSelf reportError:operationError];
-			NSInteger ckErrorCode = operationError.code;
-			
-			if (ckErrorCode == CKErrorChangeTokenExpired)
-			{
-				// CKErrorChangeTokenExpired:
-				//   The previousServerChangeToken value is too old and the client must re-sync from scratch.
-				
-                [strongSelf handleChangeTokenExpired];
-                
-            } else if (ckErrorCode == CKErrorZoneNotFound) {
-                [strongSelf handleZoneNotFound];
-            } else if (ckErrorCode == CKErrorUserDeletedZone) {
-                [strongSelf handleUserDeletedZone];
-            }
+        if (deletedRecordIDs.count > 0 || changedRecords.count > 0) {
+            hasChanges = YES;
+        }
 
-			if (completionHandler) {
-				completionHandler(UIBackgroundFetchResultFailed, NO);
-			}
-			dispatch_resume(strongSelf->fetchQueue);
-		}
-		else if (!hasChanges && !moreComing)
+        strongSelf.lastSuccessfulFetchResultWasNoData = (!hasChanges && !moreComing);
+
+		if (!hasChanges && !moreComing)
 		{
 			DDLogDebug(@"CKFetchRecordChangesOperation: !hasChanges && !moreComing");
 			
@@ -1020,7 +1033,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)_refetchMissedRecordIDs
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	YDBCKChangeSet *failedChangeSet = [MyDatabaseManager.cloudKitExtension currentChangeSet];
 	NSArray *recordIDs = failedChangeSet.recordIDsToSave;
@@ -1060,7 +1073,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)_fetchRecordChanges
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	[self fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing) {
 		
@@ -1092,7 +1105,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	if (self.needsCreateZone || self.needsCreateZoneSubscription || self.needsFetchRecordChangesAfterAppLaunch)
 	{
@@ -1115,14 +1128,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	[self continueCloudKitFlow];
 }
 
 - (void)cloudKitInFlightChangeSetChanged:(NSNotification *)notification
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	NSString *changeSetUUID = [notification.userInfo objectForKey:@"uuid"];
 	
@@ -1143,15 +1156,14 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-	//DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
+	DDLogDebug(@"%@ - %@", THIS_FILE, THIS_METHOD);
 	
 	Reachability *reachability = notification.object;
 	
-	//DDLogDebug(@"%@ - reachability.isReachable = %@", THIS_FILE, (reachability.isReachable ? @"YES" : @"NO"));
+	DDLogDebug(@"%@ - reachability.isReachable = %@", THIS_FILE, (reachability.isReachable ? @"YES" : @"NO"));
 	if (reachability.isReachable)
 	{
         //self.state = CKManagerStateReady;
-        //[self postNotificationForCloudKitManagerStateChange];
 		[self continueCloudKitFlow];
 	}
 }
