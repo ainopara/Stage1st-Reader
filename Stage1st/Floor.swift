@@ -7,6 +7,19 @@
 //
 
 import Foundation
+import JASON
+import CocoaLumberjack
+
+private let kFloorID = "floorID"
+private let kIndexMark  = "indexMark"
+private let kAuthor = "author"
+private let kAuthorID  = "authorID"
+private let kPostTime = "postTime"
+private let kContent = "content"
+private let kPoll = "poll"
+private let kMessage = "message"
+private let kImageAttachmentURLStringList = "imageAttachmentList"
+private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
 
 class Floor: NSObject, NSCoding {
     let ID: Int
@@ -15,30 +28,59 @@ class Floor: NSObject, NSCoding {
     var creationDate: NSDate?
     var content: String?
     var message: String?
-    var imageAttachmentList: [String]?
+    var imageAttachmentURLStringList: [String]?
 
     var firstQuoteReplyFloorID: Int? {
-        return nil
+        guard let
+            content = self.content,
+            URLString = S1Global.regexExtractFromString(content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
+            resultDict = S1Parser.extractQuerysFromURLString(URLString.gtm_stringByUnescapingFromHTML()),
+            floorIDString = resultDict["pid"] as? String,
+            floorID = Int(floorIDString) else { return nil }
+
+        DDLogDebug("First Quote Floor ID: \(floorID)")
+
+        return floorID
+    }
+
+    init?(json: JSON) {
+        guard let IDString = json["id"].string, ID = Int(IDString) else {
+            return nil
+        }
+        self.ID = ID
+        super.init()
+        // FIXME: finish this.
     }
 
     required init?(coder aDecoder: NSCoder) {
 
-        guard let ID = aDecoder.decodeObjectForKey("floorID") as? Int else {
+        guard let ID = aDecoder.decodeObjectForKey(kFloorID) as? Int else {
             return nil
         }
         self.ID = ID
 
         super.init()
 
-        self.indexMark = aDecoder.decodeObjectForKey("indexMark") as? String
-        self.author = aDecoder.decodeObjectForKey("") as? User
-        self.creationDate = aDecoder.decodeObjectForKey("postTime") as? NSDate
-        self.content = aDecoder.decodeObjectForKey("content") as? String
-        self.message = aDecoder.decodeObjectForKey("message") as? String
-        self.imageAttachmentList = aDecoder.decodeObjectForKey("imageAttachmentList") as? [String]
+        self.indexMark = aDecoder.decodeObjectForKey(kIndexMark) as? String
+        if let authorID = aDecoder.decodeObjectForKey(kAuthorID) as? Int {
+            let author = User(ID: authorID)
+            author.name = aDecoder.decodeObjectForKey(kAuthor) as? String
+            self.author = author
+        }
+        self.creationDate = aDecoder.decodeObjectForKey(kPostTime) as? NSDate
+        self.content = aDecoder.decodeObjectForKey(kContent) as? String
+        self.message = aDecoder.decodeObjectForKey(kMessage) as? String
+        self.imageAttachmentURLStringList = aDecoder.decodeObjectForKey(kImageAttachmentURLStringList) as? [String]
     }
 
     func encodeWithCoder(aCoder: NSCoder) {
-
+        aCoder.encodeObject(self.ID, forKey: kFloorID)
+        aCoder.encodeObject(self.indexMark, forKey: kIndexMark)
+        aCoder.encodeObject(self.author?.name, forKey: kAuthor)
+        aCoder.encodeObject(self.author?.ID, forKey: kAuthorID)
+        aCoder.encodeObject(self.creationDate, forKey: kPostTime)
+        aCoder.encodeObject(self.content, forKey: kContent)
+        aCoder.encodeObject(self.message, forKey: kMessage)
+        aCoder.encodeObject(self.imageAttachmentURLStringList, forKey: kImageAttachmentURLStringList)
     }
 }

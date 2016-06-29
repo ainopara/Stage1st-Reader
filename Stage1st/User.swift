@@ -9,7 +9,9 @@
 import Foundation
 import JASON
 
-class User {
+let kUserID = "userID"
+
+class User: NSObject, NSCoding {
     let ID: Int
     var name: String?
     var customStatus: String?
@@ -25,6 +27,7 @@ class User {
 
     init(ID: Int) {
         self.ID = ID
+        super.init()
     }
 
     init?(json: JSON) {
@@ -45,5 +48,18 @@ class User {
         if let postCountString = space["posts"].string, postCount = Int(postCountString) {
             self.postCount = postCount
         }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        guard let ID = aDecoder.decodeObjectForKey(kUserID) as? Int else {
+            return nil
+        }
+        self.ID = ID
+        super.init()
+        // FIXME: Finish it.
+    }
+
+    func encodeWithCoder(aCoder: NSCoder) {
+        // FIXME: Finish it.
     }
 }

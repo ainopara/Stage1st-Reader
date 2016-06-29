@@ -61,6 +61,7 @@
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
 		86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */; };
 		86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */; };
+		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
 		86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
@@ -201,6 +202,7 @@
 		86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongCategoryOrder.plist; path = Stage1st/MahjongCategoryOrder.plist; sourceTree = "<group>"; };
 		86D20FE01CA6B638003F2691 /* DDErrorLevelFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDErrorLevelFormatter.h; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.h; sourceTree = "<group>"; };
 		86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDErrorLevelFormatter.m; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.m; sourceTree = "<group>"; };
+		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Poll.swift; path = Stage1st/Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
 		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
@@ -637,6 +639,7 @@
 				862CECE418D34611006CA29F /* S1Floor.m */,
 				86319B401CA69EEB004F7586 /* Floor.swift */,
 				862DB7A91C8AB1870068F75F /* User.swift */,
+				86DD319E1D129406009C2F44 /* Poll.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1025,6 +1028,7 @@
 				86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
+				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
