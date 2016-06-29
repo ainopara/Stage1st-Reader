@@ -10,6 +10,8 @@ import Foundation
 import Alamofire
 import JASON
 
+private let kStage1stDomain = "Stage1stDomain"
+
 enum LoginProgress {
     case NotLogin
     case RequestingSechash
@@ -75,7 +77,7 @@ extension DiscuzAPIManager {
                 if let messageValue = json["Message"]["messageval"].string where messageValue.containsString("login_succeed") {
                     successBlock(message: json["Message"]["messagestr"].string)
                 } else {
-                    let error = NSError(domain: "Stage1stReaderDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
+                    let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
                     failureBlock(error: error)
                 }
             case .Failure(let error):
@@ -112,7 +114,7 @@ extension DiscuzAPIManager {
             switch response.result {
             case .Success(let json):
                 guard let user = User(json: json) else {
-                    let error = NSError(domain: "Stage1stReaderDomain", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
+                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
                     responseBlock(result: .Failure(error))
                     return
                 }
