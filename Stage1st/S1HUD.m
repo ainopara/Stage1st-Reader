@@ -58,6 +58,7 @@ typedef enum {
         self.messageLabel.textAlignment = NSTextAlignmentCenter;
         self.messageLabel.numberOfLines = 0;
         self.messageLabel.alpha = 0.0;
+
         [self addSubview:self.messageLabel];
         [self.messageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self);
@@ -77,17 +78,20 @@ typedef enum {
             make.center.equalTo(self);
             make.width.height.equalTo(@40);
         }];
-
     }
     return self;
+}
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeZero;
 }
 
 - (void)showMessage:(NSString *)message {
     _text = message;
     self.type = S1HUDStateShowMessage;
-    [self showIfCurrentlyHiding];
     [self.widthConstraint deactivate];
     [self.heightConstraint deactivate];
+    [self showIfCurrentlyHiding];
     [UIView animateWithDuration:0.2 animations:^{
         self.refreshButton.alpha = 0.0;
         self.indicatorView.alpha = 0.0;
@@ -99,18 +103,33 @@ typedef enum {
 }
 
 - (void)showActivityIndicator {
-    self.type = S1HUDStateShowActivityIndicator;
-    [self showIfCurrentlyHiding];
-    [self.widthConstraint activate];
-    [self.heightConstraint activate];
-    [UIView animateWithDuration:0.2 animations:^{
-        self.refreshButton.alpha = 0.0;
-        self.indicatorView.alpha = 1.0;
-        [self.indicatorView startAnimating];
-        self.messageLabel.alpha = 0.0;
-        self.messageLabel.text = @"";
-        [self layoutIfNeeded];
-    }];
+    if (self.type == S1HUDStateShowActivityIndicator) {
+        [UIView animateWithDuration:0.1 animations:^{
+            self.transform = CGAffineTransformMakeScale(1.2, 1.2);
+            [self layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            if (finished) {
+                [UIView animateWithDuration:0.1 animations:^{
+                    self.transform = CGAffineTransformIdentity;
+                }];
+            } else {
+                self.transform = CGAffineTransformIdentity;
+            }
+        }];
+    } else {
+        self.type = S1HUDStateShowActivityIndicator;
+        [self showIfCurrentlyHiding];
+        [self.widthConstraint activate];
+        [self.heightConstraint activate];
+        [UIView animateWithDuration:0.2 animations:^{
+            self.refreshButton.alpha = 0.0;
+            self.indicatorView.alpha = 1.0;
+            [self.indicatorView startAnimating];
+            self.messageLabel.alpha = 0.0;
+            self.messageLabel.text = @"";
+            [self layoutIfNeeded];
+        }];
+    }
 }
 
 - (void)showRefreshButton {
@@ -135,6 +154,7 @@ typedef enum {
 }
 
 - (void)show {
+    [self layoutIfNeeded];
     self.alpha = 0.0;
     self.transform = CGAffineTransformMakeScale(0.85, 0.85);
     [UIView animateWithDuration:0.2 animations:^{
@@ -153,7 +173,11 @@ typedef enum {
     [UIView animateWithDuration:0.2 delay:delay options:UIViewAnimationOptionCurveLinear animations:^{
         self.alpha = 0.0;
         self.transform = CGAffineTransformMakeScale(1.2, 1.2);
-    } completion:NULL];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            self.type = S1HUDStateShowNothing;
+        }
+    }];
 }
 
 @end

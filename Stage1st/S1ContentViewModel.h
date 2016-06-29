@@ -19,7 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
 
 @property (nonatomic, assign) NSUInteger currentPage;
+@property (nonatomic, assign, readonly) NSUInteger previousPage;
 @property (nonatomic, assign) NSUInteger totalPages;
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, NSNumber *> *cachedViewPosition;
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
 

@@ -173,10 +173,10 @@
 }
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
-    DDLogDebug(@"[Network] Precache %@-%@ begin", topic.topicID, page);
+    DDLogVerbose(@"[Network] Precache %@-%@ begin", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
     if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
-        DDLogDebug(@"[Database] Precache %@-%@ hit", topic.topicID, page);
+        DDLogVerbose(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
     void (^failureHandler)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {

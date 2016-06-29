@@ -28,6 +28,13 @@
 #define TOP_OFFSET -80.0
 #define BOTTOM_OFFSET 60.0
 
+typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
+    S1ContentScrollTypeRestorePosition = 0,
+    S1ContentScrollTypePullUpForNext,
+    S1ContentScrollTypePullDownForPrevious,
+    S1ContentScrollTypeToBottom
+};
+
 @interface S1ContentViewController () <UIWebViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate, REComposeViewControllerDelegate, PullToActionDelagete>
 
 @property (nonatomic, strong) UIToolbar *toolBar;
@@ -35,6 +42,7 @@
 @property (nonatomic, strong) PullToActionController *pullToActionController;
 
 @property (nonatomic, strong) S1HUD *refreshHUD;
+@property (nonatomic, strong) S1HUD *hintHUD;
 
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic, strong) UIButton *forwardButton;
@@ -47,19 +55,17 @@
 @property (nonatomic, strong) UIView *bottomDecorateLine;
 
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
-@property (nonatomic, strong) NSMutableDictionary *cachedViewPosition;
 
 @property (nonatomic, weak) S1Floor *replyTopicFloor;
+
+@property (nonatomic, assign) S1ContentScrollType scrollType;
 
 @end
 
 @implementation S1ContentViewController {
-    BOOL _needToScrollToBottom;
-    BOOL _needToLoadLastPositionFromModel;
     BOOL _finishFirstLoading;
-    BOOL _shouldRestoreViewPosition;
-    BOOL _pullUpForNext;
-    BOOL _pullDownForPrevious;
+
+    BOOL _webPageDocumentReadyForAutomaticScrolling;
 
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
@@ -75,9 +81,7 @@
         _dataCenter = dataCenter;
         _viewModel = [[S1ContentViewModel alloc] initWithTopic:topic dataCenter:self.dataCenter];
 
-        _needToLoadLastPositionFromModel = YES;
-
-        _cachedViewPosition = [[NSMutableDictionary alloc] init];
+        _scrollType = S1ContentScrollTypeRestorePosition;
     }
     return self;
 }
@@ -186,21 +190,28 @@
     
     [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
 
+
     self.refreshHUD = [[S1HUD alloc] initWithFrame:CGRectZero];
     [self.view addSubview:self.refreshHUD];
     [self.refreshHUD mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
+        make.width.lessThanOrEqualTo(self.view).priorityLow();
+    }];
+
+    self.hintHUD = [[S1HUD alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.hintHUD];
+    [self.hintHUD mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view.mas_centerX);
+        make.bottom.equalTo(self.toolBar.mas_top).offset(-10.0);
+        make.width.lessThanOrEqualTo(self.view.mas_width);
+
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
 
-    [RACObserve(self.webView, isLoading) subscribeNext:^(id x) {
-        DDLogInfo(@"[ContentVC] webView is loading: %@", x);
-    }];
-
     [[RACSignal combineLatest:@[RACObserve(self.viewModel, currentPage), RACObserve(self.viewModel, totalPages)]] subscribeNext:^(RACTuple *x) {
-        DDLogWarn(@"[ContentVM] Current page or totoal page changed: %@/%@", x.first, x.second);
+        DDLogVerbose(@"[ContentVM] Current page or totoal page changed: %@/%@", x.first, x.second);
         [self.pageButton setTitle:[self.viewModel pageButtonString] forState:UIControlStateNormal];
     }];
 
@@ -213,6 +224,8 @@
     }];
 
     [self setupActivity];
+
+    [self.view layoutIfNeeded];
 
     DDLogDebug(@"[ContentVC] View Did Load 9");
     [self fetchContentForCurrentPageWithForceUpdate:self.viewModel.currentPage == self.viewModel.totalPages];
@@ -323,9 +336,11 @@
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     labelParagraphStyle.alignment = NSTextAlignmentCenter;
-    picker.pickerTextAttributes = @{NSParagraphStyleAttributeName: labelParagraphStyle,
-                                    NSFontAttributeName: [UIFont systemFontOfSize:19.0],
-                                    NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"],};
+    picker.pickerTextAttributes = [@{
+        NSParagraphStyleAttributeName: labelParagraphStyle,
+        NSFontAttributeName: [UIFont systemFontOfSize:19.0],
+        NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"]
+    } mutableCopy];
     [picker showActionSheetPicker];
 }
 
@@ -338,14 +353,12 @@
 
 - (void)forceRefreshCurrentPage {
     [self cancelRequest];
-    [self saveViewPosition];
-    _needToLoadLastPositionFromModel = NO;
+    [self saveViewPositionForCurrentPage];
 
     [self fetchContentForCurrentPageWithForceUpdate:YES];
 }
 
-- (void)action:(id)sender
-{
+- (void)action:(id)sender {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     // Reply Action
     UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -354,8 +367,8 @@
     // Favorite Action
     UIAlertAction *favoriteAction = [UIAlertAction actionWithTitle:[self.viewModel.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite"):NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self.viewModel toggleFavorite];
-        [self.refreshHUD showMessage:[self.viewModel.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite")];
-        [self.refreshHUD hideWithDelay:0.3];
+        [self.hintHUD showMessage:[self.viewModel.topic.favorite boolValue] ? NSLocalizedString(@"ContentView_ActionSheet_Favorite", @"Favorite") : NSLocalizedString(@"ContentView_ActionSheet_Cancel_Favorite", @"Cancel Favorite")];
+        [self.hintHUD hideWithDelay:0.5];
     }];
     // Share Action
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Share", @"Share") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -409,6 +422,12 @@
     if ([request.URL.absoluteString hasPrefix:@"file://"]) {
         if ([request.URL.absoluteString hasSuffix:@"html"]) {
             return YES;
+        }
+
+        if ([request.URL.path isEqualToString:@"/ready"]) {
+            DDLogDebug(@"[WebView] ready");
+            [self didFinishBasicPageLoadForWebView:self.webView];
+            return NO;
         }
 
         // Reply
@@ -555,46 +574,7 @@
         return;
     }
     DDLogInfo(@"[ContentVC] webViewDidFinishLoad");
-    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
-    NSNumber *positionForPage = [self.cachedViewPosition objectForKey:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage]];
-
-    // Set position
-    if (_pullUpForNext) {
-        [webView.scrollView setContentOffset:CGPointMake(0.0, -CGRectGetHeight(webView.bounds)) animated:NO];
-    } else if (_pullDownForPrevious) {
-        [webView.scrollView setContentOffset:CGPointMake(0.0, webView.scrollView.contentSize.height) animated:NO];
-    } else if (positionForPage != nil) {
-        // Restore last view position from cached position in this view controller.
-        [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0))];
-    } else if (_needToLoadLastPositionFromModel) {
-        // Restore last view position when this content view first be loaded.s
-        _needToLoadLastPositionFromModel = NO;
-        if (self.viewModel.topic.lastViewedPosition != 0) {
-            [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [self.viewModel.topic.lastViewedPosition doubleValue]), 0.0))];
-        }
-    }
-
-    // Animated scroll
-    if (_needToScrollToBottom) {
-        // User want to scroll to bottom.
-        _needToScrollToBottom = NO;
-        [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:YES];
-    } else if (_pullUpForNext) {
-        _pullUpForNext = NO;
-        [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
-            webView.scrollView.alpha = 1.0;
-        } completion:NULL];
-    } else if (_pullDownForPrevious) {
-        _pullDownForPrevious = NO;
-        [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [webView.scrollView setContentOffset:CGPointMake(0.0, maxOffset) animated:NO];
-            webView.scrollView.alpha = 1.0;
-        } completion:NULL];
-    } else {
-        // clear the decelerating by animate to scroll to the same position.
-        [webView.scrollView setContentOffset:webView.scrollView.contentOffset animated:YES];
-    }
+    [self didFinishFullPageLoadForWebView:webView];
 }
 
 #pragma mark JTSImageViewControllerInteractionsDelegate
@@ -638,7 +618,7 @@
                 [self.webView.scrollView setContentOffset:currentContentOffset animated:NO];
                 self.webView.scrollView.alpha = 0.0;
             } completion:^(BOOL finished) {
-                self->_pullDownForPrevious = YES;
+                self.scrollType = S1ContentScrollTypePullDownForPrevious;
                 [self back:nil];
             }];
         });
@@ -661,7 +641,7 @@
                 [self.webView.scrollView setContentOffset:currentContentOffset animated:NO];
                 self.webView.scrollView.alpha = 0.0;
             } completion:^(BOOL finished) {
-                self->_pullUpForNext = YES;
+                self.scrollType = S1ContentScrollTypePullUpForNext;
                 [self forward:nil];
             }];
         });
@@ -670,6 +650,12 @@
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     [self updateDecorationLines:contentSize];
+    UIWebView *webView = self.webView;
+    if (webView != nil && _webPageDocumentReadyForAutomaticScrolling == YES) {
+        _webPageDocumentReadyForAutomaticScrolling = NO;
+//        [self didFinishBasicPageLoadForWebView:self.webView];
+    }
+
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
@@ -730,7 +716,7 @@
 
                 strongSelf.attributedReplyDraft = nil;
                 if (strongSelf.viewModel.currentPage == strongSelf.viewModel.totalPages) {
-                    strongSelf->_needToScrollToBottom = YES;
+                    strongSelf.scrollType = S1ContentScrollTypeToBottom;
                     [strongSelf fetchContentForCurrentPageWithForceUpdate:YES];
                 }
             };
@@ -766,10 +752,10 @@
         [self.dataCenter removePrecachedFloorsForTopic:self.viewModel.topic withPage:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage]];
     }
     //Set up HUD
-    DDLogDebug(@"[ContentVC] check precache exist");
+    DDLogVerbose(@"[ContentVC] check precache exist");
 
     if (![self.dataCenter hasPrecacheFloorsForTopic:self.viewModel.topic withPage:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage]]) {
-        DDLogDebug(@"[ContentVC] Show HUD");
+        DDLogVerbose(@"[ContentVC] Show HUD");
         [self.refreshHUD showActivityIndicator];
 
         __weak __typeof__(self) weakSelf = self;
@@ -794,10 +780,7 @@
         [strongSelf updateToolBar];
         [strongSelf updateTitleLabelWithTitle:strongSelf.viewModel.topic.title];
 
-        if (strongSelf->_shouldRestoreViewPosition) {
-            [strongSelf saveViewPosition];
-            strongSelf->_shouldRestoreViewPosition = NO;
-        }
+        [strongSelf saveViewPositionForPreviousPage];
 
         strongSelf->_finishFirstLoading = YES;
 
@@ -821,7 +804,7 @@
 
         // Auto refresh when current page not full.
         if (shouldRefetch) {
-            strongSelf->_shouldRestoreViewPosition = YES;
+            strongSelf.scrollType = S1ContentScrollTypeRestorePosition;
             [strongSelf fetchContentForCurrentPageWithForceUpdate:YES];
         }
         
@@ -829,6 +812,7 @@
         __strong __typeof__(self) strongSelf = weakSelf;
         if (error.code == NSURLErrorCancelled) {
             DDLogDebug(@"request cancelled.");
+            // TODO:
 //            if (strongSelf.refreshHUD != nil) {
 //                [strongSelf.refreshHUD hideWithDelay:0.3];
 //            }
@@ -927,15 +911,15 @@
 - (void)saveTopicViewedState:(id)sender {
     DDLogDebug(@"[ContentVC] Save Topic View State Begin.");
     if (_finishFirstLoading) {
-        [self.viewModel.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)self.webView.scrollView.contentOffset.y]];
-    } else if ((self.viewModel.topic.lastViewedPosition == nil) || (![self.viewModel.topic.lastViewedPage isEqualToNumber:[NSNumber numberWithInteger: self.viewModel.currentPage]])) {
+        self.viewModel.topic.lastViewedPosition = [NSNumber numberWithFloat:(float)self.webView.scrollView.contentOffset.y];
+    } else if (self.viewModel.topic.lastViewedPosition == nil || [self.viewModel.topic.lastViewedPage unsignedIntegerValue] != self.viewModel.currentPage) {
         // If last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded.
         // Then the unfinish loaded new page's last view position should be 0.
-        [self.viewModel.topic setLastViewedPosition:[NSNumber numberWithFloat: (float)0.0]];
+        self.viewModel.topic.lastViewedPosition = [NSNumber numberWithFloat:(float)0.0];
     }
-    [self.viewModel.topic setLastViewedPage:[NSNumber numberWithInteger: self.viewModel.currentPage]];
+    self.viewModel.topic.lastViewedPage = [NSNumber numberWithInteger:self.viewModel.currentPage];
     self.viewModel.topic.lastViewedDate = [NSDate date];
-    [self.viewModel.topic setLastReplyCount:self.viewModel.topic.replyCount];
+    self.viewModel.topic.lastReplyCount = self.viewModel.topic.replyCount;
     [self.dataCenter hasViewed:self.viewModel.topic];
     DDLogInfo(@"[ContentVC] Save Topic View State Finish.");
 }
@@ -959,8 +943,7 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
 
-    _needToLoadLastPositionFromModel = NO;
-    [self saveViewPosition];
+    [self saveViewPositionForCurrentPage];
     [self fetchContentForCurrentPageWithForceUpdate:NO];
 }
 
@@ -1002,9 +985,15 @@
     return rect;
 }
 
-- (void)saveViewPosition {
+- (void)saveViewPositionForCurrentPage {
     if (self.webView.scrollView.contentOffset.y != 0) {
-        [self.cachedViewPosition setObject:[NSNumber numberWithDouble:self.webView.scrollView.contentOffset.y] forKey:[NSNumber numberWithInteger:self.viewModel.currentPage]];
+        [self.viewModel cacheOffsetForCurrentPage:self.webView.scrollView.contentOffset.y];
+    }
+}
+
+- (void)saveViewPositionForPreviousPage {
+    if (self.webView.scrollView.contentOffset.y != 0) {
+        [self.viewModel cacheOffsetForPreviousPage:self.webView.scrollView.contentOffset.y];
     }
 }
 
@@ -1015,21 +1004,72 @@
 #pragma mark - Restore Position
 
 - (void)preChangeCurrentPage {
+    DDLogDebug(@"[webView] pre change current page");
     [self cancelRequest];
-    [self saveViewPosition];
-    _needToLoadLastPositionFromModel = NO;
+    [self saveViewPositionForCurrentPage];
+    _webPageDocumentReadyForAutomaticScrolling = YES;
 }
 
 - (void)preLoadNextPage {
 
 }
 
-- (void)didFinishBasicPageLoad {
+- (void)didFinishBasicPageLoadForWebView:(UIWebView *)webView {
+    DDLogDebug(@"[webView] basic page loaded");
+    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
 
+    switch (self.scrollType) {
+        case S1ContentScrollTypePullUpForNext: {
+            // Set position
+            [webView.scrollView setContentOffset:CGPointMake(0.0, -CGRectGetHeight(webView.bounds)) animated:NO];
+            // Animated scroll
+            [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
+                webView.scrollView.alpha = 1.0;
+            } completion:NULL];
+            break;
+        }
+        case S1ContentScrollTypePullDownForPrevious: {
+            // Set position
+            [webView.scrollView setContentOffset:CGPointMake(0.0, webView.scrollView.contentSize.height) animated:NO];
+            // Animated scroll
+            [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [webView.scrollView setContentOffset:CGPointMake(0.0, maxOffset) animated:NO];
+                webView.scrollView.alpha = 1.0;
+            } completion:NULL];
+            break;
+        }
+        case S1ContentScrollTypeToBottom:
+            [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:YES];
+            break;
+        default:
+            break;
+    }
 }
     
-- (void)didFinishFullPageLoad {
-        
+- (void)didFinishFullPageLoadForWebView:(UIWebView *)webView {
+    DDLogDebug(@"[webView] full page loaded");
+    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
+
+    switch (self.scrollType) {
+        case S1ContentScrollTypeToBottom:
+        case S1ContentScrollTypePullDownForPrevious:
+            [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:NO];
+            break;
+        case S1ContentScrollTypePullUpForNext:
+            [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
+            break;
+        default: {
+            NSNumber *positionForPage = [self.viewModel cachedOffsetForCurrentPage];
+            if (positionForPage != nil) {
+                // Restore last view position from cached position in this view controller.
+                [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0)) animated:NO];
+            }
+            break;
+        }
+    }
+
+    self.scrollType = S1ContentScrollTypeRestorePosition;
 }
 
 #pragma mark - Getters and Setters

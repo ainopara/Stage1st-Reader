@@ -19,3 +19,5 @@
 #import "S1Appdelegate.h"
 #import "NavigationControllerDelegate.h"
 #import "S1TabBar.h"
+#import "S1Parser.h"
+#import "GTMNSString+HTML.h"

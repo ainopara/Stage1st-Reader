@@ -105,3 +105,18 @@ extension S1ContentViewModel {
         }
     }
 }
+
+// MARK: - Cache Page Offset
+extension S1ContentViewModel {
+    func cacheOffsetForCurrentPage(offset: CGFloat) {
+        self.cachedViewPosition[self.currentPage as NSNumber] = NSNumber(double: Double(offset))
+    }
+
+    func cacheOffsetForPreviousPage(offset: CGFloat) {
+        self.cachedViewPosition[self.previousPage as NSNumber] = NSNumber(double: Double(offset))
+    }
+
+    func cachedOffsetForCurrentPage() -> NSNumber? {
+        return self.cachedViewPosition[self.currentPage as NSNumber] as? NSNumber
+    }
+}

@@ -15,6 +15,10 @@
 #import "DDXMLElementAdditions.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
+@interface S1ContentViewModel ()
+
+@end
+
 @implementation S1ContentViewModel
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
@@ -32,6 +36,12 @@
         } else {
             _currentPage = 1;
         }
+        _previousPage = _currentPage;
+
+        _cachedViewPosition = [[NSMutableDictionary<NSNumber *, NSNumber *> alloc] init];
+        if (topic.lastViewedPosition != nil && topic.lastViewedPage != nil) {
+            [_cachedViewPosition setObject:topic.lastViewedPosition forKey:topic.lastViewedPage];
+        }
 
         _totalPages = ([topic.replyCount unsignedIntegerValue] / 30) + 1;
 
@@ -44,7 +54,7 @@
         _dataCenter = dataCenter;
 
         [RACObserve(self, currentPage) subscribeNext:^(id x) {
-            DDLogInfo(@"[ContentVM] Current page changed to: %@", x);
+            DDLogDebug(@"[ContentVM] Current page changed to: %@", x);
         }];
 
         [RACObserve(self.topic, replyCount) subscribeNext:^(id x) {
@@ -54,6 +64,11 @@
     }
 
     return self;
+}
+
+- (void)setCurrentPage:(NSUInteger)currentPage {
+    _previousPage = _currentPage;
+    _currentPage = currentPage;
 }
 
 - (void)contentPageWithSuccess:(void (^)(NSString *, bool))success
