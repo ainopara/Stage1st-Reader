@@ -28,6 +28,8 @@ final class S1LoginViewController: UIViewController {
     let onepasswordButton = UIButton(type: .System)
     let questionSelectButton = UIButton(type: .System)
     let answerField = UITextField(frame: CGRect.zero)
+
+    let seccodeContainerView = UIView(frame: .zero)
     let seccodeImageView = UIImageView(image: nil)
     let seccodeField = UITextField(frame: CGRect.zero)
 
@@ -99,7 +101,7 @@ final class S1LoginViewController: UIViewController {
 
     // MARK: -
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        self.networkManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
+        self.networkManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .OverFullScreen
         self.modalTransitionStyle = .CrossDissolve
@@ -221,6 +223,13 @@ final class S1LoginViewController: UIViewController {
         }
 
         state = self.inLoginState() ? .Login : .NotLogin
+
+        self.seccodeContainerView.addSubview(self.seccodeImageView)
+        self.seccodeImageView.snp_makeConstraints { (make) in
+            make.centerX.equalTo(seccodeContainerView)
+        }
+
+        self.seccodeContainerView.addSubview(self.seccodeField)
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(S1LoginViewController.dismiss))
         self.tapGesture = tapGesture
