@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.2)
-  - ActionSheetPicker-3.0 (2.1.0)
+  - ActionSheetPicker-3.0 (2.2.0)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
     - AFNetworking/Reachability (= 3.1.0)
@@ -27,7 +27,7 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (2.3.0):
     - CocoaLumberjack/Extensions
-  - Crashlytics (3.7.1):
+  - Crashlytics (3.7.2):
     - Fabric (~> 1.6.3)
   - DTCoreText (1.6.17):
     - DTFoundation/Core (~> 1.7.5)
@@ -71,10 +71,9 @@ PODS:
   - ReactiveCocoa/UI (4.1.0):
     - ReactiveCocoa/Core
     - Result (~> 2.0)
-  - Result (2.0.0)
+  - Result (2.1.1)
   - Reveal-iOS-SDK (1.6.2)
-  - SnapKit (0.21.0)
-  - SwiftWebViewProgress (0.1.0)
+  - SnapKit (0.21.1)
   - YapDatabase (2.9.1):
     - YapDatabase/Standard (= 2.9.1)
   - YapDatabase/Standard (2.9.1):
@@ -153,7 +152,6 @@ DEPENDENCIES:
   - ReactiveCocoa
   - Reveal-iOS-SDK
   - SnapKit
-  - SwiftWebViewProgress (from `https://github.com/ainopara/SwiftWebViewProgress.git`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYKit
 
@@ -162,8 +160,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  SwiftWebViewProgress:
-    :git: https://github.com/ainopara/SwiftWebViewProgress.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
@@ -175,20 +171,17 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
-  SwiftWebViewProgress:
-    :commit: 06554214253bab9018896ab5dfa2c212b8feb47a
-    :git: https://github.com/ainopara/SwiftWebViewProgress.git
   YapDatabase:
     :commit: 486a9982476317764c3b5c10d3158018ddf8ab2c
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
-  ActionSheetPicker-3.0: db66605feb85689279d328206c61f0e4f398df92
+  ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
-  Crashlytics: 3cdd4c9655be68032a0cf0379e0fb5ef6af22cad
+  Crashlytics: 130ab943f8c78cda7a814b434f270b2e2c8a3cba
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: caf7580c725e64db144f610ac65cd60956911dc7
@@ -204,13 +197,12 @@ SPEC CHECKSUMS:
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: d70004d7a366a7b8e87e60ce2347182c77701949
-  Result: 9e75e1111c774c6ac594e14907b15057053a7959
+  Result: 822c879f145943320cc80a9a8372378e3d699fe4
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
-  SnapKit: 2756fe24b706367af224c9c508d2f9166d03354c
-  SwiftWebViewProgress: 6844c6a39e649782a90c3b92393cc7d5cbcc84a7
+  SnapKit: bbad04cb016c7cead63965f16b00c09318d271ee
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
   YYKit: 843d1b26e20b82c695790c9a89907eaa1e99907f
 
-PODFILE CHECKSUM: e1ce949b351d717cede500b7dc79b139c41fdb9f
+PODFILE CHECKSUM: 6d86d65307349e9f2f4a0c85bfcedfb891372598
 
 COCOAPODS: 1.0.1
