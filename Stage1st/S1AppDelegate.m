@@ -96,9 +96,6 @@ S1AppDelegate *MyAppDelegate;
     if ([userDefaults objectForKey:@"RemoveTails"] == nil) {
         [userDefaults setBool:YES forKey:@"RemoveTails"];
     }
-    if ([userDefaults objectForKey:@"UseAPI"] == nil) {
-        [userDefaults setBool:YES forKey:@"UseAPI"];
-    }
     if ([userDefaults objectForKey:@"PrecacheNextPage"] == nil) {
         [userDefaults setBool:YES forKey:@"PrecacheNextPage"];
     }
@@ -112,7 +109,7 @@ S1AppDelegate *MyAppDelegate;
         [userDefaults setBool:NO forKey:@"EnableSync"];
     }
 
-    // Start database & cloudKit (in that order)
+    // Start database & cloudKit (in order)
     [DatabaseManager initialize];
     if ([userDefaults boolForKey:@"EnableSync"]) {
         [CloudKitManager initialize];
@@ -212,7 +209,7 @@ S1AppDelegate *MyAppDelegate;
             if (topic == nil && topicID != nil) {
                 topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
-            [self presentContentViewControllerForTopic:topic];
+            [self pushContentViewControllerForTopic:topic];
             return YES;
         }
     }
@@ -316,7 +313,7 @@ S1AppDelegate *MyAppDelegate;
                 topic.lastViewedPage = lastViewedPage;
             }
         }
-        [self presentContentViewControllerForTopic:topic];
+        [self pushContentViewControllerForTopic:topic];
         return YES;
     } else {
         NSString *urlString = [userActivity.webpageURL absoluteString];
@@ -329,10 +326,10 @@ S1AppDelegate *MyAppDelegate;
                     tracedTopic = [tracedTopic copy];
                     tracedTopic.lastViewedPage = lastViewedPage;
                 }
-                [self presentContentViewControllerForTopic:tracedTopic];
+                [self pushContentViewControllerForTopic:tracedTopic];
                 return YES;
             } else {
-                [self presentContentViewControllerForTopic:parsedTopic];
+                [self pushContentViewControllerForTopic:parsedTopic];
                 return YES;
             }
         }
@@ -353,7 +350,7 @@ S1AppDelegate *MyAppDelegate;
 
 #pragma mark - Helper
 
-- (void)presentContentViewControllerForTopic:(S1Topic *)topic {
+- (void)pushContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]]) {
         S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[S1DataCenter sharedDataCenter]];

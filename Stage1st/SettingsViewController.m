@@ -201,7 +201,9 @@
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
+
 #pragma mark - Actions
+
 - (IBAction)back:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -213,16 +215,20 @@
 - (IBAction)switchRemoveTails:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"RemoveTails"];
 }
+
 - (IBAction)switchUseAPI:(UISwitch *)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"UseAPI"];
+
 }
+
 - (IBAction)switchPrecache:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"PrecacheNextPage"];
 }
+
 - (IBAction)switchNightMode:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"NightMode"];
     [[APColorManager sharedInstance] switchPalette:sender.on == YES ? PaletteTypeNight : PaletteTypeDay];
 }
+
 - (IBAction)switchForcePortrait:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"ForcePortraitForPhone"];
 }

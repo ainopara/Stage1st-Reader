@@ -25,8 +25,8 @@
 #import <Crashlytics/Answers.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
-#define TOP_OFFSET -80.0
-#define BOTTOM_OFFSET 60.0
+CGFloat const topOffset = -80.0;
+CGFloat const bottomOffset = 60.0;
 
 typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     S1ContentScrollTypeRestorePosition = 0,
@@ -34,6 +34,27 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     S1ContentScrollTypePullDownForPrevious,
     S1ContentScrollTypeToBottom
 };
+
+//@interface UIScrollView (S1Inspect)
+//@end
+//
+//@implementation UIScrollView (S1Inspect)
+//
+//+ (void)load {
+//    Method origin = class_getInstanceMethod([self class], @selector(setContentOffset:));
+//    Method newMethod = class_getInstanceMethod([self class], @selector(s1_setContentOffset:));
+//    method_exchangeImplementations(origin, newMethod);
+//}
+//
+//- (void)s1_setContentOffset:(CGPoint)contentOffset {
+//    if ([self isKindOfClass:NSClassFromString(@"_UIWebViewScrollView")]) {
+//        NSLog(@"%@ old: %f, %f", self, self.contentOffset.x, self.contentOffset.y);
+//        NSLog(@"new: %f, %f",contentOffset.x, contentOffset.y);
+//    }
+//    [self s1_setContentOffset:contentOffset];
+//}
+//
+//@end
 
 @interface S1ContentViewController () <UIWebViewDelegate, JTSImageViewControllerInteractionsDelegate, JTSImageViewControllerOptionsDelegate, REComposeViewControllerDelegate, PullToActionDelagete>
 
@@ -122,15 +143,15 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     }];
 
     self.pullToActionController = [[PullToActionController alloc] initWithScrollView:self.webView.scrollView];
-    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:TOP_OFFSET];
-    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:BOTTOM_OFFSET];
+    [self.pullToActionController addConfigurationWithName:@"top" baseLine:OffsetBaseLineTop beginPosition:0.0 endPosition:topOffset];
+    [self.pullToActionController addConfigurationWithName:@"bottom" baseLine:OffsetBaseLineBottom beginPosition:0.0 endPosition:bottomOffset];
     self.pullToActionController.delegate = self;
     
-    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)];
+    self.topDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, topOffset, self.view.bounds.size.width, 1)];
     self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.topDecorateLine];
 
-    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, TOP_OFFSET, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
+    self.bottomDecorateLine = [[UIView alloc] initWithFrame:CGRectMake(0, bottomOffset, self.view.bounds.size.width, 1)]; // will be updated soon in delegate.
     self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
     [self.webView.scrollView addSubview:self.bottomDecorateLine];
 
@@ -608,7 +629,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 #pragma mark PullToActionDelegate
 
 - (void)scrollViewDidEndDraggingOutsideTopBoundWithOffset:(CGFloat)offset {
-    if (offset < TOP_OFFSET && _finishFirstLoading && self.viewModel.currentPage != 1) {
+    if (offset < topOffset && _finishFirstLoading && self.viewModel.currentPage != 1) {
         CGPoint currentContentOffset = self.webView.scrollView.contentOffset;
         currentContentOffset.y = -CGRectGetHeight(self.webView.bounds);
 
@@ -626,7 +647,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 }
 
 - (void)scrollViewDidEndDraggingOutsideBottomBoundWithOffset:(CGFloat)offset {
-    if (offset > BOTTOM_OFFSET && _finishFirstLoading) {
+    if (offset > bottomOffset && _finishFirstLoading) {
         if (self.viewModel.currentPage >= self.viewModel.totalPages) {
             [self forward:nil];
             return;
@@ -972,8 +993,8 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 }
 
 - (void)updateDecorationLines:(CGSize)contentSize {
-    self.topDecorateLine.frame = CGRectMake(0, TOP_OFFSET, contentSize.width, 1);
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + BOTTOM_OFFSET, contentSize.width, 1);
+    self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
+    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
     self.topDecorateLine.hidden = !(self.viewModel.currentPage != 1 && _finishFirstLoading);
     self.bottomDecorateLine.hidden = !_finishFirstLoading;
 }

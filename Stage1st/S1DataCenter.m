@@ -38,13 +38,11 @@
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
-    //_shouldInterruptHistoryCallback = NO;
-    
+
     return self;
 }
 
-+ (S1DataCenter *)sharedDataCenter
-{
++ (S1DataCenter *)sharedDataCenter {
     static S1DataCenter *dataCenter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -52,8 +50,6 @@
     });
     return dataCenter;
 }
-
-
 
 #pragma mark - Network (Topic List)
 
@@ -78,64 +74,35 @@
 }
 
 - (void)fetchTopicsForKeyFromServer:(NSString *)keyID withPage:(NSNumber *)page success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure {
-    __weak __typeof__(self) myself = self;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
-        [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __strong __typeof__(self) strongMyself = myself;
-                NSDictionary *responseDict = responseObject;
-                
-                //check login state
-                NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
-                if ([loginUsername isEqualToString:@""]) {
-                    loginUsername = nil;
-                }
-                [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
-                
-                //pick formhash
-                NSString *formhash = responseDict[@"Variables"][@"formhash"];
-                if (formhash != nil) {
-                    strongMyself.formhash = formhash;
-                }
-                //get topics
-                NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
-                
-                [strongMyself processAndCacheTopics:topics withKeyID:keyID andPage:page];
-                
-                success(strongMyself.topicListCache[keyID]);
-            });
-            
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            failure(error);
-        }];
-    } else {
-        [S1NetworkManager requestTopicListForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __strong __typeof__(self) strongMyself = myself;
-                NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-                
-                //check login state
-                [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-                
-                //pick formhash
-                NSString *formhash = [S1Parser formhashFromPage:HTMLString];
-                if (formhash != nil) {
-                    strongMyself.formhash = formhash;
-                }
-                
-                //parse topics
-                NSMutableArray *topics = [[S1Parser topicsFromHTMLData:responseObject withContext:@{@"FID": keyID}] mutableCopy];
-                
-                [strongMyself processAndCacheTopics:topics withKeyID:keyID andPage:page];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    success(strongMyself.topicListCache[keyID]);
-                });
-            });
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            failure(error);
-        }];
-    }
+    __weak __typeof__(self) weakSelf = self;
+    [S1NetworkManager requestTopicListAPIForKey:keyID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __strong __typeof__(self) strongSelf = weakSelf;
+            NSDictionary *responseDict = responseObject;
+
+            //check login state
+            NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
+            if ([loginUsername isEqualToString:@""]) {
+                loginUsername = nil;
+            }
+            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+
+            //pick formhash
+            NSString *formhash = responseDict[@"Variables"][@"formhash"];
+            if (formhash != nil) {
+                strongSelf.formhash = formhash;
+            }
+            //get topics
+            NSMutableArray *topics = [S1Parser topicsFromAPI:responseDict];
+
+            [strongSelf processAndCacheTopics:topics withKeyID:keyID andPage:page];
+
+            success(strongSelf.topicListCache[keyID]);
+        });
+
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
 }
 
 - (BOOL)canMakeSearchRequest {
@@ -179,53 +146,30 @@
         DDLogVerbose(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
-    void (^failureHandler)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
+    [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+        //Update Topic
+        NSDictionary *responseDict = responseObject;
+        [topic update:[S1Parser topicInfoFromAPI:responseDict]];
+
+        //Check Login State
+        NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
+        if ([loginUsername isEqualToString:@""]) {
+            loginUsername = nil;
+        }
+        [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+        //get floors
+        NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+
+        //update floor cache
+        [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+            [self callFinishHandlerIfExistForKey:key withResult:floorList];
+        }];
+
+        DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         [self.cacheFinishHandlers setValue:nil forKey:key];
         DDLogError(@"[Network] Precache %@-%@ failed", topic.topicID, page);
-    };
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
-        [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            
-            //Update Topic
-            NSDictionary *responseDict = responseObject;
-            [topic update:[S1Parser topicInfoFromAPI:responseDict]];
-            
-            //Check Login State
-            NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
-            if ([loginUsername isEqualToString:@""]) {
-                loginUsername = nil;
-            }
-            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
-            //get floors
-            NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
-            
-            //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                [self callFinishHandlerIfExistForKey:key withResult:floorList];
-            }];
-            
-            DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
-        } failure:failureHandler];
-    } else {
-        [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            
-            //Update Topic
-            [topic update:[S1Parser topicInfoFromThreadPage:responseObject page:page withTopicID:topic.topicID]];
-            
-            //check login state
-            NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-            //get floors
-            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
-            
-            //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                [self callFinishHandlerIfExistForKey:key withResult:floorList];
-            }];
-
-            DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
-        } failure:failureHandler];
-    }
+    }];
 }
 
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
@@ -253,6 +197,7 @@
 #pragma mark - Network (Content)
 
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<S1Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
+    NSParameterAssert(![topic isImmutable]);
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
     if (floorList) {
@@ -261,57 +206,31 @@
     }
     
     NSDate *start = [NSDate date];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseAPI"] || YES) {
-        [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-            DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
-            
-            //Update Topic
-            NSDictionary *responseDict = responseObject;
-            [topic update:[S1Parser topicInfoFromAPI:responseDict]];
-            
-            //Check Login State
-            NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
-            if ([loginUsername isEqualToString:@""]) {
-                loginUsername = nil;
-            }
-            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
-            //get floors
-            NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
-            
-            //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                success(floorList, NO);
-            }];
-            
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            failure(error);
+    [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSTimeInterval timeInterval = [start timeIntervalSinceNow];
+        DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
+
+        //Update Topic
+        NSDictionary *responseDict = responseObject;
+        [topic update:[S1Parser topicInfoFromAPI:responseDict]];
+
+        //Check Login State
+        NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
+        if ([loginUsername isEqualToString:@""]) {
+            loginUsername = nil;
+        }
+        [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+        //get floors
+        NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
+
+        //update floor cache
+        [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+            success(floorList, NO);
         }];
-    } else {
-        [S1NetworkManager requestTopicContentForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-            NSTimeInterval timeInterval = [start timeIntervalSinceNow];
-            DDLogDebug(@"[Network] Content Finish Fetch:%f", -timeInterval);
-            
-            //Update Topic
-            [topic update:[S1Parser topicInfoFromThreadPage:responseObject page:page withTopicID:topic.topicID]];
-            
-            //check login state
-            NSString* HTMLString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-            [[NSUserDefaults standardUserDefaults] setValue:[S1Parser loginUserName:HTMLString] forKey:@"InLoginStateID"];
-            
-            //get floors
-            NSArray *floorList = [S1Parser contentsFromHTMLData:responseObject];
-            
-            //update floor cache
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-                success(floorList, NO);
-            }];
-            
-        } failure:^(NSURLSessionDataTask *task, NSError *error) {
-            failure(error);
-        }];
-    }
-    
+
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failure(error);
+    }];
 }
 
 - (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
