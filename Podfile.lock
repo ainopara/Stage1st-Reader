@@ -148,7 +148,6 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - pop
-  - Reachability
   - ReactiveCocoa
   - Reveal-iOS-SDK
   - SnapKit
@@ -166,7 +165,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   JTSImageViewController:
-    :commit: 8e9eced2e517f3f9303a218a79e1b3aa6e4d693a
+    :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
@@ -203,6 +202,6 @@ SPEC CHECKSUMS:
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
   YYKit: 843d1b26e20b82c695790c9a89907eaa1e99907f
 
-PODFILE CHECKSUM: 6d86d65307349e9f2f4a0c85bfcedfb891372598
+PODFILE CHECKSUM: d708191d24fb374178f1e57bef069893403899c7
 
 COCOAPODS: 1.0.1

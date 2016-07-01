@@ -38,7 +38,6 @@ target "Stage1st" do
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod '1PasswordExtension'
-    pod 'Reachability'
     pod 'ReactiveCocoa'
 end
 
