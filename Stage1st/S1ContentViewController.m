@@ -231,17 +231,30 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
 
+    __weak __typeof__(self) weakSelf = self;
     [[RACSignal combineLatest:@[RACObserve(self.viewModel, currentPage), RACObserve(self.viewModel, totalPages)]] subscribeNext:^(RACTuple *x) {
         DDLogVerbose(@"[ContentVM] Current page or totoal page changed: %@/%@", x.first, x.second);
-        [self.pageButton setTitle:[self.viewModel pageButtonString] forState:UIControlStateNormal];
+        __strong __typeof__(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        [strongSelf.pageButton setTitle:[strongSelf.viewModel pageButtonString] forState:UIControlStateNormal];
     }];
 
     [[self.favoriteButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(id x) {
-        [self.viewModel toggleFavorite];
+        __strong __typeof__(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        [strongSelf.viewModel toggleFavorite];
     }];
 
     [RACObserve(self.viewModel.topic, favorite) subscribeNext:^(id x) {
-        [self.favoriteButton setImage:[self.viewModel favoriteButtonImage] forState:UIControlStateNormal];
+        __strong __typeof__(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        [strongSelf.favoriteButton setImage:[strongSelf.viewModel favoriteButtonImage] forState:UIControlStateNormal];
     }];
 
     [self setupActivity];
