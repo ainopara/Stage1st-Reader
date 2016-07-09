@@ -19,7 +19,12 @@ iOS Client for Stage1st. Get it on [App Store](https://itunes.apple.com/app/appl
 ## How to build
 - Clone this repo.
 - `pod install`
+- Install [swiftlint](https://github.com/realm/SwiftLint).
+- (Optional) Add `XcodeColors = YES` to Run Environment Variables in Scheme.
 - Build & run with Xcode
 
+## Run Test Case
+- Add `FB_REFERENCE_IMAGE_DIR = $(SOURCE_ROOT)/$(PROJECT_NAME)Tests/ReferenceImages` to Test/Run Environment Variables in Scheme.
+
 ## License
-BSD License. See LICENSE for details.
+BSD License. See [LICENSE](https://github.com/ainopara/Stage1st-Reader/blob/develop/LICENSE.txt) for details.
