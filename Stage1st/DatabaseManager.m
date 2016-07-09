@@ -12,16 +12,16 @@
 
 
 NSString *const UIDatabaseConnectionWillUpdateNotification = @"UIDatabaseConnectionWillUpdateNotification";
-NSString *const UIDatabaseConnectionDidUpdateNotification  = @"UIDatabaseConnectionDidUpdateNotification";
+NSString *const UIDatabaseConnectionDidUpdateNotification = @"UIDatabaseConnectionDidUpdateNotification";
 NSString *const kNotificationsKey = @"notifications";
 
-NSString *const Collection_Topics    = @"topics";
+NSString *const Collection_Topics = @"topics";
 NSString *const Collection_CloudKit = @"cloudKit";
 
 NSString *const Ext_View_Archive = @"archive";
 NSString *const Ext_FullTextSearch_Archive = @"fullTextSearchArchive";
 NSString *const Ext_searchResultView_Archive = @"searchResultViewArchive";
-NSString *const Ext_CloudKit   = @"cloudKit";
+NSString *const Ext_CloudKit = @"cloudKit";
 
 NSString *const CloudKitZoneName = @"zone1";
 
@@ -155,7 +155,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupDatabase
 {
 	NSString *databasePath = [[self class] databasePath];
-	DDLogDebug(@"databasePath: %@", databasePath);
+	DDLogVerbose(@"[DatabaseManager] databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".
