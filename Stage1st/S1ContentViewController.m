@@ -373,6 +373,8 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
     } cancelBlock:nil origin:self.pageButton];
     picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
+    picker.toolbarBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
+    picker.toolbarButtonsColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     labelParagraphStyle.alignment = NSTextAlignmentCenter;
