@@ -20,6 +20,17 @@ enum LoginProgress {
     case InLogin
 }
 
+func generateURLString(baseURLString: String, parameters: [String: AnyObject]) -> String {
+    let mutableURLRequest = NSMutableURLRequest(URL: NSURL(string: baseURLString)!)
+    let encodedURLRequest = ParameterEncoding.URLEncodedInURL.encode(mutableURLRequest, parameters: parameters).0
+    return encodedURLRequest.URLString
+}
+
+enum AuthMode {
+    case Basic
+    case Secure(hash: String, code: String)
+}
+
 // MARK: - Login
 extension DiscuzAPIManager {
     /**
@@ -58,6 +69,7 @@ extension DiscuzAPIManager {
      - parameter password:             Password of account.
      - parameter secureQuestionNumber: Secure question number of account. This should be set to 0 if no question is setted.
      - parameter secureQuestionAnswer: Answer of secure question of account.
+     - parameter authMode:             Auth mode for log in.
      - parameter successBlock:         Executed if login request finished without network error.
      - parameter failureBlock:         Executed if login request not finished due to network error.
 
@@ -67,10 +79,16 @@ extension DiscuzAPIManager {
                password: String,
                secureQuestionNumber: Int,
                secureQuestionAnswer: String,
+               authMode: AuthMode,
                successBlock: (message: String?) -> Void,
                failureBlock: (error: NSError) -> Void) -> Request {
-        let parameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
-        return Alamofire.request(.POST, baseURL + "/api/mobile/?module=login&version=1&loginsubmit=yes&loginfield=auto&cookietime=2592000&mobile=no", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
+        let bodyParameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
+        var URLParameters: [String: AnyObject] = ["module": "login", "version": 1, "loginsubmit": "yes", "loginfield": "auto", "cookietime": 2592000, "mobile": "no"]
+        if case .Secure(let hash, let code) = authMode {
+            URLParameters["sechash"] = hash
+            URLParameters["seccodeverify"] = code
+        }
+        return Alamofire.request(.POST, generateURLString(baseURL + "/api/mobile/", parameters: URLParameters), parameters: bodyParameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
@@ -78,6 +96,25 @@ extension DiscuzAPIManager {
                     successBlock(message: json["Message"]["messagestr"].string)
                 } else {
                     let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
+                    failureBlock(error: error)
+                }
+            case .Failure(let error):
+                failureBlock(error: error)
+            }
+        }
+    }
+
+    func getSeccodeImage(sechash: String,
+                         successBlock: (image: UIImage) -> Void,
+                         failureBlock: (error: NSError) -> Void) -> Request {
+        let parameters: [String: AnyObject] = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
+        return Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URLEncodedInURL, headers: nil).responseData { (response) in
+            switch response.result {
+            case .Success(let data):
+                if let image = UIImage(data: data) {
+                    successBlock(image: image)
+                } else {
+                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
                     failureBlock(error: error)
                 }
             case .Failure(let error):

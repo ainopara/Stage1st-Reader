@@ -388,7 +388,6 @@
 				866CDB951B526C4800FBB133 /* Quote Floor */,
 				C09587A316CB6218007E0119 /* Settings */,
 				8694BCD51CEC42C200756C4A /* S1WebViewController.swift */,
-				868799221CE629D700F5C75C /* S1LoginViewController.swift */,
 				8671E56F1CFDEB1800F4A854 /* User */,
 			);
 			name = "View Controller";
@@ -682,6 +681,7 @@
 				C09587A416CB623E007E0119 /* SettingsViewController.h */,
 				C09587A516CB623E007E0119 /* SettingsViewController.m */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
+				868799221CE629D700F5C75C /* S1LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
 				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
