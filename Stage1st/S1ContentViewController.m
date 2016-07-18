@@ -99,6 +99,12 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     self = [super initWithNibName:nil bundle:nil];
     if (self != nil) {
         // Custom initialization
+
+        if (topic == nil) {
+            DDLogError(@"[ContentViewController] nil topic detected");
+            return nil;
+        }
+
         _dataCenter = dataCenter;
         _viewModel = [[S1ContentViewModel alloc] initWithTopic:topic dataCenter:self.dataCenter];
 
