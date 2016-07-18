@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 @objc public enum PaletteType: NSInteger {
     case Day
@@ -70,8 +71,12 @@ public class APColorManager: NSObject {
     }
 
     func colorForKey(key: String) -> UIColor {
-        let paletteID: String = (self.colorMap.valueForKey(key) as? String) ?? "default"
-        return self.colorInPaletteWithID(paletteID)
+        if let paletteID = (self.colorMap.valueForKey(key) as? String) {
+            return self.colorInPaletteWithID(paletteID)
+        } else {
+            DDLogWarn("[Color Manager] can't found color \(key), default color used")
+            return self.colorInPaletteWithID("default")
+        }
     }
 }
 
