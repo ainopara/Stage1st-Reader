@@ -81,12 +81,14 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 @property (nonatomic, assign) S1ContentScrollType scrollType;
 
+@property (nonatomic, assign) BOOL webPageAutomaticScrollingEnabled;
+@property (nonatomic, assign) BOOL webPageDocumentReadyForAutomaticScrolling;
+@property (nonatomic, assign) BOOL webPageContentSizeChangedForAutomaticScrolling;
+
 @end
 
 @implementation S1ContentViewController {
     BOOL _finishFirstLoading;
-
-    BOOL _webPageDocumentReadyForAutomaticScrolling;
 
     BOOL _presentingImageViewer;
     BOOL _presentingWebViewer;
@@ -109,6 +111,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
         _viewModel = [[S1ContentViewModel alloc] initWithTopic:topic dataCenter:self.dataCenter];
 
         _scrollType = S1ContentScrollTypeRestorePosition;
+        _webPageAutomaticScrollingEnabled = YES;
     }
     return self;
 }
@@ -245,6 +248,18 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
             return;
         }
         [strongSelf.pageButton setTitle:[strongSelf.viewModel pageButtonString] forState:UIControlStateNormal];
+    }];
+
+    [[RACSignal combineLatest:@[RACObserve(self, webPageDocumentReadyForAutomaticScrolling), RACObserve(self, webPageContentSizeChangedForAutomaticScrolling)]] subscribeNext:^(RACTuple *x) {
+        DDLogVerbose(@"[ContentVC] document ready: %@, content size changed: %@", x.first, x.second);
+        __strong __typeof__(self) strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        if ([x.first boolValue] && [x.second boolValue] && strongSelf.webPageAutomaticScrollingEnabled) {
+            [strongSelf didFinishBasicPageLoadForWebView:strongSelf.webView];
+            strongSelf.webPageAutomaticScrollingEnabled = NO;
+        }
     }];
 
     [[self.favoriteButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(id x) {
@@ -468,7 +483,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
         if ([request.URL.path isEqualToString:@"/ready"]) {
             DDLogDebug(@"[WebView] ready");
-            [self didFinishBasicPageLoadForWebView:self.webView];
+            self.webPageDocumentReadyForAutomaticScrolling = YES;
             return NO;
         }
 
@@ -692,12 +707,8 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 - (void)scrollViewContentSizeDidChange:(CGSize)contentSize {
     [self updateDecorationLines:contentSize];
-    UIWebView *webView = self.webView;
-    if (webView != nil && _webPageDocumentReadyForAutomaticScrolling == YES) {
-        _webPageDocumentReadyForAutomaticScrolling = NO;
-//        [self didFinishBasicPageLoadForWebView:self.webView];
-    }
 
+    self.webPageContentSizeChangedForAutomaticScrolling = YES;
 }
 
 - (void)scrollViewContentOffsetProgress:(NSDictionary * __nonnull)progress {
@@ -1049,7 +1060,9 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     DDLogDebug(@"[webView] pre change current page");
     [self cancelRequest];
     [self saveViewPositionForCurrentPage];
-    _webPageDocumentReadyForAutomaticScrolling = YES;
+    self.webPageDocumentReadyForAutomaticScrolling = NO;
+    self.webPageContentSizeChangedForAutomaticScrolling = NO;
+    self.webPageAutomaticScrollingEnabled = YES;
 }
 
 - (void)preLoadNextPage {
