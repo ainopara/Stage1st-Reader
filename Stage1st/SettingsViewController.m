@@ -20,7 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *keepHistoryDetail;
 @property (weak, nonatomic) IBOutlet UISwitch *removeTailsSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *versionDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *useAPISwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *nightModeSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *forcePortraitSwitch;
@@ -51,24 +50,15 @@
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
 
-    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    if (inLoginStateID) {
-        self.usernameDetail.text = inLoginStateID;
-    }
     self.forumOrderCell.textLabel.text = NSLocalizedString(@"SettingView_Forum_Order_Custom", @"Forum Order");
-    self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-    
+
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
     self.forcePortraitSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"];
     if (IS_IPAD) {
         self.forcePortraitCell.hidden = YES;
     }
     
-    self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-    
     self.removeTailsSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"];
-    self.useAPISwitch.on = YES;
-    self.useAPISwitch.enabled = NO;
     self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
     self.nightModeSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"];
     
@@ -85,8 +75,6 @@
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    [self updateiCloudStatus];
     
     self.offset = 0;
     self.tableView.delegate = self;
@@ -107,8 +95,8 @@
     }
 
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
+
     [self updateiCloudStatus];
 }
 
@@ -124,14 +112,14 @@
 }
 
 #pragma mark - Pull To Close
+
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (self.offset < -36) {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqualToString:@"contentOffset"]) {
         self.offset = [[change objectForKey:@"new"] CGPointValue].y + 64;
     }
@@ -139,8 +127,7 @@
 
 #pragma mark - Orientation
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             return UIInterfaceOrientationMaskPortrait;
@@ -149,8 +136,7 @@
     return [super supportedInterfaceOrientations];
 }
 
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             return UIInterfaceOrientationPortrait;
@@ -158,7 +144,9 @@
     }
     return [super preferredInterfaceOrientationForPresentation];
 }
+
 #pragma mark - Navigation
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row == 7) {
         if (IS_IPAD) {
@@ -216,10 +204,6 @@
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"RemoveTails"];
 }
 
-- (IBAction)switchUseAPI:(UISwitch *)sender {
-
-}
-
 - (IBAction)switchPrecache:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"PrecacheNextPage"];
 }
@@ -239,7 +223,6 @@
     [self.displayImageSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.removeTailsSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.precacheSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
-    [self.useAPISwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.forcePortraitSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.nightModeSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.navigationController.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.bartint"]];
