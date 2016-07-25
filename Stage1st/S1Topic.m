@@ -28,6 +28,9 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 - (instancetype)initWithTopicID:(NSNumber *)topicID {
     self = [super init];
     if (self != nil) {
+        if (topicID == nil) {
+            return nil;
+        }
         _topicID = topicID;
         _favorite = @(NO);
         _modelVersion = @1;

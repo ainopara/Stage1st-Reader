@@ -212,7 +212,10 @@
 
         //Update Topic
         NSDictionary *responseDict = responseObject;
-        [topic update:[S1Parser topicInfoFromAPI:responseDict]];
+        S1Topic *topicFromPageResponse = [S1Parser topicInfoFromAPI:responseDict];
+        if (topicFromPageResponse != nil) {
+            [topic update:topicFromPageResponse];
+        }
 
         //Check Login State
         NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
