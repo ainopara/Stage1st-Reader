@@ -139,9 +139,16 @@ S1AppDelegate *MyAppDelegate;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[userDefaults objectForKey:@"FontSize"] isEqualToString:@"17px"]) {
         [userDefaults setObject:@"18px" forKey:@"FontSize"];
     }
+
     // Migrate to v3.8
     if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
         NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
+        [userDefaults setValue:order forKey:@"Order"];
+    }
+
+    // Migrate to v3.9
+    if([array0 indexOfObject:@"DOTA"] == NSNotFound && [array1 indexOfObject:@"DOTA"]== NSNotFound) {
+        NSArray *order = @[array0, [[array1 arrayByAddingObject:@"DOTA"] arrayByAddingObject:@"欧美动漫"]];
         [userDefaults setValue:order forKey:@"Order"];
     }
 
