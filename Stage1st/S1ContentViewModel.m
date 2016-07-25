@@ -251,6 +251,8 @@
     NSMutableString *mutableContent = [content mutableCopy];
     NSString *tailPattern = @"((\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|( |&nbsp;)*—— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*)?((<br ?/>|<br></br>)<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?";
     [S1Global regexReplaceString:mutableContent matchPattern:tailPattern withTemplate:@""];
+    NSString *otherClientPattern = @"(\\<br />\\n)*(----发送自我的(iPhone|iPad) via )<a href[^>]*saralin[^>]*>[^<]*</a>";
+    [S1Global regexReplaceString:mutableContent matchPattern:otherClientPattern withTemplate:@""];
     return mutableContent;
 }
 
