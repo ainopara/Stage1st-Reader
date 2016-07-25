@@ -160,7 +160,7 @@
 }
 #pragma mark - Navigation
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 8) {
+    if (indexPath.section == 0 && indexPath.row == 7) {
         if (IS_IPAD) {
             return 0;
         }
