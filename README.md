@@ -19,7 +19,7 @@ iOS Client for Stage1st. Get it on [App Store](https://itunes.apple.com/app/appl
 ## How to build
 - Clone this repo.
 - `pod install`
-- Install [swiftlint](https://github.com/realm/SwiftLint).
+- (Optional) Install [swiftlint](https://github.com/realm/SwiftLint).
 - (Optional) Add `XcodeColors = YES` to Run Environment Variables in Scheme.
 - Build & run with Xcode
 
