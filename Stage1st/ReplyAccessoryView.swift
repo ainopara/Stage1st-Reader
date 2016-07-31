@@ -60,7 +60,10 @@ class ReplyAccessoryView: UIView {
         }
     }
 
-    // MARK: - Actions
+}
+
+// MARK: - Actions
+extension ReplyAccessoryView {
     func toggleFace(button: UIButton) {
         guard let composeViewController = composeViewController else {
             return

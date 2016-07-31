@@ -417,6 +417,11 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 - (void)action:(id)sender {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+    UIAlertAction *reportAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Report", @"Report") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        ;
+    }];
+
     // Reply Action
     UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self presentReplyViewToFloor:nil];
@@ -456,7 +461,8 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     }];
     // Cancel Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
-    
+
+    [moreActionSheet addAction:reportAction];
     [moreActionSheet addAction:replyAction];
     if (![self shouldPresentingFavoriteButtonOnToolBar]) {
         [moreActionSheet addAction:favoriteAction];
