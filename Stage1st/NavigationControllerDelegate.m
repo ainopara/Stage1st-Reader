@@ -15,19 +15,18 @@
 @interface NavigationControllerDelegate () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) UINavigationController *navigationController;
-@property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *popAnimator;
-@property (strong, nonatomic) NSObject <UIViewControllerAnimatedTransitioning> *pushAnimator;
+@property (strong, nonatomic) NSObject<UIViewControllerAnimatedTransitioning> *popAnimator;
+@property (strong, nonatomic) NSObject<UIViewControllerAnimatedTransitioning> *pushAnimator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
-
 
 @end
 
-
 @implementation NavigationControllerDelegate
 
-- (instancetype)initWithNavigationController:(UINavigationController *)navigationController {
+- (instancetype)initWithNavigationController:(UINavigationController *)navigationController
+{
     self = [super init];
-    if (self) {
+    if (self != nil) {
         self.navigationController = navigationController;
         self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
@@ -40,8 +39,9 @@
     return self;
 }
 
-- (void)colorPan:(UIPanGestureRecognizer *)recognizer {
-    UIView* view = self.navigationController.view;
+- (void)colorPan:(UIPanGestureRecognizer *)recognizer
+{
+    UIView *view = self.navigationController.view;
     CGPoint translation = [recognizer translationInView:view];
     if (recognizer.state == UIGestureRecognizerStateChanged) {
         DDLogVerbose(@"[ColorPan] %f",translation.y);
@@ -60,7 +60,8 @@
     }
 }
 
-- (void)pan:(UIPanGestureRecognizer*)recognizer {
+- (void)pan:(UIPanGestureRecognizer*)recognizer
+{
     UIView* view = self.navigationController.view;
     CGPoint translation = [recognizer translationInView:view];
     if (recognizer.state == UIGestureRecognizerStateBegan) {
@@ -96,7 +97,8 @@
     }
 }
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
     if (gestureRecognizer == self.colorPanRecognizer && gestureRecognizer.numberOfTouches == 1) {
         return NO;
     }
@@ -116,11 +118,13 @@
     return nil;
 }
 
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController {
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
+{
     return self.interactionController;
 }
 
-- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
+- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
+{
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"]) {
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
             return UIInterfaceOrientationMaskPortrait;

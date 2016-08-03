@@ -14,6 +14,7 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <Reachability/Reachability.h>
 
 @interface S1ContentViewModel ()
 

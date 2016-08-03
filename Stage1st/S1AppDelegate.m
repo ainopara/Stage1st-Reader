@@ -22,15 +22,9 @@
 #import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-//#import <FBMemoryProfiler/FBMemoryProfiler.h>
+#import <Reachability/Reachability.h>
 
 S1AppDelegate *MyAppDelegate;
-
-//@interface S1AppDelegate () {
-//    FBMemoryProfiler *_memoryProfiler;
-//}
-//
-//@end
 
 @implementation S1AppDelegate
 
@@ -54,14 +48,9 @@ S1AppDelegate *MyAppDelegate;
 #endif
         [self setLogLevelForSwift];
         [DDLog addLogger:logger];
-
-//        FBMemoryProfiler *memoryProfiler = [FBMemoryProfiler new];
-//        [memoryProfiler enable];
-//        _memoryProfiler = memoryProfiler;
     }
     return self;
 }
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Crashlytics
@@ -119,7 +108,7 @@ S1AppDelegate *MyAppDelegate;
     NSArray *array = [userDefaults valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
-    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
+    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"] == NSNotFound) {
         DDLogDebug(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
@@ -141,13 +130,13 @@ S1AppDelegate *MyAppDelegate;
     }
 
     // Migrate to v3.8
-    if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
+    if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"] == NSNotFound) {
         NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
         [userDefaults setValue:order forKey:@"Order"];
     }
 
     // Migrate to v3.9
-    if([array0 indexOfObject:@"DOTA"] == NSNotFound && [array1 indexOfObject:@"DOTA"]== NSNotFound) {
+    if([array0 indexOfObject:@"DOTA"] == NSNotFound && [array1 indexOfObject:@"DOTA"] == NSNotFound) {
         NSArray *order = @[array0, [[array1 arrayByAddingObject:@"DOTA"] arrayByAddingObject:@"欧美动漫"]];
         [userDefaults setValue:order forKey:@"Order"];
     }
@@ -176,8 +165,6 @@ S1AppDelegate *MyAppDelegate;
 
     // Appearence
     [[APColorManager sharedInstance] updateGlobalAppearance];
-
-    //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];

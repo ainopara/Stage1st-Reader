@@ -5,11 +5,12 @@
 //  Created by Suen Gabriel on 2/12/13.
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
+
 #import <UIKit/UIKit.h>
-#import <Reachability/Reachability.h>
 
 @class S1AppDelegate;
 @class NavigationControllerDelegate;
+@class Reachability;
 
 extern S1AppDelegate *MyAppDelegate;
 
