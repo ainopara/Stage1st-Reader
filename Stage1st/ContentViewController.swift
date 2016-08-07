@@ -17,7 +17,7 @@ extension S1ContentViewController {
 // MARK: Navigation
 extension S1ContentViewController {
     func showUserViewController(userID: NSNumber) {
-        let viewModel = S1UserViewModel(user: User(ID: userID.integerValue))
+        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.integerValue))
         let userViewController = S1UserViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(userViewController, animated: true)
     }

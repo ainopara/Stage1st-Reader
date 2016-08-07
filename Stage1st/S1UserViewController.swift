@@ -12,7 +12,7 @@ import Alamofire
 import Kingfisher
 
 final class S1UserViewController: UIViewController {
-    private(set) var viewModel: S1UserViewModel
+    private(set) var viewModel: UserViewModel
 
     private let scrollView = UIScrollView(frame: CGRect.zero)
     private let containerView = UIView(frame: CGRect.zero)
@@ -22,7 +22,7 @@ final class S1UserViewController: UIViewController {
     private let infoLabel = UILabel(frame: CGRect.zero)
 
     // MARK: - Life Cycle
-    init(viewModel: S1UserViewModel) {
+    init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
 //        self.modalPresentationStyle = .Popover
