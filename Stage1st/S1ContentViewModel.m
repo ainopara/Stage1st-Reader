@@ -154,8 +154,7 @@
     return output;
 }
 
-+ (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic
-{
++ (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic {
     NSString *topicBody = [[NSString alloc] init];
     for (S1Floor *topicFloor in floorList) {
 
@@ -268,8 +267,7 @@
     return CSSTemplate;
 }
 
-+ (NSString *)processHTMLString:(NSString *)HTMLString
-{
++ (NSString *)processHTMLString:(NSString *)HTMLString {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     // process images
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
