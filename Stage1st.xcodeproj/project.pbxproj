@@ -22,7 +22,7 @@
 		86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* S1ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* S1Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* S1Utility.swift */; };
 		862CECE518D34611006CA29F /* S1Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = 862CECE418D34611006CA29F /* S1Floor.m */; };
-		862DB79A1C8891070068F75F /* S1UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* S1UserViewController.swift */; };
+		862DB79A1C8891070068F75F /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* UserViewController.swift */; };
 		862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A01C8AB0000068F75F /* ColorManager.swift */; };
 		862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A11C8AB0000068F75F /* PullToActionController.swift */; };
 		862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */; };
@@ -141,7 +141,7 @@
 		86221B851CA65E3600015522 /* S1Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Utility.swift; path = Stage1st/S1Utility.swift; sourceTree = "<group>"; };
 		862CECE318D34611006CA29F /* S1Floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1Floor.h; path = Stage1st/S1Floor.h; sourceTree = "<group>"; };
 		862CECE418D34611006CA29F /* S1Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1Floor.m; path = Stage1st/S1Floor.m; sourceTree = "<group>"; };
-		862DB7991C8891070068F75F /* S1UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1UserViewController.swift; path = Stage1st/S1UserViewController.swift; sourceTree = "<group>"; };
+		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewController.swift; path = Stage1st/UserViewController.swift; sourceTree = "<group>"; };
 		862DB7A01C8AB0000068F75F /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorManager.swift; path = Vendors/ColorManager/ColorManager.swift; sourceTree = "<group>"; };
 		862DB7A11C8AB0000068F75F /* PullToActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PullToActionController.swift; path = Vendors/PullToActionViewController/PullToActionController.swift; sourceTree = "<group>"; };
 		862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReplyAccessoryView.swift; path = Stage1st/ReplyAccessoryView.swift; sourceTree = "<group>"; };
@@ -407,7 +407,7 @@
 			isa = PBXGroup;
 			children = (
 				8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */,
-				862DB7991C8891070068F75F /* S1UserViewController.swift */,
+				862DB7991C8891070068F75F /* UserViewController.swift */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -1051,7 +1051,7 @@
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
-				862DB79A1C8891070068F75F /* S1UserViewController.swift in Sources */,
+				862DB79A1C8891070068F75F /* UserViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

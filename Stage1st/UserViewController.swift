@@ -1,5 +1,5 @@
 //
-//  S1UserViewController.swift
+//  UserViewController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 3/3/16.
@@ -11,7 +11,7 @@ import UIKit
 import Alamofire
 import Kingfisher
 
-final class S1UserViewController: UIViewController {
+final class UserViewController: UIViewController {
     private(set) var viewModel: UserViewModel
 
     private let scrollView = UIScrollView(frame: CGRect.zero)
