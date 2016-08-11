@@ -16,11 +16,21 @@ class S1QuoteFloorViewController: UIViewController {
     var pageURL: NSURL?
     var topic: S1Topic?
     var floors: [S1Floor]?
-    var useTableView: Bool = false
+    var useTableView: Bool = true
     var centerFloorID: Int = 0
 
     var tableView: UITableView?
     var webView = UIWebView()
+    let viewModel: QuoteFloorViewModel
+
+    init(viewModel: QuoteFloorViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -34,8 +44,9 @@ class S1QuoteFloorViewController: UIViewController {
             tableView.delegate = self
             tableView.dataSource = self
             tableView.rowHeight = UITableViewAutomaticDimension
-            tableView.separatorStyle = .None
             tableView.estimatedRowHeight = 100.0
+            tableView.separatorStyle = .None
+            tableView.registerClass(QuoteFloorCell.self, forCellReuseIdentifier: "QuoteCell")
             self.view.addSubview(tableView)
 
             tableView.snp_makeConstraints(closure: { (make) -> Void in
@@ -75,29 +86,35 @@ class S1QuoteFloorViewController: UIViewController {
 }
 
 // MARK: - Table View Delegate
-extension S1QuoteFloorViewController: UITableViewDelegate, UITableViewDataSource {
-
+extension S1QuoteFloorViewController: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return viewModel.numberOfSection()
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.floors?.count ?? 0
+        return viewModel.numberOfRow(in: section)
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: S1QuoteFloorCell = tableView.dequeueReusableCellWithIdentifier("QuoteCell") as? S1QuoteFloorCell ?? S1QuoteFloorCell(style:.Default, reuseIdentifier: "QuoteCell")
-        let floor = self.floors![indexPath.row]
-        let viewModel = FloorViewModel(floorModel: floor, topicModel: self.topic!)
-        cell.updateWithViewModel(viewModel)
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("QuoteCell", forIndexPath: indexPath) as! QuoteFloorCell
+        cell.configure(viewModel.presenting(at: indexPath))
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         return cell
+    }
+}
+
+extension S1QuoteFloorViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
     }
 }
 
 // MARK: - WebView Delegate
 extension S1QuoteFloorViewController: UIWebViewDelegate {
-
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard let URL = request.URL else {
             return false

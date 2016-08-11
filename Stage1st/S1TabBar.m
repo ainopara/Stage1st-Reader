@@ -186,7 +186,7 @@
     return offset;
 }
 
-- (CGFloat) determineWidthPerItem {
+- (CGFloat)determineWidthPerItem {
     CGFloat screenWidth = self.bounds.size.width;
     CGFloat keyCountWidth = screenWidth / [_keys count];
     CGFloat expectWidth = fmaxf([self.minButtonWidth doubleValue], screenWidth / [self.expectPresentingButtonCount integerValue]);
@@ -203,7 +203,7 @@
     _index = index;
     [_buttons[_index] setSelected:YES];
     [self scrollRectToVisible:[_buttons[_index] frame] animated:YES];
-    
+
 }
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view {

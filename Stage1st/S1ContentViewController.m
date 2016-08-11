@@ -584,14 +584,14 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
                         if ([chainQuoteFloors count] > 0) {
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.viewModel.topic copy];
-                            NSString *htmlString = [S1ContentViewModel generateContentPage:chainQuoteFloors withTopic:quoteTopic];
-                            S1QuoteFloorViewController *quoteFloorViewController = [[S1QuoteFloorViewController alloc] initWithNibName:nil bundle:nil];
-                            quoteFloorViewController.topic = quoteTopic;
-                            quoteFloorViewController.floors = chainQuoteFloors;
-                            quoteFloorViewController.htmlString = htmlString;
-                            quoteFloorViewController.pageURL = [S1ContentViewModel pageBaseURL];
-                            quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
-                            [[self navigationController] pushViewController:quoteFloorViewController animated:YES];
+//                            NSString *htmlString = [S1ContentViewModel generateContentPage:chainQuoteFloors withTopic:quoteTopic];
+//                            S1QuoteFloorViewController *quoteFloorViewController = [[S1QuoteFloorViewController alloc] initWithNibName:nil bundle:nil];
+//                            quoteFloorViewController.topic = quoteTopic;
+//                            quoteFloorViewController.floors = chainQuoteFloors;
+//                            quoteFloorViewController.htmlString = htmlString;
+//                            quoteFloorViewController.pageURL = [S1ContentViewModel pageBaseURL];
+//                            quoteFloorViewController.centerFloorID = [[[chainQuoteFloors lastObject] floorID] integerValue];
+                            [self showQuoteFloorViewControllerWithTopic:quoteTopic floors:chainQuoteFloors];
                             [Answers logCustomEventWithName:@"[Content] Quote Link" customAttributes:nil];
                             return NO;
                         }

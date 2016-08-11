@@ -61,6 +61,7 @@
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
 		86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */; };
 		86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */; };
+		86DC0FAA1D59635900CD13B8 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DC0FA91D59635900CD13B8 /* ReportComposeViewController.swift */; };
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
 		86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */; };
@@ -68,9 +69,9 @@
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
 		86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EBF1F01CE720FB00641A2D /* S1Animator.swift */; };
-		86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */; };
+		86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
-		86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */; };
+		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
 		86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD82771CF9A75600C9700E /* S1FoundationTests.swift */; };
 		86FEACE61CDF5F5B00ECD694 /* DiscuzAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* DiscuzAPIManager.swift */; };
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
@@ -202,6 +203,7 @@
 		86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = MahjongCategoryOrder.plist; path = Stage1st/MahjongCategoryOrder.plist; sourceTree = "<group>"; };
 		86D20FE01CA6B638003F2691 /* DDErrorLevelFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDErrorLevelFormatter.h; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.h; sourceTree = "<group>"; };
 		86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDErrorLevelFormatter.m; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.m; sourceTree = "<group>"; };
+		86DC0FA91D59635900CD13B8 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Poll.swift; path = Stage1st/Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
 		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
@@ -213,9 +215,9 @@
 		86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashlyticsLogger.m; path = Vendors/CrashlyticsLogger/CrashlyticsLogger.m; sourceTree = "<group>"; };
 		86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = WebTemplate.bundle; path = Stage1st/WebTemplate.bundle; sourceTree = "<group>"; };
 		86EBF1F01CE720FB00641A2D /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Animator.swift; path = Stage1st/S1Animator.swift; sourceTree = "<group>"; };
-		86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloorViewModel.swift; path = Stage1st/FloorViewModel.swift; sourceTree = "<group>"; };
+		86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QuoteFloorViewModel.swift; path = Stage1st/QuoteFloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
-		86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1QuoteFloorCell.swift; path = Stage1st/S1QuoteFloorCell.swift; sourceTree = "<group>"; };
+		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QuoteFloorCell.swift; path = Stage1st/QuoteFloorCell.swift; sourceTree = "<group>"; };
 		86FD82771CF9A75600C9700E /* S1FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1FoundationTests.swift; sourceTree = "<group>"; };
 		86FEACE51CDF5F5B00ECD694 /* DiscuzAPIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DiscuzAPIManager.swift; path = Stage1st/DiscuzAPIManager.swift; sourceTree = "<group>"; };
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Stage1st/SettingsViewController.swift; sourceTree = "<group>"; };
@@ -386,6 +388,7 @@
 				863580111A945DED007B21AD /* Topic List */,
 				863580121A945DFF007B21AD /* Content */,
 				866CDB951B526C4800FBB133 /* Quote Floor */,
+				86DC0FA91D59635900CD13B8 /* ReportComposeViewController.swift */,
 				C09587A316CB6218007E0119 /* Settings */,
 				8694BCD51CEC42C200756C4A /* S1WebViewController.swift */,
 				8671E56F1CFDEB1800F4A854 /* User */,
@@ -397,8 +400,8 @@
 			isa = PBXGroup;
 			children = (
 				866CDB961B526DB100FBB133 /* S1QuoteFloorViewController.swift */,
-				86F312E91C4F54100026D6BB /* S1QuoteFloorCell.swift */,
-				86EF6CE91C6879D7007ADEE4 /* FloorViewModel.swift */,
+				86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */,
+				86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */,
 			);
 			name = "Quote Floor";
 			sourceTree = "<group>";
@@ -981,7 +984,7 @@
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,
 				86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */,
-				86F312EA1C4F54100026D6BB /* S1QuoteFloorCell.swift in Sources */,
+				86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */,
 				868799211CE629BE00F5C75C /* JASON+Alamofire.swift in Sources */,
@@ -991,6 +994,7 @@
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				862CECE518D34611006CA29F /* S1Floor.m in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
+				86DC0FAA1D59635900CD13B8 /* ReportComposeViewController.swift in Sources */,
 				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,
 				86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
@@ -1037,7 +1041,7 @@
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
-				86EF6CEA1C6879D7007ADEE4 /* FloorViewModel.swift in Sources */,
+				86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */,
 				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */,
 				86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */,

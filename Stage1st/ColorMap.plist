@@ -96,6 +96,8 @@
 	<string>7</string>
 	<key>content.picker.text</key>
 	<string>8</string>
+	<key>quote.tableview.cell.title</key>
+	<string>9</string>
 	<key>reply.background</key>
 	<string>7</string>
 	<key>reply.text</key>

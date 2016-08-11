@@ -21,7 +21,8 @@ target "Stage1st" do
     pod 'pop'
 
     pod 'DTCoreText'
-    pod 'YYKit'
+    pod 'YYKeyboardManager'
+    pod 'TextAttributes'
 
     # Database
     pod 'FMDB'

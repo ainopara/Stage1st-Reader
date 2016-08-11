@@ -6,13 +6,13 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import UIKit
-//import ReactiveCocoa
-import Alamofire
+import Result
+import ReactiveCocoa
+import SnapKit
 import Kingfisher
 
 final class UserViewController: UIViewController {
-    private(set) var viewModel: UserViewModel
+    private let viewModel: UserViewModel
 
     private let scrollView = UIScrollView(frame: CGRect.zero)
     private let containerView = UIView(frame: CGRect.zero)

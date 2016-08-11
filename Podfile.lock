@@ -65,6 +65,7 @@ PODS:
   - Result (2.1.2)
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (0.21.1)
+  - TextAttributes (0.3.1)
   - YapDatabase (2.9.1):
     - YapDatabase/Standard (= 2.9.1)
   - YapDatabase/Standard (2.9.1):
@@ -115,9 +116,7 @@ PODS:
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/Views (2.9.1):
     - YapDatabase/Standard/Core
-  - YYKit (1.0.7):
-    - YYKit/no-arc (= 1.0.7)
-  - YYKit/no-arc (1.0.7)
+  - YYKeyboardManager (1.0.1)
 
 DEPENDENCIES:
   - 1PasswordExtension
@@ -142,8 +141,9 @@ DEPENDENCIES:
   - ReactiveCocoa
   - Reveal-iOS-SDK
   - SnapKit
+  - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
-  - YYKit
+  - YYKeyboardManager
 
 EXTERNAL SOURCES:
   JTSImageViewController:
@@ -190,9 +190,10 @@ SPEC CHECKSUMS:
   Result: 6e722d4a66b1408680dbfcdf51c0b1c4b706316a
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: bbad04cb016c7cead63965f16b00c09318d271ee
+  TextAttributes: b43233c6356a72f1c1e483d5bda694535432a4be
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
-  YYKit: 843d1b26e20b82c695790c9a89907eaa1e99907f
+  YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: d708191d24fb374178f1e57bef069893403899c7
+PODFILE CHECKSUM: f2dc7015c364a2fdf44f6bb17289efd15bd15875
 
 COCOAPODS: 1.0.1
