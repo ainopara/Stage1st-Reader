@@ -11,7 +11,7 @@ import JASON
 
 let kUserID = "userID"
 
-class User: NSObject, NSCoding {
+public class User: NSObject, NSCoding {
     let ID: Int
     var name: String?
     var customStatus: String?
@@ -25,12 +25,12 @@ class User: NSObject, NSCoding {
         return NSURL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
     }
 
-    init(ID: Int) {
+    public init(ID: Int) {
         self.ID = ID
         super.init()
     }
 
-    init?(json: JSON) {
+    public init?(json: JSON) {
         let space = json["Variables"]["space"]
         guard let IDString = space["uid"].string, ID = Int(IDString) else { return nil }
 
@@ -50,7 +50,7 @@ class User: NSObject, NSCoding {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         guard let ID = aDecoder.decodeObjectForKey(kUserID) as? Int else {
             return nil
         }
@@ -59,7 +59,7 @@ class User: NSObject, NSCoding {
         // FIXME: Finish it.
     }
 
-    func encodeWithCoder(aCoder: NSCoder) {
+    public func encodeWithCoder(aCoder: NSCoder) {
         // FIXME: Finish it.
     }
 }

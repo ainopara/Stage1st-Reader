@@ -238,7 +238,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTopicViewedState:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"S1PaletteDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
 
     __weak __typeof__(self) weakSelf = self;
     [[RACSignal combineLatest:@[RACObserve(self.viewModel, currentPage), RACObserve(self.viewModel, totalPages)]] subscribeNext:^(RACTuple *x) {
@@ -419,7 +419,8 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
     UIAlertAction *reportAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Report", @"Report") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        ;
+        UIViewController *reportViewController = [self reportViewController];
+        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:reportViewController] animated:true completion:NULL];
     }];
 
     // Reply Action

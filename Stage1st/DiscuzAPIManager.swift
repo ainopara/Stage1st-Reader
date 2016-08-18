@@ -6,9 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Foundation
-
-final class DiscuzAPIManager: NSObject {
+public final class DiscuzAPIManager: NSObject {
     let baseURL: String
     var formhash: String?
     var auth: String?

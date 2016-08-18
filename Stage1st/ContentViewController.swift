@@ -57,3 +57,9 @@ extension S1ContentViewController {
         activity.webpageURL = self.viewModel.correspondingWebPageURL()
     }
 }
+
+extension S1ContentViewController {
+    func reportViewController() -> UIViewController {
+        return ReportComposeViewController(viewModel: ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: S1Topic(), floor: S1Floor()))
+    }
+}

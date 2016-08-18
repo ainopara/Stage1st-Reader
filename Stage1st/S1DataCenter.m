@@ -19,6 +19,7 @@
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) id<S1Backend> tracer;
+@property (strong, nonatomic) DiscuzAPIManager *apiManager;
 
 @property (strong, nonatomic) NSString *formhash;
 

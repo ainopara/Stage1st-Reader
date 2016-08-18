@@ -95,3 +95,10 @@ final class UserViewController: UIViewController {
         }
     }
 }
+
+// MARK: - Style
+extension UserViewController {
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    }
+}

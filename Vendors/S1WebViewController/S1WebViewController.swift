@@ -119,7 +119,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         }
 
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: "S1PaletteDidChangeNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
 
         webView.loadRequest(NSURLRequest(URL: URLToOpen))
     }

@@ -81,6 +81,5 @@ final class QuoteFloorCell: UITableViewCell {
         floorLabel.attributedText = presenting.floorMark
 //        webView.loadHTMLString(presenting.contentPage, baseURL: nil)
         contentLabel.attributedString = presenting.content
-        
     }
 }

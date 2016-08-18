@@ -104,6 +104,12 @@
 	<string>8</string>
 	<key>reply.tint</key>
 	<string>3</string>
+	<key>report.background</key>
+	<string>7</string>
+	<key>report.text</key>
+	<string>8</string>
+	<key>report.tint</key>
+	<string>3</string>
 	<key>mahjongface.background</key>
 	<string>5</string>
 	<key>mahjongface.pagecontrol.indicatortint</key>

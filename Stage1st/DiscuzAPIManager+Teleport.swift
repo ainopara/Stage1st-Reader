@@ -26,13 +26,8 @@ func generateURLString(baseURLString: String, parameters: [String: AnyObject]) -
     return encodedURLRequest.URLString
 }
 
-enum AuthMode {
-    case Basic
-    case Secure(hash: String, code: String)
-}
-
 // MARK: - Login
-extension DiscuzAPIManager {
+public extension DiscuzAPIManager {
     /**
      A check request should be sent to a discuz! server to make sure whether a seccode is necessary for login.
 
@@ -42,7 +37,7 @@ extension DiscuzAPIManager {
 
      - returns: Request object.
      */
-    func checkLoginType(noSechashBlock noSechashBlock: () -> Void,
+    public func checkLoginType(noSechashBlock noSechashBlock: () -> Void,
                                        hasSeccodeBlock: (sechash: String) -> Void,
                                        failureBlock: (error: NSError) -> Void) -> Request {
         logOut()
@@ -62,6 +57,11 @@ extension DiscuzAPIManager {
         }
     }
 
+    public enum AuthMode {
+        case Basic
+        case Secure(hash: String, code: String)
+    }
+
     /**
      Request to login when seccode is not necessary.
 
@@ -75,20 +75,23 @@ extension DiscuzAPIManager {
 
      - returns: Request object.
      */
-    func logIn(username: String,
+    public func logIn(username: String,
                password: String,
                secureQuestionNumber: Int,
                secureQuestionAnswer: String,
                authMode: AuthMode,
                successBlock: (message: String?) -> Void,
                failureBlock: (error: NSError) -> Void) -> Request {
-        let bodyParameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
+        // Generate URLString
         var URLParameters: [String: AnyObject] = ["module": "login", "version": 1, "loginsubmit": "yes", "loginfield": "auto", "cookietime": 2592000, "mobile": "no"]
         if case .Secure(let hash, let code) = authMode {
             URLParameters["sechash"] = hash
             URLParameters["seccodeverify"] = code
         }
-        return Alamofire.request(.POST, generateURLString(baseURL + "/api/mobile/", parameters: URLParameters), parameters: bodyParameters, encoding: .URL, headers: nil).responseJASON { (response) in
+        let URLString = generateURLString(baseURL + "/api/mobile/", parameters: URLParameters)
+
+        let bodyParameters: [String: AnyObject] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
+        return Alamofire.request(.POST, URLString, parameters: bodyParameters, encoding: .URL, headers: nil).responseJASON { (response) in
             debugPrint(response.request)
             switch response.result {
             case .Success(let json):
@@ -144,8 +147,8 @@ extension DiscuzAPIManager {
 }
 
 // MARK: - Profile
-extension DiscuzAPIManager {
-    func profile(userID: Int, responseBlock:(result: Result<User, NSError>) -> Void) -> Request {
+public extension DiscuzAPIManager {
+    public func profile(userID: Int, responseBlock:(result: Result<User, NSError>) -> Void) -> Request {
         let parameters: [String: AnyObject] = ["module": "profile", "version": 1, "uid": userID, "mobile": "no"]
         return Alamofire.request(.GET, baseURL + "/api/mobile/index.php", parameters: parameters, encoding: .URL, headers: nil).responseJASON { (response) in
             switch response.result {
@@ -159,6 +162,19 @@ extension DiscuzAPIManager {
             case .Failure(let error):
                 responseBlock(result: .Failure(error))
             }
+        }
+    }
+}
+
+// MARK: - Report
+public extension DiscuzAPIManager {
+    func report(topicID: String, floorID: String, authorID: String, reason: String, formhash: String, completion: (NSError?) -> Void) -> Request {
+        let URLParameters: [String: AnyObject] = ["mod": "report", "inajax": 1]
+        let URLString = generateURLString(baseURL + "/api/mobile/", parameters: URLParameters)
+
+        let bodyParameters: [String: AnyObject] = ["report_select": "", "message": reason, "referer": "", "reportsubmit": "true", "rtype": "post", "rid": authorID, "fid": floorID, "url": "", "inajax": 1, "handlekey": "miscreport1", "formhash": formhash]
+        return Alamofire.request(.POST, URLString, parameters: bodyParameters, encoding: .URL).responseString { (response) in
+            completion(response.result.error)
         }
     }
 }

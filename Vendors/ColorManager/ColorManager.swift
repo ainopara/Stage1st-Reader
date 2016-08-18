@@ -14,6 +14,8 @@ import CocoaLumberjack
     case Night
 }
 
+let APPaletteDidChangeNotification = "APPaletteDidChangeNotification"
+
 public class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
@@ -89,7 +91,7 @@ private extension APColorManager {
         self.palette = palette
         self.updateGlobalAppearance()
         if shouldPush {
-            NSNotificationCenter.defaultCenter().postNotificationName("S1PaletteDidChangeNotification", object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(APPaletteDidChangeNotification, object: nil)
         }
     }
 

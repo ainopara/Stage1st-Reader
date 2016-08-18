@@ -346,7 +346,7 @@ MAX([UIApplication sharedApplication].statusBarFrame.size.width, [UIApplication 
 		// listen for changes of status bar frame
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willChangeToSize:) name:@"S1ViewWillTransitionToSizeNotification" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColor) name:@"S1PaletteDidChangeNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColor) name:@"APPaletteDidChangeNotification" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
         
