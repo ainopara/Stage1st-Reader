@@ -133,7 +133,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.didReceivePaletteChangeNotification(NSNotification(name: "", object: nil))
+        self.didReceivePaletteChangeNotification(nil)
     }
 
     // MARK: Layout
@@ -240,7 +240,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - Notification
-    func didReceivePaletteChangeNotification(notification: NSNotification) {
+    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
         statusBarSeparatorView.backgroundColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
         progressView.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
 

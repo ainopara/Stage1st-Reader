@@ -104,3 +104,8 @@ private extension APColorManager {
         }
     }
 }
+
+public extension UIViewController {
+    func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    }
+}

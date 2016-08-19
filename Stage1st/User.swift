@@ -9,11 +9,13 @@
 import Foundation
 import JASON
 
-let kUserID = "userID"
+private let kUserID = "userID"
+private let kUserName = "userName"
+private let kCustomStatus = "customStatus"
 
 public class User: NSObject, NSCoding {
     let ID: Int
-    var name: String?
+    var name: String
     var customStatus: String?
     var sigHTML: String?
     var lastVisitDateString: String?
@@ -21,21 +23,22 @@ public class User: NSObject, NSCoding {
     var threadCount: Int?
     var postCount: Int?
 
-    var avatarURL: NSURL? {
-        return NSURL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
-    }
-
-    public init(ID: Int) {
+    public init(ID: Int, name: String) {
         self.ID = ID
+        self.name = name
         super.init()
     }
 
     public init?(json: JSON) {
         let space = json["Variables"]["space"]
-        guard let IDString = space["uid"].string, ID = Int(IDString) else { return nil }
+        guard let
+            IDString = space["uid"].string, ID = Int(IDString),
+            name = space["username"].string else {
+                return nil
+        }
 
         self.ID = ID
-        self.name = space["username"].string
+        self.name = name
         self.customStatus = space["customstatus"].string
         if let sigHTML = space["sightml"].string where sigHTML != "" {
             self.sigHTML = sigHTML
@@ -51,15 +54,29 @@ public class User: NSObject, NSCoding {
     }
 
     public required init?(coder aDecoder: NSCoder) {
-        guard let ID = aDecoder.decodeObjectForKey(kUserID) as? Int else {
+        guard let
+            ID = aDecoder.decodeObjectForKey(kUserID) as? Int,
+            name = aDecoder.decodeObjectForKey(kUserName) as? String else {
             return nil
         }
+
         self.ID = ID
+        self.name = name
+        self.customStatus = aDecoder.decodeObjectForKey(kCustomStatus) as? String
         super.init()
         // FIXME: Finish it.
     }
 
     public func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.ID, forKey: kUserID)
+        aCoder.encodeObject(self.name, forKey: kUserName)
+        aCoder.encodeObject(self.customStatus, forKey: kCustomStatus)
         // FIXME: Finish it.
+    }
+}
+
+extension User {
+    var avatarURL: NSURL? {
+        return NSURL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
     }
 }

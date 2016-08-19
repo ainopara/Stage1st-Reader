@@ -98,6 +98,7 @@
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
 
     [self updateiCloudStatus];
+    [self didReceivePaletteChangeNotification:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -229,7 +230,7 @@
     [self.navigationController.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],
                                                  NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
-    [self setNeedsStatusBarAppearanceUpdate];
+    [self.navigationController.navigationBar setBarStyle: [[APColorManager sharedInstance] isDarkTheme] ? UIBarStyleBlack : UIBarStyleDefault];
 }
 
 - (void)cloudKitStateChanged:(NSNotification *)notification {

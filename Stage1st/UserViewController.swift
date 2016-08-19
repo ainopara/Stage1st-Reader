@@ -93,12 +93,31 @@ final class UserViewController: UIViewController {
                 strongSelf.s1_presentAlertView("Error", message: error.description)
             }
         }
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
     }
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+
+        didReceivePaletteChangeNotification(nil)
+    }
+
 }
 
 // MARK: - Style
 extension UserViewController {
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    }
+
+    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
+//        navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default
+        setNeedsStatusBarAppearanceUpdate()
+        view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
     }
 }

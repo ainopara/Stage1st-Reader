@@ -15,13 +15,21 @@ import TextAttributes
 
 final class ReportComposeViewModel {
     let apiManager: DiscuzAPIManager
+    let topic: S1Topic
+    let floor: S1Floor
+    let content = MutableProperty("")
 
     init(apiManager: DiscuzAPIManager, topic: S1Topic, floor: S1Floor) {
         self.apiManager = apiManager
+        self.topic = topic
+        self.floor = floor
     }
 
-    func submit() {
+    func submit(completion: (NSError?) -> Void) {
         DDLogDebug("submit")
+        apiManager.report("\(topic.topicID)", floorID: "\(floor.floorID)", authorID: "\(topic.authorUserID)", reason: content.value, formhash: "") { (error) in
+            completion(error)
+        }
     }
 }
 
@@ -61,6 +69,10 @@ final class ReportComposeViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
     }
 
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: APPaletteDidChangeNotification, object: nil)
+    }
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -92,7 +104,15 @@ extension ReportComposeViewController: YYKeyboardObserver {
 extension ReportComposeViewController {
     func submit() {
         view.endEditing(true)
-        viewModel.submit()
+        viewModel.submit { [weak self] (error) in
+            guard let strongSelf = self else { return }
+            if let error = error {
+                // FIXME: Alert Error
+                DDLogError("Report Submit Error: \(error)")
+            } else {
+                strongSelf.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
     }
 
     func dismiss() {
@@ -100,7 +120,7 @@ extension ReportComposeViewController {
     }
 
     // MARK: - Notification
-    func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
         textView.backgroundColor = APColorManager.sharedInstance.colorForKey("report.background")
         textView.tintColor = APColorManager.sharedInstance.colorForKey("report.tint")
         textView.textColor = APColorManager.sharedInstance.colorForKey("report.text")
@@ -108,7 +128,7 @@ extension ReportComposeViewController {
         textView.typingAttributes = attributes.dictionary
         textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .Dark : .Light
 
-        setNeedsStatusBarAppearanceUpdate()
+        self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default
     }
 }
 
