@@ -12,15 +12,11 @@ import Crashlytics
 import CocoaLumberjack
 
 class S1QuoteFloorViewController: UIViewController {
-    var htmlString: String?
-    var pageURL: NSURL?
-    var topic: S1Topic?
-    var floors: [S1Floor]?
-    var useTableView: Bool = true
-    var centerFloorID: Int = 0
+    var useTableView: Bool = false
 
     var tableView: UITableView?
-    var webView = UIWebView()
+    let webView = UIWebView()
+
     let viewModel: QuoteFloorViewModel
 
     init(viewModel: QuoteFloorViewModel) {
@@ -55,7 +51,6 @@ class S1QuoteFloorViewController: UIViewController {
                 make.leading.trailing.equalTo(self.view)
             })
         } else {
-            webView.dataDetectorTypes = .None
             webView.opaque = false
             webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
             webView.delegate = self
@@ -67,9 +62,7 @@ class S1QuoteFloorViewController: UIViewController {
                 make.bottom.equalTo(self.snp_bottomLayoutGuideTop)
                 make.leading.trailing.equalTo(self.view)
             })
-            if let theHtmlString = self.htmlString {
-                webView.loadHTMLString(theHtmlString, baseURL: pageURL)
-            }
+            webView.loadHTMLString(self.viewModel.htmlString, baseURL: self.viewModel.baseURL)
         }
         // Do any additional setup after loading the view.
     }
@@ -128,7 +121,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {
-        let computedOffset: CGFloat = topPositionOfMessageWithId(self.centerFloorID) - 32
+        let computedOffset: CGFloat = topPositionOfMessageWithId(self.viewModel.centerFloorID) - 32
         var offset = webView.scrollView.contentOffset
         offset.y = computedOffset.limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
         webView.scrollView.contentOffset = offset
@@ -149,13 +142,5 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
 extension S1QuoteFloorViewController {
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
-    }
-}
-
-extension CGFloat {
-    func limit(from: CGFloat, to: CGFloat) -> CGFloat {
-        assert(to >= from)
-        let result = self < to ? self : to
-        return result > from ? result : from
     }
 }

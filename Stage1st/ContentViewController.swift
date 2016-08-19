@@ -22,8 +22,8 @@ extension S1ContentViewController {
         self.navigationController?.pushViewController(userViewController, animated: true)
     }
 
-    func showQuoteFloorViewControllerWithTopic(topic: S1Topic, floors: [S1Floor]) {
-        let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, baseURL: self.viewModel.dynamicType.pageBaseURL())
+    func showQuoteFloorViewControllerWithTopic(topic: S1Topic, floors: [S1Floor], htmlString: String, centerFloorID: Int) {
+        let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: self.viewModel.dynamicType.pageBaseURL())
         let quoteFloorViewController = S1QuoteFloorViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }

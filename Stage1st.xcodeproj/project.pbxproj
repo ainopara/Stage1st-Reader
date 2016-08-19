@@ -388,10 +388,10 @@
 				863580111A945DED007B21AD /* Topic List */,
 				863580121A945DFF007B21AD /* Content */,
 				866CDB951B526C4800FBB133 /* Quote Floor */,
-				86DC0FA91D59635900CD13B8 /* ReportComposeViewController.swift */,
-				C09587A316CB6218007E0119 /* Settings */,
-				8694BCD51CEC42C200756C4A /* S1WebViewController.swift */,
+				86A22D231D677B16004D2307 /* Report */,
 				8671E56F1CFDEB1800F4A854 /* User */,
+				86A22D241D677B21004D2307 /* Browser */,
+				C09587A316CB6218007E0119 /* Settings */,
 			);
 			name = "View Controller";
 			sourceTree = "<group>";
@@ -448,6 +448,22 @@
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
 			);
 			name = Manager;
+			sourceTree = "<group>";
+		};
+		86A22D231D677B16004D2307 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				86DC0FA91D59635900CD13B8 /* ReportComposeViewController.swift */,
+			);
+			name = Report;
+			sourceTree = "<group>";
+		};
+		86A22D241D677B21004D2307 /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				8694BCD51CEC42C200756C4A /* S1WebViewController.swift */,
+			);
+			name = Browser;
 			sourceTree = "<group>";
 		};
 		86A5AD871B56BAAE00E80790 /* Database */ = {

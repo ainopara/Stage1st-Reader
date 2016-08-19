@@ -136,3 +136,11 @@ extension UIImage {
         return newImage
     }
 }
+
+extension CGFloat {
+    func limit(from: CGFloat, to: CGFloat) -> CGFloat {
+        assert(to >= from)
+        let result = self < to ? self : to
+        return result > from ? result : from
+    }
+}

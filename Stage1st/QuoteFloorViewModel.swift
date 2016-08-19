@@ -39,12 +39,16 @@ final class QuoteFloorViewModel {
     let manager: DiscuzAPIManager
     let topic: S1Topic
     let floors: [S1Floor]
+    let htmlString: String
+    let centerFloorID: Int
     let baseURL: NSURL
 
-    init(manager: DiscuzAPIManager, topic: S1Topic, floors: [S1Floor], baseURL: NSURL) {
+    init(manager: DiscuzAPIManager, topic: S1Topic, floors: [S1Floor], htmlString: String, centerFloorID: Int, baseURL: NSURL) {
         self.manager = manager
         self.topic = topic
         self.floors = floors
+        self.htmlString = htmlString
+        self.centerFloorID = centerFloorID
         self.baseURL = baseURL
     }
 
