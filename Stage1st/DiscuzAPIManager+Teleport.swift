@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import JASON
 
-private let kStage1stDomain = "Stage1stDomain"
+let kStage1stDomain = "Stage1stDomain"
 
 enum LoginProgress {
     case NotLogin
@@ -20,7 +20,7 @@ enum LoginProgress {
     case InLogin
 }
 
-func generateURLString(baseURLString: String, parameters: [String: AnyObject]) -> String {
+private func generateURLString(baseURLString: String, parameters: [String: AnyObject]) -> String {
     let mutableURLRequest = NSMutableURLRequest(URL: NSURL(string: baseURLString)!)
     let encodedURLRequest = ParameterEncoding.URLEncodedInURL.encode(mutableURLRequest, parameters: parameters).0
     return encodedURLRequest.URLString
@@ -168,11 +168,11 @@ public extension DiscuzAPIManager {
 
 // MARK: - Report
 public extension DiscuzAPIManager {
-    func report(topicID: String, floorID: String, authorID: String, reason: String, formhash: String, completion: (NSError?) -> Void) -> Request {
+    func report(topicID: String, floorID: String, forumID: String, reason: String, formhash: String, completion: (NSError?) -> Void) -> Request {
         let URLParameters: [String: AnyObject] = ["mod": "report", "inajax": 1]
-        let URLString = generateURLString(baseURL + "/api/mobile/", parameters: URLParameters)
+        let URLString = generateURLString(baseURL + "/misc.php", parameters: URLParameters)
 
-        let bodyParameters: [String: AnyObject] = ["report_select": "", "message": reason, "referer": "", "reportsubmit": "true", "rtype": "post", "rid": authorID, "fid": floorID, "url": "", "inajax": 1, "handlekey": "miscreport1", "formhash": formhash]
+        let bodyParameters: [String: AnyObject] = ["report_select": "其他", "message": reason, "referer": baseURL + "/forum.php?mod=viewthread&tid=\(topicID)", "reportsubmit": "true", "rtype": "post", "rid": floorID, "fid": forumID, "url": "", "inajax": 1, "handlekey": "miscreport1", "formhash": formhash]
         return Alamofire.request(.POST, URLString, parameters: bodyParameters, encoding: .URL).responseString { (response) in
             completion(response.result.error)
         }

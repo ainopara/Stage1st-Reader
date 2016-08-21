@@ -120,3 +120,9 @@ extension S1ContentViewModel {
         return self.cachedViewPosition[self.currentPage as NSNumber] as? NSNumber
     }
 }
+
+extension S1ContentViewModel {
+    func reportComposeViewModel(floor: S1Floor) -> ReportComposeViewModel {
+        return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
+    }
+}

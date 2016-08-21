@@ -418,11 +418,6 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 - (void)action:(id)sender {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
-    UIAlertAction *reportAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Report", @"Report") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        UIViewController *reportViewController = [self reportViewController];
-        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:reportViewController] animated:true completion:NULL];
-    }];
-
     // Reply Action
     UIAlertAction *replyAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Reply", @"Reply") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self presentReplyViewToFloor:nil];
@@ -463,7 +458,6 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     // Cancel Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"ContentView_ActionSheet_Cancel", @"Cancel") style:UIAlertActionStyleCancel handler:nil];
 
-    [moreActionSheet addAction:reportAction];
     [moreActionSheet addAction:replyAction];
     if (![self shouldPresentingFavoriteButtonOnToolBar]) {
         [moreActionSheet addAction:favoriteAction];
@@ -497,11 +491,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
         // Reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
             NSString *floorID = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            S1Floor *floor = [self.viewModel searchFloorInCache:[floorID integerValue]];
-            if (floor != nil) {
-                DDLogDebug(@"[ContentVC] Reply to %@", floor.author);
-                [self presentReplyViewToFloor:floor];
-            }
+            [self actionButtonTappedFor:floorID];
             return NO;
         }
 
@@ -750,8 +740,6 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 #pragma mark REComposeViewControllerDelegate
 
 - (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
-    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
-    navigationDelegate.panRecognizer.enabled = YES;
     self.attributedReplyDraft = [composeViewController.textView.attributedText mutableCopy];
     if (result == REComposeResultCancelled) {
         [composeViewController dismissViewControllerAnimated:YES completion:NULL];
@@ -920,18 +908,19 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 - (void)presentReplyViewToFloor: (S1Floor *)topicFloor {
     // Check in login state.
+    if (self.viewModel.topic.fID == nil || self.viewModel.topic.formhash == nil) {
+        [self alertRefresh];
+        return;
+    }
+
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
         S1LoginViewController *loginViewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:loginViewController animated:YES completion:NULL];
         return;
     }
 
-    if (self.viewModel.topic.fID == nil || self.viewModel.topic.formhash == nil) {
-        [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"缺少必要信息（请尝试刷新当前页）" duration:2.5 animated:YES];
-        return;
-    }
-
     REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
+
     replyController.textView.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
     replyController.sheetBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"reply.background"];
     replyController.textView.tintColor = [[APColorManager sharedInstance] colorForKey:@"reply.tint"];
@@ -955,9 +944,6 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     [ReplyAccessoryView resetTextViewStyle:replyController.textView];
 
     [self presentViewController:replyController animated:YES completion:NULL];
-
-    NavigationControllerDelegate *navigationDelegate = self.navigationController.delegate;
-    navigationDelegate.panRecognizer.enabled = NO;
 }
 
 #pragma mark - Notificatons

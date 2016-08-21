@@ -15,13 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface S1ContentViewController : UIViewController
 
 @property (nonatomic, strong) S1ContentViewModel *viewModel;
-
 @property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
-
 - (instancetype)initWithViewModel:(S1ContentViewModel *)viewModel;
 
+// Expose to extension
+- (void)presentReplyViewToFloor: (S1Floor * _Nullable)topicFloor;
 @end
 
 NS_ASSUME_NONNULL_END

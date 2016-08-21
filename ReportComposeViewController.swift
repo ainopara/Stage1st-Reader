@@ -19,15 +19,26 @@ final class ReportComposeViewModel {
     let floor: S1Floor
     let content = MutableProperty("")
 
+    let canSubmit = MutableProperty(false)
+    let submiting = MutableProperty(false)
+
     init(apiManager: DiscuzAPIManager, topic: S1Topic, floor: S1Floor) {
         self.apiManager = apiManager
         self.topic = topic
         self.floor = floor
+
+        canSubmit <~ content.producer.map { $0.characters.count > 0 }.combineLatestWith(submiting.producer).map { $0 && !$1 }
     }
 
     func submit(completion: (NSError?) -> Void) {
         DDLogDebug("submit")
-        apiManager.report("\(topic.topicID)", floorID: "\(floor.floorID)", authorID: "\(topic.authorUserID)", reason: content.value, formhash: "") { (error) in
+        guard let forumID = topic.fID, formhash = topic.formhash else {
+            return
+        }
+        submiting.value = true
+        apiManager.report("\(topic.topicID)", floorID: "\(floor.floorID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
+            guard let strongSelf = self else { return }
+            strongSelf.submiting.value = false
             completion(error)
         }
     }
@@ -35,6 +46,7 @@ final class ReportComposeViewModel {
 
 final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)
+    let loadingHUD = S1HUD(frame: .zero)
     let keyboardManager = YYKeyboardManager.defaultManager()
     var textViewBottomConstraint: Constraint? = nil
 
@@ -63,7 +75,28 @@ final class ReportComposeViewController: UIViewController {
             self.textViewBottomConstraint = make.bottom.equalTo(self.view.snp_bottom).constraint
         }
 
+        view.addSubview(loadingHUD)
+        loadingHUD.snp_makeConstraints { (make) in
+            make.center.equalTo(self.view.snp_center)
+        }
+
         view.layoutIfNeeded()
+
+        // Binding
+        viewModel.content <~ textView.rac_textSignal().toSignalProducer().map { $0 as! String }.flatMapError { _ in return SignalProducer<String, NoError>.empty }
+        viewModel.canSubmit.producer.startWithNext { [weak self] (canSubmit) in
+            guard let strongSelf = self else { return }
+            strongSelf.navigationItem.rightBarButtonItem?.enabled = canSubmit
+        }
+
+        viewModel.submiting.producer.startWithNext { [weak self] (submiting) in
+            guard let strongSelf = self else { return }
+            if submiting {
+                strongSelf.loadingHUD.showActivityIndicator()
+            } else {
+                strongSelf.loadingHUD.hideWithDelay(0.0)
+            }
+        }
 
         keyboardManager.addObserver(self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
@@ -124,8 +157,7 @@ extension ReportComposeViewController {
         textView.backgroundColor = APColorManager.sharedInstance.colorForKey("report.background")
         textView.tintColor = APColorManager.sharedInstance.colorForKey("report.tint")
         textView.textColor = APColorManager.sharedInstance.colorForKey("report.text")
-        let attributes = TextAttributes().font(UIFont.systemFontOfSize(15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text"))
-        textView.typingAttributes = attributes.dictionary
+        textView.typingAttributes = TextAttributes().font(UIFont.systemFontOfSize(15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text")).dictionary
         textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .Dark : .Light
 
         self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default

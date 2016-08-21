@@ -7,6 +7,7 @@
 #import "S1Floor.h"
 #import "S1DataCenter.h"
 #import "S1Tracer.h"
+#import "S1HUD.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "S1MahjongFaceView.h"

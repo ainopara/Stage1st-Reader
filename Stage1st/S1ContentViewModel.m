@@ -110,9 +110,7 @@
 
     //process reply Button
     NSString *replyLinkString = @"";
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"] != nil) {
-        replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\">回复</a></div>", floor.floorID];
-    }
+    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\" style=\"letter-spacing: -4px;\" >・・・</a></div>", floor.floorID];
 
     //process poll
     NSString *pollContentString = @"";
