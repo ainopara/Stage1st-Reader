@@ -11,7 +11,7 @@ import JASON
 
 typealias HEXColor = String
 
-final class PollOption: NSObject {
+class PollOption: NSObject {
     let ID: Int
     let name: String?
     let votes: Int?
@@ -46,7 +46,7 @@ final class PollOption: NSObject {
     }
 }
 
-final class Poll: NSObject {
+class Poll: NSObject {
     let options: [PollOption]
     let expirationDate: NSDate?
     let maxChoices: Int?

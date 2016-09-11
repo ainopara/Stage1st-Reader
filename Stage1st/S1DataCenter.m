@@ -110,14 +110,14 @@
     return self.formhash == nil ? NO : YES;
 }
 
-- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
+- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray<S1Topic *> *))success failure:(void (^)(NSError *))failure {
     __weak __typeof__(self) myself = self;
     [S1NetworkManager postSearchForKeyword:keyword andFormhash:self.formhash success:^(NSURLSessionDataTask *task, id responseObject) {
         __strong __typeof__(self) strongMyself = myself;
         //parse topics
-        NSArray *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
+        NSArray<S1Topic *> *topics = [S1Parser topicsFromSearchResultHTMLData:responseObject];
 
-        NSMutableArray<S1Topic *> *processedTopics = [[NSMutableArray alloc] init];
+        NSMutableArray<S1Topic *> *processedTopics = [[NSMutableArray<S1Topic *> alloc] init];
         
         //append tracer message to topics
         for (S1Topic *topic in topics) {
@@ -136,6 +136,7 @@
 }
 
 #pragma mark - Network (Content Cache)
+
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     return [[S1CacheDatabaseManager sharedInstance] hasCacheForTopicID:topic.topicID withPage:page];
 }
@@ -143,10 +144,12 @@
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     DDLogVerbose(@"[Network] Precache %@-%@ begin", topic.topicID, page);
     NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
+
     if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
         DDLogVerbose(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
+
     [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
         //Update Topic
         NSDictionary *responseDict = responseObject;

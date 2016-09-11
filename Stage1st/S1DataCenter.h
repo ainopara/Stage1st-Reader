@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)canMakeSearchRequest;
 
-- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
 
 // For Content View Controller
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;

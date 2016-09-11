@@ -90,7 +90,7 @@
     return (NSArray *)topics;
 }
 
-+ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict {
++ (NSMutableArray<S1Topic *> *)topicsFromAPI:(NSDictionary *)responseDict {
     NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
     NSMutableArray *topics = [[NSMutableArray alloc] init];
     for (NSDictionary *rawTopic in rawTopicList) {
@@ -116,10 +116,10 @@
     return topics;
 }
 
-+ (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData {
++ (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData {
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
-    NSMutableArray *topics = [NSMutableArray array];
+    NSMutableArray<S1Topic *> *topics = [NSMutableArray array];
     
     DDLogDebug(@"Topic count: %lu",(unsigned long)[elements count]);
     for (TFHppleElement *element in elements) {
@@ -159,9 +159,9 @@
     return topics;
 }
 
-+ (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
++ (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
-    NSArray *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
+    NSArray<S1Topic *> *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
     NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
     for (DDXMLElement *topicNode in topicNodes) {
         DDXMLElement *topicFirstSection = [[topicNode nodesForXPath:@".//th/a" error:nil] firstObject];
@@ -188,8 +188,7 @@
     return mutableArray;
 }
 
-+ (NSArray *)contentsFromHTMLData:(NSData *)rawData
-{
++ (NSArray *)contentsFromHTMLData:(NSData *)rawData {
     // DDLogDebug(@"Begin Parsing.");
     // NSDate *start = [NSDate date];
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];

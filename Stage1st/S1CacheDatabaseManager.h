@@ -7,13 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+
 @class S1Floor;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1CacheDatabaseManager : NSObject
+
 + (S1CacheDatabaseManager *)sharedInstance;
 
-- (void)setFloorArray:(NSArray *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
-- (NSArray *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
+- (void)setFloorArray:(NSArray<S1Floor *> *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
+- (NSArray<S1Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 - (BOOL)hasCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 - (void)removeCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 
@@ -23,4 +27,7 @@
 
 - (void)saveMahjongFaceHistory:(NSMutableArray *)historyArray;
 - (NSMutableArray *)mahjongFaceHistory;
+
 @end
+
+NS_ASSUME_NONNULL_END

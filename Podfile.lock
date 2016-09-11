@@ -16,7 +16,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - Alamofire (3.4.1)
+  - Alamofire (3.5.0)
   - CocoaLumberjack (2.3.0):
     - CocoaLumberjack/Default (= 2.3.0)
     - CocoaLumberjack/Extensions (= 2.3.0)
@@ -27,7 +27,7 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (2.3.0):
     - CocoaLumberjack/Extensions
-  - Crashlytics (3.7.3):
+  - Crashlytics (3.8.1):
     - Fabric (~> 1.6.3)
   - DTCoreText (1.6.17):
     - DTFoundation/Core (~> 1.7.5)
@@ -49,18 +49,18 @@ PODS:
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
-  - GYHttpMock (1.0.0)
+  - GYHttpMock (1.0.1)
   - JASON (2.2.1)
   - JTSImageViewController (1.5)
-  - KIF (3.4.2):
-    - KIF/Core (= 3.4.2)
-  - KIF/Core (3.4.2)
-  - Kingfisher (2.4.3)
+  - KIF (3.5.1):
+    - KIF/Core (= 3.5.1)
+  - KIF/Core (3.5.1)
+  - Kingfisher (2.5.1)
   - KissXML (5.1.2)
   - Masonry (1.0.1)
   - pop (1.0.9)
   - Reachability (3.2)
-  - ReactiveCocoa (4.2.1):
+  - ReactiveCocoa (4.2.2):
     - Result (~> 2.0)
   - Result (2.1.3)
   - Reveal-iOS-SDK (1.6.2)
@@ -169,24 +169,24 @@ SPEC CHECKSUMS:
   1PasswordExtension: 8757dc3302353731dd3e678e63b5023a708783cb
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
+  Alamofire: b70a7352335f8ea5babd0a923eb7e8eacc67b877
   CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
-  Crashlytics: 76f6beaff70acf226139582c09c78461597c2b98
+  Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FBSnapshotTestCase: 918c55861356ee83aee7843d759f55a18ff6982b
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
-  GYHttpMock: d138c4197d0a133c1dca26d802f84266d3903eac
+  GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JASON: 2fdba956dfbf8663369b81a8176e6fcb225ebf10
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  KIF: b518c9831453abea5afdbbde3908ec47832d6d56
-  Kingfisher: 322a9c1c5b03212c1e741d6bece72d387b01a77a
+  KIF: 082eb65279e51c3092923802849eb796a04982ab
+  Kingfisher: 9b82e0e1f1a296f149a50bbc2214532eaa4df4f1
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: a1a931a0d08870ed8ae415a2ea5ea68ebcac77df
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 5a42745f11ea236f405bb9ce5e97c5e3b23562dd
+  ReactiveCocoa: 72263e7ac0770c274617ccd345e01049d0ca38ae
   Result: 18e1a7597fbcca5923c565b40a25a98afafdee02
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: 0dd2fd157330f1ea11fd84da13e6be8a7a22bae0

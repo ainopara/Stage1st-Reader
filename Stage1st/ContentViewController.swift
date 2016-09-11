@@ -58,19 +58,16 @@ extension S1ContentViewController {
     }
 }
 
-extension S1ContentViewController {
-    func reportViewController() -> UIViewController {
-        return ReportComposeViewController(viewModel: ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: S1Topic(), floor: S1Floor()))
-    }
-}
-
+// MARK: -
 extension S1ContentViewController {
     func actionButtonTapped(`for` floorID: NSString) {
         guard let floor = viewModel.searchFloorInCache(floorID.integerValue) else {
             return
         }
+
         DDLogDebug("[ContentVC] Action for \(floor)")
         let floorActionController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""), style: .Default, handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
@@ -87,6 +84,7 @@ extension S1ContentViewController {
             let reportComposeViewController = ReportComposeViewController(viewModel: strongSelf.viewModel.reportComposeViewModel(floor))
             strongSelf.presentViewController(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
+
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""), style: .Default, handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
 
@@ -103,7 +101,14 @@ extension S1ContentViewController {
 
             strongSelf.presentReplyViewToFloor(floor)
         }))
+
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .Cancel, handler: nil))
+
+        if let popover = floorActionController.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect.zero
+        }
+
         presentViewController(floorActionController, animated: true, completion: nil)
     }
 
