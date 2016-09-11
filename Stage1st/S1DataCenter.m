@@ -11,7 +11,6 @@
 #import "S1Topic.h"
 #import "S1Tracer.h"
 #import "S1Parser.h"
-#import "S1Floor.h"
 #import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
 #import "S1CacheDatabaseManager.h"
@@ -194,13 +193,13 @@
     }
 }
 
-- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
+- (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
     return [[S1CacheDatabaseManager sharedInstance] findFloorByID:floorID];
 }
 
 #pragma mark - Network (Content)
 
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<S1Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
     NSParameterAssert(![topic isImmutable]);
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
@@ -240,8 +239,8 @@
     }];
 }
 
-- (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
-    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:floor.floorID forumID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
+- (void)replySpecificFloor:(Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure {
+    [S1NetworkManager requestReplyRefereanceContentForTopicID:topic.topicID withPage:page floorID:[NSNumber numberWithInteger:floor.ID] forumID:topic.fID success:^(NSURLSessionDataTask *task, id responseObject) {
         NSString *responseString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSMutableDictionary *params = [S1Parser replyFloorInfoFromResponseString:responseString];
         if ([params[@"requestSuccess"]  isEqual: @YES]) {

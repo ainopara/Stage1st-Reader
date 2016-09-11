@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class S1Tracer;
 @class S1Topic;
-@class S1Floor;
+@class Floor;
 
 @interface S1DataCenter : NSObject
 
@@ -41,11 +41,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler;
 
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<S1Floor *> *floorList, BOOL fromCache))success failure:(void (^)(NSError *error))failure;
-- (S1Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID;
+- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<Floor *> *floorList, BOOL fromCache))success failure:(void (^)(NSError *error))failure;
+- (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID;
 
 // Reply
-- (void)replySpecificFloor:(S1Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
+- (void)replySpecificFloor:(Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 - (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;

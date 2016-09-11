@@ -17,18 +17,18 @@ struct FloorPresenting {
     let content: NSAttributedString
 
 
-    init(floor: S1Floor, topic: S1Topic, baseURL: NSURL) {
+    init(floor: Floor, topic: S1Topic, baseURL: NSURL) {
         avatarURL = NSURL()
         let authorAttributes = TextAttributes().font(UIFont.systemFontOfSize(14.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("quote.tableview.cell.title"))
-        author = NSAttributedString(string: floor.author ?? "?", attributes: authorAttributes)
+        author = NSAttributedString(string: floor.author.name ?? "?", attributes: authorAttributes)
 
-        if let topicAuthorID = topic.authorUserID, floorAuthorID = floor.authorID where topicAuthorID.isEqualToNumber(floorAuthorID) {
+        if let topicAuthorID = topic.authorUserID as? Int where topicAuthorID == floor.author.ID {
             isTopicAuthor = true
         } else {
             isTopicAuthor = false
         }
 
-        dateTime = NSAttributedString(string: floor.postTime?.s1_gracefulDateTimeString() ?? "?", attributes: authorAttributes)
+        dateTime = NSAttributedString(string: floor.creationDate?.s1_gracefulDateTimeString() ?? "?", attributes: authorAttributes)
         floorMark = NSAttributedString(string: floor.indexMark ?? "#?", attributes: authorAttributes)
         let contentHTML = S1ContentViewModel.generateContentPage([floor], withTopic: topic)
         content = NSAttributedString(HTMLData: (contentHTML).dataUsingEncoding(NSUTF8StringEncoding), baseURL: baseURL, documentAttributes: nil)
@@ -38,12 +38,12 @@ struct FloorPresenting {
 final class QuoteFloorViewModel {
     let manager: DiscuzAPIManager
     let topic: S1Topic
-    let floors: [S1Floor]
+    let floors: [Floor]
     let htmlString: String
     let centerFloorID: Int
     let baseURL: NSURL
 
-    init(manager: DiscuzAPIManager, topic: S1Topic, floors: [S1Floor], htmlString: String, centerFloorID: Int, baseURL: NSURL) {
+    init(manager: DiscuzAPIManager, topic: S1Topic, floors: [Floor], htmlString: String, centerFloorID: Int, baseURL: NSURL) {
         self.manager = manager
         self.topic = topic
         self.floors = floors

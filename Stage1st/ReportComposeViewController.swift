@@ -16,13 +16,13 @@ import TextAttributes
 final class ReportComposeViewModel {
     let apiManager: DiscuzAPIManager
     let topic: S1Topic
-    let floor: S1Floor
+    let floor: Floor
     let content = MutableProperty("")
 
     let canSubmit = MutableProperty(false)
     let submiting = MutableProperty(false)
 
-    init(apiManager: DiscuzAPIManager, topic: S1Topic, floor: S1Floor) {
+    init(apiManager: DiscuzAPIManager, topic: S1Topic, floor: Floor) {
         self.apiManager = apiManager
         self.topic = topic
         self.floor = floor
@@ -36,7 +36,7 @@ final class ReportComposeViewModel {
             return
         }
         submiting.value = true
-        apiManager.report("\(topic.topicID)", floorID: "\(floor.floorID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
+        apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
             guard let strongSelf = self else { return }
             strongSelf.submiting.value = false
             completion(error)

@@ -9,7 +9,6 @@
 #import "S1ContentViewModel.h"
 #import "S1DataCenter.h"
 #import "S1Topic.h"
-#import "S1Floor.h"
 #import "S1Parser.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
@@ -85,7 +84,7 @@
 
 #pragma mark - Page Generating
 
-+ (NSString *)generateFloorForTopic:(S1Floor *)floor topic:(S1Topic *)topic {
++ (NSString *)generateFloorForTopic:(Floor *)floor topic:(S1Topic *)topic {
     //process indexmark
     NSString *floorIndexMark = floor.indexMark;
     if (floorIndexMark == nil) {
@@ -96,27 +95,24 @@
     }
 
     //process author
-    NSString *floorAuthor = floor.author;
+    NSString *floorAuthor = floor.author.name;
     if (floorAuthor == nil) {
         floorAuthor = @"?";
     }
-    if (topic.authorUserID && [topic.authorUserID isEqualToNumber:floor.authorID] && ![floorIndexMark isEqualToString:@"楼主"]) {
+    if (topic.authorUserID && topic.authorUserID.integerValue == floor.author.ID && ![floorIndexMark isEqualToString:@"楼主"]) {
         floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
     }
-    floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"/user?%@\">%@</a>", floor.authorID, floorAuthor];
+    floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"/user?%ld\">%@</a>", (long)floor.author.ID, floorAuthor];
 
     //process time
-    NSString *floorPostTime = [self translateDateTimeString:floor.postTime];
+    NSString *floorPostTime = floor.creationDate.s1_gracefulDateTimeString;
 
     //process reply Button
     NSString *replyLinkString = @"";
-    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%@\" style=\"letter-spacing: -4px;\" >・・・</a></div>", floor.floorID];
+    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%ld\" style=\"letter-spacing: -4px;\" >・・・</a></div>", (long)floor.ID];
 
     //process poll
     NSString *pollContentString = @"";
-    if (floor.poll != nil) {
-        pollContentString = [NSString stringWithFormat:@"<div class=\"s1-poll\">%@</div>",floor.poll];
-    }
 
     //process content
     NSString *contentString = floor.content;
@@ -131,10 +127,10 @@
 
     //process attachment
     NSString *floorAttachment = @"";
-    if (floor.imageAttachmentList) {
-        for (NSString *imageURLString in floor.imageAttachmentList) {
+    if (floor.imageAttachmentURLStringList != nil) {
+        for (NSString *imageURLString in floor.imageAttachmentURLStringList) {
             NSString *processedImageURLString = [[NSString alloc] initWithString:imageURLString];
-            if ([floor.imageAttachmentList indexOfObject:imageURLString] != 0) {
+            if ([floor.imageAttachmentURLStringList indexOfObject:imageURLString] != 0) {
                 processedImageURLString = [@"<br /><br />" stringByAppendingString:imageURLString];
             }
             floorAttachment = [floorAttachment stringByAppendingString:processedImageURLString];
@@ -152,9 +148,9 @@
     return output;
 }
 
-+ (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic {
++ (NSString *)generateContentPage:(NSArray<Floor *> *)floorList withTopic:(S1Topic *)topic {
     NSString *topicBody = [[NSString alloc] init];
-    for (S1Floor *topicFloor in floorList) {
+    for (Floor *topicFloor in floorList) {
 
         NSString *renderedFloorString = [self generateFloorForTopic:topicFloor topic:topic];
 

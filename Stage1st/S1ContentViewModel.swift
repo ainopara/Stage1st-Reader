@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Quote Floor
 extension S1ContentViewModel {
 
-    func searchFloorInCache(floorID: Int) -> S1Floor? {
+    func searchFloorInCache(floorID: Int) -> Floor? {
         guard floorID != 0 else {
             return nil
         }
@@ -19,12 +19,12 @@ extension S1ContentViewModel {
         return self.dataCenter.searchFloorInCacheByFloorID(floorID)
     }
 
-    func chainSearchQuoteFloorInCache(firstFloorID: Int) -> [S1Floor] {
-        var result: [S1Floor] = []
+    func chainSearchQuoteFloorInCache(firstFloorID: Int) -> [Floor] {
+        var result: [Floor] = []
         var nextFloorID = firstFloorID
         while let floor = self.searchFloorInCache(nextFloorID) {
             result.insert(floor, atIndex: 0)
-            if let quoteFloorID = floor.firstQuoteReplyFloorID as? Int {
+            if let quoteFloorID = floor.firstQuoteReplyFloorID {
                 nextFloorID = quoteFloorID
             } else {
                 return result
@@ -122,7 +122,7 @@ extension S1ContentViewModel {
 }
 
 extension S1ContentViewModel {
-    func reportComposeViewModel(floor: S1Floor) -> ReportComposeViewModel {
+    func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
     }
 }

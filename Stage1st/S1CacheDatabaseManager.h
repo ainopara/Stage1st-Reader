@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class S1Floor;
+@class Floor;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,12 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (S1CacheDatabaseManager *)sharedInstance;
 
-- (void)setFloorArray:(NSArray<S1Floor *> *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
-- (NSArray<S1Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
+- (void)setFloorArray:(NSArray<Floor *> *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block;
+- (NSArray<Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 - (BOOL)hasCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 - (void)removeCacheForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page;
 
-- (S1Floor *)findFloorByID:(NSNumber *)floorID;
+- (Floor *)findFloorByID:(NSNumber *)floorID;
 
 - (void)removeCacheLastUsedBeforeDate:(NSDate *)date;
 

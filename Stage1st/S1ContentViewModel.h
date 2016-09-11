@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)contentPageWithSuccess:(void (^)(NSString *contents, bool shouldRefetch))success
                        failure:(void (^)(NSError *error))failure;
 
-+ (NSString *)generateContentPage:(NSArray<S1Floor *> *)floorList withTopic:(S1Topic *)topic;
++ (NSString *)generateContentPage:(NSArray<Floor *> *)floorList withTopic:(S1Topic *)topic;
 + (NSString *)translateDateTimeString:(NSDate *)date;
 @end
 

@@ -9,7 +9,6 @@
 #import <CocoaLumberjack/CocoaLumberjack.h>
 #import "S1CacheDatabaseManager.h"
 #import "YapDatabase.h"
-#import "S1Floor.h"
 
 NSString *const Collection_TopicFloors = @"topicFloors";
 NSString *const Collection_FloorIDs = @"floorIDs";
@@ -50,17 +49,17 @@ NSString *const Metadata_LastUsed = @"lastUsed";
 
 #pragma mark - Batch Floor Cache
 
-- (void)setFloorArray:(NSArray<S1Floor *> *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block {
+- (void)setFloorArray:(NSArray<Floor *> *)floors inTopicID:(NSNumber *)topicID ofPage:(NSNumber *)page finishBlock:(dispatch_block_t)block {
     NSString *key = [self keyForTopicID:topicID page:page];
     [self.backgroundCacheConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        [floors enumerateObjectsUsingBlock:^(S1Floor *floor, NSUInteger idx, BOOL *stop) {
-            [transaction setObject:key forKey: [floor.floorID stringValue] inCollection:Collection_FloorIDs];
+        [floors enumerateObjectsUsingBlock:^(Floor *floor, NSUInteger idx, BOOL *stop) {
+            [transaction setObject:key forKey: [[NSNumber numberWithInteger:floor.ID] stringValue] inCollection:Collection_FloorIDs];
         }];
         [transaction setObject:floors forKey:key inCollection:Collection_TopicFloors withMetadata:@{Metadata_LastUsed:[NSDate date]}];
     } completionBlock:block];
 }
 
-- (NSArray<S1Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
+- (NSArray<Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
     __block NSArray *result = nil;
     NSString *key = [self keyForTopicID:topicID page:page];
     [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
@@ -96,18 +95,18 @@ NSString *const Metadata_LastUsed = @"lastUsed";
 
 #pragma mark - Single Floor Operation
 
-- (S1Floor *)findFloorByID:(NSNumber *)floorID {
+- (Floor *)findFloorByID:(NSNumber *)floorID {
     NSString *floorIDString = [floorID stringValue];
-    __block S1Floor *result = nil;
+    __block Floor *result = nil;
     [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         NSString *key = [transaction objectForKey:floorIDString inCollection:Collection_FloorIDs];
         if (key) {
             NSArray *floors = [transaction objectForKey:key inCollection:Collection_TopicFloors];
             if (floors) {
-                __block S1Floor *theResult = nil;
+                __block Floor *theResult = nil;
                 [floors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    S1Floor *floor = obj;
-                    if ([floor.floorID isEqualToNumber:floorID]) {
+                    Floor *floor = obj;
+                    if (floor.ID == floorID.integerValue) {
                         theResult = floor;
                         *stop = YES;
                     }

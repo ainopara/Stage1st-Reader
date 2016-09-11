@@ -8,7 +8,6 @@
 
 #import "S1Parser.h"
 #import "S1Topic.h"
-#import "S1Floor.h"
 #import "TFHpple.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
@@ -188,100 +187,97 @@
     return mutableArray;
 }
 
-+ (NSArray *)contentsFromHTMLData:(NSData *)rawData {
-    // DDLogDebug(@"Begin Parsing.");
-    // NSDate *start = [NSDate date];
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
-
-    NSMutableArray *floorList = [[NSMutableArray alloc] init];
-    // DDLogDebug(@"Floor count: %lu",(unsigned long)[elements count]);
-    
-    if ([elements count]) {
-
-        for (TFHppleElement *element in elements){
-            if (![[element objectForKey:@"id"] hasPrefix:@"post_"]) {
-                continue;
-            }
-            S1Floor *floor = [[S1Floor alloc] init];
-            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
-            
-            //parse author
-            TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
-            [floor setAuthor: [authorNode text]];
-            [floor setAuthorID:[NSNumber numberWithInteger:[[[[authorNode objectForKey:@"href"] componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
-            
-            //parse post time
-            TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
-            NSString *dateTimeString;
-            if (postTimeNode) {
-                dateTimeString = [postTimeNode objectForKey:@"title"];
-            } else {
-                postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
-                dateTimeString  = [postTimeNode text];
-            }
-            if ([dateTimeString hasPrefix:@"发表于 "]) {
-                dateTimeString = [dateTimeString stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
-            }
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"yyyy-M-d HH:mm:ss"];
-            NSDate *date = [formatter dateFromString:dateTimeString];
-            [floor setPostTime:date];
-            
-            //parse index mark
-            TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
-            if ([[floorIndexMarkNode childrenWithTagName:@"em"] count] != 0) {
-                [floor setIndexMark: [[floorIndexMarkNode firstChildWithTagName:@"em"] text]];
-            } else {
-                [floor setIndexMark: [[floorIndexMarkNode text] stringByReplacingOccurrencesOfString:@"\r\n" withString:@""]];
-            }
-            
-            //parse poll
-            //TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
-            //[floor setPoll: [floorPollNode raw]];
-            
-            //parse message
-            TFHppleElement *messageNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='pcb']/div[@class='locked']/em"] firstObject];
-            [floor setMessage: [messageNode text]];
-
-            //parse content & floorID
-            TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
-            [floor setContent: [floorContentNode raw]];
-            NSString *floorIDString = [[floorContentNode objectForKey:@"id"] stringByReplacingOccurrencesOfString:@"postmessage_" withString:@""];
-            [floor setFloorID:[NSNumber numberWithInteger: [floorIDString integerValue]]];
-            
-            //parse attachment
-            NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
-            if ([floorAttachmentArray count]) {
-                NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
-                for (TFHppleElement * floorAttachmentNode in floorAttachmentArray){
-                    [imageAttachmentList addObject:[floorAttachmentNode raw]];
-                }
-                [floor setImageAttachmentList:imageAttachmentList];
-            }
-            [floorList addObject:floor];
-        }
-    }
-    return floorList;
-}
+//+ (NSArray *)contentsFromHTMLData:(NSData *)rawData {
+//    // DDLogDebug(@"Begin Parsing.");
+//    // NSDate *start = [NSDate date];
+//    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
+//    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='postlist']/div"];
+//
+//    NSMutableArray *floorList = [[NSMutableArray alloc] init];
+//    // DDLogDebug(@"Floor count: %lu",(unsigned long)[elements count]);
+//    
+//    if ([elements count]) {
+//
+//        for (TFHppleElement *element in elements){
+//            if (![[element objectForKey:@"id"] hasPrefix:@"post_"]) {
+//                continue;
+//            }
+//            Floor *floor = [[Floor alloc] init];
+//            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
+//            
+//            //parse author
+//            TFHppleElement *authorNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='pls']//div[@class='authi']/a"] firstObject];
+//            [floor setAuthor: [authorNode text]];
+//            [floor setAuthorID:[NSNumber numberWithInteger:[[[[authorNode objectForKey:@"href"] componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
+//            
+//            //parse post time
+//            TFHppleElement *postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em/span"] firstObject];
+//            NSString *dateTimeString;
+//            if (postTimeNode) {
+//                dateTimeString = [postTimeNode objectForKey:@"title"];
+//            } else {
+//                postTimeNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div/em"] firstObject];
+//                dateTimeString  = [postTimeNode text];
+//            }
+//            if ([dateTimeString hasPrefix:@"发表于 "]) {
+//                dateTimeString = [dateTimeString stringByReplacingOccurrencesOfString:@"发表于 " withString:@""];
+//            }
+//            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//            [formatter setDateFormat:@"yyyy-M-d HH:mm:ss"];
+//            NSDate *date = [formatter dateFromString:dateTimeString];
+//            [floor setPostTime:date];
+//            
+//            //parse index mark
+//            TFHppleElement *floorIndexMarkNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']/div/strong/a"] firstObject];
+//            if ([[floorIndexMarkNode childrenWithTagName:@"em"] count] != 0) {
+//                [floor setIndexMark: [[floorIndexMarkNode firstChildWithTagName:@"em"] text]];
+//            } else {
+//                [floor setIndexMark: [[floorIndexMarkNode text] stringByReplacingOccurrencesOfString:@"\r\n" withString:@""]];
+//            }
+//            
+//            //parse poll
+//            //TFHppleElement *floorPollNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//form[@id='poll']"] firstObject];
+//            //[floor setPoll: [floorPollNode raw]];
+//            
+//            //parse message
+//            TFHppleElement *messageNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='pcb']/div[@class='locked']/em"] firstObject];
+//            [floor setMessage: [messageNode text]];
+//
+//            //parse content & floorID
+//            TFHppleElement *floorContentNode  = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//td[@class='t_f']"] firstObject];
+//            [floor setContent: [floorContentNode raw]];
+//            NSString *floorIDString = [[floorContentNode objectForKey:@"id"] stringByReplacingOccurrencesOfString:@"postmessage_" withString:@""];
+//            [floor setFloorID:[NSNumber numberWithInteger: [floorIDString integerValue]]];
+//            
+//            //parse attachment
+//            NSArray *floorAttachmentArray = [xpathParserForRow searchWithXPathQuery:@"//td[@class='plc']//div[@class='mbn savephotop']/img"];
+//            if ([floorAttachmentArray count]) {
+//                NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
+//                for (TFHppleElement * floorAttachmentNode in floorAttachmentArray){
+//                    [imageAttachmentList addObject:[floorAttachmentNode raw]];
+//                }
+//                [floor setImageAttachmentList:imageAttachmentList];
+//            }
+//            [floorList addObject:floor];
+//        }
+//    }
+//    return floorList;
+//}
 
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict {
     NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
     NSMutableArray *floorList = [[NSMutableArray alloc] init];
     for (NSDictionary *rawFloor in rawFloorList) {
-        S1Floor *floor = [[S1Floor alloc] init];
+        Floor *floor = [[Floor alloc] initWithID:[rawFloor[@"pid"] integerValue] author:[[User alloc] initWithID:[rawFloor[@"authorid"] integerValue] name:rawFloor[@"author"]]];
+        floor.indexMark = rawFloor[@"number"];
+        floor.creationDate = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
         NSMutableDictionary *attachments = nil;
         if ([rawFloor valueForKey:@"attachments"]!= nil) {
             attachments = [rawFloor[@"attachments"] mutableCopy];
         }
-        floor.floorID = [NSNumber numberWithInteger:[rawFloor[@"pid"] integerValue]];
-        floor.author = rawFloor[@"author"];
-        floor.authorID = [NSNumber numberWithInteger:[rawFloor[@"authorid"] integerValue]];
-        floor.indexMark = rawFloor[@"number"];
-        floor.postTime = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
-        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%@\">%@</td>", floor.floorID, rawFloor[@"message"]] withAttachments:attachments];
-        floor.firstQuoteReplyFloorID = [S1Parser firstQuoteReplyFloorIDFromFloorString:floor.content];
+        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%ld\">%@</td>", (long)floor.ID, rawFloor[@"message"]] withAttachments:attachments];
         //process attachments left.
+
         if (attachments != nil && [attachments count] > 0) {
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
             for (NSNumber *attachmentKey in [attachments allKeys]) {
@@ -289,7 +285,7 @@
                 NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
                 [imageAttachmentList addObject:imageNode];
             }
-            floor.imageAttachmentList = imageAttachmentList;
+            floor.imageAttachmentURLStringList = imageAttachmentList;
         }
         [floorList addObject:floor];
     }

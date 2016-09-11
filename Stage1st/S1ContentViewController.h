@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithViewModel:(S1ContentViewModel *)viewModel;
 
 // Expose to extension
-- (void)presentReplyViewToFloor: (S1Floor * _Nullable)topicFloor;
+- (void)presentReplyViewToFloor: (Floor * _Nullable)topicFloor;
 @end
 
 NS_ASSUME_NONNULL_END

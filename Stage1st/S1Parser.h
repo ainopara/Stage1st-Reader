@@ -13,7 +13,7 @@
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
 + (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
-+ (NSArray *)contentsFromHTMLData:(NSData *)rawData;
+//+ (NSArray *)contentsFromHTMLData:(NSData *)rawData;
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;

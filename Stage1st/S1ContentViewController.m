@@ -10,7 +10,6 @@
 #import "S1ContentViewController.h"
 #import "S1ContentViewModel.h"
 #import "S1Topic.h"
-#import "S1Floor.h"
 #import "S1Parser.h"
 #import "S1DataCenter.h"
 #import "S1HUD.h"
@@ -77,7 +76,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 @property (nonatomic, strong) NSMutableAttributedString *attributedReplyDraft;
 
-@property (nonatomic, weak) S1Floor *replyTopicFloor;
+@property (nonatomic, weak) Floor *replyTopicFloor;
 
 @property (nonatomic, assign) S1ContentScrollType scrollType;
 
@@ -576,7 +575,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
                             _presentingContentViewController = YES;
                             S1Topic *quoteTopic = [self.viewModel.topic copy];
                             NSString *htmlString = [S1ContentViewModel generateContentPage:chainQuoteFloors withTopic:quoteTopic];
-                            [self showQuoteFloorViewControllerWithTopic:quoteTopic floors:chainQuoteFloors htmlString: htmlString centerFloorID: [[[chainQuoteFloors lastObject] floorID] integerValue]];
+                            [self showQuoteFloorViewControllerWithTopic:quoteTopic floors:chainQuoteFloors htmlString: htmlString centerFloorID: [[chainQuoteFloors lastObject] ID]];
                             [Answers logCustomEventWithName:@"[Content] Quote Link" customAttributes:nil];
                             return NO;
                         }
@@ -906,7 +905,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
 #pragma mark - Reply
 
-- (void)presentReplyViewToFloor: (S1Floor *)topicFloor {
+- (void)presentReplyViewToFloor: (Floor *)topicFloor {
     // Check in login state.
     if (self.viewModel.topic.fID == nil || self.viewModel.topic.formhash == nil) {
         [self alertRefresh];
@@ -929,7 +928,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
     // Set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
     if (topicFloor) {
-        replyController.title = [@"@" stringByAppendingString:topicFloor.author];
+        replyController.title = [@"@" stringByAppendingString:topicFloor.author.name];
         self.replyTopicFloor = topicFloor;
     } else {
         self.replyTopicFloor = nil;

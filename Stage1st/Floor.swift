@@ -1,5 +1,5 @@
 //
-//  S1Floor.swift
+//  Floor.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 3/26/16.
@@ -29,6 +29,11 @@ class Floor: NSObject, NSCoding {
     var content: String?
     var message: String?
     var imageAttachmentURLStringList: [String]?
+
+    init(ID: Int, author: User) {
+        self.ID = ID
+        self.author = author
+    }
 
     init?(json: JSON) {
         guard let

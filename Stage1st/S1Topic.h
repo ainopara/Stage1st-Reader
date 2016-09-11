@@ -10,7 +10,7 @@
 #import <CloudKit/CloudKit.h>
 #import "MyDatabaseObject.h"
 
-@class S1Floor;
+@class Floor;
 
 NS_ASSUME_NONNULL_BEGIN
 
