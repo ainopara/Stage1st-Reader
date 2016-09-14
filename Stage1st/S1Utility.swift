@@ -9,20 +9,20 @@
 import Foundation
 import UIKit
 
-func ensureMainThread(block: () -> Void) {
-    if NSThread.currentThread().isMainThread {
+func ensureMainThread(_ block: @escaping () -> Void) {
+    if Thread.current.isMainThread {
         block()
     } else {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             block()
         })
     }
 }
 
 class S1Utility: NSObject {
-    class func valuesAreEqual(value1: AnyObject?, _ value2: AnyObject?) -> Bool {
+    class func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
 
-        if let value1 = value1, value2 = value2 {
+        if let value1 = value1, let value2 = value2 {
             return value1.isEqual(value2)
         }
         if value1 == nil && value2 == nil {
@@ -32,7 +32,7 @@ class S1Utility: NSObject {
     }
 }
 
-extension NSDate {
+extension Date {
     func s1_gracefulDateTimeString() -> String {
         let interval = -self.timeIntervalSinceNow
         if interval < 60 { return "刚刚" }
@@ -41,50 +41,50 @@ extension NSDate {
         if interval < 60 * 60 * 3 { return "2小时前" }
         if interval < 60 * 60 * 4 { return "3小时前" }
 
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-M-d"
-        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: 0.0)) {
+        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: 0.0)) {
             formatter.dateFormat = "HH:mm"
-            return formatter.stringFromDate(self)
+            return formatter.string(from: self)
         }
-        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: -60 * 60 * 24.0)) {
+        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24.0)) {
             formatter.dateFormat = "昨天HH:mm"
-            return formatter.stringFromDate(self)
+            return formatter.string(from: self)
         }
-        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: -60 * 60 * 24 * 2.0)) {
+        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24 * 2.0)) {
             formatter.dateFormat = "前天HH:mm"
-            return formatter.stringFromDate(self)
+            return formatter.string(from: self)
         }
         formatter.dateFormat = "yyyy"
-        if formatter.stringFromDate(self) == formatter.stringFromDate(NSDate(timeIntervalSinceNow: 0.0)) {
+        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: 0.0)) {
             formatter.dateFormat = "M-d HH:mm"
-            return formatter.stringFromDate(self)
+            return formatter.string(from: self)
         }
         formatter.dateFormat = "yyyy-M-d HH:mm"
-        return formatter.stringFromDate(self)
+        return formatter.string(from: self)
     }
 }
 
 extension UIView {
     func s1_screenShot() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.mainScreen().scale)
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
         guard let currentContext = UIGraphicsGetCurrentContext() else {
             return nil
         }
 
-        self.layer.renderInContext(currentContext)
-        let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        self.layer.render(in: currentContext)
+        let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return viewScreenShot
     }
 
-    func s1_screenShot(rect: CGRect) -> UIImage? {
+    func s1_screenShot(_ rect: CGRect) -> UIImage? {
         guard let
             originalScreenShot = self.s1_screenShot(),
-            processingCGImage = CGImageCreateWithImageInRect(originalScreenShot.CGImage, rect) else {
+            let processingCGImage = originalScreenShot.cgImage?.cropping(to: rect) else {
             return nil
         }
-        return UIImage(CGImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
+        return UIImage(cgImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
     }
     // TODO:
     //    - (UIImage *)screenShot {
@@ -97,18 +97,18 @@ extension UIView {
 }
 
 extension UIViewController {
-    func s1_presentAlertView(title: String, message: String?) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let defaultAction = UIAlertAction(title: NSLocalizedString("Message_OK", comment: "OK"), style: .Default, handler: nil)
+    func s1_presentAlertView(_ title: String, message: String?) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let defaultAction = UIAlertAction(title: NSLocalizedString("Message_OK", comment: "OK"), style: .default, handler: nil)
         alert.addAction(defaultAction)
-        self.presentViewController(alert, animated:true, completion:nil)
+        self.present(alert, animated:true, completion:nil)
     }
 }
 
 extension UIWebView {
-    func s1_positionOfElementWithId(elementID: String) -> CGRect? {
+    func s1_positionOfElementWithId(_ elementID: String) -> CGRect? {
         let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        if let result = self.stringByEvaluatingJavaScriptFromString(script) {
+        if let result = self.stringByEvaluatingJavaScript(from: script) {
             let rect = CGRectFromString(result)
             return rect == CGRect.zero ? nil : rect
         } else {
@@ -124,21 +124,21 @@ extension UIWebView {
 }
 
 extension UIImage {
-    func s1_tintWithColor(color: UIColor) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.mainScreen().scale)
+    func s1_tintWithColor(_ color: UIColor) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.main.scale)
         color.setFill()
         let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)
         UIRectFill(rect)
-        self.drawInRect(rect, blendMode: .SourceIn, alpha: 1.0)
+        self.draw(in: rect, blendMode: .sourceIn, alpha: 1.0)
 
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return newImage
+        return newImage!
     }
 }
 
 extension CGFloat {
-    func limit(from: CGFloat, to: CGFloat) -> CGFloat {
+    func limit(_ from: CGFloat, to: CGFloat) -> CGFloat {
         assert(to >= from)
         let result = self < to ? self : to
         return result > from ? result : from

@@ -16,14 +16,14 @@ extension S1Topic {
 
      - parameter topic: the topic holding information from network API.
      */
-    func update(topic: S1Topic) {
+    func update(_ topic: S1Topic) {
         guard !self.isImmutable else {
             DDLogError("[S1Topic] Trying to update a immutable topic")
             assert(false)
             return
         }
 
-        guard self.topicID.integerValue == topic.topicID.integerValue else {
+        guard self.topicID.intValue == topic.topicID.intValue else {
             DDLogError("[S1Topic] Trying to update from a topic with different ID")
             assert(false)
             return
@@ -34,8 +34,8 @@ extension S1Topic {
 
         let properties = ["title", "replyCount", "totalPageCount", "authorUserID", "authorUserName", "formhash", "message", "fID"]
         properties.forEach { (onePropertyName) in
-            let localValue = self.valueForKey(onePropertyName)
-            let serverValue = topic.valueForKey(onePropertyName)
+            let localValue = self.value(forKey: onePropertyName)
+            let serverValue = topic.value(forKey: onePropertyName)
 
             if serverValue == nil || S1Utility.valuesAreEqual(localValue, serverValue) {
                 return

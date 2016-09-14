@@ -10,14 +10,14 @@ import UIKit
 import CocoaLumberjack
 
 @objc public protocol PullToActionDelagete {
-    optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(offset: CGFloat)
-    optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(offset: CGFloat)
-    optional func scrollViewContentSizeDidChange(contentSize: CGSize)
-    optional func scrollViewContentOffsetProgress(progress: [String: Double])
+    @objc optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(_ offset: CGFloat)
+    @objc optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(_ offset: CGFloat)
+    @objc optional func scrollViewContentSizeDidChange(_ contentSize: CGSize)
+    @objc optional func scrollViewContentOffsetProgress(_ progress: [String: Double])
 }
 
 @objc public enum OffsetBaseLine: Int {
-    case Top, Bottom, Left, Right
+    case top, bottom, left, right
 }
 
 struct OffsetRange {
@@ -25,28 +25,28 @@ struct OffsetRange {
     let endPosition: Double
     let baseLine: OffsetBaseLine
 
-    func progress (offset: Double) -> Double {
+    func progress (_ offset: Double) -> Double {
         return (offset - beginPosition) / (endPosition - beginPosition)
     }
 }
 
-public class PullToActionController: NSObject, UIScrollViewDelegate {
+open class PullToActionController: NSObject, UIScrollViewDelegate {
     weak var scrollView: UIScrollView?
     weak var delegate: PullToActionDelagete?
 
     var offset: CGPoint = CGPoint(x: 0.0, y: 0.0)
     var size: CGSize = CGSize(width: 0.0, height: 0.0)
-    var inset: UIEdgeInsets = UIEdgeInsetsZero
-    private var progressAction: [String: OffsetRange] = Dictionary<String, OffsetRange>()
+    var inset: UIEdgeInsets = UIEdgeInsets.zero
+    fileprivate var progressAction: [String: OffsetRange] = Dictionary<String, OffsetRange>()
 
     init(scrollView: UIScrollView) {
         self.scrollView = scrollView
         super.init()
 
         scrollView.delegate = self // TODO: forward message to original delegate of the scroll view.
-        scrollView.addObserver(self, forKeyPath: "contentOffset", options: .New, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentInset", options: .New, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentOffset", options: .new, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+        scrollView.addObserver(self, forKeyPath: "contentInset", options: .new, context: nil)
     }
 
     deinit {
@@ -58,14 +58,14 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         DDLogDebug("[PullToAction] deinit")
     }
 
-    public func addConfigurationWithName(name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
+    open func addConfigurationWithName(_ name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
         progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
 
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentOffset" {
-            guard let changes = change, newOffsetValue = changes["new"] as? NSValue else { return }
-            self.offset = newOffsetValue.CGPointValue()
+            guard let changes = change, let newOffsetValue = changes["new"] as? NSValue else { return }
+            self.offset = newOffsetValue.CGPointValue
 
             guard let delegateFunction = self.delegate?.scrollViewContentOffsetProgress else { return }
             var progress = [String: Double]()
@@ -78,20 +78,20 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         }
 
         if keyPath == "contentSize" {
-            guard let changes = change, newSizeValue = changes["new"] as? NSValue else { return }
-            self.size = newSizeValue.CGSizeValue()
+            guard let changes = change, let newSizeValue = changes["new"] as? NSValue else { return }
+            self.size = newSizeValue.CGSizeValue
             DDLogVerbose("[PullToAction] contentSize:w: \(self.size.width) h:\(self.size.height)")
             self.delegate?.scrollViewContentSizeDidChange?(self.size)
         }
 
         if keyPath == "contentInset" {
-            guard let changes = change, newInsetValue = changes["new"] as? NSValue else { return }
-            self.inset = newInsetValue.UIEdgeInsetsValue()
+            guard let changes = change, let newInsetValue = changes["new"] as? NSValue else { return }
+            self.inset = newInsetValue.UIEdgeInsetsValue
             DDLogVerbose("[PullToAction] inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
         }
     }
 
-    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if self.offset.y < 0.0 {
             DDLogDebug("[PullToAction] End dragging <- \(self.offset.y)")
             self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
@@ -105,18 +105,18 @@ public class PullToActionController: NSObject, UIScrollViewDelegate {
         }
     }
 
-    private func baseLineOffset(baseLine: OffsetBaseLine) -> Double {
+    fileprivate func baseLineOffset(_ baseLine: OffsetBaseLine) -> Double {
         guard let scrollView = self.scrollView else { return Double(0.0) }
         switch baseLine {
-        case .Top:
+        case .top:
             return Double(self.offset.y)
-        case .Bottom:
+        case .bottom:
             var temp = scrollView.bounds.height - self.size.height
             if temp > 0.0 { temp = 0.0 }
             return Double(self.offset.y + temp)
-        case .Left:
+        case .left:
             return Double(self.offset.x)
-        case .Right:
+        case .right:
             var temp = scrollView.bounds.width - self.size.width
             if temp > 0.0 { temp = 0.0 }
             return Double(self.offset.x + temp)

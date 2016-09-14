@@ -30,9 +30,9 @@ final class ReportComposeViewModel {
         canSubmit <~ content.producer.map { $0.characters.count > 0 }.combineLatestWith(submiting.producer).map { $0 && !$1 }
     }
 
-    func submit(completion: (NSError?) -> Void) {
+    func submit(_ completion: @escaping (NSError?) -> Void) {
         DDLogDebug("submit")
-        guard let forumID = topic.fID, formhash = topic.formhash else {
+        guard let forumID = topic.fID, let formhash = topic.formhash else {
             return
         }
         submiting.value = true
@@ -47,7 +47,7 @@ final class ReportComposeViewModel {
 final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)
     let loadingHUD = S1HUD(frame: .zero)
-    let keyboardManager = YYKeyboardManager.defaultManager()
+    let keyboardManager = YYKeyboardManager.default()
     var textViewBottomConstraint: Constraint? = nil
 
     let viewModel: ReportComposeViewModel
@@ -66,8 +66,8 @@ final class ReportComposeViewController: UIViewController {
         super.viewDidLoad()
 
         self.title = NSLocalizedString("ReportComposeViewController.title", comment: "")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(ReportComposeViewController.dismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(ReportComposeViewController.submit))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReportComposeViewController.dismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ReportComposeViewController.submit))
 
         view.addSubview(textView)
         textView.snp_makeConstraints { (make) in
@@ -98,22 +98,22 @@ final class ReportComposeViewController: UIViewController {
             }
         }
 
-        keyboardManager.addObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
+        keyboardManager.add(self)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         textView.becomeFirstResponder()
         didReceivePaletteChangeNotification(nil)
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
@@ -122,12 +122,12 @@ final class ReportComposeViewController: UIViewController {
 
 // MARK: - YYKeyboardObserver
 extension ReportComposeViewController: YYKeyboardObserver {
-    func keyboardChangedWithTransition(transition: YYKeyboardTransition) {
+    func keyboardChanged(with transition: YYKeyboardTransition) {
          let offset = transition.toFrame.minY - view.frame.maxY
 
         self.textViewBottomConstraint?.updateOffset(offset)
 
-        UIView.animateWithDuration(transition.animationDuration, delay: 0.0, options: transition.animationOption, animations: {
+        UIView.animate(withDuration: transition.animationDuration, delay: 0.0, options: transition.animationOption, animations: {
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
@@ -143,30 +143,30 @@ extension ReportComposeViewController {
                 // FIXME: Alert Error
                 DDLogError("Report Submit Error: \(error)")
             } else {
-                strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                strongSelf.dismiss(animated: true, completion: nil)
             }
         }
     }
 
     func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 
     // MARK: - Notification
-    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         textView.backgroundColor = APColorManager.sharedInstance.colorForKey("report.background")
         textView.tintColor = APColorManager.sharedInstance.colorForKey("report.tint")
         textView.textColor = APColorManager.sharedInstance.colorForKey("report.text")
         textView.typingAttributes = TextAttributes().font(UIFont.systemFontOfSize(15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text")).dictionary
-        textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .Dark : .Light
+        textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .dark : .light
 
-        self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default
+        self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .black : .default
     }
 }
 
 // MARK: - Style
 extension ReportComposeViewController {
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

@@ -41,8 +41,8 @@ class S1QuoteFloorViewController: UIViewController {
             tableView.dataSource = self
             tableView.rowHeight = UITableViewAutomaticDimension
             tableView.estimatedRowHeight = 100.0
-            tableView.separatorStyle = .None
-            tableView.registerClass(QuoteFloorCell.self, forCellReuseIdentifier: "QuoteCell")
+            tableView.separatorStyle = .none
+            tableView.register(QuoteFloorCell.self, forCellReuseIdentifier: "QuoteCell")
             self.view.addSubview(tableView)
 
             tableView.snp_makeConstraints(closure: { (make) -> Void in
@@ -51,7 +51,7 @@ class S1QuoteFloorViewController: UIViewController {
                 make.leading.trailing.equalTo(self.view)
             })
         } else {
-            webView.opaque = false
+            webView.isOpaque = false
             webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
             webView.delegate = self
             webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
@@ -62,12 +62,12 @@ class S1QuoteFloorViewController: UIViewController {
                 make.bottom.equalTo(self.snp_bottomLayoutGuideTop)
                 make.leading.trailing.equalTo(self.view)
             })
-            webView.loadHTMLString(self.viewModel.htmlString, baseURL: self.viewModel.baseURL)
+            webView.loadHTMLString(self.viewModel.htmlString, baseURL: self.viewModel.baseURL as URL)
         }
         // Do any additional setup after loading the view.
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
     }
@@ -80,36 +80,36 @@ class S1QuoteFloorViewController: UIViewController {
 
 // MARK: - Table View Delegate
 extension S1QuoteFloorViewController: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.numberOfSection()
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRow(in: section)
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("QuoteCell", forIndexPath: indexPath) as! QuoteFloorCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "QuoteCell", for: indexPath) as! QuoteFloorCell
         cell.configure(viewModel.presenting(at: indexPath))
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
         return cell
     }
 }
 
 extension S1QuoteFloorViewController: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
 }
 
 // MARK: - WebView Delegate
 extension S1QuoteFloorViewController: UIWebViewDelegate {
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        guard let URL = request.URL else {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        guard let URL = request.url else {
             return false
         }
 
@@ -120,7 +120,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
         return false
     }
 
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webViewDidFinishLoad(_ webView: UIWebView) {
         let computedOffset: CGFloat = topPositionOfMessageWithId(self.viewModel.centerFloorID) - 32
         var offset = webView.scrollView.contentOffset
         offset.y = computedOffset.limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
@@ -128,7 +128,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     }
 
     // MARK: Helper
-    func topPositionOfMessageWithId(elementID: Int) -> CGFloat {
+    func topPositionOfMessageWithId(_ elementID: Int) -> CGFloat {
         if let rect = webView.s1_positionOfElementWithId("postmessage_\(elementID)") {
             return rect.minY
         } else {
@@ -140,7 +140,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
 
 // MARK: - Style
 extension S1QuoteFloorViewController {
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

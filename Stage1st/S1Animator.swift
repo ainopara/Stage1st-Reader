@@ -9,8 +9,8 @@
 import UIKit
 
 @objc enum TransitionDirection: Int {
-    case Push
-    case Pop
+    case push
+    case pop
 }
 
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
@@ -21,15 +21,15 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
         super.init()
     }
 
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
 
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let
-            toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey),
-            fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey),
-            containerView = transitionContext.containerView() else {
+            toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to),
+            let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
+            let containerView = transitionContext.containerView else {
                 assert(false)
                 return
         }
@@ -40,33 +40,33 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
         toViewController.view.layer.shadowOpacity = 0.5
         toViewController.view.layer.shadowRadius = 5.0
         toViewController.view.layer.shadowOffset = CGSize(width: -3.0, height: 0.0)
-        toViewController.view.layer.shadowPath = UIBezierPath(rect: toViewController.view.bounds).CGPath
+        toViewController.view.layer.shadowPath = UIBezierPath(rect: toViewController.view.bounds).cgPath
 
         let containerViewWidth = containerView.frame.width
         switch self.direction {
-        case .Push:
+        case .push:
             containerView.insertSubview(toViewController.view, aboveSubview: fromViewController.view)
-            fromViewController.view.transform = CGAffineTransformIdentity
-            toViewController.view.transform = CGAffineTransformMakeTranslation(containerViewWidth, 0.0)
-        case .Pop:
+            fromViewController.view.transform = CGAffineTransform.identity
+            toViewController.view.transform = CGAffineTransform(translationX: containerViewWidth, y: 0.0)
+        case .pop:
             containerView.insertSubview(toViewController.view, belowSubview: fromViewController.view)
-            fromViewController.view.transform = CGAffineTransformIdentity
-            toViewController.view.transform = CGAffineTransformMakeTranslation(-containerViewWidth / 2.0, 0.0)
+            fromViewController.view.transform = CGAffineTransform.identity
+            toViewController.view.transform = CGAffineTransform(translationX: -containerViewWidth / 2.0, y: 0.0)
         }
 
-        UIView.animateWithDuration(self.transitionDuration(transitionContext), delay: 0.0, options: .CurveLinear, animations: {
+        UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveLinear, animations: {
             switch self.direction {
-            case .Push:
-                fromViewController.view.transform = CGAffineTransformMakeTranslation(-containerViewWidth / 2.0, 0.0)
-                toViewController.view.transform = CGAffineTransformIdentity
-            case .Pop:
-                fromViewController.view.transform = CGAffineTransformMakeTranslation(containerViewWidth, 0.0)
-                toViewController.view.transform = CGAffineTransformIdentity
+            case .push:
+                fromViewController.view.transform = CGAffineTransform(translationX: -containerViewWidth / 2.0, y: 0.0)
+                toViewController.view.transform = CGAffineTransform.identity
+            case .pop:
+                fromViewController.view.transform = CGAffineTransform(translationX: containerViewWidth, y: 0.0)
+                toViewController.view.transform = CGAffineTransform.identity
             }
         }) { (finished) in
-            fromViewController.view.transform = CGAffineTransformIdentity
-            toViewController.view.transform = CGAffineTransformIdentity
-            transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+            fromViewController.view.transform = CGAffineTransform.identity
+            toViewController.view.transform = CGAffineTransform.identity
+            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
     }
 }

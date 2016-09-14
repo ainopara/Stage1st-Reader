@@ -8,59 +8,59 @@
 import UIKit
 
 public enum TopicListPresentationType {
-    case History, Favorite
-    case Search
-    case Forum(key : String)
-    case Blank
+    case history, favorite
+    case search
+    case forum(key : String)
+    case blank
 
     init(key: String) {
         switch key {
         case "History":
-            self = .History
+            self = .history
         case "Favorite":
-            self = .Favorite
+            self = .favorite
         case "Search":
-            self = .Search
+            self = .search
         case "":
-            self = .Blank
+            self = .blank
         default:
-            self = .Forum(key: key)
+            self = .forum(key: key)
         }
     }
 }
 
 extension S1TopicListViewController {
 
-    func isPresentingDatabaseList(key: String) -> Bool {
+    func isPresentingDatabaseList(_ key: String) -> Bool {
         switch TopicListPresentationType(key: key) {
-        case .Favorite, .History:
+        case .favorite, .history:
             return true
         default:
             return false
         }
     }
 
-    func isPresentingSearchList(key: String) -> Bool {
+    func isPresentingSearchList(_ key: String) -> Bool {
         switch TopicListPresentationType(key: key) {
-        case .Search:
+        case .search:
             return true
         default:
             return false
         }
     }
 
-    func isPresentingForumList(key: String) -> Bool {
+    func isPresentingForumList(_ key: String) -> Bool {
         switch TopicListPresentationType(key: key) {
-        case .Forum:
+        case .forum:
             return true
         default:
             return false
         }
     }
 
-    func isPresentingBlankList(key: String) -> Bool {
+    func isPresentingBlankList(_ key: String) -> Bool {
         switch TopicListPresentationType(key: key) {
-        case .Blank:
+        case .blank:
             return true
         default:
             return false
@@ -71,7 +71,7 @@ extension S1TopicListViewController {
 // MARK: Style
 extension S1TopicListViewController {
 
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

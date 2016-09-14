@@ -10,9 +10,9 @@ import UIKit
 import SnapKit
 
 class ReplyAccessoryView: UIView {
-    private var toolBar: UIToolbar
-    private var faceButton: UIButton
-    private var spoilerButton: UIButton
+    fileprivate var toolBar: UIToolbar
+    fileprivate var faceButton: UIButton
+    fileprivate var spoilerButton: UIButton
 
     weak var composeViewController: REComposeViewController?
     var mahjongFaceView: S1MahjongFaceView?
@@ -20,27 +20,27 @@ class ReplyAccessoryView: UIView {
     // MARK: - Life Cycle
     init(frame: CGRect, withComposeViewController composeViewController: REComposeViewController) {
         toolBar = UIToolbar(frame: frame)
-        faceButton = UIButton(type: .System)
-        spoilerButton = UIButton(type: .System)
+        faceButton = UIButton(type: .system)
+        spoilerButton = UIButton(type: .system)
         self.composeViewController = composeViewController
         super.init(frame: frame)
 
         //Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
-        faceButton.setImage(UIImage(named: "MahjongFaceButton"), forState: .Normal)
-        faceButton.addTarget(self, action: #selector(ReplyAccessoryView.toggleFace(_:)), forControlEvents: .TouchUpInside)
+        faceButton.setImage(UIImage(named: "MahjongFaceButton"), for: UIControlState())
+        faceButton.addTarget(self, action: #selector(ReplyAccessoryView.toggleFace(_:)), for: .touchUpInside)
         let faceItem = UIBarButtonItem(customView: faceButton)
 
         //Setup spoilerButton
         spoilerButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
-        spoilerButton.setTitle("H", forState: .Normal)
-        spoilerButton.addTarget(self, action: #selector(ReplyAccessoryView.insertSpoilerMark(_:)), forControlEvents: .TouchUpInside)
+        spoilerButton.setTitle("H", for: UIControlState())
+        spoilerButton.addTarget(self, action: #selector(ReplyAccessoryView.insertSpoilerMark(_:)), for: .touchUpInside)
         let spoilerItem = UIBarButtonItem(customView: spoilerButton)
 
         //Setup toolBar
-        let fixItem = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+        let fixItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixItem.width = 26.0
-        let flexItem = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
         self.addSubview(toolBar)
         toolBar.snp_makeConstraints { (make) -> Void in
@@ -54,8 +54,8 @@ class ReplyAccessoryView: UIView {
 
     deinit {
         if let historyArray = self.mahjongFaceView?.historyArray {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray = historyArray
+            DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
+                S1DataCenter.shared().mahjongFaceHistoryArray = historyArray
             }
         }
     }
@@ -64,7 +64,7 @@ class ReplyAccessoryView: UIView {
 
 // MARK: - Actions
 extension ReplyAccessoryView {
-    func toggleFace(button: UIButton) {
+    func toggleFace(_ button: UIButton) {
         guard let composeViewController = composeViewController else {
             return
         }
@@ -73,34 +73,34 @@ extension ReplyAccessoryView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = S1DataCenter.sharedDataCenter().mahjongFaceHistoryArray ?? NSMutableArray()
+                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray ?? NSMutableArray()
                 mahjongFaceView = newMahjongfaceView
             }
-            button.setImage(UIImage(named: "KeyboardButton"), forState: .Normal)
+            button.setImage(UIImage(named: "KeyboardButton"), for: UIControlState())
             if let mahjongFaceView = mahjongFaceView {
                 composeViewController.inputView = mahjongFaceView
                 composeViewController.reloadInputViews()
             }
         } else {
-            button.setImage(UIImage(named: "MahjongFaceButton"), forState: .Normal)
+            button.setImage(UIImage(named: "MahjongFaceButton"), for: UIControlState())
             composeViewController.inputView = nil
             composeViewController.reloadInputViews()
         }
     }
 
-    func insertSpoilerMark(button: UIButton) {
+    func insertSpoilerMark(_ button: UIButton) {
         self.insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
     }
 
-    func insertQuoteMark(button: UIButton) {
+    func insertQuoteMark(_ button: UIButton) {
         self.insertMarkWithAPart("[quote]", andBPart: "[/quote]")
     }
 
-    func insertBoldMark(button: UIButton) {
+    func insertBoldMark(_ button: UIButton) {
         self.insertMarkWithAPart("[b]", andBPart: "[/b]")
     }
 
-    func insertDeleteMark(button: UIButton) {
+    func insertDeleteMark(_ button: UIButton) {
         self.insertMarkWithAPart("[s]", andBPart: "[/s]")
     }
 }
@@ -108,19 +108,19 @@ extension ReplyAccessoryView {
 //MARK: - S1MahjongFaceViewDelegate
 extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
 
-    func mahjongFaceViewController(mahjongFaceView: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
+    func mahjongFaceViewController(_ mahjongFaceView: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
         guard let textView = composeViewController?.textView else {
             return
         }
         //Insert Mahjong Face Attachment
-        textView.textStorage.insertAttributedString(NSAttributedString(attachment: attachment), atIndex: textView.selectedRange.location)
+        textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
         //Move selection location
         textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
         //Reset Text Style
         ReplyAccessoryView.resetTextViewStyle(textView)
     }
 
-    func mahjongFaceViewControllerDidPressBackSpace(mahjongFaceViewController: S1MahjongFaceView) {
+    func mahjongFaceViewControllerDidPressBackSpace(_ mahjongFaceViewController: S1MahjongFaceView) {
         guard let textView = composeViewController?.textView else {
             return
         }
@@ -130,14 +130,14 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
             range.length = 1
         }
         textView.selectedRange = range
-        textView.textStorage.deleteCharactersInRange(textView.selectedRange)
+        textView.textStorage.deleteCharacters(in: textView.selectedRange)
         textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
     }
 }
 
 // MARK: - Helper
 extension ReplyAccessoryView {
-    func insertMarkWithAPart(aPart: NSString, andBPart bPart: NSString) {
+    func insertMarkWithAPart(_ aPart: NSString, andBPart bPart: NSString) {
         guard let textView = composeViewController?.textView else {
             return
         }
@@ -145,23 +145,23 @@ extension ReplyAccessoryView {
         let selectedRange = textView.selectedRange
         let aPartLenght = aPart.length
         if selectedRange.length == 0 {
-            let wholeMark = aPart.stringByAppendingString(bPart as String)
-            textView.textStorage.insertAttributedString(NSAttributedString(string: wholeMark), atIndex: selectedRange.location)
+            let wholeMark = aPart.appending(bPart as String)
+            textView.textStorage.insert(NSAttributedString(string: wholeMark), at: selectedRange.location)
         } else {
-            textView.textStorage.insertAttributedString(NSAttributedString(string: bPart as String), atIndex: selectedRange.location + selectedRange.length)
-            textView.textStorage.insertAttributedString(NSAttributedString(string: aPart as String), atIndex: selectedRange.location)
+            textView.textStorage.insert(NSAttributedString(string: bPart as String), at: selectedRange.location + selectedRange.length)
+            textView.textStorage.insert(NSAttributedString(string: aPart as String), at: selectedRange.location)
         }
         textView.selectedRange = NSRange(location: selectedRange.location + aPartLenght, length: selectedRange.length)
         ReplyAccessoryView.resetTextViewStyle(textView)
     }
 
-    static func resetTextViewStyle(textView: UITextView) {
+    static func resetTextViewStyle(_ textView: UITextView) {
         let allTextRange = NSRange(location: 0, length: textView.textStorage.length)
         textView.textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
-        textView.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(17.0), range: allTextRange)
+        textView.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
         textView.textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
         textView.textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.sharedInstance.colorForKey("reply.text"), range: allTextRange)
-        textView.font = UIFont.systemFontOfSize(17.0)
+        textView.font = UIFont.systemFont(ofSize: 17.0)
         textView.textColor = APColorManager.sharedInstance.colorForKey("reply.text")
     }
 }

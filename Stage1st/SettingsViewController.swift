@@ -8,16 +8,16 @@
 import UIKit
 
 extension SettingsViewController {
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }
 
 extension SettingsViewController {
     func applicationVersion() -> String {
-        guard let
-            shortVersionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString"),
-            versionString = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") else {
+        guard
+            let shortVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
+            let versionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") else {
                 return "?"
         }
         return "\(shortVersionString) (\(versionString))"

@@ -12,14 +12,14 @@ import SnapKit
 import CocoaLumberjack
 
 class S1WebViewController: UIViewController, WKNavigationDelegate {
-    var URLToOpen: NSURL
+    var URLToOpen: URL
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
 
     let titleLabel = UILabel(frame: CGRect.zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
     let webView = WKWebView(frame: CGRect.zero, configuration: WKWebViewConfiguration())
-    let progressView = UIProgressView(progressViewStyle: .Bar)
+    let progressView = UIProgressView(progressViewStyle: .bar)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: CGRect.zero)
     let toolBar = UIToolbar(frame: CGRect.zero)
@@ -31,10 +31,10 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     var closeButtonItem: UIBarButtonItem?
 
     // MARK: -
-    init(URL: NSURL) {
+    init(URL: Foundation.URL) {
         self.URLToOpen = URL
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .OverFullScreen
+        self.modalPresentationStyle = .overFullScreen
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -46,13 +46,13 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
         view.backgroundColor = nil
 
-        webView.backgroundColor = .clearColor()
-        webView.scrollView.backgroundColor = .clearColor()
-        webView.opaque = false
+        webView.backgroundColor = .clear()
+        webView.scrollView.backgroundColor = .clear()
+        webView.isOpaque = false
         webView.navigationDelegate = self
-        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .New, context: nil)
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
 
-        statusBarSeparatorView.backgroundColor = UIColor.blackColor()
+        statusBarSeparatorView.backgroundColor = UIColor.black
 
         view.addSubview(blurBackgroundView)
         blurBackgroundView.snp_makeConstraints { (make) in
@@ -67,8 +67,8 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         }
 
         titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.systemFontOfSize(12.0)  // need a better solution
-        titleLabel.textAlignment = .Center
+        titleLabel.font = UIFont.systemFont(ofSize: 12.0)  // need a better solution
+        titleLabel.textAlignment = .center
         vibrancyEffectView.contentView.addSubview(titleLabel)
         titleLabel.snp_makeConstraints { (make) in
             make.edges.equalTo(vibrancyEffectView.contentView)
@@ -76,12 +76,12 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
         toolBar.barTintColor = nil
 
-        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .Plain, target: self, action: #selector(S1WebViewController.back))
-        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .Plain, target: self, action: #selector(S1WebViewController.forward))
-        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .Plain, target: self, action: #selector(S1WebViewController.refresh))
-        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .Plain, target: self, action: #selector(S1WebViewController.stop))
-        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .Plain, target: self, action: #selector(S1WebViewController.openInSafari))
-        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .Plain, target: self, action: #selector(S1WebViewController.dismiss))
+        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(S1WebViewController.back))
+        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .plain, target: self, action: #selector(S1WebViewController.forward))
+        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(S1WebViewController.refresh))
+        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController.stop))
+        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(S1WebViewController.openInSafari))
+        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController.dismiss))
 
         updateBarItems()
 
@@ -119,19 +119,19 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         }
 
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
 
-        webView.loadRequest(NSURLRequest(URL: URLToOpen))
+        webView.load(URLRequest(url: URLToOpen))
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         self.webView.removeObserver(self, forKeyPath: "estimatedProgress", context: nil)
         self.webView.stopLoading()
 //        self.webView.delegate = nil
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.didReceivePaletteChangeNotification(nil)
     }
@@ -146,7 +146,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
     // MARK: - Actions
     func dismiss() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 
     func back() {
@@ -170,40 +170,40 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     func openInSafari() {
         let URLToOpenInSafari = currentValidURL()
         DDLogDebug("[WebViewController] open in safari:\(URLToOpenInSafari)")
-        if UIApplication.sharedApplication().openURL(URLToOpenInSafari) != true {
+        if UIApplication.shared.openURL(URLToOpenInSafari) != true {
             DDLogError("[WebViewController] failed to open \(URLToOpenInSafari) in safari")
         }
     }
 
     // MARK: - UIWebViewDelegate
-    func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         DDLogDebug("[WebViewController] didCommit")
         updateBarItems()
-        backButtonItem?.enabled = webView.canGoBack
-        forwardButtonItem?.enabled = webView.canGoForward
+        backButtonItem?.isEnabled = webView.canGoBack
+        forwardButtonItem?.isEnabled = webView.canGoForward
         titleLabel.text = currentValidURL().absoluteString
     }
 
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         DDLogDebug("[WebViewController] didFinish")
         updateBarItems()
-        backButtonItem?.enabled = webView.canGoBack
-        forwardButtonItem?.enabled = webView.canGoForward
+        backButtonItem?.isEnabled = webView.canGoBack
+        forwardButtonItem?.isEnabled = webView.canGoForward
         titleLabel.text = currentValidURL().absoluteString
     }
 
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        DDLogDebug("[WebViewController] didFail")
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        DDLogDebug("[WebViewController] didFail with error:\(error)")
         updateBarItems()
     }
 
     // MARK: KVO
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let newProgress = change?[NSKeyValueChangeNewKey] as? Float else { return }
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard let newProgress = change?[NSKeyValueChangeKey.newKey] as? Float else { return }
         DDLogVerbose("[WebViewController] Loading progress: \(newProgress)")
 
         if newProgress == 1.0 {
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.progressView.setProgress(newProgress, animated: false)
                 self.progressView.alpha = 0.0
             }, completion: { finished in
@@ -216,23 +216,23 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - Helper
-    private func updateBarItems() {
-        guard let
-            back = self.backButtonItem,
-            forward = self.forwardButtonItem,
-            refresh = self.refreshButtonItem,
+    fileprivate func updateBarItems() {
+        guard
+            let back = self.backButtonItem,
+            let forward = self.forwardButtonItem,
+            let refresh = self.refreshButtonItem,
 //            stop = self.stopButtonItem,
-            close = self.closeButtonItem,
-            safari = self.safariButtonItem else { return }
+            let close = self.closeButtonItem,
+            let safari = self.safariButtonItem else { return }
 
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 //        let refreshOrStopItem = webView.loading ? stop : refresh
         let refreshOrStopItem = refresh // always show refresh button until we have a new icon for stop item.
         toolBar.setItems([close, flexSpace, back, flexSpace, refreshOrStopItem, flexSpace, forward, flexSpace, safari], animated: true)
     }
 
-    private func currentValidURL() -> NSURL {
-        if let URL = webView.URL where URL.absoluteString != "" {
+    fileprivate func currentValidURL() -> URL {
+        if let URL = webView.url , URL.absoluteString != "" {
             return URL
         } else {
             return self.URLToOpen
@@ -240,22 +240,22 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - Notification
-    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         statusBarSeparatorView.backgroundColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
         progressView.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
 
         if APColorManager.sharedInstance.isDarkTheme() {
-            let darkBlurEffect = UIBlurEffect(style: .Dark)
+            let darkBlurEffect = UIBlurEffect(style: .dark)
             blurBackgroundView.effect = darkBlurEffect
-            vibrancyEffectView.effect = UIVibrancyEffect(forBlurEffect: darkBlurEffect)
+            vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: darkBlurEffect)
             statusBarOverlayView.effect = darkBlurEffect
-            toolBar.barStyle = .Black
+            toolBar.barStyle = .black
         } else {
-            let lightBlurEffect = UIBlurEffect(style: .Light)
+            let lightBlurEffect = UIBlurEffect(style: .light)
             blurBackgroundView.effect = lightBlurEffect
-            vibrancyEffectView.effect = UIVibrancyEffect(forBlurEffect: UIBlurEffect(style: .Light))
-            statusBarOverlayView.effect = UIBlurEffect(style: .ExtraLight)
-            toolBar.barStyle = .Default
+            vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .light))
+            statusBarOverlayView.effect = UIBlurEffect(style: .extraLight)
+            toolBar.barStyle = .default
         }
     }
 }

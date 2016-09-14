@@ -20,19 +20,19 @@ class PollOption: NSObject {
     let imageInfo: [String]?
 
     init?(json: JSON) {
-        guard let IDString = json["polloptionid"].string, ID = Int(IDString) else {
+        guard let IDString = json["polloptionid"].string, let ID = Int(IDString) else {
             return nil
         }
         self.ID = ID
         self.name = json["polloption"].string
 
-        if let votesString = json["votes"].string, votes = Int(votesString) {
+        if let votesString = json["votes"].string, let votes = Int(votesString) {
             self.votes = votes
         } else {
             self.votes = nil
         }
 
-        if let percentString = json["percent"].string, percent = Double(percentString) {
+        if let percentString = json["percent"].string, let percent = Double(percentString) {
             self.percent = percent
         } else {
             self.percent = nil
@@ -48,11 +48,11 @@ class PollOption: NSObject {
 
 class Poll: NSObject {
     let options: [PollOption]
-    let expirationDate: NSDate?
+    let expirationDate: Date?
     let maxChoices: Int?
     let visible: Bool?
     let allowVote: Bool?
-    let remainTime: NSTimeInterval?
+    let remainTime: TimeInterval?
 
     init?(json: JSON) {
         guard let optionsDictionary = json["polloptions"].jsonDictionary else { return nil }
@@ -64,32 +64,32 @@ class Poll: NSObject {
             return nil
         }
 
-        if let expirationString = json["expirations"].string, expirationSeconds = Double(expirationString) {
+        if let expirationString = json["expirations"].string, let expirationSeconds = Double(expirationString) {
             self.expirationDate = NSDate(timeIntervalSince1970: expirationSeconds)
         } else {
             self.expirationDate = nil
         }
 
-        if let maxChoicesString = json["maxchoices"].string, maxChoices = Int(maxChoicesString) {
+        if let maxChoicesString = json["maxchoices"].string, let maxChoices = Int(maxChoicesString) {
             self.maxChoices = maxChoices
         } else {
             self.maxChoices = nil
         }
 
-        if let visibleString = json["visiblepool"].string, visibleInt = Int(visibleString) {
+        if let visibleString = json["visiblepool"].string, let visibleInt = Int(visibleString) {
             self.visible = visibleInt == 0 ? false : true
         } else {
             self.visible = nil
         }
 
-        if let allowVoteString = json["allowvote"].string, allowVoteInt = Int(allowVoteString) {
+        if let allowVoteString = json["allowvote"].string, let allowVoteInt = Int(allowVoteString) {
             self.allowVote = allowVoteInt == 0 ? false : true
         } else {
             self.allowVote = nil
         }
 
         // FIXME: check this api.
-        if let remainTimeString = json["remaintime"].string, remainTimeSeconds = Double(remainTimeString) {
+        if let remainTimeString = json["remaintime"].string, let remainTimeSeconds = Double(remainTimeString) {
             self.remainTime = remainTimeSeconds
         } else {
             self.remainTime = nil

@@ -25,8 +25,8 @@ public final class S1TopicListViewModel: NSObject {
         initializeMappings()
     }
 
-    func topicListForKey(key: String, refresh: Bool, success: (topicList: [S1Topic]) -> Void, failure: (error: NSError) -> Void) {
-        self.dataCenter.topicsForKey(key, shouldRefresh: refresh, success: { [weak self] (topicList) in
+    func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: NSError) -> Void) {
+        self.dataCenter.topics(forKey: key, shouldRefresh: refresh, success: { [weak self] (topicList) in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
             for topic in topicList {
@@ -43,8 +43,8 @@ public final class S1TopicListViewModel: NSObject {
         })
     }
 
-    func loadNextPageForKey(key: String, success: (topicList: [S1Topic]) -> Void, failure: (error: NSError) -> Void) {
-        self.dataCenter.loadNextPageForKey(key, success: { [weak self] (topicList) in
+    func loadNextPageForKey(_ key: String, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: NSError) -> Void) {
+        self.dataCenter.loadNextPage(forKey: key, success: { [weak self] (topicList) in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
             for topic in topicList {
@@ -64,23 +64,23 @@ public final class S1TopicListViewModel: NSObject {
         return self.viewMappings?.numberOfSections() ?? 1
     }
 
-    func numberOfItemsInSection(section: UInt) -> UInt {
-        return self.viewMappings?.numberOfItemsInSection(section) ?? 0
+    func numberOfItemsInSection(_ section: UInt) -> UInt {
+        return self.viewMappings?.numberOfItems(inSection: section) ?? 0
     }
 
-    func unfavoriteTopicAtIndexPath(indexPath: NSIndexPath) {
+    func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = self.topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopicFromFavorite(topic.topicID)
+            self.dataCenter.removeTopic(fromFavorite: topic.topicID)
         }
     }
 
-    func deleteTopicAtIndexPath(indexPath: NSIndexPath) {
+    func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = self.topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopicFromHistory(topic.topicID)
+            self.dataCenter.removeTopic(fromHistory: topic.topicID)
         }
     }
 
-    func topicWithTracedDataForTopic(topic: S1Topic) -> S1Topic {
+    func topicWithTracedDataForTopic(_ topic: S1Topic) -> S1Topic {
         if let tracedTopic = self.dataCenter.tracedTopic(topic.topicID)?.copy() as? S1Topic {
             tracedTopic.update(topic)
             return tracedTopic
@@ -94,14 +94,14 @@ public final class S1TopicListViewModel: NSObject {
 extension S1TopicListViewModel {
 
     func initializeMappings() {
-        databaseConnection.readWithBlock { (transaction) in
+        databaseConnection.read { (transaction) in
             if transaction.ext(Ext_FullTextSearch_Archive) != nil {
                 self.viewMappings = YapDatabaseViewMappings(groupFilterBlock: { (group, transaction) -> Bool in
                     return true
-                }, sortBlock: { (group1, group2, transaction) -> NSComparisonResult in
+                }, sortBlock: { (group1, group2, transaction) -> ComparisonResult in
                     return S1Formatter.sharedInstance().compareDateString(group1, withDateString: group2)
                 }, view: Ext_searchResultView_Archive)
-                self.viewMappings?.updateWithTransaction(transaction)
+                self.viewMappings?.update(with: transaction)
             } else {
                 // The view isn't ready yet.
                 // We'll try again when we get a databaseConnectionDidUpdate notification.
@@ -109,39 +109,39 @@ extension S1TopicListViewModel {
         }
     }
 
-    func topicAtIndexPath(indexPath: NSIndexPath) -> S1Topic? {
+    func topicAtIndexPath(_ indexPath: IndexPath) -> S1Topic? {
         var topic: S1Topic? = nil
-        databaseConnection.readWithBlock { (transaction) in
+        databaseConnection.read { (transaction) in
             if let
                 ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction,
-                viewMappings = self.viewMappings {
-                topic = ext.objectAtIndexPath(indexPath, withMappings: viewMappings) as? S1Topic
+                let viewMappings = self.viewMappings {
+                topic = ext.object(at: indexPath, with: viewMappings) as? S1Topic
             }
         }
 
         return topic
     }
 
-    func updateFilter(searchText: String, key: String) {
+    func updateFilter(_ searchText: String, key: String) {
         let favoriteMark = key == "Favorite" ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
         DDLogDebug("[TopicListVC] Update filter: \(query)")
         searchQueue.enqueueQuery(query)
-        MyDatabaseManager.bgDatabaseConnection.readWriteWithBlock { (transaction) in
+        MyDatabaseManager.bgDatabaseConnection.readWrite { (transaction) in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {
-                ext.performSearchWithQueue(self.searchQueue)
+                ext.performSearch(with: self.searchQueue)
             }
         }
     }
 
     func updateMappings() {
-        self.databaseConnection.readWithBlock { (transaction) in
-            self.viewMappings?.updateWithTransaction(transaction)
+        self.databaseConnection.read { (transaction) in
+            self.viewMappings?.update(with: transaction)
         }
     }
 
-    func searchBarPlaceholderStringForCurrentKey(key: String) -> String {
+    func searchBarPlaceholderStringForCurrentKey(_ key: String) -> String {
         let count = key == "Favorite" ? self.dataCenter.numberOfFavorite() : self.dataCenter.numberOfTopics()
-        return NSString(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment:"Search"), count) as String
+        return NSString(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment:"Search") as NSString, count) as String
     }
 }

@@ -10,15 +10,15 @@ import UIKit
 import CocoaLumberjack
 
 class S1Application: UIApplication {
-    override func sendEvent(event: UIEvent) {
+    override func sendEvent(_ event: UIEvent) {
         super.sendEvent(event)
 
         // Debug touch events
-        guard event.type == .Touches else {
+        guard event.type == .touches else {
             return
         }
 
-        if let touches = event.allTouches(), touch = touches.first, gestureRecognizers = touch.gestureRecognizers {
+        if let touches = event.allTouches, let touch = touches.first, let gestureRecognizers = touch.gestureRecognizers {
             for gestureRecognizer in gestureRecognizers {
                 if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
                     DDLogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")

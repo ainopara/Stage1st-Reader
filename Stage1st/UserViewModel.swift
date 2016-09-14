@@ -19,7 +19,7 @@ class UserViewModel {
         self.user = MutableProperty(user)
     }
 
-    func updateCurrentUserProfile(resultBlock: (Alamofire.Result<User, NSError>) -> Void) {
+    func updateCurrentUserProfile(_ resultBlock: (Alamofire.Result<User, NSError>) -> Void) {
         apiManager.profile(self.user.value.ID) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {

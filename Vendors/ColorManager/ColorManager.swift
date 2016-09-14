@@ -10,48 +10,48 @@ import UIKit
 import CocoaLumberjack
 
 @objc public enum PaletteType: NSInteger {
-    case Day
-    case Night
+    case day
+    case night
 }
 
 let APPaletteDidChangeNotification = "APPaletteDidChangeNotification"
 
-public class APColorManager: NSObject {
+open class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
-    let fallbackColor = UIColor.blackColor()
-    let defaultPaletteURL = NSBundle.mainBundle().URLForResource("DarkPalette2", withExtension: "plist")
+    let fallbackColor = UIColor.black
+    let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette2", withExtension: "plist")
 
-    public static let sharedInstance = {
+    open static let sharedInstance = {
         return APColorManager()
     }()
 
     override init () {
-        let paletteName = NSUserDefaults.standardUserDefaults().boolForKey("NightMode") == true ? "DarkPalette2": "DefaultPalette"
+        let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette2": "DefaultPalette"
 
-        let palettePath = NSBundle.mainBundle().pathForResource(paletteName, ofType: "plist")
-        if let palettePath = palettePath, palette = NSDictionary(contentsOfFile: palettePath) {
+        let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
+        if let palettePath = palettePath, let palette = NSDictionary(contentsOfFile: palettePath) {
             self.palette = palette
         }
-        let colorMapPath = NSBundle.mainBundle().pathForResource("ColorMap", ofType: "plist")
-        if let colorMapPath = colorMapPath, colorMap = NSDictionary(contentsOfFile: colorMapPath) {
+        let colorMapPath = Bundle.main.path(forResource: "ColorMap", ofType: "plist")
+        if let colorMapPath = colorMapPath, let colorMap = NSDictionary(contentsOfFile: colorMapPath) {
             self.colorMap = colorMap
         }
         super.init()
     }
 
-    func switchPalette(type: PaletteType) {
-        let paletteName: String = type == .Night ? "DarkPalette2" : "DefaultPalette"
-        let paletteURL = NSBundle.mainBundle().URLForResource(paletteName, withExtension: "plist")
+    func switchPalette(_ type: PaletteType) {
+        let paletteName: String = type == .night ? "DarkPalette2" : "DefaultPalette"
+        let paletteURL = Bundle.main.url(forResource: paletteName, withExtension: "plist")
         self.loadPaletteByURL(paletteURL, shouldPushNotification: true)
     }
 
-    func htmlColorStringWithID(paletteID: String) -> String {
-        return (self.palette.valueForKey(paletteID) as? String) ?? "#000000"
+    func htmlColorStringWithID(_ paletteID: String) -> String {
+        return (self.palette.value(forKey: paletteID) as? String) ?? "#000000"
     }
 
     func isDarkTheme() -> Bool {
-        return self.palette.valueForKey("Dark")?.boolValue ?? false
+        return (self.palette.value(forKey: "Dark") as AnyObject).boolValue ?? false
     }
 
     func updateGlobalAppearance() {
@@ -59,21 +59,21 @@ public class APColorManager: NSObject {
         UIToolbar.appearance().tintColor = self.colorForKey("appearance.toolbar.tint")
         UINavigationBar.appearance().barTintColor = self.colorForKey("appearance.navigationbar.bartint")
         UINavigationBar.appearance().tintColor = self.colorForKey("appearance.navigationbar.tint")
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.navigationbar.title"), NSFontAttributeName: UIFont.boldSystemFontOfSize(17.0)]
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.navigationbar.title"), NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
         UISwitch.appearance().onTintColor = self.colorForKey("appearance.switch.tint")
         if #available(iOS 9.0, *) {
-            UITextField.appearanceWhenContainedInInstancesOfClasses([UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFontOfSize(14.0)]
+            UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFont(ofSize: 14.0)]
         } else {
             // Fallback on earlier versions
-            S1ColorManager.updataSearchBarAppearanceWithColor(self.colorForKey("appearance.searchbar.text"))
+            S1ColorManager.updataSearchBarAppearance(with: self.colorForKey("appearance.searchbar.text"))
         }
-        UIScrollView.appearance().indicatorStyle = self.isDarkTheme() ? .White : .Default
-        UITextField.appearance().keyboardAppearance = self.isDarkTheme() ? .Dark : .Default
-        UIApplication.sharedApplication().statusBarStyle = self.isDarkTheme() ? .LightContent : .Default
+        UIScrollView.appearance().indicatorStyle = self.isDarkTheme() ? .white : .default
+        UITextField.appearance().keyboardAppearance = self.isDarkTheme() ? .dark : .default
+        UIApplication.shared.statusBarStyle = self.isDarkTheme() ? .lightContent : .default
     }
 
-    func colorForKey(key: String) -> UIColor {
-        if let paletteID = (self.colorMap.valueForKey(key) as? String) {
+    func colorForKey(_ key: String) -> UIColor {
+        if let paletteID = (self.colorMap.value(forKey: key) as? String) {
             return self.colorInPaletteWithID(paletteID)
         } else {
             DDLogWarn("[Color Manager] can't found color \(key), default color used")
@@ -84,20 +84,20 @@ public class APColorManager: NSObject {
 
 // MARK: Private
 private extension APColorManager {
-    func loadPaletteByURL(paletteURL: NSURL?, shouldPushNotification shouldPush: Bool) {
-        guard let paletteURL = paletteURL, palette = NSDictionary(contentsOfURL: paletteURL) else {
+    func loadPaletteByURL(_ paletteURL: URL?, shouldPushNotification shouldPush: Bool) {
+        guard let paletteURL = paletteURL, let palette = NSDictionary(contentsOf: paletteURL) else {
             return
         }
         self.palette = palette
         self.updateGlobalAppearance()
         if shouldPush {
-            NSNotificationCenter.defaultCenter().postNotificationName(APPaletteDidChangeNotification, object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
         }
     }
 
-    func colorInPaletteWithID(paletteID: String) -> UIColor {
-        let colorString = self.palette.valueForKey(paletteID) as? String
-        if let colorString = colorString, color = S1Global.colorFromHexString(colorString) {
+    func colorInPaletteWithID(_ paletteID: String) -> UIColor {
+        let colorString = self.palette.value(forKey: paletteID) as? String
+        if let colorString = colorString, let color = S1Global.color(fromHexString: colorString) {
             return color
         } else {
             return self.fallbackColor
@@ -106,6 +106,6 @@ private extension APColorManager {
 }
 
 public extension UIViewController {
-    func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    func didReceivePaletteChangeNotification(_ notification: Notification?) {
     }
 }

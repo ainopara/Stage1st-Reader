@@ -10,7 +10,7 @@ import XCTest
 @testable import Stage1st
 
 class S1DateFormatterTests: XCTestCase {
-    var dateList = [NSDate]()
+    var dateList = [Date]()
 
     override func setUp() {
         let count = 3000
@@ -18,7 +18,7 @@ class S1DateFormatterTests: XCTestCase {
 
         for _ in 1...count {
             let random: Double = Double(arc4random() % timeRange)
-            let date = NSDate(timeIntervalSinceNow: -random)
+            let date = Date(timeIntervalSinceNow: -random)
             self.dateList.append(date)
         }
     }
@@ -27,7 +27,7 @@ class S1DateFormatterTests: XCTestCase {
         for timeRange: UInt32 in [100_000, 60_000_000] {
             for _ in 1...10000 {
                 let random: Double = Double(arc4random() % timeRange)
-                let date = NSDate(timeIntervalSinceNow: -random)
+                let date = Date(timeIntervalSinceNow: -random)
                 let stringVersion1 = date.s1_gracefulDateTimeString()
                 let stringVersion2 = S1ContentViewModel.translateDateTimeString(date)
                 XCTAssert(stringVersion1 == stringVersion2, "\(stringVersion1) != \(stringVersion2)")
@@ -36,7 +36,7 @@ class S1DateFormatterTests: XCTestCase {
     }
 
     func testFormatterPerformance() {
-        self.measureBlock {
+        self.measure {
             for date in self.dateList {
                 date.s1_gracefulDateTimeString()
             }
@@ -44,7 +44,7 @@ class S1DateFormatterTests: XCTestCase {
     }
 
     func testOldFormatterPerformance() {
-        self.measureBlock {
+        self.measure {
             for date in self.dateList {
                 S1ContentViewModel.translateDateTimeString(date)
             }

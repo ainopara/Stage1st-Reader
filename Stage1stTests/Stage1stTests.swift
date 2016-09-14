@@ -87,7 +87,7 @@ class S1TopicTests: XCTestCase {
     
     func testPerformanceUpdate() {
 
-        self.measureBlock {
+        self.measure {
 
         }
     }
@@ -95,29 +95,29 @@ class S1TopicTests: XCTestCase {
 }
 
 extension XCTestCase {
-    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
 
-    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
 }
 
 extension KIFTestActor {
-    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
 
-    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
 }
 
 class S1UITests: KIFTestCase {
     func testArchive() {
-        tester().tapViewWithAccessibilityLabel("Archive", traits: UIAccessibilityTraitButton)
-        tester().tapViewWithAccessibilityLabel("Favorite", traits: UIAccessibilityTraitButton)
+        tester().tapView(withAccessibilityLabel: "Archive", traits: UIAccessibilityTraitButton)
+        tester().tapView(withAccessibilityLabel: "Favorite", traits: UIAccessibilityTraitButton)
 //        tester().tapViewWithAccessibilityLabel("Search Bar", traits: UIAccessibilityTraitSearchField)
 //        tester().waitForKeyInputReady()
         // TODO: Finish this with `FBSnapshotTestCase` and `GYHttpMock`

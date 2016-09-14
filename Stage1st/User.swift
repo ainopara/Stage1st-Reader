@@ -13,7 +13,7 @@ private let kUserID = "userID"
 private let kUserName = "userName"
 private let kCustomStatus = "customStatus"
 
-public class User: NSObject, NSCoding {
+open class User: NSObject, NSCoding {
     let ID: Int
     var name: String
     var customStatus: String?
@@ -31,52 +31,53 @@ public class User: NSObject, NSCoding {
 
     public init?(json: JSON) {
         let space = json["Variables"]["space"]
-        guard let
-            IDString = space["uid"].string, ID = Int(IDString),
-            name = space["username"].string else {
+        guard
+            let IDString = space["uid"].string,
+            let ID = Int(IDString),
+            let name = space["username"].string else {
                 return nil
         }
 
         self.ID = ID
         self.name = name
         self.customStatus = space["customstatus"].string
-        if let sigHTML = space["sightml"].string where sigHTML != "" {
+        if let sigHTML = space["sightml"].string , sigHTML != "" {
             self.sigHTML = sigHTML
         }
         self.lastVisitDateString = space["lastvisit"].string
         self.registerDateString = space["regdate"].string
-        if let threadCountString = space["threads"].string, threadCount = Int(threadCountString) {
+        if let threadCountString = space["threads"].string, let threadCount = Int(threadCountString) {
             self.threadCount = threadCount
         }
-        if let postCountString = space["posts"].string, postCount = Int(postCountString) {
+        if let postCountString = space["posts"].string, let postCount = Int(postCountString) {
             self.postCount = postCount
         }
     }
 
     public required init?(coder aDecoder: NSCoder) {
-        guard let
-            ID = aDecoder.decodeObjectForKey(kUserID) as? Int,
-            name = aDecoder.decodeObjectForKey(kUserName) as? String else {
+        guard
+            let ID = aDecoder.decodeObject(forKey: kUserID) as? Int,
+            let name = aDecoder.decodeObject(forKey: kUserName) as? String else {
             return nil
         }
 
         self.ID = ID
         self.name = name
-        self.customStatus = aDecoder.decodeObjectForKey(kCustomStatus) as? String
+        self.customStatus = aDecoder.decodeObject(forKey: kCustomStatus) as? String
         super.init()
         // FIXME: Finish it.
     }
 
-    public func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(self.ID, forKey: kUserID)
-        aCoder.encodeObject(self.name, forKey: kUserName)
-        aCoder.encodeObject(self.customStatus, forKey: kCustomStatus)
+    open func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.ID, forKey: kUserID)
+        aCoder.encode(self.name, forKey: kUserName)
+        aCoder.encode(self.customStatus, forKey: kCustomStatus)
         // FIXME: Finish it.
     }
 }
 
 extension User {
-    var avatarURL: NSURL? {
-        return NSURL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
+    var avatarURL: URL? {
+        return URL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
     }
 }

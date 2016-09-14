@@ -16,7 +16,7 @@ final class QuoteFloorCell: UITableViewCell {
     let authorLabel = UILabel(frame: .zero)
     let dateTimeLabel = UILabel(frame: .zero)
     let floorLabel = UILabel(frame: .zero)
-    let moreActionButton = UIButton(type: .System)
+    let moreActionButton = UIButton(type: .system)
     let contentLabel = DTAttributedLabel(frame: .zero)
     var webViewHeightConstraint: Constraint? = nil
 
@@ -25,8 +25,8 @@ final class QuoteFloorCell: UITableViewCell {
 
         backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
 
-        avatarView.layer.borderColor = APColorManager.sharedInstance.colorForKey("hud.border").CGColor
-        avatarView.layer.borderWidth = 1.0 / UIScreen.mainScreen().scale
+        avatarView.layer.borderColor = APColorManager.sharedInstance.colorForKey("hud.border").cgColor
+        avatarView.layer.borderWidth = 1.0 / UIScreen.main.scale
         avatarView.layer.cornerRadius = 16.0
         avatarView.clipsToBounds = true
         contentView.addSubview(avatarView)
@@ -48,7 +48,7 @@ final class QuoteFloorCell: UITableViewCell {
             make.leading.equalTo(authorLabel.snp_trailing).offset(10.0)
         }
 
-        moreActionButton.setTitle("更多", forState: .Normal)
+        moreActionButton.setTitle("更多", for: UIControlState())
         contentView.addSubview(moreActionButton)
         moreActionButton.snp_makeConstraints { (make) in
             make.centerY.equalTo(self.avatarView.snp_centerY)
@@ -74,7 +74,7 @@ final class QuoteFloorCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(presenting: FloorPresenting) {
+    func configure(_ presenting: FloorPresenting) {
         avatarView.kf_setImageWithURL(presenting.avatarURL)
         authorLabel.attributedText = presenting.author
         dateTimeLabel.attributedText = presenting.dateTime

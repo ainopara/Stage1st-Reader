@@ -12,14 +12,14 @@ import SnapKit
 import Kingfisher
 
 final class UserViewController: UIViewController {
-    private let viewModel: UserViewModel
+    fileprivate let viewModel: UserViewModel
 
-    private let scrollView = UIScrollView(frame: CGRect.zero)
-    private let containerView = UIView(frame: CGRect.zero)
-    private let avatarView = UIImageView(image: nil) // FIXME: placeholder image.
-    private let usernameLabel = UILabel(frame: CGRect.zero)
-    private let customStatusLabel = UILabel(frame: CGRect.zero)
-    private let infoLabel = UILabel(frame: CGRect.zero)
+    fileprivate let scrollView = UIScrollView(frame: CGRect.zero)
+    fileprivate let containerView = UIView(frame: CGRect.zero)
+    fileprivate let avatarView = UIImageView(image: nil) // FIXME: placeholder image.
+    fileprivate let usernameLabel = UILabel(frame: CGRect.zero)
+    fileprivate let customStatusLabel = UILabel(frame: CGRect.zero)
+    fileprivate let infoLabel = UILabel(frame: CGRect.zero)
 
     // MARK: - Life Cycle
     init(viewModel: UserViewModel) {
@@ -94,14 +94,14 @@ final class UserViewController: UIViewController {
             }
         }
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         didReceivePaletteChangeNotification(nil)
@@ -111,11 +111,11 @@ final class UserViewController: UIViewController {
 
 // MARK: - Style
 extension UserViewController {
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .LightContent : .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 
-    override func didReceivePaletteChangeNotification(notification: NSNotification?) {
+    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
 //        navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default
         setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")

@@ -11,19 +11,19 @@ import Foundation
 // MARK: - Quote Floor
 extension S1ContentViewModel {
 
-    func searchFloorInCache(floorID: Int) -> Floor? {
+    func searchFloorInCache(_ floorID: Int) -> Floor? {
         guard floorID != 0 else {
             return nil
         }
 
-        return self.dataCenter.searchFloorInCacheByFloorID(floorID)
+        return self.dataCenter.searchFloorInCache(byFloorID: NSNumber(floorID))
     }
 
-    func chainSearchQuoteFloorInCache(firstFloorID: Int) -> [Floor] {
+    func chainSearchQuoteFloorInCache(_ firstFloorID: Int) -> [Floor] {
         var result: [Floor] = []
         var nextFloorID = firstFloorID
         while let floor = self.searchFloorInCache(nextFloorID) {
-            result.insert(floor, atIndex: 0)
+            result.insert(floor, at: 0)
             if let quoteFloorID = floor.firstQuoteReplyFloorID {
                 nextFloorID = quoteFloorID
             } else {
@@ -34,20 +34,20 @@ extension S1ContentViewModel {
         return result
     }
 
-    static func templateBundle() -> NSBundle {
-        let templateBundleURL = NSBundle.mainBundle().URLForResource("WebTemplate", withExtension: "bundle")!
-        return NSBundle.init(URL: templateBundleURL)!
+    static func templateBundle() -> Bundle {
+        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
+        return Bundle.init(url: templateBundleURL)!
     }
 
-    static func pageBaseURL() -> NSURL {
-        return self.templateBundle().URLForResource("ThreadTemplate", withExtension: "html", subdirectory: "html")!
+    static func pageBaseURL() -> URL {
+        return self.templateBundle().url(forResource: "ThreadTemplate", withExtension: "html", subdirectory: "html")!
     }
 }
 
 // MARK: - ToolBar
 extension S1ContentViewModel {
     func forwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloorsForTopic(self.topic, withPage: self.currentPage + 1) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: self.currentPage + 1) {
             return UIImage(named: "Forward-Cached")!
         } else {
             return UIImage(named: "Forward")!
@@ -55,7 +55,7 @@ extension S1ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloorsForTopic(self.topic, withPage: self.currentPage - 1) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: self.currentPage - 1) {
             return UIImage(named: "Back-Cached")!
         } else {
             return UIImage(named: "Back")!
@@ -63,7 +63,7 @@ extension S1ContentViewModel {
     }
 
     func favoriteButtonImage() -> UIImage {
-        if let isFavorited = self.topic.favorite where isFavorited.boolValue {
+        if let isFavorited = self.topic.favorite , isFavorited.boolValue {
             return UIImage(named: "Favorited")!
         }
         return UIImage(named: "Favorite")!
@@ -77,16 +77,16 @@ extension S1ContentViewModel {
 
 // MARK: - NSUserActivity
 extension S1ContentViewModel {
-    func correspondingWebPageURL() -> NSURL? {
-        guard let baseURL = NSUserDefaults.standardUserDefaults().objectForKey("BaseURL") as? String else { return nil }
-        return NSURL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage)-1.html")
+    func correspondingWebPageURL() -> URL? {
+        guard let baseURL = UserDefaults.standard.object(forKey: "BaseURL") as? String else { return nil }
+        return URL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage)-1.html")
     }
 
     func activityTitle() -> String? {
         return self.topic.title
     }
 
-    func activityUserInfo() -> [NSObject: AnyObject] {
+    func activityUserInfo() -> [AnyHashable: Any] {
         return [
             "topicID": self.topic.topicID,
             "page": self.currentPage
@@ -97,23 +97,23 @@ extension S1ContentViewModel {
 // MARK: - Actions
 extension S1ContentViewModel {
     func toggleFavorite() {
-        if let isFavorite = self.topic.favorite where isFavorite.boolValue {
+        if let isFavorite = self.topic.favorite , isFavorite.boolValue {
             self.topic.favorite = false
         } else {
             self.topic.favorite = true
-            self.topic.favoriteDate = NSDate()
+            self.topic.favoriteDate = Date()
         }
     }
 }
 
 // MARK: - Cache Page Offset
 extension S1ContentViewModel {
-    func cacheOffsetForCurrentPage(offset: CGFloat) {
-        self.cachedViewPosition[self.currentPage as NSNumber] = NSNumber(double: Double(offset))
+    func cacheOffsetForCurrentPage(_ offset: CGFloat) {
+        self.cachedViewPosition[self.currentPage as NSNumber] = Double(offset)
     }
 
-    func cacheOffsetForPreviousPage(offset: CGFloat) {
-        self.cachedViewPosition[self.previousPage as NSNumber] = NSNumber(double: Double(offset))
+    func cacheOffsetForPreviousPage(_ offset: CGFloat) {
+        self.cachedViewPosition[self.previousPage as NSNumber] = Double(offset)
     }
 
     func cachedOffsetForCurrentPage() -> NSNumber? {
@@ -122,7 +122,7 @@ extension S1ContentViewModel {
 }
 
 extension S1ContentViewModel {
-    func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
+    func reportComposeViewModel(_ floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
     }
 }

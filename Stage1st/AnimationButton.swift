@@ -13,20 +13,20 @@ class AnimationView: UIView {
     var beginTime: CFTimeInterval = 0.0
     var isPlayingAnimation: Bool = false
     var images: [UIImage] = []
-    private var cgImages: [AnyObject] {
+    fileprivate var cgImages: [AnyObject] {
         if self.tintColor == nil {
             return images.flatMap({ image in
-                return image.CGImage
+                return image.cgImage
             })
         }
         return images.flatMap({ templateImage in
-            return templateImage.s1_tintWithColor(self.tintColor).CGImage
+            return templateImage.s1_tintWithColor(self.tintColor).cgImage
         })
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.userInteractionEnabled = false
+        self.isUserInteractionEnabled = false
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -42,7 +42,7 @@ extension AnimationView {
     }
 
     func reloadAnimation() {
-        guard let animation = self.layer.animationForKey("ABAnimation") as? CAKeyframeAnimation else {
+        guard let animation = self.layer.animation(forKey: "ABAnimation") as? CAKeyframeAnimation else {
             DDLogDebug("[AnimationButton] start animation")
             self.startAnimation(self.animation())
             return
@@ -54,7 +54,7 @@ extension AnimationView {
 }
 // MARK: - Private
 extension AnimationView {
-    private func animation() -> CAKeyframeAnimation {
+    fileprivate func animation() -> CAKeyframeAnimation {
         let animation = CAKeyframeAnimation(keyPath: "contents")
         animation.duration = 3.0
         animation.values = self.cgImages
@@ -65,18 +65,18 @@ extension AnimationView {
 }
 
 extension AnimationView {
-    private func startAnimation(animation: CAKeyframeAnimation) {
-        self.layer.addAnimation(animation, forKey: "ABAnimation")
+    fileprivate func startAnimation(_ animation: CAKeyframeAnimation) {
+        self.layer.add(animation, forKey: "ABAnimation")
         self.isPlayingAnimation = true
     }
 
-    private func pauseAnimation(animation: CAKeyframeAnimation) {
+    fileprivate func pauseAnimation(_ animation: CAKeyframeAnimation) {
         self.beginTime = animation.beginTime
-        self.layer.removeAnimationForKey("ABAnimation")
+        self.layer.removeAnimation(forKey: "ABAnimation")
         self.isPlayingAnimation = false
     }
 
-    private func resumeAnimation(animation: CAKeyframeAnimation) {
+    fileprivate func resumeAnimation(_ animation: CAKeyframeAnimation) {
         animation.beginTime = self.beginTime
         self.startAnimation(animation)
     }
@@ -85,7 +85,7 @@ extension AnimationView {
 // MARK: - override
 
 extension AnimationView {
-    override func intrinsicContentSize() -> CGSize {
+    override var intrinsicContentSize : CGSize {
         if let firstImage = self.images.first {
             return firstImage.size
         }
@@ -95,31 +95,31 @@ extension AnimationView {
 
 class AnimationButton: UIButton {
     var hightlightAlpha: CGFloat = 0.4
-    private let image: UIImage
-    private let animationView: AnimationView = AnimationView(frame: CGRect.zero)
+    fileprivate let image: UIImage
+    fileprivate let animationView: AnimationView = AnimationView(frame: CGRect.zero)
     var isPlayingAnimation: Bool {
         return animationView.isPlayingAnimation
     }
-    private var previousHighlighted: Bool = false
-    override var highlighted: Bool {
+    fileprivate var previousHighlighted: Bool = false
+    override var isHighlighted: Bool {
         didSet {
-            if highlighted != previousHighlighted {
-                if highlighted {
-                    animationView.tintColor = self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)
+            if isHighlighted != previousHighlighted {
+                if isHighlighted {
+                    animationView.tintColor = self.tintColor.withAlphaComponent(self.hightlightAlpha)
                 } else {
                     animationView.tintColor = self.tintColor
                 }
                 if animationView.isPlayingAnimation {
                     animationView.reloadAnimation()
                 }
-                previousHighlighted = highlighted
+                previousHighlighted = isHighlighted
             }
         }
     }
     override var tintColor: UIColor! {
         didSet {
-            if highlighted {
-                animationView.tintColor = self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)
+            if isHighlighted {
+                animationView.tintColor = self.tintColor.withAlphaComponent(self.hightlightAlpha)
             } else {
                 animationView.tintColor = self.tintColor
             }
@@ -166,8 +166,8 @@ class AnimationButton: UIButton {
         }
     }
 
-    private func setStaticImage(image: UIImage?) {
-        self.setImage(image?.s1_tintWithColor(self.tintColor), forState: .Normal)
-        self.setImage(image?.s1_tintWithColor(self.tintColor.colorWithAlphaComponent(self.hightlightAlpha)), forState: .Highlighted)
+    fileprivate func setStaticImage(_ image: UIImage?) {
+        self.setImage(image?.s1_tintWithColor(self.tintColor), for: UIControlState())
+        self.setImage(image?.s1_tintWithColor(self.tintColor.withAlphaComponent(self.hightlightAlpha)), for: .highlighted)
     }
 }
