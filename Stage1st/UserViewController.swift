@@ -38,45 +38,45 @@ final class UserViewController: UIViewController {
         self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
 
         self.view.addSubview(scrollView)
-        scrollView.snp_makeConstraints { (make) in
+        scrollView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view)
         }
 
         scrollView.addSubview(containerView)
-        containerView.snp_makeConstraints { (make) in
+        containerView.snp.makeConstraints { (make) in
             make.edges.equalTo(scrollView) // To decide scrollView's content size
-            make.width.equalTo(scrollView.snp_width) // To decide containerView's width
+            make.width.equalTo(scrollView.snp.width) // To decide containerView's width
         }
 
         containerView.addSubview(avatarView)
 
-        avatarView.snp_makeConstraints { (make) in
-            make.leading.equalTo(self.containerView.snp_leading).offset(10.0)
-            make.top.equalTo(self.containerView.snp_top).offset(10.0)
+        avatarView.snp.makeConstraints { (make) in
+            make.leading.equalTo(self.containerView.snp.leading).offset(10.0)
+            make.top.equalTo(self.containerView.snp.top).offset(10.0)
             make.width.height.equalTo(80.0)
         }
 
         containerView.addSubview(usernameLabel)
-        usernameLabel.snp_makeConstraints { (make) in
-            make.top.equalTo(self.avatarView.snp_top)
-            make.leading.equalTo(self.avatarView.snp_trailing).offset(10.0)
-            make.trailing.equalTo(self.containerView.snp_trailing).offset(-10)
+        usernameLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(self.avatarView.snp.top)
+            make.leading.equalTo(self.avatarView.snp.trailing).offset(10.0)
+            make.trailing.equalTo(self.containerView.snp.trailing).offset(-10)
         }
 
         customStatusLabel.numberOfLines = 0
         containerView.addSubview(customStatusLabel)
-        customStatusLabel.snp_makeConstraints { (make) in
-            make.top.equalTo(self.usernameLabel.snp_bottom).offset(10.0)
+        customStatusLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(self.usernameLabel.snp.bottom).offset(10.0)
             make.leading.trailing.equalTo(self.usernameLabel)
         }
 
         infoLabel.numberOfLines = 0
         containerView.addSubview(infoLabel)
-        infoLabel.snp_makeConstraints { (make) in
-            make.top.greaterThanOrEqualTo(self.avatarView.snp_bottom).offset(10.0)
-            make.top.greaterThanOrEqualTo(self.customStatusLabel.snp_bottom).offset(10.0)
-            make.leading.equalTo(avatarView.snp_leading)
-            make.trailing.equalTo(usernameLabel.snp_trailing)
+        infoLabel.snp.makeConstraints { (make) in
+            make.top.greaterThanOrEqualTo(self.avatarView.snp.bottom).offset(10.0)
+            make.top.greaterThanOrEqualTo(self.customStatusLabel.snp.bottom).offset(10.0)
+            make.leading.equalTo(avatarView.snp.leading)
+            make.trailing.equalTo(usernameLabel.snp.trailing)
         }
 
         self.viewModel.updateCurrentUserProfile { [weak self] result in

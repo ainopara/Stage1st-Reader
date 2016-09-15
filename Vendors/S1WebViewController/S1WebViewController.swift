@@ -55,22 +55,22 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         statusBarSeparatorView.backgroundColor = UIColor.black
 
         view.addSubview(blurBackgroundView)
-        blurBackgroundView.snp_makeConstraints { (make) in
+        blurBackgroundView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }
 
         blurBackgroundView.contentView.addSubview(vibrancyEffectView)
-        vibrancyEffectView.snp_makeConstraints { (make) in
-            make.leading.equalTo(blurBackgroundView.contentView.snp_leading).offset(10.0)
-            make.trailing.equalTo(blurBackgroundView.contentView.snp_trailing).offset(-10.0)
-            make.top.equalTo(blurBackgroundView.contentView.snp_top).offset(20.0 + 10.0) // TODO: adjust in viewDidLayoutSubviews()
+        vibrancyEffectView.snp.makeConstraints { (make) in
+            make.leading.equalTo(blurBackgroundView.contentView.snp.leading).offset(10.0)
+            make.trailing.equalTo(blurBackgroundView.contentView.snp.trailing).offset(-10.0)
+            make.top.equalTo(blurBackgroundView.contentView.snp.top).offset(20.0 + 10.0) // TODO: adjust in viewDidLayoutSubviews()
         }
 
         titleLabel.numberOfLines = 0
         titleLabel.font = UIFont.systemFont(ofSize: 12.0)  // need a better solution
         titleLabel.textAlignment = .center
         vibrancyEffectView.contentView.addSubview(titleLabel)
-        titleLabel.snp_makeConstraints { (make) in
+        titleLabel.snp.makeConstraints { (make) in
             make.edges.equalTo(vibrancyEffectView.contentView)
         }
 
@@ -91,30 +91,30 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         view.addSubview(toolBar)
         view.addSubview(progressView)
 
-        webView.snp_makeConstraints { (make) in
+        webView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }
 
-        statusBarOverlayView.snp_makeConstraints { (make) in
-            make.top.equalTo(snp_topLayoutGuideTop)
+        statusBarOverlayView.snp.makeConstraints { (make) in
+            make.top.equalTo(snp.topLayoutGuideTop)
             make.leading.trailing.equalTo(view)
-            make.bottom.equalTo(snp_topLayoutGuideBottom)
+            make.bottom.equalTo(snp.topLayoutGuideBottom)
         }
 
-        statusBarSeparatorView.snp_makeConstraints { (make) in
-            make.top.equalTo(statusBarOverlayView.snp_bottom)
+        statusBarSeparatorView.snp.makeConstraints { (make) in
+            make.top.equalTo(statusBarOverlayView.snp.bottom)
             make.leading.trailing.equalTo(statusBarOverlayView)
             make.height.equalTo(1.0 / UIScreen.mainScreen().scale)
         }
 
-        toolBar.snp_makeConstraints { (make) in
-            make.bottom.equalTo(view.snp_bottom)
+        toolBar.snp.makeConstraints { (make) in
+            make.bottom.equalTo(view.snp.bottom)
             make.leading.trailing.equalTo(view)
         }
 
-        progressView.snp_makeConstraints { (make) in
+        progressView.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(toolBar)
-            make.top.equalTo(toolBar.snp_top)
+            make.top.equalTo(toolBar.snp.top)
             make.height.equalTo(1.0)
         }
 

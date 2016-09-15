@@ -36,12 +36,12 @@ private class UserInfoInputView: UIView {
         usernameField.backgroundColor = UIColor.white
         self.addSubview(usernameField)
 
-        usernameField.snp_makeConstraints { (make) in
+        usernameField.snp.makeConstraints { (make) in
             make.width.equalTo(300.0)
             make.height.equalTo(30.0)
-            make.top.equalTo(self.snp_top).offset(20.0)
-            make.centerX.equalTo(self.snp_centerX)
-            make.leading.equalTo(self.snp_leading).offset(5.0)
+            make.top.equalTo(self.snp.top).offset(20.0)
+            make.centerX.equalTo(self.snp.centerX)
+            make.leading.equalTo(self.snp.leading).offset(5.0)
         }
 
         passwordField.borderStyle = .line
@@ -50,24 +50,24 @@ private class UserInfoInputView: UIView {
         passwordField.backgroundColor = UIColor.white
         self.addSubview(passwordField)
 
-        passwordField.snp_makeConstraints { (make) in
-            make.width.equalTo(self.usernameField.snp_width)
+        passwordField.snp.makeConstraints { (make) in
+            make.width.equalTo(self.usernameField.snp.width)
             make.height.equalTo(30.0)
-            make.centerX.equalTo(self.usernameField.snp_centerX)
-            make.top.equalTo(self.usernameField.snp_bottom).offset(12.0)
+            make.centerX.equalTo(self.usernameField.snp.centerX)
+            make.top.equalTo(self.usernameField.snp.bottom).offset(12.0)
         }
 
         onepasswordButton.setImage(UIImage(named: "OnePasswordButton"), for: UIControlState())
         onepasswordButton.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
 
         let buttonContainer = UIView(frame: CGRect.zero)
-        buttonContainer.snp_makeConstraints { (make) in
+        buttonContainer.snp.makeConstraints { (make) in
             make.height.equalTo(24.0)
             make.width.equalTo(28.0)
         }
         buttonContainer.addSubview(onepasswordButton)
 
-        onepasswordButton.snp_makeConstraints { (make) in
+        onepasswordButton.snp.makeConstraints { (make) in
             make.top.leading.bottom.equalTo(buttonContainer)
             make.trailing.equalTo(buttonContainer).offset(-4.0)
         }
@@ -76,10 +76,10 @@ private class UserInfoInputView: UIView {
 
         self.addSubview(questionSelectButton)
 
-        self.questionSelectButton.snp_makeConstraints { (make) in
+        self.questionSelectButton.snp.makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
             make.height.equalTo(30.0)
-            make.top.equalTo(self.passwordField.snp_bottom).offset(12.0)
+            make.top.equalTo(self.passwordField.snp.bottom).offset(12.0)
         }
 
         answerField.borderStyle = .line
@@ -90,18 +90,18 @@ private class UserInfoInputView: UIView {
         answerField.backgroundColor = UIColor.white
         self.addSubview(answerField)
 
-        answerField.snp_makeConstraints { (make) in
+        answerField.snp.makeConstraints { (make) in
             make.width.centerX.equalTo(self.questionSelectButton)
             make.height.equalTo(30.0)
-            make.top.equalTo(self.questionSelectButton.snp_bottom).offset(12.0)
+            make.top.equalTo(self.questionSelectButton.snp.bottom).offset(12.0)
         }
 
         self.addSubview(loginButton)
 
-        loginButton.snp_makeConstraints { (make) in
+        loginButton.snp.makeConstraints { (make) in
             make.width.centerX.equalTo(self.usernameField)
             make.height.equalTo(34.0)
-            make.bottom.equalTo(self.snp_bottom).offset(-12.0)
+            make.bottom.equalTo(self.snp.bottom).offset(-12.0)
         }
 
 
@@ -121,9 +121,9 @@ private class SeccodeInputView: UIView {
         super.init(frame: frame)
 
         self.addSubview(self.seccodeImageView)
-        seccodeImageView.snp_makeConstraints { (make) in
+        seccodeImageView.snp.makeConstraints { (make) in
             make.centerX.equalTo(self)
-            make.top.equalTo(self.snp_top).offset(10.0)
+            make.top.equalTo(self.snp.top).offset(10.0)
             make.width.equalTo(100.0)
             make.height.equalTo(40.0)
         }
@@ -133,17 +133,17 @@ private class SeccodeInputView: UIView {
         seccodeField.autocapitalizationType = .none
         seccodeField.returnKeyType = .go
         self.addSubview(self.seccodeField)
-        seccodeField.snp_makeConstraints { (make) in
+        seccodeField.snp.makeConstraints { (make) in
             make.centerX.equalTo(self)
-            make.width.equalTo(self.snp_width).offset(-24.0)
-            make.top.equalTo(self.seccodeImageView.snp_bottom).offset(10.0)
+            make.width.equalTo(self.snp.width).offset(-24.0)
+            make.top.equalTo(self.seccodeImageView.snp.bottom).offset(10.0)
         }
 
         self.addSubview(self.seccodeSubmitButton)
-        seccodeSubmitButton.snp_makeConstraints { (make) in
+        seccodeSubmitButton.snp.makeConstraints { (make) in
             make.centerX.equalTo(self)
-            make.width.equalTo(self.snp_width).offset(-24.0)
-            make.bottom.equalTo(self.snp_bottom).offset(-10.0)
+            make.width.equalTo(self.snp.width).offset(-24.0)
+            make.bottom.equalTo(self.snp.bottom).offset(-10.0)
         }
 
     }
@@ -187,8 +187,8 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.passwordField.returnKeyType = .go
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
                 loginButtonTopConstraint?.uninstall()
-                userInfoInputView.loginButton.snp_makeConstraints { (make) in
-                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.questionSelectButton.snp_bottom).offset(12.0).constraint
+                userInfoInputView.loginButton.snp.makeConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.questionSelectButton.snp.bottom).offset(12.0).constraint
                 }
             case .notLoginWithAnswerField:
                 userInfoInputView.usernameField.isEnabled = true
@@ -199,8 +199,8 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.passwordField.returnKeyType = .next
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
                 loginButtonTopConstraint?.uninstall()
-                userInfoInputView.loginButton.snp_updateConstraints { (make) in
-                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.answerField.snp_bottom).offset(12.0).constraint
+                userInfoInputView.loginButton.snp.updateConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.answerField.snp.bottom).offset(12.0).constraint
                 }
             case .login:
                 userInfoInputView.usernameField.isEnabled = false
@@ -210,8 +210,8 @@ final class S1LoginViewController: UIViewController {
 
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: UIControlState())
                 loginButtonTopConstraint?.uninstall()
-                userInfoInputView.loginButton.snp_updateConstraints { (make) in
-                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.usernameField.snp_bottom).offset(12.0).constraint
+                userInfoInputView.loginButton.snp.updateConstraints { (make) in
+                    self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.usernameField.snp.bottom).offset(12.0).constraint
                 }
             }
         }
@@ -244,7 +244,7 @@ final class S1LoginViewController: UIViewController {
         super.viewDidLoad()
 
         self.view.addSubview(backgroundBlurView)
-        backgroundBlurView.snp_makeConstraints { (make) in
+        backgroundBlurView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view)
         }
 
@@ -269,13 +269,13 @@ final class S1LoginViewController: UIViewController {
         userInfoInputView.loginButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
 
         containerView.addSubview(userInfoInputView)
-        userInfoInputView.snp_makeConstraints { (make) in
+        userInfoInputView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.containerView)
         }
 
         self.view.insertSubview(visibleLayoutGuide, at: 0)
         visibleLayoutGuide.isUserInteractionEnabled = false
-        visibleLayoutGuide.snp_makeConstraints { (make) in
+        visibleLayoutGuide.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view)
         }
 
@@ -283,7 +283,7 @@ final class S1LoginViewController: UIViewController {
         seccodeInputView.backgroundColor = APColorManager.sharedInstance.colorForKey("login.background")
 
         containerView.addSubview(seccodeInputView)
-        seccodeInputView.snp_makeConstraints { (make) in
+        seccodeInputView.snp.makeConstraints { (make) in
             make.edges.equalTo(containerView)
         }
 
@@ -421,7 +421,7 @@ extension S1LoginViewController {
 
         let keyboardHeightInView = self.view.bounds.maxY - endFrame.minY
         DDLogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
-        visibleLayoutGuide.snp_updateConstraints { (make) in
+        visibleLayoutGuide.snp.updateConstraints { (make) in
             make.bottom.equalTo(self.view).offset(-keyboardHeightInView)
         }
     }

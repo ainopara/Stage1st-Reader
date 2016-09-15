@@ -43,7 +43,7 @@ class ReplyAccessoryView: UIView {
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
         self.addSubview(toolBar)
-        toolBar.snp_makeConstraints { (make) -> Void in
+        toolBar.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self)
         }
     }

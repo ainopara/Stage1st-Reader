@@ -30,43 +30,43 @@ final class QuoteFloorCell: UITableViewCell {
         avatarView.layer.cornerRadius = 16.0
         avatarView.clipsToBounds = true
         contentView.addSubview(avatarView)
-        avatarView.snp_makeConstraints { (make) in
-            make.leading.equalTo(self.contentView.snp_leading).offset(5.0)
-            make.top.equalTo(self.contentView.snp_top).offset(5.0)
+        avatarView.snp.makeConstraints { (make) in
+            make.leading.equalTo(self.contentView.snp.leading).offset(5.0)
+            make.top.equalTo(self.contentView.snp.top).offset(5.0)
             make.width.height.equalTo(32.0)
         }
 
         contentView.addSubview(authorLabel)
-        authorLabel.snp_makeConstraints { (make) -> Void in
-            make.leading.equalTo(self.avatarView.snp_trailing).offset(5.0)
-            make.centerY.equalTo(self.avatarView.snp_centerY)
+        authorLabel.snp.makeConstraints { (make) -> Void in
+            make.leading.equalTo(self.avatarView.snp.trailing).offset(5.0)
+            make.centerY.equalTo(self.avatarView.snp.centerY)
         }
 
         contentView.addSubview(dateTimeLabel)
-        dateTimeLabel.snp_makeConstraints { (make) in
-            make.centerY.equalTo(self.avatarView.snp_centerY)
-            make.leading.equalTo(authorLabel.snp_trailing).offset(10.0)
+        dateTimeLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(self.avatarView.snp.centerY)
+            make.leading.equalTo(authorLabel.snp.trailing).offset(10.0)
         }
 
         moreActionButton.setTitle("更多", for: UIControlState())
         contentView.addSubview(moreActionButton)
-        moreActionButton.snp_makeConstraints { (make) in
-            make.centerY.equalTo(self.avatarView.snp_centerY)
-            make.trailing.equalTo(self.contentView.snp_trailing).offset(-10.0)
+        moreActionButton.snp.makeConstraints { (make) in
+            make.centerY.equalTo(self.avatarView.snp.centerY)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10.0)
         }
 
         contentView.addSubview(floorLabel)
-        floorLabel.snp_makeConstraints { (make) in
-            make.centerY.equalTo(self.avatarView.snp_centerY)
-            make.trailing.equalTo(self.moreActionButton.snp_leading).offset(-10.0)
+        floorLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(self.avatarView.snp.centerY)
+            make.trailing.equalTo(self.moreActionButton.snp.leading).offset(-10.0)
         }
 
         contentLabel.layoutFrameHeightIsConstrainedByBounds = false
         contentView.addSubview(contentLabel)
-        contentLabel.snp_makeConstraints { (make) -> Void in
+        contentLabel.snp.makeConstraints { (make) -> Void in
             make.leading.trailing.equalTo(contentView)
-            make.top.equalTo(self.avatarView.snp_bottom).offset(10.0)
-            make.bottom.equalTo(self.contentView.snp_bottom).offset(-5.0)
+            make.top.equalTo(self.avatarView.snp.bottom).offset(10.0)
+            make.bottom.equalTo(self.contentView.snp.bottom).offset(-5.0)
         }
     }
 

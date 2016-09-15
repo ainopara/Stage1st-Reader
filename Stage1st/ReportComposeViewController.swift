@@ -70,14 +70,14 @@ final class ReportComposeViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ReportComposeViewController.submit))
 
         view.addSubview(textView)
-        textView.snp_makeConstraints { (make) in
+        textView.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalTo(self.view)
-            self.textViewBottomConstraint = make.bottom.equalTo(self.view.snp_bottom).constraint
+            self.textViewBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
         }
 
         view.addSubview(loadingHUD)
-        loadingHUD.snp_makeConstraints { (make) in
-            make.center.equalTo(self.view.snp_center)
+        loadingHUD.snp.makeConstraints { (make) in
+            make.center.equalTo(self.view.snp.center)
         }
 
         view.layoutIfNeeded()

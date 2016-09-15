@@ -135,7 +135,7 @@ class AnimationButton: UIButton {
         self.setStaticImage(self.image)
 
         self.addSubview(animationView)
-        animationView.snp_makeConstraints { (make) in
+        animationView.snp.makeConstraints { (make) in
             make.center.equalTo(self)
         }
     }
