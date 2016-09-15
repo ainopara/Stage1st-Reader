@@ -25,17 +25,17 @@
 import JASON
 import Alamofire
 
-extension Alamofire.Request {
+extension Alamofire.DataRequest {
     /**
      Creates a response serializer that returns a JASON.JSON object constructed from the response data.
 
      - returns: A JASON.JSON object response serializer.
      */
-    static public func JASONResponseSerializer() -> Alamofire.ResponseSerializer<JASON.JSON, NSError> {
-        return Alamofire.ResponseSerializer { _, _, data, error in
-            guard error == nil else { return .Failure(error!) }
+    public static func jasonResponseSerializer() -> Alamofire.DataResponseSerializer<JASON.JSON> {
+        return Alamofire.DataResponseSerializer { _, _, data, error in
+            guard error == nil else { return .failure(error!) }
 
-            return .Success(JASON.JSON(data))
+            return .success(JASON.JSON(data))
         }
     }
 
@@ -46,7 +46,7 @@ extension Alamofire.Request {
 
      - returns: The request.
      */
-    public func responseJASON(_ completionHandler: (Alamofire.Response<JASON.JSON, NSError>) -> Void) -> Self {
-        return response(responseSerializer: Request.JASONResponseSerializer(), completionHandler: completionHandler)
+    public func responseJASON(_ completionHandler: @escaping (Alamofire.DataResponse<JASON.JSON>) -> Void) -> Self {
+        return response(responseSerializer: DataRequest.jasonResponseSerializer(), completionHandler: completionHandler)
     }
 }
