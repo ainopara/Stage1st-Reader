@@ -17,7 +17,7 @@ extension S1ContentViewController {
 // MARK: Navigation
 extension S1ContentViewController {
     func showUserViewController(_ userID: NSNumber) {
-        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.integerValue, name: ""))
+        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.intValue, name: ""))
         let userViewController = UserViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(userViewController, animated: true)
     }
@@ -32,7 +32,7 @@ extension S1ContentViewController {
 // MARK: NSUserActivity
 extension S1ContentViewController {
     func setupActivity() {
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { [weak self] in
+        DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
             let activity = NSUserActivity(activityType: "Stage1st.view-topic")
             activity.title = strongSelf.viewModel.activityTitle()

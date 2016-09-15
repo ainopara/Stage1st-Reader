@@ -46,8 +46,8 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
         view.backgroundColor = nil
 
-        webView.backgroundColor = .clear()
-        webView.scrollView.backgroundColor = .clear()
+        webView.backgroundColor = .clear
+        webView.scrollView.backgroundColor = .clear
         webView.isOpaque = false
         webView.navigationDelegate = self
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
@@ -96,15 +96,15 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         }
 
         statusBarOverlayView.snp.makeConstraints { (make) in
-            make.top.equalTo(snp.topLayoutGuideTop)
+            make.top.equalTo(self.topLayoutGuide.snp.top)
             make.leading.trailing.equalTo(view)
-            make.bottom.equalTo(snp.topLayoutGuideBottom)
+            make.bottom.equalTo(self.topLayoutGuide.snp.bottom)
         }
 
         statusBarSeparatorView.snp.makeConstraints { (make) in
             make.top.equalTo(statusBarOverlayView.snp.bottom)
             make.leading.trailing.equalTo(statusBarOverlayView)
-            make.height.equalTo(1.0 / UIScreen.mainScreen().scale)
+            make.height.equalTo(1.0 / UIScreen.main.scale)
         }
 
         toolBar.snp.makeConstraints { (make) in

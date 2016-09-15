@@ -64,8 +64,8 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
 
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentOffset" {
-            guard let changes = change, let newOffsetValue = changes["new"] as? NSValue else { return }
-            self.offset = newOffsetValue.CGPointValue
+            guard let changes = change, let newOffsetValue = changes[.newKey] as? NSValue else { return }
+            self.offset = newOffsetValue.cgPointValue
 
             guard let delegateFunction = self.delegate?.scrollViewContentOffsetProgress else { return }
             var progress = [String: Double]()
@@ -78,15 +78,15 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
         }
 
         if keyPath == "contentSize" {
-            guard let changes = change, let newSizeValue = changes["new"] as? NSValue else { return }
-            self.size = newSizeValue.CGSizeValue
+            guard let changes = change, let newSizeValue = changes[.newKey] as? NSValue else { return }
+            self.size = newSizeValue.cgSizeValue
             DDLogVerbose("[PullToAction] contentSize:w: \(self.size.width) h:\(self.size.height)")
             self.delegate?.scrollViewContentSizeDidChange?(self.size)
         }
 
         if keyPath == "contentInset" {
-            guard let changes = change, let newInsetValue = changes["new"] as? NSValue else { return }
-            self.inset = newInsetValue.UIEdgeInsetsValue
+            guard let changes = change, let newInsetValue = changes[.newKey] as? NSValue else { return }
+            self.inset = newInsetValue.uiEdgeInsetsValue
             DDLogVerbose("[PullToAction] inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
         }
     }

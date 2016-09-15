@@ -26,13 +26,14 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let
-            toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to),
-            let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
-            let containerView = transitionContext.containerView else {
+        guard
+            let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to),
+            let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) else {
                 assert(false)
                 return
         }
+
+        let containerView = transitionContext.containerView
         // TODO: remove this workaround once it is no more necessary
         toViewController.view.frame = containerView.bounds
 

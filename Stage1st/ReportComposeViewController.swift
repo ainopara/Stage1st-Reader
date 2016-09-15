@@ -8,6 +8,7 @@
 
 import Result
 import ReactiveSwift
+import ReactiveObjCBridge
 import SnapKit
 import CocoaLumberjack
 import YYKeyboardManager
@@ -27,7 +28,7 @@ final class ReportComposeViewModel {
         self.topic = topic
         self.floor = floor
 
-        canSubmit <~ content.producer.map { $0.characters.count > 0 }.combineLatestWith(submiting.producer).map { $0 && !$1 }
+        canSubmit <~ content.producer.map { $0.characters.count > 0 }.combineLatest(with: submiting.producer).map { $0 && !$1 }
     }
 
     func submit(_ completion: @escaping (NSError?) -> Void) {
@@ -36,7 +37,7 @@ final class ReportComposeViewModel {
             return
         }
         submiting.value = true
-        apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
+        _ = apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
             guard let strongSelf = self else { return }
             strongSelf.submiting.value = false
             completion(error)
@@ -66,8 +67,8 @@ final class ReportComposeViewController: UIViewController {
         super.viewDidLoad()
 
         self.title = NSLocalizedString("ReportComposeViewController.title", comment: "")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReportComposeViewController.dismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ReportComposeViewController.submit))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.dismiss()))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.submit))
 
         view.addSubview(textView)
         textView.snp.makeConstraints { (make) in
@@ -86,7 +87,7 @@ final class ReportComposeViewController: UIViewController {
         viewModel.content <~ textView.rac_textSignal().toSignalProducer().map { $0 as! String }.flatMapError { _ in return SignalProducer<String, NoError>.empty }
         viewModel.canSubmit.producer.startWithNext { [weak self] (canSubmit) in
             guard let strongSelf = self else { return }
-            strongSelf.navigationItem.rightBarButtonItem?.enabled = canSubmit
+            strongSelf.navigationItem.rightBarButtonItem?.isEnabled = canSubmit
         }
 
         viewModel.submiting.producer.startWithNext { [weak self] (submiting) in
@@ -94,7 +95,7 @@ final class ReportComposeViewController: UIViewController {
             if submiting {
                 strongSelf.loadingHUD.showActivityIndicator()
             } else {
-                strongSelf.loadingHUD.hideWithDelay(0.0)
+                strongSelf.loadingHUD.hide(withDelay: 0.0)
             }
         }
 
@@ -125,7 +126,7 @@ extension ReportComposeViewController: YYKeyboardObserver {
     func keyboardChanged(with transition: YYKeyboardTransition) {
          let offset = transition.toFrame.minY - view.frame.maxY
 
-        self.textViewBottomConstraint?.updateOffset(offset)
+        self.textViewBottomConstraint?.update(offset: offset)
 
         UIView.animate(withDuration: transition.animationDuration, delay: 0.0, options: transition.animationOption, animations: {
             self.view.layoutIfNeeded()
@@ -157,7 +158,7 @@ extension ReportComposeViewController {
         textView.backgroundColor = APColorManager.sharedInstance.colorForKey("report.background")
         textView.tintColor = APColorManager.sharedInstance.colorForKey("report.tint")
         textView.textColor = APColorManager.sharedInstance.colorForKey("report.text")
-        textView.typingAttributes = TextAttributes().font(UIFont.systemFontOfSize(15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text")).dictionary
+        textView.typingAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text")).dictionary
         textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .dark : .light
 
         self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .black : .default

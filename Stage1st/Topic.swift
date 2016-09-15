@@ -37,7 +37,7 @@ extension S1Topic {
             let localValue = self.value(forKey: onePropertyName)
             let serverValue = topic.value(forKey: onePropertyName)
 
-            if serverValue == nil || S1Utility.valuesAreEqual(localValue, serverValue) {
+            if serverValue == nil || S1Utility.valuesAreEqual(localValue as AnyObject?, serverValue as AnyObject?) {
                 return
             }
             self.setValue(serverValue, forKey: onePropertyName)

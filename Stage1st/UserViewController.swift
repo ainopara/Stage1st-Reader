@@ -82,15 +82,15 @@ final class UserViewController: UIViewController {
         self.viewModel.updateCurrentUserProfile { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
-            case .Success(let user):
+            case .success(let user):
                 strongSelf.usernameLabel.text = user.name
                 if let avatarURL = user.avatarURL {
-                    strongSelf.avatarView.kf_setImageWithURL(avatarURL)
+                    strongSelf.avatarView.kf_setImage(with: ImageResource(downloadURL: avatarURL))
                 }
                 strongSelf.customStatusLabel.text = user.customStatus
                 strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()
-            case .Failure(let error):
-                strongSelf.s1_presentAlertView("Error", message: error.description)
+            case .failure(let error):
+                strongSelf.s1_presentAlertView("Error", message: "\(error)")
             }
         }
 

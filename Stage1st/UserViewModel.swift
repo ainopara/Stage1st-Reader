@@ -19,15 +19,15 @@ class UserViewModel {
         self.user = MutableProperty(user)
     }
 
-    func updateCurrentUserProfile(_ resultBlock: (Alamofire.Result<User, NSError>) -> Void) {
+    func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
         apiManager.profile(self.user.value.ID) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {
-            case .Success(let user):
+            case .success(let user):
                 strongSelf.user.value = user
-                resultBlock(.Success(user))
-            case .Failure(let error):
-                resultBlock(.Failure(error))
+                resultBlock(.success(user))
+            case .failure(let error):
+                resultBlock(.failure(error))
             }
         }
     }
@@ -36,19 +36,19 @@ class UserViewModel {
         let attributedString = NSMutableAttributedString()
 
         if let lastVisitDateString = user.value.lastVisitDateString {
-            attributedString.appendAttributedString(NSAttributedString(string: "最后访问：\n\(lastVisitDateString)\n"))
+            attributedString.append(NSAttributedString(string: "最后访问：\n\(lastVisitDateString)\n"))
         }
         if let registerDateString = user.value.registerDateString {
-            attributedString.appendAttributedString(NSAttributedString(string: "注册日期：\n\(registerDateString)\n"))
+            attributedString.append(NSAttributedString(string: "注册日期：\n\(registerDateString)\n"))
         }
         if let threadCount = user.value.threadCount {
-            attributedString.appendAttributedString(NSAttributedString(string: "发帖数：\n\(threadCount)\n"))
+            attributedString.append(NSAttributedString(string: "发帖数：\n\(threadCount)\n"))
         }
         if let postCount = user.value.postCount {
-            attributedString.appendAttributedString(NSAttributedString(string: "回复数：\n\(postCount)\n"))
+            attributedString.append(NSAttributedString(string: "回复数：\n\(postCount)\n"))
         }
         if let sigHTML = user.value.sigHTML {
-            attributedString.appendAttributedString(NSAttributedString(string: "签名：\n\(sigHTML)\n"))
+            attributedString.append(NSAttributedString(string: "签名：\n\(sigHTML)\n"))
         }
 
         return attributedString

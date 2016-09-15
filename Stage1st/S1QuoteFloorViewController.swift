@@ -45,9 +45,9 @@ class S1QuoteFloorViewController: UIViewController {
             tableView.register(QuoteFloorCell.self, forCellReuseIdentifier: "QuoteCell")
             self.view.addSubview(tableView)
 
-            tableView.snp.makeConstraints(closure: { (make) -> Void in
-                make.top.equalTo(self.snp.topLayoutGuideBottom)
-                make.bottom.equalTo(self.snp.bottomLayoutGuideTop)
+            tableView.snp.makeConstraints({ (make) -> Void in
+                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
                 make.leading.trailing.equalTo(self.view)
             })
         } else {
@@ -57,9 +57,9 @@ class S1QuoteFloorViewController: UIViewController {
             webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
             self.view.addSubview(webView)
 
-            webView.snp.makeConstraints(closure: { (make) -> Void in
-                make.top.equalTo(self.snp.topLayoutGuideBottom)
-                make.bottom.equalTo(self.snp.bottomLayoutGuideTop)
+            webView.snp.makeConstraints({ (make) -> Void in
+                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
                 make.leading.trailing.equalTo(self.view)
             })
             webView.loadHTMLString(self.viewModel.htmlString, baseURL: self.viewModel.baseURL as URL)

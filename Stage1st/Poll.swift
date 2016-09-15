@@ -65,7 +65,7 @@ class Poll: NSObject {
         }
 
         if let expirationString = json["expirations"].string, let expirationSeconds = Double(expirationString) {
-            self.expirationDate = NSDate(timeIntervalSince1970: expirationSeconds)
+            self.expirationDate = Date(timeIntervalSince1970: expirationSeconds)
         } else {
             self.expirationDate = nil
         }

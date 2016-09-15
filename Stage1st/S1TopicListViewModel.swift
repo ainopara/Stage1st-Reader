@@ -33,12 +33,12 @@ public final class S1TopicListViewModel: NSObject {
                 processedList.append(strongSelf.topicWithTracedDataForTopic(topic))
             }
             ensureMainThread({
-                success(topicList: processedList)
+                success(processedList)
             })
 
         }, failure: { (error) in
             ensureMainThread({
-                failure(error: error)
+                failure(error as NSError)
             })
         })
     }
@@ -51,11 +51,11 @@ public final class S1TopicListViewModel: NSObject {
                 processedList.append(strongSelf.topicWithTracedDataForTopic(topic))
             }
             ensureMainThread({
-                success(topicList: processedList)
+                success(processedList)
             })
         }, failure: { (error) in
             ensureMainThread({
-                failure(error: error)
+                failure(error as NSError)
             })
         })
     }

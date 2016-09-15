@@ -14,9 +14,9 @@ extension S1AppDelegate {
 
     func setLogLevelForSwift() {
         #if DEBUG
-            defaultDebugLevel = .Verbose
+            defaultDebugLevel = .verbose
         #else
-            defaultDebugLevel = .Info
+            defaultDebugLevel = .info
         #endif
     }
 

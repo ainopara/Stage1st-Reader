@@ -47,7 +47,7 @@ extension S1ContentViewModel {
 // MARK: - ToolBar
 extension S1ContentViewModel {
     func forwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: self.currentPage + 1) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(self.currentPage + 1)) {
             return UIImage(named: "Forward-Cached")!
         } else {
             return UIImage(named: "Forward")!
@@ -55,7 +55,7 @@ extension S1ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: self.currentPage - 1) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(self.currentPage - 1)) {
             return UIImage(named: "Back-Cached")!
         } else {
             return UIImage(named: "Back")!

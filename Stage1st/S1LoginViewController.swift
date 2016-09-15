@@ -186,7 +186,7 @@ final class S1LoginViewController: UIViewController {
 
                 userInfoInputView.passwordField.returnKeyType = .go
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
-                loginButtonTopConstraint?.uninstall()
+                loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.makeConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.questionSelectButton.snp.bottom).offset(12.0).constraint
                 }
@@ -198,7 +198,7 @@ final class S1LoginViewController: UIViewController {
 
                 userInfoInputView.passwordField.returnKeyType = .next
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
-                loginButtonTopConstraint?.uninstall()
+                loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.updateConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.answerField.snp.bottom).offset(12.0).constraint
                 }
@@ -209,7 +209,7 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.answerField.alpha = 0.0
 
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: UIControlState())
-                loginButtonTopConstraint?.uninstall()
+                loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.updateConstraints { (make) in
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.usernameField.snp.bottom).offset(12.0).constraint
                 }
@@ -356,19 +356,19 @@ extension S1LoginViewController {
             return
         }
         self.seccodeInputView.seccodeSubmitButton.isEnabled = false
-        networkManager.logIn(username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: .Secure(hash: currentSechash(), code: currentSeccode()), successBlock: { [weak self] (message) in
+        networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: .secure(hash: currentSechash(), code: currentSeccode()), successBlock: { [weak self] (message) in
             guard let strongSelf = self else { return }
-            strongSelf.seccodeInputView.seccodeSubmitButton.enabled = true
-            NSUserDefaults.standardUserDefaults().setObject(username, forKey: "InLoginStateID")
-            strongSelf.state = .Login
-            let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: { action in
+            strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
+            UserDefaults.standard.set(username, forKey: "InLoginStateID")
+            strongSelf.state = .login
+            let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
                 strongSelf.dismiss()
             }))
-            strongSelf.presentViewController(alertController, animated: true, completion: nil)
+            strongSelf.present(alertController, animated: true, completion: nil)
             }) { [weak self] (error) in
                 guard let strongSelf = self else { return }
-                strongSelf.seccodeInputView.seccodeSubmitButton.enabled = true
+                strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
                 strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
         }
     }
@@ -471,37 +471,37 @@ extension S1LoginViewController {
         userInfoInputView.loginButton.isEnabled = false
         networkManager.checkLoginType(noSechashBlock: { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.networkManager.logIn(username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .Basic, successBlock: { [weak self] (message) in
+            strongSelf.networkManager.logIn(username: username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .basic, successBlock: { [weak self] (message) in
                 guard let strongSelf = self else { return }
-                strongSelf.userInfoInputView.loginButton.enabled = true
-                NSUserDefaults.standardUserDefaults().setObject(username, forKey: "InLoginStateID")
-                strongSelf.state = .Login
-                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .Alert)
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .Cancel, handler: { action in
+                strongSelf.userInfoInputView.loginButton.isEnabled = true
+                UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                strongSelf.state = .login
+                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
                     strongSelf.dismiss()
                 }))
-                strongSelf.presentViewController(alertController, animated: true, completion: nil)
+                strongSelf.present(alertController, animated: true, completion: nil)
                 }, failureBlock: { (error) in
-                    strongSelf.userInfoInputView.loginButton.enabled = true
+                    strongSelf.userInfoInputView.loginButton.isEnabled = true
                     strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
             })
         }, hasSeccodeBlock: { [weak self] (sechash) in
             guard let strongSelf = self else { return }
-            strongSelf.userInfoInputView.loginButton.enabled = true
+            strongSelf.userInfoInputView.loginButton.isEnabled = true
 
             strongSelf.sechash = sechash
-            strongSelf.seccodeInputView.hidden = false
-            strongSelf.networkManager.getSeccodeImage(sechash, successBlock: { (image) in
+            strongSelf.seccodeInputView.isHidden = false
+            strongSelf.networkManager.getSeccodeImage(sechash: sechash, successBlock: { (image) in
                 strongSelf.seccodeInputView.seccodeImageView.image = image
             }, failureBlock: { (error) in
                 strongSelf.alert(title: "下载验证码失败", message: error.localizedDescription)
-                strongSelf.userInfoInputView.loginButton.enabled = true
+                strongSelf.userInfoInputView.loginButton.isEnabled = true
             })
 
 
         }, failureBlock: { [weak self] (error) in
             guard let strongSelf = self else { return }
-            strongSelf.userInfoInputView.loginButton.enabled = true
+            strongSelf.userInfoInputView.loginButton.isEnabled = true
             strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
         })
     }
@@ -528,7 +528,7 @@ extension S1LoginViewController {
         switch gesture.state {
         case .began:
             dynamicAnimator.removeAllBehaviors()
-            DDLogDebug("[LoginVC] pan location begin \(gesture.locationInView(self.view))")
+            DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
                                                        offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: containerView.center),
                                                        attachedToAnchor: gesture.location(in: self.view))
@@ -537,7 +537,7 @@ extension S1LoginViewController {
             dynamicAnimator.addBehavior(dynamicItemBehavior!)
 
         case .changed:
-            DDLogDebug("[LoginVC] pan location \(gesture.locationInView(self.view))")
+            DDLogDebug("[LoginVC] pan location \(gesture.location(in: self.view))")
             attachmentBehavior?.anchorPoint = gesture.location(in: self.view)
         default:
             let velocity = gesture.velocity(in: self.view)
@@ -546,7 +546,7 @@ extension S1LoginViewController {
                 if let attachmentBehavior = attachmentBehavior {
                     dynamicAnimator.removeBehavior(attachmentBehavior)
                 }
-                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(dynamicItemBehavior?.linearVelocityForItem(containerView))")
+                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(dynamicItemBehavior?.linearVelocity(for: containerView))")
                 dynamicItemBehavior?.addLinearVelocity(velocity, for: containerView)
                 dynamicItemBehavior?.action = { [weak self] in
                     guard let strongSelf = self else { return }
