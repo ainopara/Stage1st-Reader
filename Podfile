@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, "8.0"
+platform :ios, "9.0"
 use_frameworks!
 
 target "Stage1st" do
@@ -9,7 +9,7 @@ target "Stage1st" do
     pod 'Kingfisher'
 
     # Model
-    pod 'JASON'
+    pod 'JASON', :git => 'https://github.com/delba/JASON.git', :branch => 'swift-3.0'
 
     # UI
     pod 'ActionSheetPicker-3.0'
@@ -22,15 +22,15 @@ target "Stage1st" do
 
     pod 'DTCoreText'
     pod 'YYKeyboardManager'
-    pod 'TextAttributes'
+    pod 'TextAttributes', :git => 'https://github.com/delba/TextAttributes.git', :branch => 'swift-3.0'
 
     # Database
     pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
 
     # Debug
-    pod 'CocoaLumberjack'
-    pod 'CocoaLumberjack/Swift'
+    pod 'CocoaLumberjack', :git => 'https://github.com/ffried/CocoaLumberjack.git', :branch => 'swift3.0'
+    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/ffried/CocoaLumberjack.git', :branch => 'swift3.0'
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
@@ -39,7 +39,6 @@ target "Stage1st" do
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod '1PasswordExtension'
-    pod 'ReactiveCocoa'
 end
 
 target "Stage1stTests" do

@@ -5,6 +5,7 @@ xcbaselines
 *.xcworkspace
 
 Pods
+Carthage
 ObjcUML
 fastlane
 

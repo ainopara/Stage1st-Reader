@@ -7,7 +7,7 @@
 //
 
 import Result
-import ReactiveCocoa
+import ReactiveSwift
 import SnapKit
 import Kingfisher
 

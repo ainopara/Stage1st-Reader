@@ -16,7 +16,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - Alamofire (3.5.0)
+  - Alamofire (4.0.0)
   - CocoaLumberjack (2.3.0):
     - CocoaLumberjack/Default (= 2.3.0)
     - CocoaLumberjack/Extensions (= 2.3.0)
@@ -55,16 +55,12 @@ PODS:
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (2.5.1)
+  - Kingfisher (3.0.1)
   - KissXML (5.1.2)
-  - Masonry (1.0.1)
-  - pop (1.0.9)
+  - Masonry (1.0.2)
   - Reachability (3.2)
-  - ReactiveCocoa (4.2.2):
-    - Result (~> 2.0)
-  - Result (2.1.3)
   - Reveal-iOS-SDK (1.6.2)
-  - SnapKit (0.22.0)
+  - SnapKit (3.0.0)
   - TextAttributes (0.3.1)
   - YapDatabase (2.9.1):
     - YapDatabase/Standard (= 2.9.1)
@@ -123,44 +119,60 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
-  - CocoaLumberjack
-  - CocoaLumberjack/Swift
+  - CocoaLumberjack (from `https://github.com/ffried/CocoaLumberjack.git`, branch `swift3.0`)
+  - CocoaLumberjack/Swift (from `https://github.com/ffried/CocoaLumberjack.git`, branch `swift3.0`)
   - Crashlytics
   - DTCoreText
   - Fabric
   - FBSnapshotTestCase
   - FMDB
   - GYHttpMock
-  - JASON
+  - JASON (from `https://github.com/delba/JASON.git`, branch `swift-3.0`)
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
   - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
-  - pop
-  - ReactiveCocoa
   - Reveal-iOS-SDK
   - SnapKit
-  - TextAttributes
+  - TextAttributes (from `https://github.com/delba/TextAttributes.git`, branch `swift-3.0`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
+  CocoaLumberjack:
+    :branch: swift3.0
+    :git: https://github.com/ffried/CocoaLumberjack.git
+  JASON:
+    :branch: swift-3.0
+    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
+  TextAttributes:
+    :branch: swift-3.0
+    :git: https://github.com/delba/TextAttributes.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
+  CocoaLumberjack:
+    :commit: 285b28c777602fa1be0246cc39cdeea703014c90
+    :git: https://github.com/ffried/CocoaLumberjack.git
+  JASON:
+    :commit: 88d5b5de70f6284375f58027acc18a7b9b5d6ce4
+    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
+  TextAttributes:
+    :commit: 128ec46902dddb3cf44c1512541d7a4a181806d2
+    :git: https://github.com/delba/TextAttributes.git
   YapDatabase:
     :commit: 486a9982476317764c3b5c10d3158018ddf8ab2c
     :git: https://github.com/ainopara/YapDatabase.git
@@ -169,8 +181,8 @@ SPEC CHECKSUMS:
   1PasswordExtension: 8757dc3302353731dd3e678e63b5023a708783cb
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  Alamofire: b70a7352335f8ea5babd0a923eb7e8eacc67b877
-  CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
+  Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
+  CocoaLumberjack: 86345bd025d61c23849a4691d52fc9977e9fe983
   Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
@@ -181,19 +193,16 @@ SPEC CHECKSUMS:
   JASON: 2fdba956dfbf8663369b81a8176e6fcb225ebf10
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: 9b82e0e1f1a296f149a50bbc2214532eaa4df4f1
+  Kingfisher: d5a491b45ea453d90a31bd2c0831d5243e73a73f
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Masonry: a1a931a0d08870ed8ae415a2ea5ea68ebcac77df
-  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 72263e7ac0770c274617ccd345e01049d0ca38ae
-  Result: 18e1a7597fbcca5923c565b40a25a98afafdee02
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
-  SnapKit: 0dd2fd157330f1ea11fd84da13e6be8a7a22bae0
+  SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   TextAttributes: b43233c6356a72f1c1e483d5bda694535432a4be
   YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: f2dc7015c364a2fdf44f6bb17289efd15bd15875
+PODFILE CHECKSUM: e8453007123df9502251f42806e61d95d8b09211
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.0.rc.2

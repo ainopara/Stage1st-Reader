@@ -1,0 +1,2 @@
+github "ReactiveCocoa/ReactiveCocoa" "reactive-objc-and-bridge"
+github "ReactiveCocoa/ReactiveSwift" "master"

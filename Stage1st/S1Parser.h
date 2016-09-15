@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+
 @class S1Topic;
 
 @interface S1Parser : NSObject
