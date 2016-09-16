@@ -17,15 +17,15 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - Alamofire (4.0.0)
-  - CocoaLumberjack (2.3.0):
-    - CocoaLumberjack/Default (= 2.3.0)
-    - CocoaLumberjack/Extensions (= 2.3.0)
-  - CocoaLumberjack/Core (2.3.0)
-  - CocoaLumberjack/Default (2.3.0):
+  - CocoaLumberjack (3.0.0):
+    - CocoaLumberjack/Default (= 3.0.0)
+    - CocoaLumberjack/Extensions (= 3.0.0)
+  - CocoaLumberjack/Core (3.0.0)
+  - CocoaLumberjack/Default (3.0.0):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.3.0):
+  - CocoaLumberjack/Extensions (3.0.0):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (2.3.0):
+  - CocoaLumberjack/Swift (3.0.0):
     - CocoaLumberjack/Extensions
   - Crashlytics (3.8.1):
     - Fabric (~> 1.6.3)
@@ -62,55 +62,54 @@ PODS:
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (3.0.0)
   - TextAttributes (0.3.1)
-  - YapDatabase (2.9.1):
-    - YapDatabase/Standard (= 2.9.1)
-  - YapDatabase/Standard (2.9.1):
-    - YapDatabase/Standard/Core (= 2.9.1)
-    - YapDatabase/Standard/Extensions (= 2.9.1)
-  - YapDatabase/Standard/Core (2.9.1):
-    - CocoaLumberjack (~> 2)
-  - YapDatabase/Standard/Extensions (2.9.1):
+  - YapDatabase (2.9.2):
+    - YapDatabase/Standard (= 2.9.2)
+  - YapDatabase/Standard (2.9.2):
+    - YapDatabase/Standard/Core (= 2.9.2)
+    - YapDatabase/Standard/Extensions (= 2.9.2)
+  - YapDatabase/Standard/Core (2.9.2):
+    - CocoaLumberjack (~> 3)
+  - YapDatabase/Standard/Extensions (2.9.2):
     - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/ActionManager (= 2.9.1)
-    - YapDatabase/Standard/Extensions/CloudKit (= 2.9.1)
-    - YapDatabase/Standard/Extensions/ConnectionProxy (= 2.9.1)
-    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 2.9.1)
-    - YapDatabase/Standard/Extensions/FilteredViews (= 2.9.1)
-    - YapDatabase/Standard/Extensions/FullTextSearch (= 2.9.1)
-    - YapDatabase/Standard/Extensions/Hooks (= 2.9.1)
-    - YapDatabase/Standard/Extensions/Relationships (= 2.9.1)
-    - YapDatabase/Standard/Extensions/RTreeIndex (= 2.9.1)
-    - YapDatabase/Standard/Extensions/SearchResults (= 2.9.1)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.9.1)
-    - YapDatabase/Standard/Extensions/Views (= 2.9.1)
-  - YapDatabase/Standard/Extensions/ActionManager (2.9.1):
-    - Reachability (~> 3)
-    - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/CloudKit (2.9.1):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionProxy (2.9.1):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/CrossProcessNotification (2.9.1):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/FilteredViews (2.9.1):
+    - YapDatabase/Standard/Extensions/ActionManager (= 2.9.2)
+    - YapDatabase/Standard/Extensions/CloudKit (= 2.9.2)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 2.9.2)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 2.9.2)
+    - YapDatabase/Standard/Extensions/FilteredViews (= 2.9.2)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Hooks (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Relationships (= 2.9.2)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 2.9.2)
+    - YapDatabase/Standard/Extensions/SearchResults (= 2.9.2)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Views (= 2.9.2)
+  - YapDatabase/Standard/Extensions/ActionManager (2.9.2):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/FullTextSearch (2.9.1):
+  - YapDatabase/Standard/Extensions/CloudKit (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Hooks (2.9.1):
+  - YapDatabase/Standard/Extensions/ConnectionProxy (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Relationships (2.9.1):
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/RTreeIndex (2.9.1):
+  - YapDatabase/Standard/Extensions/FilteredViews (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/SearchResults (2.9.1):
+    - YapDatabase/Standard/Extensions/Views
+  - YapDatabase/Standard/Extensions/FullTextSearch (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Hooks (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Relationships (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResults (2.9.2):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/FullTextSearch
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/SecondaryIndex (2.9.1):
+  - YapDatabase/Standard/Extensions/SecondaryIndex (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Views (2.9.1):
+  - YapDatabase/Standard/Extensions/Views (2.9.2):
     - YapDatabase/Standard/Core
   - YYKeyboardManager (1.0.1)
 
@@ -127,12 +126,13 @@ DEPENDENCIES:
   - FBSnapshotTestCase
   - FMDB
   - GYHttpMock
-  - JASON (from `https://github.com/delba/JASON.git`, branch `swift-3.0`)
+  - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
   - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
+  - Reachability
   - Reveal-iOS-SDK
   - SnapKit
   - TextAttributes (from `https://github.com/delba/TextAttributes.git`, branch `swift-3.0`)
@@ -143,9 +143,6 @@ EXTERNAL SOURCES:
   CocoaLumberjack:
     :branch: swift3.0
     :git: https://github.com/ffried/CocoaLumberjack.git
-  JASON:
-    :branch: swift-3.0
-    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -159,11 +156,8 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CocoaLumberjack:
-    :commit: 285b28c777602fa1be0246cc39cdeea703014c90
+    :commit: d877359527230cadc905c62a0ae3c30096edc67e
     :git: https://github.com/ffried/CocoaLumberjack.git
-  JASON:
-    :commit: 88d5b5de70f6284375f58027acc18a7b9b5d6ce4
-    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -174,7 +168,7 @@ CHECKOUT OPTIONS:
     :commit: 128ec46902dddb3cf44c1512541d7a4a181806d2
     :git: https://github.com/delba/TextAttributes.git
   YapDatabase:
-    :commit: 486a9982476317764c3b5c10d3158018ddf8ab2c
+    :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -182,7 +176,7 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
-  CocoaLumberjack: 86345bd025d61c23849a4691d52fc9977e9fe983
+  CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
@@ -200,9 +194,9 @@ SPEC CHECKSUMS:
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   TextAttributes: b43233c6356a72f1c1e483d5bda694535432a4be
-  YapDatabase: 713d4018cfacbd6e77dd430710ca84730e450980
+  YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: e8453007123df9502251f42806e61d95d8b09211
+PODFILE CHECKSUM: bf9928a0f888e7975b6af46dc27752e02817edb6
 
 COCOAPODS: 1.1.0.rc.2

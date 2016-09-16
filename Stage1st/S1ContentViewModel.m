@@ -12,7 +12,7 @@
 #import "S1Parser.h"
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
-#import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveObjc/ReactiveObjC.h>
 #import <Reachability/Reachability.h>
 
 @interface S1ContentViewModel ()
@@ -105,7 +105,8 @@
     floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"/user?%ld\">%@</a>", (long)floor.author.ID, floorAuthor];
 
     //process time
-    NSString *floorPostTime = floor.creationDate.s1_gracefulDateTimeString;
+//    NSString *floorPostTime = floor.creationDate.s1_gracefulDateTimeString;
+    NSString *floorPostTime = [S1ContentViewModel translateDateTimeString:floor.creationDate]; // FIXME: use swift version.
 
     //process reply Button
     NSString *replyLinkString = @"";

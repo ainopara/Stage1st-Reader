@@ -67,7 +67,7 @@ final class ReportComposeViewController: UIViewController {
         super.viewDidLoad()
 
         self.title = NSLocalizedString("ReportComposeViewController.title", comment: "")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.dismiss()))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self._dismiss))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.submit))
 
         view.addSubview(textView)
@@ -149,7 +149,7 @@ extension ReportComposeViewController {
         }
     }
 
-    func dismiss() {
+    func _dismiss() {
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -167,7 +167,7 @@ extension ReportComposeViewController {
 
 // MARK: - Style
 extension ReportComposeViewController {
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

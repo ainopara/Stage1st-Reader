@@ -97,7 +97,7 @@ public extension DiscuzAPIManager {
             debugPrint(response.request)
             switch response.result {
             case .success(let json):
-                if let messageValue = json["Message"]["messageval"].string , (messageValue as NSString).contains("login_succeed") {
+                if let messageValue = json["Message"]["messageval"].string, (messageValue as NSString).contains("login_succeed") {
                     successBlock(json["Message"]["messagestr"].string)
                 } else {
                     let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])

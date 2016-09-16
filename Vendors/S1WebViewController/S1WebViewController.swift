@@ -81,7 +81,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(S1WebViewController.refresh))
         stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController.stop))
         safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(S1WebViewController.openInSafari))
-        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController.dismiss))
+        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController._dismiss))
 
         updateBarItems()
 
@@ -145,7 +145,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // MARK: - Actions
-    func dismiss() {
+    func _dismiss() {
         self.dismiss(animated: true, completion: nil)
     }
 

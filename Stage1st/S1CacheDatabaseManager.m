@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Renaissance. All rights reserved.
 //
 
-#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "S1CacheDatabaseManager.h"
 #import "YapDatabase.h"
 

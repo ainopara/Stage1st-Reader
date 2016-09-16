@@ -16,7 +16,7 @@ extension S1ContentViewModel {
             return nil
         }
 
-        return self.dataCenter.searchFloorInCache(byFloorID: NSNumber(floorID))
+        return self.dataCenter.searchFloorInCache(byFloorID: NSNumber(value: floorID))
     }
 
     func chainSearchQuoteFloorInCache(_ firstFloorID: Int) -> [Floor] {
@@ -47,7 +47,7 @@ extension S1ContentViewModel {
 // MARK: - ToolBar
 extension S1ContentViewModel {
     func forwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(self.currentPage + 1)) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage + 1)) {
             return UIImage(named: "Forward-Cached")!
         } else {
             return UIImage(named: "Forward")!
@@ -55,7 +55,7 @@ extension S1ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(self.currentPage - 1)) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage - 1)) {
             return UIImage(named: "Back-Cached")!
         } else {
             return UIImage(named: "Back")!
@@ -63,7 +63,7 @@ extension S1ContentViewModel {
     }
 
     func favoriteButtonImage() -> UIImage {
-        if let isFavorited = self.topic.favorite , isFavorited.boolValue {
+        if let isFavorited = self.topic.favorite, isFavorited.boolValue {
             return UIImage(named: "Favorited")!
         }
         return UIImage(named: "Favorite")!

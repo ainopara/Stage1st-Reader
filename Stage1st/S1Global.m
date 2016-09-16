@@ -12,7 +12,10 @@
 @implementation S1ColorManager
 
 + (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName: color, NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
+    [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setDefaultTextAttributes:@{
+        NSForegroundColorAttributeName: color,
+        NSFontAttributeName:[UIFont systemFontOfSize:14.0]
+    }];
 }
 
 @end

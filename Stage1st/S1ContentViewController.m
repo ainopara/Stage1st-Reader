@@ -22,7 +22,7 @@
 #import "Masonry.h"
 #import "NavigationControllerDelegate.h"
 #import <Crashlytics/Answers.h>
-#import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveObjC/ReactiveObjC.h>
 
 CGFloat const topOffset = -80.0;
 CGFloat const bottomOffset = 60.0;

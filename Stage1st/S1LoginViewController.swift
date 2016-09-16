@@ -295,7 +295,7 @@ final class S1LoginViewController: UIViewController {
 
         state = self.inLoginState() ? .login : .notLogin
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(S1LoginViewController.dismiss))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self._dismiss))
         self.tapGesture = tapGesture
         self.backgroundBlurView.addGestureRecognizer(tapGesture)
 
@@ -363,7 +363,7 @@ extension S1LoginViewController {
             strongSelf.state = .login
             let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
-                strongSelf.dismiss()
+                strongSelf._dismiss()
             }))
             strongSelf.present(alertController, animated: true, completion: nil)
             }) { [weak self] (error) in
@@ -381,7 +381,7 @@ extension S1LoginViewController {
             guard let loginDict = loginDict else {
                 return
             }
-            if let error = error , error.code != Int(AppExtensionErrorCodeCancelledByUser) {
+            if let error = error as? NSError, error.code != Int(AppExtensionErrorCodeCancelledByUser) {
                 DDLogInfo("Error invoking 1Password App Extension for find login: \(error)")
                 return
             }
@@ -408,7 +408,7 @@ extension S1LoginViewController {
         picker.show()
     }
 
-    func dismiss() {
+    func _dismiss() {
         if let presentingViewController = self.presentingViewController {
             presentingViewController.dismiss(animated: true, completion: nil)
         } else {
@@ -478,7 +478,7 @@ extension S1LoginViewController {
                 strongSelf.state = .login
                 let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
-                    strongSelf.dismiss()
+                    strongSelf._dismiss()
                 }))
                 strongSelf.present(alertController, animated: true, completion: nil)
                 }, failureBlock: { (error) in
@@ -550,9 +550,9 @@ extension S1LoginViewController {
                 dynamicItemBehavior?.addLinearVelocity(velocity, for: containerView)
                 dynamicItemBehavior?.action = { [weak self] in
                     guard let strongSelf = self else { return }
-                    if let items = strongSelf.dynamicAnimator?.items(in: strongSelf.view.bounds) , items.count == 0 {
+                    if let items = strongSelf.dynamicAnimator?.items(in: strongSelf.view.bounds), items.count == 0 {
                         if !strongSelf.isBeingDismissed {
-                            strongSelf.dismiss()
+                            strongSelf._dismiss()
                         }
                     }
                 }

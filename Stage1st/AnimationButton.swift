@@ -85,7 +85,7 @@ extension AnimationView {
 // MARK: - override
 
 extension AnimationView {
-    override var intrinsicContentSize : CGSize {
+    override var intrinsicContentSize: CGSize {
         if let firstImage = self.images.first {
             return firstImage.size
         }

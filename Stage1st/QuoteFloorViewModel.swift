@@ -9,7 +9,7 @@
 import TextAttributes
 
 struct FloorPresenting {
-    let avatarURL: URL
+    let avatarURL: URL?
     let author: NSAttributedString
     let dateTime: NSAttributedString
     let isTopicAuthor: Bool
@@ -18,11 +18,11 @@ struct FloorPresenting {
 
 
     init(floor: Floor, topic: S1Topic, baseURL: URL) {
-        avatarURL = floor.author.avatarURL ?? URL(string: "")
+        avatarURL = floor.author.avatarURL
         let authorAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 14.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("quote.tableview.cell.title"))
         author = NSAttributedString(string: floor.author.name, attributes: authorAttributes)
 
-        if let topicAuthorID = topic.authorUserID as? Int , topicAuthorID == floor.author.ID {
+        if let topicAuthorID = topic.authorUserID as? Int, topicAuthorID == floor.author.ID {
             isTopicAuthor = true
         } else {
             isTopicAuthor = false

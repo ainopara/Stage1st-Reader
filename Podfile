@@ -9,7 +9,7 @@ target "Stage1st" do
     pod 'Kingfisher'
 
     # Model
-    pod 'JASON', :git => 'https://github.com/delba/JASON.git', :branch => 'swift-3.0'
+    pod 'JASON'
 
     # UI
     pod 'ActionSheetPicker-3.0'
@@ -33,6 +33,7 @@ target "Stage1st" do
     pod 'CocoaLumberjack/Swift', :git => 'https://github.com/ffried/CocoaLumberjack.git', :branch => 'swift3.0'
     pod 'Fabric'
     pod 'Crashlytics'
+    pod 'Reachability'
     pod 'Reveal-iOS-SDK', :configurations => ['Debug']
     # pod 'FBMemoryProfiler'
 

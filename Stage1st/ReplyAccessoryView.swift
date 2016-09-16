@@ -54,7 +54,7 @@ class ReplyAccessoryView: UIView {
 
     deinit {
         if let historyArray = self.mahjongFaceView?.historyArray {
-            DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
+            DispatchQueue.global().async {
                 S1DataCenter.shared().mahjongFaceHistoryArray = historyArray
             }
         }
