@@ -30,7 +30,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     var safariButtonItem: UIBarButtonItem?
     var closeButtonItem: UIBarButtonItem?
 
-    // MARK: -
+    // MARK: - Life Cycle
     init(URL: Foundation.URL) {
         self.URLToOpen = URL
         super.init(nibName: nil, bundle: nil)
@@ -232,7 +232,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     fileprivate func currentValidURL() -> URL {
-        if let URL = webView.url , URL.absoluteString != "" {
+        if let URL = webView.url, URL.absoluteString != "" {
             return URL
         } else {
             return self.URLToOpen

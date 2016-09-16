@@ -111,7 +111,7 @@ final class UserViewController: UIViewController {
 
 // MARK: - Style
 extension UserViewController {
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 

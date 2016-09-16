@@ -489,7 +489,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
         // Reply
         if ([request.URL.path isEqualToString:@"/reply"]) {
-            NSString *floorID = [request.URL.query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *floorID = [request.URL.query stringByRemovingPercentEncoding];
             [self actionButtonTappedFor:floorID];
             return NO;
         }

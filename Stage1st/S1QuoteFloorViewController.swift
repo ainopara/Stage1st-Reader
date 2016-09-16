@@ -140,7 +140,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
 
 // MARK: - Style
 extension S1QuoteFloorViewController {
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

@@ -97,7 +97,7 @@ extension S1ContentViewModel {
 // MARK: - Actions
 extension S1ContentViewModel {
     func toggleFavorite() {
-        if let isFavorite = self.topic.favorite , isFavorite.boolValue {
+        if let isFavorite = self.topic.favorite, isFavorite.boolValue {
             self.topic.favorite = false
         } else {
             self.topic.favorite = true

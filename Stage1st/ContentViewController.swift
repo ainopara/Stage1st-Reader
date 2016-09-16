@@ -58,7 +58,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: -
+// MARK: - Actions
 extension S1ContentViewController {
     func actionButtonTapped(for floorID: NSString) {
         guard let floor = viewModel.searchFloorInCache(floorID.integerValue) else {

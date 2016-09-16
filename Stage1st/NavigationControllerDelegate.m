@@ -70,12 +70,12 @@
         [self.navigationController popViewControllerAnimated:YES];
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / screenWidth : 0];
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         CGFloat velocityX = [recognizer velocityInView:view].x;
-        CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         if ((translation.x > _TRIGGER_THRESHOLD || velocityX > _TRIGGER_VELOCITY_THRESHOLD) && velocityX >= -100) {
             self.interactionController.completionSpeed = 0.3 / fmin((screenWidth - fmin(translation.x, 0)) / fabs(velocityX), 0.3);

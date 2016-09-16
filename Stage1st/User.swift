@@ -41,7 +41,7 @@ open class User: NSObject, NSCoding {
         self.ID = ID
         self.name = name
         self.customStatus = space["customstatus"].string
-        if let sigHTML = space["sightml"].string , sigHTML != "" {
+        if let sigHTML = space["sightml"].string, sigHTML != "" {
             self.sigHTML = sigHTML
         }
         self.lastVisitDateString = space["lastvisit"].string

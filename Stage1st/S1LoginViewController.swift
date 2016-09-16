@@ -228,7 +228,7 @@ final class S1LoginViewController: UIViewController {
         "驾驶执照最后四位数字"
     ]
 
-    // MARK: -
+    // MARK: - Life Cycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.networkManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)

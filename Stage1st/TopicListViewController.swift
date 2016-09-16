@@ -71,7 +71,7 @@ extension S1TopicListViewController {
 // MARK: Style
 extension S1TopicListViewController {
 
-    open override var preferredStatusBarStyle : UIStatusBarStyle {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
         return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
     }
 }

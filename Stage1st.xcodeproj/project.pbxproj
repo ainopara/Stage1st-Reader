@@ -55,6 +55,14 @@
 		869D68701D8B0FA90039D4CB /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; };
 		869D68711D8B0FA90039D4CB /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; };
 		869D68721D8B0FA90039D4CB /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; };
+		869D68731D8C290A0039D4CB /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; };
+		869D68741D8C290A0039D4CB /* ReactiveObjC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		869D68751D8C290A0039D4CB /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; };
+		869D68761D8C290A0039D4CB /* ReactiveObjCBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		869D68771D8C290A0039D4CB /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; };
+		869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		869D68791D8C290A0039D4CB /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; };
+		869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
@@ -118,6 +126,23 @@
 			remoteInfo = Stage1st;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		869D687B1D8C290A0039D4CB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				869D68761D8C290A0039D4CB /* ReactiveObjCBridge.framework in Embed Frameworks */,
+				869D68741D8C290A0039D4CB /* ReactiveObjC.framework in Embed Frameworks */,
+				869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */,
+				869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4358B1D3313628BA0A5AAF21 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
@@ -299,10 +324,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */,
+				869D68791D8C290A0039D4CB /* Result.framework in Frameworks */,
+				869D68751D8C290A0039D4CB /* ReactiveObjCBridge.framework in Frameworks */,
 				869D68721D8B0FA90039D4CB /* Result.framework in Frameworks */,
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
+				869D68731D8C290A0039D4CB /* ReactiveObjC.framework in Frameworks */,
 				B9F3162CDD829E5736F68499 /* Pods_Stage1st.framework in Frameworks */,
 				869D68701D8B0FA90039D4CB /* ReactiveObjCBridge.framework in Frameworks */,
+				869D68771D8C290A0039D4CB /* ReactiveSwift.framework in Frameworks */,
 				869D686F1D8B0FA90039D4CB /* ReactiveObjC.framework in Frameworks */,
 				869D68711D8B0FA90039D4CB /* ReactiveSwift.framework in Frameworks */,
 			);
@@ -767,6 +796,7 @@
 				86A766CF1BA43703009BAD0D /* Auto Increase Build Number */,
 				FEA0C5DDF38BA7893E28CD69 /* [CP] Embed Pods Frameworks */,
 				93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */,
+				869D687B1D8C290A0039D4CB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
