@@ -346,7 +346,7 @@ S1AppDelegate *MyAppDelegate;
 
 - (void)pushContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-    if ([rootvc isKindOfClass:[UINavigationController class]]) {
+    if ([rootvc isKindOfClass:[UINavigationController class]] && topic != nil) {
         S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[S1DataCenter sharedDataCenter]];
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
     }
