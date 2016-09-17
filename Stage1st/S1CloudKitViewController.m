@@ -63,15 +63,11 @@
     [[NSUserDefaults standardUserDefaults] setBool:self.iCloudSwitch.on forKey:@"EnableSync"];
     NSString *title = NSLocalizedString(@"SettingView_CloudKit_Enable_Message", @"");
     NSString *message = @"";
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"") style:UIAlertActionStyleDefault handler:NULL]];
+    [self presentViewController:alertController animated:YES completion:NULL];
     
-    UIAlertView *alertView =
-		  [[UIAlertView alloc] initWithTitle:title
-                                     message:message
-                                    delegate:nil
-                           cancelButtonTitle:nil
-                           otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
-    
-    [alertView show];
     if (self.iCloudSwitch.on == NO) {
         [MyCloudKitManager prepareForUnregister];
         [MyDatabaseManager unregisterCloudKitExtension];
@@ -91,15 +87,10 @@
         if (message == nil) {
             message = @"No description information.";
         }
-        
-        UIAlertView *alertView =
-        [[UIAlertView alloc] initWithTitle:title
-                                   message:message
-                                  delegate:nil
-                         cancelButtonTitle:nil
-                         otherButtonTitles:NSLocalizedString(@"Message_OK", @""), nil];
-        
-        [alertView show];
+
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"") style:UIAlertActionStyleDefault handler:NULL]];
+        [self presentViewController:alertController animated:YES completion:NULL];
     }
 }
 

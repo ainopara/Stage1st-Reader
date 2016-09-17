@@ -219,21 +219,18 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	
 		NSString *title = @"You're not signed into iCloud.";
 		NSString *message = @"You must be signed into iCloud for syncing to work.";
-		
-		UIAlertView *alertView =
-		  [[UIAlertView alloc] initWithTitle:title
-		                             message:message
-		                            delegate:nil
-		                   cancelButtonTitle:nil
-		                   otherButtonTitles:@"Oops", nil];
-		
-		[alertView show];
+
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Oops" style:UIAlertActionStyleDefault handler:NULL]];
+        [[[MyAppDelegate window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
+
 	};
 	
-	if ([NSThread isMainThread])
-		block();
-	else
-		dispatch_async(dispatch_get_main_queue(), block);
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
 }
 
 - (void)warnAboutFeatures
@@ -243,14 +240,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		NSString *title = @"Stage1st Reader doesn't support switching iCloud accounts.";
 		NSString *message = @"Maybe in future.";
 		
-		UIAlertView *alertView =
-		  [[UIAlertView alloc] initWithTitle:title
-		                             message:message
-		                            delegate:nil
-		                   cancelButtonTitle:nil
-		                   otherButtonTitles:@"OK", nil];
-		
-		[alertView show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:NULL]];
+        [[[MyAppDelegate window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
 	};
 	
     if ([NSThread isMainThread]) {
