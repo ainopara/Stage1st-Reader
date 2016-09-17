@@ -59,7 +59,7 @@ PODS:
   - KissXML (5.1.2)
   - Masonry (1.0.2)
   - Reachability (3.2)
-  - Reveal-iOS-SDK (1.6.2)
+  - Reveal-SDK (2)
   - SnapKit (3.0.0)
   - TextAttributes (0.3.1)
   - YapDatabase (2.9.2):
@@ -133,7 +133,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
-  - Reveal-iOS-SDK
+  - Reveal-SDK
   - SnapKit
   - TextAttributes (from `https://github.com/delba/TextAttributes.git`, branch `swift-3.0`)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
@@ -191,12 +191,12 @@ SPEC CHECKSUMS:
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
+  Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   TextAttributes: b43233c6356a72f1c1e483d5bda694535432a4be
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: bf9928a0f888e7975b6af46dc27752e02817edb6
+PODFILE CHECKSUM: 12503ca25166bdba49fa5d7ee724f35b16d2421c
 
 COCOAPODS: 1.1.0.rc.2
