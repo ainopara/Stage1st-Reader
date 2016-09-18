@@ -36,7 +36,9 @@ font {
     font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 }
 
-
+body {
+    -webkit-touch-callout: none;
+}
 
 h1 {
     /*font-size: 20px; in CSS file*/
