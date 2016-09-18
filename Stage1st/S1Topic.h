@@ -10,8 +10,6 @@
 #import <CloudKit/CloudKit.h>
 #import "MyDatabaseObject.h"
 
-@class Floor;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface S1Topic : MyDatabaseObject<NSCoding>

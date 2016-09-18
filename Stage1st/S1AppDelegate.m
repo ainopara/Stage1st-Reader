@@ -57,47 +57,10 @@ S1AppDelegate *MyAppDelegate;
     // Crashlytics
     [Fabric with:@[[Crashlytics class]]];
 
-    // Setup User Defaults
+    // Setup
+    [self setup];
+
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    if (![userDefaults valueForKey:@"Order"]) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
-        NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [userDefaults setObject:order forKey:@"Order"];
-    }
-    if ([userDefaults objectForKey:@"Display"] == nil) {
-        [userDefaults setBool:YES forKey:@"Display"];
-    }
-    if ([userDefaults objectForKey:@"BaseURL"] == nil) {
-        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
-    }
-    if ([userDefaults objectForKey:@"FontSize"] == nil) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [userDefaults setObject:@"18px" forKey:@"FontSize"];
-        } else {
-            [userDefaults setObject:@"17px" forKey:@"FontSize"];
-        }
-    }
-    if ([userDefaults objectForKey:@"HistoryLimit"] == nil) {
-        [userDefaults setObject:@-1 forKey:@"HistoryLimit"];
-    }
-    if ([userDefaults objectForKey:@"ReplyIncrement"] == nil) {
-        [userDefaults setBool:YES forKey:@"ReplyIncrement"];
-    }
-    if ([userDefaults objectForKey:@"RemoveTails"] == nil) {
-        [userDefaults setBool:YES forKey:@"RemoveTails"];
-    }
-    if ([userDefaults objectForKey:@"PrecacheNextPage"] == nil) {
-        [userDefaults setBool:YES forKey:@"PrecacheNextPage"];
-    }
-    if ([userDefaults objectForKey:@"ForcePortraitForPhone"] == nil) {
-        [userDefaults setBool:YES forKey:@"ForcePortraitForPhone"];
-    }
-    if ([userDefaults objectForKey:@"NightMode"] == nil) {
-        [userDefaults setBool:NO forKey:@"NightMode"];
-    }
-    if ([userDefaults objectForKey:@"EnableSync"] == nil) {
-        [userDefaults setBool:NO forKey:@"EnableSync"];
-    }
 
     // Start database & cloudKit (in order)
     [DatabaseManager initialize];
@@ -130,18 +93,7 @@ S1AppDelegate *MyAppDelegate;
         [userDefaults setObject:@"18px" forKey:@"FontSize"];
     }
 
-    // Migrate to v3.8
-    if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"] == NSNotFound) {
-        NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
-        [userDefaults setValue:order forKey:@"Order"];
-    }
-
-    // Migrate to v3.9
-    if([array0 indexOfObject:@"DOTA"] == NSNotFound && [array1 indexOfObject:@"DOTA"] == NSNotFound) {
-        NSArray *order = @[array0, [[array1 arrayByAddingObject:@"DOTA"] arrayByAddingObject:@"欧美动漫"]];
-        [userDefaults setValue:order forKey:@"Order"];
-    }
-
+    // Migrate to v3.8 and later
     [self migrate];
     
     // Preload floor cache database
