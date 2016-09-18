@@ -51,7 +51,7 @@ open class APColorManager: NSObject {
     }
 
     func isDarkTheme() -> Bool {
-        return (self.palette.value(forKey: "Dark") as AnyObject).boolValue ?? false
+        return self.palette.value(forKey: "Dark") as? Bool ?? false
     }
 
     func updateGlobalAppearance() {
