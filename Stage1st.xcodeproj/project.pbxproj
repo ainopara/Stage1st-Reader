@@ -18,6 +18,7 @@
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
+		8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* S1ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* S1Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* S1Utility.swift */; };
@@ -161,6 +162,7 @@
 		860573561B762C3B00C70781 /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatabaseManager.m; path = Stage1st/DatabaseManager.m; sourceTree = "<group>"; };
 		860573571B762C3B00C70781 /* MyDatabaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDatabaseObject.h; path = Stage1st/MyDatabaseObject.h; sourceTree = "<group>"; };
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
+		8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CacheDatabaseManager.swift; path = Stage1st/CacheDatabaseManager.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* S1ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1ContentViewModel.swift; path = Stage1st/S1ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* S1Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Utility.swift; path = Stage1st/S1Utility.swift; sourceTree = "<group>"; };
@@ -505,6 +507,7 @@
 				860573541B762C3B00C70781 /* CloudKitManager.m */,
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
+				8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */,
 				86A766CE1BA3EE13009BAD0D /* FloorCache */,
 				8605735D1B762C6100C70781 /* Sqlite3 */,
 			);
@@ -1104,6 +1107,7 @@
 				86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
+				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,

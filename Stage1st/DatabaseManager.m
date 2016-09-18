@@ -428,18 +428,18 @@ DatabaseManager *MyDatabaseManager;
             NSDate *remoteLastUpdateDate = [remoteRecord valueForKey:@"lastViewedDate"];
             NSDate *localLastUpdateDate = topic.lastViewedDate;
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] != 0) {
-                DDLogDebug(@"Merge: Remote Change");
+                DDLogDebug(@"Merging: Remote Change %lu", (unsigned long)[remoteChangedKeys count]);
                 for (NSString *key in remoteChangedKeys) {
-                    DDLogDebug(@"%@ : %@", key, [remoteRecord valueForKey:key]);
+                    DDLogDebug(@"[R] %@ : %@", key, [remoteRecord valueForKey:key]);
                 }
-                DDLogDebug(@"Merge: Local Change");
+                DDLogDebug(@"Merging: Local Change %lu", (unsigned long)[localChangedKeys count]);
                 for (NSString *key in localChangedKeys) {
-                    DDLogDebug(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+                    DDLogDebug(@"[L] %@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
                 }
             }
             
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] > 0) {
-                DDLogDebug(@"Merge: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Resolve: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 topic = [topic copy]; // make mutable copy
                 for (NSString *remoteChangedKey in remoteChangedKeys) {
                     id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
@@ -448,7 +448,7 @@ DatabaseManager *MyDatabaseManager;
                 }
                 [transaction setObject:topic forKey:key inCollection:collection];
             } else if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] < 0){
-                DDLogDebug(@"Merge: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Resolve: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *localChangedKey in localChangedKeys)
                 {
                     id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
