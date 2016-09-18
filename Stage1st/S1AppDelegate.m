@@ -42,6 +42,7 @@ S1AppDelegate *MyAppDelegate;
 //        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
 //        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(118, 164, 211) backgroundColor:nil forFlag:DDLogFlagInfo];
 //        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
+        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
         [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];

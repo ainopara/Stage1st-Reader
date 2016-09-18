@@ -13,6 +13,7 @@
 #import <YapDatabase/YapDatabaseCloudKit.h>
 
 @interface S1CloudKitViewController ()
+
 @property (weak, nonatomic) IBOutlet UISwitch *iCloudSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *currentStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uploadQueueLabel;
@@ -93,7 +94,7 @@
 #pragma mark - Notification
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-        [self.iCloudSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
+    [self.iCloudSwitch setOnTintColor:[[APColorManager sharedInstance] colorForKey:@"appearance.switch.tint"]];
     [self.navigationController.navigationBar setBarTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.battint"]];
     [self.navigationController.navigationBar setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"appearance.navigationbar.title"],NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];

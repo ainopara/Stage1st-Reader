@@ -450,7 +450,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
         [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
         NSURL *URLToOpen = [self.viewModel correspondingWebPageURL];
         if (URLToOpen != nil) {
-            S1WebViewController *controller = [[S1WebViewController alloc] initWithURL:URLToOpen];
+            WebViewController *controller = [[WebViewController alloc] initWithURL:URLToOpen];
             [self presentViewController:controller animated:YES completion:nil];
         }
     }];
@@ -510,7 +510,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
 
             NSString *imageID = request.URL.fragment;
             NSString *imageURL = [request.URL.path stringByReplacingCharactersInRange:NSRangeFromString(@"0 15") withString:@""];
-            DDLogDebug(@"JTS View Image: %@", imageURL);
+            DDLogDebug(@"[ContentVC] JTS View Image: %@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
             imageInfo.referenceRect = [self positionOfElementWithId:imageID];
@@ -531,7 +531,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
         [Answers logCustomEventWithName:@"[Content] Image" customAttributes:@{@"type": @"hijack"}];
 
         NSString *imageURL = request.URL.absoluteString;
-        DDLogDebug(@"JTS View Image: %@", imageURL);
+        DDLogDebug(@"[ContentVC] JTS View Image: %@", imageURL);
         JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
         imageInfo.imageURL = request.URL;
 
@@ -597,7 +597,7 @@ typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
         [CrashlyticsKit setObjectValue:@"WebViewer" forKey:@"lastViewController"];
         if (SYSTEM_VERSION_LESS_THAN(@"9")) {
             DDLogDebug(@"[ContentVC] Open in WebView: %@", request.URL);
-            S1WebViewController *webViewController = [[S1WebViewController alloc] initWithURL:request.URL];
+            WebViewController *webViewController = [[WebViewController alloc] initWithURL:request.URL];
             [strongSelf presentViewController:webViewController animated:YES completion:nil];
         } else {
             DDLogDebug(@"[ContentVC] Open in Safari: %@", request.URL);

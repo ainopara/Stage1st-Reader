@@ -358,7 +358,7 @@
     if (processedString) {
         return [processedString stringByReplacingOccurrencesOfString:@"<br></br>" withString:@"<br />"];
     } else {
-        DDLogError(@"[ContentViewModel] Report Fail to modify image");
+        DDLogError(@"[ContentViewModel] Fail to modify image: %@", HTMLString);
         return HTMLString;
     }
 }

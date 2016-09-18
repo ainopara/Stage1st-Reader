@@ -1,5 +1,5 @@
 //
-//  S1WebViewController.swift
+//  WebViewController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 5/18/16.
@@ -11,7 +11,7 @@ import WebKit
 import SnapKit
 import CocoaLumberjack
 
-class S1WebViewController: UIViewController, WKNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate {
     var URLToOpen: URL
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
@@ -31,7 +31,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     var closeButtonItem: UIBarButtonItem?
 
     // MARK: - Life Cycle
-    init(URL: Foundation.URL) {
+    init(URL: URL) {
         self.URLToOpen = URL
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .overFullScreen
@@ -76,12 +76,12 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
         toolBar.barTintColor = nil
 
-        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(S1WebViewController.back))
-        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .plain, target: self, action: #selector(S1WebViewController.forward))
-        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(S1WebViewController.refresh))
-        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController.stop))
-        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(S1WebViewController.openInSafari))
-        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(S1WebViewController._dismiss))
+        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(WebViewController.back))
+        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .plain, target: self, action: #selector(WebViewController.forward))
+        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(WebViewController.refresh))
+        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(WebViewController.stop))
+        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(WebViewController.openInSafari))
+        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(WebViewController._dismiss))
 
         updateBarItems()
 
@@ -119,7 +119,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
         }
 
 
-        NotificationCenter.default.addObserver(self, selector: #selector(S1WebViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(WebViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
 
         webView.load(URLRequest(url: URLToOpen))
     }
@@ -169,15 +169,15 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
 
     func openInSafari() {
         let URLToOpenInSafari = currentValidURL()
-        DDLogDebug("[WebViewController] open in safari:\(URLToOpenInSafari)")
+        DDLogDebug("[WebVC] open in safari:\(URLToOpenInSafari)")
         if UIApplication.shared.openURL(URLToOpenInSafari) != true {
-            DDLogError("[WebViewController] failed to open \(URLToOpenInSafari) in safari")
+            DDLogError("[WebVC] failed to open \(URLToOpenInSafari) in safari")
         }
     }
 
     // MARK: - UIWebViewDelegate
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        DDLogDebug("[WebViewController] didCommit")
+        DDLogDebug("[WebVC] didCommit")
         updateBarItems()
         backButtonItem?.isEnabled = webView.canGoBack
         forwardButtonItem?.isEnabled = webView.canGoForward
@@ -185,7 +185,7 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        DDLogDebug("[WebViewController] didFinish")
+        DDLogDebug("[WebVC] didFinish")
         updateBarItems()
         backButtonItem?.isEnabled = webView.canGoBack
         forwardButtonItem?.isEnabled = webView.canGoForward
@@ -193,14 +193,14 @@ class S1WebViewController: UIViewController, WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        DDLogDebug("[WebViewController] didFail with error:\(error)")
+        DDLogDebug("[WebVC] didFail with error:\(error)")
         updateBarItems()
     }
 
     // MARK: KVO
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard let newProgress = change?[NSKeyValueChangeKey.newKey] as? Float else { return }
-        DDLogVerbose("[WebViewController] Loading progress: \(newProgress)")
+        DDLogVerbose("[WebVC] Loading progress: \(newProgress)")
 
         if newProgress == 1.0 {
             UIView.animate(withDuration: 0.3, animations: {
