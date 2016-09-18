@@ -22,7 +22,7 @@ iframe {
 .i_table {
     border-radius: 0px;
     word-break: break-all;
-    font-family: Helvetica;
+    font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     /*width: 90; for iPad in CSS file*/
 }
 
@@ -33,7 +33,7 @@ iframe {
 
 font {
     /*font-size: 17px; in CSS file*/
-    font-family: Helvetica;
+    font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 }
 
 
