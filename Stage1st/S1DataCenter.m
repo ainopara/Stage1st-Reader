@@ -160,15 +160,20 @@
             loginUsername = nil;
         }
         [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+
         //get floors
         NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
 
         //update floor cache
-        [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-            [self callFinishHandlerIfExistForKey:key withResult:floorList];
-        }];
-
-        DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
+        if (floorList && [floorList count] > 0) {
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
+                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+            }];
+        } else {
+            [self.cacheFinishHandlers setValue:nil forKey:key];
+            DDLogError(@"[Network] Precache %@-%@ failed (no floor list)", topic.topicID, page);
+        }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         [self.cacheFinishHandlers setValue:nil forKey:key];
         DDLogError(@"[Network] Precache %@-%@ failed", topic.topicID, page);
@@ -203,7 +208,7 @@
     NSParameterAssert(![topic isImmutable]);
     // Use Cache Result If Exist
     NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
-    if (floorList) {
+    if (floorList && [floorList count] > 0) {
         success(floorList, YES);
         return;
     }
@@ -230,10 +235,13 @@
         NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
 
         //update floor cache
-        [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
-            success(floorList, NO);
-        }];
-
+        if (floorList && [floorList count] > 0) {
+            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+                success(floorList, NO);
+            }];
+        } else {
+            failure([[NSError alloc] initWithDomain:@"Stage1stErrorDomain" code:10 userInfo:nil]);
+        }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);
     }];
