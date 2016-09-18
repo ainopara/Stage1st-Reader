@@ -126,7 +126,7 @@ DEPENDENCIES:
   - FBSnapshotTestCase
   - FMDB
   - GYHttpMock
-  - JASON
+  - JASON (from `https://github.com/delba/JASON.git`)
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
   - Kingfisher
@@ -143,6 +143,8 @@ EXTERNAL SOURCES:
   CocoaLumberjack:
     :branch: swift3.0
     :git: https://github.com/ffried/CocoaLumberjack.git
+  JASON:
+    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -156,8 +158,11 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CocoaLumberjack:
-    :commit: d877359527230cadc905c62a0ae3c30096edc67e
+    :commit: bdfc2151e2468517e613d9e8b87d69dc7c569f97
     :git: https://github.com/ffried/CocoaLumberjack.git
+  JASON:
+    :commit: 88d5b5de70f6284375f58027acc18a7b9b5d6ce4
+    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -197,6 +202,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 12503ca25166bdba49fa5d7ee724f35b16d2421c
+PODFILE CHECKSUM: 0dad02278709ca305f9ca5e1b4beba219cbca431
 
 COCOAPODS: 1.1.0.rc.2

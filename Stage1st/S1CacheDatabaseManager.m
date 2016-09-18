@@ -59,7 +59,7 @@ NSString *const Metadata_LastUsed = @"lastUsed";
 }
 
 - (NSArray<Floor *> *)cacheValueForTopicID:(NSNumber *)topicID withPage:(NSNumber *)page {
-    __block NSArray *result = nil;
+    __block NSArray<Floor *> *result = nil;
     NSString *key = [self keyForTopicID:topicID page:page];
     [self.cacheConnection readWithBlock:^(YapDatabaseReadTransaction * __nonnull transaction) {
         result = [transaction objectForKey:key inCollection:Collection_TopicFloors];

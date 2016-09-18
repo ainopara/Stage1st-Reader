@@ -9,7 +9,7 @@ target "Stage1st" do
     pod 'Kingfisher'
 
     # Model
-    pod 'JASON'
+    pod 'JASON', :git => 'https://github.com/delba/JASON.git'
 
     # UI
     pod 'ActionSheetPicker-3.0'
