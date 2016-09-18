@@ -36,7 +36,7 @@ a:visited {
     color: {{borderText}};
 }
 
-.reply a{
+.reply a {
     color: {{borderText}};
 }
 
@@ -57,6 +57,7 @@ a.user {
     color: {{text}};
     border-bottom: {{border}} 1px solid;
 }
+
 .s1-alert {
     color: {{borderText}};
 }

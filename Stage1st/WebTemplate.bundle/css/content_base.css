@@ -65,29 +65,36 @@ blockquote {
 .head {
     font-size: 12px;
 }
+
 .head div {
     padding: 3px;
     float: left;
     position: relative;
     display: inline-block;
 }
+
 .reply {
     float:right !important;
     text-align:right;
 }
-.reply a{
+
+.reply a {
     text-decoration: none;
 }
+
 .attachment {
     padding: 3px;
 }
-.attachment img{
+
+.attachment img {
     display: block;
 }
+
 .smalltext {
     font-size: 12px;
     float: initial !important;
 }
+
 .pstatus {
     font-style: normal;
     font-size: 12px;
@@ -95,18 +102,22 @@ blockquote {
     display: block;
     margin-bottom: -25px;
 }
+
 .s1-poll {
     font-size: 14px;
 }
+
 .s1-alert {
     font-style: normal;
     font-size: 12px;
     text-align: center;
 }
+
 div.pbg {
     height: 3px;
     border-bottom: 1px solid;
 }
+
 div.pbr {
     height: 3px;
 }
