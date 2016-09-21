@@ -85,12 +85,12 @@ final class ReportComposeViewController: UIViewController {
 
         // Binding
         viewModel.content <~ textView.rac_textSignal().toSignalProducer().map { $0 as! String }.flatMapError { _ in return SignalProducer<String, NoError>.empty }
-        viewModel.canSubmit.producer.startWithValues { [weak self] (canSubmit) in
+        viewModel.canSubmit.producer.startWithNext { [weak self] (canSubmit) in
             guard let strongSelf = self else { return }
             strongSelf.navigationItem.rightBarButtonItem?.isEnabled = canSubmit
         }
 
-        viewModel.submiting.producer.startWithValues { [weak self] (submiting) in
+        viewModel.submiting.producer.startWithNext { [weak self] (submiting) in
             guard let strongSelf = self else { return }
             if submiting {
                 strongSelf.loadingHUD.showActivityIndicator()

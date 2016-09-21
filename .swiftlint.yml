@@ -6,6 +6,7 @@ disabled_rules: # rule identifiers to exclude from running
   - function_parameter_count 
   - todo
   - force_cast
+  - force_try
 included: # paths to include during linting. `--path` is ignored if present.
   - Stage1st
   - Vendors
