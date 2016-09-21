@@ -55,7 +55,7 @@ class CacheDatabaseManager: NSObject {
             result = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor]
         }
         self.backgroundWriteConnection.asyncReadWrite { (transaction) in
-            if let originMetadata = transaction.metadata(forKey: key, inCollection: collectionPageFloors) as? [String: Date] {
+            if let originMetadata = transaction.metadata(forKey: key, inCollection: collectionPageFloors) as? [String: Any] {
                 var mutableOriginMetadata = originMetadata
                 mutableOriginMetadata[metadataLastUsed] = Date()
                 transaction.replaceMetadata(mutableOriginMetadata, forKey: key, inCollection: collectionPageFloors)
@@ -63,7 +63,7 @@ class CacheDatabaseManager: NSObject {
                 transaction.replaceMetadata([metadataLastUsed: Date()], forKey: key, inCollection: collectionPageFloors)
             }
         }
-        return result;
+        return result
     }
 
     func hasFloors(in topicID: Int, page: Int) -> Bool {
@@ -85,13 +85,13 @@ class CacheDatabaseManager: NSObject {
 
 extension CacheDatabaseManager {
     func floor(ID: Int) -> Floor? {
-        var floor: Floor? = nil;
+        var floor: Floor? = nil
         self.readConnection.read { (transaction) in
             guard
                 let key = transaction.object(forKey: "\(ID)", inCollection: collectionFloorIDs) as? String,
                 let floors = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor]  else {
                 DDLogWarn("Failed to find floor(ID: \(ID)) in cache database due to index or cache not exist.")
-                return;
+                return
             }
             floor = floors.first(where: { (aFloor) -> Bool in
                 return aFloor.ID == ID
@@ -113,9 +113,46 @@ extension CacheDatabaseManager {
         }
     }
 
+    /// Note: this operation will leave tings in collectionFloors (i.e. the index) uncleaned. make sure to clean them.
     func removeFloors(lastUsedBefore date: Date) {
         self.backgroundWriteConnection.readWrite { (transaction) in
-            transaction.enumerateKeysAndMetadata(inCollection: collectionPageFloors, using: <#T##(String, Any?, UnsafeMutablePointer<ObjCBool>) -> Void#>)
+            var keysToRemove = [String]()
+            transaction.enumerateKeysAndMetadata(inCollection: collectionPageFloors, using: { (key, metadata, _) in
+                guard
+                    let metadata = metadata as? [String: Any],
+                    let lastUsedDate = metadata[metadataLastUsed] as? Date else {
+                    DDLogWarn("key\(key) do not have valid metadata. skipped.")
+                    return
+                }
+
+                if date.timeIntervalSince(lastUsedDate) > 0 {
+                    keysToRemove.append(key)
+                }
+            })
+
+            DDLogInfo("Keys to remove from floor cache: \(keysToRemove)")
+            for key in keysToRemove {
+                transaction.removeObject(forKey: key, inCollection: collectionPageFloors)
+            }
+        }
+    }
+
+    func cleanInvalidFloorsID() {
+        self.backgroundWriteConnection.readWrite { (transaction) in
+            var floorIDsToRemove = [String]()
+            transaction.enumerateKeysAndObjects(inCollection: collectionFloorIDs, using: { (floorID, key, _) in
+                guard let keyString = key as? String else {
+                    DDLogWarn("floorID \(floorID) index to \(key) which is not a string key as expected.")
+                    return
+                }
+                if !transaction.hasObject(forKey: keyString, inCollection: collectionPageFloors) {
+                    floorIDsToRemove.append(floorID)
+                }
+            })
+
+            for floorID in floorIDsToRemove {
+                transaction.removeObject(forKey: floorID, inCollection: collectionFloorIDs)
+            }
         }
     }
 }
