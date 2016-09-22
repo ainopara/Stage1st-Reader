@@ -9,7 +9,7 @@ target "Stage1st" do
     pod 'Kingfisher'
 
     # Model
-    pod 'JASON', :git => 'https://github.com/delba/JASON.git'
+    pod 'JASON'
 
     # UI
     pod 'ActionSheetPicker-3.0'
@@ -18,19 +18,17 @@ target "Stage1st" do
     pod 'Masonry'
     pod 'SnapKit'
 
-#    pod 'pop'
-
     pod 'DTCoreText'
     pod 'YYKeyboardManager'
-    pod 'TextAttributes', :git => 'https://github.com/delba/TextAttributes.git', :branch => 'swift-3.0'
+    pod 'TextAttributes'
 
     # Database
     pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
 
     # Debug
-    pod 'CocoaLumberjack', :git => 'https://github.com/ffried/CocoaLumberjack.git', :branch => 'swift3.0'
-    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/ffried/CocoaLumberjack.git', :branch => 'swift3.0'
+    pod 'CocoaLumberjack'
+    pod 'CocoaLumberjack/Swift'
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reachability'

@@ -85,7 +85,7 @@ final class UserViewController: UIViewController {
             case .success(let user):
                 strongSelf.usernameLabel.text = user.name
                 if let avatarURL = user.avatarURL {
-                    strongSelf.avatarView.kf_setImage(with: ImageResource(downloadURL: avatarURL))
+                    strongSelf.avatarView.kf.setImage(with: ImageResource(downloadURL: avatarURL))
                 }
                 strongSelf.customStatusLabel.text = user.customStatus
                 strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()

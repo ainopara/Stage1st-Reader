@@ -76,7 +76,7 @@ final class QuoteFloorCell: UITableViewCell {
 
     func configure(_ presenting: FloorPresenting) {
         if let avatarURL = presenting.avatarURL {
-            avatarView.kf_setImage(with: ImageResource(downloadURL: avatarURL))
+            avatarView.kf.setImage(with: ImageResource(downloadURL: avatarURL))
         }
         authorLabel.attributedText = presenting.author
         dateTimeLabel.attributedText = presenting.dateTime

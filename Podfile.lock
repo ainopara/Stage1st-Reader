@@ -27,7 +27,7 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.0.0):
     - CocoaLumberjack/Extensions
-  - Crashlytics (3.8.1):
+  - Crashlytics (3.8.2):
     - Fabric (~> 1.6.3)
   - DTCoreText (1.6.17):
     - DTFoundation/Core (~> 1.7.5)
@@ -50,18 +50,18 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - GYHttpMock (1.0.1)
-  - JASON (2.2.1)
+  - JASON (3.0)
   - JTSImageViewController (1.5)
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (3.0.1)
+  - Kingfisher (3.1.0)
   - KissXML (5.1.2)
   - Masonry (1.0.2)
   - Reachability (3.2)
   - Reveal-SDK (2)
-  - SnapKit (3.0.0)
-  - TextAttributes (0.3.1)
+  - SnapKit (3.0.1)
+  - TextAttributes (1.0)
   - YapDatabase (2.9.2):
     - YapDatabase/Standard (= 2.9.2)
   - YapDatabase/Standard (2.9.2):
@@ -118,8 +118,8 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
-  - CocoaLumberjack (from `https://github.com/ffried/CocoaLumberjack.git`, branch `swift3.0`)
-  - CocoaLumberjack/Swift (from `https://github.com/ffried/CocoaLumberjack.git`, branch `swift3.0`)
+  - CocoaLumberjack
+  - CocoaLumberjack/Swift
   - Crashlytics
   - DTCoreText
   - Fabric
@@ -135,33 +135,24 @@ DEPENDENCIES:
   - Reachability
   - Reveal-SDK
   - SnapKit
-  - TextAttributes (from `https://github.com/delba/TextAttributes.git`, branch `swift-3.0`)
+  - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
-  CocoaLumberjack:
-    :branch: swift3.0
-    :git: https://github.com/ffried/CocoaLumberjack.git
   JASON:
     :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  TextAttributes:
-    :branch: swift-3.0
-    :git: https://github.com/delba/TextAttributes.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
-  CocoaLumberjack:
-    :commit: bdfc2151e2468517e613d9e8b87d69dc7c569f97
-    :git: https://github.com/ffried/CocoaLumberjack.git
   JASON:
-    :commit: 88d5b5de70f6284375f58027acc18a7b9b5d6ce4
+    :commit: 8d742f5a8199fa97d45dc87ea9cfca860911df3f
     :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
@@ -169,9 +160,6 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
-  TextAttributes:
-    :commit: 128ec46902dddb3cf44c1512541d7a4a181806d2
-    :git: https://github.com/delba/TextAttributes.git
   YapDatabase:
     :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
@@ -182,26 +170,26 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: fef59f00388f267e52d9b432aa5d93dc97190f14
   CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
-  Crashlytics: 4391d8df0b125345e9f209c5db6e7f40a6a8435d
+  Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
   DTCoreText: 3ea8bba23dd2141ba18adb227a7dd33a822df1c4
   DTFoundation: 3b6b1b817d2a7fb02e7eaf2596c922a68145bd43
   Fabric: 5755268d0171435ab167e3d0878a28a777deaf10
   FBSnapshotTestCase: 918c55861356ee83aee7843d759f55a18ff6982b
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
-  JASON: 2fdba956dfbf8663369b81a8176e6fcb225ebf10
+  JASON: cf4d762e61428a20db8eaef2acb6a569a10c1801
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: d5a491b45ea453d90a31bd2c0831d5243e73a73f
+  Kingfisher: 7779f22e977393e9533a89a9685beb8f679d3767
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
-  SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
-  TextAttributes: b43233c6356a72f1c1e483d5bda694535432a4be
+  SnapKit: f818b8326d45b4e1c777d0ab27b5c0a3624bfdeb
+  TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 0dad02278709ca305f9ca5e1b4beba219cbca431
+PODFILE CHECKSUM: 6338e05b026fc7e0bddce1a9b0782e9f434d4763
 
 COCOAPODS: 1.1.0.rc.2
