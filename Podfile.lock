@@ -126,7 +126,7 @@ DEPENDENCIES:
   - FBSnapshotTestCase
   - FMDB
   - GYHttpMock
-  - JASON (from `https://github.com/delba/JASON.git`)
+  - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
   - Kingfisher
@@ -140,8 +140,6 @@ DEPENDENCIES:
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
-  JASON:
-    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -151,9 +149,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
-  JASON:
-    :commit: 8d742f5a8199fa97d45dc87ea9cfca860911df3f
-    :git: https://github.com/delba/JASON.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -190,6 +185,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 6338e05b026fc7e0bddce1a9b0782e9f434d4763
+PODFILE CHECKSUM: 9d1d10fab5fe7d3d637b620129483c7e0b4398ff
 
 COCOAPODS: 1.1.0.rc.2

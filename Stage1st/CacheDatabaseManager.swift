@@ -13,18 +13,18 @@ private let collectionPageFloors = "topicFloors"
 private let collectionFloorIDs = "floorIDs"
 private let collectionMahjongFace = "mahjongFace"
 private let metadataLastUsed = "lastUsed"
+private let keyHistory = "history"
 
 class CacheDatabaseManager: NSObject {
-    static let shared = CacheDatabaseManager()
-
     let cacheDatabase: YapDatabase
     let readConnection: YapDatabaseConnection
     let backgroundWriteConnection: YapDatabaseConnection
 
-    override init() {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let path = documentsDirectory.appendingPathComponent("Cache.sqlite")
-        self.cacheDatabase = YapDatabase(path: path.absoluteString)
+//    let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+//    let path = documentsDirectory.appendingPathComponent("Cache.sqlite")
+
+    init(path: String) {
+        self.cacheDatabase = YapDatabase(path: path)
         self.readConnection = self.cacheDatabase.newConnection()
         self.backgroundWriteConnection = self.cacheDatabase.newConnection()
 
@@ -70,7 +70,9 @@ class CacheDatabaseManager: NSObject {
         let key = self._key(for: topicID, page: page)
         var hasFloors: Bool = false
         self.readConnection.read { (transaction) in
-            hasFloors = transaction.hasObject(forKey: key, inCollection: collectionPageFloors)
+            if let _ = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] {
+                hasFloors = true
+            }
         }
         return hasFloors
     }
@@ -157,14 +159,25 @@ extension CacheDatabaseManager {
     }
 }
 
+struct MahjongFaceItem {
+
+}
+
 // MARK: - Mahjong Face History
 extension CacheDatabaseManager {
-    func set(mahjongFaceHistory: [[Any]]) {
+    func set(mahjongFaceHistory: [MahjongFaceItem]) {
         // Array<(String, String, URL)>
+        self.backgroundWriteConnection.asyncReadWrite { (transaction) in
+            transaction.setObject(mahjongFaceHistory, forKey: keyHistory, inCollection: collectionMahjongFace)
+        }
     }
 
-    func mahjongFaceHistory() -> [[Any]]? {
-        return nil
+    func mahjongFaceHistory() -> [MahjongFaceItem]? {
+        var mahjongFaceHistory: [MahjongFaceItem]? = nil
+        self.readConnection.read { (transaction) in
+            mahjongFaceHistory = transaction.object(forKey: keyHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
+        }
+        return mahjongFaceHistory
     }
 }
 
