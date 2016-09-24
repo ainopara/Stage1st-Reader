@@ -48,7 +48,7 @@ final class QuoteFloorCell: UITableViewCell {
             make.leading.equalTo(authorLabel.snp.trailing).offset(10.0)
         }
 
-        moreActionButton.setTitle("更多", for: UIControlState())
+        moreActionButton.setTitle("更多", for: .normal)
         contentView.addSubview(moreActionButton)
         moreActionButton.snp.makeConstraints { (make) in
             make.centerY.equalTo(self.avatarView.snp.centerY)

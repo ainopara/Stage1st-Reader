@@ -57,7 +57,7 @@ private class UserInfoInputView: UIView {
             make.top.equalTo(self.usernameField.snp.bottom).offset(12.0)
         }
 
-        onepasswordButton.setImage(UIImage(named: "OnePasswordButton"), for: UIControlState())
+        onepasswordButton.setImage(UIImage(named: "OnePasswordButton"), for: .normal)
         onepasswordButton.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
 
         let buttonContainer = UIView(frame: CGRect.zero)
@@ -185,9 +185,13 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.answerField.alpha = 0.0
 
                 userInfoInputView.passwordField.returnKeyType = .go
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.makeConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                    make.width.centerX.equalTo(self.userInfoInputView.usernameField)
+                    make.height.equalTo(34.0)
+                    make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
+
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.questionSelectButton.snp.bottom).offset(12.0).constraint
                 }
             case .notLoginWithAnswerField:
@@ -197,9 +201,13 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.answerField.alpha = 1.0
 
                 userInfoInputView.passwordField.returnKeyType = .next
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: UIControlState())
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.updateConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                    make.width.centerX.equalTo(self.userInfoInputView.usernameField)
+                    make.height.equalTo(34.0)
+                    make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
+
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.answerField.snp.bottom).offset(12.0).constraint
                 }
             case .login:
@@ -208,9 +216,13 @@ final class S1LoginViewController: UIViewController {
                 userInfoInputView.questionSelectButton.alpha = 0.0
                 userInfoInputView.answerField.alpha = 0.0
 
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: UIControlState())
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.updateConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                    make.width.centerX.equalTo(self.userInfoInputView.usernameField)
+                    make.height.equalTo(34.0)
+                    make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
+
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.usernameField.snp.bottom).offset(12.0).constraint
                 }
             }
@@ -260,7 +272,7 @@ final class S1LoginViewController: UIViewController {
         userInfoInputView.passwordField.delegate = self
         userInfoInputView.passwordField.placeholder = NSLocalizedString("S1LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(S1LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
-        userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: UIControlState())
+        userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: .normal)
         userInfoInputView.questionSelectButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
         userInfoInputView.questionSelectButton.addTarget(self, action: #selector(S1LoginViewController.selectSecureQuestion(_:)), for: .touchUpInside)
         userInfoInputView.answerField.delegate = self
@@ -289,7 +301,7 @@ final class S1LoginViewController: UIViewController {
 
         seccodeInputView.seccodeField.delegate = self
         seccodeInputView.seccodeField.backgroundColor = UIColor.white
-        seccodeInputView.seccodeSubmitButton.setTitle("提交", for: UIControlState())
+        seccodeInputView.seccodeSubmitButton.setTitle("提交", for: .normal)
         seccodeInputView.seccodeSubmitButton.backgroundColor = APColorManager.sharedInstance.colorForKey("login.button")
         seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(S1LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
 
@@ -396,7 +408,7 @@ extension S1LoginViewController {
         self.view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
         let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
-                button.setTitle(selectedValue as? String ?? "??", for: UIControlState())
+                button.setTitle(selectedValue as? String ?? "??", for: .normal)
                 if selectedIndex == 0 {
                     self.state = .notLogin
                 } else {

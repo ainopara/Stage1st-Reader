@@ -27,13 +27,13 @@ class ReplyAccessoryView: UIView {
 
         //Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
-        faceButton.setImage(UIImage(named: "MahjongFaceButton"), for: UIControlState())
+        faceButton.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
         faceButton.addTarget(self, action: #selector(ReplyAccessoryView.toggleFace(_:)), for: .touchUpInside)
         let faceItem = UIBarButtonItem(customView: faceButton)
 
         //Setup spoilerButton
         spoilerButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
-        spoilerButton.setTitle("H", for: UIControlState())
+        spoilerButton.setTitle("H", for: .normal)
         spoilerButton.addTarget(self, action: #selector(ReplyAccessoryView.insertSpoilerMark(_:)), for: .touchUpInside)
         let spoilerItem = UIBarButtonItem(customView: spoilerButton)
 
@@ -76,13 +76,13 @@ extension ReplyAccessoryView {
                 newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray ?? NSMutableArray()
                 mahjongFaceView = newMahjongfaceView
             }
-            button.setImage(UIImage(named: "KeyboardButton"), for: UIControlState())
+            button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
             if let mahjongFaceView = mahjongFaceView {
                 composeViewController.inputView = mahjongFaceView
                 composeViewController.reloadInputViews()
             }
         } else {
-            button.setImage(UIImage(named: "MahjongFaceButton"), for: UIControlState())
+            button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
             composeViewController.inputView = nil
             composeViewController.reloadInputViews()
         }

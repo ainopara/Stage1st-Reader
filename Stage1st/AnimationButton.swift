@@ -167,7 +167,7 @@ class AnimationButton: UIButton {
     }
 
     fileprivate func setStaticImage(_ image: UIImage?) {
-        self.setImage(image?.s1_tintWithColor(self.tintColor), for: UIControlState())
+        self.setImage(image?.s1_tintWithColor(self.tintColor), for: .normal)
         self.setImage(image?.s1_tintWithColor(self.tintColor.withAlphaComponent(self.hightlightAlpha)), for: .highlighted)
     }
 }

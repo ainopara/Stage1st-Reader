@@ -80,6 +80,7 @@ extension S1AppDelegate {
             userDefaults.s1_setObjectIfNotExist(object: "17px", key: "FontSize")
         }
 
+        // TODO: Use register domain.
         userDefaults.s1_setObjectIfNotExist(object: "http://bbs.saraba1st.com/2b/", key: "BaseURL")
         userDefaults.s1_setObjectIfNotExist(object: NSNumber(value: -1), key: "HistoryLimit")
         userDefaults.s1_setObjectIfNotExist(object: true, key: "Display")
