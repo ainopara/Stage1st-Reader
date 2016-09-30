@@ -13,19 +13,19 @@
 
 @implementation S1MahjongFacePageView
 
--(instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self != nil) {
         _buttons = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
--(void)setMahjongFaceList:(NSArray *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns {
+- (void)setMahjongFaceList:(NSArray *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns {
     NSInteger rowIndex = 0;
     NSInteger columnIndex = 0;
     NSInteger buttonIndex = 0;
-    CGFloat heightOffset = (self.frame.size.height - rows*50.0)/2;
+    CGFloat heightOffset = (self.frame.size.height - rows * 50.0) / 2;
     for(S1MahjongFaceButton *button in self.buttons) {
         buttonIndex = rowIndex * columns + columnIndex;
         if (buttonIndex < [list count] && buttonIndex < rows * columns) {
@@ -63,7 +63,7 @@
         }
         buttonIndex = rowIndex * columns + columnIndex;
     }
-    if (!self.backspaceButton) {
+    if (self.backspaceButton == nil) {
         self.backspaceButton = [[S1MahjongFaceButton alloc] init];
         [self.backspaceButton setImage:[[UIImage imageNamed:@"Backspace"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
         self.backspaceButton.adjustsImageWhenHighlighted = NO;
@@ -71,9 +71,8 @@
         [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backspaceButton];
     }
+
     [self.backspaceButton setFrame:CGRectMake((columns - 1) * 50 + 10,(rows - 1) * 50 + heightOffset, 50, 50)];
-    
-    
 }
 
 - (NSMutableURLRequest *)requestForURL:(NSURL *)URL {
@@ -106,14 +105,17 @@
         NSLog(@"Unexpected failure when request mahjong face image:%@", error);
     }];
 }
+
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button {
     if (self.containerView) {
         [self.containerView mahjongFacePressed:button];
     }
 }
+
 - (void)backspacePressed:(UIButton *)button {
     if (self.containerView) {
         [self.containerView backspacePressed:button];
     }
 }
+
 @end

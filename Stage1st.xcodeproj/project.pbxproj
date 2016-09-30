@@ -45,7 +45,6 @@
 		8681E6BF1CEF61ED004269D3 /* Stage1stTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */; };
 		868799211CE629BE00F5C75C /* JASON+Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799201CE629BE00F5C75C /* JASON+Alamofire.swift */; };
 		868799231CE629D700F5C75C /* S1LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799221CE629D700F5C75C /* S1LoginViewController.swift */; };
-		868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */; };
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
 		8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8693431919E5A074008F7A58 /* S1ContentViewModel.m */; };
 		8694BCD61CEC42C200756C4A /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD51CEC42C200756C4A /* WebViewController.swift */; };
@@ -201,8 +200,6 @@
 		8681E6C01CEF61ED004269D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		868799201CE629BE00F5C75C /* JASON+Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "JASON+Alamofire.swift"; path = "Stage1st/JASON+Alamofire.swift"; sourceTree = "<group>"; };
 		868799221CE629D700F5C75C /* S1LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1LoginViewController.swift; path = Stage1st/S1LoginViewController.swift; sourceTree = "<group>"; };
-		868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1CacheDatabaseManager.h; path = Stage1st/S1CacheDatabaseManager.h; sourceTree = "<group>"; };
-		868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1CacheDatabaseManager.m; path = Stage1st/S1CacheDatabaseManager.m; sourceTree = "<group>"; };
 		868A98041CA7F22500498C38 /* AnimationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnimationButton.swift; path = Stage1st/AnimationButton.swift; sourceTree = "<group>"; };
 		8693431819E5A074008F7A58 /* S1ContentViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ContentViewModel.h; path = Stage1st/S1ContentViewModel.h; sourceTree = "<group>"; };
 		8693431919E5A074008F7A58 /* S1ContentViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1ContentViewModel.m; path = Stage1st/S1ContentViewModel.m; sourceTree = "<group>"; };
@@ -508,19 +505,9 @@
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
 				8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */,
-				86A766CE1BA3EE13009BAD0D /* FloorCache */,
 				8605735D1B762C6100C70781 /* Sqlite3 */,
 			);
 			name = Database;
-			sourceTree = "<group>";
-		};
-		86A766CE1BA3EE13009BAD0D /* FloorCache */ = {
-			isa = PBXGroup;
-			children = (
-				868A6FD81B7B900C0063E37D /* S1CacheDatabaseManager.h */,
-				868A6FD91B7B900C0063E37D /* S1CacheDatabaseManager.m */,
-			);
-			name = FloorCache;
 			sourceTree = "<group>";
 		};
 		86D20FE31CA6B64A003F2691 /* Logger */ = {
@@ -1043,7 +1030,6 @@
 				86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */,
 				86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
-				868A6FDA1B7B900C0063E37D /* S1CacheDatabaseManager.m in Sources */,
 				868799211CE629BE00F5C75C /* JASON+Alamofire.swift in Sources */,
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,

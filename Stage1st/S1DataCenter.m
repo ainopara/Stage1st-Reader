@@ -18,6 +18,7 @@
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) id<S1Backend> tracer;
+@property (strong, nonatomic) CacheDatabaseManager *cacheDatabaseManager;
 @property (strong, nonatomic) DiscuzAPIManager *apiManager;
 
 @property (strong, nonatomic) NSString *formhash;
@@ -38,6 +39,10 @@
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
+
+    NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:true error:NULL];
+    NSString *cacheDatabasePath = [[documentsDirectoryURL URLByAppendingPathComponent:@"Cache.sqlite"] absoluteString];
+    _cacheDatabaseManager = [[CacheDatabaseManager alloc] initWithPath:cacheDatabasePath];
 
     return self;
 }
@@ -137,7 +142,7 @@
 #pragma mark - Network (Content Cache)
 
 - (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    return [[S1CacheDatabaseManager sharedInstance] hasCacheForTopicID:topic.topicID withPage:page];
+    return [self.cacheDatabaseManager hasFloorsIn:[topic.topicID integerValue] page:[page integerValue]];
 }
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
@@ -166,9 +171,14 @@
 
         //update floor cache
         if (floorList && [floorList count] > 0) {
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+            __weak __typeof__(self) weakSelf = self;
+            [self.cacheDatabaseManager setWithFloors:floorList topicID:[topic.topicID integerValue] page:[page integerValue] completion:^{
+                __strong __typeof__(self) strongSelf = weakSelf;
+                if (strongSelf == nil) {
+                    return;
+                }
                 DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
-                [self callFinishHandlerIfExistForKey:key withResult:floorList];
+                [strongSelf callFinishHandlerIfExistForKey:key withResult:floorList];
             }];
         } else {
             [self.cacheFinishHandlers setValue:nil forKey:key];
@@ -181,7 +191,7 @@
 }
 
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    [[S1CacheDatabaseManager sharedInstance] removeCacheForTopicID:topic.topicID withPage:page];
+    [self.cacheDatabaseManager removeFloorsIn:[topic.topicID integerValue] page:[page integerValue]];
 }
 
 - (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
@@ -199,7 +209,7 @@
 }
 
 - (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
-    return [[S1CacheDatabaseManager sharedInstance] findFloorByID:floorID];
+    return [self.cacheDatabaseManager floorWithID:[floorID integerValue]];
 }
 
 #pragma mark - Network (Content)
@@ -207,7 +217,7 @@
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<Floor *> *, BOOL))success failure:(void (^)(NSError *))failure {
     NSParameterAssert(![topic isImmutable]);
     // Use Cache Result If Exist
-    NSArray *floorList = [[S1CacheDatabaseManager sharedInstance] cacheValueForTopicID:topic.topicID withPage:page];
+    NSArray *floorList = [self.cacheDatabaseManager floorsIn:[topic.topicID integerValue] page:[page integerValue]];
     if (floorList && [floorList count] > 0) {
         success(floorList, YES);
         return;
@@ -236,7 +246,7 @@
 
         //update floor cache
         if (floorList && [floorList count] > 0) {
-            [[S1CacheDatabaseManager sharedInstance] setFloorArray:floorList inTopicID:topic.topicID ofPage:page finishBlock:^{
+            [self.cacheDatabaseManager setWithFloors:floorList topicID:[topic.topicID integerValue] page:[page integerValue] completion:^{
                 success(floorList, NO);
             }];
         } else {
@@ -296,7 +306,6 @@
     [S1NetworkManager cancelRequest];
 }
 
-
 #pragma mark - Database
 
 - (void)hasViewed:(S1Topic *)topic {
@@ -337,7 +346,8 @@
 #pragma mark - Cleaning
 
 - (void)cleaning {
-    [[S1CacheDatabaseManager sharedInstance] removeCacheLastUsedBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 3600]];
+    [self.cacheDatabaseManager removeFloorsWithLastUsedBefore:[NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 3600]];
+    [self.cacheDatabaseManager cleanInvalidFloorsID];
     NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
     if (duration < 0) {
         return;
@@ -348,11 +358,11 @@
 #pragma mark - Mahjongface History
 
 - (NSMutableArray *)mahjongFaceHistoryArray {
-    return [[S1CacheDatabaseManager sharedInstance] mahjongFaceHistory];
+    return [self.cacheDatabaseManager mahjongFaceHistory];
 }
 
 - (void)setMahjongFaceHistoryArray:(NSMutableArray *)mahjongFaceHistoryArray {
-    [[S1CacheDatabaseManager sharedInstance] saveMahjongFaceHistory:mahjongFaceHistoryArray];
+    [self.cacheDatabaseManager saveMahjongFaceHistory:mahjongFaceHistoryArray];
 }
 
 #pragma mark - Helper

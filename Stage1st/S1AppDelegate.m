@@ -96,11 +96,6 @@ S1AppDelegate *MyAppDelegate;
     // Migrate to v3.8 and later
     [self migrate];
     
-    // Preload floor cache database
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [S1CacheDatabaseManager sharedInstance];
-    });
-
     if ([userDefaults boolForKey:@"EnableSync"]) {
         // Register for push notifications
         UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge + UIUserNotificationTypeSound + UIUserNotificationTypeAlert categories:nil];

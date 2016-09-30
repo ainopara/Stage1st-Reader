@@ -34,18 +34,19 @@
     self.shouldIngnoreScrollEvent = NO;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.background"];
-    self.keyTranslation = @{@"history":@"历史",
-                            @"face":@"麻将脸",
-                            @"dym":@"大姨妈",
-                            @"goose":@"鹅",
-                            @"zdl":@"战斗力",
-                            @"nq":@"扭曲",
-                            @"normal":@"正常向",
-                            @"flash":@"闪光弹",
-                            @"animal":@"动物",
-                            @"carton":@"动漫",
-                            @"bundam":@"雀高达"
-                            };
+    self.keyTranslation = @{
+        @"history":@"历史",
+        @"face":@"麻将脸",
+        @"dym":@"大姨妈",
+        @"goose":@"鹅",
+        @"zdl":@"战斗力",
+        @"nq":@"扭曲",
+        @"normal":@"正常向",
+        @"flash":@"闪光弹",
+        @"animal":@"动物",
+        @"carton":@"动漫",
+        @"bundam":@"雀高达"
+    };
     self.pageViews = [[NSMutableArray alloc] init];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"MahjongMap" ofType:@"plist"];
     self.mahjongMap = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -73,7 +74,6 @@
     }];
     // init page control
     self.pageControl = [[UIPageControl alloc] init];
-    //self.pageControl.hidesForSinglePage = YES;
     self.pageControl.currentPage = 0;
     self.pageControl.pageIndicatorTintColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.indicatortint"];
     self.pageControl.currentPageIndicatorTintColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.currentpage"];
@@ -104,13 +104,13 @@
     return self;
 }
 
-#pragma mark Event
+#pragma mark - Actions
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button
 {
     DDLogDebug(@"%@", button.mahjongFaceKey);
     
-    if (self.delegate) {
+    if (self.delegate != nil) {
         S1MahjongFaceTextAttachment *mahjongFaceTextAttachment = [S1MahjongFaceTextAttachment new];
         
         //Set tag and image
@@ -124,7 +124,10 @@
         mahjongFaceTextAttachment.image = [UIImage imageWithData:imageData];
         [self.delegate mahjongFaceViewController:self didFinishWithResult:mahjongFaceTextAttachment];
     }
+
     //Update history
+
+    // Step 1: Remove the history if it already in history list
     NSArray *thePackage = nil;
     for (NSArray *package in self.historyArray) {
         if ([[package firstObject] isEqualToString:button.mahjongFaceKey]) {
@@ -133,6 +136,8 @@
             break;
         }
     }
+
+    // Step 2: Insert the package to history array
     if ([self.currentCategory isEqualToString:@"history"]) {
         if (thePackage != nil) {
             [self.historyArray insertObject:thePackage atIndex:0];
@@ -140,6 +145,8 @@
     } else {
         [self.historyArray insertObject:@[button.mahjongFaceKey, button.category, [self URLForKey:button.mahjongFaceKey inCategory:button.category]] atIndex:0];
     }
+
+    // Step 3: Remove overflow if history count exceed limit
     if (self.historyCountLimit != 0 && [self.historyArray count] > self.historyCountLimit) {
         NSMutableArray *newHistoryArray = [NSMutableArray arrayWithCapacity:self.historyCountLimit];
         for (NSUInteger i = 0; i < self.historyCountLimit; i++) {
@@ -148,6 +155,7 @@
         self.historyArray = newHistoryArray;
     }
 }
+
 - (void)backspacePressed:(UIButton *)button {
     DDLogDebug(@"backspace");
     if (self.delegate) {
@@ -161,7 +169,7 @@
     [self setContentOffsetForGlobalIndex:[self globalIndexForCategory:self.currentCategory andPage:self.pageControl.currentPage]];
 }
 
-#pragma mark Delegate
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.shouldIngnoreScrollEvent) {
@@ -190,6 +198,8 @@
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:newPageNumber]];
 }
 
+#pragma mark - S1TabBarDelegate
+
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     DDLogDebug(@"%@",key);
     self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
@@ -197,9 +207,11 @@
     [self setNeedsLayout];
 }
 
-#pragma mark Layout
+#pragma mark - Layout
+
 - (void)layoutSubviews {
     [super layoutSubviews];
+
     DDLogDebug(@"layout subviews");
     NSInteger totalPageCount = [self pageCountForCategory:self.currentCategory];
     NSInteger currentPage = (self.pageControl.currentPage > totalPageCount) ? totalPageCount : self.pageControl.currentPage;
@@ -218,7 +230,7 @@
     [self setPage:[self globalIndexForCategory:self.currentCategory andPage:currentPage]];
 }
 
-#pragma mark Helper
+#pragma mark - Helper
 
 - (S1MahjongFacePageView *)usableMahjongFacePageViewForIndex:(NSUInteger)index {
     for (S1MahjongFacePageView *page in self.pageViews) {
@@ -264,6 +276,7 @@
     NSUInteger startingIndex = localIndex * (rows * columns - 1);
     NSUInteger endingIndex = (localIndex + 1) * (rows * columns - 1);
     NSMutableArray *mahjongFacePackages = [[NSMutableArray alloc] initWithCapacity:rows * columns];
+
     if ([categoryForThisPage isEqualToString:@"history"]) {
         for (NSUInteger index = startingIndex; index < endingIndex; index++) {
             if (index >= [self.historyArray count]) {
@@ -282,6 +295,7 @@
             [mahjongFacePackages addObject:package];
         }
     }
+
     pageView.frame = CGRectMake(globalIndex * CGRectGetWidth(scrollView.bounds), 0, CGRectGetWidth(scrollView.bounds), CGRectGetHeight(scrollView.bounds));
     [pageView setMahjongFaceList:mahjongFacePackages withRows:rows andColumns:columns];
 }
@@ -296,7 +310,8 @@
 - (void)setContentOffsetForGlobalIndex:(NSUInteger)index {
     [self.scrollView setContentOffset:CGPointMake(index * CGRectGetWidth(self.scrollView.bounds), 0)];
 }
-- (NSURL *)URLForKey:(NSString *)key inCategory:(NSString *)category{
+
+- (NSURL *)URLForKey:(NSString *)key inCategory:(NSString *)category {
     NSString *prefix = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"static/image/smiley/"];
     NSString *mahjongURLString = [prefix stringByAppendingString:[[self.mahjongMap valueForKey:category] valueForKey:key]];
     return [NSURL URLWithString:mahjongURLString];

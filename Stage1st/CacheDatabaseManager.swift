@@ -147,7 +147,9 @@ extension CacheDatabaseManager {
                     DDLogWarn("floorID \(floorID) index to \(key) which is not a string key as expected.")
                     return
                 }
-                if !transaction.hasObject(forKey: keyString, inCollection: collectionPageFloors) {
+                if let _ = transaction.object(forKey: keyString, inCollection: collectionPageFloors) as? [Floor] {
+                    // Nothing to do
+                } else {
                     floorIDsToRemove.append(floorID)
                 }
             })
