@@ -22,8 +22,8 @@
 
 @property (strong, nonatomic) NSString *formhash;
 
-@property (strong, nonatomic) NSMutableDictionary *topicListCache;
-@property (strong, nonatomic) NSMutableDictionary *topicListCachePageNumber;
+@property (strong, nonatomic) NSMutableDictionary<NSString *, NSMutableArray<S1Topic *> *> *topicListCache;
+@property (strong, nonatomic) NSMutableDictionary<NSString *, NSNumber *> *topicListCachePageNumber;
 
 @property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
 
@@ -34,7 +34,7 @@
 -(instancetype)init {
     self = [super init];
     
-    _tracer = [[S1YapDatabaseAdapter alloc] init];
+    _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
     _cacheFinishHandlers = [NSMutableDictionary dictionary];

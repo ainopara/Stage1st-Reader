@@ -15,4 +15,6 @@
 
 @property (nonatomic, strong) DatabaseManager *database;
 
+- (instancetype)initWithDatabase:(DatabaseManager *)database;
+
 @end

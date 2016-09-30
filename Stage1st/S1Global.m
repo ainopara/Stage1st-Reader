@@ -7,7 +7,6 @@
 //
 
 #import "S1Global.h"
-#import "S1CacheDatabaseManager.h"
 
 @implementation S1ColorManager
 

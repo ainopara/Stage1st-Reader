@@ -16,7 +16,7 @@
 
 @implementation S1YapDatabaseAdapter
 
-- (instancetype)initWithDatabase:(YapDatabase *)database {
+- (instancetype)initWithDatabase:(DatabaseManager *)database {
     self = [super init];
     if (self != nil) {
         _database = MyDatabaseManager;
