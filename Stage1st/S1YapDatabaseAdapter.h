@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "S1DataCenter.h"
 
+@class DatabaseManager;
+
 @interface S1YapDatabaseAdapter : NSObject<S1Backend>
+
+@property (nonatomic, strong) DatabaseManager *database;
 
 @end

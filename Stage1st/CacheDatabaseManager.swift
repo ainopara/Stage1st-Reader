@@ -20,9 +20,6 @@ class CacheDatabaseManager: NSObject {
     let readConnection: YapDatabaseConnection
     let backgroundWriteConnection: YapDatabaseConnection
 
-//    let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-//    let path = documentsDirectory.appendingPathComponent("Cache.sqlite")
-
     init(path: String) {
         self.cacheDatabase = YapDatabase(path: path)
         self.readConnection = self.cacheDatabase.newConnection()
@@ -185,7 +182,7 @@ extension CacheDatabaseManager {
 
 // MARK: - Helper
 extension CacheDatabaseManager {
-    func _key(for topicID: Int, page: Int) -> String {
+    fileprivate func _key(for topicID: Int, page: Int) -> String {
         return "\(topicID):\(page)"
     }
 }

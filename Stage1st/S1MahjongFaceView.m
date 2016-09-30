@@ -14,6 +14,7 @@
 #import "Masonry.h"
 
 @interface S1MahjongFaceView () <UIScrollViewDelegate, S1TabBarDelegate>
+
 @property (nonatomic, strong) NSDictionary *mahjongMap;
 @property (nonatomic, strong) NSDictionary *keyTranslation;
 @property (nonatomic, strong) NSArray *mahjongCategoryOrder;
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) S1TabBar *tabBar;
 
 @property (nonatomic, assign) BOOL shouldIngnoreScrollEvent;
+
 @end
 
 #pragma mark -

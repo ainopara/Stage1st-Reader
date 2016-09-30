@@ -13,7 +13,6 @@
 #import "S1Parser.h"
 #import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
-#import "S1CacheDatabaseManager.h"
 
 @interface S1DataCenter ()
 

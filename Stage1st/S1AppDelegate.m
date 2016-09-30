@@ -19,7 +19,6 @@
 #import "DatabaseManager.h"
 #import "CrashlyticsLogger.h"
 #import "DDErrorLevelFormatter.h"
-#import "S1CacheDatabaseManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Reachability/Reachability.h>

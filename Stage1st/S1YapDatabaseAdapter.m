@@ -6,19 +6,28 @@
 //  Copyright (c) 2015 Renaissance. All rights reserved.
 //
 
+#import <YapDatabase/YapDatabase.h>
+
 #import "S1YapDatabaseAdapter.h"
 #import "DatabaseManager.h"
 #import "YapDatabaseQuery.h"
 #import "YapDatabaseFullTextSearchTransaction.h"
 #import "S1Topic.h"
-#import <YapDatabase/YapDatabase.h>
 
 @implementation S1YapDatabaseAdapter
 
-#pragma mark - Backend Protocol
+- (instancetype)initWithDatabase:(YapDatabase *)database {
+    self = [super init];
+    if (self != nil) {
+        _database = MyDatabaseManager;
+    }
+    return self;
+}
+
+#pragma mark - S1Backend
 
 - (void)hasViewed:(S1Topic *)topic {
-    [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.database.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];
         if (tracedTopic == nil) {
             DDLogDebug(@"[Database] Save Topic: \n%@",topic);
@@ -65,7 +74,7 @@
 }
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
-    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+    [self.database.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
         if ([topic.favorite boolValue] != YES) {
             [transaction removeObjectForKey:[topicID stringValue] inCollection:Collection_Topics];
@@ -73,18 +82,17 @@
     }];
 }
 
--(void)removeTopicFromFavorite:(NSNumber *)topicID {
-    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+- (void)removeTopicFromFavorite:(NSNumber *)topicID {
+    [self.database.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         S1Topic *topic = [[transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics] copy];
         topic.favorite = [NSNumber numberWithBool:NO];
         [transaction replaceObject:topic forKey:[topicID stringValue] inCollection:Collection_Topics];
     }];
 }
 
-- (S1Topic *)topicByID:(NSNumber *)topicID
-{
+- (S1Topic *)topicByID:(NSNumber *)topicID {
     __block S1Topic *topic = nil;
-    [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
     }];
     return topic;
@@ -92,7 +100,7 @@
 
 - (NSNumber *)numberOfTopicsInDatabse {
     __block NSUInteger count = 0;
-    [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         count = [transaction numberOfKeysInCollection:Collection_Topics];
     }];
     return @(count);
@@ -100,7 +108,7 @@
 
 - (NSNumber *)numberOfFavoriteTopicsInDatabse {
     __block NSUInteger count = 0;
-    [MyDatabaseManager.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         [[transaction ext:Ext_FullTextSearch_Archive] enumerateKeysMatching:@"favorite:FY title:*" usingBlock:^(NSString *collection, NSString *key, BOOL *stop) {
             count = count + 1;
         }];
@@ -109,7 +117,7 @@
 }
 
 - (void)removeTopicBeforeDate:(NSDate *)date {
-    [MyDatabaseManager.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+    [self.database.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
         __block NSMutableArray *keysToRemove = [[NSMutableArray alloc] init];
         [transaction enumerateKeysAndObjectsInCollection:Collection_Topics usingBlock:^(NSString * _Nonnull key, id  _Nonnull object, BOOL * _Nonnull stop) {
             S1Topic *topic = object;
