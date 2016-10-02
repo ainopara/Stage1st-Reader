@@ -7,6 +7,7 @@
 //
 
 import WebKit
+import SnapKit
 import CocoaLumberjack
 import Crashlytics
 
@@ -31,7 +32,7 @@ class S1ContentViewController: UIViewController {
     var pageButton = UIButton(frame: .zero)
     var favoriteButton = UIButton(frame: .zero)
     lazy var actionBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(actionButtonTapped(for:)))
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
     }()
 
     var titleLabel = UILabel(frame: .zero)
@@ -57,11 +58,149 @@ class S1ContentViewController: UIViewController {
     init(viewModel: S1ContentViewModel) {
         self.viewModel = viewModel
         self.dataCenter = viewModel.dataCenter
+
         super.init(nibName: nil, bundle: nil)
+
+        // Toolbar
+        toolBar.isTranslucent = false
+
+        // Back button
+        backButton.setImage(#imageLiteral(resourceName: "Back"), for: .normal)
+        backButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
+        backButton.imageView?.contentMode = .center
+        backButton.addTarget(self, action: #selector(back(sender:)), for: .touchUpInside)
+        let backLongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(backLongPressed(gestureRecognizer:)))
+        backLongPressGestureRecognizer.minimumPressDuration = 0.5
+        backButton.addGestureRecognizer(backLongPressGestureRecognizer)
+
+        // Forward button
+        let image = _isInLastPage() ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
+        forwardButton.setImage(image, for: .normal)
+        forwardButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
+        forwardButton.imageView?.contentMode = .center
+        forwardButton.addTarget(self, action: #selector(forward(sender:)), for: .touchUpInside)
+        let forwardLongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(forwardLongPressed(gestureRecognizer:)))
+        forwardLongPressGestureRecognizer.minimumPressDuration = 0.5
+        forwardButton.addGestureRecognizer(forwardLongPressGestureRecognizer)
+
+        // Page button
+        pageButton.frame = CGRect(x: 0.0, y: 0.0, width: 80.0, height: 30.0)
+        pageButton.titleLabel?.font = UIFont.systemFont(ofSize: 13.0)
+        pageButton.backgroundColor = .clear
+        pageButton.titleLabel?.textAlignment = .center
+        pageButton.addTarget(self, action: #selector(pickPage(sender:)), for: .touchUpInside)
+        let forceRefreshGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(forceRefreshPressed(gestureRecognizer:)))
+        forceRefreshGestureRecognizer.minimumPressDuration = 0.5
+        pageButton.addGestureRecognizer(forceRefreshGestureRecognizer)
+
+        // WebView
+        webView.navigationDelegate = self
+        webView.scrollView.backgroundColor = .clear
+        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
+        }
+        webView.isOpaque = false
+
+        // Pull to action
+        pullToActionController.addConfiguration(withName: "top", baseLine: .top, beginPosition: 0.0, endPosition: Double(topOffset))
+        pullToActionController.addConfiguration(withName: "bottom", baseLine: .bottom, beginPosition: 0.0, endPosition: Double(bottomOffset))
+        pullToActionController.delegate = self
+
+        // Title label
+        titleLabel.numberOfLines = 0
+        titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.textAlignment = .center
+
+        if let title = self.viewModel.topic.title, title != "" {
+            titleLabel.text = title
+        } else {
+            titleLabel.text = "\(self.viewModel.topic.topicID) 载入中..."
+        }
+
+        // Notification
+        NotificationCenter.default.addObserver(self, selector: #selector(S1ContentViewController.saveTopicViewedState(sender:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: "APPaletteDidChangeNotification"), object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        DDLogInfo("[ContentVC] Dealloc Begin")
+        NotificationCenter.default.removeObserver(self)
+        self.pullToActionController.delegate = nil
+        self.webView.navigationDelegate = nil
+        self.webView.scrollView.delegate = nil
+        self.webView.stopLoading()
+        DDLogInfo("[ContentVC] Dealloced")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Color
+        view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
+        topDecorateLine.backgroundColor = APColorManager.sharedInstance.colorForKey("content.decoration.line")
+        bottomDecorateLine.backgroundColor = APColorManager.sharedInstance.colorForKey("content.decoration.line")
+        if let title = self.viewModel.topic.title, title != "" {
+            titleLabel.textColor = APColorManager.sharedInstance.colorForKey("content.titlelabel.text.normal")
+        } else {
+            titleLabel.textColor = APColorManager.sharedInstance.colorForKey("content.titlelabel.text.disable")
+        }
+        pageButton.setTitleColor(APColorManager.sharedInstance.colorForKey(content.pagebutton.text), for: .normal)
+
+
+
+
+        view.addSubview(toolBar)
+        toolBar.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(self.view)
+            make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+        }
+
+        view.addSubview(webView)
+        webView.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(self.view)
+            make.top.equalTo(self.topLayoutGuide.snp.bottom)
+            make.bottom.equalTo(self.toolBar.snp.top)
+        }
+
+        webView.scrollView.addSubview(topDecorateLine)
+        topDecorateLine.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(self.webView.scrollView)
+            make.height.equalTo(1.0)
+        }
+
+        webView.scrollView.addSubview(bottomDecorateLine)
+        bottomDecorateLine.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(self.webView.scrollView)
+            make.height.equalTo(1.0)
+        }
+
+        webView.scrollView.insertSubview(titleLabel, at: 0)
+        titleLabel.snp.makeConstraints { (make) in
+            make.bottom.equalTo(self.webView.scrollView.subviews[1].snp.top)
+            make.centerX.equalTo(self.webView.scrollView.snp.centerX)
+            make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
+        }
+
+        view.addSubview(refreshHUD)
+        refreshHUD.snp.makeConstraints { (make) in
+            make.center.equalTo(self.view)
+            make.width.lessThanOrEqualTo(self.view).priority(250.0)
+        }
+
+        view.addSubview(hintHUD)
+        hintHUD.snp.makeConstraints { (make) in
+            make.centerX.equalTo(self.view.snp.centerX)
+            make.bottom.equalTo(self.toolBar.snp.top).offset(-10.0)
+            make.width.lessThanOrEqualTo(self.view.snp.width)
+        }
+
+        view.layoutIfNeeded()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -93,72 +232,71 @@ class S1ContentViewController: UIViewController {
 //        [self saveTopicViewedState:nil];
         DDLogDebug("[ContentVC] View did disappear end")
     }
-
-    deinit {
-        DDLogInfo("[ContentVC] Dealloc Begin")
-        NotificationCenter.default.removeObserver(self)
-        self.pullToActionController.delegate = nil
-        self.webView.navigationDelegate = nil
-        self.webView.scrollView.delegate = nil
-        self.webView.stopLoading()
-        DDLogInfo("[ContentVC] Dealloced")
-    }
-}
-
-// MARK: - Style
-extension S1ContentViewController {
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
-    }
-}
-
-// MARK: Navigation
-extension S1ContentViewController {
-    func showUserViewController(_ userID: NSNumber) {
-        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.intValue, name: ""))
-        let userViewController = UserViewController(viewModel: viewModel)
-        self.navigationController?.pushViewController(userViewController, animated: true)
-    }
-
-    func showQuoteFloorViewControllerWithTopic(_ topic: S1Topic, floors: [Floor], htmlString: String, centerFloorID: Int) {
-        let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self.viewModel).pageBaseURL())
-        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: viewModel)
-        self.navigationController?.pushViewController(quoteFloorViewController, animated: true)
-    }
-}
-
-// MARK: NSUserActivity
-extension S1ContentViewController {
-    func _setupActivity() {
-        DispatchQueue.global().async { [weak self] in
-            guard let strongSelf = self else { return }
-            let activity = NSUserActivity(activityType: "Stage1st.view-topic")
-            activity.title = strongSelf.viewModel.activityTitle()
-            activity.userInfo = strongSelf.viewModel.activityUserInfo()
-            activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL() as URL?
-
-            if #available(iOS 9.0, *) {
-                activity.isEligibleForSearch = true
-                activity.requiredUserInfoKeys = Set(arrayLiteral: "topicID")
-            }
-
-            DispatchQueue.main.async(execute: {
-                guard let strongSelf = self else { return }
-                strongSelf.userActivity = activity
-            })
-        }
-    }
-
-    open override func updateUserActivityState(_ activity: NSUserActivity) {
-        DDLogDebug("[ContentVC] Hand Off Activity Updated")
-        activity.userInfo = self.viewModel.activityUserInfo()
-        activity.webpageURL = self.viewModel.correspondingWebPageURL() as URL?
-    }
 }
 
 // MARK: - Actions
 extension S1ContentViewController {
-    func actionButtonTapped(for floorID: NSString) {
+    open func back(sender: Any?) {
+        if _isInFirstPage() {
+            _ = self.navigationController?.popViewController(animated: true)
+        } else {
+//            [self _hook_preChangeCurrentPage];
+            self.viewModel.currentPage -= 1
+//            [self fetchContentForCurrentPageWithForceUpdate:NO];
+        }
+    }
+
+    open func forward(sender: Any?) {
+        switch (_isInLastPage(), self.webView.s1_atBottom()) {
+        case (true, false):
+//            [self scrollToBottomAnimated:YES];
+            break
+        case (true, true):
+//            [self forceRefreshCurrentPage];
+            break
+        case (false, _):
+//            [self _hook_preChangeCurrentPage];
+            self.viewModel.currentPage += 1
+//            [self fetchContentForCurrentPageWithForceUpdate:NO];
+            break
+        default:
+            DDLogError("This should never happen, just make swift compiler happy.")
+        }
+    }
+
+    open func backLongPressed(gestureRecognizer: UIGestureRecognizer) {
+        guard
+            gestureRecognizer.state == UIGestureRecognizerState.began,
+            !_isInFirstPage() else {
+            return
+        }
+
+//        self._hook_preChangeCurrentPage()
+        self.viewModel.currentPage = 1
+//        self.fetchContentForCurrentPageWithForceUpdate(false)
+    }
+
+    open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
+        guard
+            gestureRecognizer.state == UIGestureRecognizerState.began,
+            !_isInLastPage() else {
+            return
+        }
+
+//        self._hook_preChangeCurrentPage()
+        self.viewModel.currentPage = self.viewModel.totalPages
+//        self.fetchContentForCurrentPageWithForceUpdate(false)
+    }
+
+    open func action(sender: Any?) {
+
+    }
+
+    open func saveTopicViewedState(sender: Any?) {
+
+    }
+
+    open func actionButtonTapped(for floorID: NSString) {
         guard let floor = viewModel.searchFloorInCache(floorID.integerValue) else {
             return
         }
@@ -210,11 +348,16 @@ extension S1ContentViewController {
         present(floorActionController, animated: true, completion: nil)
     }
 
-    func alertRefresh() {
+    open func alertRefresh() {
         let refreshAlertController = UIAlertController(title: "缺少必要的信息", message: "请长按页码刷新当前页面", preferredStyle: .alert)
         refreshAlertController.addAction(UIAlertAction(title: "好", style: .cancel, handler: nil))
         present(refreshAlertController, animated: true, completion: nil)
     }
+}
+
+// MARK: - WKNavigationDelegate
+extension S1ContentViewController: WKNavigationDelegate {
+
 }
 
 // MARK: - PullToActionDelagete
@@ -239,7 +382,7 @@ extension S1ContentViewController: PullToActionDelagete {
             }, completion: { [weak self] (finished) in
                 guard let strongSelf = self else { return }
                 strongSelf.scrollType = .pullDownForPrevious
-//                strongSelf.back(nil)
+                strongSelf.back(sender: nil)
             })
         }
     }
@@ -253,7 +396,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
         guard !self._isInLastPage() else {
             // Only refresh triggered in last page
-//            self.forward(nil)
+            self.forward(sender: nil)
             return
         }
 
@@ -269,7 +412,7 @@ extension S1ContentViewController: PullToActionDelagete {
             }, completion: { [weak self] (finished) in
                 guard let strongSelf = self else { return }
                 strongSelf.scrollType = .pullUpForNext
-//                strongSelf.forward(nil)
+                strongSelf.forward(sender: nil)
             })
         }
     }
@@ -322,5 +465,56 @@ extension S1ContentViewController {
     }
     func _isInLastPage() -> Bool {
         return self.viewModel.currentPage >= self.viewModel.totalPages
+    }
+}
+
+// MARK: - Style
+extension S1ContentViewController {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
+    }
+}
+
+// MARK: Navigation
+extension S1ContentViewController {
+    func showUserViewController(_ userID: NSNumber) {
+        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.intValue, name: ""))
+        let userViewController = UserViewController(viewModel: viewModel)
+        self.navigationController?.pushViewController(userViewController, animated: true)
+    }
+
+    func showQuoteFloorViewControllerWithTopic(_ topic: S1Topic, floors: [Floor], htmlString: String, centerFloorID: Int) {
+        let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self.viewModel).pageBaseURL())
+        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: viewModel)
+        self.navigationController?.pushViewController(quoteFloorViewController, animated: true)
+    }
+}
+
+// MARK: NSUserActivity
+extension S1ContentViewController {
+    func _setupActivity() {
+        DispatchQueue.global().async { [weak self] in
+            guard let strongSelf = self else { return }
+            let activity = NSUserActivity(activityType: "Stage1st.view-topic")
+            activity.title = strongSelf.viewModel.activityTitle()
+            activity.userInfo = strongSelf.viewModel.activityUserInfo()
+            activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL() as URL?
+
+            if #available(iOS 9.0, *) {
+                activity.isEligibleForSearch = true
+                activity.requiredUserInfoKeys = Set(arrayLiteral: "topicID")
+            }
+
+            DispatchQueue.main.async(execute: {
+                guard let strongSelf = self else { return }
+                strongSelf.userActivity = activity
+            })
+        }
+    }
+
+    open override func updateUserActivityState(_ activity: NSUserActivity) {
+        DDLogDebug("[ContentVC] Hand Off Activity Updated")
+        activity.userInfo = self.viewModel.activityUserInfo()
+        activity.webpageURL = self.viewModel.correspondingWebPageURL() as URL?
     }
 }

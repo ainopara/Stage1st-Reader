@@ -58,7 +58,7 @@ public class PullToActionController: NSObject {
         DDLogDebug("[PullToAction] deinit")
     }
 
-    public func addConfiguration(with name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
+    public func addConfiguration(withName name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
         progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
 
