@@ -40,16 +40,16 @@ class S1ContentViewController: UIViewController {
     var bottomDecorateLine = UIView(frame: .zero)
 
     var attributedReplyDraft: NSMutableAttributedString? = nil
-
     weak var replyTopicFloor: Floor?
+
     var scrollType: S1ContentScrollType = .restorePosition
-    var webPageAutomaticScrollingEnabled: Bool = true
-    var webPageDocumentReadyForAutomaticScrolling: Bool = false
-    var webPageContentSizeChangedForAutomaticScrolling: Bool = false
-    var finishFirstLoading: Bool = false
-    var presentingImageViewer: Bool = false
-    var presentingWebViewer: Bool = false
-    var presentingContentViewController: Bool = false
+    var webPageAutomaticScrollingEnabled = true
+    var webPageDocumentReadyForAutomaticScrolling = false
+    var webPageContentSizeChangedForAutomaticScrolling = false
+    var finishFirstLoading = false
+    var presentingImageViewer = false
+    var presentingWebViewer = false
+    var presentingContentViewController = false
 
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
         self.init(viewModel: S1ContentViewModel(topic: topic, dataCenter: dataCenter))
@@ -119,8 +119,8 @@ class S1ContentViewController: UIViewController {
         }
 
         // Notification
-        NotificationCenter.default.addObserver(self, selector: #selector(S1ContentViewController.saveTopicViewedState(sender:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: "APPaletteDidChangeNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveTopicViewedState(sender:)), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -140,21 +140,6 @@ class S1ContentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Color
-        view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
-        webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
-        topDecorateLine.backgroundColor = APColorManager.sharedInstance.colorForKey("content.decoration.line")
-        bottomDecorateLine.backgroundColor = APColorManager.sharedInstance.colorForKey("content.decoration.line")
-        if let title = self.viewModel.topic.title, title != "" {
-            titleLabel.textColor = APColorManager.sharedInstance.colorForKey("content.titlelabel.text.normal")
-        } else {
-            titleLabel.textColor = APColorManager.sharedInstance.colorForKey("content.titlelabel.text.disable")
-        }
-        pageButton.setTitleColor(APColorManager.sharedInstance.colorForKey(content.pagebutton.text), for: .normal)
-
-
-
-
         view.addSubview(toolBar)
         toolBar.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self.view)
@@ -172,12 +157,14 @@ class S1ContentViewController: UIViewController {
         topDecorateLine.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self.webView.scrollView)
             make.height.equalTo(1.0)
+            make.bottom.equalTo(self.webView.scrollView.subviews[0]).offset(topOffset)
         }
 
         webView.scrollView.addSubview(bottomDecorateLine)
         bottomDecorateLine.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self.webView.scrollView)
             make.height.equalTo(1.0)
+            make.top.equalTo(self.webView.scrollView.subviews[0]).offset(bottomOffset)
         }
 
         webView.scrollView.insertSubview(titleLabel, at: 0)
@@ -209,6 +196,8 @@ class S1ContentViewController: UIViewController {
         self.presentingImageViewer = false
         self.presentingWebViewer = false
         self.presentingContentViewController = false
+
+        self.didReceivePaletteChangeNotification(nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -288,12 +277,34 @@ extension S1ContentViewController {
 //        self.fetchContentForCurrentPageWithForceUpdate(false)
     }
 
+    open func pickPage(sender: Any?) {
+
+    }
+
+    open func forceRefreshPressed(gestureRecognizer: UIGestureRecognizer) {
+
+    }
+
     open func action(sender: Any?) {
 
     }
 
     open func saveTopicViewedState(sender: Any?) {
 
+    }
+
+    open override func didReceivePaletteChangeNotification(_ notification: Notification?) {
+        // Color
+        view.backgroundColor = APColorManager.shared.colorForKey("content.background")
+        webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
+        topDecorateLine.backgroundColor = APColorManager.shared.colorForKey("content.decoration.line")
+        bottomDecorateLine.backgroundColor = APColorManager.shared.colorForKey("content.decoration.line")
+        if let title = self.viewModel.topic.title, title != "" {
+            titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
+        } else {
+            titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.disable")
+        }
+        pageButton.setTitleColor(APColorManager.shared.colorForKey("content.pagebutton.text"), for: .normal)
     }
 
     open func actionButtonTapped(for floorID: NSString) {
@@ -471,7 +482,7 @@ extension S1ContentViewController {
 // MARK: - Style
 extension S1ContentViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
+        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 }
 

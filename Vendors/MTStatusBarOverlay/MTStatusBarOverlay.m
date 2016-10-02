@@ -59,11 +59,11 @@ MAX([UIApplication sharedApplication].statusBarFrame.size.width, [UIApplication 
 // iOS7 Theme (for UIStatusBarStyleDefault)
 ///////////////////////////////////////////////////////
 
-#define kTextColor						        [[APColorManager sharedInstance] colorForKey:@"overlay.text"]
-#define kErrorMessageTextColor       	        [[APColorManager sharedInstance] colorForKey:@"overlay.text"]
-#define kFinishedMessageTextColor    	        [[APColorManager sharedInstance] colorForKey:@"overlay.text"]
-#define kBackgroundColor                        [[APColorManager sharedInstance] colorForKey:@"overlay.background"]
-#define kActivityIndicatorViewStyle		    	([[APColorManager sharedInstance] isDarkTheme] ? UIActivityIndicatorViewStyleWhite:UIActivityIndicatorViewStyleGray)
+#define kTextColor						        [[APColorManager shared] colorForKey:@"overlay.text"]
+#define kErrorMessageTextColor       	        [[APColorManager shared] colorForKey:@"overlay.text"]
+#define kFinishedMessageTextColor    	        [[APColorManager shared] colorForKey:@"overlay.text"]
+#define kBackgroundColor                        [[APColorManager shared] colorForKey:@"overlay.background"]
+#define kActivityIndicatorViewStyle		    	([[APColorManager shared] isDarkTheme] ? UIActivityIndicatorViewStyleWhite:UIActivityIndicatorViewStyleGray)
 
 ///////////////////////////////////////////////////////
 // Progress

@@ -35,7 +35,7 @@ final class UserViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        self.view.backgroundColor = APColorManager.shared.colorForKey("content.background")
 
         self.view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
@@ -94,7 +94,7 @@ final class UserViewController: UIViewController {
             }
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
     }
 
     deinit {
@@ -112,12 +112,12 @@ final class UserViewController: UIViewController {
 // MARK: - Style
 extension UserViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
+        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-//        navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .Black : .Default
+//        navigationController?.navigationBar.barStyle = APColorManager.shared.isDarkTheme() ? .Black : .Default
         setNeedsStatusBarAppearanceUpdate()
-        view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        view.backgroundColor = APColorManager.shared.colorForKey("content.background")
     }
 }

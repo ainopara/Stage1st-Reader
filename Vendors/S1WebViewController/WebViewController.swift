@@ -119,7 +119,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
 
 
-        NotificationCenter.default.addObserver(self, selector: #selector(WebViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(WebViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
 
         webView.load(URLRequest(url: URLToOpen))
     }
@@ -241,10 +241,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
     // MARK: - Notification
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        statusBarSeparatorView.backgroundColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
-        progressView.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
+        statusBarSeparatorView.backgroundColor = APColorManager.shared.colorForKey("default.text.tint")
+        progressView.tintColor = APColorManager.shared.colorForKey("default.text.tint")
 
-        if APColorManager.sharedInstance.isDarkTheme() {
+        if APColorManager.shared.isDarkTheme() {
             let darkBlurEffect = UIBlurEffect(style: .dark)
             blurBackgroundView.effect = darkBlurEffect
             vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: darkBlurEffect)

@@ -19,7 +19,7 @@ struct FloorPresenting {
 
     init(floor: Floor, topic: S1Topic, baseURL: URL) {
         avatarURL = floor.author.avatarURL
-        let authorAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 14.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("quote.tableview.cell.title"))
+        let authorAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 14.0)).foregroundColor(APColorManager.shared.colorForKey("quote.tableview.cell.title"))
         author = NSAttributedString(string: floor.author.name, attributes: authorAttributes)
 
         if let topicAuthorID = topic.authorUserID as? Int, topicAuthorID == floor.author.ID {

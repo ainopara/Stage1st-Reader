@@ -100,11 +100,11 @@ final class ReportComposeViewController: UIViewController {
         }
 
         keyboardManager.add(self)
-        NotificationCenter.default.addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+        NotificationCenter.default.removeObserver(self, name: .APPaletteDidChangeNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -155,19 +155,19 @@ extension ReportComposeViewController {
 
     // MARK: - Notification
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        textView.backgroundColor = APColorManager.sharedInstance.colorForKey("report.background")
-        textView.tintColor = APColorManager.sharedInstance.colorForKey("report.tint")
-        textView.textColor = APColorManager.sharedInstance.colorForKey("report.text")
-        textView.typingAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 15.0)).foregroundColor(APColorManager.sharedInstance.colorForKey("report.text")).dictionary
-        textView.keyboardAppearance = APColorManager.sharedInstance.isDarkTheme() ? .dark : .light
+        textView.backgroundColor = APColorManager.shared.colorForKey("report.background")
+        textView.tintColor = APColorManager.shared.colorForKey("report.tint")
+        textView.textColor = APColorManager.shared.colorForKey("report.text")
+        textView.typingAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 15.0)).foregroundColor(APColorManager.shared.colorForKey("report.text")).dictionary
+        textView.keyboardAppearance = APColorManager.shared.isDarkTheme() ? .dark : .light
 
-        self.navigationController?.navigationBar.barStyle = APColorManager.sharedInstance.isDarkTheme() ? .black : .default
+        self.navigationController?.navigationBar.barStyle = APColorManager.shared.isDarkTheme() ? .black : .default
     }
 }
 
 // MARK: - Style
 extension ReportComposeViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
+        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 }

@@ -167,16 +167,16 @@ REComposeViewControllerDelegate
         }
 
     } cancelBlock:nil origin:self.pageButton];
-    picker.pickerBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.picker.background"];
-    picker.toolbarBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
-    picker.toolbarButtonsColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
+    picker.pickerBackgroundColor = [[APColorManager shared] colorForKey:@"content.picker.background"];
+    picker.toolbarBackgroundColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.bartint"];
+    picker.toolbarButtonsColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.tint"];
     
     NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     labelParagraphStyle.alignment = NSTextAlignmentCenter;
     picker.pickerTextAttributes = [@{
         NSParagraphStyleAttributeName: labelParagraphStyle,
         NSFontAttributeName: [UIFont systemFontOfSize:19.0],
-        NSForegroundColorAttributeName: [[APColorManager sharedInstance] colorForKey:@"content.picker.text"]
+        NSForegroundColorAttributeName: [[APColorManager shared] colorForKey:@"content.picker.text"]
     } mutableCopy];
     [picker showActionSheetPicker];
 }
@@ -630,10 +630,10 @@ REComposeViewControllerDelegate
 
     REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
 
-    replyController.textView.keyboardAppearance = [[APColorManager sharedInstance] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-    replyController.sheetBackgroundColor = [[APColorManager sharedInstance] colorForKey:@"reply.background"];
-    replyController.textView.tintColor = [[APColorManager sharedInstance] colorForKey:@"reply.tint"];
-    replyController.textView.textColor = [[APColorManager sharedInstance] colorForKey:@"reply.text"];
+    replyController.textView.keyboardAppearance = [[APColorManager shared] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    replyController.sheetBackgroundColor = [[APColorManager shared] colorForKey:@"reply.background"];
+    replyController.textView.tintColor = [[APColorManager shared] colorForKey:@"reply.tint"];
+    replyController.textView.textColor = [[APColorManager shared] colorForKey:@"reply.text"];
 
     // Set title
     replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
@@ -674,21 +674,21 @@ REComposeViewControllerDelegate
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-    self.view.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.background"];
-    self.webView.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.webview.background"];
+    self.view.backgroundColor = [[APColorManager shared] colorForKey:@"content.background"];
+    self.webView.backgroundColor = [[APColorManager shared] colorForKey:@"content.webview.background"];
 
-    self.topDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
-    self.bottomDecorateLine.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"content.decoration.line"];
+    self.topDecorateLine.backgroundColor = [[APColorManager shared] colorForKey:@"content.decoration.line"];
+    self.bottomDecorateLine.backgroundColor = [[APColorManager shared] colorForKey:@"content.decoration.line"];
     if (self.viewModel.topic.title == nil || [self.viewModel.topic.title isEqualToString:@""]) {
         self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.viewModel.topic.topicID];
-        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.disable"];
+        self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.disable"];
     } else {
         self.titleLabel.text = self.viewModel.topic.title;
-        self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+        self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.normal"];
     }
-    [self.pageButton setTitleColor:[[APColorManager sharedInstance] colorForKey:@"content.pagebutton.text"] forState:UIControlStateNormal];
-    self.toolBar.barTintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.bartint"];
-    self.toolBar.tintColor = [[APColorManager sharedInstance] colorForKey:@"appearance.toolbar.tint"];
+    [self.pageButton setTitleColor:[[APColorManager shared] colorForKey:@"content.pagebutton.text"] forState:UIControlStateNormal];
+    self.toolBar.barTintColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.bartint"];
+    self.toolBar.tintColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.tint"];
 
     [self setNeedsStatusBarAppearanceUpdate];
 
@@ -717,7 +717,7 @@ REComposeViewControllerDelegate
 
 - (void)updateTitleLabelWithTitle:(NSString *)title {
     self.titleLabel.text = title;
-    self.titleLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"content.titlelabel.text.normal"];
+    self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.normal"];
 }
 
 - (void)updateDecorationLines:(CGSize)contentSize {

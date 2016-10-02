@@ -31,12 +31,12 @@ class S1QuoteFloorViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+        self.view.backgroundColor = APColorManager.shared.colorForKey("content.background")
         self.automaticallyAdjustsScrollViewInsets = false
         if self.useTableView {
             let tableView = UITableView()
             self.tableView = tableView
-            tableView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.background")
+            tableView.backgroundColor = APColorManager.shared.colorForKey("content.background")
             tableView.delegate = self
             tableView.dataSource = self
             tableView.rowHeight = UITableViewAutomaticDimension
@@ -52,7 +52,7 @@ class S1QuoteFloorViewController: UIViewController {
             })
         } else {
             webView.isOpaque = false
-            webView.backgroundColor = APColorManager.sharedInstance.colorForKey("content.webview.background")
+            webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
             webView.delegate = self
             webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
             self.view.addSubview(webView)
@@ -141,6 +141,6 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
 // MARK: - Style
 extension S1QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.sharedInstance.isDarkTheme() ? .lightContent : .default
+        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 }

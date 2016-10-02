@@ -111,7 +111,7 @@ S1AppDelegate *MyAppDelegate;
     [NSURLCache setSharedURLCache:URLCache];
 
     // Appearence
-    [[APColorManager sharedInstance] updateGlobalAppearance];
+    [[APColorManager shared] updateGlobalAppearance];
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];

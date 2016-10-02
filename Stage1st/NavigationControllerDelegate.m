@@ -47,13 +47,13 @@
         DDLogVerbose(@"[ColorPan] %f",translation.y);
         if (translation.y > _COLOR_CHANGE_TRIGGER_THRESHOLD && [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == NO) {
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NightMode"];
-            [[APColorManager sharedInstance] switchPalette:PaletteTypeNight];
+            [[APColorManager shared] switchPalette:PaletteTypeNight];
             recognizer.enabled = NO;
             recognizer.enabled = YES;
         }
         if (translation.y < -_COLOR_CHANGE_TRIGGER_THRESHOLD && [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"] == YES) {
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
-            [[APColorManager sharedInstance] switchPalette:PaletteTypeDay];
+            [[APColorManager shared] switchPalette:PaletteTypeDay];
             recognizer.enabled = NO;
             recognizer.enabled = YES;
         }

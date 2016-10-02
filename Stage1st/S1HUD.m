@@ -35,10 +35,10 @@ typedef enum {
     self = [super initWithFrame:frame];
     if (self != nil) {
         self.alpha = 0.0;
-        self.layer.borderColor = [[[APColorManager sharedInstance] colorForKey:@"hud.border"] CGColor];
+        self.layer.borderColor = [[[APColorManager shared] colorForKey:@"hud.border"] CGColor];
         self.layer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
         self.layer.cornerRadius = 3.0;
-        self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"hud.background"];
+        self.backgroundColor = [[APColorManager shared] colorForKey:@"hud.background"];
         [self mas_makeConstraints:^(MASConstraintMaker *make) {
             self.widthConstraint = make.width.greaterThanOrEqualTo(@60);
             self.heightConstraint = make.height.greaterThanOrEqualTo(@60);
@@ -54,7 +54,7 @@ typedef enum {
 
         self.messageLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.messageLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13.0f];
-        self.messageLabel.textColor = [[APColorManager sharedInstance] colorForKey:@"hud.text"];
+        self.messageLabel.textColor = [[APColorManager shared] colorForKey:@"hud.text"];
         self.messageLabel.textAlignment = NSTextAlignmentCenter;
         self.messageLabel.numberOfLines = 0;
         self.messageLabel.alpha = 0.0;

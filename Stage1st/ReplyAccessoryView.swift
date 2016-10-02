@@ -159,8 +159,8 @@ extension ReplyAccessoryView {
         textView.textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
         textView.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
         textView.textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
-        textView.textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.sharedInstance.colorForKey("reply.text"), range: allTextRange)
+        textView.textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.shared.colorForKey("reply.text"), range: allTextRange)
         textView.font = UIFont.systemFont(ofSize: 17.0)
-        textView.textColor = APColorManager.sharedInstance.colorForKey("reply.text")
+        textView.textColor = APColorManager.shared.colorForKey("reply.text")
     }
 }

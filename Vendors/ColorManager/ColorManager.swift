@@ -14,15 +14,13 @@ import CocoaLumberjack
     case night
 }
 
-let APPaletteDidChangeNotification = "APPaletteDidChangeNotification"
-
 open class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
     let fallbackColor = UIColor.black
     let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette2", withExtension: "plist")
 
-    open static let sharedInstance = {
+    open static let shared = {
         return APColorManager()
     }()
 
@@ -91,7 +89,7 @@ private extension APColorManager {
         self.palette = palette
         self.updateGlobalAppearance()
         if shouldPush {
-            NotificationCenter.default.post(name: Notification.Name(rawValue: APPaletteDidChangeNotification), object: nil)
+            NotificationCenter.default.post(name: .APPaletteDidChangeNotification, object: nil)
         }
     }
 
@@ -108,4 +106,8 @@ private extension APColorManager {
 public extension UIViewController {
     func didReceivePaletteChangeNotification(_ notification: Notification?) {
     }
+}
+
+public extension Notification.Name {
+    public static let APPaletteDidChangeNotification = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
 }

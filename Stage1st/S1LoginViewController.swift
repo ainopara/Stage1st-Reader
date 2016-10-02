@@ -58,7 +58,7 @@ private class UserInfoInputView: UIView {
         }
 
         onepasswordButton.setImage(UIImage(named: "OnePasswordButton"), for: .normal)
-        onepasswordButton.tintColor = APColorManager.sharedInstance.colorForKey("default.text.tint")
+        onepasswordButton.tintColor = APColorManager.shared.colorForKey("default.text.tint")
 
         let buttonContainer = UIView(frame: CGRect.zero)
         buttonContainer.snp.makeConstraints { (make) in
@@ -260,7 +260,7 @@ final class S1LoginViewController: UIViewController {
             make.edges.equalTo(self.view)
         }
 
-        containerView.backgroundColor = APColorManager.sharedInstance.colorForKey("login.background")
+        containerView.backgroundColor = APColorManager.shared.colorForKey("login.background")
         containerView.layer.cornerRadius = 4.0
         containerView.clipsToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -273,12 +273,12 @@ final class S1LoginViewController: UIViewController {
         userInfoInputView.passwordField.placeholder = NSLocalizedString("S1LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(S1LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
         userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: .normal)
-        userInfoInputView.questionSelectButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
+        userInfoInputView.questionSelectButton.tintColor = APColorManager.shared.colorForKey("login.text")
         userInfoInputView.questionSelectButton.addTarget(self, action: #selector(S1LoginViewController.selectSecureQuestion(_:)), for: .touchUpInside)
         userInfoInputView.answerField.delegate = self
         userInfoInputView.loginButton.addTarget(self, action: #selector(S1LoginViewController.logIn(_:)), for: .touchUpInside)
-        userInfoInputView.loginButton.backgroundColor = APColorManager.sharedInstance.colorForKey("login.button")
-        userInfoInputView.loginButton.tintColor = APColorManager.sharedInstance.colorForKey("login.text")
+        userInfoInputView.loginButton.backgroundColor = APColorManager.shared.colorForKey("login.button")
+        userInfoInputView.loginButton.tintColor = APColorManager.shared.colorForKey("login.text")
 
         containerView.addSubview(userInfoInputView)
         userInfoInputView.snp.makeConstraints { (make) in
@@ -292,7 +292,7 @@ final class S1LoginViewController: UIViewController {
         }
 
         seccodeInputView.isHidden = true
-        seccodeInputView.backgroundColor = APColorManager.sharedInstance.colorForKey("login.background")
+        seccodeInputView.backgroundColor = APColorManager.shared.colorForKey("login.background")
 
         containerView.addSubview(seccodeInputView)
         seccodeInputView.snp.makeConstraints { (make) in
@@ -302,7 +302,7 @@ final class S1LoginViewController: UIViewController {
         seccodeInputView.seccodeField.delegate = self
         seccodeInputView.seccodeField.backgroundColor = UIColor.white
         seccodeInputView.seccodeSubmitButton.setTitle("提交", for: .normal)
-        seccodeInputView.seccodeSubmitButton.backgroundColor = APColorManager.sharedInstance.colorForKey("login.button")
+        seccodeInputView.seccodeSubmitButton.backgroundColor = APColorManager.shared.colorForKey("login.button")
         seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(S1LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
 
         state = self.inLoginState() ? .login : .notLogin
@@ -415,8 +415,8 @@ extension S1LoginViewController {
                     self.state = .notLoginWithAnswerField
                 }
             }, cancel: nil, origin: button)!
-        picker.toolbarBackgroundColor = APColorManager.sharedInstance.colorForKey("appearance.toolbar.bartint")
-        picker.toolbarButtonsColor = APColorManager.sharedInstance.colorForKey("appearance.toolbar.tint")
+        picker.toolbarBackgroundColor = APColorManager.shared.colorForKey("appearance.toolbar.bartint")
+        picker.toolbarButtonsColor = APColorManager.shared.colorForKey("appearance.toolbar.tint")
         picker.show()
     }
 
