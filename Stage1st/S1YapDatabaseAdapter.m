@@ -92,7 +92,7 @@
 
 - (S1Topic *)topicByID:(NSNumber *)topicID {
     __block S1Topic *topic = nil;
-    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
     }];
     return topic;
@@ -100,7 +100,7 @@
 
 - (NSNumber *)numberOfTopicsInDatabse {
     __block NSUInteger count = 0;
-    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         count = [transaction numberOfKeysInCollection:Collection_Topics];
     }];
     return @(count);
@@ -108,7 +108,7 @@
 
 - (NSNumber *)numberOfFavoriteTopicsInDatabse {
     __block NSUInteger count = 0;
-    [self.database.uiDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
+    [self.database.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         [[transaction ext:Ext_FullTextSearch_Archive] enumerateKeysMatching:@"favorite:FY title:*" usingBlock:^(NSString *collection, NSString *key, BOOL *stop) {
             count = count + 1;
         }];

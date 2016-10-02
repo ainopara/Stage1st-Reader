@@ -55,8 +55,9 @@ open class User: NSObject, NSCoding {
     }
 
     public required init?(coder aDecoder: NSCoder) {
+        let ID = aDecoder.decodeInteger(forKey: kUserID)
         guard
-            let ID = aDecoder.decodeObject(forKey: kUserID) as? Int,
+            ID != 0,
             let name = aDecoder.decodeObject(forKey: kUserName) as? String else {
             return nil
         }

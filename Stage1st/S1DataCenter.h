@@ -13,13 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class S1Tracer;
 @class S1Topic;
 @class Floor;
+@class MahjongFaceItem;
 
 @interface S1DataCenter : NSObject
 
 + (S1DataCenter *)sharedDataCenter;
 
 // Mahjong Face
-@property (strong, nonatomic, nullable) NSMutableArray *mahjongFaceHistoryArray;
+@property (strong, nonatomic, nullable) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
 
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;

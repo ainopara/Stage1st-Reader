@@ -281,11 +281,13 @@
 
 - (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *))failure {
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970])];
-    NSDictionary *params = @{@"posttime":timestamp,
-                             @"formhash":topic.formhash,
-                             @"usesig":@"1",
-                             @"subject":@"",
-                             @"message":text};
+    NSDictionary *params = @{
+        @"posttime":timestamp,
+        @"formhash":topic.formhash,
+        @"usesig":@"1",
+        @"subject":@"",
+        @"message":text
+    };
     [S1NetworkManager postReplyForTopicID:topic.topicID forumID:topic.fID andParams:params success:^(NSURLSessionDataTask *task, id responseObject) {
         success();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -356,12 +358,12 @@
 
 #pragma mark - Mahjongface History
 
-- (NSMutableArray *)mahjongFaceHistoryArray {
+- (NSArray<MahjongFaceItem *> *)mahjongFaceHistoryArray {
     return [self.cacheDatabaseManager mahjongFaceHistory];
 }
 
-- (void)setMahjongFaceHistoryArray:(NSMutableArray *)mahjongFaceHistoryArray {
-    [self.cacheDatabaseManager saveMahjongFaceHistory:mahjongFaceHistoryArray];
+- (void)setMahjongFaceHistoryArray:(NSArray<MahjongFaceItem *> *)mahjongFaceHistoryArray {
+    [self.cacheDatabaseManager setWithMahjongFaceHistory:mahjongFaceHistoryArray];
 }
 
 #pragma mark - Helper

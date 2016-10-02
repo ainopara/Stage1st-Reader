@@ -13,7 +13,7 @@ private let collectionPageFloors = "topicFloors"
 private let collectionFloorIDs = "floorIDs"
 private let collectionMahjongFace = "mahjongFace"
 private let metadataLastUsed = "lastUsed"
-private let keyHistory = "history"
+private let keyMahjongFaceHistory = "mahjongFaceHistory"
 
 class CacheDatabaseManager: NSObject {
     let cacheDatabase: YapDatabase
@@ -88,7 +88,7 @@ extension CacheDatabaseManager {
         self.readConnection.read { (transaction) in
             guard
                 let key = transaction.object(forKey: "\(ID)", inCollection: collectionFloorIDs) as? String,
-                let floors = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor]  else {
+                let floors = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] else {
                 DDLogWarn("Failed to find floor(ID: \(ID)) in cache database due to index or cache not exist.")
                 return
             }
@@ -158,23 +158,19 @@ extension CacheDatabaseManager {
     }
 }
 
-struct MahjongFaceItem {
-
-}
-
 // MARK: - Mahjong Face History
 extension CacheDatabaseManager {
     func set(mahjongFaceHistory: [MahjongFaceItem]) {
         // Array<(String, String, URL)>
         self.backgroundWriteConnection.asyncReadWrite { (transaction) in
-            transaction.setObject(mahjongFaceHistory, forKey: keyHistory, inCollection: collectionMahjongFace)
+            transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace)
         }
     }
 
     func mahjongFaceHistory() -> [MahjongFaceItem]? {
         var mahjongFaceHistory: [MahjongFaceItem]? = nil
         self.readConnection.read { (transaction) in
-            mahjongFaceHistory = transaction.object(forKey: keyHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
+            mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
         return mahjongFaceHistory
     }

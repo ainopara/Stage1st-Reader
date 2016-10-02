@@ -21,22 +21,24 @@
     return self;
 }
 
-- (void)setMahjongFaceList:(NSArray *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns {
+- (void)setMahjongFaceList:(NSArray<MahjongFaceItem *> *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns {
     NSInteger rowIndex = 0;
     NSInteger columnIndex = 0;
     NSInteger buttonIndex = 0;
     CGFloat heightOffset = (self.frame.size.height - rows * 50.0) / 2;
+
     for(S1MahjongFaceButton *button in self.buttons) {
         buttonIndex = rowIndex * columns + columnIndex;
         if (buttonIndex < [list count] && buttonIndex < rows * columns) {
-            NSString *keyToSet = [[list objectAtIndex:buttonIndex] firstObject];
-            if ([button.mahjongFaceKey isEqualToString:keyToSet]) {
-                //NSLog(@"face button cache hit:%@",button.mahjongFaceKey);
+            MahjongFaceItem *item = [list objectAtIndex:buttonIndex];
+            if ([button.mahjongFaceKey isEqualToString:item.key]) {
+                DDLogVerbose(@"face button hit, skip.");
             } else {
-                button.mahjongFaceKey = keyToSet;
-                button.category =[[list objectAtIndex:buttonIndex] objectAtIndex:1];
-                [self setImageURL:[[list objectAtIndex:buttonIndex] lastObject] forButton:button];
+                button.mahjongFaceKey = item.key;
+                button.category = item.category;
+                [self setImageURL:item.url forButton:button];
             }
+
             [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
             button.hidden = NO;
         } else {
@@ -48,13 +50,13 @@
             columnIndex = 0;
         }
     }
+
     buttonIndex = rowIndex * columns + columnIndex;
+
     while (buttonIndex < [list count] && buttonIndex < rows * columns) {
-        NSString *key = [[list objectAtIndex:buttonIndex] firstObject];
-        NSString *category = [[list objectAtIndex:buttonIndex] objectAtIndex:1];
-        NSURL *URL = [[list objectAtIndex:buttonIndex] lastObject];
-        S1MahjongFaceButton *button = [self mahjongFaceButtonForKey:key andURL:URL];
-        button.category = category;
+        MahjongFaceItem *item = [list objectAtIndex:buttonIndex];
+        S1MahjongFaceButton *button = [self mahjongFaceButtonForKey:item.key andURL:item.url];
+        button.category = item.category;
         [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
         columnIndex += 1;
         if (columnIndex == columns) {
@@ -63,6 +65,7 @@
         }
         buttonIndex = rowIndex * columns + columnIndex;
     }
+
     if (self.backspaceButton == nil) {
         self.backspaceButton = [[S1MahjongFaceButton alloc] init];
         [self.backspaceButton setImage:[[UIImage imageNamed:@"Backspace"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];

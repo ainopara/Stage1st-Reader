@@ -10,9 +10,9 @@ import UIKit
 import SnapKit
 
 class ReplyAccessoryView: UIView {
-    fileprivate var toolBar: UIToolbar
-    fileprivate var faceButton: UIButton
-    fileprivate var spoilerButton: UIButton
+    private var toolBar: UIToolbar
+    private var faceButton: UIButton
+    private var spoilerButton: UIButton
 
     weak var composeViewController: REComposeViewController?
     var mahjongFaceView: S1MahjongFaceView?
@@ -59,7 +59,6 @@ class ReplyAccessoryView: UIView {
             }
         }
     }
-
 }
 
 // MARK: - Actions
@@ -73,7 +72,7 @@ extension ReplyAccessoryView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray ?? NSMutableArray()
+                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray ?? [MahjongFaceItem]()
                 mahjongFaceView = newMahjongfaceView
             }
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)

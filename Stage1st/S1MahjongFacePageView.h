@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+
 @class S1MahjongFaceView;
 @class S1MahjongFaceButton;
+@class MahjongFaceItem;
 
 @interface S1MahjongFacePageView : UIView
 
@@ -17,6 +19,6 @@
 @property (nonatomic, weak) S1MahjongFaceView *containerView;
 @property (nonatomic, assign) NSUInteger index;
 
-- (void)setMahjongFaceList:(NSArray *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns;
+- (void)setMahjongFaceList:(NSArray<MahjongFaceItem *> *)list withRows:(NSInteger)rows andColumns:(NSInteger)columns;
 
 @end

@@ -57,7 +57,7 @@
     NSMutableArray *mutableOrder = [self.mahjongCategoryOrder mutableCopy];
     [mutableOrder insertObject:@"history" atIndex:0];
     self.mahjongCategoryOrder = [mutableOrder copy];
-    self.historyArray = [NSMutableArray array];
+    self.historyArray = [NSArray array];
     self.currentCategory = @"history";
     
     // init tab bar
@@ -80,7 +80,6 @@
     self.pageControl.pageIndicatorTintColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.indicatortint"];
     self.pageControl.currentPageIndicatorTintColor = [[APColorManager sharedInstance] colorForKey:@"mahjongface.pagecontrol.currentpage"];
     [self.pageControl addTarget:self action:@selector(pageChanged:) forControlEvents:UIControlEventValueChanged];
-    //self.pageControl.backgroundColor = [UIColor clearColor];
     [self addSubview:self.pageControl];
     [self.pageControl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.mas_centerX);
@@ -115,8 +114,7 @@
     if (self.delegate != nil) {
         S1MahjongFaceTextAttachment *mahjongFaceTextAttachment = [S1MahjongFaceTextAttachment new];
         
-        //Set tag and image
-        
+        // Set tag and image
         NSString *localPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Mahjong/"];
         NSString *suffix = [[self.mahjongMap valueForKey:button.category] valueForKey:button.mahjongFaceKey];
         NSString *fullPath = [NSString stringWithFormat:@"%@%@", localPath, suffix];
@@ -127,35 +125,37 @@
         [self.delegate mahjongFaceViewController:self didFinishWithResult:mahjongFaceTextAttachment];
     }
 
-    //Update history
+    MahjongFaceItem *newItem = [[MahjongFaceItem alloc] initWithKey:button.mahjongFaceKey
+                                                           category:button.category
+                                                                url:[self URLForKey:button.mahjongFaceKey inCategory:button.category]];
+    [self updateHistoryWithItem:newItem];
+}
+
+- (void)updateHistoryWithItem:(MahjongFaceItem *)newItem {
+    // Update history
+    NSMutableArray<MahjongFaceItem *> *mutableHistoryArray = [self.historyArray mutableCopy];
 
     // Step 1: Remove the history if it already in history list
-    NSArray *thePackage = nil;
-    for (NSArray *package in self.historyArray) {
-        if ([[package firstObject] isEqualToString:button.mahjongFaceKey]) {
-            thePackage = package;
-            [self.historyArray removeObject:package];
+    MahjongFaceItem *theItem = nil;
+    for (MahjongFaceItem *item in mutableHistoryArray) {
+        if ([item.key isEqualToString:newItem.key]) {
+            theItem = item;
+            [mutableHistoryArray removeObject:item];
             break;
         }
     }
 
-    // Step 2: Insert the package to history array
-    if ([self.currentCategory isEqualToString:@"history"]) {
-        if (thePackage != nil) {
-            [self.historyArray insertObject:thePackage atIndex:0];
-        }
-    } else {
-        [self.historyArray insertObject:@[button.mahjongFaceKey, button.category, [self URLForKey:button.mahjongFaceKey inCategory:button.category]] atIndex:0];
-    }
+    // Step 2: Insert the item to history array
+    [mutableHistoryArray insertObject:newItem atIndex:0];
 
     // Step 3: Remove overflow if history count exceed limit
-    if (self.historyCountLimit != 0 && [self.historyArray count] > self.historyCountLimit) {
-        NSMutableArray *newHistoryArray = [NSMutableArray arrayWithCapacity:self.historyCountLimit];
-        for (NSUInteger i = 0; i < self.historyCountLimit; i++) {
-            [newHistoryArray addObject:[self.historyArray objectAtIndex:i]];
-        }
-        self.historyArray = newHistoryArray;
+    while (self.historyCountLimit != 0 && [mutableHistoryArray count] > self.historyCountLimit) {
+        [mutableHistoryArray removeLastObject];
     }
+
+    self.historyArray = [mutableHistoryArray copy];
+
+    [self setNeedsLayout];
 }
 
 - (void)backspacePressed:(UIButton *)button {
@@ -203,7 +203,7 @@
 #pragma mark - S1TabBarDelegate
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
-    DDLogDebug(@"%@",key);
+    DDLogVerbose(@"category selected: %@", key);
     self.currentCategory = [[self.keyTranslation allKeysForObject:key] objectAtIndex:0];
     self.pageControl.currentPage = 0;
     [self setNeedsLayout];
@@ -256,6 +256,8 @@
 }
 
 - (void)setMahjongFacePageViewInScrollView:(UIScrollView *)scrollView atIndex:(NSUInteger)globalIndex {
+
+    // Calculate current local index and category from global index
     NSUInteger localIndex = globalIndex;
     NSString *categoryForThisPage;
     for (NSString *key in self.mahjongCategoryOrder) {
@@ -266,10 +268,12 @@
             break;
         }
     }
+
     if (categoryForThisPage == nil || localIndex >= [self pageCountForCategory:categoryForThisPage]) {
         return;
     }
-    DDLogDebug(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
+
+    DDLogVerbose(@"Category:%@, Local Index:%lu", categoryForThisPage, (unsigned long)localIndex);
     
     S1MahjongFacePageView *pageView = [self usableMahjongFacePageViewForIndex:globalIndex];
     
@@ -277,7 +281,7 @@
     NSUInteger columns = [self numberOfColumnsForFrameSize:scrollView.bounds.size];
     NSUInteger startingIndex = localIndex * (rows * columns - 1);
     NSUInteger endingIndex = (localIndex + 1) * (rows * columns - 1);
-    NSMutableArray *mahjongFacePackages = [[NSMutableArray alloc] initWithCapacity:rows * columns];
+    NSMutableArray<MahjongFaceItem *> *mahjongFacePackages = [[NSMutableArray<MahjongFaceItem *> alloc] initWithCapacity:rows * columns];
 
     if ([categoryForThisPage isEqualToString:@"history"]) {
         for (NSUInteger index = startingIndex; index < endingIndex; index++) {
@@ -293,8 +297,8 @@
                 break;
             }
             NSString *key = [allKeys objectAtIndex:index];
-            NSArray *package = @[key, categoryForThisPage, [self URLForKey:key inCategory:categoryForThisPage]];
-            [mahjongFacePackages addObject:package];
+            MahjongFaceItem *item = [[MahjongFaceItem alloc] initWithKey:key category:categoryForThisPage url:[self URLForKey:key inCategory:categoryForThisPage]];
+            [mahjongFacePackages addObject:item];
         }
     }
 

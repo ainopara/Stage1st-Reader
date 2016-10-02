@@ -12,13 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class S1MahjongFaceButton;
 @class S1MahjongFaceTextAttachment;
+@class MahjongFaceItem;
 @protocol S1MahjongFaceViewDelegate;
 
 @interface S1MahjongFaceView : UIView
 
 @property (nonatomic, strong) NSString * currentCategory;
 @property (nonatomic, assign) NSUInteger historyCountLimit;
-@property (nonatomic, strong) NSMutableArray * historyArray;
+@property (nonatomic, strong) NSArray<MahjongFaceItem *> *historyArray;
 @property (weak, nonatomic, nullable) id<S1MahjongFaceViewDelegate> delegate;
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button;

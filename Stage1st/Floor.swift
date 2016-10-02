@@ -10,16 +10,16 @@ import Foundation
 import JASON
 import CocoaLumberjack
 
-private let kFloorID = "floorID"
-private let kIndexMark  = "indexMark"
-private let kAuthor = "author"
-private let kAuthorID  = "authorID"
-private let kPostTime = "postTime"
-private let kContent = "content"
-private let kPoll = "poll"
-private let kMessage = "message"
-private let kImageAttachmentURLStringList = "imageAttachmentList"
-private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
+fileprivate let kFloorID = "floorID"
+fileprivate let kIndexMark  = "indexMark"
+fileprivate let kAuthor = "author"
+fileprivate let kAuthorID  = "authorID"
+fileprivate let kPostTime = "postTime"
+fileprivate let kContent = "content"
+fileprivate let kPoll = "poll"
+fileprivate let kMessage = "message"
+fileprivate let kImageAttachmentURLStringList = "imageAttachmentList"
+fileprivate let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
 
 class Floor: NSObject, NSCoding {
     let ID: Int
@@ -54,9 +54,11 @@ class Floor: NSObject, NSCoding {
 
     required init?(coder aDecoder: NSCoder) {
 
+        let ID = aDecoder.decodeInteger(forKey: kFloorID)
+        let authorID = aDecoder.decodeInteger(forKey: kAuthorID)
         guard
-            let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int,
-            let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int,
+            ID != 0,
+            authorID != 0,
             let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String else {
                 return nil
         }
