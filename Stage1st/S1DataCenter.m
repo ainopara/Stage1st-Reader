@@ -40,7 +40,7 @@
     _cacheFinishHandlers = [NSMutableDictionary dictionary];
 
     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:true error:NULL];
-    NSString *cacheDatabasePath = [[documentsDirectoryURL URLByAppendingPathComponent:@"Cache.sqlite"] absoluteString];
+    NSString *cacheDatabasePath = [[[documentsDirectoryURL URLByAppendingPathComponent:@"Cache.sqlite"] filePathURL] path];
     _cacheDatabaseManager = [[CacheDatabaseManager alloc] initWithPath:cacheDatabasePath];
 
     return self;

@@ -22,6 +22,9 @@ public final class S1TopicListViewModel: NSObject {
         self.dataCenter = dataCenter
         super.init()
 
+        // pre-load to spead up respongding to first tap on archive button.
+        self.updateFilter("", key: "History")
+
         initializeMappings()
     }
 
@@ -127,7 +130,7 @@ extension S1TopicListViewModel {
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
         DDLogDebug("[TopicListVC] Update filter: \(query)")
         searchQueue.enqueueQuery(query)
-        MyDatabaseManager.bgDatabaseConnection.readWrite { (transaction) in
+        MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { (transaction) in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {
                 ext.performSearch(with: self.searchQueue)
             }

@@ -8,20 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class S1Topic, S1DataCenter, S1ContentViewModel;
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface S1ContentViewController : UIViewController
-
-@property (nonatomic, strong) S1ContentViewModel *viewModel;
-@property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
-
-- (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
-- (instancetype)initWithViewModel:(S1ContentViewModel *)viewModel;
-
-// Expose to extension
-- (void)presentReplyViewToFloor: (Floor * _Nullable)topicFloor;
-@end
-
-NS_ASSUME_NONNULL_END
+typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
+    S1ContentScrollTypeRestorePosition = 0,
+    S1ContentScrollTypePullUpForNext,
+    S1ContentScrollTypePullDownForPrevious,
+    S1ContentScrollTypeToBottom
+};

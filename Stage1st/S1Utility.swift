@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import WebKit
 import UIKit
 
 func ensureMainThread(_ block: @escaping () -> Void) {
@@ -116,6 +117,14 @@ extension UIWebView {
         }
     }
 
+    func s1_atBottom() -> Bool {
+        let offsetY = self.scrollView.contentOffset.y
+        let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
+        return offsetY >= maxOffsetY
+    }
+}
+
+extension WKWebView {
     func s1_atBottom() -> Bool {
         let offsetY = self.scrollView.contentOffset.y
         let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height

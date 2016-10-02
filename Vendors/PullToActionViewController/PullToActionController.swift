@@ -25,12 +25,12 @@ struct OffsetRange {
     let endPosition: Double
     let baseLine: OffsetBaseLine
 
-    func progress (_ offset: Double) -> Double {
+    func progress(for offset: Double) -> Double {
         return (offset - beginPosition) / (endPosition - beginPosition)
     }
 }
 
-open class PullToActionController: NSObject, UIScrollViewDelegate {
+public class PullToActionController: NSObject {
     weak var scrollView: UIScrollView?
     weak var delegate: PullToActionDelagete?
 
@@ -58,19 +58,24 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
         DDLogDebug("[PullToAction] deinit")
     }
 
-    open func addConfigurationWithName(_ name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
+    public func addConfiguration(with name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
         progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
 
-    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentOffset" {
-            guard let changes = change, let newOffsetValue = changes[.newKey] as? NSValue else { return }
+            guard
+                let changes = change,
+                let newOffsetValue = changes[.newKey] as? NSValue else {
+                return
+            }
+
             self.offset = newOffsetValue.cgPointValue
 
             guard let delegateFunction = self.delegate?.scrollViewContentOffsetProgress else { return }
             var progress = [String: Double]()
             for (name, actionOffset) in self.progressAction {
-                let progressValue = actionOffset.progress(self.baseLineOffset(actionOffset.baseLine))
+                let progressValue = actionOffset.progress(for: self.currentOffset(relativeTo: actionOffset.baseLine))
                 progress.updateValue(progressValue, forKey: name)
             }
             delegateFunction(progress)
@@ -78,8 +83,22 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
         }
 
         if keyPath == "contentSize" {
-            guard let changes = change, let newSizeValue = changes[.newKey] as? NSValue else { return }
-            self.size = newSizeValue.cgSizeValue
+            guard
+                let changes = change,
+                let newSizeValue = changes[.newKey] as? NSValue else {
+                return
+            }
+
+            let newSize = newSizeValue.cgSizeValue
+
+            guard
+//                (abs(self.size.width) < 0.1 && abs(self.size.height) < 0.1) ||
+                abs(self.size.width - newSize.width) > 0.1 || abs(self.size.height - newSize.height) > 0.1 else {
+                return
+            }
+
+            self.size = newSize
+
             DDLogVerbose("[PullToAction] contentSize:w: \(self.size.width) h:\(self.size.height)")
             self.delegate?.scrollViewContentSizeDidChange?(self.size)
         }
@@ -91,13 +110,35 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
         }
     }
 
+    private func currentOffset(relativeTo baseLine: OffsetBaseLine) -> Double {
+        guard let scrollView = self.scrollView else {
+            return Double(0.0)
+        }
+
+        switch baseLine {
+        case .top:
+            return Double(self.offset.y)
+        case .bottom:
+            return Double(self.offset.y - min(self.size.height - scrollView.bounds.height, 0.0))
+        case .left:
+            return Double(self.offset.x)
+        case .right:
+            return Double(self.offset.x - min(self.size.width - scrollView.bounds.width, 0.0))
+        }
+    }
+}
+
+extension PullToActionController: UIScrollViewDelegate {
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if self.offset.y < 0.0 {
-            DDLogDebug("[PullToAction] End dragging <- \(self.offset.y)")
-            self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(self.offset.y)
+        //TODO: consider content inset
+        let topOffset = self.offset.y
+        if topOffset < 0.0 {
+            DDLogDebug("[PullToAction] End dragging <- \(topOffset)")
+            self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(topOffset)
             return
         }
-        let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height //TODO: consider content inset
+
+        let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height
         if bottomOffset > 0.0 {
             DDLogDebug("[PullToAction] End dragging -> \(bottomOffset)")
             self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
@@ -105,21 +146,8 @@ open class PullToActionController: NSObject, UIScrollViewDelegate {
         }
     }
 
-    fileprivate func baseLineOffset(_ baseLine: OffsetBaseLine) -> Double {
-        guard let scrollView = self.scrollView else { return Double(0.0) }
-        switch baseLine {
-        case .top:
-            return Double(self.offset.y)
-        case .bottom:
-            var temp = scrollView.bounds.height - self.size.height
-            if temp > 0.0 { temp = 0.0 }
-            return Double(self.offset.y + temp)
-        case .left:
-            return Double(self.offset.x)
-        case .right:
-            var temp = scrollView.bounds.width - self.size.width
-            if temp > 0.0 { temp = 0.0 }
-            return Double(self.offset.x + temp)
-        }
+    // To disable pinch to zoom gesture in WKWebView
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return nil
     }
 }

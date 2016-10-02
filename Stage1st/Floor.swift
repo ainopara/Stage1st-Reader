@@ -53,9 +53,8 @@ class Floor: NSObject, NSCoding {
     }
 
     required init?(coder aDecoder: NSCoder) {
-
-        let ID = aDecoder.decodeInteger(forKey: kFloorID)
-        let authorID = aDecoder.decodeInteger(forKey: kAuthorID)
+        let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
+        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int ?? aDecoder.decodeInteger(forKey: kAuthorID)
         guard
             ID != 0,
             authorID != 0,

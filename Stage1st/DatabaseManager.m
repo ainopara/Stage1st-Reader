@@ -301,9 +301,9 @@ DatabaseManager *MyDatabaseManager;
         }
     }];
     
-    // TODO: compress the generated search string,They are not build in function so that I must implement them and make them accessed by sqlite.
+    // TODO: compress the generated search string,They are not build-in function, so I must implement them and make them accessed by sqlite.
     // (use sqlite3_create_function to add custom function to sqlite)
-    //NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
+    // NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
     YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
     [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
