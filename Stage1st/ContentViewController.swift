@@ -44,13 +44,14 @@ class S1ContentViewController: UIViewController {
 
     var scrollType: S1ContentScrollType = .restorePosition
     var webPageAutomaticScrollingEnabled = true
-    var webPageDocumentReadyForAutomaticScrolling = false
-    var webPageContentSizeChangedForAutomaticScrolling = false
+    var webPageReadyForAutomaticScrolling = false
+    var webPageSizeChangedForAutomaticScrolling = false
     var finishFirstLoading = false
     var presentingImageViewer = false
     var presentingWebViewer = false
     var presentingContentViewController = false
 
+    // MARK: - Life Cycle
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
         self.init(viewModel: S1ContentViewModel(topic: topic, dataCenter: dataCenter))
     }
@@ -217,8 +218,8 @@ class S1ContentViewController: UIViewController {
         }
 
         DDLogDebug("[ContentVC] View did disappear begin")
-//        [self cancelRequest];
-//        [self saveTopicViewedState:nil];
+        cancelRequest()
+        saveTopicViewedState(sender: nil)
         DDLogDebug("[ContentVC] View did disappear end")
     }
 }
@@ -229,22 +230,28 @@ extension S1ContentViewController {
         if _isInFirstPage() {
             _ = self.navigationController?.popViewController(animated: true)
         } else {
-//            [self _hook_preChangeCurrentPage];
+            _hook_preChangeCurrentPage()
             self.viewModel.currentPage -= 1
 //            [self fetchContentForCurrentPageWithForceUpdate:NO];
         }
     }
 
     open func forward(sender: Any?) {
+
+        func scrollToBottom(animated: Bool) {
+            let offset = CGPoint(x: 0.0, y: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
+            webView.scrollView.setContentOffset(offset, animated: animated)
+        }
+
         switch (_isInLastPage(), self.webView.s1_atBottom()) {
         case (true, false):
-//            [self scrollToBottomAnimated:YES];
+            scrollToBottom(animated: true)
             break
         case (true, true):
-//            [self forceRefreshCurrentPage];
+            forceRefreshCurrentPage()
             break
         case (false, _):
-//            [self _hook_preChangeCurrentPage];
+            _hook_preChangeCurrentPage()
             self.viewModel.currentPage += 1
 //            [self fetchContentForCurrentPageWithForceUpdate:NO];
             break
@@ -260,8 +267,8 @@ extension S1ContentViewController {
             return
         }
 
-//        self._hook_preChangeCurrentPage()
-        self.viewModel.currentPage = 1
+        _hook_preChangeCurrentPage()
+        viewModel.currentPage = 1
 //        self.fetchContentForCurrentPageWithForceUpdate(false)
     }
 
@@ -272,7 +279,7 @@ extension S1ContentViewController {
             return
         }
 
-//        self._hook_preChangeCurrentPage()
+        _hook_preChangeCurrentPage()
         self.viewModel.currentPage = self.viewModel.totalPages
 //        self.fetchContentForCurrentPageWithForceUpdate(false)
     }
@@ -282,7 +289,12 @@ extension S1ContentViewController {
     }
 
     open func forceRefreshPressed(gestureRecognizer: UIGestureRecognizer) {
+        guard gestureRecognizer.state == .began else {
+            return
+        }
 
+        DDLogDebug("[ContentVC] Force refresh pressed")
+        forceRefreshCurrentPage()
     }
 
     open func action(sender: Any?) {
@@ -290,6 +302,7 @@ extension S1ContentViewController {
     }
 
     open func saveTopicViewedState(sender: Any?) {
+        DDLogDebug("[ContentVC] Save Topic View State Begin.")
 
     }
 
@@ -305,6 +318,13 @@ extension S1ContentViewController {
             titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.disable")
         }
         pageButton.setTitleColor(APColorManager.shared.colorForKey("content.pagebutton.text"), for: .normal)
+        toolBar.barTintColor = APColorManager.shared.colorForKey("appearance.toolbar.bartint")
+        toolBar.tintColor = APColorManager.shared.colorForKey("appearance.toolbar.tint")
+
+        setNeedsStatusBarAppearanceUpdate()
+
+        saveViewPositionForCurrentPage()
+//        [self fetchContentForCurrentPageWithForceUpdate:NO];
     }
 
     open func actionButtonTapped(for floorID: NSString) {
@@ -368,10 +388,45 @@ extension S1ContentViewController {
 
 // MARK: - WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        DDLogInfo("[ContentVC] did commit navigation: \(navigation)")
+    }
 
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        DDLogInfo("[ContentVC] webViewDidFinishLoad")
+        _hook_didFinishFullPageLoad(for: webView)
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        DDLogWarn("[ContentVC] webview failed to load with error: \(error)")
+        _hook_didFinishFullPageLoad(for: webView)
+    }
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.cancel)
+            return
+        }
+
+        if url.absoluteString == "about:blank" {
+            decisionHandler(.allow)
+            return
+        }
+
+        if url.absoluteString.hasPrefix("file://") {
+            if url.absoluteString.hasSuffix("html") {
+                decisionHandler(.allow)
+                return
+            }
+        }
+
+        DDLogWarn("no case match for url: \(url), fallback cancel")
+        decisionHandler(.cancel)
+        return
+    }
 }
 
-// MARK: - PullToActionDelagete
+// MARK: PullToActionDelagete
 extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewDidEndDraggingOutsideTopBoundWithOffset(_ offset: CGFloat) {
         guard
@@ -429,53 +484,87 @@ extension S1ContentViewController: PullToActionDelagete {
     }
 
     public func scrollViewContentSizeDidChange(_ contentSize: CGSize) {
-//        self.updateDecorationLines(contentSize)
-        self.webPageContentSizeChangedForAutomaticScrolling = true
+        updateDecorationLines(contentSize: contentSize)
+        webPageSizeChangedForAutomaticScrolling = true
     }
 
     public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
-        guard self.finishFirstLoading else {
-            if self._isInLastPage() {
-                self.forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
+        guard finishFirstLoading else {
+            if _isInLastPage() {
+                forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
             }
-            self.forwardButton.imageView?.layer.transform = CATransform3DIdentity
-            self.backButton.imageView?.layer.transform = CATransform3DIdentity
+            forwardButton.imageView?.layer.transform = CATransform3DIdentity
+            backButton.imageView?.layer.transform = CATransform3DIdentity
             return
         }
 
         // Process for bottom offset
         if let bottomProgress = progress["bottom"] {
-            if self._isInLastPage() {
+            if _isInLastPage() {
                 let image = bottomProgress >= 0.0 ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
                 let rotateAngle: CGFloat = CGFloat(bottomProgress >= 0.0 ? M_PI_2 * bottomProgress : M_PI_2)
 
-                self.forwardButton.setImage(image, for: .normal)
-                self.forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotateAngle, 0.0, 0.0, 1.0)
+                forwardButton.setImage(image, for: .normal)
+                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotateAngle, 0.0, 0.0, 1.0)
             } else {
                 let limitedBottomProgress = max(min(bottomProgress, 1.0), 0.0)
-                self.forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedBottomProgress), 0.0, 0.0, 1.0)
+                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedBottomProgress), 0.0, 0.0, 1.0)
             }
         }
 
         // Process for top offset
-        if self._isInFirstPage() {
-            self.backButton.imageView?.layer.transform = CATransform3DIdentity
+        if _isInFirstPage() {
+            backButton.imageView?.layer.transform = CATransform3DIdentity
         } else {
             if let topProgress = progress["top"] {
                 let limitedTopProgress = max(min(topProgress, 1.0), 0.0)
-                self.backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedTopProgress), 0.0, 0.0, 1.0)
+                backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedTopProgress), 0.0, 0.0, 1.0)
             }
         }
     }
 }
 
-// MARK: - Helper
-extension S1ContentViewController {
-    func _isInFirstPage() -> Bool {
-        return self.viewModel.currentPage == 1
-    }
-    func _isInLastPage() -> Bool {
-        return self.viewModel.currentPage >= self.viewModel.totalPages
+extension S1ContentViewController: REComposeViewControllerDelegate {
+    func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
+        attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
+        switch result {
+        case .cancelled:
+            composeViewController.dismiss(animated: true, completion: nil)
+        case .posted:
+            guard composeViewController.plainText.characters.count > 0 else {
+                return
+            }
+
+            let successBlock = { [weak self] in
+//                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
+                guard let strongSelf = self else { return }
+                strongSelf.attributedReplyDraft = nil;
+                if strongSelf._isInLastPage() {
+                    strongSelf.scrollType = .toBottom
+//                    strongSelf.fetch
+                }
+            }
+
+            let failureBlock = { (error: NSError) in
+                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
+                    DDLogDebug("[Network] NSURLErrorCancelled")
+//                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
+                } else {
+                    DDLogDebug("[Network] reply error: \(error)")
+//                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
+                }
+            }
+
+            // [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
+
+            if let replyTopicFloor = replyTopicFloor {
+                viewModel.dataCenter.replySpecificFloor(replyTopicFloor, in: viewModel.topic, atPage: NSNumber(value: viewModel.currentPage), withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
+            } else {
+                viewModel.dataCenter.reply(viewModel.topic, withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
+            }
+
+            composeViewController.dismiss(animated: true, completion: nil)
+        }
     }
 }
 
@@ -491,17 +580,17 @@ extension S1ContentViewController {
     func showUserViewController(_ userID: NSNumber) {
         let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID.intValue, name: ""))
         let userViewController = UserViewController(viewModel: viewModel)
-        self.navigationController?.pushViewController(userViewController, animated: true)
+        navigationController?.pushViewController(userViewController, animated: true)
     }
 
     func showQuoteFloorViewControllerWithTopic(_ topic: S1Topic, floors: [Floor], htmlString: String, centerFloorID: Int) {
         let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self.viewModel).pageBaseURL())
         let quoteFloorViewController = S1QuoteFloorViewController(viewModel: viewModel)
-        self.navigationController?.pushViewController(quoteFloorViewController, animated: true)
+        navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }
 }
 
-// MARK: NSUserActivity
+// MARK: NSUserActivity (aspect)
 extension S1ContentViewController {
     func _setupActivity() {
         DispatchQueue.global().async { [weak self] in
@@ -525,7 +614,195 @@ extension S1ContentViewController {
 
     open override func updateUserActivityState(_ activity: NSUserActivity) {
         DDLogDebug("[ContentVC] Hand Off Activity Updated")
-        activity.userInfo = self.viewModel.activityUserInfo()
-        activity.webpageURL = self.viewModel.correspondingWebPageURL() as URL?
+        activity.userInfo = viewModel.activityUserInfo()
+        activity.webpageURL = viewModel.correspondingWebPageURL() as URL?
+    }
+}
+
+// MARK: - Reply (aspect)
+extension S1ContentViewController {
+    func presentReplyView(to floor: Floor?) {
+        // Check in login state.
+        guard viewModel.topic.fID != nil, viewModel.topic.formhash != nil else {
+            alertRefresh()
+            return
+        }
+
+        guard let _ = UserDefaults.standard.value(forKey: "InLoginStateID") else {
+            let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
+            present(loginViewController, animated: true, completion: nil)
+            return
+        }
+
+        let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
+
+        // configure
+        replyViewController.textView.keyboardAppearance = APColorManager.shared.isDarkTheme() ? .dark : .default
+        replyViewController.textView.tintColor = APColorManager.shared.colorForKey("reply.tint")
+        replyViewController.textView.textColor = APColorManager.shared.colorForKey("reply.text")
+        replyViewController.sheetBackgroundColor = APColorManager.shared.colorForKey("reply.background")
+
+        replyTopicFloor = floor
+        if let floor = floor {
+            replyViewController.title = "@\(floor.author.name)"
+        } else {
+            replyViewController.title = NSLocalizedString("ContentView_Reply_Title", comment: "Reply")
+        }
+
+        if let replyDraft = attributedReplyDraft {
+            replyViewController.textView.attributedText = replyDraft
+        }
+
+        replyViewController.delegate = self
+        let frame = CGRect(x: 0.0, y: 0.0, width: replyViewController.view.bounds.width, height: 35.0)
+        replyViewController.accessoryView = ReplyAccessoryView(frame: frame, withComposeViewController: replyViewController)
+        ReplyAccessoryView.resetTextViewStyle(replyViewController.textView)
+
+        present(replyViewController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - Network (view model)
+extension S1ContentViewController {
+    func fetchContentForCurrentPage(with forceUpdate: Bool) {
+        updateToolBar()
+
+        userActivity?.needsSave = true
+
+        // remove cache for last page
+        if forceUpdate {
+            viewModel.dataCenter.removePrecachedFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage))
+        }
+
+        // Set up HUD
+        DDLogVerbose("[ContentVC] check precache exist")
+
+        
+    }
+}
+
+// MARK: - Helper (view model)
+extension S1ContentViewController {
+    func _isInFirstPage() -> Bool {
+        return viewModel.currentPage == 1
+    }
+    func _isInLastPage() -> Bool {
+        return viewModel.currentPage >= viewModel.totalPages
+    }
+}
+
+// MARK: - Helper (hook)
+extension S1ContentViewController {
+    func _hook_preChangeCurrentPage() {
+
+    }
+
+    func _hook_preLoadNextPage() {
+
+    }
+
+    func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
+
+    }
+
+    func _hook_didFinishFullPageLoad(for webView: WKWebView) {
+
+    }
+}
+
+// MARK: - Helper (Misc)
+extension S1ContentViewController {
+    func updateToolBar() {
+        func updateForwardButton() {
+            forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
+        }
+
+        func updateBackwardButton() {
+            backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
+        }
+
+        updateForwardButton()
+        updateBackwardButton()
+    }
+
+    func updateTitleLabel(title: String) {
+        // FIXME: title label should be change by monitoring viewmodel's property change, not by manually call this method
+        titleLabel.text = title
+        titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
+    }
+
+    func updateDecorationLines(contentSize: CGSize) {
+        // Seems no more necessary if we use auto layout
+
+//        self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
+//        self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
+//        self.topDecorateLine.hidden = !(self.viewModel.currentPage != 1 && self.finishFirstLoading);
+//        self.bottomDecorateLine.hidden = !self.finishFirstLoading;
+    }
+
+    static func positionOfElement(with ID: String, in webView: WKWebView) -> CGRect {
+        let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
+        var rect = CGRect.zero
+        let semaphore = DispatchSemaphore(value: 1)
+        webView.evaluateJavaScript(script) { (result, error) in
+            defer {
+                semaphore.signal()
+            }
+
+            guard error == nil else {
+                DDLogWarn("failed to get position of element: \(ID) with error: \(error)")
+                return
+            }
+
+            guard let resultString = result as? String else {
+                DDLogWarn("failed to get position of element: \(ID) with result: \(result)")
+                return
+            }
+
+            rect = CGRectFromString(resultString)
+        }
+
+        semaphore.wait()
+        return rect
+    }
+
+    func saveViewPositionForCurrentPage() {
+        guard webView.scrollView.contentOffset.y != 0 else {
+            return
+        }
+
+        viewModel.cacheOffsetForCurrentPage(webView.scrollView.contentOffset.y)
+    }
+
+    func saveViewPositionForPreviousPage() {
+        guard webView.scrollView.contentOffset.y != 0 else {
+            return
+        }
+
+        viewModel.cacheOffsetForPreviousPage(webView.scrollView.contentOffset.y)
+    }
+
+    func shouldPresentingFavoriteButtonOnToolBar() -> Bool {
+        return view.bounds.width > 320.0 + 1.0
+    }
+
+    func hideHUDIfNoMessageToShow() {
+        if let message = viewModel.topic.message, message != "" {
+            refreshHUD.showMessage(message)
+            refreshHUD.hide(withDelay: 3.0)
+        } else {
+            refreshHUD.hide(withDelay: 0.3)
+        }
+    }
+
+    func forceRefreshCurrentPage() {
+        cancelRequest()
+        saveViewPositionForCurrentPage()
+
+//        [self fetchContentForCurrentPageWithForceUpdate:YES];
+    }
+
+    func cancelRequest() {
+        viewModel.dataCenter.cancelRequest()
     }
 }

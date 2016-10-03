@@ -52,10 +52,8 @@ CGFloat const bottomOffset = 60.0;
 //@end
 
 @interface S1ContentViewController (Stage1stAdd) <
-WKNavigationDelegate,
 JTSImageViewControllerInteractionsDelegate,
-JTSImageViewControllerOptionsDelegate,
-REComposeViewControllerDelegate
+JTSImageViewControllerOptionsDelegate
 >
 
 @end
@@ -109,7 +107,7 @@ REComposeViewControllerDelegate
         [strongSelf.pageButton setTitle:[strongSelf.viewModel pageButtonString] forState:UIControlStateNormal];
     }];
 
-    [[RACSignal combineLatest:@[RACObserve(self, webPageDocumentReadyForAutomaticScrolling), RACObserve(self, webPageContentSizeChangedForAutomaticScrolling)]] subscribeNext:^(RACTuple *x) {
+    [[RACSignal combineLatest:@[RACObserve(self, webPageReadyForAutomaticScrolling), RACObserve(self, webPageSizeChangedForAutomaticScrolling)]] subscribeNext:^(RACTuple *x) {
         DDLogVerbose(@"[ContentVC] document ready: %@, content size changed: %@", x.first, x.second);
         __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
@@ -181,20 +179,6 @@ REComposeViewControllerDelegate
     [picker showActionSheetPicker];
 }
 
-- (void)forceRefreshPressed:(UIGestureRecognizer *)gr {
-    if (gr.state == UIGestureRecognizerStateBegan) {
-        DDLogDebug(@"[ContentVC] Force refresh pressed");
-        [self forceRefreshCurrentPage];
-    }
-}
-
-- (void)forceRefreshCurrentPage {
-    [self cancelRequest];
-    [self saveViewPositionForCurrentPage];
-
-    [self fetchContentForCurrentPageWithForceUpdate:YES];
-}
-
 - (void)action:(id)sender {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
@@ -258,20 +242,6 @@ REComposeViewControllerDelegate
 
 #pragma mark - WKNavigationDelegate
 
-- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
-    DDLogInfo(@"[ContentVC] did commit navigation: %@", navigation);
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    DDLogInfo(@"[ContentVC] webViewDidFinishLoad");
-    [self didFinishFullPageLoadForWebView:webView];
-}
-
-- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    DDLogWarn(@"[ContentVC] webview failed to load with error: %@", error);
-    [self didFinishFullPageLoadForWebView:webView];
-}
-
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSURLRequest *request = navigationAction.request;
     if ([request.URL.absoluteString isEqualToString:@"about:blank"]) {
@@ -286,7 +256,7 @@ REComposeViewControllerDelegate
 
         if ([request.URL.path isEqualToString:@"/ready"]) {
             DDLogDebug(@"[WebView] ready");
-            self.webPageDocumentReadyForAutomaticScrolling = YES;
+            self.webPageReadyForAutomaticScrolling = YES;
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
@@ -319,7 +289,7 @@ REComposeViewControllerDelegate
             DDLogDebug(@"[ContentVC] JTS View Image: %@", imageURL);
             JTSImageInfo *imageInfo = [[JTSImageInfo alloc] init];
             imageInfo.imageURL = [[NSURL alloc] initWithString:imageURL];
-            imageInfo.referenceRect = [self positionOfElementWithId:imageID];
+            imageInfo.referenceRect = [[self class] positionOfElementWith:imageID in:self.webView];
             imageInfo.referenceView = self.webView;
 
             JTSImageViewController *imageViewer = [[JTSImageViewController alloc] initWithImageInfo:imageInfo mode:JTSImageViewControllerMode_Image backgroundStyle:JTSImageViewControllerBackgroundOption_Blurred];
@@ -454,51 +424,6 @@ REComposeViewControllerDelegate
     return 0.3;
 }
 
-#pragma mark REComposeViewControllerDelegate
-
-- (void)composeViewController:(REComposeViewController *)composeViewController didFinishWithResult:(REComposeResult)result {
-    self.attributedReplyDraft = [composeViewController.textView.attributedText mutableCopy];
-    if (result == REComposeResultCancelled) {
-        [composeViewController dismissViewControllerAnimated:YES completion:NULL];
-    } else if (result == REComposeResultPosted) {
-        if (composeViewController.plainText.length > 0) {
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
-            __weak __typeof__(self) weakSelf = self;
-            void (^successBlock)() = ^{
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
-                __strong __typeof__(self) strongSelf = weakSelf;
-                if (strongSelf == nil) {
-                    return;
-                }
-
-                strongSelf.attributedReplyDraft = nil;
-                if (strongSelf.viewModel.currentPage == strongSelf.viewModel.totalPages) {
-                    strongSelf.scrollType = S1ContentScrollTypeToBottom;
-                    [strongSelf fetchContentForCurrentPageWithForceUpdate:YES];
-                }
-            };
-            void (^failureBlock)() = ^(NSError *error) {
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error.code == NSURLErrorCancelled) {
-                    DDLogDebug(@"[Network] NSURLErrorCancelled");
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
-                } else {
-                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
-                }
-            };
-
-            if (self.replyTopicFloor) {
-                [self.dataCenter replySpecificFloor:self.replyTopicFloor inTopic:self.viewModel.topic atPage:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage] withText:composeViewController.plainText success: successBlock failure:failureBlock];
-            } else {
-                [self.dataCenter replyTopic:self.viewModel.topic withText:composeViewController.plainText success:successBlock failure:failureBlock];
-            }
-            [composeViewController dismissViewControllerAnimated:YES completion:nil];
-        }
-    }
-}
-
 #pragma mark - Networking
 
 - (void)fetchContentForCurrentPageWithForceUpdate:(BOOL)forceUpdate {
@@ -584,10 +509,6 @@ REComposeViewControllerDelegate
     }];
 }
 
-- (void)cancelRequest {
-    [self.dataCenter cancelRequest];
-}
-
 #pragma mark - Layout
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -613,48 +534,6 @@ REComposeViewControllerDelegate
     self.toolBar.items = items;
 }
 
-#pragma mark - Reply
-
-- (void)presentReplyViewToFloor: (Floor *)topicFloor {
-    // Check in login state.
-    if (self.viewModel.topic.fID == nil || self.viewModel.topic.formhash == nil) {
-        [self alertRefresh];
-        return;
-    }
-
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"]) {
-        S1LoginViewController *loginViewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
-        [self presentViewController:loginViewController animated:YES completion:NULL];
-        return;
-    }
-
-    REComposeViewController *replyController = [[REComposeViewController alloc] initWithNibName:nil bundle:nil];
-
-    replyController.textView.keyboardAppearance = [[APColorManager shared] isDarkTheme] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-    replyController.sheetBackgroundColor = [[APColorManager shared] colorForKey:@"reply.background"];
-    replyController.textView.tintColor = [[APColorManager shared] colorForKey:@"reply.tint"];
-    replyController.textView.textColor = [[APColorManager shared] colorForKey:@"reply.text"];
-
-    // Set title
-    replyController.title = NSLocalizedString(@"ContentView_Reply_Title", @"Reply");
-    if (topicFloor) {
-        replyController.title = [@"@" stringByAppendingString:topicFloor.author.name];
-        self.replyTopicFloor = topicFloor;
-    } else {
-        self.replyTopicFloor = nil;
-    }
-
-    if (self.attributedReplyDraft != nil) {
-        [replyController.textView setAttributedText:self.attributedReplyDraft];
-    }
-
-    replyController.delegate = self;
-    replyController.accessoryView = [[ReplyAccessoryView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(replyController.view.bounds), 35) withComposeViewController:replyController];
-    [ReplyAccessoryView resetTextViewStyle:replyController.textView];
-
-    [self presentViewController:replyController animated:YES completion:NULL];
-}
-
 #pragma mark - Notificatons
 
 - (void)saveTopicViewedState:(id)sender {
@@ -673,115 +552,15 @@ REComposeViewControllerDelegate
     DDLogInfo(@"[ContentVC] Save Topic View State Finish.");
 }
 
-- (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-    self.view.backgroundColor = [[APColorManager shared] colorForKey:@"content.background"];
-    self.webView.backgroundColor = [[APColorManager shared] colorForKey:@"content.webview.background"];
-
-    self.topDecorateLine.backgroundColor = [[APColorManager shared] colorForKey:@"content.decoration.line"];
-    self.bottomDecorateLine.backgroundColor = [[APColorManager shared] colorForKey:@"content.decoration.line"];
-    if (self.viewModel.topic.title == nil || [self.viewModel.topic.title isEqualToString:@""]) {
-        self.titleLabel.text = [NSString stringWithFormat: @"%@ 载入中...", self.viewModel.topic.topicID];
-        self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.disable"];
-    } else {
-        self.titleLabel.text = self.viewModel.topic.title;
-        self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.normal"];
-    }
-    [self.pageButton setTitleColor:[[APColorManager shared] colorForKey:@"content.pagebutton.text"] forState:UIControlStateNormal];
-    self.toolBar.barTintColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.bartint"];
-    self.toolBar.tintColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.tint"];
-
-    [self setNeedsStatusBarAppearanceUpdate];
-
-    [self saveViewPositionForCurrentPage];
-    [self fetchContentForCurrentPageWithForceUpdate:NO];
-}
-
-#pragma mark - Helpers
-
-- (void)scrollToBottomAnimated:(BOOL)animated {
-    [self.webView.scrollView setContentOffset:CGPointMake(0, self.webView.scrollView.contentSize.height - self.webView.scrollView.bounds.size.height) animated:animated];
-}
-
-- (void)updateToolBar {
-    [self updateForwardButton];
-    [self updateBackwardButton];
-}
-
-- (void)updateForwardButton {
-    [self.forwardButton setImage:[self.viewModel forwardButtonImage] forState:UIControlStateNormal];
-}
-
-- (void)updateBackwardButton {
-    [self.backButton setImage:[self.viewModel backwardButtonImage] forState:UIControlStateNormal];
-}
-
-- (void)updateTitleLabelWithTitle:(NSString *)title {
-    self.titleLabel.text = title;
-    self.titleLabel.textColor = [[APColorManager shared] colorForKey:@"content.titlelabel.text.normal"];
-}
-
-- (void)updateDecorationLines:(CGSize)contentSize {
-    self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
-    self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
-    self.topDecorateLine.hidden = !(self.viewModel.currentPage != 1 && self.finishFirstLoading);
-    self.bottomDecorateLine.hidden = !self.finishFirstLoading;
-}
-
-- (CGRect)positionOfElementWithId:(NSString *)elementID {
-    NSString *js = @"function f(){ var r = document.getElementById('%@').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();";
-//    NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:];
-//    CGRect rect = CGRectFromString(result);
-    __block CGRect rect = CGRectZero;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
-    [self.webView evaluateJavaScript:[NSString stringWithFormat:js, elementID] completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-        if (error != nil) {
-            DDLogWarn(@"failed to get position of element: %@", elementID);
-            dispatch_semaphore_signal(semaphore);
-        }
-        rect = CGRectFromString(result);
-        dispatch_semaphore_signal(semaphore);
-    }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    return rect;
-}
-
-- (void)saveViewPositionForCurrentPage {
-    if (self.webView.scrollView.contentOffset.y != 0) {
-        [self.viewModel cacheOffsetForCurrentPage:self.webView.scrollView.contentOffset.y];
-    }
-}
-
-- (void)saveViewPositionForPreviousPage {
-    if (self.webView.scrollView.contentOffset.y != 0) {
-        [self.viewModel cacheOffsetForPreviousPage:self.webView.scrollView.contentOffset.y];
-    }
-}
-
-- (BOOL)shouldPresentingFavoriteButtonOnToolBar {
-    return CGRectGetWidth(self.view.bounds) > 321.0;
-}
-
-- (void)hideHUDIfNoMessageToShow {
-    if (self.viewModel.topic.message == nil || [self.viewModel.topic.message isEqualToString:@""]) {
-        [self.refreshHUD hideWithDelay:0.3];
-    } else {
-        [self.refreshHUD showMessage:self.viewModel.topic.message];
-    }
-}
-
 #pragma mark - Restore Position
 
 - (void)preChangeCurrentPage {
     DDLogDebug(@"[webView] pre change current page");
     [self cancelRequest];
     [self saveViewPositionForCurrentPage];
-    self.webPageDocumentReadyForAutomaticScrolling = NO;
-    self.webPageContentSizeChangedForAutomaticScrolling = NO;
+    self.webPageReadyForAutomaticScrolling = NO;
+    self.webPageSizeChangedForAutomaticScrolling = NO;
     self.webPageAutomaticScrollingEnabled = YES;
-}
-
-- (void)preLoadNextPage {
-
 }
 
 - (void)didFinishBasicPageLoadForWebView:(WKWebView *)webView {
@@ -841,14 +620,5 @@ REComposeViewControllerDelegate
 
     self.scrollType = S1ContentScrollTypeRestorePosition;
 }
-
-#pragma mark - Getters and Setters
-
-//- (UIBarButtonItem *)actionBarButtonItem {
-//    if (_actionBarButtonItem == nil) {
-//        _actionBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(action:)];
-//    }
-//    return _actionBarButtonItem;
-//}
 
 @end
