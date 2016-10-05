@@ -9,6 +9,7 @@
 import WebKit
 import SnapKit
 import CocoaLumberjack
+import ActionSheetPicker_3_0
 import Crashlytics
 
 private let topOffset: CGFloat = -80.0
@@ -16,7 +17,6 @@ private let bottomOffset: CGFloat = 60.0
 
 class S1ContentViewController: UIViewController {
     let viewModel: S1ContentViewModel
-    let dataCenter: S1DataCenter
 
     var toolBar = UIToolbar(frame: .zero)
     var webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
@@ -27,8 +27,8 @@ class S1ContentViewController: UIViewController {
     var refreshHUD = S1HUD(frame: .zero)
     var hintHUD = S1HUD(frame: .zero)
 
-    var backButton = UIButton(frame: .zero)
-    var forwardButton = UIButton(frame: .zero)
+    var backButton = UIButton(type: .system)
+    var forwardButton = UIButton(type: .system)
     var pageButton = UIButton(frame: .zero)
     var favoriteButton = UIButton(frame: .zero)
     lazy var actionBarButtonItem: UIBarButtonItem = {
@@ -58,7 +58,6 @@ class S1ContentViewController: UIViewController {
 
     init(viewModel: S1ContentViewModel) {
         self.viewModel = viewModel
-        self.dataCenter = viewModel.dataCenter
 
         super.init(nibName: nil, bundle: nil)
 
@@ -119,9 +118,50 @@ class S1ContentViewController: UIViewController {
             titleLabel.text = "\(self.viewModel.topic.topicID) 载入中..."
         }
 
+        // Toolbar items
+        let forwardItem = UIBarButtonItem(customView: forwardButton)
+        let backwardItem = UIBarButtonItem(customView: backButton)
+        favoriteButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
+        favoriteButton.imageView?.clipsToBounds = false
+        favoriteButton.imageView?.contentMode = .center
+        let favoriteItem = UIBarButtonItem(customView: favoriteButton)
+
+        updateToolBar()
+
+        let labelItem = UIBarButtonItem(customView: pageButton)
+        labelItem.width = 80.0
+
+        let fixItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixItem.width = 26.0
+
+        let fixItem2 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixItem2.width = 48.0
+
+        let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+
+        if !shouldPresentingFavoriteButtonOnToolBar() {
+            favoriteItem.customView?.bounds = .zero
+            favoriteItem.customView?.isHidden = true
+            fixItem2.width = 0.0
+        }
+
+        toolBar.setItems([backwardItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, actionBarButtonItem], animated: false)
+
+        perform(Selector(("viewDidLoadObjC")))
+
+        // Activity
+        _setupActivity()
+
         // Notification
         NotificationCenter.default.addObserver(self, selector: #selector(saveTopicViewedState(sender:)), name: .UIApplicationDidEnterBackground, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
+
+        // Fetch
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf._isInLastPage())
+        }
+
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -154,6 +194,8 @@ class S1ContentViewController: UIViewController {
             make.bottom.equalTo(self.toolBar.snp.top)
         }
 
+        view.layoutIfNeeded()
+
         webView.scrollView.addSubview(topDecorateLine)
         topDecorateLine.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(self.webView.scrollView)
@@ -168,12 +210,16 @@ class S1ContentViewController: UIViewController {
             make.top.equalTo(self.webView.scrollView.subviews[0]).offset(bottomOffset)
         }
 
+//        view.layoutIfNeeded()
+
         webView.scrollView.insertSubview(titleLabel, at: 0)
         titleLabel.snp.makeConstraints { (make) in
             make.bottom.equalTo(self.webView.scrollView.subviews[1].snp.top)
             make.centerX.equalTo(self.webView.scrollView.snp.centerX)
             make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
         }
+
+//        view.layoutIfNeeded()
 
         view.addSubview(refreshHUD)
         refreshHUD.snp.makeConstraints { (make) in
@@ -232,7 +278,7 @@ extension S1ContentViewController {
         } else {
             _hook_preChangeCurrentPage()
             self.viewModel.currentPage -= 1
-//            [self fetchContentForCurrentPageWithForceUpdate:NO];
+            self.fetchContentForCurrentPage(forceUpdate: false)
         }
     }
 
@@ -253,7 +299,7 @@ extension S1ContentViewController {
         case (false, _):
             _hook_preChangeCurrentPage()
             self.viewModel.currentPage += 1
-//            [self fetchContentForCurrentPageWithForceUpdate:NO];
+            self.fetchContentForCurrentPage(forceUpdate: false)
             break
         default:
             DDLogError("This should never happen, just make swift compiler happy.")
@@ -269,7 +315,7 @@ extension S1ContentViewController {
 
         _hook_preChangeCurrentPage()
         viewModel.currentPage = 1
-//        self.fetchContentForCurrentPageWithForceUpdate(false)
+        self.fetchContentForCurrentPage(forceUpdate: false)
     }
 
     open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
@@ -281,11 +327,50 @@ extension S1ContentViewController {
 
         _hook_preChangeCurrentPage()
         self.viewModel.currentPage = self.viewModel.totalPages
-//        self.fetchContentForCurrentPageWithForceUpdate(false)
+        self.fetchContentForCurrentPage(forceUpdate: false)
     }
 
     open func pickPage(sender: Any?) {
+        func generatePageList() -> [String] {
+            var pageList = [String]()
 
+            for page in 1...max(viewModel.currentPage, viewModel.totalPages) {
+                if viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: page)) {
+                    pageList.append("✓第 \(page) 页✓")
+                } else {
+                    pageList.append("第 \(page) 页")
+                }
+            }
+
+            return pageList
+        }
+
+        let pageList = generatePageList()
+
+        let picker = ActionSheetStringPicker(title: "", rows: pageList, initialSelection: Int(viewModel.currentPage - 1), doneBlock: { [weak self] (picker, selectedIndex, selectedValue) in
+            guard let strongSelf = self else { return }
+
+            if strongSelf.viewModel.currentPage == UInt(selectedIndex + 1) {
+                strongSelf.forceRefreshCurrentPage()
+            } else {
+                strongSelf._hook_preChangeCurrentPage()
+                strongSelf.viewModel.currentPage = UInt(selectedIndex + 1)
+                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+            }
+        }, cancel: nil, origin: pageButton)
+
+        picker?.pickerBackgroundColor = APColorManager.shared.colorForKey("content.picker.background")
+        picker?.toolbarBackgroundColor = APColorManager.shared.colorForKey("appearance.toolbar.bartint")
+        picker?.toolbarButtonsColor = APColorManager.shared.colorForKey("appearance.toolbar.tint")
+
+        let labelParagraphStyle = NSMutableParagraphStyle()
+        labelParagraphStyle.alignment = .center
+        picker?.pickerTextAttributes = [
+            NSParagraphStyleAttributeName: labelParagraphStyle,
+            NSFontAttributeName: UIFont.systemFont(ofSize: 19.0),
+            NSForegroundColorAttributeName: APColorManager.shared.colorForKey("content.picker.text")
+        ]
+        picker?.show()
     }
 
     open func forceRefreshPressed(gestureRecognizer: UIGestureRecognizer) {
@@ -302,8 +387,11 @@ extension S1ContentViewController {
     }
 
     open func saveTopicViewedState(sender: Any?) {
-        DDLogDebug("[ContentVC] Save Topic View State Begin.")
-
+        if finishFirstLoading {
+            viewModel.saveTopicViewedState(lastViewedPosition: Double(webView.scrollView.contentOffset.y))
+        } else {
+            viewModel.saveTopicViewedState(lastViewedPosition: nil)
+        }
     }
 
     open override func didReceivePaletteChangeNotification(_ notification: Notification?) {
@@ -324,7 +412,7 @@ extension S1ContentViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         saveViewPositionForCurrentPage()
-//        [self fetchContentForCurrentPageWithForceUpdate:NO];
+        fetchContentForCurrentPage(forceUpdate: false)
     }
 
     open func actionButtonTapped(for floorID: NSString) {
@@ -366,7 +454,7 @@ extension S1ContentViewController {
                 return
             }
 
-//            strongSelf.presentReplyView(to: floor)
+            strongSelf.presentReplyView(toFloor: floor)
         }))
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .cancel, handler: nil))
@@ -484,7 +572,7 @@ extension S1ContentViewController: PullToActionDelagete {
     }
 
     public func scrollViewContentSizeDidChange(_ contentSize: CGSize) {
-        updateDecorationLines(contentSize: contentSize)
+        _updateDecorationLines(contentSize: contentSize)
         webPageSizeChangedForAutomaticScrolling = true
     }
 
@@ -538,19 +626,21 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
             let successBlock = { [weak self] in
 //                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                 guard let strongSelf = self else { return }
-                strongSelf.attributedReplyDraft = nil;
+                strongSelf.attributedReplyDraft = nil
                 if strongSelf._isInLastPage() {
                     strongSelf.scrollType = .toBottom
-//                    strongSelf.fetch
+                    strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
             }
 
-            let failureBlock = { (error: NSError) in
-                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
+            let failureBlock = { (error: Error) in
+                let nserror = error as NSError
+
+                if nserror.domain == NSURLErrorDomain && nserror.code == NSURLErrorCancelled {
                     DDLogDebug("[Network] NSURLErrorCancelled")
 //                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else {
-                    DDLogDebug("[Network] reply error: \(error)")
+                    DDLogDebug("[Network] reply error: \(nserror)")
 //                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                 }
             }
@@ -621,7 +711,7 @@ extension S1ContentViewController {
 
 // MARK: - Reply (aspect)
 extension S1ContentViewController {
-    func presentReplyView(to floor: Floor?) {
+    func presentReplyView(toFloor floor: Floor?) {
         // Check in login state.
         guard viewModel.topic.fID != nil, viewModel.topic.formhash != nil else {
             alertRefresh()
@@ -664,7 +754,7 @@ extension S1ContentViewController {
 
 // MARK: - Network (view model)
 extension S1ContentViewController {
-    func fetchContentForCurrentPage(with forceUpdate: Bool) {
+    func fetchContentForCurrentPage(forceUpdate: Bool) {
         updateToolBar()
 
         userActivity?.needsSave = true
@@ -677,7 +767,66 @@ extension S1ContentViewController {
         // Set up HUD
         DDLogVerbose("[ContentVC] check precache exist")
 
-        
+        if !viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage)) {
+            // only show hud when no cached floors
+            DDLogVerbose("[ContentVC] Show HUD")
+            refreshHUD.showActivityIndicator()
+
+            refreshHUD.refreshEventHandler = { [weak self] (hud) in
+                guard let strongSelf = self else { return }
+
+                hud?.hide(withDelay: 0.0)
+                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+            }
+        }
+
+        viewModel.contentPage(success: { [weak self] (contents, shouldRefetch) in
+            guard let strongSelf = self else { return }
+
+            strongSelf.updateToolBar()
+            if let title = strongSelf.viewModel.topic.title {
+                strongSelf.updateTitleLabel(title: title)
+            }
+
+            strongSelf.saveViewPositionForPreviousPage()
+            strongSelf.finishFirstLoading = true
+            strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
+
+            // Prepare next page
+            if (!strongSelf._isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
+                strongSelf.viewModel.dataCenter.setFinishHandlerFor(strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), andHandler: { [weak self] (floorList) in
+                    guard let strongSelf = self else { return }
+                    strongSelf.updateToolBar()
+                })
+                strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), shouldUpdate: false)
+            }
+
+            // Dismiss HUD if exist
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.hideHUDIfNoMessageToShow()
+            }
+
+            // Auto refresh when current page not full.
+            if shouldRefetch {
+                strongSelf.scrollType = .restorePosition
+                strongSelf.fetchContentForCurrentPage(forceUpdate: true)
+            }
+
+        }) { [weak self] (error) in
+            guard let strongSelf = self else { return }
+
+            if (error as NSError).code == NSURLErrorCancelled {
+                DDLogDebug("request cancelled.")
+                // TODO:
+                //            if (strongSelf.refreshHUD != nil) {
+                //                [strongSelf.refreshHUD hideWithDelay:0.3];
+                //            }
+            } else {
+                DDLogDebug("[ContentVC] fetch failed with error: \(error)")
+                strongSelf.refreshHUD.showRefreshButton()
+            }
+        }
     }
 }
 
@@ -694,19 +843,67 @@ extension S1ContentViewController {
 // MARK: - Helper (hook)
 extension S1ContentViewController {
     func _hook_preChangeCurrentPage() {
+        DDLogDebug("[webView] pre change current page")
 
+        cancelRequest()
+        saveViewPositionForCurrentPage()
+
+        webPageReadyForAutomaticScrolling = false
+        webPageSizeChangedForAutomaticScrolling = false
+        webPageAutomaticScrollingEnabled = true
     }
 
     func _hook_preLoadNextPage() {
-
+        // Noting to do
     }
 
     func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
+        DDLogDebug("[webView] basic page loaded")
+        let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
 
+        switch scrollType {
+        case .pullUpForNext:
+            // Set position
+            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: -webView.bounds.height), animated: false)
+            // Animated scroll
+            UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
+                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+                webView.scrollView.alpha = 1.0
+            }, completion: nil)
+        case .pullDownForPrevious:
+            // Set position
+            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: webView.scrollView.contentSize.height), animated: false)
+            // Animated scroll
+            UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
+                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
+                webView.scrollView.alpha = 1.0
+            }, completion: nil)
+        case .toBottom:
+            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: true)
+        default:
+            break
+        }
     }
 
     func _hook_didFinishFullPageLoad(for webView: WKWebView) {
+        DDLogDebug("[webView] full page loaded")
+        let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
+        switch scrollType {
+        case .toBottom:
+            fallthrough
+        case .pullDownForPrevious:
+            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
+        case .pullUpForNext:
+            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+        default:
+            if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
+                // Restore last view position from cached position in this view controller.
+                let offset = CGPoint(x: webView.scrollView.contentOffset.x, y: max(min(maxOffset, CGFloat(positionForPage.doubleValue)), 0.0))
+                webView.scrollView.setContentOffset(offset, animated: false)
+            }
+        }
 
+        scrollType = .restorePosition
     }
 }
 
@@ -731,13 +928,13 @@ extension S1ContentViewController {
         titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
     }
 
-    func updateDecorationLines(contentSize: CGSize) {
+    func _updateDecorationLines(contentSize: CGSize) {
         // Seems no more necessary if we use auto layout
-
 //        self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
 //        self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
-//        self.topDecorateLine.hidden = !(self.viewModel.currentPage != 1 && self.finishFirstLoading);
-//        self.bottomDecorateLine.hidden = !self.finishFirstLoading;
+
+        topDecorateLine.isHidden = _isInFirstPage() || !self.finishFirstLoading
+        bottomDecorateLine.isHidden = !self.finishFirstLoading
     }
 
     static func positionOfElement(with ID: String, in webView: WKWebView) -> CGRect {
@@ -799,7 +996,7 @@ extension S1ContentViewController {
         cancelRequest()
         saveViewPositionForCurrentPage()
 
-//        [self fetchContentForCurrentPageWithForceUpdate:YES];
+        fetchContentForCurrentPage(forceUpdate: true)
     }
 
     func cancelRequest() {

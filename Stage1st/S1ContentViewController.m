@@ -64,39 +64,6 @@ JTSImageViewControllerOptionsDelegate
 
 - (void)viewDidLoadObjC {
 
-    UIBarButtonItem *forwardItem = [[UIBarButtonItem alloc] initWithCustomView:self.forwardButton];
-    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:self.backButton];
-
-    // Favorite Button
-    self.favoriteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.favoriteButton.frame = CGRectMake(0, 0, 40, 30);
-    self.favoriteButton.imageView.clipsToBounds = NO;
-    self.favoriteButton.imageView.contentMode = UIViewContentModeCenter;
-
-    UIBarButtonItem *favoriteItem = [[UIBarButtonItem alloc] initWithCustomView:self.favoriteButton];
-
-    [self updateToolBar];
-    
-    UIBarButtonItem *labelItem = [[UIBarButtonItem alloc] initWithCustomView:self.pageButton];
-    labelItem.width = 80.0;
-    
-    UIBarButtonItem *fixItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem.width = 26.0;
-    UIBarButtonItem *fixItem2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    fixItem2.width = 48.0;
-    UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-
-    // Hide Favorite button when device do not have enough space for it.
-    if (![self shouldPresentingFavoriteButtonOnToolBar]) {
-        favoriteItem.customView.bounds = CGRectZero;
-        favoriteItem.customView.hidden = YES;
-        fixItem2.width = 0.0;
-    }
-    
-    [self.toolBar setItems:@[backItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, self.actionBarButtonItem]];
-
-
-   
     __weak __typeof__(self) weakSelf = self;
     [[RACSignal combineLatest:@[RACObserve(self.viewModel, currentPage), RACObserve(self.viewModel, totalPages)]] subscribeNext:^(RACTuple *x) {
         DDLogVerbose(@"[ContentVM] Current page or totoal page changed: %@/%@", x.first, x.second);
@@ -114,7 +81,7 @@ JTSImageViewControllerOptionsDelegate
             return;
         }
         if ([x.first boolValue] && [x.second boolValue] && strongSelf.webPageAutomaticScrollingEnabled) {
-            [strongSelf didFinishBasicPageLoadForWebView:strongSelf.webView];
+            [strongSelf _hook_didFinishBasicPageLoadFor:strongSelf.webView];
             strongSelf.webPageAutomaticScrollingEnabled = NO;
         }
     }];
@@ -134,50 +101,9 @@ JTSImageViewControllerOptionsDelegate
         }
         [strongSelf.favoriteButton setImage:[strongSelf.viewModel favoriteButtonImage] forState:UIControlStateNormal];
     }];
-
-    [self _setupActivity];
-
-    [self.view layoutIfNeeded];
-
-    DDLogDebug(@"[ContentVC] View Did Load 9");
-    [self fetchContentForCurrentPageWithForceUpdate:self.viewModel.currentPage == self.viewModel.totalPages];
 }
 
 #pragma mark - Actions
-
-- (void)pickPage:(id)sender {
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (long i = 0; i < (self.viewModel.currentPage > self.viewModel.totalPages ? self.viewModel.currentPage : self.viewModel.totalPages); i++) {
-        if ([self.dataCenter hasPrecacheFloorsForTopic:self.viewModel.topic withPage:[NSNumber numberWithLong:i + 1]]) {
-            [array addObject:[NSString stringWithFormat:@"✓第 %ld 页✓", i + 1]];
-        } else {
-            [array addObject:[NSString stringWithFormat:@"第 %ld 页", i + 1]];
-        }
-    }
-    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:@"" rows:array initialSelection:self.viewModel.currentPage - 1 doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-
-        if (self.viewModel.currentPage != selectedIndex + 1) {
-            [self preChangeCurrentPage];
-            self.viewModel.currentPage = selectedIndex + 1;
-            [self fetchContentForCurrentPageWithForceUpdate:NO];
-        } else {
-            [self forceRefreshCurrentPage];
-        }
-
-    } cancelBlock:nil origin:self.pageButton];
-    picker.pickerBackgroundColor = [[APColorManager shared] colorForKey:@"content.picker.background"];
-    picker.toolbarBackgroundColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.bartint"];
-    picker.toolbarButtonsColor = [[APColorManager shared] colorForKey:@"appearance.toolbar.tint"];
-    
-    NSMutableParagraphStyle *labelParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    labelParagraphStyle.alignment = NSTextAlignmentCenter;
-    picker.pickerTextAttributes = [@{
-        NSParagraphStyleAttributeName: labelParagraphStyle,
-        NSFontAttributeName: [UIFont systemFontOfSize:19.0],
-        NSForegroundColorAttributeName: [[APColorManager shared] colorForKey:@"content.picker.text"]
-    } mutableCopy];
-    [picker showActionSheetPicker];
-}
 
 - (void)action:(id)sender {
     UIAlertController *moreActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -326,14 +252,14 @@ JTSImageViewControllerOptionsDelegate
         // Open S1 topic
         S1Topic *topic = [S1Parser extractTopicInfoFromLink:request.URL.absoluteString];
         if (topic.topicID != nil) {
-            S1Topic *tracedTopic = [self.dataCenter tracedTopic:topic.topicID];
+            S1Topic *tracedTopic = [self.viewModel.dataCenter tracedTopic:topic.topicID];
             if (tracedTopic != nil) {
                 NSNumber *lastViewedPage = topic.lastViewedPage;
                 topic = [tracedTopic copy];
                 topic.lastViewedPage = lastViewedPage;
             }
             self.presentingContentViewController = YES;
-            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
+            S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.viewModel.dataCenter];
             [[self navigationController] pushViewController:contentViewController animated:YES];
             [Answers logCustomEventWithName:@"[Content] Topic Link" customAttributes:nil];
             decisionHandler(WKNavigationActionPolicyCancel);
@@ -424,91 +350,6 @@ JTSImageViewControllerOptionsDelegate
     return 0.3;
 }
 
-#pragma mark - Networking
-
-- (void)fetchContentForCurrentPageWithForceUpdate:(BOOL)forceUpdate {
-    [self updateToolBar];
-
-    self.userActivity.needsSave = YES;
-   
-    //remove cache for last page
-    if (forceUpdate) {
-        [self.dataCenter removePrecachedFloorsForTopic:self.viewModel.topic withPage:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage]];
-    }
-    //Set up HUD
-    DDLogVerbose(@"[ContentVC] check precache exist");
-
-    if (![self.dataCenter hasPrecacheFloorsForTopic:self.viewModel.topic withPage:[NSNumber numberWithUnsignedInteger:self.viewModel.currentPage]]) {
-        DDLogVerbose(@"[ContentVC] Show HUD");
-        [self.refreshHUD showActivityIndicator];
-
-        __weak __typeof__(self) weakSelf = self;
-        [self.refreshHUD setRefreshEventHandler:^(S1HUD *aHUD) {
-            __strong __typeof__(self) strongSelf = weakSelf;
-            if (strongSelf == nil) {
-                return;
-            }
-
-            [aHUD hideWithDelay:0.0];
-            [strongSelf fetchContentForCurrentPageWithForceUpdate:NO];
-        }];
-    }
-
-    __weak __typeof__(self) weakSelf = self;
-    [self.viewModel contentPageWithSuccess:^(NSString *contents, bool shouldRefetch) {
-        __strong __typeof__(self) strongSelf = weakSelf;
-        if (strongSelf == nil) {
-            return;
-        }
-
-        [strongSelf updateToolBar];
-        [strongSelf updateTitleLabelWithTitle:strongSelf.viewModel.topic.title];
-
-        [strongSelf saveViewPositionForPreviousPage];
-
-        strongSelf.finishFirstLoading = YES;
-
-        [strongSelf.webView loadHTMLString:contents baseURL:[S1ContentViewModel pageBaseURL]];
-
-        // Prepare next page
-        if (strongSelf.viewModel.currentPage < strongSelf.viewModel.totalPages) {
-            NSNumber *cachePage = [NSNumber numberWithUnsignedInteger:strongSelf.viewModel.currentPage + 1];
-            [strongSelf.dataCenter setFinishHandlerForTopic:strongSelf.viewModel.topic withPage:cachePage andHandler:^(NSArray *floorList) {
-                __strong __typeof__(self) strongSelf = weakSelf;
-                [strongSelf updateToolBar];
-            }];
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"]) {
-                [strongSelf.dataCenter precacheFloorsForTopic:strongSelf.viewModel.topic withPage:cachePage shouldUpdate:NO];
-            }
-        }
-        // Dismiss HUD if exist
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongSelf hideHUDIfNoMessageToShow];
-        });
-
-        // Auto refresh when current page not full.
-        if (shouldRefetch) {
-            strongSelf.scrollType = S1ContentScrollTypeRestorePosition;
-            [strongSelf fetchContentForCurrentPageWithForceUpdate:YES];
-        }
-        
-    } failure:^(NSError *error) {
-        __strong __typeof__(self) strongSelf = weakSelf;
-        if (error.code == NSURLErrorCancelled) {
-            DDLogDebug(@"request cancelled.");
-            // TODO:
-//            if (strongSelf.refreshHUD != nil) {
-//                [strongSelf.refreshHUD hideWithDelay:0.3];
-//            }
-        } else {
-            DDLogDebug(@"%@", error);
-            if (strongSelf.refreshHUD != nil) {
-                [strongSelf.refreshHUD showRefreshButton];
-            }
-        }
-    }];
-}
-
 #pragma mark - Layout
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -532,93 +373,6 @@ JTSImageViewControllerOptionsDelegate
         fixItem2.width = 0.0;
     }
     self.toolBar.items = items;
-}
-
-#pragma mark - Notificatons
-
-- (void)saveTopicViewedState:(id)sender {
-    DDLogDebug(@"[ContentVC] Save Topic View State Begin.");
-    if (self.finishFirstLoading) {
-        self.viewModel.topic.lastViewedPosition = [NSNumber numberWithFloat:(float)self.webView.scrollView.contentOffset.y];
-    } else if (self.viewModel.topic.lastViewedPosition == nil || [self.viewModel.topic.lastViewedPage unsignedIntegerValue] != self.viewModel.currentPage) {
-        // If last viewed page in record doesn't equal current page it means user has changed page since this view controller is loaded.
-        // Then the unfinish loaded new page's last view position should be 0.
-        self.viewModel.topic.lastViewedPosition = [NSNumber numberWithFloat:(float)0.0];
-    }
-    self.viewModel.topic.lastViewedPage = [NSNumber numberWithInteger:self.viewModel.currentPage];
-    self.viewModel.topic.lastViewedDate = [NSDate date];
-    self.viewModel.topic.lastReplyCount = self.viewModel.topic.replyCount;
-    [self.dataCenter hasViewed:self.viewModel.topic];
-    DDLogInfo(@"[ContentVC] Save Topic View State Finish.");
-}
-
-#pragma mark - Restore Position
-
-- (void)preChangeCurrentPage {
-    DDLogDebug(@"[webView] pre change current page");
-    [self cancelRequest];
-    [self saveViewPositionForCurrentPage];
-    self.webPageReadyForAutomaticScrolling = NO;
-    self.webPageSizeChangedForAutomaticScrolling = NO;
-    self.webPageAutomaticScrollingEnabled = YES;
-}
-
-- (void)didFinishBasicPageLoadForWebView:(WKWebView *)webView {
-    DDLogDebug(@"[webView] basic page loaded");
-    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
-
-    switch (self.scrollType) {
-        case S1ContentScrollTypePullUpForNext: {
-            // Set position
-            [webView.scrollView setContentOffset:CGPointMake(0.0, -CGRectGetHeight(webView.bounds)) animated:NO];
-            // Animated scroll
-            [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
-                webView.scrollView.alpha = 1.0;
-            } completion:NULL];
-            break;
-        }
-        case S1ContentScrollTypePullDownForPrevious: {
-            // Set position
-            [webView.scrollView setContentOffset:CGPointMake(0.0, webView.scrollView.contentSize.height) animated:NO];
-            // Animated scroll
-            [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                [webView.scrollView setContentOffset:CGPointMake(0.0, maxOffset) animated:NO];
-                webView.scrollView.alpha = 1.0;
-            } completion:NULL];
-            break;
-        }
-        case S1ContentScrollTypeToBottom:
-            [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:YES];
-            break;
-        default:
-            break;
-    }
-}
-    
-- (void)didFinishFullPageLoadForWebView:(WKWebView *)webView {
-    DDLogDebug(@"[webView] full page loaded");
-    CGFloat maxOffset = webView.scrollView.contentSize.height - CGRectGetHeight(webView.scrollView.bounds);
-
-    switch (self.scrollType) {
-        case S1ContentScrollTypeToBottom:
-        case S1ContentScrollTypePullDownForPrevious:
-            [webView.scrollView setContentOffset:CGPointMake(0, maxOffset) animated:NO];
-            break;
-        case S1ContentScrollTypePullUpForNext:
-            [webView.scrollView setContentOffset:CGPointMake(0.0, 0.0) animated:NO];
-            break;
-        default: {
-            NSNumber *positionForPage = [self.viewModel cachedOffsetForCurrentPage];
-            if (positionForPage != nil) {
-                // Restore last view position from cached position in this view controller.
-                [webView.scrollView setContentOffset:CGPointMake(webView.scrollView.contentOffset.x, fmax(fmin(maxOffset, [positionForPage doubleValue]), 0.0)) animated:NO];
-            }
-            break;
-        }
-    }
-
-    self.scrollType = S1ContentScrollTypeRestorePosition;
 }
 
 @end

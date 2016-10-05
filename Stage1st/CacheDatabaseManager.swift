@@ -40,7 +40,7 @@ class CacheDatabaseManager: NSObject {
             transaction.setObject(floors, forKey: key, inCollection: collectionPageFloors, withMetadata: [metadataLastUsed: Date()])
 
         }, completionBlock: {
-            DDLogVerbose("cached \(key)")
+            DDLogVerbose("[CacheDatabase] finish cache for key: \(key)")
             completion?()
         })
     }

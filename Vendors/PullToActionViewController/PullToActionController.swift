@@ -119,11 +119,11 @@ public class PullToActionController: NSObject {
         case .top:
             return Double(self.offset.y)
         case .bottom:
-            return Double(self.offset.y - min(self.size.height - scrollView.bounds.height, 0.0))
+            return Double(self.offset.y - max(self.size.height - scrollView.bounds.height, 0.0))
         case .left:
             return Double(self.offset.x)
         case .right:
-            return Double(self.offset.x - min(self.size.width - scrollView.bounds.width, 0.0))
+            return Double(self.offset.x - max(self.size.width - scrollView.bounds.width, 0.0))
         }
     }
 }

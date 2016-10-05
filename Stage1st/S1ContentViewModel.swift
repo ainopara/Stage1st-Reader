@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 // MARK: - Quote Floor
 extension S1ContentViewModel {
@@ -124,5 +125,25 @@ extension S1ContentViewModel {
 extension S1ContentViewModel {
     func reportComposeViewModel(_ floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
+    }
+}
+
+extension S1ContentViewModel {
+    func saveTopicViewedState(lastViewedPosition: Double?) {
+
+        DDLogInfo("[ContentVM] Save Topic View State Begin.")
+
+        if let lastViewedPosition = lastViewedPosition {
+            topic.lastViewedPosition = NSNumber(value: lastViewedPosition)
+        } else if topic.lastViewedPosition == nil || topic.lastViewedPage?.uintValue ?? 0 != currentPage {
+            topic.lastViewedPosition = NSNumber(value: 0.0)
+        }
+
+        topic.lastViewedPage = NSNumber(value: currentPage)
+        topic.lastViewedDate = Date()
+        topic.lastReplyCount = topic.replyCount
+        dataCenter.hasViewed(topic)
+
+        DDLogInfo("[ContentVM] Save Topic View State Finish.")
     }
 }
