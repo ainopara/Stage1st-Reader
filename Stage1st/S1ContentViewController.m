@@ -30,26 +30,26 @@
 CGFloat const topOffset = -80.0;
 CGFloat const bottomOffset = 60.0;
 
-//@interface UIScrollView (S1Inspect)
-//@end
-//
-//@implementation UIScrollView (S1Inspect)
-//
-//+ (void)load {
-//    Method origin = class_getInstanceMethod([self class], @selector(setContentOffset:));
-//    Method newMethod = class_getInstanceMethod([self class], @selector(s1_setContentOffset:));
-//    method_exchangeImplementations(origin, newMethod);
-//}
-//
-//- (void)s1_setContentOffset:(CGPoint)contentOffset {
-//    if ([self isKindOfClass:NSClassFromString(@"_UIWebViewScrollView")]) {
-//        NSLog(@"%@ old: %f, %f", self, self.contentOffset.x, self.contentOffset.y);
-//        NSLog(@"new: %f, %f",contentOffset.x, contentOffset.y);
-//    }
-//    [self s1_setContentOffset:contentOffset];
-//}
-//
-//@end
+@interface UIScrollView (S1Inspect)
+@end
+
+@implementation UIScrollView (S1Inspect)
+
++ (void)load {
+    Method origin = class_getInstanceMethod([self class], @selector(setContentOffset:));
+    Method newMethod = class_getInstanceMethod([self class], @selector(s1_setContentOffset:));
+    method_exchangeImplementations(origin, newMethod);
+}
+
+- (void)s1_setContentOffset:(CGPoint)contentOffset {
+    if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
+        NSLog(@"%@ old: %f, %f", self, self.contentOffset.x, self.contentOffset.y);
+        NSLog(@"new: %f, %f",contentOffset.x, contentOffset.y);
+    }
+    [self s1_setContentOffset:contentOffset];
+}
+
+@end
 
 @interface S1ContentViewController (Stage1stAdd) <
 JTSImageViewControllerInteractionsDelegate,

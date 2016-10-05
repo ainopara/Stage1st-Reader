@@ -15,10 +15,6 @@
 #import <ReactiveObjc/ReactiveObjC.h>
 #import <Reachability/Reachability.h>
 
-@interface S1ContentViewModel ()
-
-@end
-
 @implementation S1ContentViewModel
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
@@ -102,7 +98,8 @@
     if (topic.authorUserID && topic.authorUserID.integerValue == floor.author.ID && ![floorIndexMark isEqualToString:@"楼主"]) {
         floorAuthor = [floorAuthor stringByAppendingString:@" (楼主)"];
     }
-    floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"/user?%ld\">%@</a>", (long)floor.author.ID, floorAuthor];
+    ///<a class="user" href="javascript:void(0);" onclick="window.webkit.messageHandlers.stage1st.postMessage({'type': 'user', 'id': 14971})">KUSOSO</a>
+    floorAuthor = [NSString stringWithFormat:@"<a class=\"user\" href=\"javascript:void(0);\" onclick=\"window.webkit.messageHandlers.stage1st.postMessage({'type': 'user', 'id': %ld})\">%@</a>", (long)floor.author.ID, floorAuthor];
 
     //process time
 //    NSString *floorPostTime = floor.creationDate.s1_gracefulDateTimeString;
@@ -110,7 +107,7 @@
 
     //process reply Button
     NSString *replyLinkString = @"";
-    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"/reply?%ld\" style=\"letter-spacing: -4px;\" >・・・</a></div>", (long)floor.ID];
+    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"javascript:void(0);\" onclick=\"window.webkit.messageHandlers.stage1st.postMessage({'type': 'reply', 'id': %ld})\" style=\"letter-spacing: -4px;\" >・・・</a></div>", (long)floor.ID];
 
     //process poll
     NSString *pollContentString = @"";
@@ -168,20 +165,20 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"15px"]) {
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_15px" ofType:@"css"];
+            fontSizeCSSPath = @"content_15px.css";
         } else if ([fontSizeKey isEqualToString:@"17px"]){
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_17px" ofType:@"css"];
+            fontSizeCSSPath = @"content_17px.css";
         } else {
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_19px" ofType:@"css"];
+            fontSizeCSSPath = @"content_19px.css";
         }
     } else {
         NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
         if ([fontSizeKey isEqualToString:@"18px"]) {
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_ipad_18px" ofType:@"css"];
+            fontSizeCSSPath = @"content_ipad_18px.css";
         } else if ([fontSizeKey isEqualToString:@"20px"]){
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_ipad_20px" ofType:@"css"];
+            fontSizeCSSPath = @"content_ipad_20px.css";
         } else {
-            fontSizeCSSPath = [[S1ContentViewModel templateBundle] pathForResource:@"css/content_ipad_22px" ofType:@"css"];
+            fontSizeCSSPath = @"content_ipad_22px.css";
         }
     }
 
@@ -292,8 +289,10 @@
                     NSString *placeholderURL = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"stage1streader-placeholder.png"];
                     [imageElement addAttributeWithName:@"src" stringValue:placeholderURL];
                 }
-                NSString *linkString = [NSString stringWithFormat:@"/present-image:%@#%@", [[image attributeForName:@"src"] stringValue], [[imageElement attributeForName:@"id"] stringValue]];
-                [linkElement addAttributeWithName:@"href" stringValue:linkString];
+                NSString *linkString = [NSString stringWithFormat:@"window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '%@', 'id': '%@'})", [[image attributeForName:@"src"] stringValue], [[imageElement attributeForName:@"id"] stringValue]];
+                [linkElement removeAttributeForName:@"onclick"];
+                [linkElement addAttributeWithName:@"href" stringValue:@"javascript:void(0);"];
+                [linkElement addAttributeWithName:@"onclick" stringValue:linkString];
                 [linkElement addChild:imageElement];
                 [linkElement removeAttributeForName:@"src"];
                 [linkElement setName:@"a"];
@@ -302,7 +301,6 @@
         
         //clean image's attribute (if it is not a mahjong face, it is the linkElement)
         [image removeAttributeForName:@"onmouseover"];
-        [image removeAttributeForName:@"onclick"];
         [image removeAttributeForName:@"file"];
         [image removeAttributeForName:@"id"];
         [image removeAttributeForName:@"lazyloadthumb"];

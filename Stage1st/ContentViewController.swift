@@ -19,7 +19,10 @@ class S1ContentViewController: UIViewController {
     let viewModel: S1ContentViewModel
 
     var toolBar = UIToolbar(frame: .zero)
-    var webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+    lazy var webView: WKWebView = {
+        return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
+    }()
+
     lazy var pullToActionController: PullToActionController = {
         return PullToActionController(scrollView: self.webView.scrollView)
     }()
@@ -42,7 +45,11 @@ class S1ContentViewController: UIViewController {
     var attributedReplyDraft: NSMutableAttributedString? = nil
     weak var replyTopicFloor: Floor?
 
-    var scrollType: ScrollType = .restorePosition
+    var scrollType: ScrollType = .restorePosition {
+        didSet {
+            DDLogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)")
+        }
+    }
 
     var backButtonState: BackButtonState = .back(rotateAngle: 0.0) {
         didSet {
@@ -104,8 +111,8 @@ class S1ContentViewController: UIViewController {
     }
 
     var webPageAutomaticScrollingEnabled = true
-    var webPageReadyForAutomaticScrolling = false
-    var webPageSizeChangedForAutomaticScrolling = false
+    dynamic var webPageReadyForAutomaticScrolling = false
+    dynamic var webPageSizeChangedForAutomaticScrolling = false
     var finishFirstLoading = false
     var presentingImageViewer = false
     var presentingWebViewer = false
@@ -233,6 +240,40 @@ class S1ContentViewController: UIViewController {
         self.webView.scrollView.delegate = nil
         self.webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
+    }
+}
+
+extension S1ContentViewController: WKScriptMessageHandler {
+    func sharedConfiguration() -> WKWebViewConfiguration {
+        let configuration = WKWebViewConfiguration()
+        let userContentController = WKUserContentController()
+        userContentController.add(self, name: "stage1st")
+        configuration.userContentController = userContentController
+        return configuration
+    }
+
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        DDLogInfo("[ContentVC] message body: \(message.body)")
+        guard
+            let messageDictionary = message.body as? [String: Any],
+            let type = messageDictionary["type"] as? String else {
+            DDLogWarn("[ContentVC] unexpected message format")
+            return
+        }
+
+        switch type {
+        case "ready":
+            DDLogDebug("[WebView] ready")
+            webPageReadyForAutomaticScrolling = true
+        case "reply":
+            break
+        case "user":
+            break
+        case "image":
+            break
+        default:
+            DDLogWarn("[WebView] unexpected type: \(type)")
+        }
     }
 }
 
@@ -542,7 +583,7 @@ extension S1ContentViewController {
 // MARK: WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        DDLogInfo("[ContentVC] did commit navigation: \(navigation)")
+        DDLogDebug("[ContentVC] did commit navigation: \(navigation)")
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -948,9 +989,12 @@ extension S1ContentViewController {
         default:
             break
         }
+
+        scrollType = .restorePosition
     }
 
     func _hook_didFinishFullPageLoad(for webView: WKWebView) {
+        return;
         DDLogDebug("[webView] full page loaded")
         let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
         switch scrollType {
@@ -968,7 +1012,7 @@ extension S1ContentViewController {
             }
         }
 
-        scrollType = .restorePosition
+//        scrollType = .restorePosition
     }
 }
 
@@ -1073,7 +1117,7 @@ extension S1ContentViewController {
 
 // MARK: State
 extension S1ContentViewController {
-    enum ScrollType {
+    enum ScrollType: String {
         case restorePosition
         case pullUpForNext
         case pullDownForPrevious

@@ -150,4 +150,8 @@ extension PullToActionController: UIScrollViewDelegate {
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return nil
     }
+
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+    }
 }
