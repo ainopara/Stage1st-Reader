@@ -47,6 +47,14 @@ extension S1ContentViewModel {
 
 // MARK: - ToolBar
 extension S1ContentViewModel {
+    func hasPrecachedPreviousPage() -> Bool {
+        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage - 1))
+    }
+
+    func hasPrecachedNextPage() -> Bool {
+        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage + 1))
+    }
+
     func forwardButtonImage() -> UIImage {
         if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage + 1)) {
             return UIImage(named: "Forward-Cached")!

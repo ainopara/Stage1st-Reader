@@ -18,7 +18,7 @@ target "Stage1st" do
     pod 'Masonry'
     pod 'SnapKit'
 
-    pod 'DTCoreText'
+#    pod 'DTCoreText'
     pod 'YYKeyboardManager'
     pod 'TextAttributes'
 

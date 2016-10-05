@@ -12,7 +12,6 @@
 #import "S1MahjongFaceView.h"
 #import "S1MahjongFaceTextAttachment.h"
 #import "S1TopicListViewController.h"
-#import "S1ContentViewController.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
 #import "S1ContentViewModel.h"

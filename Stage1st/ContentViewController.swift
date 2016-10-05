@@ -12,8 +12,8 @@ import CocoaLumberjack
 import ActionSheetPicker_3_0
 import Crashlytics
 
-private let topOffset: CGFloat = -80.0
-private let bottomOffset: CGFloat = 60.0
+fileprivate let topOffset: CGFloat = -80.0
+fileprivate let bottomOffset: CGFloat = 60.0
 
 class S1ContentViewController: UIViewController {
     let viewModel: S1ContentViewModel
@@ -42,7 +42,67 @@ class S1ContentViewController: UIViewController {
     var attributedReplyDraft: NSMutableAttributedString? = nil
     weak var replyTopicFloor: Floor?
 
-    var scrollType: S1ContentScrollType = .restorePosition
+    var scrollType: ScrollType = .restorePosition
+
+    var backButtonState: BackButtonState = .back(rotateAngle: 0.0) {
+        didSet {
+            switch backButtonState {
+            case .back(let rotateAngle):
+                if case .back(let oldRotateAngle) = oldValue {
+                    if rotateAngle != oldRotateAngle {
+                        backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    }
+                } else {
+                    backButton.setImage(#imageLiteral(resourceName: "Back"), for: .normal)
+                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                }
+            case .cachedBack(let rotateAngle):
+                if case .cachedBack(let oldRotateAngle) = oldValue {
+                    if rotateAngle != oldRotateAngle {
+                        backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    }
+                } else {
+                    backButton.setImage(#imageLiteral(resourceName: "Back-Cached"), for: .normal)
+                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                }
+            }
+        }
+    }
+
+    var forwardButtonState: ForwardButtonState = .forward(rotateAngle: 0.0) {
+        didSet {
+            switch forwardButtonState {
+            case .forward(let rotateAngle):
+                if case .forward(let oldRotateAngle) = oldValue {
+                    if rotateAngle != oldRotateAngle {
+                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    }
+                } else {
+                    forwardButton.setImage(#imageLiteral(resourceName: "Forward"), for: .normal)
+                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                }
+            case .cachedForward(let rotateAngle):
+                if case .cachedForward(let oldRotateAngle) = oldValue {
+                    if rotateAngle != oldRotateAngle {
+                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    }
+                } else {
+                    forwardButton.setImage(#imageLiteral(resourceName: "Forward-Cached"), for: .normal)
+                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                }
+            case .refresh(let rotateAngle):
+                if case .refresh(let oldRotateAngle) = oldValue {
+                    if rotateAngle != oldRotateAngle {
+                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    }
+                } else {
+                    forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
+                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                }
+            }
+        }
+    }
+
     var webPageAutomaticScrollingEnabled = true
     var webPageReadyForAutomaticScrolling = false
     var webPageSizeChangedForAutomaticScrolling = false
@@ -51,7 +111,7 @@ class S1ContentViewController: UIViewController {
     var presentingWebViewer = false
     var presentingContentViewController = false
 
-    // MARK: - Life Cycle
+    // MARK: -
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
         self.init(viewModel: S1ContentViewModel(topic: topic, dataCenter: dataCenter))
     }
@@ -97,9 +157,6 @@ class S1ContentViewController: UIViewController {
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = .clear
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
-            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
-        }
         webView.isOpaque = false
 
         // Pull to action
@@ -177,7 +234,10 @@ class S1ContentViewController: UIViewController {
         self.webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
+}
 
+// MARK: - Life Cycle
+extension S1ContentViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -198,19 +258,17 @@ class S1ContentViewController: UIViewController {
 
         webView.scrollView.addSubview(topDecorateLine)
         topDecorateLine.snp.makeConstraints { (make) in
-            make.leading.trailing.equalTo(self.webView.scrollView)
+            make.leading.trailing.equalTo(self.webView)
             make.height.equalTo(1.0)
-            make.bottom.equalTo(self.webView.scrollView.subviews[0]).offset(topOffset)
+            make.bottom.equalTo(self.webView.scrollView.subviews[0].snp.top).offset(topOffset)
         }
 
         webView.scrollView.addSubview(bottomDecorateLine)
         bottomDecorateLine.snp.makeConstraints { (make) in
-            make.leading.trailing.equalTo(self.webView.scrollView)
+            make.leading.trailing.equalTo(self.webView)
             make.height.equalTo(1.0)
-            make.top.equalTo(self.webView.scrollView.subviews[0]).offset(bottomOffset)
+            make.top.equalTo(self.webView.scrollView.subviews[0].snp.bottom).offset(bottomOffset)
         }
-
-//        view.layoutIfNeeded()
 
         webView.scrollView.insertSubview(titleLabel, at: 0)
         titleLabel.snp.makeConstraints { (make) in
@@ -218,8 +276,6 @@ class S1ContentViewController: UIViewController {
             make.centerX.equalTo(self.webView.scrollView.snp.centerX)
             make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
         }
-
-//        view.layoutIfNeeded()
 
         view.addSubview(refreshHUD)
         refreshHUD.snp.makeConstraints { (make) in
@@ -245,6 +301,12 @@ class S1ContentViewController: UIViewController {
         self.presentingContentViewController = false
 
         self.didReceivePaletteChangeNotification(nil)
+
+        // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
+        // FIXME: find a way to make sure this only called once.
+        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -411,8 +473,10 @@ extension S1ContentViewController {
 
         setNeedsStatusBarAppearanceUpdate()
 
-        saveViewPositionForCurrentPage()
-        fetchContentForCurrentPage(forceUpdate: false)
+        if notification != nil {
+            saveViewPositionForCurrentPage()
+            fetchContentForCurrentPage(forceUpdate: false)
+        }
     }
 
     open func actionButtonTapped(for floorID: NSString) {
@@ -474,7 +538,8 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: - WKNavigationDelegate
+// MARK: -
+// MARK: WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         DDLogInfo("[ContentVC] did commit navigation: \(navigation)")
@@ -579,39 +644,39 @@ extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
         guard finishFirstLoading else {
             if _isInLastPage() {
-                forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
+                forwardButtonState = .refresh(rotateAngle: 0.0)
             }
-            forwardButton.imageView?.layer.transform = CATransform3DIdentity
-            backButton.imageView?.layer.transform = CATransform3DIdentity
+            // back state set depend on cache info
             return
         }
 
         // Process for bottom offset
         if let bottomProgress = progress["bottom"] {
             if _isInLastPage() {
-                let image = bottomProgress >= 0.0 ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
-                let rotateAngle: CGFloat = CGFloat(bottomProgress >= 0.0 ? M_PI_2 * bottomProgress : M_PI_2)
-
-                forwardButton.setImage(image, for: .normal)
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotateAngle, 0.0, 0.0, 1.0)
+                if bottomProgress >= 0 {
+                    forwardButtonState = .refresh(rotateAngle: bottomProgress)
+                } else {
+                    forwardButtonState = .forward(rotateAngle: 1.0)
+                }
             } else {
                 let limitedBottomProgress = max(min(bottomProgress, 1.0), 0.0)
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedBottomProgress), 0.0, 0.0, 1.0)
+                forwardButtonState = .forward(rotateAngle: limitedBottomProgress) // FIXME: or .cachedForward judge depending on cache state
             }
         }
 
         // Process for top offset
-        if _isInFirstPage() {
-            backButton.imageView?.layer.transform = CATransform3DIdentity
-        } else {
-            if let topProgress = progress["top"] {
+        if let topProgress = progress["top"] {
+            if _isInFirstPage() {
+                backButtonState = .back(rotateAngle: 0.0)
+            } else {
                 let limitedTopProgress = max(min(topProgress, 1.0), 0.0)
-                backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * limitedTopProgress), 0.0, 0.0, 1.0)
+                backButtonState = .back(rotateAngle: limitedTopProgress)
             }
         }
     }
 }
 
+// MARK: REComposeViewControllerDelegate
 extension S1ContentViewController: REComposeViewControllerDelegate {
     func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
         attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
@@ -830,7 +895,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: - Helper (view model)
+// MARK: Helper (view model)
 extension S1ContentViewController {
     func _isInFirstPage() -> Bool {
         return viewModel.currentPage == 1
@@ -840,7 +905,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: - Helper (hook)
+// MARK: Helper (hook)
 extension S1ContentViewController {
     func _hook_preChangeCurrentPage() {
         DDLogDebug("[webView] pre change current page")
@@ -907,14 +972,16 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: - Helper (Misc)
+// MARK: Helper (Misc)
 extension S1ContentViewController {
     func updateToolBar() {
         func updateForwardButton() {
+            // FIXME: this will make state failed to reflect button image but will lead to less quest for cache database which is good.
             forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
         }
 
         func updateBackwardButton() {
+            // FIXME: this will make state failed to reflect button image but will lead to less quest for cache database which is good.
             backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
         }
 
@@ -1001,5 +1068,26 @@ extension S1ContentViewController {
 
     func cancelRequest() {
         viewModel.dataCenter.cancelRequest()
+    }
+}
+
+// MARK: State
+extension S1ContentViewController {
+    enum ScrollType {
+        case restorePosition
+        case pullUpForNext
+        case pullDownForPrevious
+        case toBottom
+    }
+
+    enum BackButtonState {
+        case back(rotateAngle: Double)
+        case cachedBack(rotateAngle: Double)
+    }
+
+    enum ForwardButtonState {
+        case forward(rotateAngle: Double)
+        case cachedForward(rotateAngle: Double)
+        case refresh(rotateAngle: Double)
     }
 }

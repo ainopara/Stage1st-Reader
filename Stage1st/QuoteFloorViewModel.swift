@@ -30,8 +30,9 @@ struct FloorPresenting {
 
         dateTime = NSAttributedString(string: floor.creationDate?.s1_gracefulDateTimeString() ?? "?", attributes: authorAttributes)
         floorMark = NSAttributedString(string: floor.indexMark ?? "#?", attributes: authorAttributes)
-        let contentHTML = S1ContentViewModel.generateContentPage([floor], with: topic)
-        content = NSAttributedString(htmlData: (contentHTML).data(using: String.Encoding.utf8), baseURL: baseURL, documentAttributes: nil)
+//        let contentHTML = S1ContentViewModel.generateContentPage([floor], with: topic)
+//        content = NSAttributedString(htmlData: (contentHTML).data(using: String.Encoding.utf8), baseURL: baseURL, documentAttributes: nil)
+        content = NSAttributedString()
     }
 }
 

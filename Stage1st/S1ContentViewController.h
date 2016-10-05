@@ -8,12 +8,3 @@
 
 #import <UIKit/UIKit.h>
 
-@class S1ContentViewController;
-
-typedef NS_ENUM(NSUInteger, S1ContentScrollType) {
-    S1ContentScrollTypeRestorePosition = 0,
-    S1ContentScrollTypePullUpForNext,
-    S1ContentScrollTypePullDownForPrevious,
-    S1ContentScrollTypeToBottom
-};
-

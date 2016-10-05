@@ -9,7 +9,6 @@
 import SnapKit
 import Kingfisher
 import CocoaLumberjack
-import DTCoreText
 
 final class QuoteFloorCell: UITableViewCell {
     let avatarView = UIImageView(image: nil)
@@ -17,7 +16,7 @@ final class QuoteFloorCell: UITableViewCell {
     let dateTimeLabel = UILabel(frame: .zero)
     let floorLabel = UILabel(frame: .zero)
     let moreActionButton = UIButton(type: .system)
-    let contentLabel = DTAttributedLabel(frame: .zero)
+    let contentLabel = UILabel(frame: .zero)
     var webViewHeightConstraint: Constraint? = nil
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -61,7 +60,7 @@ final class QuoteFloorCell: UITableViewCell {
             make.trailing.equalTo(self.moreActionButton.snp.leading).offset(-10.0)
         }
 
-        contentLabel.layoutFrameHeightIsConstrainedByBounds = false
+//        contentLabel.layoutFrameHeightIsConstrainedByBounds = false
         contentView.addSubview(contentLabel)
         contentLabel.snp.makeConstraints { (make) -> Void in
             make.leading.trailing.equalTo(contentView)
@@ -82,6 +81,6 @@ final class QuoteFloorCell: UITableViewCell {
         dateTimeLabel.attributedText = presenting.dateTime
         floorLabel.attributedText = presenting.floorMark
 //        webView.loadHTMLString(presenting.contentPage, baseURL: nil)
-        contentLabel.attributedString = presenting.content
+        contentLabel.attributedText = presenting.content
     }
 }
