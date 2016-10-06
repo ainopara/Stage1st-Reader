@@ -56,6 +56,7 @@
 		869D68761D8C290A0039D4CB /* ReactiveObjCBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
 		86A880BE1D8D680800AD02F2 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; };
@@ -216,6 +217,7 @@
 		869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjCBridge.framework; path = Carthage/Build/iOS/ReactiveObjCBridge.framework; sourceTree = "<group>"; };
 		869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		869D686E1D8B0FA90039D4CB /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		869E02391DA67293006A45FE /* ActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivityItemProvider.swift; path = Stage1st/ActivityItemProvider.swift; sourceTree = "<group>"; };
 		86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportComposeViewController.swift; path = Stage1st/ReportComposeViewController.swift; sourceTree = "<group>"; };
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+WKWebViewHack.h"; path = "Stage1st/UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+WKWebViewHack.m"; path = "Stage1st/UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
@@ -657,6 +659,7 @@
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
 				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
 				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
+				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -1089,6 +1092,7 @@
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */,
+				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,

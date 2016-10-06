@@ -6,17 +6,16 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Foundation
 import WebKit
-import UIKit
+import CocoaLumberjack
 
 func ensureMainThread(_ block: @escaping () -> Void) {
     if Thread.current.isMainThread {
         block()
     } else {
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.main.async {
             block()
-        })
+        }
     }
 }
 
@@ -67,7 +66,7 @@ extension Date {
 }
 
 extension UIView {
-    func s1_screenShot(rect: CGRect) -> UIImage? {
+    func s1_screenShot() -> UIImage? {
         // https://chromium.googlesource.com/chromium/src.git/+/46.0.2478.0/ios/chrome/browser/snapshots/snapshot_manager.mm
         func viewHierarchyContainsWKWebView(_ view: UIView) -> Bool {
             if view is WKWebView {
@@ -83,13 +82,13 @@ extension UIView {
             return false
         }
 
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
         guard let currentContext = UIGraphicsGetCurrentContext() else {
             return nil
         }
 
         if viewHierarchyContainsWKWebView(self) {
-            self.drawHierarchy(in: rect, afterScreenUpdates: true)
+            self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         } else {
             self.layer.render(in: currentContext)
         }
@@ -99,9 +98,9 @@ extension UIView {
         return viewScreenShot
     }
 
-    func s1_screenShot() -> UIImage? {
-        return s1_screenShot(rect: self.bounds)
-    }
+//    func s1_screenShot() -> UIImage? {
+//        return s1_screenShot(rect: self.bounds)
+//    }
     // TODO:
     //    - (UIImage *)screenShot {
     //    //clip
@@ -140,6 +139,42 @@ extension UIWebView {
 }
 
 extension WKWebView {
+    func s1_positionOfElement(with ID: String) -> CGRect {
+        // TODO: Find a better solution for avoid dead lock.
+        assert(!Thread.current.isMainThread)
+        guard !Thread.current.isMainThread else {
+            var rect = CGRect.zero
+            DispatchQueue.global().sync {
+                rect = s1_positionOfElement(with: ID)
+            }
+            return rect
+        }
+
+        let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
+        var rect = CGRect.zero
+        let semaphore = DispatchSemaphore(value: 0)
+        evaluateJavaScript(script) { (result, error) in
+            defer {
+                semaphore.signal()
+            }
+
+            guard error == nil else {
+                DDLogWarn("failed to get position of element: \(ID) with error: \(error)")
+                return
+            }
+
+            guard let resultString = result as? String else {
+                DDLogWarn("failed to get position of element: \(ID) with result: \(result)")
+                return
+            }
+
+            rect = CGRectFromString(resultString)
+        }
+
+        semaphore.wait()
+        return rect
+    }
+
     func s1_atBottom() -> Bool {
         let offsetY = self.scrollView.contentOffset.y
         let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
@@ -159,10 +194,25 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage!
     }
+
+    func s1_crop(to rect: CGRect) -> UIImage? {
+        var rect = rect
+        let scale = self.scale
+        rect.origin.x *= scale
+        rect.origin.y *= scale
+        rect.size.width *= scale
+        rect.size.height *= scale
+        if let cgImage = self.cgImage?.cropping(to: rect) {
+            return UIImage(cgImage: cgImage)
+        }
+
+        return nil
+    }
 }
 
+// TODO: extend to any comparable types
 extension CGFloat {
-    func limit(_ from: CGFloat, to: CGFloat) -> CGFloat {
+    func s1_limit(_ from: CGFloat, to: CGFloat) -> CGFloat {
         assert(to >= from)
         let result = self < to ? self : to
         return result > from ? result : from

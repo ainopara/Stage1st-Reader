@@ -123,7 +123,7 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
     func webViewDidFinishLoad(_ webView: UIWebView) {
         let computedOffset: CGFloat = topPositionOfMessageWithId(self.viewModel.centerFloorID) - 32
         var offset = webView.scrollView.contentOffset
-        offset.y = computedOffset.limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
+        offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
         webView.scrollView.contentOffset = offset
     }
 

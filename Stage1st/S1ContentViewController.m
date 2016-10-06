@@ -7,7 +7,6 @@
 //
 
 #import <WebKit/WebKit.h>
-#import <ActionSheetPicker_3_0/ActionSheetStringPicker.h>
 #import <Crashlytics/Answers.h>
 #import <ReactiveObjC/ReactiveObjC.h>
 
@@ -18,12 +17,7 @@
 #import "S1DataCenter.h"
 #import "S1HUD.h"
 #import "REComposeViewController.h"
-#import "MTStatusBarOverlay.h"
 
-#import "JTSSimpleImageDownloader.h"
-#import "JTSImageViewController.h"
-#import "S1MahjongFaceView.h"
-#import "Masonry.h"
 #import "NavigationControllerDelegate.h"
 
 @interface S1ContentViewController (Stage1stAdd)
@@ -31,8 +25,6 @@
 @end
 
 @implementation S1ContentViewController (Stage1stAdd)
-
-#pragma mark - Life Cycle
 
 - (void)viewDidLoadObjC {
 

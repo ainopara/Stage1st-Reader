@@ -418,7 +418,10 @@ extension S1ContentViewController {
 
         let pageList = generatePageList()
 
-        let picker = ActionSheetStringPicker(title: "", rows: pageList, initialSelection: Int(viewModel.currentPage - 1), doneBlock: { [weak self] (picker, selectedIndex, selectedValue) in
+        let picker = ActionSheetStringPicker(title: "",
+                                             rows: pageList,
+                                             initialSelection: Int(viewModel.currentPage - 1),
+                                             doneBlock: { [weak self] (picker, selectedIndex, selectedValue) in
             guard let strongSelf = self else { return }
 
             if strongSelf.viewModel.currentPage == UInt(selectedIndex + 1) {
@@ -454,10 +457,14 @@ extension S1ContentViewController {
     }
 
     open func action(sender: Any?) {
-        let moreActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let moreActionSheet = UIAlertController(title: nil,
+                                                message: nil,
+                                                preferredStyle: .actionSheet)
 
         // Reply Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Reply", comment: "Reply"), style: .default, handler: { [weak self] (_) in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Reply", comment: "Reply"),
+                                                style: .default,
+                                                handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.presentReplyView(toFloor: nil)
         }))
@@ -465,7 +472,9 @@ extension S1ContentViewController {
         if !shouldPresentingFavoriteButtonOnToolBar() {
             // Favorite Action
             let title = viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite") : NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite")
-            moreActionSheet.addAction(UIAlertAction(title: title, style: .default, handler: { [weak self] (_) in
+            moreActionSheet.addAction(UIAlertAction(title: title,
+                                                    style: .default,
+                                                    handler: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.toggleFavorite()
                 let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite") : NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite")
@@ -475,25 +484,32 @@ extension S1ContentViewController {
         }
 
         // Share Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Share", comment: "Share"), style: .default, handler: { [weak self] (_) in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Share", comment: "Share"),
+                                                style: .default,
+                                                handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             var rect = strongSelf.view.bounds
             rect.origin.y += 20.0
             rect.size.height -= 20.0
-            let screenshot = strongSelf.view.s1_screenShot(rect: rect)
+//            let screenshot = strongSelf.view.s1_screenShot()?.s1_crop(to: rect)
             let content = strongSelf.viewModel.topic.title ?? ""
             let items: [Any] = ([
-                "\(content) #Stage1st Reader#",
+                ContentTextActivityItemProvider(title: content),
+//                "\(content) #Stage1st Reader#",
                 strongSelf.viewModel.correspondingWebPageURL(),
-                screenshot] as [Any?])
+                ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect)] as [Any?])
                 .filter { return $0 != nil }
+                .map { $0! }
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
+
             strongSelf.present(activityController, animated: true, completion: nil)
         }))
 
         // Copy Link
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"), style: .default, handler: { [weak self] (_) in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"),
+                                                style: .default,
+                                                handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             if let urlString = strongSelf.viewModel.correspondingWebPageURL()?.absoluteString {
                 UIPasteboard.general.string = urlString
@@ -505,7 +521,9 @@ extension S1ContentViewController {
         }))
 
         // Origin Page Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_OriginPage", comment: "Origin"), style: .default, handler: { [weak self] (_) in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_OriginPage", comment: "Origin"),
+                                                style: .default,
+                                                handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.presentingWebViewer = true
             Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
@@ -518,7 +536,9 @@ extension S1ContentViewController {
         }))
 
         // Cancel Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"), style: .cancel, handler: nil))
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"),
+                                                style: .cancel,
+                                                handler: nil))
 
         moreActionSheet.popoverPresentationController?.barButtonItem = self.actionBarButtonItem
         present(moreActionSheet, animated: true, completion: nil)
@@ -530,9 +550,13 @@ extension S1ContentViewController {
         }
 
         DDLogDebug("[ContentVC] Action for \(floor)")
-        let floorActionController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let floorActionController = UIAlertController(title: nil,
+                                                      message: nil,
+                                                      preferredStyle: .actionSheet)
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""), style: .default, handler: { [weak self] (action) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""),
+                                                      style: .default,
+                                                      handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
                 strongSelf.alertRefresh()
@@ -549,7 +573,9 @@ extension S1ContentViewController {
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""), style: .default, handler: { [weak self] (action) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""),
+                                                      style: .default,
+                                                      handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
 
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
@@ -566,7 +592,9 @@ extension S1ContentViewController {
             strongSelf.presentReplyView(toFloor: floor)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .cancel, handler: nil))
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""),
+                                                      style: .cancel,
+                                                      handler: nil))
 
         if let popover = floorActionController.popoverPresentationController {
             popover.sourceView = self.view
@@ -577,8 +605,12 @@ extension S1ContentViewController {
     }
 
     func alertRefresh() {
-        let refreshAlertController = UIAlertController(title: "缺少必要的信息", message: "请长按页码刷新当前页面", preferredStyle: .alert)
-        refreshAlertController.addAction(UIAlertAction(title: "好", style: .cancel, handler: nil))
+        let refreshAlertController = UIAlertController(title: "缺少必要的信息",
+                                                       message: "请长按页码刷新当前页面",
+                                                       preferredStyle: .alert)
+        refreshAlertController.addAction(UIAlertAction(title: "好",
+                                                       style: .cancel,
+                                                       handler: nil))
         present(refreshAlertController, animated: true, completion: nil)
     }
 
@@ -717,11 +749,17 @@ extension S1ContentViewController: WKNavigationDelegate {
         }
 
         // Fallback Open link
-        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
+        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""),
+                                                    message: url.absoluteString,
+                                                    preferredStyle: .alert)
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""), style: .cancel, handler: nil))
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""),
+                                                    style: .cancel,
+                                                    handler: nil))
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { [weak self] (action) in
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
+                                                    style: .default,
+                                                    handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
             strongSelf.presentingWebViewer = true
             Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
@@ -786,7 +824,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
 
             let imageInfo = JTSImageInfo()
             imageInfo.imageURL = URL(string: url)
-            imageInfo.referenceRect = S1ContentViewController.positionOfElement(with: ID, in: strongSelf.webView)
+            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: ID)
             imageInfo.referenceView = strongSelf.webView
 
             let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
@@ -851,7 +889,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
         var currentContentOffset = self.webView.scrollView.contentOffset
 //        currentContentOffset.y = -self.webView.bounds.height
-        currentContentOffset.y -= 300
+        currentContentOffset.y -= self.webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -882,7 +920,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
         var currentContentOffset = self.webView.scrollView.contentOffset
 //        currentContentOffset.y = self.webView.scrollView.contentSize.height
-        currentContentOffset.y += 300
+        currentContentOffset.y += self.webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -1009,7 +1047,6 @@ extension S1ContentViewController {
                 favoriteItem.customView?.isHidden = true
                 fixItem2.width = 0.0
             }
-//            toolBar.items = items
         }
     }
 }
@@ -1185,18 +1222,17 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: Helper (view model)
+
 extension S1ContentViewController {
+    // MARK: Helper (view model)
     func _isInFirstPage() -> Bool {
         return viewModel.currentPage == 1
     }
     func _isInLastPage() -> Bool {
         return viewModel.currentPage >= viewModel.totalPages
     }
-}
 
-// MARK: Helper (hook)
-extension S1ContentViewController {
+    // MARK: Helper (hook)
     func _hook_preChangeCurrentPage() {
         DDLogDebug("[webView] pre change current page")
 
@@ -1208,6 +1244,7 @@ extension S1ContentViewController {
         webPageAutomaticScrollingEnabled = true
     }
 
+    @available(*, unavailable, message: "This method is not used")
     func _hook_preLoadNextPage() {
         // Noting to do
     }
@@ -1242,12 +1279,21 @@ extension S1ContentViewController {
         case .toBottom:
             webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: true)
         default:
-            break
+            if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
+                // Restore last view position from cached position in this view controller.
+                let offset = CGPoint(x: webView.scrollView.contentOffset.x, y: max(min(maxOffset, CGFloat(positionForPage.doubleValue)), 0.0))
+                webView.scrollView.setContentOffset(offset, animated: false)
+                webView.scrollView.s1_isIgnoringContentOffsetChange = true
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                    webView.scrollView.s1_isIgnoringContentOffsetChange = false
+                }
+            }
         }
 
         scrollType = .restorePosition
     }
 
+    @available(*, unavailable, message: "This method should only be used for UIWebView")
     func _hook_didFinishFullPageLoad(for webView: WKWebView) {
         DDLogDebug("[webView] full page loaded")
         let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
@@ -1266,12 +1312,10 @@ extension S1ContentViewController {
             }
         }
 
-//        scrollType = .restorePosition
+        scrollType = .restorePosition
     }
-}
 
-// MARK: Helper (Misc)
-extension S1ContentViewController {
+    // MARK: Helper (Misc)
     func updateToolBar() {
         func updateForwardButton() {
             // FIXME: this will make state failed to reflect button image but will lead to less quest for cache database which is good.
@@ -1340,45 +1384,6 @@ extension S1ContentViewController {
 
     func cancelRequest() {
         viewModel.dataCenter.cancelRequest()
-    }
-}
-
-// MARK: - Static
-extension S1ContentViewController {
-    static func positionOfElement(with ID: String, in webView: WKWebView) -> CGRect {
-        // TODO: Find a better solution for avoid dead lock.
-        assert(!Thread.isMainThread)
-        guard !Thread.isMainThread else {
-            var rect = CGRect.zero
-            DispatchQueue.global().sync {
-                rect = S1ContentViewController.positionOfElement(with: ID, in: webView)
-            }
-            return rect
-        }
-
-        let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        var rect = CGRect.zero
-        let semaphore = DispatchSemaphore(value: 0)
-        webView.evaluateJavaScript(script) { (result, error) in
-            defer {
-                semaphore.signal()
-            }
-
-            guard error == nil else {
-                DDLogWarn("failed to get position of element: \(ID) with error: \(error)")
-                return
-            }
-
-            guard let resultString = result as? String else {
-                DDLogWarn("failed to get position of element: \(ID) with result: \(result)")
-                return
-            }
-
-            rect = CGRectFromString(resultString)
-        }
-
-        semaphore.wait()
-        return rect
     }
 }
 
