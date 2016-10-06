@@ -131,8 +131,17 @@ extension S1ContentViewModel {
 }
 
 extension S1ContentViewModel {
-    func reportComposeViewModel(_ floor: Floor) -> ReportComposeViewModel {
+    func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
+    }
+
+    func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
+        let htmlString = type(of: self).generateContentPage(floors, with: topic)
+        return QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic.copy() as! S1Topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self).pageBaseURL())
+    }
+
+    func userViewModel(userID: Int) -> UserViewModel {
+        return UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID, name: ""))
     }
 }
 

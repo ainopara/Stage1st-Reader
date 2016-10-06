@@ -569,7 +569,8 @@ extension S1ContentViewController {
                 return
             }
 
-            let reportComposeViewController = ReportComposeViewController(viewModel: strongSelf.viewModel.reportComposeViewModel(floor))
+            let reportViewModel = strongSelf.viewModel.reportComposeViewModel(floor: floor)
+            let reportComposeViewController = ReportComposeViewController(viewModel: reportViewModel)
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
 
@@ -649,18 +650,12 @@ extension S1ContentViewController {
 // MARK: -
 // MARK: WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        DDLogDebug("[ContentVC] did commit navigation: \(navigation)")
-    }
-
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         DDLogInfo("[ContentVC] webViewDidFinishLoad")
-//        _hook_didFinishFullPageLoad(for: webView)
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         DDLogWarn("[ContentVC] webview failed to load with error: \(error)")
-//        _hook_didFinishFullPageLoad(for: webView)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -736,10 +731,7 @@ extension S1ContentViewController: WKNavigationDelegate {
                         presentingContentViewController = true
                         Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
 
-                        let quoteTopic = viewModel.topic.copy() as! S1Topic
-
-                        let htmlString = S1ContentViewModel.generateContentPage(chainQuoteFloors, with: quoteTopic)
-                        showQuoteFloorViewControllerWithTopic(quoteTopic, floors: chainQuoteFloors, htmlString: htmlString, centerFloorID: chainQuoteFloors.last!.ID)
+                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
 
                         decisionHandler(.cancel)
                         return
@@ -1060,14 +1052,14 @@ extension S1ContentViewController {
 // MARK: Navigation
 extension S1ContentViewController {
     func showUserViewController(with userID: Int) {
-        let viewModel = UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID, name: ""))
-        let userViewController = UserViewController(viewModel: viewModel)
+        let userViewModel = viewModel.userViewModel(userID: userID)
+        let userViewController = UserViewController(viewModel: userViewModel)
         navigationController?.pushViewController(userViewController, animated: true)
     }
 
-    func showQuoteFloorViewControllerWithTopic(_ topic: S1Topic, floors: [Floor], htmlString: String, centerFloorID: Int) {
-        let viewModel = QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self.viewModel).pageBaseURL())
-        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: viewModel)
+    func showQuoteFloorViewController(floors: [Floor], centerFloorID: Int) {
+        let quoteFloorViewModel = viewModel.quoteFloorViewModel(floors: floors, centerFloorID: centerFloorID)
+        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: quoteFloorViewModel)
         navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }
 }
@@ -1244,11 +1236,6 @@ extension S1ContentViewController {
         webPageAutomaticScrollingEnabled = true
     }
 
-    @available(*, unavailable, message: "This method is not used")
-    func _hook_preLoadNextPage() {
-        // Noting to do
-    }
-
     func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
         DDLogDebug("[webView] basic page loaded")
         let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
@@ -1287,28 +1274,6 @@ extension S1ContentViewController {
                 DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
                     webView.scrollView.s1_isIgnoringContentOffsetChange = false
                 }
-            }
-        }
-
-        scrollType = .restorePosition
-    }
-
-    @available(*, unavailable, message: "This method should only be used for UIWebView")
-    func _hook_didFinishFullPageLoad(for webView: WKWebView) {
-        DDLogDebug("[webView] full page loaded")
-        let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
-        switch scrollType {
-        case .toBottom:
-            fallthrough
-        case .pullDownForPrevious:
-            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
-        case .pullUpForNext:
-            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
-        default:
-            if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
-                // Restore last view position from cached position in this view controller.
-                let offset = CGPoint(x: webView.scrollView.contentOffset.x, y: max(min(maxOffset, CGFloat(positionForPage.doubleValue)), 0.0))
-                webView.scrollView.setContentOffset(offset, animated: false)
             }
         }
 
