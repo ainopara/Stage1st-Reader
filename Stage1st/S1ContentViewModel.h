@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)generateContentPage:(NSArray<Floor *> *)floorList withTopic:(S1Topic *)topic;
 + (NSString *)translateDateTimeString:(NSDate *)date;
+
 @end
 
 NS_ASSUME_NONNULL_END

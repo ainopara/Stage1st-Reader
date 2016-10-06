@@ -180,6 +180,11 @@ extension WKWebView {
         let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
         return offsetY >= maxOffsetY
     }
+
+    func s1_scrollToBottom(animated: Bool) {
+        let offset = CGPoint(x: 0.0, y: scrollView.contentSize.height - scrollView.bounds.height)
+        scrollView.setContentOffset(offset, animated: animated)
+    }
 }
 
 extension UIImage {

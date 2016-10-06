@@ -111,13 +111,13 @@ class S1ContentViewController: UIViewController {
         }
     }
 
+    // flag to make sure _hook_didFinishBasicPageLoad only called once per action (size change may occure multiple times)
     var webPageAutomaticScrollingEnabled = true
     dynamic var webPageReadyForAutomaticScrolling = false
     dynamic var webPageSizeChangedForAutomaticScrolling = false
+
     var finishFirstLoading = false
-    var presentingImageViewer = false
-    var presentingWebViewer = false
-    var presentingContentViewController = false
+    var presentType: PresentType = .none
 
     // MARK: -
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
@@ -143,7 +143,7 @@ class S1ContentViewController: UIViewController {
         backButton.addGestureRecognizer(backLongPressGestureRecognizer)
 
         // Forward button
-        let image = _isInLastPage() ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
+        let image = viewModel.isInLastPage() ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
         forwardButton.setImage(image, for: .normal)
         forwardButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
         forwardButton.imageView?.clipsToBounds = false
@@ -169,9 +169,13 @@ class S1ContentViewController: UIViewController {
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         webView.isOpaque = false
 
+        // Decoration line
+        topDecorateLine.isHidden = true
+        bottomDecorateLine.isHidden = true
+
         // Pull to action
-        pullToActionController.addConfiguration(withName: "top", baseLine: .top, beginPosition: 0.0, endPosition: Double(topOffset))
-        pullToActionController.addConfiguration(withName: "bottom", baseLine: .bottom, beginPosition: 0.0, endPosition: Double(bottomOffset))
+        pullToActionController.setConfiguration(withName: "top", baseLine: .top, beginPosition: 0.0, endPosition: Double(topOffset))
+        pullToActionController.setConfiguration(withName: "bottom", baseLine: .bottom, beginPosition: 0.0, endPosition: Double(bottomOffset))
         pullToActionController.delegate = self
 
         // Title label
@@ -212,7 +216,17 @@ class S1ContentViewController: UIViewController {
             fixItem2.width = 0.0
         }
 
-        toolBar.setItems([backwardItem, fixItem, forwardItem, flexItem, labelItem, flexItem, favoriteItem, fixItem2, actionBarButtonItem], animated: false)
+        toolBar.setItems([
+            backwardItem,
+            fixItem,
+            forwardItem,
+            flexItem,
+            labelItem,
+            flexItem,
+            favoriteItem,
+            fixItem2,
+            actionBarButtonItem
+            ], animated: false)
 
         perform(Selector(("viewDidLoadObjC")))
 
@@ -220,13 +234,19 @@ class S1ContentViewController: UIViewController {
         _setupActivity()
 
         // Notification
-        NotificationCenter.default.addObserver(self, selector: #selector(saveTopicViewedState(sender:)), name: .UIApplicationDidEnterBackground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(saveTopicViewedState(sender:)),
+                                               name: .UIApplicationDidEnterBackground,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
 
         // Fetch
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf._isInLastPage())
+            strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
         }
     }
 
@@ -237,10 +257,10 @@ class S1ContentViewController: UIViewController {
     deinit {
         DDLogInfo("[ContentVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
-        self.pullToActionController.delegate = nil
-        self.webView.navigationDelegate = nil
-        self.webView.scrollView.delegate = nil
-        self.webView.stopLoading()
+        pullToActionController.delegate = nil
+        webView.navigationDelegate = nil
+        webView.scrollView.delegate = nil
+        webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
@@ -305,9 +325,7 @@ extension S1ContentViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.presentingImageViewer = false
-        self.presentingWebViewer = false
-        self.presentingContentViewController = false
+        presentType = .none
 
         self.didReceivePaletteChangeNotification(nil)
 
@@ -327,15 +345,11 @@ extension S1ContentViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        guard
-            !self.presentingImageViewer,
-            !self.presentingWebViewer,
-            !self.presentingContentViewController else {
+        guard case .none = presentType else {
             return
         }
 
-        DDLogDebug("[ContentVC] View did disappear begin")
-        cancelRequest()
+        viewModel.cancelRequest()
         saveTopicViewedState(sender: nil)
         DDLogDebug("[ContentVC] View did disappear end")
     }
@@ -344,7 +358,7 @@ extension S1ContentViewController {
 // MARK: - Actions
 extension S1ContentViewController {
     open func back(sender: Any?) {
-        if _isInFirstPage() {
+        if viewModel.isInFirstPage() {
             _ = self.navigationController?.popViewController(animated: true)
         } else {
             _hook_preChangeCurrentPage()
@@ -354,15 +368,9 @@ extension S1ContentViewController {
     }
 
     open func forward(sender: Any?) {
-
-        func scrollToBottom(animated: Bool) {
-            let offset = CGPoint(x: 0.0, y: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
-            webView.scrollView.setContentOffset(offset, animated: animated)
-        }
-
-        switch (_isInLastPage(), self.webView.s1_atBottom()) {
+        switch (viewModel.isInLastPage(), self.webView.s1_atBottom()) {
         case (true, false):
-            scrollToBottom(animated: true)
+            webView.s1_scrollToBottom(animated: true)
             break
         case (true, true):
             forceRefreshCurrentPage()
@@ -380,7 +388,7 @@ extension S1ContentViewController {
     open func backLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
             gestureRecognizer.state == UIGestureRecognizerState.began,
-            !_isInFirstPage() else {
+            !viewModel.isInFirstPage() else {
             return
         }
 
@@ -392,7 +400,7 @@ extension S1ContentViewController {
     open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
             gestureRecognizer.state == UIGestureRecognizerState.began,
-            !_isInLastPage() else {
+            !viewModel.isInLastPage() else {
             return
         }
 
@@ -491,15 +499,13 @@ extension S1ContentViewController {
             var rect = strongSelf.view.bounds
             rect.origin.y += 20.0
             rect.size.height -= 20.0
-//            let screenshot = strongSelf.view.s1_screenShot()?.s1_crop(to: rect)
-            let content = strongSelf.viewModel.topic.title ?? ""
             let items: [Any] = ([
-                ContentTextActivityItemProvider(title: content),
-//                "\(content) #Stage1st Reader#",
+                ContentTextActivityItemProvider(title: strongSelf.viewModel.topic.title ?? ""),
                 strongSelf.viewModel.correspondingWebPageURL(),
                 ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect)] as [Any?])
                 .filter { return $0 != nil }
                 .map { $0! }
+
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
 
@@ -525,7 +531,7 @@ extension S1ContentViewController {
                                                 style: .default,
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
-            strongSelf.presentingWebViewer = true
+            strongSelf.presentType = .web
             Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
             if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
                 let webViewController = WebViewController(URL: urlToOpen)
@@ -678,7 +684,7 @@ extension S1ContentViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            presentingImageViewer = true
+            presentType = .image
             Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
 
@@ -699,7 +705,7 @@ extension S1ContentViewController: WKNavigationDelegate {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 var topic = topic
-                presentingContentViewController = true
+                presentType = .content
                 Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
 
                 if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
@@ -728,7 +734,7 @@ extension S1ContentViewController: WKNavigationDelegate {
                     let pid = Int(pidString) {
                     let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
                     if chainQuoteFloors.count > 0 {
-                        presentingContentViewController = true
+                        presentType = .quote
                         Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
 
                         showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
@@ -753,7 +759,7 @@ extension S1ContentViewController: WKNavigationDelegate {
                                                     style: .default,
                                                     handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
-            strongSelf.presentingWebViewer = true
+            strongSelf.presentType = .web
             Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
             DDLogDebug("[ContentVC] Open in Safari: \(url)")
 
@@ -793,6 +799,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
             }
         case "user":
             if let userID = messageDictionary["id"] as? Int {
+                presentType = .user
                 showUserViewController(with: userID)
             }
         case "image":
@@ -809,7 +816,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
     func showImage(with ID: String, _ url: String) {
         DispatchQueue.global(qos: .default).async { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.presentingImageViewer = true
+            strongSelf.presentType = .image
             Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
             DDLogDebug("[ContentVC] JTS View Image: \(url)")
@@ -871,11 +878,11 @@ extension S1ContentViewController: JTSImageViewControllerOptionsDelegate {
 
 // MARK: PullToActionDelagete
 extension S1ContentViewController: PullToActionDelagete {
-    public func scrollViewDidEndDraggingOutsideTopBoundWithOffset(_ offset: CGFloat) {
+    public func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat) {
         guard
             offset < topOffset,
             self.finishFirstLoading,
-            !self._isInFirstPage() else {
+            !self.viewModel.isInFirstPage() else {
             return
         }
 
@@ -897,14 +904,14 @@ extension S1ContentViewController: PullToActionDelagete {
         }
     }
 
-    public func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(_ offset: CGFloat) {
+    public func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat) {
         guard
             offset > bottomOffset,
             self.finishFirstLoading else {
             return
         }
 
-        guard !self._isInLastPage() else {
+        guard !self.viewModel.isInLastPage() else {
             // Only refresh triggered in last page
             self.forward(sender: nil)
             return
@@ -935,7 +942,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
     public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
         guard finishFirstLoading else {
-            if _isInLastPage() {
+            if viewModel.isInLastPage() {
                 forwardButtonState = .refresh(rotateAngle: 0.0)
             }
             // back state set depend on cache info
@@ -944,7 +951,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
         // Process for bottom offset
         if let bottomProgress = progress["bottom"] {
-            if _isInLastPage() {
+            if viewModel.isInLastPage() {
                 if bottomProgress >= 0 {
                     forwardButtonState = .refresh(rotateAngle: bottomProgress)
                 } else {
@@ -958,7 +965,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
         // Process for top offset
         if let topProgress = progress["top"] {
-            if _isInFirstPage() {
+            if viewModel.isInFirstPage() {
                 backButtonState = .back(rotateAngle: 0.0)
             } else {
                 let limitedTopProgress = max(min(topProgress, 1.0), 0.0)
@@ -984,7 +991,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 //                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                 guard let strongSelf = self else { return }
                 strongSelf.attributedReplyDraft = nil
-                if strongSelf._isInLastPage() {
+                if strongSelf.viewModel.isInLastPage() {
                     strongSelf.scrollType = .toBottom
                     strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
@@ -1177,7 +1184,7 @@ extension S1ContentViewController {
             strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
 
             // Prepare next page
-            if (!strongSelf._isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
+            if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
                 strongSelf.viewModel.dataCenter.setFinishHandlerFor(strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), andHandler: { [weak self] (floorList) in
                     guard let strongSelf = self else { return }
                     strongSelf.updateToolBar()
@@ -1214,22 +1221,21 @@ extension S1ContentViewController {
     }
 }
 
-
 extension S1ContentViewController {
-    // MARK: Helper (view model)
-    func _isInFirstPage() -> Bool {
-        return viewModel.currentPage == 1
-    }
-    func _isInLastPage() -> Bool {
-        return viewModel.currentPage >= viewModel.totalPages
-    }
-
     // MARK: Helper (hook)
     func _hook_preChangeCurrentPage() {
         DDLogDebug("[webView] pre change current page")
 
-        cancelRequest()
+        viewModel.cancelRequest()
         saveViewPositionForCurrentPage()
+
+        webPageReadyForAutomaticScrolling = false
+        webPageSizeChangedForAutomaticScrolling = false
+        webPageAutomaticScrollingEnabled = true
+    }
+
+    func _hook_preRefreshCurrentPage() {
+        DDLogDebug("[webView] pre refresh current page")
 
         webPageReadyForAutomaticScrolling = false
         webPageSizeChangedForAutomaticScrolling = false
@@ -1307,7 +1313,7 @@ extension S1ContentViewController {
 //        self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
 //        self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
 
-        topDecorateLine.isHidden = _isInFirstPage() || !self.finishFirstLoading
+        topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading
         bottomDecorateLine.isHidden = !self.finishFirstLoading
     }
 
@@ -1341,15 +1347,13 @@ extension S1ContentViewController {
     }
 
     func forceRefreshCurrentPage() {
-        cancelRequest()
+        viewModel.cancelRequest()
         saveViewPositionForCurrentPage()
 
+        _hook_preRefreshCurrentPage()
         fetchContentForCurrentPage(forceUpdate: true)
     }
 
-    func cancelRequest() {
-        viewModel.dataCenter.cancelRequest()
-    }
 }
 
 // MARK: - State
@@ -1370,5 +1374,20 @@ extension S1ContentViewController {
         case forward(rotateAngle: Double)
         case cachedForward(rotateAngle: Double)
         case refresh(rotateAngle: Double)
+    }
+
+    enum PresentType {
+        case none
+        case image
+        case web
+        case content
+        case user
+        case quote
+
+        // TODO: not tracked for now
+        case actionSheet
+        case alert
+        case reply
+        case report
     }
 }

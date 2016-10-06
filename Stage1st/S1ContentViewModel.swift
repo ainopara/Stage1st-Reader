@@ -130,6 +130,7 @@ extension S1ContentViewModel {
     }
 }
 
+// MARK: - View Model
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
@@ -145,10 +146,11 @@ extension S1ContentViewModel {
     }
 }
 
+// MARK: - Misc
 extension S1ContentViewModel {
     func saveTopicViewedState(lastViewedPosition: Double?) {
 
-        DDLogInfo("[ContentVM] Save Topic View State Begin.")
+        DDLogInfo("[ContentVM] Save Topic View State Begin")
 
         if let lastViewedPosition = lastViewedPosition {
             topic.lastViewedPosition = NSNumber(value: lastViewedPosition)
@@ -161,6 +163,17 @@ extension S1ContentViewModel {
         topic.lastReplyCount = topic.replyCount
         dataCenter.hasViewed(topic)
 
-        DDLogInfo("[ContentVM] Save Topic View State Finish.")
+        DDLogInfo("[ContentVM] Save Topic View State Finish")
+    }
+
+    func cancelRequest() {
+        dataCenter.cancelRequest()
+    }
+
+    func isInFirstPage() -> Bool {
+        return currentPage == 1
+    }
+    func isInLastPage() -> Bool {
+        return currentPage >= totalPages
     }
 }

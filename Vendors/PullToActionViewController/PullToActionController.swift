@@ -6,27 +6,26 @@
 //  Copyright (c) 2015 Renaissance. All rights reserved.
 //
 
-import UIKit
 import CocoaLumberjack
 
 @objc public protocol PullToActionDelagete {
-    @objc optional func scrollViewDidEndDraggingOutsideTopBoundWithOffset(_ offset: CGFloat)
-    @objc optional func scrollViewDidEndDraggingOutsideBottomBoundWithOffset(_ offset: CGFloat)
+    @objc optional func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat)
+    @objc optional func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat)
     @objc optional func scrollViewContentSizeDidChange(_ contentSize: CGSize)
     @objc optional func scrollViewContentOffsetProgress(_ progress: [String: Double])
 }
 
-@objc public enum OffsetBaseLine: Int {
-    case top, bottom, left, right
-}
+public struct OffsetRange {
+    public enum BaseLine: Int {
+        case top, bottom, left, right
+    }
 
-struct OffsetRange {
     let beginPosition: Double
     let endPosition: Double
-    let baseLine: OffsetBaseLine
+    let baseLine: BaseLine
 
-    func progress(for offset: Double) -> Double {
-        return (offset - beginPosition) / (endPosition - beginPosition)
+    func progress(for currentOffset: Double) -> Double {
+        return (currentOffset - beginPosition) / (endPosition - beginPosition)
     }
 }
 
@@ -39,6 +38,7 @@ public class PullToActionController: NSObject {
     var inset: UIEdgeInsets = UIEdgeInsets.zero
     fileprivate var progressAction: [String: OffsetRange] = Dictionary<String, OffsetRange>()
 
+    // MARK: -
     init(scrollView: UIScrollView) {
         self.scrollView = scrollView
         super.init()
@@ -58,7 +58,7 @@ public class PullToActionController: NSObject {
         DDLogDebug("[PullToAction] deinit")
     }
 
-    public func addConfiguration(withName name: String, baseLine: OffsetBaseLine, beginPosition: Double, endPosition: Double) {
+    public func setConfiguration(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
         progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
 
@@ -91,9 +91,7 @@ public class PullToActionController: NSObject {
 
             let newSize = newSizeValue.cgSizeValue
 
-            guard
-//                (abs(self.size.width) < 0.1 && abs(self.size.height) < 0.1) ||
-                abs(self.size.width - newSize.width) > 0.1 || abs(self.size.height - newSize.height) > 0.1 else {
+            guard abs(self.size.width - newSize.width) > 0.1 || abs(self.size.height - newSize.height) > 0.1 else {
                 return
             }
 
@@ -110,7 +108,7 @@ public class PullToActionController: NSObject {
         }
     }
 
-    private func currentOffset(relativeTo baseLine: OffsetBaseLine) -> Double {
+    private func currentOffset(relativeTo baseLine: OffsetRange.BaseLine) -> Double {
         guard let scrollView = self.scrollView else {
             return Double(0.0)
         }
@@ -128,20 +126,21 @@ public class PullToActionController: NSObject {
     }
 }
 
+// MARK: UIScrollViewDelegate
 extension PullToActionController: UIScrollViewDelegate {
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         //TODO: consider content inset
         let topOffset = self.offset.y
         if topOffset < 0.0 {
             DDLogDebug("[PullToAction] End dragging <- \(topOffset)")
-            self.delegate?.scrollViewDidEndDraggingOutsideTopBoundWithOffset?(topOffset)
+            self.delegate?.scrollViewDidEndDraggingOutsideTopBound?(with: topOffset)
             return
         }
 
         let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height
         if bottomOffset > 0.0 {
             DDLogDebug("[PullToAction] End dragging -> \(bottomOffset)")
-            self.delegate?.scrollViewDidEndDraggingOutsideBottomBoundWithOffset?(bottomOffset)
+            self.delegate?.scrollViewDidEndDraggingOutsideBottomBound?(with: bottomOffset)
             return
         }
     }
@@ -151,6 +150,7 @@ extension PullToActionController: UIScrollViewDelegate {
         return nil
     }
 
+    // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }

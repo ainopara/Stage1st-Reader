@@ -38,14 +38,21 @@
         [strongSelf.pageButton setTitle:[strongSelf.viewModel pageButtonString] forState:UIControlStateNormal];
     }];
 
-    [[RACSignal combineLatest:@[RACObserve(self, webPageReadyForAutomaticScrolling), RACObserve(self, webPageSizeChangedForAutomaticScrolling)]] subscribeNext:^(RACTuple *x) {
-        DDLogVerbose(@"[ContentVC] document ready: %@, content size changed: %@", x.first, x.second);
+    [RACObserve(self, webPageReadyForAutomaticScrolling) subscribeNext:^(NSNumber *x) {
+        DDLogVerbose(@"[ContentVC] document ready: %@", x);
         __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
             return;
         }
-        if ([x.first boolValue] && [x.second boolValue] && strongSelf.webPageAutomaticScrollingEnabled) {
-            [strongSelf _hook_didFinishBasicPageLoadFor:strongSelf.webView];
+        if ([x boolValue] && strongSelf.webPageAutomaticScrollingEnabled) {
+            // Wait for content size changed
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                __strong __typeof__(self) strongSelf = weakSelf;
+                if (strongSelf == nil) {
+                    return;
+                }
+                [strongSelf _hook_didFinishBasicPageLoadFor:strongSelf.webView];
+            });
             strongSelf.webPageAutomaticScrollingEnabled = NO;
         }
     }];
