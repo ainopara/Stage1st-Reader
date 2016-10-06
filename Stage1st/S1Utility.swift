@@ -67,25 +67,40 @@ extension Date {
 }
 
 extension UIView {
-    func s1_screenShot() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
+    func s1_screenShot(rect: CGRect) -> UIImage? {
+        // https://chromium.googlesource.com/chromium/src.git/+/46.0.2478.0/ios/chrome/browser/snapshots/snapshot_manager.mm
+        func viewHierarchyContainsWKWebView(_ view: UIView) -> Bool {
+            if view is WKWebView {
+                return true
+            }
+
+            for subview in view.subviews {
+                if viewHierarchyContainsWKWebView(subview) {
+                    return true
+                }
+            }
+
+            return false
+        }
+
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
         guard let currentContext = UIGraphicsGetCurrentContext() else {
             return nil
         }
 
-        self.layer.render(in: currentContext)
+        if viewHierarchyContainsWKWebView(self) {
+            self.drawHierarchy(in: rect, afterScreenUpdates: true)
+        } else {
+            self.layer.render(in: currentContext)
+        }
+
         let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return viewScreenShot
     }
 
-    func s1_screenShot(_ rect: CGRect) -> UIImage? {
-        guard let
-            originalScreenShot = self.s1_screenShot(),
-            let processingCGImage = originalScreenShot.cgImage?.cropping(to: rect) else {
-            return nil
-        }
-        return UIImage(cgImage: processingCGImage, scale: 1.0, orientation: originalScreenShot.imageOrientation)
+    func s1_screenShot() -> UIImage? {
+        return s1_screenShot(rect: self.bounds)
     }
     // TODO:
     //    - (UIImage *)screenShot {

@@ -311,12 +311,14 @@
     }
     
     // process spoiler
-    NSArray<NSString *> *spoilerXpathList = @[@"//font[@color='LemonChiffon']",
-                                              @"//font[@color='Yellow']",
-                                              @"//font[@color='#fffacd']",
-                                              @"//font[@color='#FFFFCC']",
-                                              @"//font[@color='White']"];
-    NSArray< DDXMLElement *> * _Nullable spoilers = @[];
+    NSArray<NSString *> *spoilerXpathList = @[
+        @"//font[@color='LemonChiffon']",
+        @"//font[@color='Yellow']",
+        @"//font[@color='#fffacd']",
+        @"//font[@color='#FFFFCC']",
+        @"//font[@color='White']"
+    ];
+    NSArray< DDXMLElement *> *spoilers = @[];
     for (NSString *spoilerXpath in spoilerXpathList) {
         NSArray< DDXMLElement *> * _Nullable temp = [xmlDoc nodesForXPath:spoilerXpath error:nil];
         if (temp != nil) {

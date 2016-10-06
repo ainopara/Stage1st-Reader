@@ -57,6 +57,7 @@
 		869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
+		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
 		86A880BE1D8D680800AD02F2 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; };
 		86A880BF1D8D680C00AD02F2 /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; };
 		86A880C01D8D680F00AD02F2 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; };
@@ -216,6 +217,8 @@
 		869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		869D686E1D8B0FA90039D4CB /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportComposeViewController.swift; path = Stage1st/ReportComposeViewController.swift; sourceTree = "<group>"; };
+		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+WKWebViewHack.h"; path = "Stage1st/UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
+		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+WKWebViewHack.m"; path = "Stage1st/UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Teleport.swift"; path = "Stage1st/DiscuzAPIManager+Teleport.swift"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
@@ -652,6 +655,8 @@
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
+				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
+				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -1102,6 +1107,7 @@
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
 				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
+				86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */,
 				862DB79A1C8891070068F75F /* UserViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

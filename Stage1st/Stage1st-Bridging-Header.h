@@ -20,3 +20,4 @@
 #import "S1TabBar.h"
 #import "S1Parser.h"
 #import "GTMNSString+HTML.h"
+#import "UIScrollView+WKWebViewHack.h"
