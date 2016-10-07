@@ -8,10 +8,12 @@
 
 import Result
 import ReactiveSwift
+import ReactiveObjC
 import SnapKit
 import CocoaLumberjack
 import YYKeyboardManager
 import TextAttributes
+
 
 final class ReportComposeViewModel {
     let apiManager: DiscuzAPIManager
@@ -83,7 +85,16 @@ final class ReportComposeViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Binding
-        viewModel.content <~ textView.rac_textSignal().toSignalProducer().map { $0 as! String }.flatMapError { _ in return SignalProducer<String, NoError>.empty }
+        textView.rac_textSignal().subscribeNext({ [weak self] (value) in
+            guard let strongSelf = self else { return }
+            guard let contentString = value as? String else { return }
+
+            strongSelf.viewModel.content.value = contentString
+        })
+//            .toSignalProducer()
+//            .map { $0 as! String }
+//            .flatMapError { _ in return SignalProducer<String, NoError>.empty }
+
         viewModel.canSubmit.producer.startWithValues { [weak self] (canSubmit) in
             guard let strongSelf = self else { return }
             strongSelf.navigationItem.rightBarButtonItem?.isEnabled = canSubmit
@@ -99,7 +110,10 @@ final class ReportComposeViewController: UIViewController {
         }
 
         keyboardManager.add(self)
-        NotificationCenter.default.addObserver(self, selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
     }
 
     deinit {

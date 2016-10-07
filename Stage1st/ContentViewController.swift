@@ -15,6 +15,7 @@ import Crashlytics
 
 fileprivate let topOffset: CGFloat = -80.0
 fileprivate let bottomOffset: CGFloat = 60.0
+fileprivate let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
 class S1ContentViewController: UIViewController {
     let viewModel: S1ContentViewModel
@@ -168,6 +169,7 @@ class S1ContentViewController: UIViewController {
         webView.scrollView.backgroundColor = .clear
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         webView.isOpaque = false
+        webView.loadHTMLString(blankPageHTMLString, baseURL: URL(string: "about:blank"))
 
         // Decoration line
         topDecorateLine.isHidden = true

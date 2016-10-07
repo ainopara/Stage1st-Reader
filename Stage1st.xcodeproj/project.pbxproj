@@ -55,7 +55,6 @@
 		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
-		86A7CD601DA73EF900ED705D /* ObjectiveCBridging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
@@ -206,7 +205,6 @@
 		86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportComposeViewController.swift; path = Stage1st/ReportComposeViewController.swift; sourceTree = "<group>"; };
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+WKWebViewHack.h"; path = "Stage1st/UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+WKWebViewHack.m"; path = "Stage1st/UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
-		86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ObjectiveCBridging.swift; path = Vendors/ObjectiveCBridging.swift; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Teleport.swift"; path = "Stage1st/DiscuzAPIManager+Teleport.swift"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
@@ -621,7 +619,6 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */,
 				868799201CE629BE00F5C75C /* JASON+Alamofire.swift */,
 				86221B851CA65E3600015522 /* S1Utility.swift */,
 				862DB7A01C8AB0000068F75F /* ColorManager.swift */,
@@ -1031,7 +1028,6 @@
 				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,
 				86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
-				86A7CD601DA73EF900ED705D /* ObjectiveCBridging.swift in Sources */,
 				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
