@@ -52,17 +52,10 @@
 		8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
-		869D68741D8C290A0039D4CB /* ReactiveObjC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		869D68761D8C290A0039D4CB /* ReactiveObjCBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
-		86A880BE1D8D680800AD02F2 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */; };
-		86A880BF1D8D680C00AD02F2 /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */; };
-		86A880C01D8D680F00AD02F2 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */; };
-		86A880C11D8D681100AD02F2 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869D686E1D8B0FA90039D4CB /* Result.framework */; };
+		86A7CD601DA73EF900ED705D /* ObjectiveCBridging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
@@ -133,10 +126,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				869D68761D8C290A0039D4CB /* ReactiveObjCBridge.framework in Embed Frameworks */,
-				869D68741D8C290A0039D4CB /* ReactiveObjC.framework in Embed Frameworks */,
-				869D68781D8C290A0039D4CB /* ReactiveSwift.framework in Embed Frameworks */,
-				869D687A1D8C290A0039D4CB /* Result.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,14 +202,11 @@
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1TopicListCellSubView.m; path = Stage1st/S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
 		869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationControllerDelegate.m; path = Stage1st/NavigationControllerDelegate.m; sourceTree = "<group>"; };
-		869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Carthage/Build/iOS/ReactiveObjC.framework; sourceTree = "<group>"; };
-		869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjCBridge.framework; path = Carthage/Build/iOS/ReactiveObjCBridge.framework; sourceTree = "<group>"; };
-		869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
-		869D686E1D8B0FA90039D4CB /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		869E02391DA67293006A45FE /* ActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivityItemProvider.swift; path = Stage1st/ActivityItemProvider.swift; sourceTree = "<group>"; };
 		86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportComposeViewController.swift; path = Stage1st/ReportComposeViewController.swift; sourceTree = "<group>"; };
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+WKWebViewHack.h"; path = "Stage1st/UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+WKWebViewHack.m"; path = "Stage1st/UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
+		86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ObjectiveCBridging.swift; path = Vendors/ObjectiveCBridging.swift; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DiscuzAPIManager+Teleport.swift"; path = "Stage1st/DiscuzAPIManager+Teleport.swift"; sourceTree = "<group>"; };
 		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceTextAttachment.h; path = Stage1st/S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
@@ -325,10 +311,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86A880BE1D8D680800AD02F2 /* ReactiveObjC.framework in Frameworks */,
-				86A880BF1D8D680C00AD02F2 /* ReactiveObjCBridge.framework in Frameworks */,
-				86A880C01D8D680F00AD02F2 /* ReactiveSwift.framework in Frameworks */,
-				86A880C11D8D681100AD02F2 /* Result.framework in Frameworks */,
 				86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */,
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
 				B9F3162CDD829E5736F68499 /* Pods_Stage1st.framework in Frameworks */,
@@ -639,10 +621,7 @@
 		C095875416CA8A3E007E0119 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				869D686B1D8B0FA90039D4CB /* ReactiveObjC.framework */,
-				869D686C1D8B0FA90039D4CB /* ReactiveObjCBridge.framework */,
-				869D686D1D8B0FA90039D4CB /* ReactiveSwift.framework */,
-				869D686E1D8B0FA90039D4CB /* Result.framework */,
+				86A7CD5F1DA73EF900ED705D /* ObjectiveCBridging.swift */,
 				868799201CE629BE00F5C75C /* JASON+Alamofire.swift */,
 				86221B851CA65E3600015522 /* S1Utility.swift */,
 				862DB7A01C8AB0000068F75F /* ColorManager.swift */,
@@ -1052,6 +1031,7 @@
 				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,
 				86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */,
 				86040B8019DE3A74004BF2BC /* S1DataCenter.m in Sources */,
+				86A7CD601DA73EF900ED705D /* ObjectiveCBridging.swift in Sources */,
 				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
