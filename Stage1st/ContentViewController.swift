@@ -650,6 +650,8 @@ extension S1ContentViewController {
 
         if notification != nil {
             saveViewPositionForCurrentPage()
+
+            _hook_preRefreshCurrentPage()
             fetchContentForCurrentPage(forceUpdate: false)
         }
     }
