@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CocoaLumberjack/DDLog.h>
+@import CocoaLumberjack.DDLog;
 
 @interface DDErrorLevelFormatter : NSObject <DDLogFormatter>
 

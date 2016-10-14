@@ -11,12 +11,14 @@
   </head>
   <body vlink="#333333" link="#333333">
 %@
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script>$(document).ready(function() {
-              window.webkit.messageHandlers.stage1st.postMessage({type: "ready"});
-          });
-          jQuery(window).load(function () {
-              window.webkit.messageHandlers.stage1st.postMessage({type: "load"});
-          });</script>
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "ready"});
+      });
+      $(window).on("load", function () {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "load"});
+      });
+    </script>
   </body>
 </html>

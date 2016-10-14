@@ -783,7 +783,7 @@ extension S1ContentViewController: WKNavigationDelegate {
 // MARK: WKScriptMessageHandler
 extension S1ContentViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        DDLogInfo("[ContentVC] message body: \(message.body)")
+        DDLogVerbose("[ContentVC] message body: \(message.body)")
         guard
             let messageDictionary = message.body as? [String: Any],
             let type = messageDictionary["type"] as? String else {
@@ -792,25 +792,31 @@ extension S1ContentViewController: WKScriptMessageHandler {
         }
 
         switch type {
-        case "ready":
+        case "ready": // called when dom finish loading
             DDLogDebug("[WebView] ready")
             webPageReadyForAutomaticScrolling = true
-        case "load":
+        case "load": // called when all the images finish loading
             DDLogDebug("[WebView] load")
         case "reply":
             if let floorID = messageDictionary["id"] as? Int {
                 actionButtonTapped(for: floorID)
+            } else {
+                DDLogError("unexpected message format: \(messageDictionary)")
             }
         case "user":
             if let userID = messageDictionary["id"] as? Int {
                 presentType = .user
                 showUserViewController(with: userID)
+            } else {
+                DDLogError("unexpected message format: \(messageDictionary)")
             }
         case "image":
             if
                 let imageID = messageDictionary["id"] as? String,
                 let imageURLString = messageDictionary["src"] as? String {
                 showImage(with: imageID, imageURLString)
+            } else {
+                DDLogError("unexpected message format: \(messageDictionary)")
             }
         default:
             DDLogWarn("[WebView] unexpected type: \(type)")
@@ -963,7 +969,8 @@ extension S1ContentViewController: PullToActionDelagete {
                 }
             } else {
                 let limitedBottomProgress = max(min(bottomProgress, 1.0), 0.0)
-                forwardButtonState = .forward(rotateAngle: limitedBottomProgress) // FIXME: or .cachedForward judge depending on cache state
+                // FIXME: or .cachedForward judge depending on cache state
+                forwardButtonState = .forward(rotateAngle: limitedBottomProgress)
             }
         }
 
@@ -1293,12 +1300,14 @@ extension S1ContentViewController {
     // MARK: Helper (Misc)
     func updateToolBar() {
         func updateForwardButton() {
-            // FIXME: this will make state failed to reflect button image but will lead to less quest for cache database which is good.
+            // FIXME: this will make state failed to reflect button image 
+            // but will lead to less quest for cache database which is good.
             forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
         }
 
         func updateBackwardButton() {
-            // FIXME: this will make state failed to reflect button image but will lead to less quest for cache database which is good.
+            // FIXME: this will make state failed to reflect button image 
+            // but will lead to less quest for cache database which is good.
             backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
         }
 
@@ -1307,7 +1316,8 @@ extension S1ContentViewController {
     }
 
     func updateTitleLabel(title: String) {
-        // FIXME: title label should be change by monitoring viewmodel's property change, not by manually call this method
+        // FIXME: title label should be change by monitoring viewmodel's 
+        // property change, not by manually call this method
         titleLabel.text = title
         titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
     }
