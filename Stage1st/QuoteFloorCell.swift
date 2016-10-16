@@ -72,15 +72,4 @@ final class QuoteFloorCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func configure(_ presenting: FloorPresenting) {
-        if let avatarURL = presenting.avatarURL {
-            avatarView.kf.setImage(with: ImageResource(downloadURL: avatarURL))
-        }
-        authorLabel.attributedText = presenting.author
-        dateTimeLabel.attributedText = presenting.dateTime
-        floorLabel.attributedText = presenting.floorMark
-//        webView.loadHTMLString(presenting.contentPage, baseURL: nil)
-        contentLabel.attributedText = presenting.content
-    }
 }

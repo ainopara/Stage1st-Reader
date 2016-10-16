@@ -198,7 +198,7 @@
     return mutableContent;
 }
 
-+ (NSString *)processHTMLString:(NSString *)HTMLString {
++ (NSString *)processHTMLString:(NSString *)HTMLString withFloorID:(NSInteger)floorID {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:[HTMLString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     // process images
     NSArray *images = [xmlDoc nodesForXPath:@"//img" error:nil];
@@ -220,7 +220,7 @@
             if (![imageSrc hasPrefix:@"static/image/smiley"]) {
                 DDXMLElement *linkElement = image;
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
-                [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"img%ld", (long)imageCount]];
+                [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"%ld-img%ld",floorID, (long)imageCount]];
                 imageCount += 1;
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"] || [MyAppDelegate.reachability isReachableViaWiFi]) {
                     [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];

@@ -76,7 +76,7 @@ extension PageRenderer {
                 DDLogWarn("[PageRenderer] nil content in floor \(floor.ID)")
                 return ""
             }
-            let firstProcessedContent = S1ContentViewModel.processHTMLString(content)
+            let firstProcessedContent = S1ContentViewModel.processHTMLString(content, withFloorID: floor.ID)
             let secondProcessedContent = UserDefaults.standard.bool(forKey: "RemoveTails") ? S1ContentViewModel.stripTails(firstProcessedContent) : firstProcessedContent
             return secondProcessedContent
         }
@@ -104,7 +104,7 @@ extension PageRenderer {
             "index-mark": processIndexMark(indexMark: floor.indexMark),
             "author-ID": floor.author.ID,
             "author-name": processAuthor(floor: floor),
-            "post-time": floor.creationDate?.s1_gracefulDateTimeString ?? "无日期",
+            "post-time": floor.creationDate?.s1_gracefulDateTimeString() ?? "无日期",
             "ID": "\(floor.ID)",
             "poll": nil,
             "content": processContent(content: floor.content),

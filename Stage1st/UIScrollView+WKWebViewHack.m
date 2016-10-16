@@ -19,7 +19,7 @@
 - (void)s1_setContentOffset:(CGPoint)contentOffset {
 #ifdef DEBUG
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
-        NSLog(@"%@ \n y: %f -> %f", self, self.contentOffset.y, contentOffset.y);
+//        NSLog(@"%@ \n y: %f -> %f", self, self.contentOffset.y, contentOffset.y);
     }
 #endif
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {

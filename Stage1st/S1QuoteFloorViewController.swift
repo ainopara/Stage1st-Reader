@@ -6,22 +6,30 @@
 //  Copyright (c) 2015 Renaissance. All rights reserved.
 //
 
-import UIKit
-import JTSImageViewController
+import WebKit
 import Crashlytics
 import CocoaLumberjack
+import JTSImageViewController
 
 class S1QuoteFloorViewController: UIViewController {
-    var useTableView: Bool = false
-
-    var tableView: UITableView?
-    let webView = UIWebView()
-
     let viewModel: QuoteFloorViewModel
+
+    lazy var webView: WKWebView = {
+        return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
+    }()
 
     init(viewModel: QuoteFloorViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+
+        automaticallyAdjustsScrollViewInsets = false
+
+        webView.navigationDelegate = self
+        webView.scrollView.backgroundColor = .clear
+        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        webView.scrollView.delegate = self
+        webView.isOpaque = false
+        webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -31,40 +39,17 @@ class S1QuoteFloorViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = APColorManager.shared.colorForKey("content.background")
-        self.automaticallyAdjustsScrollViewInsets = false
-        if self.useTableView {
-            let tableView = UITableView()
-            self.tableView = tableView
-            tableView.backgroundColor = APColorManager.shared.colorForKey("content.background")
-            tableView.delegate = self
-            tableView.dataSource = self
-            tableView.rowHeight = UITableViewAutomaticDimension
-            tableView.estimatedRowHeight = 100.0
-            tableView.separatorStyle = .none
-            tableView.register(QuoteFloorCell.self, forCellReuseIdentifier: "QuoteCell")
-            self.view.addSubview(tableView)
 
-            tableView.snp.makeConstraints({ (make) -> Void in
-                make.top.equalTo(self.topLayoutGuide.snp.bottom)
-                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-                make.leading.trailing.equalTo(self.view)
-            })
-        } else {
-            webView.isOpaque = false
-            webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
-            webView.delegate = self
-            webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-            self.view.addSubview(webView)
+        self.view.addSubview(webView)
+        webView.snp.makeConstraints({ (make) -> Void in
+            make.top.equalTo(self.topLayoutGuide.snp.bottom)
+            make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+            make.leading.trailing.equalTo(self.view)
+        })
+    }
 
-            webView.snp.makeConstraints({ (make) -> Void in
-                make.top.equalTo(self.topLayoutGuide.snp.bottom)
-                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-                make.leading.trailing.equalTo(self.view)
-            })
-            webView.loadHTMLString(self.viewModel.htmlString, baseURL: self.viewModel.baseURL as URL)
-        }
-        // Do any additional setup after loading the view.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -75,39 +60,39 @@ class S1QuoteFloorViewController: UIViewController {
     deinit {
         DDLogInfo("[QuoteFloorVC] dealloc")
     }
-
 }
 
-// MARK: - Table View Delegate
-extension S1QuoteFloorViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.numberOfSection()
-    }
+// MARK: - Actions
+extension S1QuoteFloorViewController {
+    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
+        view.backgroundColor = APColorManager.shared.colorForKey("content.background")
+        webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRow(in: section)
-    }
+        setNeedsStatusBarAppearanceUpdate()
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "QuoteCell", for: indexPath) as! QuoteFloorCell
-        cell.configure(viewModel.presenting(at: indexPath))
-        tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-        return cell
     }
 }
 
-extension S1QuoteFloorViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return false
+// MARK:
+extension S1QuoteFloorViewController {
+    func sharedConfiguration() -> WKWebViewConfiguration {
+        let configuration = WKWebViewConfiguration()
+        let userContentController = WKUserContentController()
+        userContentController.add(self, name: "stage1st")
+        configuration.userContentController = userContentController
+        return configuration
     }
 }
 
-// MARK: - WebView Delegate
-extension S1QuoteFloorViewController: UIWebViewDelegate {
+// MARK: - WKScriptMessageHandler
+extension S1QuoteFloorViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+
+    }
+}
+
+// MARK: WKNavigationDelegate
+extension S1QuoteFloorViewController: WKNavigationDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard let URL = request.url else {
             return false
@@ -126,10 +111,24 @@ extension S1QuoteFloorViewController: UIWebViewDelegate {
         offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
         webView.scrollView.contentOffset = offset
     }
+}
 
-    // MARK: Helper
+extension S1QuoteFloorViewController: UIScrollViewDelegate {
+    // To disable pinch to zoom gesture in WKWebView
+    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return nil
+    }
+
+    // To fix bug in WKWebView
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+    }
+}
+
+// MARK: Helper
+extension S1QuoteFloorViewController {
     func topPositionOfMessageWithId(_ elementID: Int) -> CGFloat {
-        if let rect = webView.s1_positionOfElementWithId("postmessage_\(elementID)") {
+        if let rect = webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
             return rect.minY
         } else {
             DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")

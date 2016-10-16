@@ -3,6 +3,14 @@ img {
     display: inline-block;
 }
 
+a {
+    display: inline-block;
+}
+
+a img {
+    vertical-align: bottom;
+}
+
 iframe {
     width: 0 !important;
     height: 0 !important;

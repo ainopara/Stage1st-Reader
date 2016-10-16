@@ -139,19 +139,15 @@ extension UIWebView {
 }
 
 extension WKWebView {
-    func s1_positionOfElement(with ID: String) -> CGRect {
+    func s1_positionOfElement(with ID: String) -> CGRect? {
         // TODO: Find a better solution for avoid dead lock.
         assert(!Thread.current.isMainThread)
         guard !Thread.current.isMainThread else {
-            var rect = CGRect.zero
-            DispatchQueue.global().sync {
-                rect = s1_positionOfElement(with: ID)
-            }
-            return rect
+            return nil
         }
 
         let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        var rect = CGRect.zero
+        var rect: CGRect? = nil
         let semaphore = DispatchSemaphore(value: 0)
         evaluateJavaScript(script) { (result, error) in
             defer {

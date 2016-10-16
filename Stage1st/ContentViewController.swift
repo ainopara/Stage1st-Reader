@@ -606,11 +606,20 @@ extension S1ContentViewController {
                                                       handler: nil))
 
         if let popover = floorActionController.popoverPresentationController {
-            popover.sourceView = self.view
-            popover.sourceRect = CGRect.zero
+            popover.delegate = self
+            presentType = .action(floorID: floorID)
+            DispatchQueue.global(qos: .default).async { [weak self] in
+                guard let strongSelf = self else { return }
+                popover.sourceView = strongSelf.webView
+                popover.sourceRect = strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action") ?? CGRect(origin: strongSelf.webView.center, size: .zero)
+                DispatchQueue.main.async { [weak self] in
+                    guard let strongSelf = self else { return }
+                    strongSelf.present(floorActionController, animated: true, completion: nil)
+                }
+            }
+        } else {
+            present(floorActionController, animated: true, completion: nil)
         }
-
-        present(floorActionController, animated: true, completion: nil)
     }
 
     func alertRefresh() {
@@ -833,7 +842,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
 
             let imageInfo = JTSImageInfo()
             imageInfo.imageURL = URL(string: url)
-            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: ID)
+            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: ID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
             imageInfo.referenceView = strongSelf.webView
 
             let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
@@ -1030,6 +1039,18 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 
             composeViewController.dismiss(animated: true, completion: nil)
         }
+    }
+}
+
+// MARK: UIPopoverPresentationControllerDelegate
+extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
+    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
+        // TODO: find a solution.
+//        guard case .action(let floorID) = presentType else { return }
+//        DispatchQueue.global(qos: .default).async { [weak self] in
+//            guard let strongSelf = self else { return }
+//            rect.pointee = strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action")
+//        }
     }
 }
 
@@ -1403,5 +1424,6 @@ extension S1ContentViewController {
         case alert
         case reply
         case report
+        case action(floorID: Int)
     }
 }
