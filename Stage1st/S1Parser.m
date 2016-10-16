@@ -360,7 +360,7 @@
     }
     // Php Scheme
     if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
-        NSDictionary *dict = [S1Parser extractQuerysFromURLString:URLString];
+        NSDictionary<NSString *, NSString *> *dict = [S1Parser extractQuerysFromURLString:URLString];
         topicIDString = [dict objectForKey:@"tid"];
         topicPageString = [dict objectForKey:@"page"];
         if (topicPageString == nil) {
@@ -376,7 +376,7 @@
     return topic;
 }
 
-+ (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString {
++ (NSDictionary<NSString *, NSString *> *)extractQuerysFromURLString:(NSString *)URLString {
     NSURL *url = [[NSURL alloc] initWithString:URLString];
     if (url!= nil) {
         NSString *queryString = [url.query gtm_stringByUnescapingFromHTML];

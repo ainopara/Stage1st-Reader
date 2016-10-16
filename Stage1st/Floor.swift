@@ -93,9 +93,8 @@ extension Floor {
             let content = self.content,
             let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
             let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),
-            let floorIDString = resultDict["pid"] as? String,
+            let floorIDString = resultDict["pid"],
             let floorID = Int(floorIDString) else { return nil }
-
         DDLogDebug("First Quote Floor ID: \(floorID)")
 
         return floorID

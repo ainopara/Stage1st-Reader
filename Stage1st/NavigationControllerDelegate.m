@@ -28,7 +28,9 @@
     self = [super init];
     if (self != nil) {
         self.navigationController = navigationController;
-        self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        self.panRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        self.panRecognizer.edges = UIRectEdgeLeft;
+        self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
         self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
         self.colorPanRecognizer.delegate = self;
@@ -68,11 +70,13 @@
         self.interactionController = [UIPercentDrivenInteractiveTransition new];
         self.interactionController.completionCurve = UIViewAnimationCurveLinear;
         [self.navigationController popViewControllerAnimated:YES];
+        DDLogVerbose(@"[NavPan] Begin.");
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / screenWidth : 0];
+        DDLogVerbose(@"[NavPan] Update: %f.", translation.x > 0 ? translation.x / screenWidth : 0);
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         CGFloat velocityX = [recognizer velocityInView:view].x;
         CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -97,6 +101,8 @@
     }
 }
 
+#pragma mark - UIGestureRecognizerDelegate
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
     if (gestureRecognizer == self.colorPanRecognizer && gestureRecognizer.numberOfTouches == 1) {
@@ -104,6 +110,18 @@
     }
     return YES;
 }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+//    if (gestureRecognizer == self.panRecognizer && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        DDLogVerbose(@"pan gesture simultaneously with %@", otherGestureRecognizer);
+//        return YES;
+//    }
+
+    return NO;
+}
+
+#pragma mark - UINavigationControllerDelegate
 
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {

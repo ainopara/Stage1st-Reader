@@ -329,12 +329,15 @@ extension S1ContentViewController {
 
         presentType = .none
 
-        self.didReceivePaletteChangeNotification(nil)
+        didReceivePaletteChangeNotification(nil)
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
         // FIXME: find a way to make sure this only called once.
         if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
+        }
+        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
+            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
         }
     }
 
@@ -738,12 +741,12 @@ extension S1ContentViewController: WKNavigationDelegate {
             if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
                 DDLogDebug("[ContentVC] Extract query: \(querys)")
                 if
-                    let mod = querys["mod"] as? String,
+                    let mod = querys["mod"],
                     mod == "redirect",
-                    let tidString = querys["ptid"] as? String,
+                    let tidString = querys["ptid"],
                     let tid = Int(tidString),
                     tid == viewModel.topic.topicID.intValue,
-                    let pidString = querys["pid"] as? String,
+                    let pidString = querys["pid"],
                     let pid = Int(pidString) {
                     let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
                     if chainQuoteFloors.count > 0 {
