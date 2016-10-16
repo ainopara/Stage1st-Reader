@@ -29,31 +29,35 @@ PODS:
     - CocoaLumberjack/Extensions
   - Crashlytics (3.8.2):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.9)
-  - FBSnapshotTestCase (2.1.3):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.3)
-  - FBSnapshotTestCase/Core (2.1.3)
-  - FBSnapshotTestCase/SwiftSupport (2.1.3):
+  - Fabric (1.6.10)
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
+  - GRMustache.swift (1.1.0)
   - GYHttpMock (1.0.1)
   - JASON (3.0)
   - JTSImageViewController (1.5)
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (3.1.1)
+  - Kingfisher (3.1.3)
   - KissXML (5.1.2)
   - Masonry (1.0.2)
   - Reachability (3.2)
   - ReactiveObjC (1.0.1)
-  - ReactiveSwift (1.0.0-alpha.1):
+  - ReactiveObjCBridge (1.0.0):
+    - ReactiveObjC
+    - ReactiveSwift (~> 1.0.0-alpha.1)
+  - ReactiveSwift (1.0.0-alpha.2):
     - Result (~> 3.0)
   - Result (3.0.0)
   - Reveal-SDK (2)
-  - SnapKit (3.0.1)
+  - SnapKit (3.0.2)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
     - YapDatabase/Standard (= 2.9.2)
@@ -117,6 +121,7 @@ DEPENDENCIES:
   - Fabric
   - FBSnapshotTestCase
   - FMDB
+  - GRMustache.swift (from `https://github.com/groue/GRMustache.swift.git`, branch `Swift3`)
   - GYHttpMock
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
@@ -126,6 +131,7 @@ DEPENDENCIES:
   - Masonry
   - Reachability
   - ReactiveObjC
+  - ReactiveObjCBridge (from `https://github.com/ainopara/ReactiveObjCBridge.git`, branch `master`)
   - ReactiveSwift (~> 1.0.0-alpha.1)
   - Reveal-SDK
   - SnapKit
@@ -134,21 +140,33 @@ DEPENDENCIES:
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
+  GRMustache.swift:
+    :branch: Swift3
+    :git: https://github.com/groue/GRMustache.swift.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
+  ReactiveObjCBridge:
+    :branch: master
+    :git: https://github.com/ainopara/ReactiveObjCBridge.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
+  GRMustache.swift:
+    :commit: 46d26696bcf37158ce9f46cb1250cfb26ed19adc
+    :git: https://github.com/groue/GRMustache.swift.git
   JTSImageViewController:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
     :git: https://github.com/ainopara/KissXML.git
+  ReactiveObjCBridge:
+    :commit: 2310f4457f098e19a6c371d739ee932a7d805bf0
+    :git: https://github.com/ainopara/ReactiveObjCBridge.git
   YapDatabase:
     :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
@@ -160,26 +178,28 @@ SPEC CHECKSUMS:
   Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
   CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   Crashlytics: 27acca95a01b042a8294291dd6dff27f8f6af6d7
-  Fabric: bc5bec42cef4bcf1ee3ce0e218fc518e4b44dfbb
-  FBSnapshotTestCase: 4607968e0dfa1e2772ec0d0098354f8b870c5753
+  Fabric: c73f371ee543e3f0b80608f2674750e4910d1669
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  GRMustache.swift: 6bc0a640ddc833e38a05d02fe9ed8b6c98491989
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JASON: cf4d762e61428a20db8eaef2acb6a569a10c1801
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: 12b755ae697cc9f0fd3e550db8417fa1233e09ab
+  Kingfisher: 007f5851c18c81e7cc106c9cbac1bafea1cce5dc
   KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveObjC: 0e618037d7b883b4cebcc8da203e8ed9b69ca2d3
-  ReactiveSwift: cf34523b2b0dd8fbfc8fda484b0d0585e3d74955
+  ReactiveObjCBridge: 34b1a487e1b825a08b4dc38fe90f691d4ccd66be
+  ReactiveSwift: 967383cc7b58baa05c997965f9a76b7fd796f2a7
   Result: 1b3e431f37cbcd3ad89c6aa9ab0ae55515fae3b6
   Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
-  SnapKit: f818b8326d45b4e1c777d0ab27b5c0a3624bfdeb
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 5f83735f475c88026742c0aa34add66357dadb53
+PODFILE CHECKSUM: 97343ae90ac494a3c1b4d23a38aeef9490b0c04e
 
-COCOAPODS: 1.1.0.rc.2
+COCOAPODS: 1.1.0.rc.3

@@ -15,6 +15,12 @@
 #import <ReactiveObjc/ReactiveObjC.h>
 #import <Reachability/Reachability.h>
 
+@interface S1ContentViewModel ()
+
+@property (nonatomic, strong) NSArray<Floor *> *floors;
+
+@end
+
 @implementation S1ContentViewModel
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
@@ -67,17 +73,6 @@
     _currentPage = currentPage;
 }
 
-- (void)contentPageWithSuccess:(void (^)(NSString *, bool))success
-                       failure:(void (^)(NSError *))failure {
-    [self.dataCenter floorsForTopic:self.topic withPage:[NSNumber numberWithUnsignedInteger:self.currentPage] success:^(NSArray *floorList, BOOL fromCache) {
-        NSString *renderedPage = [S1ContentViewModel generateContentPage:floorList withTopic:self.topic];
-        BOOL notLastPage = self.currentPage < self.totalPages;
-        success(renderedPage, fromCache && [floorList count] != 30 && notLastPage); // FIXME: 30 should not be hard coded.
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
-}
-
 #pragma mark - Page Generating
 
 + (NSString *)generateFloorForTopic:(Floor *)floor topic:(S1Topic *)topic {
@@ -107,7 +102,6 @@
 
     //process reply Button
     NSString *replyLinkString = @"";
-    replyLinkString = [NSString stringWithFormat: @"<div class=\"reply\"><a href=\"javascript:void(0);\" onclick=\"window.webkit.messageHandlers.stage1st.postMessage({'type': 'reply', 'id': %ld})\" style=\"letter-spacing: -4px;\" >・・・</a></div>", (long)floor.ID];
 
     //process poll
     NSString *pollContentString = @"";
@@ -144,50 +138,6 @@
     NSString *output = [NSString stringWithFormat:floorTemplate, floorIndexMark, floorAuthor, floorPostTime, replyLinkString, pollContentString, contentString, floorAttachment];
 
     return output;
-}
-
-+ (NSString *)generateContentPage:(NSArray<Floor *> *)floorList withTopic:(S1Topic *)topic {
-    NSString *topicBody = [[NSString alloc] init];
-    for (Floor *topicFloor in floorList) {
-
-        NSString *renderedFloorString = [self generateFloorForTopic:topicFloor topic:topic];
-
-        if ([floorList indexOfObject:topicFloor] != 0) {
-            renderedFloorString = [@"<br />" stringByAppendingString:renderedFloorString];
-        }
-        topicBody = [topicBody stringByAppendingString:renderedFloorString];
-    }
-
-    topicBody = [S1ContentViewModel processHTMLString:topicBody];
-
-    //CSS
-    NSString *fontSizeCSSPath = @"";
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-        if ([fontSizeKey isEqualToString:@"15px"]) {
-            fontSizeCSSPath = @"content_15px.css";
-        } else if ([fontSizeKey isEqualToString:@"17px"]){
-            fontSizeCSSPath = @"content_17px.css";
-        } else {
-            fontSizeCSSPath = @"content_19px.css";
-        }
-    } else {
-        NSString *fontSizeKey = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
-        if ([fontSizeKey isEqualToString:@"18px"]) {
-            fontSizeCSSPath = @"content_ipad_18px.css";
-        } else if ([fontSizeKey isEqualToString:@"20px"]){
-            fontSizeCSSPath = @"content_ipad_20px.css";
-        } else {
-            fontSizeCSSPath = @"content_ipad_22px.css";
-        }
-    }
-
-    NSString *colorCSS = [S1ContentViewModel renderColorCSS];
-
-    NSString *threadTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"html/ThreadTemplate" ofType:@"html"];
-    NSString *threadTemplate = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:threadTemplatePath]  encoding:NSUTF8StringEncoding];
-    NSString *threadPage = [NSString stringWithFormat:threadTemplate, fontSizeCSSPath, colorCSS, topicBody];
-    return threadPage;
 }
 
 # pragma mark - Helper
@@ -246,17 +196,6 @@
     NSString *otherClientPattern = @"(\\<br />\\n)*(----发送自我的(iPhone|iPad) via )<a href[^>]*saralin[^>]*>[^<]*</a>";
     [S1Global regexReplaceString:mutableContent matchPattern:otherClientPattern withTemplate:@""];
     return mutableContent;
-}
-
-+ (NSString *)renderColorCSS {
-    NSString *CSSTemplatePath = [[S1ContentViewModel templateBundle] pathForResource:@"css/color" ofType:@"css"];
-    NSData *CSSTemplateData = [NSData dataWithContentsOfFile:CSSTemplatePath];
-    NSString *CSSTemplate = [[NSString alloc] initWithData:CSSTemplateData  encoding:NSUTF8StringEncoding];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{background}}" withString:[[APColorManager shared] htmlColorStringWithID:@"5"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{text}}" withString:[[APColorManager shared] htmlColorStringWithID:@"21"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{border}}" withString:[[APColorManager shared] htmlColorStringWithID:@"14"]];
-    CSSTemplate = [CSSTemplate stringByReplacingOccurrencesOfString:@"{{borderText}}" withString:[[APColorManager shared] htmlColorStringWithID:@"17"]];
-    return CSSTemplate;
 }
 
 + (NSString *)processHTMLString:(NSString *)HTMLString {

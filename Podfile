@@ -31,6 +31,7 @@ target "Stage1st" do
     pod 'CocoaLumberjack/Swift'
     pod 'ReactiveSwift', '~> 1.0.0-alpha.1'
     pod 'ReactiveObjC'
+    pod 'ReactiveObjCBridge', :git => 'https://github.com/ainopara/ReactiveObjCBridge.git', :branch => 'master'
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reachability'
@@ -39,6 +40,7 @@ target "Stage1st" do
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
+    pod 'GRMustache.swift', :git => 'https://github.com/groue/GRMustache.swift.git', :branch => 'Swift3'
     pod '1PasswordExtension'
 end
 

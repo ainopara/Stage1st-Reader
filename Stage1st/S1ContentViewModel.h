@@ -25,11 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
 
-- (void)contentPageWithSuccess:(void (^)(NSString *contents, bool shouldRefetch))success
-                       failure:(void (^)(NSError *error))failure;
-
-+ (NSString *)generateContentPage:(NSArray<Floor *> *)floorList withTopic:(S1Topic *)topic;
-+ (NSString *)translateDateTimeString:(NSDate *)date;
++ (NSString *)processHTMLString:(NSString *)HTMLString;
++ (NSString *)stripTails:(NSString *)content;
 
 @end
 

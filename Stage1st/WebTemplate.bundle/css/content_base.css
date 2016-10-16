@@ -73,13 +73,14 @@ blockquote {
     display: inline-block;
 }
 
-.reply {
+.action {
     float:right !important;
     text-align:right;
 }
 
-.reply a {
+.action a {
     text-decoration: none;
+    letter-spacing: -4px;
 }
 
 .attachment {

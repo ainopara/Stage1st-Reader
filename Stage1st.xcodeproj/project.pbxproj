@@ -53,6 +53,7 @@
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */; };
 		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
+		869F8AB31DB374CF0055046B /* PageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869F8AB21DB374CF0055046B /* PageRenderer.swift */; };
 		86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */; };
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
@@ -202,6 +203,7 @@
 		869CAF0F1A18831D00EB2BF4 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationControllerDelegate.h; path = Stage1st/NavigationControllerDelegate.h; sourceTree = "<group>"; };
 		869CAF101A18831D00EB2BF4 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationControllerDelegate.m; path = Stage1st/NavigationControllerDelegate.m; sourceTree = "<group>"; };
 		869E02391DA67293006A45FE /* ActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivityItemProvider.swift; path = Stage1st/ActivityItemProvider.swift; sourceTree = "<group>"; };
+		869F8AB21DB374CF0055046B /* PageRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PageRenderer.swift; path = Stage1st/PageRenderer.swift; sourceTree = "<group>"; };
 		86A22D251D69BB1D004D2307 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportComposeViewController.swift; path = Stage1st/ReportComposeViewController.swift; sourceTree = "<group>"; };
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+WKWebViewHack.h"; path = "Stage1st/UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+WKWebViewHack.m"; path = "Stage1st/UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
@@ -463,6 +465,7 @@
 				86A5AD871B56BAAE00E80790 /* Database */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
+				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1011,6 +1014,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C095874416CA8A36007E0119 /* main.m in Sources */,
+				869F8AB31DB374CF0055046B /* PageRenderer.swift in Sources */,
 				8693431A19E5A074008F7A58 /* S1ContentViewModel.m in Sources */,
 				C095874816CA8A36007E0119 /* S1AppDelegate.m in Sources */,
 				862F51BF189136000038A289 /* XPathQuery.m in Sources */,

@@ -117,7 +117,7 @@ class S1ContentViewController: UIViewController {
     dynamic var webPageReadyForAutomaticScrolling = false
     dynamic var webPageSizeChangedForAutomaticScrolling = false
 
-    var finishFirstLoading = false
+    dynamic var finishFirstLoading = false
     var presentType: PresentType = .none
 
     // MARK: -
@@ -563,7 +563,7 @@ extension S1ContentViewController {
                                                       preferredStyle: .actionSheet)
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""),
-                                                      style: .default,
+                                                      style: .destructive,
                                                       handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
@@ -797,7 +797,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
             webPageReadyForAutomaticScrolling = true
         case "load": // called when all the images finish loading
             DDLogDebug("[WebView] load")
-        case "reply":
+        case "action":
             if let floorID = messageDictionary["id"] as? Int {
                 actionButtonTapped(for: floorID)
             } else {
@@ -1182,51 +1182,51 @@ extension S1ContentViewController {
             }
         }
 
-        viewModel.contentPage(success: { [weak self] (contents, shouldRefetch) in
+        viewModel.currentContentPage { [weak self] (result) in
             guard let strongSelf = self else { return }
 
-            strongSelf.updateToolBar()
-            if let title = strongSelf.viewModel.topic.title {
-                strongSelf.updateTitleLabel(title: title)
-            }
+            switch result {
+            case .success(let contents, let shouldRefetch):
+                strongSelf.updateToolBar()
+                if let title = strongSelf.viewModel.topic.title {
+                    strongSelf.updateTitleLabel(title: title)
+                }
 
-            strongSelf.saveViewPositionForPreviousPage()
-            strongSelf.finishFirstLoading = true
-            strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
+                strongSelf.saveViewPositionForPreviousPage()
+                strongSelf.finishFirstLoading = true
+                strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
 
-            // Prepare next page
-            if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
-                strongSelf.viewModel.dataCenter.setFinishHandlerFor(strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), andHandler: { [weak self] (floorList) in
+                // Prepare next page
+                if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
+                    strongSelf.viewModel.dataCenter.setFinishHandlerFor(strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), andHandler: { [weak self] (floorList) in
+                        guard let strongSelf = self else { return }
+                        strongSelf.updateToolBar()
+                        })
+                    strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), shouldUpdate: false)
+                }
+
+                // Dismiss HUD if exist
+                DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.updateToolBar()
-                })
-                strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), shouldUpdate: false)
-            }
+                    strongSelf.hideHUDIfNoMessageToShow()
+                }
 
-            // Dismiss HUD if exist
-            DispatchQueue.main.async { [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf.hideHUDIfNoMessageToShow()
-            }
-
-            // Auto refresh when current page not full.
-            if shouldRefetch {
-                strongSelf.scrollType = .restorePosition
-                strongSelf.fetchContentForCurrentPage(forceUpdate: true)
-            }
-
-        }) { [weak self] (error) in
-            guard let strongSelf = self else { return }
-
-            if (error as NSError).code == NSURLErrorCancelled {
-                DDLogDebug("request cancelled.")
-                // TODO:
-                //            if (strongSelf.refreshHUD != nil) {
-                //                [strongSelf.refreshHUD hideWithDelay:0.3];
-                //            }
-            } else {
-                DDLogDebug("[ContentVC] fetch failed with error: \(error)")
-                strongSelf.refreshHUD.showRefreshButton()
+                // Auto refresh when current page not full.
+                if shouldRefetch {
+                    strongSelf.scrollType = .restorePosition
+                    strongSelf.fetchContentForCurrentPage(forceUpdate: true)
+                }
+            case .failure(let error):
+                if error.code == NSURLErrorCancelled {
+                    DDLogDebug("request cancelled.")
+                    // TODO:
+                    //            if (strongSelf.refreshHUD != nil) {
+                    //                [strongSelf.refreshHUD hideWithDelay:0.3];
+                    //            }
+                } else {
+                    DDLogDebug("[ContentVC] fetch failed with error: \(error)")
+                    strongSelf.refreshHUD.showRefreshButton()
+                }
             }
         }
     }
@@ -1300,13 +1300,13 @@ extension S1ContentViewController {
     // MARK: Helper (Misc)
     func updateToolBar() {
         func updateForwardButton() {
-            // FIXME: this will make state failed to reflect button image 
+            // FIXME: this will make state failed to reflect button image
             // but will lead to less quest for cache database which is good.
             forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
         }
 
         func updateBackwardButton() {
-            // FIXME: this will make state failed to reflect button image 
+            // FIXME: this will make state failed to reflect button image
             // but will lead to less quest for cache database which is good.
             backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
         }
@@ -1316,7 +1316,7 @@ extension S1ContentViewController {
     }
 
     func updateTitleLabel(title: String) {
-        // FIXME: title label should be change by monitoring viewmodel's 
+        // FIXME: title label should be change by monitoring viewmodel's
         // property change, not by manually call this method
         titleLabel.text = title
         titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")

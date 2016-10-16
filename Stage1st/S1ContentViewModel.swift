@@ -6,12 +6,24 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Foundation
 import CocoaLumberjack
+import Result
+import Mustache
+
+extension S1ContentViewModel {
+    func currentContentPage(completion: @escaping (Result<(String, Bool), NSError>) -> Void) {
+        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage), success: { [weak self] (floors, isFromCache) in
+            guard let strongSelf = self else { return }
+            let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
+            completion(.success(strongSelf.generatePage(with: floors), shouldRefetch))
+        }) { (error) in
+            completion(.failure(error as NSError))
+        }
+    }
+}
 
 // MARK: - Quote Floor
 extension S1ContentViewModel {
-
     func searchFloorInCache(_ floorID: Int) -> Floor? {
         guard floorID != 0 else {
             return nil
@@ -41,7 +53,7 @@ extension S1ContentViewModel {
     }
 
     static func pageBaseURL() -> URL {
-        return self.templateBundle().url(forResource: "ThreadTemplate", withExtension: "html", subdirectory: "html")!
+        return self.templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
     }
 }
 
@@ -137,7 +149,7 @@ extension S1ContentViewModel {
     }
 
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
-        let htmlString = type(of: self).generateContentPage(floors, with: topic)
+        let htmlString = generatePage(with: floors)
         return QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic.copy() as! S1Topic, floors: floors, htmlString: htmlString, centerFloorID: centerFloorID, baseURL: type(of: self).pageBaseURL())
     }
 
@@ -176,4 +188,9 @@ extension S1ContentViewModel {
     func isInLastPage() -> Bool {
         return currentPage >= totalPages
     }
+}
+
+// MARK: - Page Rander
+extension S1ContentViewModel: PageRenderer {
+
 }
