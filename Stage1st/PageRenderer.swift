@@ -63,14 +63,24 @@ extension PageRenderer {
             ]
         }
 
+        func floorsData() -> [[String: Any?]] {
+            var isFirstInPage = true
+            var data = [[String: Any?]]()
+            for floor in floors {
+                data.append(_floorData(with: floor, topicAuthorID: topic.authorUserID as? Int, isFirstInPage: isFirstInPage))
+                isFirstInPage = false
+            }
+            return data
+        }
+
         return [
             "font-style-file": fontStyleFile(),
             "color": colorStyle(),
-            "floors": floors.map { _floorData(with: $0, topicAuthorID: topic.authorUserID as? Int) }
+            "floors": floorsData()
         ]
     }
 
-    func _floorData(with floor: Floor, topicAuthorID: Int?) -> [String: Any?] {
+    func _floorData(with floor: Floor, topicAuthorID: Int?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
             guard let content = content else {
                 DDLogWarn("[PageRenderer] nil content in floor \(floor.ID)")
@@ -108,7 +118,8 @@ extension PageRenderer {
             "ID": "\(floor.ID)",
             "poll": nil,
             "content": processContent(content: floor.content),
-            "attachments": floor.imageAttachmentURLStringList
+            "attachments": floor.imageAttachmentURLStringList,
+            "is-first": isFirstInPage
         ]
     }
 }
