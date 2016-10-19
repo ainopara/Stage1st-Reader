@@ -6,6 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
+#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "UIScrollView+WKWebViewHack.h"
 
 @implementation UIScrollView (S1Inspect)
@@ -23,11 +24,11 @@
     }
 #endif
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
-        if (![self s1_isIgnoringContentOffsetChange]) {
+        if (![self s1_ignoringContentOffsetChange]) {
             [self s1_setContentOffset:contentOffset];
         } else {
 #ifdef DEBUG
-            NSLog(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
+            DDLogInfo(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
 #endif
         }
     } else {
@@ -35,11 +36,24 @@
     }
 }
 
-- (void)s1_setIgnoreContentOffsetChange:(BOOL)ignoreContentOffsetChange {
-    objc_setAssociatedObject(self, @selector(s1_isIgnoringContentOffsetChange), @(ignoreContentOffsetChange), OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setS1_ignoringContentOffsetChange:(BOOL)s1_ignoringContentOffsetChange {
+    objc_setAssociatedObject(self, @selector(s1_ignoringContentOffsetChange), @(s1_ignoringContentOffsetChange), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)s1_isIgnoringContentOffsetChange {
+- (BOOL)s1_ignoringContentOffsetChange {
+    NSNumber *number = objc_getAssociatedObject(self, _cmd);
+    if (number == nil) {
+        return NO; // default to false
+    }
+
+    return [number boolValue];
+}
+
+- (void)setS1_trackingPageBottom:(BOOL)s1_trackingPageBottom {
+    objc_setAssociatedObject(self, @selector(s1_trackingPageBottom), @(s1_trackingPageBottom), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (BOOL)s1_trackingPageBottom {
     NSNumber *number = objc_getAssociatedObject(self, _cmd);
     if (number == nil) {
         return NO; // default to false

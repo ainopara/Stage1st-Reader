@@ -661,8 +661,6 @@ extension S1ContentViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         if notification != nil {
-            saveViewPositionForCurrentPage()
-
             _hook_preRefreshCurrentPage()
             fetchContentForCurrentPage(forceUpdate: false)
         }
@@ -1016,6 +1014,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
                 strongSelf.attributedReplyDraft = nil
                 if strongSelf.viewModel.isInLastPage() {
                     strongSelf.scrollType = .toBottom
+                    strongSelf._hook_preRefreshCurrentPage()
                     strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
             }
@@ -1202,6 +1201,7 @@ extension S1ContentViewController {
                 guard let strongSelf = self else { return }
 
                 hud?.hide(withDelay: 0.0)
+                strongSelf._hook_preRefreshCurrentPage()
                 strongSelf.fetchContentForCurrentPage(forceUpdate: false)
             }
         }
@@ -1238,6 +1238,7 @@ extension S1ContentViewController {
                 // Auto refresh when current page not full.
                 if shouldRefetch {
                     strongSelf.scrollType = .restorePosition
+                    strongSelf._hook_preRefreshCurrentPage()
                     strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
             case .failure(let error):
@@ -1272,6 +1273,8 @@ extension S1ContentViewController {
     func _hook_preRefreshCurrentPage() {
         DDLogDebug("[webView] pre refresh current page")
 
+        saveViewPositionForCurrentPage()
+
         webPageReadyForAutomaticScrolling = false
         webPageSizeChangedForAutomaticScrolling = false
         webPageAutomaticScrollingEnabled = true
@@ -1288,10 +1291,10 @@ extension S1ContentViewController {
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
-                webView.scrollView.s1_isIgnoringContentOffsetChange = true
+                webView.scrollView.s1_ignoringContentOffsetChange = true
                 webView.scrollView.alpha = 1.0
             }, completion: { (finished) in
-                webView.scrollView.s1_isIgnoringContentOffsetChange = false
+                webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .pullDownForPrevious:
             // Set position
@@ -1299,21 +1302,21 @@ extension S1ContentViewController {
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
-                webView.scrollView.s1_isIgnoringContentOffsetChange = true
+                webView.scrollView.s1_ignoringContentOffsetChange = true
                 webView.scrollView.alpha = 1.0
             }, completion: { (finished) in
-                webView.scrollView.s1_isIgnoringContentOffsetChange = false
+                webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .toBottom:
             webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: true)
-        default:
+        case .restorePosition:
             if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
                 // Restore last view position from cached position in this view controller.
                 let offset = CGPoint(x: webView.scrollView.contentOffset.x, y: max(min(maxOffset, CGFloat(positionForPage.doubleValue)), 0.0))
                 webView.scrollView.setContentOffset(offset, animated: false)
-                webView.scrollView.s1_isIgnoringContentOffsetChange = true
+                webView.scrollView.s1_ignoringContentOffsetChange = true
                 DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
-                    webView.scrollView.s1_isIgnoringContentOffsetChange = false
+                    webView.scrollView.s1_ignoringContentOffsetChange = false
                 }
             }
         }
@@ -1386,12 +1389,9 @@ extension S1ContentViewController {
 
     func forceRefreshCurrentPage() {
         viewModel.cancelRequest()
-        saveViewPositionForCurrentPage()
-
         _hook_preRefreshCurrentPage()
         fetchContentForCurrentPage(forceUpdate: true)
     }
-
 }
 
 // MARK: - State

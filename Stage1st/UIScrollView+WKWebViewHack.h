@@ -10,6 +10,7 @@
 
 @interface UIScrollView (S1Inspect)
 
-@property (nonatomic, assign, setter=s1_setIgnoreContentOffsetChange:, getter=s1_isIgnoringContentOffsetChange) BOOL s1_ignoreContentOffsetChange;
+@property (nonatomic, assign) BOOL s1_ignoringContentOffsetChange;
+@property (nonatomic, assign) BOOL s1_trackingPageBottom;
 
 @end
