@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		361860201DB5D39100D11504 /* S1Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3618601F1DB5D39100D11504 /* S1Error.swift */; };
 		7B670747DD553D17A8D1236F /* Pods_Stage1stTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806C850B09C10F1B9F1345A0 /* Pods_Stage1stTests.framework */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
@@ -133,6 +134,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3618601F1DB5D39100D11504 /* S1Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Error.swift; path = Stage1st/S1Error.swift; sourceTree = "<group>"; };
 		4358B1D3313628BA0A5AAF21 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		806C850B09C10F1B9F1345A0 /* Pods_Stage1stTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1stTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
@@ -670,6 +672,7 @@
 				86319B401CA69EEB004F7586 /* Floor.swift */,
 				862DB7A91C8AB1870068F75F /* User.swift */,
 				86DD319E1D129406009C2F44 /* Poll.swift */,
+				3618601F1DB5D39100D11504 /* S1Error.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1066,6 +1069,7 @@
 				86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
+				361860201DB5D39100D11504 /* S1Error.swift in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
