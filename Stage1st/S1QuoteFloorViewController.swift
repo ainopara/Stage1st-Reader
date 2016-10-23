@@ -29,7 +29,6 @@ class S1QuoteFloorViewController: UIViewController {
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         webView.scrollView.delegate = self
         webView.isOpaque = false
-        webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -61,6 +60,15 @@ class S1QuoteFloorViewController: UIViewController {
 //        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
 //            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
 //        }
+
+        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
+        // Also use this method to initialize content.
+        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+            guard let strongSelf = self else { return }
+            guard let result = result as? String, result != "" else {
+                strongSelf.webView.loadHTMLString(strongSelf.viewModel.generatePage(with: strongSelf.viewModel.floors), baseURL: strongSelf.viewModel.baseURL)
+                return
+            }
         }
     }
 

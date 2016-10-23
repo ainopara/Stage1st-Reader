@@ -34,15 +34,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     init(URL: URL) {
         self.URLToOpen = URL
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .overFullScreen
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+        modalPresentationStyle = .overFullScreen
 
         view.backgroundColor = nil
 
@@ -54,36 +46,48 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
         statusBarSeparatorView.backgroundColor = UIColor.black
 
+        titleLabel.numberOfLines = 0
+        titleLabel.font = UIFont.systemFont(ofSize: 12.0)  // need a better solution
+        titleLabel.textAlignment = .center
+
+        toolBar.barTintColor = nil
+
+        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(back))
+        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .plain, target: self, action: #selector(forward))
+        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(refresh))
+        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(stop))
+        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(openInSafari))
+        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(_dismiss))
+
+        updateBarItems()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         view.addSubview(blurBackgroundView)
         blurBackgroundView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }
 
         blurBackgroundView.contentView.addSubview(vibrancyEffectView)
+
         vibrancyEffectView.snp.makeConstraints { (make) in
             make.leading.equalTo(blurBackgroundView.contentView.snp.leading).offset(10.0)
             make.trailing.equalTo(blurBackgroundView.contentView.snp.trailing).offset(-10.0)
             make.top.equalTo(blurBackgroundView.contentView.snp.top).offset(20.0 + 10.0) // TODO: adjust in viewDidLayoutSubviews()
         }
 
-        titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.systemFont(ofSize: 12.0)  // need a better solution
-        titleLabel.textAlignment = .center
         vibrancyEffectView.contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.edges.equalTo(vibrancyEffectView.contentView)
         }
-
-        toolBar.barTintColor = nil
-
-        backButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(WebViewController.back))
-        forwardButtonItem = UIBarButtonItem(image: UIImage(named: "Forward"), style: .plain, target: self, action: #selector(WebViewController.forward))
-        refreshButtonItem = UIBarButtonItem(image: UIImage(named: "Refresh_black"), style: .plain, target: self, action: #selector(WebViewController.refresh))
-        stopButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(WebViewController.stop))
-        safariButtonItem = UIBarButtonItem(image: UIImage(named: "Safari_s"), style: .plain, target: self, action: #selector(WebViewController.openInSafari))
-        closeButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(WebViewController._dismiss))
-
-        updateBarItems()
 
         view.addSubview(webView)
         view.addSubview(statusBarOverlayView)
@@ -117,23 +121,29 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             make.top.equalTo(toolBar.snp.top)
             make.height.equalTo(1.0)
         }
-
-
-        NotificationCenter.default.addObserver(self, selector: #selector(WebViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
-
-        webView.load(URLRequest(url: URLToOpen))
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        self.webView.removeObserver(self, forKeyPath: "estimatedProgress", context: nil)
-        self.webView.stopLoading()
-//        self.webView.delegate = nil
+        webView.removeObserver(self, forKeyPath: "estimatedProgress", context: nil)
+        webView.stopLoading()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.didReceivePaletteChangeNotification(nil)
+
+        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
+        // Also use this method to initialize content.
+        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+            guard let strongSelf = self else { return }
+            guard let result = result as? String, result != "" else {
+                if let url = strongSelf.webView.url {
+                    strongSelf.webView.load(URLRequest(url: url))
+                }
+                return
+            }
+        }
     }
 
     // MARK: Layout
