@@ -1313,16 +1313,12 @@ extension S1ContentViewController {
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .toBottom:
-            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: true)
+            webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(Int(maxOffset))}, 300);", completionHandler: nil)
         case .restorePosition:
             if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
                 // Restore last view position from cached position in this view controller.
-                let offset = CGPoint(x: webView.scrollView.contentOffset.x, y: max(min(maxOffset, CGFloat(positionForPage.doubleValue)), 0.0))
-                webView.scrollView.setContentOffset(offset, animated: false)
-                webView.scrollView.s1_ignoringContentOffsetChange = true
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
-                    webView.scrollView.s1_ignoringContentOffsetChange = false
-                }
+                let offset = Int(positionForPage.doubleValue)
+                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(offset)}, 0);", completionHandler: nil)
             }
         }
 

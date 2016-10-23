@@ -38,7 +38,7 @@
         [strongSelf.pageButton setTitle:[strongSelf.viewModel pageButtonString] forState:UIControlStateNormal];
     }];
 
-    [[RACSignal combineLatest:@[RACObserve(self, webPageSizeChangedForAutomaticScrolling), RACObserve(self, finishFirstLoading)]] subscribeNext:^(RACTuple *x) {
+    [[RACSignal combineLatest:@[RACObserve(self, webPageReadyForAutomaticScrolling), RACObserve(self, finishFirstLoading)]] subscribeNext:^(RACTuple *x) {
         DDLogVerbose(@"[ContentVC] document ready: %@, finish first loading: %@", x.first, x.second);
         __strong __typeof__(self) strongSelf = weakSelf;
         if (strongSelf == nil) {
