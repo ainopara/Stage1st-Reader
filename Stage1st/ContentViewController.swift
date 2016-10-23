@@ -331,9 +331,9 @@ extension S1ContentViewController {
         if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
         }
-        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
-            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
-        }
+//        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
+//            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
+//        }
 
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.

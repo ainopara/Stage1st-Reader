@@ -28,8 +28,7 @@
     self = [super init];
     if (self != nil) {
         self.navigationController = navigationController;
-        self.panRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-        self.panRecognizer.edges = UIRectEdgeLeft;
+        self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
         self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
         self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
