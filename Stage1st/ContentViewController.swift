@@ -245,11 +245,6 @@ class S1ContentViewController: UIViewController {
                                                name: .APPaletteDidChangeNotification,
                                                object: nil)
 
-        // Fetch
-        DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -338,6 +333,16 @@ extension S1ContentViewController {
         }
         if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
+        }
+
+        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
+        // Also use this method to initialize content.
+        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+            guard let strongSelf = self else { return }
+            guard let result = result as? String, result != "" else {
+                strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
+                return
+            }
         }
     }
 
