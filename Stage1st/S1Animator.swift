@@ -15,6 +15,7 @@ import UIKit
 
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     let direction: TransitionDirection
+    var curve = UIViewAnimationOptions.curveEaseInOut
 
     init(direction: TransitionDirection) {
         self.direction = direction
@@ -44,7 +45,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
         toViewController.view.layer.shadowPath = UIBezierPath(rect: toViewController.view.bounds).cgPath
 
         let containerViewWidth = containerView.frame.width
-        switch self.direction {
+        switch direction {
         case .push:
             containerView.insertSubview(toViewController.view, aboveSubview: fromViewController.view)
             fromViewController.view.transform = CGAffineTransform.identity
@@ -55,8 +56,9 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
             toViewController.view.transform = CGAffineTransform(translationX: -containerViewWidth / 2.0, y: 0.0)
         }
 
-        UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.0, options: .curveLinear, animations: {
-            switch self.direction {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.0, options: curve, animations: { [weak self] in
+            guard let strongSelf = self else { return }
+            switch strongSelf.direction {
             case .push:
                 fromViewController.view.transform = CGAffineTransform(translationX: -containerViewWidth / 2.0, y: 0.0)
                 toViewController.view.transform = CGAffineTransform.identity

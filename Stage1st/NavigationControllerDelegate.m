@@ -15,8 +15,8 @@
 @interface NavigationControllerDelegate () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) UINavigationController *navigationController;
-@property (strong, nonatomic) NSObject<UIViewControllerAnimatedTransitioning> *popAnimator;
-@property (strong, nonatomic) NSObject<UIViewControllerAnimatedTransitioning> *pushAnimator;
+@property (strong, nonatomic) S1Animator *popAnimator;
+@property (strong, nonatomic) S1Animator *pushAnimator;
 @property (strong, nonatomic) UIPercentDrivenInteractiveTransition *interactionController;
 
 @end
@@ -68,6 +68,7 @@
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         self.interactionController = [UIPercentDrivenInteractiveTransition new];
         self.interactionController.completionCurve = UIViewAnimationCurveLinear;
+        self.popAnimator.curve = UIViewAnimationOptionCurveLinear;
         [self.navigationController popViewControllerAnimated:YES];
         DDLogVerbose(@"[NavPan] Begin.");
     }
@@ -93,10 +94,12 @@
             [self.interactionController cancelInteractiveTransition];
         }
         self.interactionController = nil;
+        self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
     } else {
         DDLogWarn(@"[NavPan] Other Interaction Event:%ld", (long)recognizer.state);
         [self.interactionController cancelInteractiveTransition];
         self.interactionController = nil;
+        self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
     }
 }
 
