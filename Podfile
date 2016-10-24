@@ -40,7 +40,7 @@ target "Stage1st" do
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
-    pod 'GRMustache.swift', :git => 'https://github.com/groue/GRMustache.swift.git', :branch => 'Swift3'
+    pod 'GRMustache.swift'
     pod '1PasswordExtension'
 end
 
