@@ -44,7 +44,7 @@ public extension DiscuzAPIManager {
         logOut()
         let parameters: [String: Any] = ["module": "secure", "version": 1, "mobile": "no", "type": "login"]
         return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
-            debugPrint(response.request)
+            debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
                 if let sechash = json["Variables"]["sechash"].string {
@@ -94,7 +94,7 @@ public extension DiscuzAPIManager {
 
         let bodyParameters: [String: Any] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
         return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
-            debugPrint(response.request)
+            debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
                 if let messageValue = json["Message"]["messageval"].string, (messageValue as NSString).contains("login_succeed") {
