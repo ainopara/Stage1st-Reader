@@ -220,7 +220,7 @@
             if (![imageSrc hasPrefix:@"static/image/smiley"]) {
                 DDXMLElement *linkElement = image;
                 DDXMLElement *imageElement = [[DDXMLElement alloc] initWithName:@"img"];
-                [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"%ld-img%ld",floorID, (long)imageCount]];
+                [imageElement addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"%ld-img%ld", (long)floorID, (long)imageCount]];
                 imageCount += 1;
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"Display"] || [MyAppDelegate.reachability isReachableViaWiFi]) {
                     [imageElement addAttributeWithName:@"src" stringValue:[[image attributeForName:@"src"] stringValue]];

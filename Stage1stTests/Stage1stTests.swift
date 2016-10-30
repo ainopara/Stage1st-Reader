@@ -11,7 +11,6 @@ import KIF
 import FBSnapshotTestCase
 @testable import Stage1st
 
-
 class S1TopicTests: XCTestCase {
     var voidTopic: S1Topic!
     var tracedTopic: S1Topic!
