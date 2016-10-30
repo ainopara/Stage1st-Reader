@@ -4,9 +4,9 @@ xcbaselines
 *.xccheckout
 *.xcworkspace
 
-Pods
-Carthage
-ObjcUML
-fastlane
+/Pods
+/Carthage
+/fastlane
 
 ReferenceImages*
+
