@@ -55,13 +55,19 @@
 
         _dataCenter = dataCenter;
 
+        __weak __typeof__(self) weakSelf = self;
         [RACObserve(self, currentPage) subscribeNext:^(id x) {
             DDLogDebug(@"[ContentVM] Current page changed to: %@", x);
         }];
 
         [RACObserve(self.topic, replyCount) subscribeNext:^(id x) {
+            __strong __typeof__(self) strongSelf = weakSelf;
+            if (strongSelf == nil) {
+                return;
+            }
+
             DDLogInfo(@"[ContentVM] reply count changed: %@", x);
-            self.totalPages = ([x unsignedIntegerValue] / 30) + 1;
+            strongSelf.totalPages = ([x unsignedIntegerValue] / 30) + 1;
         }];
     }
 
