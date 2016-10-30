@@ -30,17 +30,18 @@ public struct OffsetRange {
 }
 
 public class PullToActionController: NSObject {
-    weak var scrollView: UIScrollView?
+    weak var scrollView: UIScrollView? // ???: Should I make this strong?
     weak var delegate: PullToActionDelagete?
 
-    var offset: CGPoint = CGPoint(x: 0.0, y: 0.0)
-    var size: CGSize = CGSize(width: 0.0, height: 0.0)
-    var inset: UIEdgeInsets = UIEdgeInsets.zero
-    fileprivate var progressAction: [String: OffsetRange] = Dictionary<String, OffsetRange>()
+    var offset: CGPoint = .zero
+    var size: CGSize = .zero
+    var inset: UIEdgeInsets = .zero
+    fileprivate var progressActions = Dictionary<String, OffsetRange>()
 
     // MARK: -
     init(scrollView: UIScrollView) {
         self.scrollView = scrollView
+
         super.init()
 
         scrollView.delegate = self // TODO: forward message to original delegate of the scroll view.
@@ -50,16 +51,16 @@ public class PullToActionController: NSObject {
     }
 
     deinit {
-        self.scrollView?.removeObserver(self, forKeyPath: "contentOffset")
-        self.scrollView?.removeObserver(self, forKeyPath: "contentSize")
-        self.scrollView?.removeObserver(self, forKeyPath: "contentInset")
-        self.scrollView?.delegate = nil
+        scrollView?.removeObserver(self, forKeyPath: "contentOffset")
+        scrollView?.removeObserver(self, forKeyPath: "contentSize")
+        scrollView?.removeObserver(self, forKeyPath: "contentInset")
+        scrollView?.delegate = nil
 
         DDLogDebug("[PullToAction] deinit")
     }
 
     public func setConfiguration(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
-        progressAction.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
+        progressActions.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -70,12 +71,15 @@ public class PullToActionController: NSObject {
                 return
             }
 
-            self.offset = newOffsetValue.cgPointValue
+            offset = newOffsetValue.cgPointValue
 
-            guard let delegateFunction = self.delegate?.scrollViewContentOffsetProgress else { return }
+            guard let delegateFunction = delegate?.scrollViewContentOffsetProgress else {
+                return
+            }
+
             var progress = [String: Double]()
-            for (name, actionOffset) in self.progressAction {
-                let progressValue = actionOffset.progress(for: self.currentOffset(relativeTo: actionOffset.baseLine))
+            for (name, actionOffset) in progressActions {
+                let progressValue = actionOffset.progress(for: currentOffset(relativeTo: actionOffset.baseLine))
                 progress.updateValue(progressValue, forKey: name)
             }
             delegateFunction(progress)
@@ -91,20 +95,25 @@ public class PullToActionController: NSObject {
 
             let newSize = newSizeValue.cgSizeValue
 
-            guard abs(self.size.width - newSize.width) > 0.1 || abs(self.size.height - newSize.height) > 0.1 else {
+            guard abs(size.width - newSize.width) > 0.1 || abs(size.height - newSize.height) > 0.1 else {
                 return
             }
 
-            self.size = newSize
+            size = newSize
 
-            DDLogVerbose("[PullToAction] contentSize:w: \(self.size.width) h:\(self.size.height)")
-            self.delegate?.scrollViewContentSizeDidChange?(self.size)
+            DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
+            delegate?.scrollViewContentSizeDidChange?(size)
         }
 
         if keyPath == "contentInset" {
-            guard let changes = change, let newInsetValue = changes[.newKey] as? NSValue else { return }
-            self.inset = newInsetValue.uiEdgeInsetsValue
-            DDLogVerbose("[PullToAction] inset: top: \(self.inset.top) bottom: \(self.inset.bottom)")
+            guard
+                let changes = change,
+                let newInsetValue = changes[.newKey] as? NSValue else {
+                return
+            }
+
+            inset = newInsetValue.uiEdgeInsetsValue
+            DDLogVerbose("[PullToAction] inset: top: \(inset.top) bottom: \(inset.bottom)")
         }
     }
 
@@ -115,13 +124,13 @@ public class PullToActionController: NSObject {
 
         switch baseLine {
         case .top:
-            return Double(self.offset.y)
+            return Double(offset.y)
         case .bottom:
-            return Double(self.offset.y - max(self.size.height - scrollView.bounds.height, 0.0))
+            return Double(offset.y - max(size.height - scrollView.bounds.height, 0.0))
         case .left:
-            return Double(self.offset.x)
+            return Double(offset.x)
         case .right:
-            return Double(self.offset.x - max(self.size.width - scrollView.bounds.width, 0.0))
+            return Double(offset.x - max(size.width - scrollView.bounds.width, 0.0))
         }
     }
 }
@@ -130,17 +139,17 @@ public class PullToActionController: NSObject {
 extension PullToActionController: UIScrollViewDelegate {
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         //TODO: consider content inset
-        let topOffset = self.offset.y
+        let topOffset = offset.y
         if topOffset < 0.0 {
             DDLogDebug("[PullToAction] End dragging <- \(topOffset)")
-            self.delegate?.scrollViewDidEndDraggingOutsideTopBound?(with: topOffset)
+            delegate?.scrollViewDidEndDraggingOutsideTopBound?(with: topOffset)
             return
         }
 
-        let bottomOffset = self.offset.y + scrollView.bounds.height - self.size.height
+        let bottomOffset = offset.y + scrollView.bounds.height - size.height
         if bottomOffset > 0.0 {
             DDLogDebug("[PullToAction] End dragging -> \(bottomOffset)")
-            self.delegate?.scrollViewDidEndDraggingOutsideBottomBound?(with: bottomOffset)
+            delegate?.scrollViewDidEndDraggingOutsideBottomBound?(with: bottomOffset)
             return
         }
     }
