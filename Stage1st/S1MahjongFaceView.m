@@ -136,10 +136,8 @@
     NSMutableArray<MahjongFaceItem *> *mutableHistoryArray = [self.historyArray mutableCopy];
 
     // Step 1: Remove the history if it already in history list
-    MahjongFaceItem *theItem = nil;
     for (MahjongFaceItem *item in mutableHistoryArray) {
         if ([item.key isEqualToString:newItem.key]) {
-            theItem = item;
             [mutableHistoryArray removeObject:item];
             break;
         }

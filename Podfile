@@ -42,12 +42,13 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'GRMustache.swift'
     pod '1PasswordExtension'
-end
 
-target "Stage1stTests" do
-    pod 'GYHttpMock'
-    pod 'FBSnapshotTestCase'
-    pod 'KIF', :configurations => ['Debug']
+    target "Stage1stTests" do
+        inherit! :search_paths
+        pod 'GYHttpMock'
+        pod 'FBSnapshotTestCase'
+        pod 'KIF', :configurations => ['Debug']
+    end
 end
 
 post_install do |installer|

@@ -24,29 +24,19 @@ class S1DateFormatterTests: XCTestCase {
     }
 
     func testFormatter() {
-        for timeRange: UInt32 in [100_000, 60_000_000] {
-            for _ in 1...10000 {
-                let random: Double = Double(arc4random() % timeRange)
-                let date = Date(timeIntervalSinceNow: -random)
-                let stringVersion1 = date.s1_gracefulDateTimeString()
-                let stringVersion2 = S1ContentViewModel.translateDateTimeString(date)
-                XCTAssert(stringVersion1 == stringVersion2, "\(stringVersion1) != \(stringVersion2)")
-            }
-        }
+//        for timeRange: UInt32 in [100_000, 60_000_000] {
+//            for _ in 1...10000 {
+//                let random: Double = Double(arc4random() % timeRange)
+//                let date = Date(timeIntervalSinceNow: -random)
+//                let stringVersion1 = date.s1_gracefulDateTimeString()
+//            }
+//        }
     }
 
     func testFormatterPerformance() {
         self.measure {
             for date in self.dateList {
-                date.s1_gracefulDateTimeString()
-            }
-        }
-    }
-
-    func testOldFormatterPerformance() {
-        self.measure {
-            for date in self.dateList {
-                S1ContentViewModel.translateDateTimeString(date)
+                _ = date.s1_gracefulDateTimeString()
             }
         }
     }

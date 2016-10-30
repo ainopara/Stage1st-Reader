@@ -28,8 +28,8 @@ class S1TopicTests: XCTestCase {
         tracedTopic.fID = 1
 
         // Reset changed property record
-        let data = NSKeyedArchiver.archivedDataWithRootObject(tracedTopic)
-        tracedTopic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? S1Topic
+        let data = NSKeyedArchiver.archivedData(withRootObject: tracedTopic)
+        tracedTopic = NSKeyedUnarchiver.unarchiveObject(with: data) as? S1Topic
 
         serverTopic = S1Topic(topicID: 100)
         serverTopic.title = "server"
@@ -128,7 +128,7 @@ class S1SnapshotTests: FBSnapshotTestCase {
 
     override func setUp() {
         super.setUp()
-//        self.recordMode = true
+//        recordMode = true
     }
 
     func testTabbar1() {
