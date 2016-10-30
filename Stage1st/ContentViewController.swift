@@ -685,11 +685,12 @@ extension S1ContentViewController {
             let topicID = notification?.userInfo?["topicID"] as? NSNumber,
             let page = notification?.userInfo?["page"] as? NSNumber,
             viewModel.topic.topicID.intValue == topicID.intValue,
-            viewModel.currentPage == page.uintValue else {
+            page.intValue - Int(viewModel.currentPage) == 1 else {
             return
         }
 
         updateToolBar()
+//        forwardButton.setImage(UIImage(named: "Forward-Cached")!, for: .normal) // FIXME: Currently to make this operation fast.
     }
 }
 
