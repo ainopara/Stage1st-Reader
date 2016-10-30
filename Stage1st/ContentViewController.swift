@@ -245,6 +245,10 @@ class S1ContentViewController: UIViewController {
                                                name: .APPaletteDidChangeNotification,
                                                object: nil)
 
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceiveFloorCachedNotification(_:)),
+                                               name: Notification.Name(rawValue: "S1FloorDidCached"),
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -669,6 +673,18 @@ extension S1ContentViewController {
             _hook_preRefreshCurrentPage()
             fetchContentForCurrentPage(forceUpdate: false)
         }
+    }
+
+    open func didReceiveFloorCachedNotification(_ notification: Notification?) {
+        guard
+            let topicID = notification?.userInfo?["topicID"] as? NSNumber,
+            let page = notification?.userInfo?["page"] as? NSNumber,
+            viewModel.topic.topicID.intValue == topicID.intValue,
+            viewModel.currentPage == page.uintValue else {
+            return
+        }
+
+        updateToolBar()
     }
 }
 
@@ -1227,10 +1243,6 @@ extension S1ContentViewController {
 
                 // Prepare next page
                 if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
-                    strongSelf.viewModel.dataCenter.setFinishHandlerFor(strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), andHandler: { [weak self] (floorList) in
-                        guard let strongSelf = self else { return }
-                        strongSelf.updateToolBar()
-                        })
                     strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), shouldUpdate: false)
                 }
 

@@ -40,8 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
 
-- (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler;
-
 - (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<Floor *> *floorList, BOOL fromCache))success failure:(void (^)(NSError *error))failure;
 - (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID;
 

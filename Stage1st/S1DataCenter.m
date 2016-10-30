@@ -25,8 +25,6 @@
 @property (strong, nonatomic) NSMutableDictionary<NSString *, NSMutableArray<S1Topic *> *> *topicListCache;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, NSNumber *> *topicListCachePageNumber;
 
-@property (strong, nonatomic) NSMutableDictionary *cacheFinishHandlers;
-
 @end
 
 @implementation S1DataCenter
@@ -37,7 +35,6 @@
     _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
-    _cacheFinishHandlers = [NSMutableDictionary dictionary];
 
     NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:true error:NULL];
     NSString *cacheDatabasePath = [[[documentsDirectoryURL URLByAppendingPathComponent:@"Cache.sqlite"] filePathURL] path];
@@ -146,65 +143,47 @@
 
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     DDLogVerbose(@"[Network] Precache %@-%@ begin", topic.topicID, page);
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
 
-    if ((shouldUpdate == NO) && ([self hasPrecacheFloorsForTopic:topic withPage:page])) {
+    if (shouldUpdate == NO && [self hasPrecacheFloorsForTopic:topic withPage:page]) {
         DDLogVerbose(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
 
-    [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, id responseObject) {
-        //Update Topic
-        NSDictionary *responseDict = responseObject;
-        [topic update:[S1Parser topicInfoFromAPI:responseDict]];
+    [S1NetworkManager requestTopicContentAPIForID:topic.topicID withPage:page success:^(NSURLSessionDataTask *task, NSDictionary *responseDict) {
+        // Update Topic
+        S1Topic *extractedTopicInfo = [S1Parser topicInfoFromAPI:responseDict];
+        if (extractedTopicInfo != nil) {
+            [topic update:extractedTopicInfo];
+        } else {
+            DDLogWarn(@"[Network] Can not ectract valid topic info from dict %@", responseDict);
+        }
 
-        //Check Login State
+        // Update Login State
         NSString *loginUsername = responseDict[@"Variables"][@"member_username"];
         if ([loginUsername isEqualToString:@""]) {
             loginUsername = nil;
         }
         [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
 
-        //get floors
+        // Get floors
         NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
 
-        //update floor cache
+        // Update floor cache
         if (floorList && [floorList count] > 0) {
-            __weak __typeof__(self) weakSelf = self;
             [self.cacheDatabaseManager setWithFloors:floorList topicID:[topic.topicID integerValue] page:[page integerValue] completion:^{
-                __strong __typeof__(self) strongSelf = weakSelf;
-                if (strongSelf == nil) {
-                    return;
-                }
                 DDLogDebug(@"[Network] Precache %@-%@ finish", topic.topicID, page);
-                [strongSelf callFinishHandlerIfExistForKey:key withResult:floorList];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"S1FloorDidCached" object:nil userInfo:@{@"topicID": topic.topicID, @"page": page}];
             }];
         } else {
-            [self.cacheFinishHandlers setValue:nil forKey:key];
             DDLogError(@"[Network] Precache %@-%@ failed (no floor list)", topic.topicID, page);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        [self.cacheFinishHandlers setValue:nil forKey:key];
-        DDLogError(@"[Network] Precache %@-%@ failed", topic.topicID, page);
+        DDLogWarn(@"[Network] Precache %@-%@ failed", topic.topicID, page);
     }];
 }
 
 - (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
     [self.cacheDatabaseManager removeFloorsIn:[topic.topicID integerValue] page:[page integerValue]];
-}
-
-- (void)setFinishHandlerForTopic:(S1Topic *)topic withPage:(NSNumber *)page andHandler:(void (^)(NSArray *floorList))handler {
-    NSString *key = [NSString stringWithFormat:@"%@:%@", topic.topicID, page];
-    [self.cacheFinishHandlers setValue:handler forKey:key];
-}
-
-- (void)callFinishHandlerIfExistForKey:(NSString *)key withResult:(NSArray *)floorList {
-    //call finish block if exist
-    void (^handler)(NSArray *floorList) = [self.cacheFinishHandlers valueForKey:key];
-    if (handler != nil) {
-        [self.cacheFinishHandlers setValue:nil forKey:key];
-        handler(floorList);
-    }
 }
 
 - (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID {
