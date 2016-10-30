@@ -25,6 +25,10 @@ class S1ContentViewController: UIViewController {
         return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
     }()
 
+    lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
+        return GeneralScriptMessageHandler(delegate: self)
+    }()
+
     lazy var pullToActionController: PullToActionController = {
         return PullToActionController(scrollView: self.webView.scrollView)
     }()
@@ -258,6 +262,7 @@ class S1ContentViewController: UIViewController {
     deinit {
         DDLogInfo("[ContentVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.delegate = nil
         webView.navigationDelegate = nil
         webView.scrollView.delegate = nil
@@ -811,49 +816,34 @@ extension S1ContentViewController: WKNavigationDelegate {
     }
 }
 
-// MARK: WKScriptMessageHandler
-extension S1ContentViewController: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        DDLogVerbose("[ContentVC] message body: \(message.body)")
-        guard
-            let messageDictionary = message.body as? [String: Any],
-            let type = messageDictionary["type"] as? String else {
-                DDLogWarn("[ContentVC] unexpected message format")
-                return
-        }
-
-        switch type {
-        case "ready": // called when dom finish loading
-            DDLogDebug("[WebView] ready")
-            webPageReadyForAutomaticScrolling = true
-        case "load": // called when all the images finish loading
-            DDLogDebug("[WebView] load")
-        case "action":
-            if let floorID = messageDictionary["id"] as? Int {
-                actionButtonTapped(for: floorID)
-            } else {
-                DDLogError("unexpected message format: \(messageDictionary)")
-            }
-        case "user":
-            if let userID = messageDictionary["id"] as? Int {
-                presentType = .user
-                showUserViewController(with: userID)
-            } else {
-                DDLogError("unexpected message format: \(messageDictionary)")
-            }
-        case "image":
-            if
-                let imageID = messageDictionary["id"] as? String,
-                let imageURLString = messageDictionary["src"] as? String {
-                showImage(with: imageID, imageURLString)
-            } else {
-                DDLogError("unexpected message format: \(messageDictionary)")
-            }
-        default:
-            DDLogWarn("[WebView] unexpected type: \(type)")
-        }
+extension S1ContentViewController: WebViewEventDelegate {
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
+        webPageReadyForAutomaticScrolling = true
     }
 
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String : Any]) {
+
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
+        actionButtonTapped(for: floorID)
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
+        presentType = .user
+        showUserViewController(with: userID)
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
+        showImage(with: imageID, imageURLString)
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
+
+    }
+}
+
+extension S1ContentViewController {
     func showImage(with ID: String, _ url: String) {
         DispatchQueue.global(qos: .default).async { [weak self] in
             guard let strongSelf = self else { return }
@@ -880,7 +870,7 @@ extension S1ContentViewController: WKScriptMessageHandler {
     func sharedConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
-        userContentController.add(self, name: "stage1st")
+        userContentController.add(webViewScriptMessageHandler, name: "stage1st")
         configuration.userContentController = userContentController
         return configuration
     }

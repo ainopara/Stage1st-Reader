@@ -69,6 +69,7 @@
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
 		86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */; };
+		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
@@ -226,6 +227,7 @@
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Poll.swift; path = Stage1st/Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
 		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
+		86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewEventDelegate.swift; path = Stage1st/WebViewEventDelegate.swift; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E4396F1BEC478700027FFA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1ReorderForumViewController.h; path = Stage1st/S1ReorderForumViewController.h; sourceTree = "<group>"; };
@@ -637,6 +639,7 @@
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
 				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
 				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
+				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -1015,6 +1018,7 @@
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
+				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				C095878B16CA993A007E0119 /* S1ContentViewController.m in Sources */,
 				86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */,
