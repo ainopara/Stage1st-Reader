@@ -107,7 +107,6 @@
 		C09587A116CB61FC007E0119 /* GSStaticTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879A16CB61FC007E0119 /* GSStaticTableViewController.m */; };
 		C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C095879C16CB61FC007E0119 /* UIControl+BlockWrapper.m */; };
 		C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C09587A516CB623E007E0119 /* SettingsViewController.m */; };
-		C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -293,8 +292,6 @@
 		C095879C16CB61FC007E0119 /* UIControl+BlockWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+BlockWrapper.m"; sourceTree = "<group>"; };
 		C09587A416CB623E007E0119 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = Stage1st/SettingsViewController.h; sourceTree = "<group>"; };
 		C09587A516CB623E007E0119 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = Stage1st/SettingsViewController.m; sourceTree = "<group>"; };
-		C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
-		C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MTStatusBarOverlay.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CC2DA46B733F2DE1887C78AE /* Pods-Stage1stTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1stTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1stTests/Pods-Stage1stTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E5F83F6F9AB0F984CC62588A /* Pods-Stage1st.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.release.xcconfig"; sourceTree = "<group>"; };
 		E95A18822A9B28E3E7E48592 /* Pods-Stage1stTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1stTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1stTests/Pods-Stage1stTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -403,7 +400,7 @@
 			name = S1MahjongFaceView;
 			sourceTree = "<group>";
 		};
-		865C251B1C99110C0075B303 /* View Controller */ = {
+		865C251B1C99110C0075B303 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
 				863580111A945DED007B21AD /* Topic List */,
@@ -414,7 +411,7 @@
 				86A22D241D677B21004D2307 /* Browser */,
 				C09587A316CB6218007E0119 /* Settings */,
 			);
-			name = "View Controller";
+			name = ViewController;
 			sourceTree = "<group>";
 		};
 		866CDB951B526C4800FBB133 /* Quote Floor */ = {
@@ -566,7 +563,7 @@
 			children = (
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
-				865C251B1C99110C0075B303 /* View Controller */,
+				865C251B1C99110C0075B303 /* ViewController */,
 				C095877A16CA8DB0007E0119 /* Model */,
 				C095877B16CA8DBE007E0119 /* View */,
 				8681E6D41CEF6EC0004269D3 /* Manager */,
@@ -635,7 +632,6 @@
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
 				862F51B61891359A0038A289 /* TFHpple */,
-				C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */,
 				C083353B16E647A70035C1AA /* GoogleToolbox */,
 				C08334F216E2245B0035C1AA /* ODRefreshControl */,
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
@@ -722,16 +718,6 @@
 				8605636D1B88222100E1D63E /* S1CloudKitViewController.m */,
 			);
 			name = Settings;
-			sourceTree = "<group>";
-		};
-		C0AEAE8416F6267800CB0E71 /* MTStatusBarOverlay */ = {
-			isa = PBXGroup;
-			children = (
-				C0AEAE8516F6267900CB0E71 /* MTStatusBarOverlay.h */,
-				C0AEAE8616F6267900CB0E71 /* MTStatusBarOverlay.m */,
-			);
-			name = MTStatusBarOverlay;
-			path = Vendors/MTStatusBarOverlay;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1094,7 +1080,6 @@
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
 				C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */,
-				C0AEAE8716F6267900CB0E71 /* MTStatusBarOverlay.m in Sources */,
 				86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */,
 				862DB79A1C8891070068F75F /* UserViewController.swift in Sources */,
 			);
