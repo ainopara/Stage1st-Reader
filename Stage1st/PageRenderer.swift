@@ -7,6 +7,7 @@
 //
 
 import Mustache
+import KissXML
 import CocoaLumberjack
 
 protocol PageRenderer {
@@ -82,12 +83,65 @@ extension PageRenderer {
 
     func _floorData(with floor: Floor, topicAuthorID: Int?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
+            func stripTails(content: String) -> String {
+                let mutableString = (content as NSString).mutableCopy() as! NSMutableString
+
+                let pattern1 = "((\\<br ?/>(&#13;)?\\n)*(——— 来自|----发送自 |——发送自|( |&nbsp;)*—— from )<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|126\\.am/S1Nyan)[^>]*>[^<]*</a>[^<]*)?((<br ?/>|<br></br>)<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*</a>)?"
+                let pattern2 = "(\\<br />\\n)*(----发送自我的(iPhone|iPad) via )<a href[^>]*saralin[^>]*>[^<]*</a>"
+
+                S1Global.regexReplace(mutableString, matchPattern: pattern1, withTemplate: "")
+                S1Global.regexReplace(mutableString, matchPattern: pattern2, withTemplate: "")
+                return mutableString as String
+            }
+
+            func process(HTMLString: String, with floorID: Int) -> String {
+                guard
+                    let data = HTMLString.data(using: .utf8),
+                    let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
+                    DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
+                    return HTMLString
+                }
+
+                func processImages() {
+                    guard let images = (try? xmlDocument.nodes(forXPath: "//img")) as? [DDXMLElement] else {
+                        return
+                    }
+
+                    var imageIndexInCurrentFloor = 1
+                    for image in images {
+                        let srcString = image.attribute(forName: "src")?.stringValue
+                        let fileString = image.attribute(forName: "file")?.stringValue
+
+                        if let fileString = fileString {
+                            image.removeAttribute(forName: "src")
+                            image.addAttribute(withName: "src", stringValue: fileString)
+                        } else if let srcString = srcString, srcString {
+
+                        }
+
+
+                    }
+                }
+
+                func processSpoiler() {
+
+                }
+
+                func processIndent() {
+
+                }
+
+                processImages()
+                processSpoiler()
+                processIndent()
+            }
+
             guard let content = content else {
                 DDLogWarn("[PageRenderer] nil content in floor \(floor.ID)")
                 return ""
             }
-            let firstProcessedContent = S1ContentViewModel.processHTMLString(content, withFloorID: floor.ID)
-            let secondProcessedContent = UserDefaults.standard.bool(forKey: "RemoveTails") ? S1ContentViewModel.stripTails(firstProcessedContent) : firstProcessedContent
+            let firstProcessedContent = process(HTMLString: content, with: floor.ID)
+            let secondProcessedContent = UserDefaults.standard.bool(forKey: "RemoveTails") ? stripTails(content: firstProcessedContent) : firstProcessedContent
             return secondProcessedContent
         }
 

@@ -76,19 +76,46 @@ protocol ImagePresenter {
     var webView: WKWebView { get }
 }
 
+protocol UserViewModelGenerator {
+    func userViewModel(userID: Int) -> UserViewModel
+}
+
+protocol S1ContentViewModelGenerator {
+    func contentViewModel() -> S1ContentViewModel
+}
+
+protocol QuoteFloorViewModelGenerator {
+    func quoteFloorViewModel() -> QuoteFloorViewModel
+}
+
+protocol UserPresenter {
+    var presentType: S1ContentViewController.PresentType { get set }
+    var viewModel: UserViewModelGenerator { get }
+}
+
+extension WebViewEventDelegate where Self: UIViewController, Self: UserPresenter {
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
+        var varSelf = self // FIXME: Make swift complier happy, remove this when the issue fixed.
+        varSelf.presentType = .user
+        let userViewModel = viewModel.userViewModel(userID: userID)
+        let userViewController = UserViewController(viewModel: userViewModel)
+        navigationController?.pushViewController(userViewController, animated: true)
+    }
+}
+
 extension WebViewEventDelegate where Self: UIViewController, Self: ImagePresenter, Self: JTSImageViewControllerInteractionsDelegate, Self: JTSImageViewControllerOptionsDelegate {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith ID: String, url: String) {
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
         DispatchQueue.global(qos: .default).async { [weak self] in
             guard let strongSelf = self else { return }
             var varStrongSelf = strongSelf // FIXME: Make swift complier happy, remove this when the issue fixed.
             varStrongSelf.presentType = .image
             Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
-            DDLogDebug("[ContentVC] JTS View Image: \(url)")
+            DDLogDebug("[ContentVC] JTS View Image: \(imageURLString)")
 
             let imageInfo = JTSImageInfo()
-            imageInfo.imageURL = URL(string: url)
-            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: ID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
+            imageInfo.imageURL = URL(string: imageURLString)
+            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: imageID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
             imageInfo.referenceView = strongSelf.webView
 
             let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)

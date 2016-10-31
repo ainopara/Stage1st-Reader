@@ -151,7 +151,9 @@ extension S1ContentViewModel {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic.copy() as! S1Topic, floors: floors, centerFloorID: centerFloorID, baseURL: type(of: self).pageBaseURL())
     }
+}
 
+extension S1ContentViewModel: UserViewModelGenerator {
     func userViewModel(userID: Int) -> UserViewModel {
         return UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID, name: ""))
     }

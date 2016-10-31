@@ -817,7 +817,7 @@ extension S1ContentViewController: WKNavigationDelegate {
     }
 }
 
-extension S1ContentViewController: WebViewEventDelegate {
+extension S1ContentViewController: ImagePresenter, UserPresenter, WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
         webPageReadyForAutomaticScrolling = true
     }
@@ -830,14 +830,14 @@ extension S1ContentViewController: WebViewEventDelegate {
         actionButtonTapped(for: floorID)
     }
 
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
-        presentType = .user
-        showUserViewController(with: userID)
-    }
+//    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
+//        presentType = .user
+//        showUserViewController(with: userID)
+//    }
 
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
-        showImage(with: imageID, imageURLString)
-    }
+//    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
+//        showImage(with: imageID, imageURLString)
+//    }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
 
