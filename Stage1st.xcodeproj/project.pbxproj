@@ -1144,7 +1144,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = Stage1stTests/Info.plist;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ain.Stage1stTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ainopara.Stage1stTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0.1;
@@ -1174,7 +1174,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = Stage1stTests/Info.plist;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ain.Stage1stTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ainopara.Stage1stTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0.1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stage1st.app/Stage1st";
