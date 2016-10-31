@@ -46,7 +46,9 @@ PODS:
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
   - Kingfisher (3.1.4)
-  - KissXML (5.1.2)
+  - KissXML (5.1.2):
+    - KissXML/Core (= 5.1.2)
+  - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
   - Reachability (3.2)
   - ReactiveObjC (1.0.1)
@@ -156,7 +158,7 @@ CHECKOUT OPTIONS:
     :commit: facffd04379873741e7acedb336d27765964eac6
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
-    :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
+    :commit: 69d88824d428cf6b3407eb778f23c7562f87149b
     :git: https://github.com/ainopara/KissXML.git
   ReactiveObjCBridge:
     :commit: 2310f4457f098e19a6c371d739ee932a7d805bf0
@@ -181,7 +183,7 @@ SPEC CHECKSUMS:
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
   Kingfisher: 6c67e3e57f2d81a9cfdfa25052cd86f33ceac9bb
-  KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
+  KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveObjC: 0e618037d7b883b4cebcc8da203e8ed9b69ca2d3
