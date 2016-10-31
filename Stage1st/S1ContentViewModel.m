@@ -15,12 +15,6 @@
 #import <ReactiveObjc/ReactiveObjC.h>
 #import <Reachability/Reachability.h>
 
-@interface S1ContentViewModel ()
-
-@property (nonatomic, strong) NSArray<Floor *> *floors;
-
-@end
-
 @implementation S1ContentViewModel
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter {
