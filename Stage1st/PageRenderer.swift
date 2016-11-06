@@ -95,16 +95,9 @@ extension PageRenderer {
             }
 
             func process(HTMLString: String, with floorID: Int) -> String {
-                guard
-                    let data = HTMLString.data(using: .utf8),
-                    let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
-                    DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
-                    return HTMLString
-                }
-
-                func processImages() {
+                func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     guard let images = (try? xmlDocument.nodes(forXPath: "//img")) as? [DDXMLElement] else {
-                        return
+                        return xmlDocument
                     }
 
                     var imageIndexInCurrentFloor = 1
@@ -115,25 +108,80 @@ extension PageRenderer {
                         if let fileString = fileString {
                             image.removeAttribute(forName: "src")
                             image.addAttribute(withName: "src", stringValue: fileString)
-                        } else if let srcString = srcString, srcString {
-
+                        } else if let srcString = srcString {
+                            // TODO: Finish this.
                         }
-
-
                     }
+
+                    return xmlDocument
                 }
 
-                func processSpoiler() {
+                func processSpoiler(xmlDocument: DDXMLDocument) -> DDXMLDocument {
+                    let spoilerXpathList = [
+                        "//font[@color='LemonChiffon']",
+                        "//font[@color='Yellow']",
+                        "//font[@color='#fffacd']",
+                        "//font[@color='#FFFFCC']",
+                        "//font[@color='White']"
+                    ]
 
+                    let spoilers = spoilerXpathList
+                        .map { (try? xmlDocument.nodes(forXPath: $0)) as? [DDXMLElement] }
+                        .flatMap { $0 } /// [[T]?] -> [[T]]
+                        .flatMap { $0 } /// [[T]] -> [T]
+
+                    for spoilerElement in spoilers {
+                        spoilerElement.removeAttribute(forName: "color")
+                        spoilerElement.name = "div"
+                        spoilerElement.addAttribute(withName: "style", stringValue: "display:none;")
+                        let index = spoilerElement.index
+                        if let parentElement = spoilerElement.parent as? DDXMLElement {
+                            spoilerElement.detach()
+                            parentElement.setOwner(xmlDocument)
+
+                            let buttonElement = DDXMLElement(name: "input")
+                            buttonElement.addAttribute(withName: "value", stringValue: "显示反白内容")
+                            buttonElement.addAttribute(withName: "type", stringValue: "button")
+                            buttonElement.addAttribute(withName: "style", stringValue: "width:80px;font-size:10px;margin:0px;padding:0px;")
+                            buttonElement.addAttribute(withName: "onclick", stringValue: "var e = this.parentNode.getElementsByTagName('div')[0];e.style.display = '';e.style.border = '#aaa 1px solid';this.style.display = 'none';")
+
+                            let containerElement = DDXMLElement(name: "div")
+                            containerElement.addChild(buttonElement)
+                            containerElement.addChild(spoilerElement)
+
+                            parentElement.insertChild(containerElement, at: index)
+                        }
+                    }
+
+                    return xmlDocument
                 }
 
-                func processIndent() {
-
+                func processIndent(xmlDocument: DDXMLDocument) -> DDXMLDocument {
+                    if let paragraphs = (try? xmlDocument.nodes(forXPath: "//td[@class='t_f']//p[@style]")) as? [DDXMLElement] {
+                        for paragraph in paragraphs {
+                            paragraph.removeAttribute(forName: "style")
+                        }
+                    }
+                    return xmlDocument
                 }
 
-                processImages()
-                processSpoiler()
-                processIndent()
+                guard
+                    let data = HTMLString.data(using: .utf8),
+                    let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
+                        DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
+                        return HTMLString
+                }
+
+                let processedDocument = processIndent(xmlDocument: processSpoiler(xmlDocument: processImages(xmlDocument: xmlDocument)))
+                let processedString = processedDocument.xmlString(withOptions: UInt(DDXMLNodePrettyPrint)) as NSString
+                let cuttedString = processedString.substring(with: NSRange(location: 183, length: processedString.length - 183 - 17))
+
+                if cuttedString.characters.count > 0 {
+                    return cuttedString.replacingOccurrences(of: "<br></br>", with: "<br />")
+                }
+
+                DDLogError("[ContentViewModel] Fail to modify image: \(HTMLString)")
+                return HTMLString
             }
 
             guard let content = content else {
