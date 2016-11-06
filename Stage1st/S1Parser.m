@@ -205,7 +205,9 @@
             NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
             for (NSNumber *attachmentKey in [attachments allKeys]) {
                 NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
-                [imageAttachmentList addObject:imageURL];
+                if (imageURL != nil) {
+                    [imageAttachmentList addObject:imageURL];
+                }
             }
             floor.imageAttachmentURLStringList = imageAttachmentList;
         }
