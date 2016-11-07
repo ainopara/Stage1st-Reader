@@ -25,8 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithTopic:(S1Topic *)topic dataCenter:(S1DataCenter *)dataCenter;
 
-+ (NSString *)processHTMLString:(NSString *)HTMLString withFloorID:(NSInteger)floorID;
-
 @end
 
 NS_ASSUME_NONNULL_END

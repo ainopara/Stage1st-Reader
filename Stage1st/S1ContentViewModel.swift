@@ -9,10 +9,54 @@
 import CocoaLumberjack
 import Result
 import Mustache
+import ReactiveSwift
+
+class S1ContentViewModel: NSObject {
+    let topic: S1Topic
+    let dataCenter: S1DataCenter
+
+    let currentPage: MutableProperty<UInt>
+    let previousPage: MutableProperty<UInt>
+    let totalPages: MutableProperty<UInt>
+    var cachedViewPosition: [UInt: Double] = [:]
+
+    init(topic: S1Topic, dataCenter: S1DataCenter) {
+        self.topic = topic.isImmutable ? topic : (topic.copy() as! S1Topic)
+
+        if let currentPage = topic.lastViewedPage?.uintValue {
+            self.currentPage = MutableProperty(currentPage)
+        } else {
+            self.currentPage = MutableProperty(1)
+        }
+
+        self.previousPage = MutableProperty(self.currentPage.value)
+
+        if let replyCount = topic.replyCount?.uintValue {
+            self.totalPages = MutableProperty(replyCount / 30 + 1)
+        } else {
+            self.totalPages = MutableProperty(self.currentPage.value)
+        }
+
+        DDLogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
+
+        self.dataCenter = dataCenter
+
+        super.init()
+
+        if topic.favorite == nil {
+            topic.favorite = NSNumber(value: false)
+        }
+
+        if let lastViewedPosition = topic.lastViewedPosition?.doubleValue, let lastViewedPage = topic.lastViewedPage?.uintValue {
+            cachedViewPosition[lastViewedPage] = lastViewedPosition
+        }
+    }
+
+}
 
 extension S1ContentViewModel {
     func currentContentPage(completion: @escaping (Result<(String, Bool), NSError>) -> Void) {
-        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage), success: { [weak self] (floors, isFromCache) in
+        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] (floors, isFromCache) in
             guard let strongSelf = self else { return }
             let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
             completion(.success(strongSelf.generatePage(with: floors), shouldRefetch))
@@ -60,15 +104,15 @@ extension S1ContentViewModel {
 // MARK: - ToolBar
 extension S1ContentViewModel {
     func hasPrecachedPreviousPage() -> Bool {
-        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage - 1))
+        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value - 1))
     }
 
     func hasPrecachedNextPage() -> Bool {
-        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage + 1))
+        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value + 1))
     }
 
     func forwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage + 1)) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value + 1)) {
             return UIImage(named: "Forward-Cached")!
         } else {
             return UIImage(named: "Forward")!
@@ -76,7 +120,7 @@ extension S1ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage - 1)) {
+        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value - 1)) {
             return UIImage(named: "Back-Cached")!
         } else {
             return UIImage(named: "Back")!
@@ -91,8 +135,8 @@ extension S1ContentViewModel {
     }
 
     func pageButtonString() -> String {
-        let totalPages = self.currentPage > self.totalPages ? self.currentPage : self.totalPages
-        return "\(self.currentPage)/\(totalPages)"
+        let presentingTotalPages = max(self.currentPage.value, self.totalPages.value)
+        return "\(self.currentPage.value)/\(presentingTotalPages)"
     }
 }
 
@@ -100,7 +144,7 @@ extension S1ContentViewModel {
 extension S1ContentViewModel {
     func correspondingWebPageURL() -> URL? {
         guard let baseURL = UserDefaults.standard.object(forKey: "BaseURL") as? String else { return nil }
-        return URL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage)-1.html")
+        return URL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage.value)-1.html")
     }
 
     func activityTitle() -> String? {
@@ -110,7 +154,7 @@ extension S1ContentViewModel {
     func activityUserInfo() -> [AnyHashable: Any] {
         return [
             "topicID": self.topic.topicID,
-            "page": self.currentPage
+            "page": self.currentPage.value
         ]
     }
 }
@@ -130,24 +174,27 @@ extension S1ContentViewModel {
 // MARK: - Cache Page Offset
 extension S1ContentViewModel {
     func cacheOffsetForCurrentPage(_ offset: CGFloat) {
-        self.cachedViewPosition[self.currentPage as NSNumber] = Double(offset)
+        self.cachedViewPosition[self.currentPage.value] = Double(offset)
     }
 
     func cacheOffsetForPreviousPage(_ offset: CGFloat) {
-        self.cachedViewPosition[self.previousPage as NSNumber] = Double(offset)
+        self.cachedViewPosition[self.previousPage.value] = Double(offset)
     }
 
-    func cachedOffsetForCurrentPage() -> NSNumber? {
-        return self.cachedViewPosition[self.currentPage as NSNumber] as? NSNumber
+    func cachedOffsetForCurrentPage() -> Double? {
+        return self.cachedViewPosition[self.currentPage.value]
     }
 }
 
 // MARK: - View Model
+
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
     }
+}
 
+extension S1ContentViewModel: QuoteFloorViewModelGenerator {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic.copy() as! S1Topic, floors: floors, centerFloorID: centerFloorID, baseURL: type(of: self).pageBaseURL())
     }
@@ -167,11 +214,11 @@ extension S1ContentViewModel {
 
         if let lastViewedPosition = lastViewedPosition {
             topic.lastViewedPosition = NSNumber(value: lastViewedPosition)
-        } else if topic.lastViewedPosition == nil || topic.lastViewedPage?.uintValue ?? 0 != currentPage {
+        } else if topic.lastViewedPosition == nil || topic.lastViewedPage?.uintValue ?? 0 != currentPage.value {
             topic.lastViewedPosition = NSNumber(value: 0.0)
         }
 
-        topic.lastViewedPage = NSNumber(value: currentPage)
+        topic.lastViewedPage = NSNumber(value: currentPage.value)
         topic.lastViewedDate = Date()
         topic.lastReplyCount = topic.replyCount
         dataCenter.hasViewed(topic)
@@ -184,14 +231,12 @@ extension S1ContentViewModel {
     }
 
     func isInFirstPage() -> Bool {
-        return currentPage == 1
+        return currentPage.value == 1
     }
     func isInLastPage() -> Bool {
-        return currentPage >= totalPages
+        return currentPage.value >= totalPages.value
     }
 }
 
 // MARK: - Page Rander
-extension S1ContentViewModel: PageRenderer {
-
-}
+extension S1ContentViewModel: PageRenderer { }

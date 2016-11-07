@@ -85,7 +85,7 @@ protocol S1ContentViewModelGenerator {
 }
 
 protocol QuoteFloorViewModelGenerator {
-    func quoteFloorViewModel() -> QuoteFloorViewModel
+    func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel
 }
 
 protocol UserPresenter {

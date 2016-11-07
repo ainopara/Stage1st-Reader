@@ -9,6 +9,7 @@
 import Mustache
 import KissXML
 import CocoaLumberjack
+import Reachability
 
 protocol PageRenderer {
     var topic: S1Topic { get }
@@ -96,6 +97,13 @@ extension PageRenderer {
 
             func process(HTMLString: String, with floorID: Int) -> String {
                 func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
+                    func isMahjongFaceImage(imageSourceString: String?) -> Bool {
+                        if let srcString = imageSourceString, srcString.hasPrefix("static/image/smiley") {
+                            return true
+                        }
+                        return false
+                    }
+
                     guard let images = (try? xmlDocument.nodes(forXPath: "//img")) as? [DDXMLElement] else {
                         return xmlDocument
                     }
@@ -108,9 +116,46 @@ extension PageRenderer {
                         if let fileString = fileString {
                             image.removeAttribute(forName: "src")
                             image.addAttribute(withName: "src", stringValue: fileString)
-                        } else if let srcString = srcString {
-                            // TODO: Finish this.
+                        } else if let srcString = srcString, !srcString.hasPrefix("http") {
+                            image.removeAttribute(forName: "src")
+                            let baseURLString = UserDefaults.standard.object(forKey: "BaseURL") as! String
+                            image.addAttribute(withName: "src", stringValue: baseURLString + srcString)
                         }
+
+                        if let finalImageSrcString = image.attribute(forName: "src")?.stringValue, !isMahjongFaceImage(imageSourceString: srcString) {
+                            // Prepare new image element.
+                            let imageElement = DDXMLElement(name: "img")
+                            imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
+                            imageIndexInCurrentFloor += 1
+                            if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
+                                imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
+                            } else {
+                                let placeholderURLString = UserDefaults.standard.object(forKey: "BaseURL") as! String + "stage1streader-placeholder.png"
+                                imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
+                            }
+
+                            // Transform original image element to link element.
+                            let linkElement = image
+                            linkElement.name = "a"
+                            linkElement.removeAttribute(forName: "src")
+                            linkElement.removeAttribute(forName: "href")
+                            linkElement.addAttribute(withName: "href", stringValue: "javascript:void(0);")
+                            linkElement.removeAttribute(forName: "onclick")
+                            let src = imageElement.attribute(forName: "src")?.stringValue!
+                            let id = imageElement.attribute(forName: "id")?.stringValue!
+                            let linkString = "window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '\(src)', 'id': '\(id)'})"
+                            linkElement.addAttribute(withName: "onclick", stringValue: linkString)
+                            linkElement.addChild(imageElement)
+                        }
+
+                        // clean image's attribute (if it is not a mahjong face, it is the linkElement)
+                        image.removeAttribute(forName: "onmouseover")
+                        image.removeAttribute(forName: "file")
+                        image.removeAttribute(forName: "id")
+                        image.removeAttribute(forName: "lazyloadthumb")
+                        image.removeAttribute(forName: "border")
+                        image.removeAttribute(forName: "width")
+                        image.removeAttribute(forName: "height")
                     }
 
                     return xmlDocument

@@ -17,7 +17,7 @@ fileprivate let topOffset: CGFloat = -80.0
 fileprivate let bottomOffset: CGFloat = 60.0
 fileprivate let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
-class S1ContentViewController: UIViewController {
+class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
     let viewModel: S1ContentViewModel
 
     var toolBar = UIToolbar(frame: .zero)
@@ -381,7 +381,7 @@ extension S1ContentViewController {
             _ = self.navigationController?.popViewController(animated: true)
         } else {
             _hook_preChangeCurrentPage()
-            self.viewModel.currentPage -= 1
+            self.viewModel.currentPage.value -= 1
             self.fetchContentForCurrentPage(forceUpdate: false)
         }
     }
@@ -396,7 +396,7 @@ extension S1ContentViewController {
             break
         case (false, _):
             _hook_preChangeCurrentPage()
-            self.viewModel.currentPage += 1
+            self.viewModel.currentPage.value += 1
             self.fetchContentForCurrentPage(forceUpdate: false)
             break
         default:
@@ -412,7 +412,7 @@ extension S1ContentViewController {
         }
 
         _hook_preChangeCurrentPage()
-        viewModel.currentPage = 1
+        viewModel.currentPage.value = 1
         self.fetchContentForCurrentPage(forceUpdate: false)
     }
 
@@ -424,7 +424,7 @@ extension S1ContentViewController {
         }
 
         _hook_preChangeCurrentPage()
-        self.viewModel.currentPage = self.viewModel.totalPages
+        self.viewModel.currentPage.value = self.viewModel.totalPages.value
         self.fetchContentForCurrentPage(forceUpdate: false)
     }
 
@@ -432,7 +432,7 @@ extension S1ContentViewController {
         func generatePageList() -> [String] {
             var pageList = [String]()
 
-            for page in 1...max(viewModel.currentPage, viewModel.totalPages) {
+            for page in 1...max(viewModel.currentPage.value, viewModel.totalPages.value) {
                 if viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: page)) {
                     pageList.append("✓第 \(page) 页✓")
                 } else {
@@ -447,15 +447,15 @@ extension S1ContentViewController {
 
         let picker = ActionSheetStringPicker(title: "",
                                              rows: pageList,
-                                             initialSelection: Int(viewModel.currentPage - 1),
+                                             initialSelection: Int(viewModel.currentPage.value - 1),
                                              doneBlock: { [weak self] (picker, selectedIndex, selectedValue) in
             guard let strongSelf = self else { return }
 
-            if strongSelf.viewModel.currentPage == UInt(selectedIndex + 1) {
+            if strongSelf.viewModel.currentPage.value == UInt(selectedIndex + 1) {
                 strongSelf.forceRefreshCurrentPage()
             } else {
                 strongSelf._hook_preChangeCurrentPage()
-                strongSelf.viewModel.currentPage = UInt(selectedIndex + 1)
+                strongSelf.viewModel.currentPage.value = UInt(selectedIndex + 1)
                 strongSelf.fetchContentForCurrentPage(forceUpdate: false)
             }
         }, cancel: nil, origin: pageButton)
@@ -685,7 +685,7 @@ extension S1ContentViewController {
             let topicID = notification?.userInfo?["topicID"] as? NSNumber,
             let page = notification?.userInfo?["page"] as? NSNumber,
             viewModel.topic.topicID.intValue == topicID.intValue,
-            page.intValue - Int(viewModel.currentPage) == 1 else {
+            page.intValue - Int(viewModel.currentPage.value) == 1 else {
             return
         }
 
@@ -817,7 +817,7 @@ extension S1ContentViewController: WKNavigationDelegate {
     }
 }
 
-extension S1ContentViewController: ImagePresenter, UserPresenter, WebViewEventDelegate {
+extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
         webPageReadyForAutomaticScrolling = true
     }
@@ -1046,7 +1046,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
             // [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
 
             if let replyTopicFloor = replyTopicFloor {
-                viewModel.dataCenter.replySpecificFloor(replyTopicFloor, in: viewModel.topic, atPage: NSNumber(value: viewModel.currentPage), withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
+                viewModel.dataCenter.replySpecificFloor(replyTopicFloor, in: viewModel.topic, atPage: NSNumber(value: viewModel.currentPage.value), withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
             } else {
                 viewModel.dataCenter.reply(viewModel.topic, withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
             }
@@ -1198,13 +1198,13 @@ extension S1ContentViewController {
 
         // remove cache for last page
         if forceUpdate {
-            viewModel.dataCenter.removePrecachedFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage))
+            viewModel.dataCenter.removePrecachedFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage.value))
         }
 
         // Set up HUD
         DDLogVerbose("[ContentVC] check precache exist")
 
-        if !viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage)) {
+        if !viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage.value)) {
             // only show hud when no cached floors
             DDLogVerbose("[ContentVC] Show HUD")
             refreshHUD.showActivityIndicator()
@@ -1234,7 +1234,7 @@ extension S1ContentViewController {
 
                 // Prepare next page
                 if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
-                    strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage + 1), shouldUpdate: false)
+                    strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage.value + 1), shouldUpdate: false)
                 }
 
                 // Dismiss HUD if exist
@@ -1320,8 +1320,7 @@ extension S1ContentViewController {
         case .restorePosition:
             if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
                 // Restore last view position from cached position in this view controller.
-                let offset = Int(positionForPage.doubleValue)
-                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(offset)}, 0);", completionHandler: nil)
+                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(positionForPage)}, 0);", completionHandler: nil)
             }
         }
 
