@@ -51,10 +51,8 @@ PODS:
   - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
   - Reachability (3.2)
-  - ReactiveObjC (1.0.1)
-  - ReactiveObjCBridge (1.0.0):
-    - ReactiveObjC
-    - ReactiveSwift (~> 1.0.0-alpha.1)
+  - ReactiveCocoa (5.0.0-alpha.3):
+    - ReactiveSwift (~> 1.0.0-alpha.3)
   - ReactiveSwift (1.0.0-alpha.3):
     - Result (~> 3.0)
   - Result (3.0.0)
@@ -132,9 +130,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
-  - ReactiveObjC
-  - ReactiveObjCBridge (from `https://github.com/ainopara/ReactiveObjCBridge.git`, branch `master`)
-  - ReactiveSwift (~> 1.0.0-alpha.1)
+  - ReactiveCocoa (~> 5.0.0-alpha.3)
   - Reveal-SDK
   - SnapKit
   - TextAttributes
@@ -146,9 +142,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  ReactiveObjCBridge:
-    :branch: master
-    :git: https://github.com/ainopara/ReactiveObjCBridge.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
@@ -160,9 +153,6 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: 69d88824d428cf6b3407eb778f23c7562f87149b
     :git: https://github.com/ainopara/KissXML.git
-  ReactiveObjCBridge:
-    :commit: 2310f4457f098e19a6c371d739ee932a7d805bf0
-    :git: https://github.com/ainopara/ReactiveObjCBridge.git
   YapDatabase:
     :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
@@ -186,8 +176,7 @@ SPEC CHECKSUMS:
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveObjC: 0e618037d7b883b4cebcc8da203e8ed9b69ca2d3
-  ReactiveObjCBridge: 34b1a487e1b825a08b4dc38fe90f691d4ccd66be
+  ReactiveCocoa: d8a03d3deae0dd76410a30589946328d76ab9d2b
   ReactiveSwift: d67b677f9574ba614d94022a88fcf456e77fa515
   Result: 1b3e431f37cbcd3ad89c6aa9ab0ae55515fae3b6
   Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
@@ -196,6 +185,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: c90dade91859eae6c8e12e732f1aa643c1ac8d7c
+PODFILE CHECKSUM: 246814621fd0d3fa0995db4d5f0d374e1a3ad906
 
 COCOAPODS: 1.1.1

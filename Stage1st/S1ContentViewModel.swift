@@ -9,19 +9,23 @@
 import CocoaLumberjack
 import Result
 import Mustache
+import ReactiveCocoa
 import ReactiveSwift
 
-class S1ContentViewModel: NSObject {
+class S1ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let dataCenter: S1DataCenter
+    let discuzAPIManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
 
     let currentPage: MutableProperty<UInt>
     let previousPage: MutableProperty<UInt>
     let totalPages: MutableProperty<UInt>
+    let replyCount: DynamicProperty<NSNumber>
+    let favorite: DynamicProperty<NSNumber>
     var cachedViewPosition: [UInt: Double] = [:]
 
     init(topic: S1Topic, dataCenter: S1DataCenter) {
-        self.topic = topic.isImmutable ? topic : (topic.copy() as! S1Topic)
+        self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
 
         if let currentPage = topic.lastViewedPage?.uintValue {
             self.currentPage = MutableProperty(currentPage)
@@ -41,6 +45,9 @@ class S1ContentViewModel: NSObject {
 
         self.dataCenter = dataCenter
 
+        self.replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
+        self.favorite = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.favorite))
+
         super.init()
 
         if topic.favorite == nil {
@@ -50,6 +57,17 @@ class S1ContentViewModel: NSObject {
         if let lastViewedPosition = topic.lastViewedPosition?.doubleValue, let lastViewedPage = topic.lastViewedPage?.uintValue {
             cachedViewPosition[lastViewedPage] = lastViewedPosition
         }
+
+        currentPage.producer.startWithValues { (page) in
+            DDLogInfo("[ContentVM] Current page changed to: \(page)")
+        }
+
+        totalPages <~ replyCount.producer
+            .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
+            .logEvents()
+        // TODO: Add logs
+//        DDLogInfo("[ContentVM] reply count changed: %@", x)
+        previousPage <~ currentPage.combinePrevious(1).producer.map { $1 }
     }
 
 }
@@ -163,10 +181,10 @@ extension S1ContentViewModel {
 extension S1ContentViewModel {
     func toggleFavorite() {
         if let isFavorite = self.topic.favorite, isFavorite.boolValue {
-            self.topic.favorite = false
+            topic.favorite = false
         } else {
-            self.topic.favorite = true
-            self.topic.favoriteDate = Date()
+            topic.favorite = true
+            topic.favoriteDate = Date()
         }
     }
 }
@@ -174,35 +192,41 @@ extension S1ContentViewModel {
 // MARK: - Cache Page Offset
 extension S1ContentViewModel {
     func cacheOffsetForCurrentPage(_ offset: CGFloat) {
-        self.cachedViewPosition[self.currentPage.value] = Double(offset)
+        cachedViewPosition[currentPage.value] = Double(offset)
     }
 
     func cacheOffsetForPreviousPage(_ offset: CGFloat) {
-        self.cachedViewPosition[self.previousPage.value] = Double(offset)
+        cachedViewPosition[previousPage.value] = Double(offset)
     }
 
     func cachedOffsetForCurrentPage() -> Double? {
-        return self.cachedViewPosition[self.currentPage.value]
+        return cachedViewPosition[currentPage.value]
     }
 }
 
 // MARK: - View Model
-
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
-        return ReportComposeViewModel(apiManager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic, floor: floor)
+        return ReportComposeViewModel(apiManager: discuzAPIManager,
+                                      topic: topic,
+                                      floor: floor)
     }
 }
 
 extension S1ContentViewModel: QuoteFloorViewModelGenerator {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
-        return QuoteFloorViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), topic: topic.copy() as! S1Topic, floors: floors, centerFloorID: centerFloorID, baseURL: type(of: self).pageBaseURL())
+        return QuoteFloorViewModel(manager: discuzAPIManager,
+                                   topic: topic.copy() as! S1Topic,
+                                   floors: floors,
+                                   centerFloorID: centerFloorID,
+                                   baseURL: type(of: self).pageBaseURL())
     }
 }
 
 extension S1ContentViewModel: UserViewModelGenerator {
     func userViewModel(userID: Int) -> UserViewModel {
-        return UserViewModel(manager: DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b"), user: User(ID: userID, name: ""))
+        return UserViewModel(manager: discuzAPIManager,
+                             user: User(ID: userID, name: ""))
     }
 }
 
@@ -237,6 +261,3 @@ extension S1ContentViewModel {
         return currentPage.value >= totalPages.value
     }
 }
-
-// MARK: - Page Rander
-extension S1ContentViewModel: PageRenderer { }

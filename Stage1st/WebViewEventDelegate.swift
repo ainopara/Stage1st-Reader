@@ -71,11 +71,6 @@ protocol WebViewEventDelegate: class {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String: Any])
 }
 
-protocol ImagePresenter {
-    var presentType: S1ContentViewController.PresentType { get set }
-    var webView: WKWebView { get }
-}
-
 protocol UserViewModelGenerator {
     func userViewModel(userID: Int) -> UserViewModel
 }
@@ -89,8 +84,9 @@ protocol QuoteFloorViewModelGenerator {
 }
 
 protocol UserPresenter {
+    associatedtype ViewModel: UserViewModelGenerator
     var presentType: S1ContentViewController.PresentType { get set }
-    var viewModel: UserViewModelGenerator { get }
+    var viewModel: ViewModel { get }
 }
 
 extension WebViewEventDelegate where Self: UIViewController, Self: UserPresenter {
@@ -101,6 +97,11 @@ extension WebViewEventDelegate where Self: UIViewController, Self: UserPresenter
         let userViewController = UserViewController(viewModel: userViewModel)
         navigationController?.pushViewController(userViewController, animated: true)
     }
+}
+
+protocol ImagePresenter {
+    var presentType: S1ContentViewController.PresentType { get set }
+    var webView: WKWebView { get }
 }
 
 extension WebViewEventDelegate where Self: UIViewController, Self: ImagePresenter, Self: JTSImageViewControllerInteractionsDelegate, Self: JTSImageViewControllerOptionsDelegate {

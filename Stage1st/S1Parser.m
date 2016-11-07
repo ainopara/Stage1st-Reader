@@ -160,7 +160,7 @@
 
 + (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
-    NSArray<S1Topic *> *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
+    NSArray<DDXMLElement *> *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];
     NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
     for (DDXMLElement *topicNode in topicNodes) {
         DDXMLElement *topicFirstSection = [[topicNode nodesForXPath:@".//th/a" error:nil] firstObject];

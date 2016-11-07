@@ -12,6 +12,8 @@ import CocoaLumberjack
 import ActionSheetPicker_3_0
 import JTSImageViewController
 import Crashlytics
+import ReactiveSwift
+import ReactiveCocoa
 
 fileprivate let topOffset: CGFloat = -80.0
 fileprivate let bottomOffset: CGFloat = 60.0
@@ -118,10 +120,10 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
 
     // flag to make sure _hook_didFinishBasicPageLoad only called once per action (size change may occure multiple times)
     var webPageAutomaticScrollingEnabled = true
-    dynamic var webPageReadyForAutomaticScrolling = false
-    dynamic var webPageSizeChangedForAutomaticScrolling = false
+    var webPageReadyForAutomaticScrolling = MutableProperty(false)
+    var webPageSizeChangedForAutomaticScrolling = false
 
-    dynamic var finishFirstLoading = false
+    var finishFirstLoading = MutableProperty(false)
     var presentType: PresentType = .none
 
     // MARK: -
@@ -234,7 +236,36 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
             actionBarButtonItem
             ], animated: false)
 
-        perform(Selector(("viewDidLoadObjC")))
+        // Binding
+        viewModel.currentPage.producer
+            .combineLatest(with: viewModel.totalPages.producer).startWithValues { [weak self] (currentPage, totalPage) in
+            DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
+            guard let strongSelf = self else { return }
+            strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
+        }
+
+        webPageReadyForAutomaticScrolling.producer
+            .combineLatest(with: finishFirstLoading.producer).startWithValues { [weak self] (webPageReadyForAutomaticScrolling, finishFirstLoading) in
+                DDLogVerbose("[ContentVC] document ready: \(webPageReadyForAutomaticScrolling), finish first loading: \(finishFirstLoading)")
+                guard let strongSelf = self else { return }
+                if webPageReadyForAutomaticScrolling && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: { [weak self] in
+                        guard let strongSelf = self else { return }
+                        strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView)
+                    })
+                    strongSelf.webPageAutomaticScrollingEnabled = false
+                }
+        }
+
+        favoriteButton.reactive.trigger(for: .touchUpInside).observeValues { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.viewModel.toggleFavorite()
+        }
+
+        viewModel.favorite.producer.map { $0?.boolValue ?? false }.startWithValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
+        }
 
         // Activity
         _setupActivity()
@@ -650,7 +681,7 @@ extension S1ContentViewController {
     }
 
     open func saveTopicViewedState(sender: Any?) {
-        if finishFirstLoading {
+        if finishFirstLoading.value {
             viewModel.saveTopicViewedState(lastViewedPosition: Double(webView.scrollView.contentOffset.y))
         } else {
             viewModel.saveTopicViewedState(lastViewedPosition: nil)
@@ -819,7 +850,7 @@ extension S1ContentViewController: WKNavigationDelegate {
 
 extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
-        webPageReadyForAutomaticScrolling = true
+        webPageReadyForAutomaticScrolling.value = true
     }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String : Any]) {
@@ -829,15 +860,6 @@ extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
         actionButtonTapped(for: floorID)
     }
-
-//    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
-//        presentType = .user
-//        showUserViewController(with: userID)
-//    }
-
-//    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
-//        showImage(with: imageID, imageURLString)
-//    }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
 
@@ -913,7 +935,7 @@ extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat) {
         guard
             offset < topOffset,
-            self.finishFirstLoading,
+            self.finishFirstLoading.value,
             !self.viewModel.isInFirstPage() else {
             return
         }
@@ -939,7 +961,7 @@ extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat) {
         guard
             offset > bottomOffset,
-            self.finishFirstLoading else {
+            self.finishFirstLoading.value else {
             return
         }
 
@@ -973,7 +995,7 @@ extension S1ContentViewController: PullToActionDelagete {
     }
 
     public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
-        guard finishFirstLoading else {
+        guard finishFirstLoading.value else {
             if viewModel.isInLastPage() {
                 forwardButtonState = .refresh(rotateAngle: 0.0)
             }
@@ -1229,7 +1251,7 @@ extension S1ContentViewController {
                 }
 
                 strongSelf.saveViewPositionForPreviousPage()
-                strongSelf.finishFirstLoading = true
+                strongSelf.finishFirstLoading.value = true
                 strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
 
                 // Prepare next page
@@ -1273,7 +1295,7 @@ extension S1ContentViewController {
         viewModel.cancelRequest()
         saveViewPositionForCurrentPage()
 
-        webPageReadyForAutomaticScrolling = false
+        webPageReadyForAutomaticScrolling.value = false
         webPageSizeChangedForAutomaticScrolling = false
         webPageAutomaticScrollingEnabled = true
     }
@@ -1283,7 +1305,7 @@ extension S1ContentViewController {
 
         saveViewPositionForCurrentPage()
 
-        webPageReadyForAutomaticScrolling = false
+        webPageReadyForAutomaticScrolling.value = false
         webPageSizeChangedForAutomaticScrolling = false
         webPageAutomaticScrollingEnabled = true
     }
@@ -1357,8 +1379,8 @@ extension S1ContentViewController {
 //        self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
 //        self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
 
-        topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading
-        bottomDecorateLine.isHidden = !self.finishFirstLoading
+        topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading.value
+        bottomDecorateLine.isHidden = !self.finishFirstLoading.value
     }
 
     func saveViewPositionForCurrentPage() {

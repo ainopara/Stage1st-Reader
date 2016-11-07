@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import ReactiveCocoa
 import ReactiveSwift
 
 class UserViewModel {

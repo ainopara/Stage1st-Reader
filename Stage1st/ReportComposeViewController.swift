@@ -7,8 +7,8 @@
 //
 
 import Result
+import ReactiveCocoa
 import ReactiveSwift
-import ReactiveObjC
 import SnapKit
 import CocoaLumberjack
 import YYKeyboardManager
@@ -85,12 +85,13 @@ final class ReportComposeViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Binding
-        textView.rac_textSignal().subscribeNext({ [weak self] (value) in
-            guard let strongSelf = self else { return }
-            guard let contentString = value as? String else { return }
-
-            strongSelf.viewModel.content.value = contentString
-        })
+        viewModel.content <~ textView.reactive.textValues
+//        textView.rac_textSignal().subscribeNext({ [weak self] (value) in
+//            guard let strongSelf = self else { return }
+//            guard let contentString = value as? String else { return }
+//
+//            strongSelf.viewModel.content.value = contentString
+//        })
 //            .toSignalProducer()
 //            .map { $0 as! String }
 //            .flatMapError { _ in return SignalProducer<String, NoError>.empty }
