@@ -65,7 +65,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
         totalPages <~ replyCount.producer
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
             .logEvents()
-        // TODO: Add logs
+        // TODO: Add logs.
 //        DDLogInfo("[ContentVM] reply count changed: %@", x)
         previousPage <~ currentPage.combinePrevious(1).producer.map { $1 }
     }
