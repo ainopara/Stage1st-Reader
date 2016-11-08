@@ -8,15 +8,17 @@
 
 import TextAttributes
 
-final class QuoteFloorViewModel {
-    let manager: DiscuzAPIManager
+final class QuoteFloorViewModel: PageRenderer {
     let topic: S1Topic
     let floors: [Floor]
+
+    let discuzAPIManager: DiscuzAPIManager
+
     let centerFloorID: Int
     let baseURL: URL
 
     init(manager: DiscuzAPIManager, topic: S1Topic, floors: [Floor], centerFloorID: Int, baseURL: URL) {
-        self.manager = manager
+        self.discuzAPIManager = manager
         self.topic = topic
         self.floors = floors
         self.centerFloorID = centerFloorID
@@ -24,5 +26,9 @@ final class QuoteFloorViewModel {
     }
 }
 
-extension QuoteFloorViewModel: PageRenderer {
+extension QuoteFloorViewModel: UserViewModelGenerator {
+    func userViewModel(userID: Int) -> UserViewModel {
+        return UserViewModel(manager: discuzAPIManager,
+                             user: User(ID: userID, name: ""))
+    }
 }

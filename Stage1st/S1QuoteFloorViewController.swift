@@ -11,12 +11,18 @@ import Crashlytics
 import CocoaLumberjack
 import JTSImageViewController
 
-class S1QuoteFloorViewController: UIViewController {
+class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter {
     let viewModel: QuoteFloorViewModel
 
     lazy var webView: WKWebView = {
         return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
     }()
+
+    lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
+        return GeneralScriptMessageHandler(delegate: self)
+    }()
+
+    var presentType: S1ContentViewController.PresentType = .none
 
     init(viewModel: QuoteFloorViewModel) {
         self.viewModel = viewModel
@@ -35,6 +41,11 @@ class S1QuoteFloorViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        DDLogInfo("[QuoteFloorVC] dealloc")
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
+    }
+
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +60,8 @@ class S1QuoteFloorViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        presentType = .none
 
         didReceivePaletteChangeNotification(nil)
 
@@ -76,10 +89,6 @@ class S1QuoteFloorViewController: UIViewController {
         super.viewDidAppear(animated)
         Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
     }
-
-    deinit {
-        DDLogInfo("[QuoteFloorVC] dealloc")
-    }
 }
 
 // MARK: - Actions
@@ -89,7 +98,6 @@ extension S1QuoteFloorViewController {
         webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
 
         setNeedsStatusBarAppearanceUpdate()
-
     }
 }
 
@@ -98,34 +106,176 @@ extension S1QuoteFloorViewController {
     func sharedConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
-        userContentController.add(self, name: "stage1st")
+        userContentController.add(webViewScriptMessageHandler, name: "stage1st")
         configuration.userContentController = userContentController
         return configuration
     }
 }
 
 // MARK: - WKScriptMessageHandler
-extension S1QuoteFloorViewController: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+extension S1QuoteFloorViewController: WebViewEventDelegate {
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
 
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String : Any]) {
+
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
+//        actionButtonTapped(for: floorID)
+    }
+
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
+
+    }
+}
+
+// MARK: JTSImageViewControllerInteractionsDelegate
+extension S1QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
+    func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
+        let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { (_) in
+            DispatchQueue.global(qos: .background).async {
+                UIImageWriteToSavedPhotosAlbum(imageViewer.image, nil, nil, nil)
+            }
+        }))
+
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { (_) in
+            UIPasteboard.general.string = imageViewer.imageInfo.imageURL.absoluteString
+        }))
+
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"), style: .cancel, handler: nil))
+
+        imageActionSheet.popoverPresentationController?.sourceView = imageViewer.view
+        imageActionSheet.popoverPresentationController?.sourceRect = rect
+        imageViewer.present(imageActionSheet, animated: true, completion: nil)
+    }
+}
+
+// MARK: JTSImageViewControllerOptionsDelegate
+extension S1QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
+    func alphaForBackgroundDimmingOverlay(inImageViewer imageViewer: JTSImageViewController!) -> CGFloat {
+        return 0.3
     }
 }
 
 // MARK: WKNavigationDelegate
 extension S1QuoteFloorViewController: WKNavigationDelegate {
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        guard let URL = request.url else {
-            return false
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.cancel)
+            return
         }
 
-        if URL.absoluteString == "about:blank" || URL.absoluteString.hasPrefix("file://") {
-            return true
+        if url.absoluteString == "about:blank" {
+            decisionHandler(.allow)
+            return
         }
 
-        return false
+        if url.absoluteString.hasPrefix("file://") {
+            if url.absoluteString.hasSuffix("html") {
+                decisionHandler(.allow)
+                return
+            }
+        }
+
+        // Image URL opened in image Viewer
+        if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
+            presentType = .image
+            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
+            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
+
+            DDLogDebug("[ContentVC] JTS View Image: \(url)")
+
+            let imageInfo = JTSImageInfo()
+            imageInfo.imageURL = url
+            let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
+            imageViewController?.interactionsDelegate = self
+            imageViewController?.optionsDelegate = self
+            imageViewController?.show(from: self, transition: .fromOffscreen)
+
+            decisionHandler(.cancel)
+            return
+        }
+
+        if let baseURL = UserDefaults.standard.string(forKey: "BaseURL"), url.absoluteString.hasPrefix(baseURL) {
+            // Open as S1 topic
+            if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
+                var topic = topic
+                presentType = .content
+                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
+
+                if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
+                    let lastViewedPage = topic.lastViewedPage
+                    topic = tracedTopic.copy() as! S1Topic
+                    topic.lastViewedPage = lastViewedPage
+                }
+
+                let contentViewController = S1ContentViewController(topic: topic, dataCenter: viewModel.dataCenter)
+                navigationController?.pushViewController(contentViewController, animated: true)
+
+                decisionHandler(.cancel)
+                return
+            }
+
+            // Open Quote Link
+            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
+                DDLogDebug("[ContentVC] Extract query: \(querys)")
+                if
+                    let mod = querys["mod"],
+                    mod == "redirect",
+                    let tidString = querys["ptid"],
+                    let tid = Int(tidString),
+                    tid == viewModel.topic.topicID.intValue,
+                    let pidString = querys["pid"],
+                    let pid = Int(pidString) {
+                    let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
+                    if chainQuoteFloors.count > 0 {
+                        presentType = .quote
+                        Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
+
+                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
+
+                        decisionHandler(.cancel)
+                        return
+                    }
+                }
+            }
+        }
+
+        // Fallback Open link
+        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""),
+                                                    message: url.absoluteString,
+                                                    preferredStyle: .alert)
+
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""),
+                                                    style: .cancel,
+                                                    handler: nil))
+
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
+                                                    style: .default,
+                                                    handler: { [weak self] (action) in
+                                                        guard let strongSelf = self else { return }
+                                                        strongSelf.presentType = .web
+                                                        Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+                                                        DDLogDebug("[ContentVC] Open in Safari: \(url)")
+                                                        
+                                                        if !UIApplication.shared.openURL(url) {
+                                                            DDLogWarn("Failed to open url: \(url)")
+                                                        }
+        }))
+        
+        present(alertViewController, animated: true, completion: nil)
+        
+        DDLogWarn("no case match for url: \(url), fallback cancel")
+        decisionHandler(.cancel)
+        return
     }
 
-    func webViewDidFinishLoad(_ webView: UIWebView) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let computedOffset: CGFloat = topPositionOfMessageWithId(self.viewModel.centerFloorID) - 32
         var offset = webView.scrollView.contentOffset
         offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
@@ -133,6 +283,7 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
     }
 }
 
+// MARK: UIScrollViewDelegate
 extension S1QuoteFloorViewController: UIScrollViewDelegate {
     // To disable pinch to zoom gesture in WKWebView
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -145,7 +296,7 @@ extension S1QuoteFloorViewController: UIScrollViewDelegate {
     }
 }
 
-// MARK: Helper
+// MARK: - Helper
 extension S1QuoteFloorViewController {
     func topPositionOfMessageWithId(_ elementID: Int) -> CGFloat {
         if let rect = webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
