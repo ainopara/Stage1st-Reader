@@ -215,8 +215,9 @@ extension S1ContentViewModel {
 
 extension S1ContentViewModel: QuoteFloorViewModelGenerator {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
-        return QuoteFloorViewModel(manager: discuzAPIManager,
-                                   topic: topic.copy() as! S1Topic,
+        return QuoteFloorViewModel(dataCenter: dataCenter,
+                                   manager: discuzAPIManager,
+                                   topic: topic,
                                    floors: floors,
                                    centerFloorID: centerFloorID,
                                    baseURL: type(of: self).pageBaseURL())

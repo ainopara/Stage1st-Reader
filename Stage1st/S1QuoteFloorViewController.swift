@@ -222,28 +222,28 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
             }
 
             // Open Quote Link
-            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
-                DDLogDebug("[ContentVC] Extract query: \(querys)")
-                if
-                    let mod = querys["mod"],
-                    mod == "redirect",
-                    let tidString = querys["ptid"],
-                    let tid = Int(tidString),
-                    tid == viewModel.topic.topicID.intValue,
-                    let pidString = querys["pid"],
-                    let pid = Int(pidString) {
-                    let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
-                    if chainQuoteFloors.count > 0 {
-                        presentType = .quote
-                        Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
-
-                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
-
-                        decisionHandler(.cancel)
-                        return
-                    }
-                }
-            }
+//            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
+//                DDLogDebug("[ContentVC] Extract query: \(querys)")
+//                if
+//                    let mod = querys["mod"],
+//                    mod == "redirect",
+//                    let tidString = querys["ptid"],
+//                    let tid = Int(tidString),
+//                    tid == viewModel.topic.topicID.intValue,
+//                    let pidString = querys["pid"],
+//                    let pid = Int(pidString) {
+//                    let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
+//                    if chainQuoteFloors.count > 0 {
+//                        presentType = .quote
+//                        Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
+//
+//                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
+//
+//                        decisionHandler(.cancel)
+//                        return
+//                    }
+//                }
+//            }
         }
 
         // Fallback Open link
@@ -258,28 +258,33 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
                                                     style: .default,
                                                     handler: { [weak self] (action) in
-                                                        guard let strongSelf = self else { return }
-                                                        strongSelf.presentType = .web
-                                                        Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
-                                                        DDLogDebug("[ContentVC] Open in Safari: \(url)")
-                                                        
-                                                        if !UIApplication.shared.openURL(url) {
-                                                            DDLogWarn("Failed to open url: \(url)")
-                                                        }
+            guard let strongSelf = self else { return }
+            strongSelf.presentType = .web
+            Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+            DDLogDebug("[ContentVC] Open in Safari: \(url)")
+
+            if !UIApplication.shared.openURL(url) {
+                DDLogWarn("Failed to open url: \(url)")
+            }
         }))
-        
+
         present(alertViewController, animated: true, completion: nil)
-        
+
         DDLogWarn("no case match for url: \(url), fallback cancel")
         decisionHandler(.cancel)
         return
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        let computedOffset: CGFloat = topPositionOfMessageWithId(self.viewModel.centerFloorID) - 32
-        var offset = webView.scrollView.contentOffset
-        offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
-        webView.scrollView.contentOffset = offset
+        DispatchQueue.global().async { [weak self] in
+            guard let strongSelf = self else { return }
+            let computedOffset: CGFloat = strongSelf.topPositionOfMessageWithId(strongSelf.viewModel.centerFloorID) - 32
+            var offset = webView.scrollView.contentOffset
+            offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
+            DispatchQueue.main.async {
+                webView.scrollView.contentOffset = offset
+            }
+        }
     }
 }
 

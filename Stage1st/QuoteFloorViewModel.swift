@@ -12,12 +12,14 @@ final class QuoteFloorViewModel: PageRenderer {
     let topic: S1Topic
     let floors: [Floor]
 
+    let dataCenter: S1DataCenter
     let discuzAPIManager: DiscuzAPIManager
 
     let centerFloorID: Int
     let baseURL: URL
 
-    init(manager: DiscuzAPIManager, topic: S1Topic, floors: [Floor], centerFloorID: Int, baseURL: URL) {
+    init(dataCenter: S1DataCenter, manager: DiscuzAPIManager, topic: S1Topic, floors: [Floor], centerFloorID: Int, baseURL: URL) {
+        self.dataCenter = dataCenter
         self.discuzAPIManager = manager
         self.topic = topic
         self.floors = floors
