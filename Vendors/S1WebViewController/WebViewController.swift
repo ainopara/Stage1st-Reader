@@ -138,9 +138,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
             guard let strongSelf = self else { return }
             guard let result = result as? String, result != "" else {
-                if let url = strongSelf.webView.url {
-                    strongSelf.webView.load(URLRequest(url: url))
-                }
+                strongSelf.webView.load(URLRequest(url: strongSelf.currentValidURL()))
                 return
             }
         }
