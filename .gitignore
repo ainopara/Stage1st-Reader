@@ -7,6 +7,7 @@ xcbaselines
 /Pods
 /Carthage
 /fastlane
+/.idea
 
 ReferenceImages*
 
