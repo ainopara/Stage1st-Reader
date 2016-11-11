@@ -45,7 +45,7 @@ PODS:
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (3.1.4)
+  - Kingfisher (3.2.0)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
@@ -56,7 +56,7 @@ PODS:
   - ReactiveSwift (1.0.0-alpha.3):
     - Result (~> 3.0)
   - Result (3.0.0)
-  - Reveal-SDK (2)
+  - Reveal-SDK (3)
   - SnapKit (3.0.2)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -172,14 +172,14 @@ SPEC CHECKSUMS:
   JASON: cf4d762e61428a20db8eaef2acb6a569a10c1801
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: 6c67e3e57f2d81a9cfdfa25052cd86f33ceac9bb
+  Kingfisher: 50407d1d5dbc34965009d425a286342ff36a84ea
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: d8a03d3deae0dd76410a30589946328d76ab9d2b
   ReactiveSwift: d67b677f9574ba614d94022a88fcf456e77fa515
   Result: 1b3e431f37cbcd3ad89c6aa9ab0ae55515fae3b6
-  Reveal-SDK: 4d36a47c7091843eee525b72219e005b90bbac0b
+  Reveal-SDK: cad54352e23854083e3917ddf665dc0fe7781c53
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb

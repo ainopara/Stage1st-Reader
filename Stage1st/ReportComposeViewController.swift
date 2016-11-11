@@ -14,7 +14,6 @@ import CocoaLumberjack
 import YYKeyboardManager
 import TextAttributes
 
-
 final class ReportComposeViewModel {
     let apiManager: DiscuzAPIManager
     let topic: S1Topic

@@ -104,7 +104,6 @@ private class UserInfoInputView: UIView {
             make.bottom.equalTo(self.snp.bottom).offset(-12.0)
         }
 
-
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -509,7 +508,6 @@ extension S1LoginViewController {
                 strongSelf.alert(title: "下载验证码失败", message: error.localizedDescription)
                 strongSelf.userInfoInputView.loginButton.isEnabled = true
             })
-
 
         }, failureBlock: { [weak self] (error) in
             guard let strongSelf = self else { return }

@@ -899,7 +899,6 @@ extension S1ContentViewController {
     }
 }
 
-
 // MARK: JTSImageViewControllerInteractionsDelegate
 extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
