@@ -191,12 +191,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.textAlignment = .center
 
-        if let title = self.viewModel.topic.title, title != "" {
-            titleLabel.text = title
-        } else {
-            titleLabel.text = "\(self.viewModel.topic.topicID) 载入中..."
-        }
-
         // Toolbar items
         let forwardItem = UIBarButtonItem(customView: forwardButton)
         let backwardItem = UIBarButtonItem(customView: backButton)
@@ -265,6 +259,17 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
         viewModel.favorite.producer.map { $0?.boolValue ?? false }.startWithValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
+        }
+
+        viewModel.title.producer.startWithValues { [weak self] (title) in
+            guard let strongSelf = self else { return }
+            if let title = title, title != "" {
+                strongSelf.titleLabel.text = title as String
+                strongSelf.titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
+            } else {
+                strongSelf.titleLabel.text = "\(strongSelf.viewModel.topic.topicID) 载入中..."
+                strongSelf.titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.disable")
+            }
         }
 
         // Activity
@@ -367,10 +372,11 @@ extension S1ContentViewController {
         didReceivePaletteChangeNotification(nil)
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
-        // FIXME: find a way to make sure this only called once.
-        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
-            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
-        }
+        // FIXME: find a way to make sure this only called once. Prefer this not work.
+//        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+//            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
+//        }
+
 //        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
 //            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
 //        }
@@ -1245,9 +1251,6 @@ extension S1ContentViewController {
             switch result {
             case .success(let contents, let shouldRefetch):
                 strongSelf.updateToolBar()
-                if let title = strongSelf.viewModel.topic.title {
-                    strongSelf.updateTitleLabel(title: title)
-                }
 
                 strongSelf.saveViewPositionForPreviousPage()
                 strongSelf.finishFirstLoading.value = true
@@ -1364,13 +1367,6 @@ extension S1ContentViewController {
 
         updateForwardButton()
         updateBackwardButton()
-    }
-
-    func updateTitleLabel(title: String) {
-        // FIXME: title label should be change by monitoring viewmodel's
-        // property change, not by manually call this method
-        titleLabel.text = title
-        titleLabel.textColor = APColorManager.shared.colorForKey("content.titlelabel.text.normal")
     }
 
     func _updateDecorationLines(contentSize: CGSize) {

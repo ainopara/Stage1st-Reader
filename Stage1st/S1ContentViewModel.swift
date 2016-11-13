@@ -20,8 +20,11 @@ class S1ContentViewModel: NSObject, PageRenderer {
     let currentPage: MutableProperty<UInt>
     let previousPage: MutableProperty<UInt>
     let totalPages: MutableProperty<UInt>
+
+    let title: DynamicProperty<NSString>
     let replyCount: DynamicProperty<NSNumber>
     let favorite: DynamicProperty<NSNumber>
+
     var cachedViewPosition: [UInt: Double] = [:]
 
     init(topic: S1Topic, dataCenter: S1DataCenter) {
@@ -45,6 +48,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
 
         self.dataCenter = dataCenter
 
+        self.title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
         self.replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
         self.favorite = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.favorite))
 
