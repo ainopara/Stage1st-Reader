@@ -68,16 +68,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
                         backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
                 } else {
-                    backButton.setImage(#imageLiteral(resourceName: "Back"), for: .normal)
-                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
-                }
-            case .cachedBack(let rotateAngle):
-                if case .cachedBack(let oldRotateAngle) = oldValue {
-                    if rotateAngle != oldRotateAngle {
-                        backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
-                    }
-                } else {
-                    backButton.setImage(#imageLiteral(resourceName: "Back-Cached"), for: .normal)
+                    backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
                     backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
             }
@@ -93,16 +84,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
                         forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
                 } else {
-                    forwardButton.setImage(#imageLiteral(resourceName: "Forward"), for: .normal)
-                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
-                }
-            case .cachedForward(let rotateAngle):
-                if case .cachedForward(let oldRotateAngle) = oldValue {
-                    if rotateAngle != oldRotateAngle {
-                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
-                    }
-                } else {
-                    forwardButton.setImage(#imageLiteral(resourceName: "Forward-Cached"), for: .normal)
+                    forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
                     forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
             case .refresh(let rotateAngle):
@@ -727,7 +709,6 @@ extension S1ContentViewController {
         }
 
         updateToolBar()
-//        forwardButton.setImage(UIImage(named: "Forward-Cached")!, for: .normal) // FIXME: Currently to make this operation fast.
     }
 }
 
@@ -1017,9 +998,7 @@ extension S1ContentViewController: PullToActionDelagete {
                     forwardButtonState = .forward(rotateAngle: 1.0)
                 }
             } else {
-                let limitedBottomProgress = max(min(bottomProgress, 1.0), 0.0)
-                // FIXME: or .cachedForward judge depending on cache state
-                forwardButtonState = .forward(rotateAngle: limitedBottomProgress)
+                forwardButtonState = .forward(rotateAngle: max(min(bottomProgress, 1.0), 0.0))
             }
         }
 
@@ -1028,8 +1007,7 @@ extension S1ContentViewController: PullToActionDelagete {
             if viewModel.isInFirstPage() {
                 backButtonState = .back(rotateAngle: 0.0)
             } else {
-                let limitedTopProgress = max(min(topProgress, 1.0), 0.0)
-                backButtonState = .back(rotateAngle: limitedTopProgress)
+                backButtonState = .back(rotateAngle: max(min(topProgress, 1.0), 0.0))
             }
         }
     }
@@ -1144,7 +1122,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: NSUserActivity (aspect)
+// MARK: - NSUserActivity (aspect)
 extension S1ContentViewController {
     func _setupActivity() {
         DispatchQueue.global().async { [weak self] in
@@ -1353,27 +1331,11 @@ extension S1ContentViewController {
 
     // MARK: Helper (Misc)
     func updateToolBar() {
-        func updateForwardButton() {
-            // FIXME: this will make state failed to reflect button image
-            // but will lead to less quest for cache database which is good.
-            forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
-        }
-
-        func updateBackwardButton() {
-            // FIXME: this will make state failed to reflect button image
-            // but will lead to less quest for cache database which is good.
-            backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
-        }
-
-        updateForwardButton()
-        updateBackwardButton()
+        forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
+        backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
     }
 
     func _updateDecorationLines(contentSize: CGSize) {
-        // Seems no more necessary if we use auto layout
-//        self.topDecorateLine.frame = CGRectMake(0, topOffset, contentSize.width, 1);
-//        self.bottomDecorateLine.frame = CGRectMake(0, contentSize.height + bottomOffset, contentSize.width, 1);
-
         topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading.value
         bottomDecorateLine.isHidden = !self.finishFirstLoading.value
     }
@@ -1425,12 +1387,10 @@ extension S1ContentViewController {
 
     enum BackButtonState {
         case back(rotateAngle: Double)
-        case cachedBack(rotateAngle: Double)
     }
 
     enum ForwardButtonState {
         case forward(rotateAngle: Double)
-        case cachedForward(rotateAngle: Double)
         case refresh(rotateAngle: Double)
     }
 

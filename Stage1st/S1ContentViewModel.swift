@@ -135,25 +135,26 @@ extension S1ContentViewModel {
 
     func forwardButtonImage() -> UIImage {
         if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value + 1)) {
-            return UIImage(named: "Forward-Cached")!
+            return #imageLiteral(resourceName: "Forward-Cached")
         } else {
-            return UIImage(named: "Forward")!
+            return #imageLiteral(resourceName: "Forward")
         }
     }
 
     func backwardButtonImage() -> UIImage {
         if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value - 1)) {
-            return UIImage(named: "Back-Cached")!
+            return #imageLiteral(resourceName: "Back-Cached")
         } else {
-            return UIImage(named: "Back")!
+            return #imageLiteral(resourceName: "Back")
         }
     }
 
     func favoriteButtonImage() -> UIImage {
         if let isFavorited = self.topic.favorite, isFavorited.boolValue {
-            return UIImage(named: "Favorited")!
+            return #imageLiteral(resourceName: "Favorited")
+        } else {
+            return #imageLiteral(resourceName: "Favorite")
         }
-        return UIImage(named: "Favorite")!
     }
 
     func pageButtonString() -> String {

@@ -16,7 +16,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - Alamofire (4.0.1)
+  - Alamofire (4.1.0)
   - CocoaLumberjack (3.0.0):
     - CocoaLumberjack/Default (= 3.0.0)
     - CocoaLumberjack/Extensions (= 3.0.0)
@@ -40,12 +40,12 @@ PODS:
   - FMDB/standard (2.6.2)
   - GRMustache.swift (2.0.0)
   - GYHttpMock (1.0.1)
-  - JASON (3.0)
+  - JASON (3.1)
   - JTSImageViewController (1.5)
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (3.2.0)
+  - Kingfisher (3.2.1)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
@@ -56,7 +56,7 @@ PODS:
   - ReactiveSwift (1.0.0-alpha.3):
     - Result (~> 3.0)
   - Result (3.0.0)
-  - Reveal-SDK (3)
+  - Reveal-SDK (4)
   - SnapKit (3.0.2)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -161,7 +161,7 @@ SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
+  Alamofire: e266cf991b933498df791e645e0d8ac294492153
   CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
@@ -169,17 +169,17 @@ SPEC CHECKSUMS:
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
-  JASON: cf4d762e61428a20db8eaef2acb6a569a10c1801
+  JASON: c1204b01c9979eef35b6948ca939aac5e7bef081
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: 50407d1d5dbc34965009d425a286342ff36a84ea
+  Kingfisher: 64ef28c6d3d6f344e3ae2d7f5c9da80439505d99
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: d8a03d3deae0dd76410a30589946328d76ab9d2b
   ReactiveSwift: d67b677f9574ba614d94022a88fcf456e77fa515
   Result: 1b3e431f37cbcd3ad89c6aa9ab0ae55515fae3b6
-  Reveal-SDK: cad54352e23854083e3917ddf665dc0fe7781c53
+  Reveal-SDK: 178c927f1a3230648d3a92b96f6e730a35b2750a
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
