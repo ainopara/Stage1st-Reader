@@ -265,7 +265,7 @@ extension PageRenderer {
             "ID": "\(floor.ID)",
             "poll": nil,
             "content": processContent(content: floor.content),
-            "attachments": floor.imageAttachmentURLStringList,
+            "attachments": floor.imageAttachmentURLStringList.flatMap { $0.map { ["url": $0, "ID": UUID().uuidString] } },
             "is-first": isFirstInPage
         ]
     }
