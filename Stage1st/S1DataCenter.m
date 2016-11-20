@@ -29,7 +29,7 @@
 
 @implementation S1DataCenter
 
--(instancetype)init {
+- (instancetype)init {
     self = [super init];
     
     _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
