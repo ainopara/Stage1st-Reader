@@ -1230,7 +1230,9 @@ extension S1ContentViewController {
             case .success(let contents, let shouldRefetch):
                 strongSelf.updateToolBar()
 
-                strongSelf.saveViewPositionForPreviousPage()
+                if strongSelf.finishFirstLoading.value == true {
+                    strongSelf.saveViewPositionForPreviousPage()
+                }
                 strongSelf.finishFirstLoading.value = true
                 strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
 
@@ -1273,7 +1275,6 @@ extension S1ContentViewController {
         DDLogDebug("[webView] pre change current page")
 
         viewModel.cancelRequest()
-        saveViewPositionForCurrentPage()
 
         webPageReadyForAutomaticScrolling.value = false
         webPageSizeChangedForAutomaticScrolling = false
@@ -1282,8 +1283,6 @@ extension S1ContentViewController {
 
     func _hook_preRefreshCurrentPage() {
         DDLogDebug("[webView] pre refresh current page")
-
-        saveViewPositionForCurrentPage()
 
         webPageReadyForAutomaticScrolling.value = false
         webPageSizeChangedForAutomaticScrolling = false
@@ -1340,20 +1339,10 @@ extension S1ContentViewController {
         bottomDecorateLine.isHidden = !self.finishFirstLoading.value
     }
 
-    func saveViewPositionForCurrentPage() {
-        guard webView.scrollView.contentOffset.y != 0 else {
-            return
-        }
-
-        viewModel.cacheOffsetForCurrentPage(webView.scrollView.contentOffset.y)
-    }
-
     func saveViewPositionForPreviousPage() {
-        guard webView.scrollView.contentOffset.y != 0 else {
-            return
-        }
+        let currentOffsetY = webView.scrollView.contentOffset.y
 
-        viewModel.cacheOffsetForPreviousPage(webView.scrollView.contentOffset.y)
+        viewModel.cacheOffsetForPreviousPage(currentOffsetY)
     }
 
     func shouldPresentingFavoriteButtonOnToolBar() -> Bool {

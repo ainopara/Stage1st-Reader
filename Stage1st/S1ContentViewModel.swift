@@ -71,7 +71,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
             .logEvents()
         // TODO: Add logs.
 //        DDLogInfo("[ContentVM] reply count changed: %@", x)
-        previousPage <~ currentPage.combinePrevious(1).producer.map { $1 }
+        previousPage <~ currentPage.combinePrevious(1).producer.map { (previous, current) in return previous }
     }
 
 }
