@@ -215,6 +215,7 @@ extension UIImage {
 extension CGFloat {
     func s1_limit(_ from: CGFloat, to: CGFloat) -> CGFloat {
         assert(to >= from)
+        guard to >= from else { return from }
         let result = self < to ? self : to
         return result > from ? result : from
     }

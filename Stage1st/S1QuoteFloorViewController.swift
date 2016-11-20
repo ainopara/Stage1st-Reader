@@ -22,7 +22,7 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         return GeneralScriptMessageHandler(delegate: self)
     }()
 
-    var presentType: S1ContentViewController.PresentType = .none
+    var presentType: PresentType = .none
 
     init(viewModel: QuoteFloorViewModel) {
         self.viewModel = viewModel
@@ -61,6 +61,7 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        let previousPresentType = presentType
         presentType = .none
 
         didReceivePaletteChangeNotification(nil)
@@ -77,11 +78,15 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
 
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.
-        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-            guard let strongSelf = self else { return }
-            guard let result = result as? String, result != "" else {
-                strongSelf.webView.loadHTMLString(strongSelf.viewModel.generatePage(with: strongSelf.viewModel.floors), baseURL: strongSelf.viewModel.baseURL)
-                return
+        if case .image = previousPresentType {
+            /// Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
+        } else {
+            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+                guard let strongSelf = self else { return }
+                guard let result = result as? String, result != "" else {
+                    strongSelf.webView.loadHTMLString(strongSelf.viewModel.generatePage(with: strongSelf.viewModel.floors), baseURL: strongSelf.viewModel.baseURL)
+                    return
+                }
             }
         }
     }
@@ -280,10 +285,8 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
         DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
             let computedOffset: CGFloat = strongSelf.topPositionOfMessageWithId(strongSelf.viewModel.centerFloorID) - 32
-            var offset = webView.scrollView.contentOffset
-            offset.y = computedOffset.s1_limit(0.0, to: webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
-            DispatchQueue.main.async {
-                webView.scrollView.contentOffset = offset
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(computedOffset)}, 0);", completionHandler: nil)
             }
         }
     }

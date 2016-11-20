@@ -85,7 +85,7 @@ protocol QuoteFloorViewModelGenerator {
 
 protocol UserPresenter {
     associatedtype ViewModel: UserViewModelGenerator
-    var presentType: S1ContentViewController.PresentType { get set }
+    var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
 }
 
@@ -100,7 +100,7 @@ extension WebViewEventDelegate where Self: UIViewController, Self: UserPresenter
 }
 
 protocol ImagePresenter {
-    var presentType: S1ContentViewController.PresentType { get set }
+    var presentType: PresentType { get set }
     var webView: WKWebView { get }
 }
 

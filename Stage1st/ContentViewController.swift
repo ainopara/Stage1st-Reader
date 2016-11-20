@@ -349,6 +349,7 @@ extension S1ContentViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        let previousPresentType = presentType
         presentType = .none
 
         didReceivePaletteChangeNotification(nil)
@@ -365,11 +366,15 @@ extension S1ContentViewController {
 
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.
-        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-            guard let strongSelf = self else { return }
-            guard let result = result as? String, result != "" else {
-                strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
-                return
+        if case .image = previousPresentType {
+            /// Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
+        } else {
+            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+                guard let strongSelf = self else { return }
+                guard let result = result as? String, result != "" else {
+                    strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
+                    return
+                }
             }
         }
     }
@@ -1228,7 +1233,7 @@ extension S1ContentViewController {
 
             switch result {
             case .success(let contents, let shouldRefetch):
-                strongSelf.updateToolBar()
+                strongSelf.updateToolBar() /// TODO: Is it still necessary?
 
                 if strongSelf.finishFirstLoading.value == true {
                     strongSelf.saveViewPositionForPreviousPage()
@@ -1382,20 +1387,20 @@ extension S1ContentViewController {
         case forward(rotateAngle: Double)
         case refresh(rotateAngle: Double)
     }
+}
 
-    enum PresentType {
-        case none
-        case image
-        case web
-        case content
-        case user
-        case quote
+enum PresentType {
+    case none
+    case image
+    case web
+    case content
+    case user
+    case quote
 
-        // TODO: not tracked for now
-        case actionSheet
-        case alert
-        case reply
-        case report
-        case action(floorID: Int)
-    }
+    // TODO: not tracked for now
+    case actionSheet
+    case alert
+    case reply
+    case report
+    case action(floorID: Int)
 }
