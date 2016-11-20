@@ -16,6 +16,7 @@
     self = [super initWithFrame:frame];
     if (self != nil) {
         _highlighted = NO;
+        _pinningToTop = NO;
     }
     return self;
 }
@@ -29,6 +30,12 @@
     UIColor *cellBackgroundColor = _highlighted ?
     [[APColorManager shared] colorForKey:@"topiclist.cell.background.highlight"] :
     [[APColorManager shared] colorForKey:@"topiclist.cell.background.normal"];
+
+    if (_pinningToTop) {
+        cellBackgroundColor = _highlighted ?
+        [[APColorManager shared] colorForKey:@"topiclist.cell.pinningTopBackground.highlight"] :
+        [[APColorManager shared] colorForKey:@"topiclist.cell.pinningTopBackground.normal"];
+    }
 
     UIColor *replyCountRectFillColor = [[APColorManager shared] colorForKey:@"topiclist.cell.replycount.fill"];
     UIColor *replyCountRectStrokeColor = [[APColorManager shared] colorForKey:@"topiclist.cell.replycount.border.normal"];

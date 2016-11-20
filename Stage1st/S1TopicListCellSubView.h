@@ -14,5 +14,6 @@
 
 @property (nonatomic, strong) S1Topic *topic;
 @property (nonatomic, assign) BOOL highlighted;
+@property (nonatomic, assign) BOOL pinningToTop;
 
 @end

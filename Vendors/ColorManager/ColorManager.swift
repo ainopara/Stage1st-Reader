@@ -18,14 +18,14 @@ open class APColorManager: NSObject {
     var palette: NSDictionary = NSDictionary()
     var colorMap: NSDictionary = NSDictionary()
     let fallbackColor = UIColor.black
-    let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette2", withExtension: "plist")
+    let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
     open static let shared = {
         return APColorManager()
     }()
 
     override init () {
-        let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette2": "DefaultPalette"
+        let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette": "DefaultPalette"
 
         let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
         if let palettePath = palettePath, let palette = NSDictionary(contentsOfFile: palettePath) {
@@ -39,7 +39,7 @@ open class APColorManager: NSObject {
     }
 
     func switchPalette(_ type: PaletteType) {
-        let paletteName: String = type == .night ? "DarkPalette2" : "DefaultPalette"
+        let paletteName: String = type == .night ? "DarkPalette" : "DefaultPalette"
         let paletteURL = Bundle.main.url(forResource: paletteName, withExtension: "plist")
         self.loadPaletteByURL(paletteURL, shouldPushNotification: true)
     }

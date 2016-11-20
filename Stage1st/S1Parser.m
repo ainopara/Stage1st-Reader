@@ -99,6 +99,10 @@
         topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
         topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
         topic.authorUserName = rawTopic[@"author"];
+        if (rawTopic[@"dblastpost"] != nil) {
+            topic.lastReplyDate = [NSDate dateWithTimeIntervalSince1970:[rawTopic[@"dblastpost"] integerValue]];
+        }
+
         BOOL isStickThread = NO;
         for (NSInteger i = [rawTopicList indexOfObject:rawTopic]; i< rawTopicList.count; i++) {
             NSDictionary *theTopic = [rawTopicList objectAtIndex:i];

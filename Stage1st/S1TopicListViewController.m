@@ -244,7 +244,14 @@ static NSString * const cellIdentifier = @"TopicCell";
         cell.highlight = self.searchKeyword;
         return cell;
     } else {
-        [cell setTopic:self.topics[indexPath.row]];
+        S1Topic *topic = self.topics[indexPath.row];
+        [cell setTopic:topic];
+        if ([[NSDate date] timeIntervalSince1970] < [topic.lastReplyDate timeIntervalSince1970] ) {
+            cell.pinningTop = YES;
+        } else {
+            cell.pinningTop = NO;
+        }
+
         cell.highlight = @"";
         return cell;
     }

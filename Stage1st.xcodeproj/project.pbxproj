@@ -59,7 +59,7 @@
 		86AF9E3B1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzAPIManager+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
-		86BA383B1C0635EC00D508AC /* DarkPalette2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette2.plist */; };
+		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
 		86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BA383C1C0A106E00D508AC /* S1Application.swift */; };
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
@@ -67,7 +67,6 @@
 		86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */; };
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
-		86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */; };
 		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
@@ -211,7 +210,7 @@
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
 		86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+MahjongFaceExtension.m"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.m"; sourceTree = "<group>"; };
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+MahjongFaceExtension.h"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
-		86BA383A1C0635EC00D508AC /* DarkPalette2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette2.plist; path = Stage1st/DarkPalette2.plist; sourceTree = "<group>"; };
+		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86BA383C1C0A106E00D508AC /* S1Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Application.swift; sourceTree = "<group>"; };
 		86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFacePageView.h; path = Stage1st/S1MahjongFacePageView.h; sourceTree = "<group>"; };
 		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFacePageView.m; path = Stage1st/S1MahjongFacePageView.m; sourceTree = "<group>"; };
@@ -222,7 +221,6 @@
 		86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDErrorLevelFormatter.m; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.m; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Poll.swift; path = Stage1st/Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
-		86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewEventDelegate.swift; path = Stage1st/WebViewEventDelegate.swift; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E4396F1BEC478700027FFA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
@@ -507,8 +505,7 @@
 			isa = PBXGroup;
 			children = (
 				86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */,
-				86DD5BFD1B577CAA00A6FD34 /* DarkPalette.plist */,
-				86BA383A1C0635EC00D508AC /* DarkPalette2.plist */,
+				86BA383A1C0635EC00D508AC /* DarkPalette.plist */,
 				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 			);
 			name = Colors;
@@ -837,8 +834,7 @@
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
 				860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */,
 				86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */,
-				86BA383B1C0635EC00D508AC /* DarkPalette2.plist in Resources */,
-				86DD5BFE1B577CAA00A6FD34 /* DarkPalette.plist in Resources */,
+				86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */,
 				C083351616E34DCF0035C1AA /* ForumKeyMap.plist in Resources */,
 				C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */,
 			);

@@ -66,6 +66,14 @@
     [_titleLabel setAttributedText:[self attributedTopicTitle]];
 }
 
+- (void)setPinningTop:(BOOL)pinningTop {
+    self.drawingSubview.pinningToTop = pinningTop;
+}
+
+- (BOOL)pinningTop {
+    return self.drawingSubview.pinningToTop;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
 

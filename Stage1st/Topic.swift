@@ -32,7 +32,7 @@ extension S1Topic {
         // Recored database reply count for presenting in topic list table cell
         self.lastReplyCount = self.replyCount
 
-        let properties = ["title", "replyCount", "totalPageCount", "authorUserID", "authorUserName", "formhash", "message", "fID"]
+        let properties = ["title", "replyCount", "totalPageCount", "authorUserID", "authorUserName", "formhash", "message", "fID", "lastReplyDate"]
         properties.forEach { (onePropertyName) in
             let localValue = self.value(forKey: onePropertyName)
             let serverValue = topic.value(forKey: onePropertyName)

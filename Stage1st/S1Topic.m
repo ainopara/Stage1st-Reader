@@ -116,6 +116,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     copy->_fID = _fID;
     copy->_formhash = _formhash;
     copy->_lastViewedPage = _lastViewedPage;
+    copy->_lastReplyDate = _lastReplyDate;
     copy->_message = _message;
     copy->_modelVersion = _modelVersion;
     return copy;
@@ -187,6 +188,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [mappings_localKeyToCloudKey removeObjectForKey:@"message"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyCount"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserName"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyDate"];
     return mappings_localKeyToCloudKey;
     
 }
