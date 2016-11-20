@@ -266,7 +266,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
                                                name: .APPaletteDidChangeNotification,
                                                object: nil)
-
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveFloorCachedNotification(_:)),
                                                name: Notification.Name(rawValue: "S1FloorDidCached"),
@@ -746,8 +745,7 @@ extension S1ContentViewController: WKNavigationDelegate {
             }
         }
 
-        // Image URL opened in image Viewer
-        if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
+        func presentImageViewer() {
             presentType = .image
             Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
@@ -760,7 +758,26 @@ extension S1ContentViewController: WKNavigationDelegate {
             imageViewController?.interactionsDelegate = self
             imageViewController?.optionsDelegate = self
             imageViewController?.show(from: self, transition: .fromOffscreen)
+        }
 
+        func presentContentViewController(for topic: S1Topic) {
+            var topic = topic
+            presentType = .content
+            Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
+
+            if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
+                let lastViewedPage = topic.lastViewedPage
+                topic = tracedTopic.copy() as! S1Topic
+                topic.lastViewedPage = lastViewedPage
+            }
+
+            let contentViewController = S1ContentViewController(topic: topic, dataCenter: viewModel.dataCenter)
+            navigationController?.pushViewController(contentViewController, animated: true)
+        }
+
+        // Image URL opened in image Viewer
+        if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
+            presentImageViewer()
             decisionHandler(.cancel)
             return
         }
@@ -768,45 +785,30 @@ extension S1ContentViewController: WKNavigationDelegate {
         if let baseURL = UserDefaults.standard.string(forKey: "BaseURL"), url.absoluteString.hasPrefix(baseURL) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
-                var topic = topic
-                presentType = .content
-                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
-
-                if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
-                    let lastViewedPage = topic.lastViewedPage
-                    topic = tracedTopic.copy() as! S1Topic
-                    topic.lastViewedPage = lastViewedPage
-                }
-
-                let contentViewController = S1ContentViewController(topic: topic, dataCenter: viewModel.dataCenter)
-                navigationController?.pushViewController(contentViewController, animated: true)
-
+                presentContentViewController(for: topic)
                 decisionHandler(.cancel)
                 return
             }
 
             // Open Quote Link
-            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
-                DDLogDebug("[ContentVC] Extract query: \(querys)")
-                if
-                    let mod = querys["mod"],
-                    mod == "redirect",
-                    let tidString = querys["ptid"],
-                    let tid = Int(tidString),
-                    tid == viewModel.topic.topicID.intValue,
-                    let pidString = querys["pid"],
-                    let pid = Int(pidString) {
-                    let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
-                    if chainQuoteFloors.count > 0 {
-                        presentType = .quote
-                        Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
+            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString),
+                let mod = querys["mod"],
+                mod == "redirect",
+                let tidString = querys["ptid"],
+                let tid = Int(tidString),
+                tid == viewModel.topic.topicID.intValue,
+                let pidString = querys["pid"],
+                let pid = Int(pidString),
+                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)),
+                chainQuoteFloors.count > 0 {
 
-                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
+                presentType = .quote
+                Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
 
-                        decisionHandler(.cancel)
-                        return
-                    }
-                }
+                showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
+
+                decisionHandler(.cancel)
+                return
             }
         }
 
@@ -1202,6 +1204,24 @@ extension S1ContentViewController {
 // MARK: - Network (view model)
 extension S1ContentViewController {
     func fetchContentForCurrentPage(forceUpdate: Bool) {
+        func showHud() {
+            if !viewModel.hasPrecachedCurrentPage() {
+                // only show hud when no cached floors
+                DDLogVerbose("[ContentVC] check precache: not hit. shows HUD")
+                refreshHUD.showActivityIndicator()
+
+                refreshHUD.refreshEventHandler = { [weak self] (hud) in
+                    guard let strongSelf = self else { return }
+
+                    hud?.hide(withDelay: 0.0)
+                    strongSelf._hook_preRefreshCurrentPage()
+                    strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+                }
+            } else {
+                DDLogVerbose("[ContentVC] check precache: hit.")
+            }
+        }
+
         updateToolBar()
 
         userActivity?.needsSave = true
@@ -1212,21 +1232,7 @@ extension S1ContentViewController {
         }
 
         // Set up HUD
-        DDLogVerbose("[ContentVC] check precache exist")
-
-        if !viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage.value)) {
-            // only show hud when no cached floors
-            DDLogVerbose("[ContentVC] Show HUD")
-            refreshHUD.showActivityIndicator()
-
-            refreshHUD.refreshEventHandler = { [weak self] (hud) in
-                guard let strongSelf = self else { return }
-
-                hud?.hide(withDelay: 0.0)
-                strongSelf._hook_preRefreshCurrentPage()
-                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
-            }
-        }
+        showHud()
 
         viewModel.currentContentPage { [weak self] (result) in
             guard let strongSelf = self else { return }

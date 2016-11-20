@@ -35,6 +35,11 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
         webView.scrollView.delegate = self
         webView.isOpaque = false
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -42,8 +47,13 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
     }
 
     deinit {
-        DDLogInfo("[QuoteFloorVC] dealloc")
+        DDLogInfo("[QuoteFloorVC] Dealloc Begin")
+        NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
+        webView.navigationDelegate = nil
+        webView.scrollView.delegate = nil
+        webView.stopLoading()
+        DDLogInfo("[QuoteFloorVC] Dealloced")
     }
 
     // MARK: - Life Cycle

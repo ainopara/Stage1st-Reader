@@ -129,6 +129,10 @@ extension S1ContentViewModel {
         return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value - 1))
     }
 
+    func hasPrecachedCurrentPage() -> Bool {
+        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value))
+    }
+
     func hasPrecachedNextPage() -> Bool {
         return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value + 1))
     }
