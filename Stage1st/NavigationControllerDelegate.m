@@ -107,8 +107,18 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-    if (gestureRecognizer == self.colorPanRecognizer && gestureRecognizer.numberOfTouches == 1) {
-        return NO;
+    if (gestureRecognizer == self.colorPanRecognizer) {
+        if (gestureRecognizer.numberOfTouches == 1) {
+            return NO;
+        } else {
+            return YES;
+        }
+    }
+
+    if (gestureRecognizer == self.panRecognizer) {
+        if (self.navigationController.viewControllers.count == 1) {
+            return NO;
+        }
     }
     return YES;
 }
