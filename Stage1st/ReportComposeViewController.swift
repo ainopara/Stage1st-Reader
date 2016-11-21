@@ -28,7 +28,10 @@ final class ReportComposeViewModel {
         self.topic = topic
         self.floor = floor
 
-        canSubmit <~ content.producer.map { $0.characters.count > 0 }.combineLatest(with: submiting.producer).map { $0 && !$1 }
+        canSubmit <~ content.producer
+            .map { $0.characters.count > 0 }
+            .combineLatest(with: submiting.producer)
+            .map { $0 && !$1 }
     }
 
     func submit(_ completion: @escaping (NSError?) -> Void) {
@@ -84,16 +87,7 @@ final class ReportComposeViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Binding
-        viewModel.content <~ textView.reactive.textValues
-//        textView.rac_textSignal().subscribeNext({ [weak self] (value) in
-//            guard let strongSelf = self else { return }
-//            guard let contentString = value as? String else { return }
-//
-//            strongSelf.viewModel.content.value = contentString
-//        })
-//            .toSignalProducer()
-//            .map { $0 as! String }
-//            .flatMapError { _ in return SignalProducer<String, NoError>.empty }
+        viewModel.content <~ textView.reactive.continuousTextValues
 
         viewModel.canSubmit.producer.startWithValues { [weak self] (canSubmit) in
             guard let strongSelf = self else { return }
