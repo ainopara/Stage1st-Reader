@@ -238,10 +238,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     if ([self isPresentingDatabaseList:self.currentKey]) {
         [cell setTopic:[self.viewModel topicAtIndexPath:indexPath]];
         cell.highlight = self.searchBar.text;
+        cell.pinningTop = NO;
         return cell;
     } else if ([self isPresentingSearchList:self.currentKey]) {
         [cell setTopic:self.topics[indexPath.row]];
         cell.highlight = self.searchKeyword;
+        cell.pinningTop = NO;
         return cell;
     } else {
         S1Topic *topic = self.topics[indexPath.row];
