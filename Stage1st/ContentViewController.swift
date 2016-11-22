@@ -280,7 +280,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
         DDLogInfo("[ContentVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
-        pullToActionController.delegate = nil
+        pullToActionController.stop()
         webView.navigationDelegate = nil
         webView.scrollView.delegate = nil
         webView.stopLoading()

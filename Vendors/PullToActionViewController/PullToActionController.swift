@@ -51,16 +51,19 @@ public class PullToActionController: NSObject {
     }
 
     deinit {
-        scrollView?.removeObserver(self, forKeyPath: "contentOffset")
-        scrollView?.removeObserver(self, forKeyPath: "contentSize")
-        scrollView?.removeObserver(self, forKeyPath: "contentInset")
-        scrollView?.delegate = nil
-
+        stop()
         DDLogDebug("[PullToAction] deinit")
     }
 
     public func setConfiguration(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
         progressActions.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
+    }
+
+    public func stop() {
+        scrollView?.removeObserver(self, forKeyPath: "contentOffset")
+        scrollView?.removeObserver(self, forKeyPath: "contentSize")
+        scrollView?.removeObserver(self, forKeyPath: "contentInset")
+        scrollView?.delegate = nil
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
