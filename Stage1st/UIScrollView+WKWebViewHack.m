@@ -23,6 +23,7 @@
 //        NSLog(@"%@ \n y: %f -> %f", self, self.contentOffset.y, contentOffset.y);
     }
 #endif
+
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
         if (![self s1_ignoringContentOffsetChange]) {
             [self s1_setContentOffset:contentOffset];
@@ -41,19 +42,6 @@
 }
 
 - (BOOL)s1_ignoringContentOffsetChange {
-    NSNumber *number = objc_getAssociatedObject(self, _cmd);
-    if (number == nil) {
-        return NO; // default to false
-    }
-
-    return [number boolValue];
-}
-
-- (void)setS1_trackingPageBottom:(BOOL)s1_trackingPageBottom {
-    objc_setAssociatedObject(self, @selector(s1_trackingPageBottom), @(s1_trackingPageBottom), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (BOOL)s1_trackingPageBottom {
     NSNumber *number = objc_getAssociatedObject(self, _cmd);
     if (number == nil) {
         return NO; // default to false
