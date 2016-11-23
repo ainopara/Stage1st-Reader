@@ -31,7 +31,6 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 
 @property (assign, nonatomic) CGFloat offset;
-@property (nonatomic, strong) PullToActionController *pullManager;
 
 @end
 
@@ -79,8 +78,6 @@
     self.offset = 0;
     self.tableView.delegate = self;
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-//    self.pullManager = [[PullToActionController alloc] initWithScrollView:self.tableView];
-//    [self.pullManager add]
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
