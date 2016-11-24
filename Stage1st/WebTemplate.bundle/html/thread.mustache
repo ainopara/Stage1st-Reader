@@ -16,12 +16,16 @@
       {{>floor}}
     {{/floors}}
     <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/ResizeSensor.js"></script>
     <script>
       $(document).ready(function() {
           window.webkit.messageHandlers.stage1st.postMessage({type: "ready"});
       });
       $(window).on("load", function () {
           window.webkit.messageHandlers.stage1st.postMessage({type: "load"});
+      });
+      new ResizeSensor($('html, body'), function() {
+        window.webkit.messageHandlers.stage1st.postMessage({type: "heightChanged", height: $(document).height()});
       });
     </script>
   </body>

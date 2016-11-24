@@ -34,6 +34,9 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "load": // called when all the images finish loading
             DDLogDebug("[WebView] load")
             delegate?.generalScriptMessageHandler(self, loadWith: messageDictionary)
+        case "heightChange":
+            DDLogDebug("[WebView] heightChange")
+            delegate?.generalScriptMessageHandler(self, heightChangedTo: messageDictionary["height"] as! Double)
         case "action":
             if let floorID = messageDictionary["id"] as? Int {
                 delegate?.generalScriptMessageHandler(self, actionButtonTappedFor: floorID)
@@ -65,6 +68,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
 protocol WebViewEventDelegate: class {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String: Any])
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String: Any])
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String)

@@ -138,6 +138,9 @@ extension S1QuoteFloorViewController: WebViewEventDelegate {
 
     }
 
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
+   }
+
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
 //        actionButtonTapped(for: floorID)
     }
