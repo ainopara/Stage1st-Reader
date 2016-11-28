@@ -18,7 +18,6 @@ target "Stage1st" do
     pod 'Masonry'
     pod 'SnapKit'
 
-#    pod 'DTCoreText'
     pod 'YYKeyboardManager'
     pod 'TextAttributes'
 
@@ -30,9 +29,7 @@ target "Stage1st" do
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
     pod 'ReactiveCocoa', '~> 5.0.0-alpha.3'
-#    pod 'ReactiveSwift', '~> 1.0.0-alpha.1'
-#    pod 'ReactiveObjC'
-#    pod 'ReactiveObjCBridge', :git => 'https://github.com/ainopara/ReactiveObjCBridge.git', :branch => 'master'
+
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reachability'
