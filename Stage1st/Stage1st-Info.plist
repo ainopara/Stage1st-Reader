@@ -45,7 +45,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>5011</string>
+	<string>5017</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -76,8 +76,13 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>New item</key>
-			<string></string>
+			<key>saraba1st.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 		</dict>
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>

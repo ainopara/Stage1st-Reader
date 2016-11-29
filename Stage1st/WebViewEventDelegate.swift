@@ -34,7 +34,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "load": // called when all the images finish loading
             DDLogDebug("[WebView] load")
             delegate?.generalScriptMessageHandler(self, loadWith: messageDictionary)
-        case "heightChange":
+        case "heightChanged":
             DDLogDebug("[WebView] heightChange")
             delegate?.generalScriptMessageHandler(self, heightChangedTo: messageDictionary["height"] as! Double)
         case "action":

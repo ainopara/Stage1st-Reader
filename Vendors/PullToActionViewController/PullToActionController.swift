@@ -51,7 +51,6 @@ public class PullToActionController: NSObject {
     }
 
     deinit {
-        stop()
         DDLogDebug("[PullToAction] deinit")
     }
 
