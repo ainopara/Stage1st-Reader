@@ -125,10 +125,10 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-//    if (gestureRecognizer == self.panRecognizer && [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-//        DDLogVerbose(@"pan gesture simultaneously with %@", otherGestureRecognizer);
-//        return YES;
-//    }
+    if (gestureRecognizer == self.colorPanRecognizer) {
+        DDLogVerbose(@"pan gesture simultaneously with %@", otherGestureRecognizer);
+        return YES;
+    }
 
     return NO;
 }
