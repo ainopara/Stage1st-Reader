@@ -150,11 +150,6 @@ extension PullToActionController: UIScrollViewDelegate {
         }
     }
 
-    // To disable pinch to zoom gesture in WKWebView
-    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return nil
-    }
-
     // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal

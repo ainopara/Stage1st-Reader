@@ -62,7 +62,6 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         webView.navigationDelegate = nil
-        webView.scrollView.delegate = nil
         webView.stopLoading()
         DDLogInfo("[QuoteFloorVC] Dealloced")
     }
@@ -311,11 +310,6 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
 
 // MARK: UIScrollViewDelegate
 extension S1QuoteFloorViewController: UIScrollViewDelegate {
-    // To disable pinch to zoom gesture in WKWebView
-    open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return nil
-    }
-
     // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
