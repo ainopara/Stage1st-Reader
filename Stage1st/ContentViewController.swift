@@ -662,7 +662,6 @@ extension S1ContentViewController {
 
         if let popover = floorActionController.popoverPresentationController {
             popover.delegate = self
-            presentType = .action(floorID: floorID)
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
                 popover.sourceView = strongSelf.webView
