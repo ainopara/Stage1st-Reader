@@ -19,17 +19,23 @@ func ensureMainThread(_ block: @escaping () -> Void) {
     }
 }
 
-class S1Utility: NSObject {
-    class func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
+// https://www.youtube.com/watch?v=jzdOkQFekbg `Let's Talk About Let` by `objc.io`
+func mutate<T>(_ value: T, change: (inout T) -> ()) -> T {
+    var copy = value
+    change(&copy)
+    return copy
+}
 
-        if let value1 = value1, let value2 = value2 {
-            return value1.isEqual(value2)
-        }
-        if value1 == nil && value2 == nil {
-            return true
-        }
-        return false
+func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
+    if let value1 = value1, let value2 = value2 {
+        return value1.isEqual(value2)
     }
+
+    if value1 == nil && value2 == nil {
+        return true
+    }
+
+    return false
 }
 
 extension Date {

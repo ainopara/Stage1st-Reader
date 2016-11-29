@@ -20,11 +20,10 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         DDLogVerbose("[ContentVC] message body: \(message.body)")
-        guard
-            let messageDictionary = message.body as? [String: Any],
-            let type = messageDictionary["type"] as? String else {
-                DDLogWarn("[ContentVC] unexpected message format")
-                return
+        guard let messageDictionary = message.body as? [String: Any],
+              let type = messageDictionary["type"] as? String else {
+            DDLogWarn("[ContentVC] unexpected message format")
+            return
         }
 
         switch type {
@@ -38,26 +37,24 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             DDLogDebug("[WebView] heightChange")
             delegate?.generalScriptMessageHandler(self, heightChangedTo: messageDictionary["height"] as! Double)
         case "action":
-            if let floorID = messageDictionary["id"] as? Int {
-                delegate?.generalScriptMessageHandler(self, actionButtonTappedFor: floorID)
-            } else {
+            guard let floorID = messageDictionary["id"] as? Int else {
                 DDLogError("unexpected message format: \(messageDictionary)")
+                return
             }
+            delegate?.generalScriptMessageHandler(self, actionButtonTappedFor: floorID)
         case "user":
-            if let userID = messageDictionary["id"] as? Int {
-                delegate?.generalScriptMessageHandler(self, showUserProfileWith: userID)
-            } else {
+            guard let userID = messageDictionary["id"] as? Int else {
                 DDLogError("unexpected message format: \(messageDictionary)")
+                return
             }
+            delegate?.generalScriptMessageHandler(self, showUserProfileWith: userID)
         case "image":
-            if
-                let imageID = messageDictionary["id"] as? String,
-                let imageURLString = messageDictionary["src"] as? String {
-                delegate?.generalScriptMessageHandler(self, showImageWith: imageID, imageURLString: imageURLString)
-                //                showImage(with: imageID, imageURLString)
-            } else {
+            guard let imageID = messageDictionary["id"] as? String,
+               let imageURLString = messageDictionary["src"] as? String else {
                 DDLogError("unexpected message format: \(messageDictionary)")
+                return
             }
+            delegate?.generalScriptMessageHandler(self, showImageWith: imageID, imageURLString: imageURLString)
         default:
             DDLogWarn("[WebView] unexpected type: \(type)")
             delegate?.generalScriptMessageHandler(self, handleUnkonwnEventWith: messageDictionary)
@@ -114,7 +111,6 @@ extension WebViewEventDelegate where Self: UIViewController, Self: ImagePresente
             guard let strongSelf = self else { return }
             var varStrongSelf = strongSelf // FIXME: Make swift complier happy, remove this when the issue fixed.
             varStrongSelf.presentType = .image
-            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
             DDLogDebug("[ContentVC] JTS View Image: \(imageURLString)")
 

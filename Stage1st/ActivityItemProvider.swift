@@ -24,7 +24,6 @@ class ContentTextActivityItemProvider: UIActivityItemProvider {
             return "\(self.title) #Stage1st Reader# "
         case UIActivityType.postToTwitter:
             return "\(self.title) #Stage1stReader "
-
         default:
             return self.title
         }

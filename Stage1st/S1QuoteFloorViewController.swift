@@ -22,7 +22,18 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         return GeneralScriptMessageHandler(delegate: self)
     }()
 
-    var presentType: PresentType = .none
+    var presentType: PresentType = .none {
+        didSet {
+            switch presentType {
+            case .none:
+                Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
+            case .image:
+                Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
+            default:
+                break
+            }
+        }
+    }
 
     init(viewModel: QuoteFloorViewModel) {
         self.viewModel = viewModel
@@ -99,11 +110,6 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
                 }
             }
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
     }
 }
 
@@ -204,7 +210,6 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
             presentType = .image
-            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
 
             DDLogDebug("[ContentVC] JTS View Image: \(url)")
@@ -278,8 +283,7 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
                                                     style: .default,
                                                     handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
-            strongSelf.presentType = .web
-            Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+            strongSelf.presentType = .background
             DDLogDebug("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {

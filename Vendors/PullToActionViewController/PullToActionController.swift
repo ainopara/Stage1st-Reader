@@ -8,13 +8,6 @@
 
 import CocoaLumberjack
 
-@objc public protocol PullToActionDelagete {
-    @objc optional func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat)
-    @objc optional func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat)
-    @objc optional func scrollViewContentSizeDidChange(_ contentSize: CGSize)
-    @objc optional func scrollViewContentOffsetProgress(_ progress: [String: Double])
-}
-
 public struct OffsetRange {
     public enum BaseLine: Int {
         case top, bottom, left, right
@@ -29,6 +22,7 @@ public struct OffsetRange {
     }
 }
 
+// MARK: -
 public class PullToActionController: NSObject {
     weak var scrollView: UIScrollView? // ???: Should I make this strong?
     weak var delegate: PullToActionDelagete?
@@ -165,4 +159,12 @@ extension PullToActionController: UIScrollViewDelegate {
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
+}
+
+// MARK: -
+@objc public protocol PullToActionDelagete {
+    @objc optional func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat)
+    @objc optional func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat)
+    @objc optional func scrollViewContentSizeDidChange(_ contentSize: CGSize)
+    @objc optional func scrollViewContentOffsetProgress(_ progress: [String: Double])
 }

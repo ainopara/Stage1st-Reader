@@ -31,8 +31,8 @@ S1AppDelegate *MyAppDelegate;
     if (self != nil) {
         // Store global reference
         MyAppDelegate = self;
-        // Configure logging
 
+        // Configure logging
 #ifdef DEBUG
         id <DDLogger> logger = [DDTTYLogger sharedInstance];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];

@@ -106,7 +106,20 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
     var webPageDidFinishFirstAutomaticScrolling = false
 
     var finishFirstLoading = MutableProperty(false)
-    var presentType: PresentType = .none
+    var presentType: PresentType = .none {
+        didSet {
+            switch presentType {
+            case .none:
+                Crashlytics.sharedInstance().setObjectValue("ContentViewController", forKey: "lastViewController")
+            case .image:
+                Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
+            case .web:
+                Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+            default:
+                break
+            }
+        }
+    }
 
     // MARK: -
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
@@ -382,7 +395,6 @@ extension S1ContentViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Crashlytics.sharedInstance().setObjectValue("ContentViewController", forKey: "lastViewController")
         DDLogDebug("[ContentVC] View did appear")
     }
 
@@ -540,15 +552,17 @@ extension S1ContentViewController {
                                                 style: .default,
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
-            var rect = strongSelf.view.bounds
-            rect.origin.y += 20.0
-            rect.size.height -= 20.0
+
+            let rect = mutate(strongSelf.view.bounds) { (value: inout CGRect) in
+                value.origin.y += 20.0
+                value.size.height -= 20.0
+            }
+
             let items: [Any] = ([
                 ContentTextActivityItemProvider(title: strongSelf.viewModel.topic.title ?? ""),
                 strongSelf.viewModel.correspondingWebPageURL(),
                 ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect)] as [Any?])
-                .filter { return $0 != nil }
-                .map { $0! }
+                .flatMap { $0 }
 
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
@@ -576,7 +590,6 @@ extension S1ContentViewController {
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.presentType = .web
-            Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
             if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
                 let webViewController = WebViewController(URL: urlToOpen)
                 strongSelf.present(webViewController, animated: true, completion: nil)
@@ -749,7 +762,6 @@ extension S1ContentViewController: WKNavigationDelegate {
 
         func presentImageViewer() {
             presentType = .image
-            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
 
             DDLogDebug("[ContentVC] JTS View Image: \(url)")
@@ -827,8 +839,7 @@ extension S1ContentViewController: WKNavigationDelegate {
                                                     style: .default,
                                                     handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
-            strongSelf.presentType = .web
-            Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+            strongSelf.presentType = .background // FIXME: maybe alert type?
             DDLogDebug("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {
@@ -871,7 +882,6 @@ extension S1ContentViewController {
         DispatchQueue.global(qos: .default).async { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.presentType = .image
-            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
             Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
             DDLogDebug("[ContentVC] JTS View Image: \(url)")
 
@@ -1409,6 +1419,7 @@ enum PresentType {
     case content
     case user
     case quote
+    case background
 
     // TODO: not tracked for now
     case actionSheet
