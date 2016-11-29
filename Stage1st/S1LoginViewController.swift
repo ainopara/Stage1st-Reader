@@ -317,7 +317,7 @@ final class S1LoginViewController: UIViewController {
         self.view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
 
-        NotificationCenter.default.addObserver(self, selector: #selector(S1LoginViewController.keyboardFrameWillChange(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1LoginViewController.keyboardFrameWillChange(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
     deinit {
@@ -330,16 +330,9 @@ final class S1LoginViewController: UIViewController {
         containerView.center = centerOfContainerView()
         if let dynamicAnimator = self.dynamicAnimator {
             // update snap point
-            if #available(iOS 9, *) {
-                if let snapBehavior = self.snapBehavior {
-                    snapBehavior.snapPoint = centerOfContainerView()
-                } else {
-                    let snapBehavior = UISnapBehavior(item: containerView, snapTo: centerOfContainerView())
-                    dynamicAnimator.addBehavior(snapBehavior)
-                    self.snapBehavior = snapBehavior
-                }
+            if let snapBehavior = self.snapBehavior {
+                snapBehavior.snapPoint = centerOfContainerView()
             } else {
-                dynamicAnimator.removeAllBehaviors()
                 let snapBehavior = UISnapBehavior(item: containerView, snapTo: centerOfContainerView())
                 dynamicAnimator.addBehavior(snapBehavior)
                 self.snapBehavior = snapBehavior
