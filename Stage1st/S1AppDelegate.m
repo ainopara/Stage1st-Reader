@@ -53,8 +53,9 @@ S1AppDelegate *MyAppDelegate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Crashlytics
+#ifndef DEBUG
     [Fabric with:@[[Crashlytics class]]];
-
+#endif
     // Setup
     [self setup];
 
