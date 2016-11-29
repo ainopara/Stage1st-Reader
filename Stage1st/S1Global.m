@@ -8,17 +8,6 @@
 
 #import "S1Global.h"
 
-@implementation S1ColorManager
-
-+ (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
-    [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setDefaultTextAttributes:@{
-        NSForegroundColorAttributeName: color,
-        NSFontAttributeName:[UIFont systemFontOfSize:14.0]
-    }];
-}
-
-@end
-
 @implementation S1Formatter
 
 - (instancetype)init {

@@ -1148,11 +1148,8 @@ extension S1ContentViewController {
             activity.title = strongSelf.viewModel.activityTitle()
             activity.userInfo = strongSelf.viewModel.activityUserInfo()
             activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL() as URL?
-
-            if #available(iOS 9.0, *) {
-                activity.isEligibleForSearch = true
-                activity.requiredUserInfoKeys = Set(arrayLiteral: "topicID")
-            }
+            activity.isEligibleForSearch = true
+            activity.requiredUserInfoKeys = Set(arrayLiteral: "topicID")
 
             DispatchQueue.main.async(execute: {
                 guard let strongSelf = self else { return }

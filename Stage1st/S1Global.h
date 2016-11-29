@@ -12,12 +12,6 @@
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
-@interface S1ColorManager : NSObject
-
-+ (void)updataSearchBarAppearanceWithColor:(UIColor *)color;
-
-@end
-
 @interface S1Formatter : NSObject
 
 + (S1Formatter *)sharedInstance;

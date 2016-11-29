@@ -53,29 +53,25 @@ open class APColorManager: NSObject {
     }
 
     func updateGlobalAppearance() {
-        UIToolbar.appearance().barTintColor = self.colorForKey("appearance.toolbar.bartint")
-        UIToolbar.appearance().tintColor = self.colorForKey("appearance.toolbar.tint")
-        UINavigationBar.appearance().barTintColor = self.colorForKey("appearance.navigationbar.bartint")
-        UINavigationBar.appearance().tintColor = self.colorForKey("appearance.navigationbar.tint")
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.navigationbar.title"), NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
-        UISwitch.appearance().onTintColor = self.colorForKey("appearance.switch.tint")
-        if #available(iOS 9.0, *) {
-            UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFont(ofSize: 14.0)]
-        } else {
-            // Fallback on earlier versions
-            S1ColorManager.updataSearchBarAppearance(with: self.colorForKey("appearance.searchbar.text"))
-        }
-        UIScrollView.appearance().indicatorStyle = self.isDarkTheme() ? .white : .default
-        UITextField.appearance().keyboardAppearance = self.isDarkTheme() ? .dark : .default
-        UIApplication.shared.statusBarStyle = self.isDarkTheme() ? .lightContent : .default
+        UIToolbar.appearance().barTintColor = colorForKey("appearance.toolbar.bartint")
+        UIToolbar.appearance().tintColor = colorForKey("appearance.toolbar.tint")
+        UINavigationBar.appearance().barTintColor = colorForKey("appearance.navigationbar.bartint")
+        UINavigationBar.appearance().tintColor = colorForKey("appearance.navigationbar.tint")
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: colorForKey("appearance.navigationbar.title"), NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
+        UISwitch.appearance().onTintColor = colorForKey("appearance.switch.tint")
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFont(ofSize: 14.0)]
+
+        UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
+        UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default
+        UIApplication.shared.statusBarStyle = isDarkTheme() ? .lightContent : .default
     }
 
     func colorForKey(_ key: String) -> UIColor {
         if let paletteID = (self.colorMap.value(forKey: key) as? String) {
-            return self.colorInPaletteWithID(paletteID)
+            return colorInPaletteWithID(paletteID)
         } else {
             DDLogWarn("[Color Manager] can't found color \(key), default color used")
-            return self.colorInPaletteWithID("default")
+            return colorInPaletteWithID("default")
         }
     }
 }
