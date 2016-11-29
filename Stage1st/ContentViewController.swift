@@ -589,7 +589,6 @@ extension S1ContentViewController {
                                                 style: .default,
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
-            strongSelf.presentType = .web
             if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
                 let webViewController = WebViewController(URL: urlToOpen)
                 strongSelf.present(webViewController, animated: true, completion: nil)
@@ -632,6 +631,7 @@ extension S1ContentViewController {
                 return
             }
 
+            strongSelf.presentType = .report
             let reportViewModel = strongSelf.viewModel.reportComposeViewModel(floor: floor)
             let reportComposeViewController = ReportComposeViewController(viewModel: reportViewModel)
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
@@ -849,7 +849,7 @@ extension S1ContentViewController: WKNavigationDelegate {
 
         present(alertViewController, animated: true, completion: nil)
 
-        DDLogWarn("no case match for url: \(url), fallback cancel")
+        DDLogWarn("No case match for url: \(url), fallback to asking for open link.")
         decisionHandler(.cancel)
         return
     }
@@ -1414,17 +1414,16 @@ extension S1ContentViewController {
 
 enum PresentType {
     case none
-    case image
-    case web
+    case image // Note: partly tracked in protocol extension
     case content
-    case user
+    case user // Note: tracked in protocol extension
     case quote
+    case report
     case background
 
-    // TODO: not tracked for now
-    case actionSheet
-    case alert
-    case reply
-    case report
-    case action(floorID: Int)
+    // Note: not tracked for now
+    case web // Note: WebViewController do not hide view controller under it
+    case actionSheet // Note: UIAlertController do not hide view controller under it
+    case alert // Note: UIAlertController do not hide view controller under it
+    case reply // Note: REComposeViewController do not hide view controller under it
 }
