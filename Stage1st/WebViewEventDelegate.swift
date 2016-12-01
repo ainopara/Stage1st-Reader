@@ -200,7 +200,6 @@ extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControl
                 imageInfo.referenceView = strongSelf.view
             }
 
-
             let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
             imageViewController?.interactionsDelegate = strongSelf
             imageViewController?.optionsDelegate = strongSelf
