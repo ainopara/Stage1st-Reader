@@ -33,6 +33,9 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "load": // called when all the images finish loading
             DDLogDebug("[WebView] load")
             delegate?.generalScriptMessageHandler(self, loadWith: messageDictionary)
+        case "touch":
+            DDLogDebug("[WebView] touch event")
+            delegate?.generalScriptMessageHandlerTouchEvent(self)
         case "heightChanged":
             DDLogDebug("[WebView] heightChange")
             delegate?.generalScriptMessageHandler(self, heightChangedTo: messageDictionary["height"] as! Double)
@@ -65,6 +68,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
 protocol WebViewEventDelegate: class {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String: Any])
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String: Any])
+    func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int)
@@ -75,6 +79,7 @@ protocol WebViewEventDelegate: class {
 extension WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String: Any]) {}
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String: Any]) {}
+    func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler) {}
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {}
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {}
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {}

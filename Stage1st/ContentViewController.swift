@@ -842,6 +842,13 @@ extension S1ContentViewController: WebViewEventDelegate {
         webPageReadyForAutomaticScrolling.value = true
     }
 
+    func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler) {
+        if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled {
+            DDLogInfo("User Touch detected. Stop tracking scroll type \(scrollType)")
+            webPageAutomaticScrollingEnabled = false
+        }
+    }
+
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
         webPageCurrentContentHeight.value = CGFloat(height)
     }

@@ -24,6 +24,12 @@
       $(window).on("load", function () {
           window.webkit.messageHandlers.stage1st.postMessage({type: "load"});
       });
+      document.ontouchstart = function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "touch"});
+      }
+      document.ontouchend = function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "touch"});
+      }
       new ResizeSensor($('html, body'), function() {
         window.webkit.messageHandlers.stage1st.postMessage({type: "heightChanged", height: $(document).height()});
       });
