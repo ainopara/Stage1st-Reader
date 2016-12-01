@@ -214,6 +214,12 @@ extension S1ContentViewModel {
 }
 
 // MARK: - View Model
+extension S1ContentViewModel: ContentViewModelMaker {
+    func contentViewModel(topic: S1Topic) -> S1ContentViewModel {
+        return S1ContentViewModel(topic: topic, dataCenter: dataCenter)
+    }
+}
+
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(apiManager: discuzAPIManager,
@@ -222,7 +228,7 @@ extension S1ContentViewModel {
     }
 }
 
-extension S1ContentViewModel: QuoteFloorViewModelGenerator {
+extension S1ContentViewModel: QuoteFloorViewModelMaker {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(dataCenter: dataCenter,
                                    manager: discuzAPIManager,
@@ -233,7 +239,7 @@ extension S1ContentViewModel: QuoteFloorViewModelGenerator {
     }
 }
 
-extension S1ContentViewModel: UserViewModelGenerator {
+extension S1ContentViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
         return UserViewModel(manager: discuzAPIManager,
                              user: User(ID: userID, name: ""))

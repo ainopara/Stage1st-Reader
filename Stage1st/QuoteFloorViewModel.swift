@@ -33,7 +33,7 @@ final class QuoteFloorViewModel: PageRenderer {
     }
 }
 
-extension QuoteFloorViewModel: UserViewModelGenerator {
+extension QuoteFloorViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
         return UserViewModel(manager: discuzAPIManager,
                              user: User(ID: userID, name: ""))

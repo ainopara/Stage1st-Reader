@@ -19,7 +19,7 @@ private let topOffset: CGFloat = -80.0
 private let bottomOffset: CGFloat = 60.0
 private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
-class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
+class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: S1ContentViewModel
 
     var toolBar = UIToolbar(frame: .zero)
@@ -754,45 +754,17 @@ extension S1ContentViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString.hasPrefix("file://") {
+        if url.absoluteString.hasPrefix("file://") { // ???: Can I remove it?
             if url.absoluteString.hasSuffix("html") {
                 decisionHandler(.allow)
                 return
             }
         }
 
-        func presentImageViewer() {
-            presentType = .image
-            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
-
-            DDLogDebug("[ContentVC] JTS View Image: \(url)")
-
-            let imageInfo = JTSImageInfo()
-            imageInfo.imageURL = url
-            let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
-            imageViewController?.interactionsDelegate = self
-            imageViewController?.optionsDelegate = self
-            imageViewController?.show(from: self, transition: .fromOffscreen)
-        }
-
-        func presentContentViewController(for topic: S1Topic) {
-            var topic = topic
-            presentType = .content
-            Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
-
-            if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
-                let lastViewedPage = topic.lastViewedPage
-                topic = tracedTopic.copy() as! S1Topic
-                topic.lastViewedPage = lastViewedPage
-            }
-
-            let contentViewController = S1ContentViewController(topic: topic, dataCenter: viewModel.dataCenter)
-            navigationController?.pushViewController(contentViewController, animated: true)
-        }
-
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            presentImageViewer()
+            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
+            showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
             return
         }
@@ -800,28 +772,31 @@ extension S1ContentViewController: WKNavigationDelegate {
         if let baseURL = UserDefaults.standard.string(forKey: "BaseURL"), url.absoluteString.hasPrefix(baseURL) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
-                presentContentViewController(for: topic)
+                var topic = topic
+                if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
+                    let lastViewedPage = topic.lastViewedPage
+                    topic = tracedTopic.copy() as! S1Topic
+                    if lastViewedPage != nil {
+                        topic.lastViewedPage = lastViewedPage
+                    }
+                }
+
+                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
+                showContentViewController(topic: topic)
                 decisionHandler(.cancel)
                 return
             }
 
             // Open Quote Link
             if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString),
-                let mod = querys["mod"],
-                mod == "redirect",
-                let tidString = querys["ptid"],
-                let tid = Int(tidString),
-                tid == viewModel.topic.topicID.intValue,
-                let pidString = querys["pid"],
-                let pid = Int(pidString),
-                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)),
-                chainQuoteFloors.count > 0 {
-
-                presentType = .quote
+               let mod = querys["mod"], mod == "redirect",
+               let tidString = querys["ptid"],
+               let tid = Int(tidString), tid == viewModel.topic.topicID.intValue,
+               let pidString = querys["pid"],
+               let pid = Int(pidString),
+               let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
                 Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
-
                 showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
-
                 decisionHandler(.cancel)
                 return
             }
@@ -1072,7 +1047,7 @@ extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
     }
 }
 
-// MARK: - Layout
+// MARK: - Layout & Style
 extension S1ContentViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -1098,26 +1073,9 @@ extension S1ContentViewController {
             }
         }
     }
-}
-// MARK: - Style
-extension S1ContentViewController {
+
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return APColorManager.shared.isDarkTheme() ? .lightContent : .default
-    }
-}
-
-// MARK: Navigation
-extension S1ContentViewController {
-    func showUserViewController(with userID: Int) {
-        let userViewModel = viewModel.userViewModel(userID: userID)
-        let userViewController = UserViewController(viewModel: userViewModel)
-        navigationController?.pushViewController(userViewController, animated: true)
-    }
-
-    func showQuoteFloorViewController(floors: [Floor], centerFloorID: Int) {
-        let quoteFloorViewModel = viewModel.quoteFloorViewModel(floors: floors, centerFloorID: centerFloorID)
-        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: quoteFloorViewModel)
-        navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }
 }
 

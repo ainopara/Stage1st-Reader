@@ -454,6 +454,7 @@
 				86A5AD871B56BAAE00E80790 /* Database */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
+				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
 			);
 			name = Manager;
@@ -626,7 +627,6 @@
 				C095878F16CB61FC007E0119 /* StaticTableViewBuilder */,
 				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
 				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
-				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";

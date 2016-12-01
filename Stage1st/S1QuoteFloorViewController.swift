@@ -218,30 +218,6 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
                 decisionHandler(.cancel)
                 return
             }
-
-            // Open Quote Link
-//            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString) {
-//                DDLogDebug("[ContentVC] Extract query: \(querys)")
-//                if
-//                    let mod = querys["mod"],
-//                    mod == "redirect",
-//                    let tidString = querys["ptid"],
-//                    let tid = Int(tidString),
-//                    tid == viewModel.topic.topicID.intValue,
-//                    let pidString = querys["pid"],
-//                    let pid = Int(pidString) {
-//                    let chainQuoteFloors = viewModel.chainSearchQuoteFloorInCache(pid)
-//                    if chainQuoteFloors.count > 0 {
-//                        presentType = .quote
-//                        Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
-//
-//                        showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
-//
-//                        decisionHandler(.cancel)
-//                        return
-//                    }
-//                }
-//            }
         }
 
         // Fallback Open link
