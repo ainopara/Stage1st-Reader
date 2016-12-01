@@ -264,7 +264,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     S1ContentViewController *contentViewController;
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        contentViewController = [[S1ContentViewController alloc] initWithTopic:[self.viewModel topicAtIndexPath:indexPath] dataCenter:self.dataCenter];
+        S1Topic *topic = [self.viewModel topicAtIndexPath:indexPath];
+        if (topic == nil) {
+            DDLogError(@"[TopicList] Can not get valid topic from database.");
+            return;
+        }
+        contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:self.dataCenter];
     } else {
         S1Topic *topic = self.topics[indexPath.row];
         S1Topic *processedTopic = [self.viewModel topicWithTracedDataForTopic:topic];

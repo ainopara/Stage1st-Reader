@@ -125,23 +125,8 @@ extension S1QuoteFloorViewController {
 
 // MARK: - WKScriptMessageHandler
 extension S1QuoteFloorViewController: WebViewEventDelegate {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
-
-    }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String : Any]) {
-
-    }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
-   }
-
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
 //        actionButtonTapped(for: floorID)
-    }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
-
     }
 }
 
