@@ -100,7 +100,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
         }
     }
 
-    // flag to make sure _hook_didFinishBasicPageLoad only called once per action (size change may occure multiple times)
     var webPageAutomaticScrollingEnabled = true
     var webPageReadyForAutomaticScrolling = MutableProperty(false)
     var webPageDidFinishFirstAutomaticScrolling = false
@@ -297,7 +296,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.stop()
         webView.navigationDelegate = nil
-        webView.scrollView.delegate = nil
         webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
@@ -368,20 +366,10 @@ extension S1ContentViewController {
 
         didReceivePaletteChangeNotification(nil)
 
-        // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
-        // FIXME: find a way to make sure this only called once. Prefer this not work.
-//        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
-//            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
-//        }
-
-//        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
-//            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
-//        }
-
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.
         if case .image = previousPresentType {
-            /// Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
+            // Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
         } else {
             webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
                 guard let strongSelf = self else { return }
@@ -1310,7 +1298,7 @@ extension S1ContentViewController {
     }
 
     func _hook_didFinishBasicPageLoad(for webView: WKWebView, animated: Bool) {
-        DDLogDebug("[webView] basic page loaded")
+        DDLogDebug("[webView] basic page loaded with scrollType \(scrollType)")
         let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
 
         switch scrollType {

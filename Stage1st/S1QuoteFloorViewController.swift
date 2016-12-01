@@ -86,16 +86,6 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
 
         didReceivePaletteChangeNotification(nil)
 
-        // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
-        // FIXME: find a way to make sure this only called once. Prefer this not work.
-//        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
-//            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
-//        }
-
-//        if let panRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.panRecognizer {
-//            webView.scrollView.panGestureRecognizer.require(toFail: panRecognizer)
-//        }
-
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.
         if case .image = previousPresentType {

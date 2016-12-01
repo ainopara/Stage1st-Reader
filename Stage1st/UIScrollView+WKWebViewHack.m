@@ -29,7 +29,7 @@
             [self s1_setContentOffset:contentOffset];
         } else {
 #ifdef DEBUG
-            DDLogInfo(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
+            DDLogWarn(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
 #endif
         }
     } else {
