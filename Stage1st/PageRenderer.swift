@@ -90,7 +90,7 @@ extension PageRenderer {
                 let brPattern0 = "(<br ?/>|<br>|<br></br>)*"
                 let brPattern1 = "(<br ?/>(&#13;)?\\n)*"
                 let pattern0 = brPattern0 + "<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*?</a>"
-                let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next)[^>]*>[^<]*?</a>[^<]*"
+                let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next|s1next)[^>]*>[^<]*?</a>[^<]*"
 
                 S1Global.regexReplace(mutableString, matchPattern: pattern0, withTemplate: "")
                 S1Global.regexReplace(mutableString, matchPattern: pattern1, withTemplate: "")
