@@ -603,6 +603,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.view.backgroundColor = [[APColorManager shared] colorForKey:@"topiclist.background"];
     self.tableView.separatorColor = [[APColorManager shared] colorForKey:@"topiclist.tableview.separator"];
     self.tableView.backgroundColor = [[APColorManager shared] colorForKey:@"topiclist.tableview.background"];
+    self.tableView.indicatorStyle = [[APColorManager shared] isDarkTheme] ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleDefault;
     if (self.tableView.backgroundView) {
         self.tableView.backgroundView.backgroundColor = [[APColorManager shared] colorForKey:@"topiclist.tableview.background"];
     }

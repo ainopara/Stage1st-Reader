@@ -40,6 +40,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
         webView.backgroundColor = .clear
         webView.scrollView.backgroundColor = .clear
+        webView.scrollView.indicatorStyle = .default
         webView.isOpaque = false
         webView.navigationDelegate = self
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)

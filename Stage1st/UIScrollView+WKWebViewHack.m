@@ -20,7 +20,7 @@
 - (void)s1_setContentOffset:(CGPoint)contentOffset {
 #ifdef DEBUG
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
-//        NSLog(@"%@ \n y: %f -> %f", self, self.contentOffset.y, contentOffset.y);
+        NSLog(@"%@ \n y: %f -> %f", self, self.contentOffset.y, contentOffset.y);
     }
 #endif
 
@@ -28,9 +28,13 @@
         if (![self s1_ignoringContentOffsetChange]) {
             [self s1_setContentOffset:contentOffset];
         } else {
+            if (contentOffset.y != 0.0) {
+                [self s1_setContentOffset:contentOffset];
+            } else {
 #ifdef DEBUG
-            DDLogWarn(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
+                DDLogWarn(@"ignore change y: %f -> %f", self.contentOffset.y, contentOffset.y);
 #endif
+            }
         }
     } else {
         [self s1_setContentOffset:contentOffset];

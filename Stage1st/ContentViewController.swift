@@ -100,11 +100,13 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         }
     }
 
-    var webPageAutomaticScrollingEnabled = true
-    var webPageReadyForAutomaticScrolling = MutableProperty(false)
-    var webPageDidFinishFirstAutomaticScrolling = false
+    let finishFirstLoading = MutableProperty(false) // No automatic scrolling should happen before first loading.
+    let webPageReadyForAutomaticScrolling = MutableProperty(false) // No automatic scrolling should happen before content ready. ready signal will trigger first automatic scrolling.
+    let webPageCurrentContentHeight = MutableProperty(0.0 as CGFloat) // Every content height change will trying to trigger automatic scrolling.
 
-    var finishFirstLoading = MutableProperty(false)
+    var webPageAutomaticScrollingEnabled = true // Note: User interaction will disable automatic scrolling.
+    var webPageDidFinishFirstAutomaticScrolling = false // Note: Only first automatic scrolling has animation.
+
     var presentType: PresentType = .none {
         didSet {
             switch presentType {
@@ -232,17 +234,16 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
         }
 
-        webPageReadyForAutomaticScrolling.producer
-            .combineLatest(with: finishFirstLoading.producer)
-            .startWithValues { [weak self] (webPageReadyForAutomaticScrolling, finishFirstLoading) in
+        SignalProducer.combineLatest(webPageReadyForAutomaticScrolling.producer, finishFirstLoading.producer, webPageCurrentContentHeight.producer)
+            .startWithValues { [weak self] (webPageReady, finishFirstLoading, currentContentHeight) in
 
             guard let strongSelf = self else { return }
-            DDLogVerbose("[ContentVC] document ready: \(webPageReadyForAutomaticScrolling), finish first loading: \(finishFirstLoading)")
+            DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading)")
 
-            if webPageReadyForAutomaticScrolling && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
+            if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView, animated: strongSelf.webPageDidFinishFirstAutomaticScrolling)
+                    strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView)
                 }
             }
         }
@@ -408,6 +409,11 @@ extension S1ContentViewController {
         if viewModel.isInFirstPage() {
             _ = navigationController?.popViewController(animated: true)
         } else {
+            if let _ = sender as? WKWebView {
+                scrollType = .pullDownForPrevious
+            } else {
+                scrollType = .restorePosition
+            }
             _hook_preChangeCurrentPage()
             viewModel.currentPage.value -= 1
             fetchContentForCurrentPage(forceUpdate: false)
@@ -418,15 +424,17 @@ extension S1ContentViewController {
         switch (viewModel.isInLastPage(), self.webView.s1_atBottom()) {
         case (true, false):
             webView.s1_scrollToBottom(animated: true)
-            break
         case (true, true):
-            forceRefreshCurrentPage()
-            break
+            refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
         case (false, _):
+            if let _ = sender as? WKWebView {
+                scrollType = .pullUpForNext
+            } else {
+                scrollType = .restorePosition
+            }
             _hook_preChangeCurrentPage()
             viewModel.currentPage.value += 1
             fetchContentForCurrentPage(forceUpdate: false)
-            break
         default:
             DDLogError("This should never happen, just make swift compiler happy.")
         }
@@ -439,9 +447,10 @@ extension S1ContentViewController {
             return
         }
 
+        scrollType = .restorePosition
         _hook_preChangeCurrentPage()
         viewModel.currentPage.value = 1
-        self.fetchContentForCurrentPage(forceUpdate: false)
+        fetchContentForCurrentPage(forceUpdate: false)
     }
 
     open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
@@ -451,6 +460,7 @@ extension S1ContentViewController {
             return
         }
 
+        scrollType = .restorePosition
         _hook_preChangeCurrentPage()
         viewModel.currentPage.value = viewModel.totalPages.value
         fetchContentForCurrentPage(forceUpdate: false)
@@ -480,8 +490,9 @@ extension S1ContentViewController {
             guard let strongSelf = self else { return }
 
             if strongSelf.viewModel.currentPage.value == UInt(selectedIndex + 1) {
-                strongSelf.forceRefreshCurrentPage()
+                strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
             } else {
+                strongSelf.scrollType = .restorePosition
                 strongSelf._hook_preChangeCurrentPage()
                 strongSelf.viewModel.currentPage.value = UInt(selectedIndex + 1)
                 strongSelf.fetchContentForCurrentPage(forceUpdate: false)
@@ -508,7 +519,7 @@ extension S1ContentViewController {
         }
 
         DDLogDebug("[ContentVC] Force refresh pressed")
-        forceRefreshCurrentPage()
+        refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
     }
 
     open func action(sender: Any?) {
@@ -699,6 +710,7 @@ extension S1ContentViewController {
         // Color
         view.backgroundColor = APColorManager.shared.colorForKey("content.background")
         webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
+        webView.scrollView.indicatorStyle = APColorManager.shared.isDarkTheme() ? .white : .default
         topDecorateLine.backgroundColor = APColorManager.shared.colorForKey("content.decoration.line")
         bottomDecorateLine.backgroundColor = APColorManager.shared.colorForKey("content.decoration.line")
         if let title = self.viewModel.topic.title, title != "" {
@@ -713,9 +725,8 @@ extension S1ContentViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         if notification != nil {
-            _hook_preChangeCurrentPage()
-            viewModel.currentPage.value = viewModel.currentPage.value
-            fetchContentForCurrentPage(forceUpdate: false)
+            saveViewPositionForCurrentPage()
+            refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
         }
     }
 
@@ -754,11 +765,9 @@ extension S1ContentViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString.hasPrefix("file://") { // ???: Can I remove it?
-            if url.absoluteString.hasSuffix("html") {
-                decisionHandler(.allow)
-                return
-            }
+        if url.absoluteString.hasPrefix("file://") && url.absoluteString.hasSuffix("html") {
+            decisionHandler(.allow)
+            return
         }
 
         // Image URL opened in image Viewer
@@ -772,6 +781,7 @@ extension S1ContentViewController: WKNavigationDelegate {
         if let baseURL = UserDefaults.standard.string(forKey: "BaseURL"), url.absoluteString.hasPrefix(baseURL) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
+                // TODO: Make this logic easy to understand.
                 var topic = topic
                 if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
                     let lastViewedPage = topic.lastViewedPage
@@ -803,20 +813,10 @@ extension S1ContentViewController: WKNavigationDelegate {
         }
 
         // Fallback Open link
-        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""),
-                                                    message: url.absoluteString,
-                                                    preferredStyle: .alert)
-
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""),
-                                                    style: .cancel,
-                                                    handler: nil))
-
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
-                                                    style: .default,
-                                                    handler: { [weak self] (action) in
-            guard let strongSelf = self else { return }
-            strongSelf.presentType = .background // FIXME: maybe alert type?
-            DDLogDebug("[ContentVC] Open in Safari: \(url)")
+        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""), style: .cancel, handler: nil))
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { (action) in
+            DDLogInfo("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {
                 DDLogWarn("Failed to open url: \(url)")
@@ -837,7 +837,7 @@ extension S1ContentViewController: WebViewEventDelegate {
     }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
-        _hook_didFinishBasicPageLoad(for: webView, animated: !webPageDidFinishFirstAutomaticScrolling)
+        webPageCurrentContentHeight.value = CGFloat(height)
     }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
@@ -907,8 +907,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 strongSelf.webView.scrollView.alpha = 0.0
             }, completion: { [weak self] (finished) in
                 guard let strongSelf = self else { return }
-                strongSelf.scrollType = .pullDownForPrevious
-                strongSelf.back(sender: nil)
+                strongSelf.back(sender: strongSelf.webView)
             })
         }
     }
@@ -938,8 +937,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 strongSelf.webView.scrollView.alpha = 0.0
             }, completion: { [weak self] (finished) in
                 guard let strongSelf = self else { return }
-                strongSelf.scrollType = .pullUpForNext
-                strongSelf.forward(sender: nil)
+                strongSelf.forward(sender: strongSelf.webView)
             })
         }
     }
@@ -956,11 +954,6 @@ extension S1ContentViewController: PullToActionDelagete {
             // back state set depend on cache info
             return
         }
-
-//        if webPageDidFinishFirstAutomaticScrolling {
-//            DDLogInfo("Invalid automatic scrolling")
-//            webPageAutomaticScrollingEnabled = false
-//        }
 
         // Process for bottom offset
         if let bottomProgress = progress["bottom"] {
@@ -1003,10 +996,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
                 guard let strongSelf = self else { return }
                 strongSelf.attributedReplyDraft = nil
                 if strongSelf.viewModel.isInLastPage() {
-                    strongSelf.scrollType = .toBottom
-                    strongSelf._hook_preChangeCurrentPage()
-                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
-                    strongSelf.fetchContentForCurrentPage(forceUpdate: true)
+                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .toBottom)
                 }
             }
 
@@ -1118,9 +1108,7 @@ extension S1ContentViewController {
                     guard let strongSelf = self else { return }
 
                     hud?.hide(withDelay: 0.0)
-                    strongSelf._hook_preChangeCurrentPage()
-                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
-                    strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
                 }
             } else {
                 DDLogVerbose("[ContentVC] check precache: hit.")
@@ -1165,10 +1153,7 @@ extension S1ContentViewController {
 
                 // Auto refresh when current page not full.
                 if shouldRefetch {
-                    strongSelf.scrollType = .restorePosition
-                    strongSelf._hook_preChangeCurrentPage()
-                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
-                    strongSelf.fetchContentForCurrentPage(forceUpdate: true)
+                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
                 }
             case .failure(let error):
                 if error.code == NSURLErrorCancelled {
@@ -1225,13 +1210,13 @@ extension S1ContentViewController {
         webPageAutomaticScrollingEnabled = true
     }
 
-    func _hook_didFinishBasicPageLoad(for webView: WKWebView, animated: Bool) {
-        DDLogDebug("[webView] basic page loaded with scrollType \(scrollType)")
+    func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
+        DDLogDebug("[webView] basic page loaded with scrollType \(scrollType) firstAnimationSkipped: \(webPageDidFinishFirstAutomaticScrolling)")
         let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
 
         switch scrollType {
         case .pullUpForNext:
-            guard animated else {
+            guard !webPageDidFinishFirstAutomaticScrolling else {
                 return
             }
             // Set position
@@ -1245,7 +1230,7 @@ extension S1ContentViewController {
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .pullDownForPrevious:
-            guard animated else {
+            guard !webPageDidFinishFirstAutomaticScrolling else {
                 webView.evaluateJavaScript("$('html, body').animate({ scrollTop: $(document).height()}, 0);", completionHandler: nil)
                 return
             }
@@ -1264,11 +1249,14 @@ extension S1ContentViewController {
         case .restorePosition:
             if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
                 // Restore last view position from cached position in this view controller.
+                DDLogInfo("Trying to restore position of \(positionForPage)")
                 webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(positionForPage)}, 0);", completionHandler: nil)
+                webView.scrollView.flashScrollIndicators()
             }
         }
 
         webPageDidFinishFirstAutomaticScrolling = true
+        // FIXME: scroll type should turn back to restore position when other event occured.
     }
 
     // MARK: Helper (Misc)
@@ -1287,12 +1275,16 @@ extension S1ContentViewController {
         webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
             guard let strongSelf = self else { return }
             guard let result = result as? String, result != "" else {
-                strongSelf._hook_preChangeCurrentPage()
-                strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
-                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+                strongSelf.refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
                 return
             }
         }
+    }
+
+    func saveViewPositionForCurrentPage() {
+        let currentOffsetY = webView.scrollView.contentOffset.y
+
+        viewModel.cacheOffsetForCurrentPage(currentOffsetY)
     }
 
     func saveViewPositionForPreviousPage() {
@@ -1314,11 +1306,12 @@ extension S1ContentViewController {
         }
     }
 
-    func forceRefreshCurrentPage() {
-        viewModel.cancelRequest()
+    func refreshCurrentPage(forceUpdate: Bool, scrollType: ScrollType) {
+        viewModel.cancelRequest() // ???: Maybe remove this?
+        self.scrollType = scrollType
         _hook_preChangeCurrentPage()
         viewModel.currentPage.value = viewModel.currentPage.value
-        fetchContentForCurrentPage(forceUpdate: true)
+        fetchContentForCurrentPage(forceUpdate: forceUpdate)
     }
 }
 

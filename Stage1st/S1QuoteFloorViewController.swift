@@ -11,7 +11,7 @@ import Crashlytics
 import CocoaLumberjack
 import JTSImageViewController
 
-class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter {
+class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter {
     let viewModel: QuoteFloorViewModel
 
     lazy var webView: WKWebView = {
@@ -169,11 +169,6 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString == "about:blank" {
-            decisionHandler(.allow)
-            return
-        }
-
         if url.absoluteString.hasPrefix("file://") {
             if url.absoluteString.hasSuffix("html") {
                 decisionHandler(.allow)
@@ -183,18 +178,8 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            presentType = .image
-            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
-
-            DDLogDebug("[ContentVC] JTS View Image: \(url)")
-
-            let imageInfo = JTSImageInfo()
-            imageInfo.imageURL = url
-            let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
-            imageViewController?.interactionsDelegate = self
-            imageViewController?.optionsDelegate = self
-            imageViewController?.show(from: self, transition: .fromOffscreen)
-
+            Answers.logCustomEvent(withName: "[QuoteFloor] Image", customAttributes: ["type": "hijack"])
+            showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
             return
         }
@@ -203,18 +188,16 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 var topic = topic
-                presentType = .content
-                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
-
                 if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
                     let lastViewedPage = topic.lastViewedPage
                     topic = tracedTopic.copy() as! S1Topic
-                    topic.lastViewedPage = lastViewedPage
+                    if lastViewedPage != nil {
+                        topic.lastViewedPage = lastViewedPage
+                    }
                 }
 
-                let contentViewController = S1ContentViewController(topic: topic, dataCenter: viewModel.dataCenter)
-                navigationController?.pushViewController(contentViewController, animated: true)
-
+                Answers.logCustomEvent(withName: "[QuoteFloor] Topic Link", customAttributes: nil)
+                showContentViewController(topic: topic)
                 decisionHandler(.cancel)
                 return
             }
