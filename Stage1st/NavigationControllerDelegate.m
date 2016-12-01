@@ -126,8 +126,10 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     if (gestureRecognizer == self.colorPanRecognizer) {
-        DDLogVerbose(@"pan gesture simultaneously with %@", otherGestureRecognizer);
-        return YES;
+//        DDLogVerbose(@"pan gesture simultaneously with %@", otherGestureRecognizer);
+//        if ([otherGestureRecognizer.view isKindOfClass:[NSClassFromString(@"WKScrollView") class]] && [otherGestureRecognizer isKindOfClass:[NSClassFromString(@"UIScrollViewPanGestureRecognizer") class]]) {
+//            return YES;
+//        }
     }
 
     return NO;
