@@ -116,7 +116,7 @@ extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
         //Move selection location
         textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
         //Reset Text Style
-        ReplyAccessoryView.resetTextViewStyle(textView)
+        textView.s1_resetToReplyStyle()
     }
 
     func mahjongFaceViewControllerDidPressBackSpace(_ mahjongFaceViewController: S1MahjongFaceView) {
@@ -151,16 +151,18 @@ extension ReplyAccessoryView {
             textView.textStorage.insert(NSAttributedString(string: aPart as String), at: selectedRange.location)
         }
         textView.selectedRange = NSRange(location: selectedRange.location + aPartLenght, length: selectedRange.length)
-        ReplyAccessoryView.resetTextViewStyle(textView)
+        textView.s1_resetToReplyStyle()
     }
+}
 
-    static func resetTextViewStyle(_ textView: UITextView) {
-        let allTextRange = NSRange(location: 0, length: textView.textStorage.length)
-        textView.textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
-        textView.textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
-        textView.textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
-        textView.textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.shared.colorForKey("reply.text"), range: allTextRange)
-        textView.font = UIFont.systemFont(ofSize: 17.0)
-        textView.textColor = APColorManager.shared.colorForKey("reply.text")
+extension UITextView {
+    func s1_resetToReplyStyle() {
+        let allTextRange = NSRange(location: 0, length: textStorage.length)
+        textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
+        textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
+        textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
+        textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.shared.colorForKey("reply.text"), range: allTextRange)
+        font = UIFont.systemFont(ofSize: 17.0)
+        textColor = APColorManager.shared.colorForKey("reply.text")
     }
 }

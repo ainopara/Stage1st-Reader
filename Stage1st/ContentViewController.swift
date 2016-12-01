@@ -15,16 +15,16 @@ import Crashlytics
 import ReactiveSwift
 import ReactiveCocoa
 
-fileprivate let topOffset: CGFloat = -80.0
-fileprivate let bottomOffset: CGFloat = 60.0
-fileprivate let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
+private let topOffset: CGFloat = -80.0
+private let bottomOffset: CGFloat = 60.0
+private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
     let viewModel: S1ContentViewModel
 
     var toolBar = UIToolbar(frame: .zero)
     lazy var webView: WKWebView = {
-        return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
+        return WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
 
     lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
@@ -273,7 +273,11 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter {
 
         // Notification
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(saveTopicViewedState(sender:)),
+                                               selector: #selector(applicationWillEnterForeground),
+                                               name: .UIApplicationWillEnterForeground,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidEnterBackground),
                                                name: .UIApplicationDidEnterBackground,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
@@ -366,24 +370,12 @@ extension S1ContentViewController {
 
         didReceivePaletteChangeNotification(nil)
 
-        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
         // Also use this method to initialize content.
         if case .image = previousPresentType {
             // Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
         } else {
-            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-                guard let strongSelf = self else { return }
-                guard let result = result as? String, result != "" else {
-                    strongSelf.fetchContentForCurrentPage(forceUpdate: strongSelf.viewModel.isInLastPage())
-                    return
-                }
-            }
+            _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning()
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        DDLogDebug("[ContentVC] View did appear")
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -397,17 +389,28 @@ extension S1ContentViewController {
         saveTopicViewedState(sender: nil)
         DDLogDebug("[ContentVC] View did disappear end")
     }
+
+    func applicationWillEnterForeground() {
+        DDLogDebug("[ContentVC] \(self) will enter foreground begin")
+        _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning()
+    }
+
+    func applicationDidEnterBackground() {
+        DDLogDebug("[ContentVC] \(self) did enter background begin")
+        saveTopicViewedState(sender: nil)
+        DDLogDebug("[ContentVC] \(self) did enter background end")
+    }
 }
 
 // MARK: - Actions
 extension S1ContentViewController {
     open func back(sender: Any?) {
         if viewModel.isInFirstPage() {
-            _ = self.navigationController?.popViewController(animated: true)
+            _ = navigationController?.popViewController(animated: true)
         } else {
             _hook_preChangeCurrentPage()
-            self.viewModel.currentPage.value -= 1
-            self.fetchContentForCurrentPage(forceUpdate: false)
+            viewModel.currentPage.value -= 1
+            fetchContentForCurrentPage(forceUpdate: false)
         }
     }
 
@@ -421,8 +424,8 @@ extension S1ContentViewController {
             break
         case (false, _):
             _hook_preChangeCurrentPage()
-            self.viewModel.currentPage.value += 1
-            self.fetchContentForCurrentPage(forceUpdate: false)
+            viewModel.currentPage.value += 1
+            fetchContentForCurrentPage(forceUpdate: false)
             break
         default:
             DDLogError("This should never happen, just make swift compiler happy.")
@@ -449,8 +452,8 @@ extension S1ContentViewController {
         }
 
         _hook_preChangeCurrentPage()
-        self.viewModel.currentPage.value = self.viewModel.totalPages.value
-        self.fetchContentForCurrentPage(forceUpdate: false)
+        viewModel.currentPage.value = viewModel.totalPages.value
+        fetchContentForCurrentPage(forceUpdate: false)
     }
 
     open func pickPage(sender: Any?) {
@@ -518,7 +521,18 @@ extension S1ContentViewController {
                                                 style: .default,
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
-            strongSelf.presentReplyView(toFloor: nil)
+            guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
+                strongSelf._alertRefresh()
+                return
+            }
+
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+                let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
+                strongSelf.present(loginViewController, animated: true, completion: nil)
+                return
+            }
+
+            strongSelf._presentReplyView(toFloor: nil)
         }))
 
         if !shouldPresentingFavoriteButtonOnToolBar() {
@@ -609,7 +623,7 @@ extension S1ContentViewController {
                                                       handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
-                strongSelf.alertRefresh()
+                strongSelf._alertRefresh()
                 return
             }
 
@@ -629,9 +643,8 @@ extension S1ContentViewController {
                                                       style: .default,
                                                       handler: { [weak self] (action) in
             guard let strongSelf = self else { return }
-
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
-                strongSelf.alertRefresh()
+                strongSelf._alertRefresh()
                 return
             }
 
@@ -641,7 +654,7 @@ extension S1ContentViewController {
                 return
             }
 
-            strongSelf.presentReplyView(toFloor: floor)
+            strongSelf._presentReplyView(toFloor: floor)
         }))
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""),
@@ -664,7 +677,7 @@ extension S1ContentViewController {
         }
     }
 
-    func alertRefresh() {
+    func _alertRefresh() {
         let refreshAlertController = UIAlertController(title: "缺少必要的信息",
                                                        message: "请长按页码刷新当前页面",
                                                        preferredStyle: .alert)
@@ -701,6 +714,7 @@ extension S1ContentViewController {
 
         if notification != nil {
             _hook_preChangeCurrentPage()
+            viewModel.currentPage.value = viewModel.currentPage.value
             fetchContentForCurrentPage(forceUpdate: false)
         }
     }
@@ -841,14 +855,10 @@ extension S1ContentViewController: WKNavigationDelegate {
         return
     }
 }
-
+// MARK: WebViewEventDelegate
 extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
         webPageReadyForAutomaticScrolling.value = true
-    }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String : Any]) {
-
     }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
@@ -858,36 +868,10 @@ extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
         actionButtonTapped(for: floorID)
     }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String : Any]) {
-
-    }
 }
 
 extension S1ContentViewController {
-    func showImage(with ID: String, _ url: String) {
-        DispatchQueue.global(qos: .default).async { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.presentType = .image
-            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
-            DDLogDebug("[ContentVC] JTS View Image: \(url)")
-
-            let imageInfo = JTSImageInfo()
-            imageInfo.imageURL = URL(string: url)
-            imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: ID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
-            imageInfo.referenceView = strongSelf.webView
-
-            let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
-            imageViewController?.interactionsDelegate = strongSelf
-            imageViewController?.optionsDelegate = strongSelf
-            DispatchQueue.main.async { [weak self] in
-                guard let strongSelf = self else { return }
-                imageViewController?.show(from: strongSelf, transition: .fromOriginalPosition)
-            }
-        }
-    }
-
-    func sharedConfiguration() -> WKWebViewConfiguration {
+    func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
         userContentController.add(webViewScriptMessageHandler, name: "stage1st")
@@ -1046,6 +1030,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
                 if strongSelf.viewModel.isInLastPage() {
                     strongSelf.scrollType = .toBottom
                     strongSelf._hook_preChangeCurrentPage()
+                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
                     strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
             }
@@ -1162,50 +1147,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: - Reply (aspect)
-extension S1ContentViewController {
-    func presentReplyView(toFloor floor: Floor?) {
-        // Check in login state.
-        guard viewModel.topic.fID != nil, viewModel.topic.formhash != nil else {
-            alertRefresh()
-            return
-        }
-
-        guard let _ = UserDefaults.standard.value(forKey: "InLoginStateID") else {
-            let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
-            present(loginViewController, animated: true, completion: nil)
-            return
-        }
-
-        let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
-
-        // configure
-        replyViewController.textView.keyboardAppearance = APColorManager.shared.isDarkTheme() ? .dark : .default
-        replyViewController.textView.tintColor = APColorManager.shared.colorForKey("reply.tint")
-        replyViewController.textView.textColor = APColorManager.shared.colorForKey("reply.text")
-        replyViewController.sheetBackgroundColor = APColorManager.shared.colorForKey("reply.background")
-
-        replyTopicFloor = floor
-        if let floor = floor {
-            replyViewController.title = "@\(floor.author.name)"
-        } else {
-            replyViewController.title = NSLocalizedString("ContentView_Reply_Title", comment: "Reply")
-        }
-
-        if let replyDraft = attributedReplyDraft {
-            replyViewController.textView.attributedText = replyDraft
-        }
-
-        replyViewController.delegate = self
-        let frame = CGRect(x: 0.0, y: 0.0, width: replyViewController.view.bounds.width, height: 35.0)
-        replyViewController.accessoryView = ReplyAccessoryView(frame: frame, withComposeViewController: replyViewController)
-        ReplyAccessoryView.resetTextViewStyle(replyViewController.textView)
-
-        present(replyViewController, animated: true, completion: nil)
-    }
-}
-
-// MARK: - Network (view model)
+// MARK: - Main Function
 extension S1ContentViewController {
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func showHud() {
@@ -1219,6 +1161,7 @@ extension S1ContentViewController {
 
                     hud?.hide(withDelay: 0.0)
                     strongSelf._hook_preChangeCurrentPage()
+                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
                     strongSelf.fetchContentForCurrentPage(forceUpdate: false)
                 }
             } else {
@@ -1266,6 +1209,7 @@ extension S1ContentViewController {
                 if shouldRefetch {
                     strongSelf.scrollType = .restorePosition
                     strongSelf._hook_preChangeCurrentPage()
+                    strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
                     strongSelf.fetchContentForCurrentPage(forceUpdate: true)
                 }
             case .failure(let error):
@@ -1282,9 +1226,35 @@ extension S1ContentViewController {
             }
         }
     }
+
+    func _presentReplyView(toFloor floor: Floor?) {
+        let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
+        replyViewController.delegate = self
+        replyViewController.textView.keyboardAppearance = APColorManager.shared.isDarkTheme() ? .dark : .default
+        replyViewController.textView.tintColor = APColorManager.shared.colorForKey("reply.tint")
+        replyViewController.textView.textColor = APColorManager.shared.colorForKey("reply.text")
+        replyViewController.sheetBackgroundColor = APColorManager.shared.colorForKey("reply.background")
+
+        replyTopicFloor = floor
+        if let floor = floor { // Reply Floor
+            replyViewController.title = "@\(floor.author.name)"
+        } else { // Reply Topic
+            replyViewController.title = NSLocalizedString("ContentView_Reply_Title", comment: "Reply")
+        }
+
+        if let replyDraft = attributedReplyDraft {
+            replyViewController.textView.attributedText = replyDraft
+        }
+
+        let frame = CGRect(x: 0.0, y: 0.0, width: replyViewController.view.bounds.width, height: 35.0)
+        replyViewController.accessoryView = ReplyAccessoryView(frame: frame, withComposeViewController: replyViewController)
+        replyViewController.textView.s1_resetToReplyStyle()
+
+        present(replyViewController, animated: true, completion: nil)
+    }
 }
 
-// MARK: Helper (hook)
+// MARK: Helper
 extension S1ContentViewController {
 
     func _hook_preChangeCurrentPage() {
@@ -1354,6 +1324,19 @@ extension S1ContentViewController {
         bottomDecorateLine.isHidden = !self.finishFirstLoading.value
     }
 
+    func _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning() {
+        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
+        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
+            guard let strongSelf = self else { return }
+            guard let result = result as? String, result != "" else {
+                strongSelf._hook_preChangeCurrentPage()
+                strongSelf.viewModel.currentPage.value = strongSelf.viewModel.currentPage.value
+                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+                return
+            }
+        }
+    }
+
     func saveViewPositionForPreviousPage() {
         let currentOffsetY = webView.scrollView.contentOffset.y
 
@@ -1376,6 +1359,7 @@ extension S1ContentViewController {
     func forceRefreshCurrentPage() {
         viewModel.cancelRequest()
         _hook_preChangeCurrentPage()
+        viewModel.currentPage.value = viewModel.currentPage.value
         fetchContentForCurrentPage(forceUpdate: true)
     }
 }
