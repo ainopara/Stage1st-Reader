@@ -113,7 +113,7 @@ S1AppDelegate *MyAppDelegate;
     // Appearence
     [[APColorManager shared] updateGlobalAppearance];
 
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
+    S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
     navigationController.delegate = self.navigationDelegate;
     navigationController.viewControllers = @[[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
