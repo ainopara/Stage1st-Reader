@@ -18,11 +18,15 @@ class S1Application: UIApplication {
             return
         }
 
-        if let touches = event.allTouches, let touch = touches.first, let gestureRecognizers = touch.gestureRecognizers {
-            for gestureRecognizer in gestureRecognizers {
-                if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
-                    DDLogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")
-                }
+        guard let touches = event.allTouches,
+              let touch = touches.first,
+              let gestureRecognizers = touch.gestureRecognizers else {
+            return
+        }
+
+        for gestureRecognizer in gestureRecognizers {
+            if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+                DDLogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")
             }
         }
     }
