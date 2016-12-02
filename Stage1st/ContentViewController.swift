@@ -1288,7 +1288,7 @@ extension S1ContentViewController {
         webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
             guard let strongSelf = self else { return }
             guard let result = result as? String, result != "" else {
-                strongSelf.refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
+                strongSelf.refreshCurrentPage(forceUpdate: !strongSelf.finishFirstLoading.value && strongSelf.viewModel.isInLastPage(), scrollType: .restorePosition)
                 return
             }
         }
