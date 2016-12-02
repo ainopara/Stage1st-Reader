@@ -84,6 +84,12 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         let previousPresentType = presentType
         presentType = .none
 
+        // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
+        // FIXME: find a way to make sure this only called once. Prefer this not work.
+        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+            webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
+        }
+
         didReceivePaletteChangeNotification(nil)
 
         // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
@@ -109,6 +115,10 @@ extension S1QuoteFloorViewController {
         webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
 
         setNeedsStatusBarAppearanceUpdate()
+
+        if notification != nil {
+            webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
+        }
     }
 }
 
