@@ -760,6 +760,10 @@ extension S1ContentViewController: WKNavigationDelegate {
         DDLogWarn("[ContentVC] webview failed to load with error: \(error)")
     }
 
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        DDLogInfo("[ContentVC] webViewWebContentProcessDidTerminate")
+    }
+
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
             decisionHandler(.cancel)
