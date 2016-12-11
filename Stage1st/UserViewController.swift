@@ -17,7 +17,7 @@ final class UserViewController: UIViewController {
 
     private let scrollView = UIScrollView(frame: CGRect.zero)
     private let containerView = UIView(frame: CGRect.zero)
-    private let avatarView = UIImageView(image: nil) // FIXME: placeholder image.
+    private let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
     private let usernameLabel = UILabel(frame: CGRect.zero)
     private let customStatusLabel = UILabel(frame: CGRect.zero)
     private let infoLabel = UILabel(frame: CGRect.zero)
@@ -26,7 +26,6 @@ final class UserViewController: UIViewController {
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-//        self.modalPresentationStyle = .Popover
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -117,8 +116,7 @@ extension UserViewController {
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-//        navigationController?.navigationBar.barStyle = APColorManager.shared.isDarkTheme() ? .Black : .Default
-        setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = APColorManager.shared.colorForKey("content.background")
+        setNeedsStatusBarAppearanceUpdate()
     }
 }

@@ -22,6 +22,7 @@ open class User: NSObject, NSCoding {
     var registerDateString: String?
     var threadCount: Int?
     var postCount: Int?
+    var blocked: Bool?
 
     public init(ID: Int, name: String) {
         self.ID = ID
@@ -31,11 +32,10 @@ open class User: NSObject, NSCoding {
 
     public init?(json: JSON) {
         let space = json["Variables"]["space"]
-        guard
-            let IDString = space["uid"].string,
-            let ID = Int(IDString),
-            let name = space["username"].string else {
-                return nil
+        guard let IDString = space["uid"].string,
+              let ID = Int(IDString),
+              let name = space["username"].string else {
+            return nil
         }
 
         self.ID = ID
@@ -56,9 +56,8 @@ open class User: NSObject, NSCoding {
 
     public required init?(coder aDecoder: NSCoder) {
         let ID = aDecoder.decodeObject(forKey: kUserID) as? Int ?? aDecoder.decodeInteger(forKey: kUserID)
-        guard
-            ID != 0,
-            let name = aDecoder.decodeObject(forKey: kUserName) as? String else {
+        guard ID != 0,
+              let name = aDecoder.decodeObject(forKey: kUserName) as? String else {
             return nil
         }
 
