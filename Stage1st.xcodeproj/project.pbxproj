@@ -770,7 +770,7 @@
 				CLASSPREFIX = S1;
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Renaissance;
 				TargetAttributes = {
 					8681E6BB1CEF61ED004269D3 = {
