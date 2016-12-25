@@ -13,12 +13,20 @@ import Reachability
 
 protocol PageRenderer {
     var topic: S1Topic { get }
+
+    func templateBundle() -> Bundle
+    func userIsBlocked(with userID: Int) -> Bool
+    func generatePage(with floors: [Floor]) -> String
 }
 
 extension PageRenderer {
     func templateBundle() -> Bundle {
         let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
         return Bundle.init(url: templateBundleURL)!
+    }
+
+    func userIsBlocked(with userID: Int) -> Bool {
+        return false
     }
 
     func generatePage(with floors: [Floor]) -> String {
@@ -267,7 +275,7 @@ extension PageRenderer {
             "post-time": floor.creationDate?.s1_gracefulDateTimeString() ?? "无日期",
             "ID": "\(floor.ID)",
             "poll": nil,
-            "content": processContent(content: floor.content),
+            "content": userIsBlocked(with: floor.author.ID) ? "<i class=\"pstatus\">该用户已被您屏蔽</i><br>" : processContent(content: floor.content),
             "attachments": floor.imageAttachmentURLStringList.flatMap { (list: [String]) in list.map { ["url": $0, "ID": UUID().uuidString] } },
             "is-first": isFirstInPage
         ]
