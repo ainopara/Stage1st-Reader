@@ -16,6 +16,7 @@ NSString *const UIDatabaseConnectionDidUpdateNotification = @"UIDatabaseConnecti
 NSString *const kNotificationsKey = @"notifications";
 
 NSString *const Collection_Topics = @"topics";
+NSString *const Collection_UserBlackList = @"userBlackList";
 NSString *const Collection_CloudKit = @"cloudKit";
 
 NSString *const Ext_View_Archive = @"archive";

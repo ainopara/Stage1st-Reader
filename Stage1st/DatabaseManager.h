@@ -37,6 +37,7 @@ extern NSString *const kNotificationsKey;
  * E.g.: [transaction objectForKey:todoId inCollection:Collection_Todos]
 **/
 extern NSString *const Collection_Topics;
+extern NSString *const Collection_UserBlackList;
 extern NSString *const Collection_CloudKit;
 
 /**
