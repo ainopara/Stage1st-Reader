@@ -82,6 +82,7 @@ extension PageRenderer {
         ]
     }
 
+    // swiftlint:disable nesting
     func _floorData(with floor: Floor, topicAuthorID: Int?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
             func stripTails(content: String) -> String {
@@ -271,4 +272,5 @@ extension PageRenderer {
             "is-first": isFirstInPage
         ]
     }
+    // swiftlint:enable nesting
 }

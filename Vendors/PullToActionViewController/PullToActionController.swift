@@ -30,7 +30,7 @@ public class PullToActionController: NSObject {
     var offset: CGPoint = .zero
     var size: CGSize = .zero
     var inset: UIEdgeInsets = .zero
-    fileprivate var progressActions = Dictionary<String, OffsetRange>()
+    fileprivate var progressActions = [String: OffsetRange]()
 
     // MARK: -
     init(scrollView: UIScrollView) {

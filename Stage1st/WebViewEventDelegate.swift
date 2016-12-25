@@ -18,6 +18,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
         self.delegate = delegate
     }
 
+    // swiftlint:disable cyclomatic_complexity
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         DDLogVerbose("[ContentVC] message body: \(message.body)")
         guard let messageDictionary = message.body as? [String: Any],
@@ -63,7 +64,9 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             delegate?.generalScriptMessageHandler(self, handleUnkonwnEventWith: messageDictionary)
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 }
+
 // MARK: -
 protocol WebViewEventDelegate: class {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String: Any])
