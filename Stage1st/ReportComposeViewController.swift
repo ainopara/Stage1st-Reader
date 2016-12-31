@@ -87,7 +87,7 @@ final class ReportComposeViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Binding
-        viewModel.content <~ textView.reactive.continuousTextValues
+        viewModel.content <~ textView.reactive.continuousTextValues.map { $0 ?? "" }
 
         viewModel.canSubmit.producer.startWithValues { [weak self] (canSubmit) in
             guard let strongSelf = self else { return }

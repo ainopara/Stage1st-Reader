@@ -22,7 +22,7 @@ protocol PageRenderer {
 extension PageRenderer {
     func templateBundle() -> Bundle {
         let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
-        return Bundle.init(url: templateBundleURL)!
+        return Bundle(url: templateBundleURL)!
     }
 
     func userIsBlocked(with userID: Int) -> Bool {

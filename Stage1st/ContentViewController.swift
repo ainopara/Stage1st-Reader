@@ -248,7 +248,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             }
         }
 
-        favoriteButton.reactive.trigger(for: .touchUpInside).observeValues { [weak self] in
+        favoriteButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.viewModel.toggleFavorite()
         }
