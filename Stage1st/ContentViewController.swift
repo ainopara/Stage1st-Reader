@@ -300,8 +300,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.stop()
-        webView.navigationDelegate = nil
-        webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
@@ -366,7 +364,6 @@ extension S1ContentViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let previousPresentType = presentType
         presentType = .none
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
@@ -378,11 +375,7 @@ extension S1ContentViewController {
         didReceivePaletteChangeNotification(nil)
 
         // Also use this method to initialize content.
-        if case .image = previousPresentType {
-            // Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
-        } else {
-            _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning()
-        }
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -399,7 +392,7 @@ extension S1ContentViewController {
 
     func applicationWillEnterForeground() {
         DDLogDebug("[ContentVC] \(self) will enter foreground begin")
-        _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning()
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     func applicationDidEnterBackground() {
@@ -761,7 +754,7 @@ extension S1ContentViewController: WKNavigationDelegate {
     }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        DDLogInfo("[ContentVC] webViewWebContentProcessDidTerminate")
+        DDLogError("[ContentVC] webViewWebContentProcessDidTerminate")
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -1287,14 +1280,10 @@ extension S1ContentViewController {
         bottomDecorateLine.isHidden = !self.finishFirstLoading.value
     }
 
-    func _tryToReloadWKWebViewIfPageIsBlankDueToMemoryWarning() {
-        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
-        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-            guard let strongSelf = self else { return }
-            guard let result = result as? String, result != "" else {
-                strongSelf.refreshCurrentPage(forceUpdate: !strongSelf.finishFirstLoading.value && strongSelf.viewModel.isInLastPage(), scrollType: .restorePosition)
-                return
-            }
+    func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
+        guard let title = webView.title, title != "" else {
+            refreshCurrentPage(forceUpdate: !finishFirstLoading.value && viewModel.isInLastPage(), scrollType: .restorePosition)
+            return
         }
     }
 

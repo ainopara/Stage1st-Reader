@@ -62,7 +62,14 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
         updateBarItems()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillEnterForeground),
+                                               name: .UIApplicationWillEnterForeground,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -133,16 +140,14 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.didReceivePaletteChangeNotification(nil)
+        DDLogInfo("[WebVC] view will appear")
 
-        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
-        // Also use this method to initialize content.
-        webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-            guard let strongSelf = self else { return }
-            guard let result = result as? String, result != "" else {
-                strongSelf.webView.load(URLRequest(url: strongSelf.currentValidURL()))
-                return
-            }
-        }
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
+    }
+
+    func applicationWillEnterForeground() {
+        DDLogDebug("[WebVC] \(self) will enter foreground begin")
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     // MARK: Layout
@@ -184,7 +189,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         }
     }
 
-    // MARK: - UIWebViewDelegate
+    // MARK: - WKWebViewNavigationDelegate
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         DDLogDebug("[WebVC] didCommit")
         updateBarItems()
@@ -204,6 +209,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         DDLogDebug("[WebVC] didFail with error:\(error)")
         updateBarItems()
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        DDLogError("[WebVC] \(#function)")
     }
 
     // MARK: KVO
@@ -245,6 +254,13 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             return URL
         } else {
             return self.URLToOpen
+        }
+    }
+
+    func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
+        guard let title = webView.title, title != "" else {
+            webView.load(URLRequest(url: currentValidURL()))
+            return
         }
     }
 

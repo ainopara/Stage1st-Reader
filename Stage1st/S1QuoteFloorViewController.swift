@@ -48,6 +48,10 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         webView.isOpaque = false
 
         NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationWillEnterForeground),
+                                               name: .UIApplicationWillEnterForeground,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
                                                name: .APPaletteDidChangeNotification,
                                                object: nil)
@@ -61,7 +65,6 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         DDLogInfo("[QuoteFloorVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
-        webView.navigationDelegate = nil
         webView.stopLoading()
         DDLogInfo("[QuoteFloorVC] Dealloced")
     }
@@ -81,7 +84,6 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let previousPresentType = presentType
         presentType = .none
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
@@ -92,19 +94,13 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
 
         didReceivePaletteChangeNotification(nil)
 
-        // http://stackoverflow.com/questions/27809259/detecting-whether-a-wkwebview-has-blanked
-        // Also use this method to initialize content.
-        if case .image = previousPresentType {
-            /// Note: Calling evaluateJavaScript to WKWebView will cause the content of it changed to blank before completionHandler return. That will lead to screen blink when user coming back from image viewer.
-        } else {
-            webView.evaluateJavaScript("document.querySelector('body').innerHTML") { [weak self] (result, error) in
-                guard let strongSelf = self else { return }
-                guard let result = result as? String, result != "" else {
-                    strongSelf.webView.loadHTMLString(strongSelf.viewModel.generatePage(with: strongSelf.viewModel.floors), baseURL: strongSelf.viewModel.baseURL)
-                    return
-                }
-            }
-        }
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
+    }
+
+    func applicationWillEnterForeground() {
+        DDLogDebug("[QuoteFloorVC] \(self) will enter foreground begin")
+        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
+        DDLogDebug("[QuoteFloorVC] \(self) will enter foreground end")
     }
 }
 
@@ -241,6 +237,10 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
         return
     }
 
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        DDLogError("[QuoteFloor] \(#function)")
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
@@ -268,6 +268,13 @@ extension S1QuoteFloorViewController {
         } else {
             DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
             return 0.0
+        }
+    }
+
+    func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
+        guard let title = webView.title, title != "" else {
+            webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
+            return
         }
     }
 }
