@@ -53,7 +53,7 @@ PODS:
   - Reachability (3.2)
   - ReactiveCocoa (5.0.0-rc.1):
     - ReactiveSwift (~> 1.0.0-rc.3)
-  - ReactiveSwift (1.0.0-rc.3):
+  - ReactiveSwift (1.0.0):
     - Result (~> 3.1)
   - Result (3.1.0)
   - Reveal-SDK (5)
@@ -130,7 +130,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
-  - ReactiveCocoa (~> 5.0.0-alpha.3)
+  - ReactiveCocoa (~> 5.0.0-rc.1)
   - Reveal-SDK
   - SnapKit
   - TextAttributes
@@ -177,7 +177,7 @@ SPEC CHECKSUMS:
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 3e9cad4b77fa199d41e03f603cb55d0701ad6ad8
-  ReactiveSwift: 443cb065e9aa9451b30f0c85e9d7e9b4cec369cd
+  ReactiveSwift: f391724ee318a2cfd3e37dfb041cd49ecf4e7869
   Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
   Reveal-SDK: 7e3945c0c3649106c3cc8923672ee545e25605c0
   SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
@@ -185,6 +185,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: b56534babcd1ff4b713c4e3d9ab54f6bed973b2d
+PODFILE CHECKSUM: 7b540a086bdfe990d4e028f12fa3dd21e3398ccb
 
 COCOAPODS: 1.1.1
