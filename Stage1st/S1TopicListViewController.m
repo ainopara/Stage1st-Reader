@@ -68,6 +68,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 @implementation S1TopicListViewController {
     BOOL _loadingFlag;
     BOOL _loadingMore;
+    BOOL _beforeLaunchingAnimation;
 }
 
 #pragma mark - Life Cycle
@@ -77,6 +78,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (self) {
         _loadingFlag = NO;
         _loadingMore = NO;
+        _beforeLaunchingAnimation = YES;
         _currentKey = @"";
         _previousKey = @"";
     }
@@ -93,9 +95,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     //Setup Navigation Bar
     [self.view addSubview:self.navigationBar];
     [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top);
+        make.bottom.equalTo(self.view.mas_top);
         make.leading.with.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
     }];
 
     //Setup Table View
@@ -110,13 +111,15 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.scrollTabBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.tableView.mas_bottom);
         make.leading.with.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
+        make.top.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
     [self.view addSubview:self.refreshHUD];
     [self.refreshHUD mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
     }];
+
+    [self.view layoutIfNeeded];
 
     //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
@@ -138,6 +141,24 @@ static NSString * const cellIdentifier = @"TopicCell";
     [super viewWillAppear:animated];
 
     [self updateArchiveIcon];
+
+    [self.navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top);
+        make.leading.with.trailing.equalTo(self.view);
+        make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
+    }];
+    [self.scrollTabBar mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.tableView.mas_bottom);
+        make.leading.with.trailing.equalTo(self.view);
+        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
+    }];
+
+    _beforeLaunchingAnimation = NO;
+    [UIView animateWithDuration:0.3 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.1 options:0 animations:^{
+        [self setNeedsStatusBarAppearanceUpdate];
+        [self.view layoutIfNeeded];
+    } completion:^(BOOL finished) {
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -471,6 +492,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.view.frame = frame;
 }
 
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return _beforeLaunchingAnimation;
+}
+
 #pragma mark Networking
 
 - (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop {
@@ -628,7 +657,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[APColorManager shared] colorForKey:@"appearance.navigationbar.title"],
                                                            NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
     self.archiveButton.tintColor = [[APColorManager shared] colorForKey:@"topiclist.navigationbar.titlelabel"];
-    [self setNeedsStatusBarAppearanceUpdate];
+    if (!_beforeLaunchingAnimation) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification {
