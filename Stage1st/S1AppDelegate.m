@@ -120,6 +120,7 @@ S1AppDelegate *MyAppDelegate;
     navigationController.navigationBarHidden = YES;
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [[APColorManager shared] colorForKey:@"window.background"];
     self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
 
