@@ -27,6 +27,10 @@
     return myGlobalFormatter;
 }
 
+- (void)clearCache {
+    _dateCache = [[NSMutableDictionary alloc] init];
+}
+
 - (NSDateFormatter *)dateFormatter {
     if (_dateFormatter == nil) {
         _dateFormatter = [[NSDateFormatter alloc] init];

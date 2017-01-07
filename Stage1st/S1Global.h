@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSMutableDictionary *dateCache;
 
+- (void)clearCache;
 - (NSString *)headerForDate:(NSDate *)date;
 - (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2;
 
