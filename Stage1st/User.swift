@@ -22,7 +22,6 @@ open class User: NSObject, NSCoding {
     var registerDateString: String?
     var threadCount: Int?
     var postCount: Int?
-    var blocked: Bool?
 
     public init(ID: Int, name: String) {
         self.ID = ID
