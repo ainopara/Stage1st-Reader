@@ -72,7 +72,7 @@ extension ReplyAccessoryView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray ?? [MahjongFaceItem]()
+                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray
                 mahjongFaceView = newMahjongfaceView
             }
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)

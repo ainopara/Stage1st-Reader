@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (S1DataCenter *)sharedDataCenter;
 
 // Mahjong Face
-@property (strong, nonatomic, nullable) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
+@property (strong, nonatomic) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
 
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;

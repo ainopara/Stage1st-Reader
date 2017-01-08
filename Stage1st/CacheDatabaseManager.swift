@@ -167,18 +167,18 @@ extension CacheDatabaseManager {
         }
     }
 
-    func mahjongFaceHistory() -> [MahjongFaceItem]? {
+    func mahjongFaceHistory() -> [MahjongFaceItem] {
         var mahjongFaceHistory: [MahjongFaceItem]? = nil
         self.readConnection.read { (transaction) in
             mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
-        return mahjongFaceHistory
+        return mahjongFaceHistory ?? [MahjongFaceItem]()
     }
 }
 
 // MARK: - Helper
-extension CacheDatabaseManager {
-    fileprivate func _key(for topicID: Int, page: Int) -> String {
+private extension CacheDatabaseManager {
+    func _key(for topicID: Int, page: Int) -> String {
         return "\(topicID):\(page)"
     }
 }
