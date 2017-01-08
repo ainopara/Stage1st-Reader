@@ -65,7 +65,7 @@
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray<S1Topic *> *))success failure:(void (^)(NSError *))failure {
     
     if (self.topicListCachePageNumber[keyID] == nil) {
-        failure(nil);
+        failure([NSError errorWithDomain:@"Stage1stDomain" code:0 userInfo:nil]);
         return;
     }
     
