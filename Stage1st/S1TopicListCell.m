@@ -100,16 +100,16 @@
     titleParagraphStyle.alignment = NSTextAlignmentLeft;
 
     NSDictionary *const attribute = @{
-                                      NSForegroundColorAttributeName: titleColor,
-                                      NSFontAttributeName: titleFont,
-                                      NSParagraphStyleAttributeName: titleParagraphStyle
-                                      };
+        NSForegroundColorAttributeName: titleColor,
+        NSFontAttributeName: titleFont,
+        NSParagraphStyleAttributeName: titleParagraphStyle
+    };
 
     NSMutableAttributedString *const titleContent = [[NSMutableAttributedString alloc] initWithString:titleString attributes:attribute];
 
     NSDictionary *const highlightAttribute = @{
-                                               NSForegroundColorAttributeName:[[APColorManager shared] colorForKey:@"topiclist.cell.title.highlight"]
-                                               };
+        NSForegroundColorAttributeName:[[APColorManager shared] colorForKey:@"topiclist.cell.title.highlight"]
+    };
 
     if (self.highlight != nil && ![self.highlight isEqualToString:@""]) {
         [titleContent addAttributes:highlightAttribute
