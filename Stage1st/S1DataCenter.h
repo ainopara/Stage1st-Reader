@@ -68,16 +68,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol S1Backend <NSObject>
-
-- (void)hasViewed:(S1Topic *)topic;
-- (void)removeTopicFromHistory:(NSNumber *)topicID;
-- (void)removeTopicFromFavorite:(NSNumber *)topicID;
-- (S1Topic * _Nullable)topicByID:(NSNumber *)topicID;
-- (NSNumber *)numberOfTopicsInDatabse;
-- (NSNumber *)numberOfFavoriteTopicsInDatabse;
-- (void)removeTopicBeforeDate:(NSDate *)date;
-
-@end
-
 NS_ASSUME_NONNULL_END

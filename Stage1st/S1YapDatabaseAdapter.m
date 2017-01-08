@@ -14,6 +14,14 @@
 #import "YapDatabaseFullTextSearchTransaction.h"
 #import "S1Topic.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
+@interface S1YapDatabaseAdapter ()
+
+@property (nonatomic, strong) DatabaseManager *database;
+
+@end
+
 @implementation S1YapDatabaseAdapter
 
 - (instancetype)initWithDatabase:(DatabaseManager *)database {
@@ -24,7 +32,9 @@
     return self;
 }
 
-#pragma mark - S1Backend
+@end
+
+@implementation S1YapDatabaseAdapter (Topic)
 
 - (void)hasViewed:(S1Topic *)topic {
     [self.database.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
@@ -90,7 +100,7 @@
     }];
 }
 
-- (S1Topic *)topicByID:(NSNumber *)topicID {
+- (S1Topic *_Nullable)topicByID:(NSNumber *)topicID {
     __block S1Topic *topic = nil;
     [self.database.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction *transaction) {
         topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
@@ -135,3 +145,21 @@
 }
 
 @end
+
+@implementation S1YapDatabaseAdapter (User)
+
+- (void)blockUserWithID:(NSUInteger)userID {
+    
+}
+
+- (void)unblockUserWithID:(NSUInteger)userID {
+    
+}
+
+- (BOOL)userIDIsBlocked:(NSUInteger)userID {
+    return NO;
+}
+
+@end
+
+NS_ASSUME_NONNULL_END

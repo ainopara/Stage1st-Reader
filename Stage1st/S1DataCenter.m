@@ -14,9 +14,11 @@
 #import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1DataCenter ()
 
-@property (strong, nonatomic) id<S1Backend> tracer;
+@property (strong, nonatomic) S1YapDatabaseAdapter *tracer;
 @property (strong, nonatomic) CacheDatabaseManager *cacheDatabaseManager;
 @property (strong, nonatomic) DiscuzAPIManager *apiManager;
 
@@ -300,7 +302,7 @@
     [self.tracer removeTopicFromFavorite:topicID];
 }
 
-- (S1Topic *)tracedTopic:(NSNumber *)topicID {
+- (S1Topic *_Nullable)tracedTopic:(NSNumber *)topicID {
     return [self.tracer topicByID:topicID];
 }
 
@@ -388,3 +390,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
