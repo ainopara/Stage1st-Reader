@@ -14,6 +14,7 @@ import JTSImageViewController
 import Crashlytics
 import ReactiveSwift
 import ReactiveCocoa
+import Photos
 
 private let topOffset: CGFloat = -80.0
 private let bottomOffset: CGFloat = 60.0
@@ -872,7 +873,26 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
 
         imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { (_) in
             DispatchQueue.global(qos: .background).async {
-                UIImageWriteToSavedPhotosAlbum(imageViewer.image, nil, nil, nil)
+                PHPhotoLibrary.requestAuthorization { status in
+                    guard case .authorized = status else {
+                        DDLogError("No auth to access photo library")
+                        return
+                    }
+
+                    let imageData = imageViewer.imageData
+                    guard imageData != nil else {
+                        DDLogError("Image data is nil")
+                        return
+                    }
+
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
+                    }, completionHandler: { (success, error) in
+                        if let error = error {
+                            DDLogError("\(error)")
+                        }
+                    })
+                }
             }
         }))
 
