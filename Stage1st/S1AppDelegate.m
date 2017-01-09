@@ -111,7 +111,7 @@ S1AppDelegate *MyAppDelegate;
     [NSURLCache setSharedURLCache:URLCache];
 
     // Appearence
-    [[APColorManager shared] updateGlobalAppearance];
+    [[ColorManager shared] updateGlobalAppearance];
 
     S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
@@ -120,7 +120,7 @@ S1AppDelegate *MyAppDelegate;
     navigationController.navigationBarHidden = YES;
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = [[APColorManager shared] colorForKey:@"window.background"];
+    self.window.backgroundColor = [[ColorManager shared] colorForKey:@"window.background"];
     self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
 

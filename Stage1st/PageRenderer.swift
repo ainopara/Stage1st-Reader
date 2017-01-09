@@ -66,10 +66,10 @@ extension PageRenderer {
 
         func colorStyle() -> [String: Any?] {
             return [
-                "background": APColorManager.shared.htmlColorStringWithID("5"),
-                "text": APColorManager.shared.htmlColorStringWithID("21"),
-                "border": APColorManager.shared.htmlColorStringWithID("14"),
-                "borderText": APColorManager.shared.htmlColorStringWithID("17")
+                "background": ColorManager.shared.htmlColorStringWithID("5"),
+                "text": ColorManager.shared.htmlColorStringWithID("21"),
+                "border": ColorManager.shared.htmlColorStringWithID("14"),
+                "borderText": ColorManager.shared.htmlColorStringWithID("17")
             ]
         }
 

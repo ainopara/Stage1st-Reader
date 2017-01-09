@@ -161,8 +161,8 @@ extension UITextView {
         textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
         textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
         textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
-        textStorage.addAttribute(NSForegroundColorAttributeName, value: APColorManager.shared.colorForKey("reply.text"), range: allTextRange)
+        textStorage.addAttribute(NSForegroundColorAttributeName, value: ColorManager.shared.colorForKey("reply.text"), range: allTextRange)
         font = UIFont.systemFont(ofSize: 17.0)
-        textColor = APColorManager.shared.colorForKey("reply.text")
+        textColor = ColorManager.shared.colorForKey("reply.text")
     }
 }

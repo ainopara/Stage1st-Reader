@@ -9,7 +9,7 @@ import UIKit
 
 extension SettingsViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 }
 

@@ -135,11 +135,11 @@ final class UserViewController: UIViewController {
 // MARK: - Style
 extension UserViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = APColorManager.shared.colorForKey("content.background")
+        view.backgroundColor = ColorManager.shared.colorForKey("content.background")
         setNeedsStatusBarAppearanceUpdate()
     }
 }

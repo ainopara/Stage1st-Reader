@@ -107,8 +107,8 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
 // MARK: - Actions
 extension S1QuoteFloorViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = APColorManager.shared.colorForKey("content.background")
-        webView.backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
+        view.backgroundColor = ColorManager.shared.colorForKey("content.background")
+        webView.backgroundColor = ColorManager.shared.colorForKey("content.webview.background")
 
         setNeedsStatusBarAppearanceUpdate()
 
@@ -282,6 +282,6 @@ extension S1QuoteFloorViewController {
 // MARK: - Style
 extension S1QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return APColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 }

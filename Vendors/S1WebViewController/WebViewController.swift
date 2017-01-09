@@ -266,10 +266,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
     // MARK: - Notification
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        statusBarSeparatorView.backgroundColor = APColorManager.shared.colorForKey("default.text.tint")
-        progressView.tintColor = APColorManager.shared.colorForKey("default.text.tint")
+        statusBarSeparatorView.backgroundColor = ColorManager.shared.colorForKey("default.text.tint")
+        progressView.tintColor = ColorManager.shared.colorForKey("default.text.tint")
 
-        if APColorManager.shared.isDarkTheme() {
+        if ColorManager.shared.isDarkTheme() {
             let darkBlurEffect = UIBlurEffect(style: .dark)
             blurBackgroundView.effect = darkBlurEffect
             vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: darkBlurEffect)

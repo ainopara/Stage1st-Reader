@@ -1,5 +1,5 @@
 //
-//  APColorManager.swift
+//  ColorManager.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 11/12/15.
@@ -9,13 +9,13 @@
 import UIKit
 import CocoaLumberjack
 
-public class APColorManager: NSObject {
+public class ColorManager: NSObject {
     fileprivate var palette: NSDictionary = NSDictionary()
     fileprivate var colorMap: NSDictionary = NSDictionary()
     fileprivate let fallbackColor = UIColor.black
     fileprivate let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
-    public static let shared = { return APColorManager() }()
+    public static let shared = { return ColorManager() }()
 
     override init () {
         let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette": "DefaultPalette"
@@ -74,7 +74,7 @@ public class APColorManager: NSObject {
 }
 
 // MARK: - Private
-private extension APColorManager {
+private extension ColorManager {
     func loadPaletteByURL(_ paletteURL: URL?, shouldPushNotification shouldPush: Bool) {
         guard let paletteURL = paletteURL, let palette = NSDictionary(contentsOf: paletteURL) else {
             return

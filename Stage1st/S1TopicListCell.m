@@ -93,7 +93,7 @@
     NSString *const titleString = self.topic.title == nil ? @"" : self.topic.title;
     UIUserInterfaceSizeClass horizontalClass = self.traitCollection.horizontalSizeClass;
     UIFont *const titleFont = horizontalClass == UIUserInterfaceSizeClassCompact ? [UIFont systemFontOfSize:15.0] : [UIFont systemFontOfSize:17.0];
-    UIColor *const titleColor = [[APColorManager shared] colorForKey:@"topiclist.cell.title.text"];
+    UIColor *const titleColor = [[ColorManager shared] colorForKey:@"topiclist.cell.title.text"];
 
     NSMutableParagraphStyle *const titleParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     titleParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -108,7 +108,7 @@
     NSMutableAttributedString *const titleContent = [[NSMutableAttributedString alloc] initWithString:titleString attributes:attribute];
 
     NSDictionary *const highlightAttribute = @{
-        NSForegroundColorAttributeName:[[APColorManager shared] colorForKey:@"topiclist.cell.title.highlight"]
+        NSForegroundColorAttributeName:[[ColorManager shared] colorForKey:@"topiclist.cell.title.highlight"]
     };
 
     if (self.highlight != nil && ![self.highlight isEqualToString:@""]) {

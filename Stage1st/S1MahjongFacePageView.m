@@ -70,7 +70,7 @@
         self.backspaceButton = [[S1MahjongFaceButton alloc] init];
         [self.backspaceButton setImage:[[UIImage imageNamed:@"Backspace"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
         self.backspaceButton.adjustsImageWhenHighlighted = NO;
-        [self.backspaceButton setTintColor:[[APColorManager shared] colorForKey:@"mahjongface.backspace.tint"]];
+        [self.backspaceButton setTintColor:[[ColorManager shared] colorForKey:@"mahjongface.backspace.tint"]];
         [self.backspaceButton addTarget:self action:@selector(backspacePressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.backspaceButton];
     }

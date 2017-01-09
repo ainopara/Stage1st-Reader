@@ -22,9 +22,9 @@ final class QuoteFloorCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        backgroundColor = APColorManager.shared.colorForKey("content.webview.background")
+        backgroundColor = ColorManager.shared.colorForKey("content.webview.background")
 
-        avatarView.layer.borderColor = APColorManager.shared.colorForKey("hud.border").cgColor
+        avatarView.layer.borderColor = ColorManager.shared.colorForKey("hud.border").cgColor
         avatarView.layer.borderWidth = 1.0 / UIScreen.main.scale
         avatarView.layer.cornerRadius = 16.0
         avatarView.clipsToBounds = true
