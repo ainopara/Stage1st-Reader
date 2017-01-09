@@ -15,7 +15,7 @@ import ReactiveSwift
 class S1ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let dataCenter: S1DataCenter
-    let discuzAPIManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")
+    let apiManager: DiscuzAPIManager
 
     let currentPage: MutableProperty<UInt>
     let previousPage: MutableProperty<UInt>
@@ -47,6 +47,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
         DDLogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
 
         self.dataCenter = dataCenter
+        self.apiManager = dataCenter.apiManager
 
         self.title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
         self.replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
@@ -221,7 +222,7 @@ extension S1ContentViewModel: ContentViewModelMaker {
 
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
-        return ReportComposeViewModel(apiManager: discuzAPIManager,
+        return ReportComposeViewModel(apiManager: apiManager,
                                       topic: topic,
                                       floor: floor)
     }
@@ -230,7 +231,7 @@ extension S1ContentViewModel {
 extension S1ContentViewModel: QuoteFloorViewModelMaker {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(dataCenter: dataCenter,
-                                   manager: discuzAPIManager,
+                                   manager: apiManager,
                                    topic: topic,
                                    floors: floors,
                                    centerFloorID: centerFloorID,
@@ -239,8 +240,8 @@ extension S1ContentViewModel: QuoteFloorViewModelMaker {
 }
 
 extension S1ContentViewModel: UserViewModelMaker {
-    func userViewModel(userID: Int) -> UserViewModel {
-        return UserViewModel(manager: discuzAPIManager,
+    func userViewModel(userID: UInt) -> UserViewModel {
+        return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
     }
 }

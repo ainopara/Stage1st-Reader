@@ -6,7 +6,7 @@ target "Stage1st" do
     # Network
     pod 'AFNetworking'
     pod 'Alamofire'
-    pod 'Kingfisher'
+    pod 'AlamofireImage'
 
     # Model
     pod 'JASON'

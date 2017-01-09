@@ -14,43 +14,71 @@ NS_ASSUME_NONNULL_BEGIN
 @class S1Topic;
 @class Floor;
 @class MahjongFaceItem;
+@class DiscuzAPIManager;
 
 @interface S1DataCenter : NSObject
 
 + (S1DataCenter *)sharedDataCenter;
 
 // Mahjong Face
+@property (strong, nonatomic) DiscuzAPIManager *apiManager;
 @property (strong, nonatomic) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
 
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
 
-- (void)topicsForKey:(NSString *)keyID shouldRefresh:(BOOL)refresh success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)topicsForKey:(NSString *)keyID
+       shouldRefresh:(BOOL)refresh
+             success:(void (^)(NSArray<S1Topic *> *topicList))success
+             failure:(void (^)(NSError *error))failure;
 
-- (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)loadNextPageForKey:(NSString *)keyID
+                   success:(void (^)(NSArray<S1Topic *> *topicList))success
+                   failure:(void (^)(NSError *error))failure;
 
 - (BOOL)canMakeSearchRequest;
 
-- (void)searchTopicsForKeyword:(NSString *)keyword success:(void (^)(NSArray<S1Topic *> *topicList))success failure:(void (^)(NSError *error))failure;
+- (void)searchTopicsForKeyword:(NSString *)keyword
+                       success:(void (^)(NSArray<S1Topic *> *topicList))success
+                       failure:(void (^)(NSError *error))failure;
 
 // For Content View Controller
-- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic
+                         withPage:(NSNumber *)page;
 
-- (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate;
+- (void)precacheFloorsForTopic:(S1Topic *)topic
+                      withPage:(NSNumber *)page
+                  shouldUpdate:(BOOL)shouldUpdate;
 
-- (void)removePrecachedFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page;
+- (void)removePrecachedFloorsForTopic:(S1Topic *)topic
+                             withPage:(NSNumber *)page;
 
-- (void)floorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page success:(void (^)(NSArray<Floor *> *floorList, BOOL fromCache))success failure:(void (^)(NSError *error))failure;
+- (void)floorsForTopic:(S1Topic *)topic
+              withPage:(NSNumber *)page
+               success:(void (^)(NSArray<Floor *> *floorList, BOOL fromCache))success
+               failure:(void (^)(NSError *error))failure;
+
 - (Floor *)searchFloorInCacheByFloorID:(NSNumber *)floorID;
 
 // Reply
-- (void)replySpecificFloor:(Floor *)floor inTopic:(S1Topic *)topic atPage:(NSNumber *)page withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
-- (void)replyTopic:(S1Topic *)topic withText:(NSString *)text success:(void (^)())success failure:(void (^)(NSError *error))failure;
+- (void)replySpecificFloor:(Floor *)floor
+                   inTopic:(S1Topic *)topic
+                    atPage:(NSNumber *)page
+                  withText:(NSString *)text
+                   success:(void (^)())success
+                   failure:(void (^)(NSError *error))failure;
 
-- (void)findTopicFloor:(NSNumber *)floorID inTopicID:(NSNumber *)topicID success:(void (^)())success failure:(void (^)(NSError *))failure;
+- (void)replyTopic:(S1Topic *)topic
+          withText:(NSString *)text
+           success:(void (^)())success
+           failure:(void (^)(NSError *error))failure;
 
-// Database
+- (void)findTopicFloor:(NSNumber *)floorID
+             inTopicID:(NSNumber *)topicID
+               success:(void (^)())success
+               failure:(void (^)(NSError *))failure;
 
+#pragma mark - Database
 - (void)hasViewed:(S1Topic *)topic;
 - (void)removeTopicFromHistory:(NSNumber *)topicID;
 - (void)removeTopicFromFavorite:(NSNumber *)topicID;
@@ -59,10 +87,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSNumber *)numberOfTopics;
 - (NSNumber *)numberOfFavorite;
 
-// About Network
+- (void)blockUserWithID:(NSUInteger)userID;
+- (void)unblockUserWithID:(NSUInteger)userID;
+- (BOOL)userIDIsBlocked:(NSUInteger)userID;
+
+#pragma mark - Network
 - (void)cancelRequest;
 
-// Cleaning
+#pragma mark - Cleaning
 - (void)clearTopicListCache;
 - (void)cleaning;
 

@@ -12,16 +12,26 @@ import ReactiveCocoa
 import ReactiveSwift
 
 class UserViewModel {
+    let dataCenter: S1DataCenter
     let user: MutableProperty<User>
-    let apiManager: DiscuzAPIManager
+    let blocked: MutableProperty<Bool>
 
-    init(manager: DiscuzAPIManager, user: User) {
-        self.apiManager = manager
+    init(dataCenter: S1DataCenter, user: User) {
+        self.dataCenter = dataCenter
         self.user = MutableProperty(user)
+        self.blocked = MutableProperty(dataCenter.userIDIsBlocked(user.ID))
+
+        blocked.producer.startWithValues { (isBlocked) in
+            if isBlocked {
+                dataCenter.blockUser(withID: user.ID)
+            } else {
+                dataCenter.unblockUser(withID: user.ID)
+            }
+        }
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
-        apiManager.profile(self.user.value.ID) { [weak self] (result) in
+        dataCenter.apiManager.profile(self.user.value.ID) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {
             case .success(let user):

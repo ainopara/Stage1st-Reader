@@ -15,7 +15,7 @@ protocol PageRenderer {
     var topic: S1Topic { get }
 
     func templateBundle() -> Bundle
-    func userIsBlocked(with userID: Int) -> Bool
+    func userIsBlocked(with userID: UInt) -> Bool
     func generatePage(with floors: [Floor]) -> String
 }
 
@@ -25,7 +25,7 @@ extension PageRenderer {
         return Bundle(url: templateBundleURL)!
     }
 
-    func userIsBlocked(with userID: Int) -> Bool {
+    func userIsBlocked(with userID: UInt) -> Bool {
         return false
     }
 
@@ -77,7 +77,7 @@ extension PageRenderer {
             var isFirstInPage = true
             var data = [[String: Any?]]()
             for floor in floors {
-                data.append(_floorData(with: floor, topicAuthorID: topic.authorUserID as? Int, isFirstInPage: isFirstInPage))
+                data.append(_floorData(with: floor, topicAuthorID: topic.authorUserID as? UInt, isFirstInPage: isFirstInPage))
                 isFirstInPage = false
             }
             return data
@@ -91,7 +91,7 @@ extension PageRenderer {
     }
 
     // swiftlint:disable nesting
-    func _floorData(with floor: Floor, topicAuthorID: Int?, isFirstInPage: Bool) -> [String: Any?] {
+    func _floorData(with floor: Floor, topicAuthorID: UInt?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
             func stripTails(content: String) -> String {
                 let mutableString = (content as NSString).mutableCopy() as! NSMutableString

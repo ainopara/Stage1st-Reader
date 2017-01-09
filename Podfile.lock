@@ -17,6 +17,8 @@ PODS:
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
   - Alamofire (4.2.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
   - CocoaLumberjack (3.0.0):
     - CocoaLumberjack/Default (= 3.0.0)
     - CocoaLumberjack/Extensions (= 3.0.0)
@@ -45,7 +47,6 @@ PODS:
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
   - KIF/Core (3.5.1)
-  - Kingfisher (3.2.4)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
@@ -115,6 +116,7 @@ DEPENDENCIES:
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
+  - AlamofireImage
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
@@ -126,7 +128,6 @@ DEPENDENCIES:
   - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
-  - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
@@ -162,6 +163,7 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
   CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
@@ -172,7 +174,6 @@ SPEC CHECKSUMS:
   JASON: c1204b01c9979eef35b6948ca939aac5e7bef081
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
-  Kingfisher: 8d80f39da403cd9c9ee11984e1655f4d6a566cdb
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
@@ -185,6 +186,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 7b540a086bdfe990d4e028f12fa3dd21e3398ccb
+PODFILE CHECKSUM: e538d23e2ecbdaefc442f9f4732bb3b895bed357
 
 COCOAPODS: 1.1.1

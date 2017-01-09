@@ -26,6 +26,8 @@
     [S1Global regexReplaceString:mutableContent matchPattern:@"<blockquote><p>引用:</p>" withTemplate:@"<blockquote>"];
     //process imgwidth issue
     [S1Global regexReplaceString:mutableContent matchPattern:@"<imgwidth=([^>]*)>" withTemplate:@"<img width=$1>"];
+    // process embeded bilibili video to link
+    [S1Global regexReplaceString:mutableContent matchPattern:@"\\[thgame_biliplay\\{,=av\\}(\\d+)\\{,=page\\}(\\d+)[^\\]]*\\]\\[/thgame_biliplay\\]" withTemplate:@"<a href=\"https://www.bilibili.com/video/av$1/index_$2.html\">https://www.bilibili.com/video/av$1/index_$2.html</a>"];
     //process embeded image attachments
     __block NSString *finalString = [mutableContent copy];
     NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";

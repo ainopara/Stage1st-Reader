@@ -34,8 +34,8 @@ final class QuoteFloorViewModel: PageRenderer {
 }
 
 extension QuoteFloorViewModel: UserViewModelMaker {
-    func userViewModel(userID: Int) -> UserViewModel {
-        return UserViewModel(manager: discuzAPIManager,
+    func userViewModel(userID: UInt) -> UserViewModel {
+        return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
     }
 }

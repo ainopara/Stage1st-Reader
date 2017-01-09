@@ -9,9 +9,7 @@
 #import "S1DataCenter.h"
 #import "S1NetworkManager.h"
 #import "S1Topic.h"
-#import "S1Tracer.h"
 #import "S1Parser.h"
-#import "YapDatabase.h"
 #import "S1YapDatabaseAdapter.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -20,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) S1YapDatabaseAdapter *tracer;
 @property (strong, nonatomic) CacheDatabaseManager *cacheDatabaseManager;
-@property (strong, nonatomic) DiscuzAPIManager *apiManager;
 
 @property (strong, nonatomic) NSString *formhash;
 
@@ -35,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super init];
     
     _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
+    _apiManager = [[DiscuzAPIManager alloc] initWithBaseURL:@"http://bbs.saraba1st.com/2b"];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 
@@ -288,7 +286,7 @@ NS_ASSUME_NONNULL_BEGIN
     [S1NetworkManager cancelRequest];
 }
 
-#pragma mark - Database
+#pragma mark - Database (Topic)
 
 - (void)hasViewed:(S1Topic *)topic {
     [self.tracer hasViewed:topic];
@@ -312,6 +310,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSNumber *)numberOfFavorite {
     return [self.tracer numberOfFavoriteTopicsInDatabse];
+}
+
+#pragma mark - Database (User Blocking)
+
+- (void)blockUserWithID:(NSUInteger)userID {
+    [self.tracer blockUserWithID:userID];
+}
+
+- (void)unblockUserWithID:(NSUInteger)userID {
+    [self.tracer unblockUserWithID:userID];
+}
+
+- (BOOL)userIDIsBlocked:(NSUInteger)userID {
+    return [self.tracer userIDIsBlocked:userID];
 }
 
 #pragma mark - Topic List Cache

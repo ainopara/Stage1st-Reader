@@ -41,7 +41,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var backButton = UIButton(type: .system)
     var forwardButton = UIButton(type: .system)
     var pageButton = UIButton(frame: .zero)
-    var favoriteButton = UIButton(frame: .zero)
+    var favoriteButton = UIButton(type: .system)
     lazy var actionBarButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
     }()

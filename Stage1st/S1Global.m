@@ -164,7 +164,12 @@
     return mutableArray;
 }
 + (NSInteger)regexReplaceString:(NSMutableString *)mutableString matchPattern:(NSString *)pattern withTemplate:(NSString *)temp {
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSError *error = nil;
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+    if (error) {
+        DDLogError(@"Regex Replace error: %@ when initialize with pattern: %@", error, pattern);
+        return 0;
+    }
     return [re replaceMatchesInString:mutableString options:NSMatchingReportProgress range:NSMakeRange(0, [mutableString length]) withTemplate:temp];
 }
 

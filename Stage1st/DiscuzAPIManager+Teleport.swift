@@ -152,7 +152,7 @@ public extension DiscuzAPIManager {
 // MARK: - Profile
 public extension DiscuzAPIManager {
     @discardableResult
-    public func profile(_ userID: Int, responseBlock: @escaping (_ result: Result<User>) -> Void) -> Request {
+    public func profile(_ userID: UInt, responseBlock: @escaping (_ result: Result<User>) -> Void) -> Request {
         let parameters: [String: Any] = ["module": "profile", "version": 1, "uid": userID, "mobile": "no"]
         return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
             switch response.result {

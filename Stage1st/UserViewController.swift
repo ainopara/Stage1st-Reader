@@ -10,34 +10,73 @@ import Result
 import ReactiveCocoa
 import ReactiveSwift
 import SnapKit
-import Kingfisher
+import AlamofireImage
 
 final class UserViewController: UIViewController {
     private let viewModel: UserViewModel
 
-    private let scrollView = UIScrollView(frame: CGRect.zero)
-    private let containerView = UIView(frame: CGRect.zero)
+    private let scrollView = UIScrollView(frame: .zero)
+    private let containerView = UIView(frame: .zero)
     private let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
-    private let usernameLabel = UILabel(frame: CGRect.zero)
-    private let customStatusLabel = UILabel(frame: CGRect.zero)
-    private let infoLabel = UILabel(frame: CGRect.zero)
+    private let usernameLabel = UILabel(frame: .zero)
+    private let blockButton = UIButton(type: .system)
+    private let customStatusLabel = UILabel(frame: .zero)
+    private let infoLabel = UILabel(frame: .zero)
 
     // MARK: - Life Cycle
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+
+        avatarView.contentMode = .scaleAspectFill
+        avatarView.layer.borderWidth = 1.0 / UIScreen.main.scale
+        avatarView.clipsToBounds = true
+        customStatusLabel.numberOfLines = 0
+        infoLabel.numberOfLines = 0
+
+        viewModel.updateCurrentUserProfile { [weak self] result in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let user):
+                strongSelf.usernameLabel.text = user.name
+                if let avatarURL = user.avatarURL {
+                    strongSelf.avatarView.af_setImage(withURL: avatarURL)
+                }
+                strongSelf.customStatusLabel.text = user.customStatus
+                strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()
+            case .failure(let error):
+                strongSelf.s1_presentAlertView("Error", message: "\(error)")
+            }
+        }
+
+        viewModel.blocked.producer.startWithValues { [weak self] (isBlocked) in
+            guard let strongSelf = self else { return }
+            strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
+        }
+
+        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.viewModel.blocked.value = !strongSelf.viewModel.blocked.value
+        }
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = APColorManager.shared.colorForKey("content.background")
-
-        self.view.addSubview(scrollView)
+        view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view)
         }
@@ -51,54 +90,39 @@ final class UserViewController: UIViewController {
         containerView.addSubview(avatarView)
 
         avatarView.snp.makeConstraints { (make) in
-            make.leading.equalTo(self.containerView.snp.leading).offset(10.0)
-            make.top.equalTo(self.containerView.snp.top).offset(10.0)
+            make.leading.equalTo(containerView.snp.leading).offset(10.0)
+            make.top.equalTo(containerView.snp.top).offset(10.0)
             make.width.height.equalTo(80.0)
         }
 
         containerView.addSubview(usernameLabel)
         usernameLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(self.avatarView.snp.top)
-            make.leading.equalTo(self.avatarView.snp.trailing).offset(10.0)
-            make.trailing.equalTo(self.containerView.snp.trailing).offset(-10)
+            make.top.equalTo(avatarView.snp.top)
+            make.leading.equalTo(avatarView.snp.trailing).offset(10.0)
         }
 
-        customStatusLabel.numberOfLines = 0
+        blockButton.setContentHuggingPriority(UILayoutPriorityDefaultLow + 1, for: .horizontal)
+        containerView.addSubview(blockButton)
+        blockButton.snp.makeConstraints { (make) in
+            make.leading.equalTo(usernameLabel.snp.trailing).offset(10.0)
+            make.trailing.equalTo(containerView.snp.trailing).offset(-10.0)
+            make.top.equalTo(usernameLabel.snp.top)
+            make.bottom.equalTo(usernameLabel.snp.bottom)
+        }
+
         containerView.addSubview(customStatusLabel)
         customStatusLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(self.usernameLabel.snp.bottom).offset(10.0)
-            make.leading.trailing.equalTo(self.usernameLabel)
+            make.top.equalTo(usernameLabel.snp.bottom).offset(10.0)
+            make.leading.trailing.equalTo(blockButton.snp.trailing)
         }
 
-        infoLabel.numberOfLines = 0
         containerView.addSubview(infoLabel)
         infoLabel.snp.makeConstraints { (make) in
-            make.top.greaterThanOrEqualTo(self.avatarView.snp.bottom).offset(10.0)
-            make.top.greaterThanOrEqualTo(self.customStatusLabel.snp.bottom).offset(10.0)
+            make.top.greaterThanOrEqualTo(avatarView.snp.bottom).offset(10.0)
+            make.top.greaterThanOrEqualTo(customStatusLabel.snp.bottom).offset(10.0)
             make.leading.equalTo(avatarView.snp.leading)
-            make.trailing.equalTo(usernameLabel.snp.trailing)
+            make.trailing.equalTo(blockButton.snp.trailing)
         }
-
-        self.viewModel.updateCurrentUserProfile { [weak self] result in
-            guard let strongSelf = self else { return }
-            switch result {
-            case .success(let user):
-                strongSelf.usernameLabel.text = user.name
-                if let avatarURL = user.avatarURL {
-                    strongSelf.avatarView.kf.setImage(with: ImageResource(downloadURL: avatarURL))
-                }
-                strongSelf.customStatusLabel.text = user.customStatus
-                strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()
-            case .failure(let error):
-                strongSelf.s1_presentAlertView("Error", message: "\(error)")
-            }
-        }
-
-        NotificationCenter.default.addObserver(self, selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)), name: .APPaletteDidChangeNotification, object: nil)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -106,7 +130,6 @@ final class UserViewController: UIViewController {
 
         didReceivePaletteChangeNotification(nil)
     }
-
 }
 
 // MARK: - Style

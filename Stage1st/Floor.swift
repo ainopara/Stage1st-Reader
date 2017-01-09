@@ -10,18 +10,18 @@ import Foundation
 import JASON
 import CocoaLumberjack
 
-fileprivate let kFloorID = "floorID"
-fileprivate let kIndexMark  = "indexMark"
-fileprivate let kAuthor = "author"
-fileprivate let kAuthorID  = "authorID"
-fileprivate let kPostTime = "postTime"
-fileprivate let kContent = "content"
-fileprivate let kPoll = "poll"
-fileprivate let kMessage = "message"
-fileprivate let kImageAttachmentURLStringList = "imageAttachmentList"
-fileprivate let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
+private let kFloorID = "floorID"
+private let kIndexMark  = "indexMark"
+private let kAuthor = "author"
+private let kAuthorID  = "authorID"
+private let kPostTime = "postTime"
+private let kContent = "content"
+private let kPoll = "poll"
+private let kMessage = "message"
+private let kImageAttachmentURLStringList = "imageAttachmentList"
+private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
 
-class Floor: NSObject, NSCoding {
+final class Floor: NSObject, NSCoding {
     let ID: Int
     var indexMark: String?
     var author: User
@@ -36,13 +36,12 @@ class Floor: NSObject, NSCoding {
     }
 
     init?(json: JSON) {
-        guard
-            let IDString = json["pid"].string,
-            let ID = Int(IDString),
-            let authorIDString = json["authorid"].string,
-            let authorID = Int(authorIDString),
-            let authorName = json["author"].string else {
-                return nil
+        guard let IDString = json["pid"].string,
+              let ID = Int(IDString),
+              let authorIDString = json["authorid"].string,
+              let authorID = UInt(authorIDString),
+              let authorName = json["author"].string else {
+            return nil
         }
 
         self.ID = ID
@@ -54,7 +53,7 @@ class Floor: NSObject, NSCoding {
 
     required init?(coder aDecoder: NSCoder) {
         let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
-        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int ?? aDecoder.decodeInteger(forKey: kAuthorID)
+        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? UInt ?? UInt(aDecoder.decodeInteger(forKey: kAuthorID))
         guard
             ID != 0,
             authorID != 0,
