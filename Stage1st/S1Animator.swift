@@ -66,7 +66,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 fromViewController.view.transform = CGAffineTransform(translationX: containerViewWidth, y: 0.0)
                 toViewController.view.transform = CGAffineTransform.identity
             }
-        }) { (finished) in
+        }) { (_) in
             fromViewController.view.transform = CGAffineTransform.identity
             toViewController.view.transform = CGAffineTransform.identity
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)

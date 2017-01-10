@@ -366,7 +366,7 @@ extension S1LoginViewController {
             UserDefaults.standard.set(username, forKey: "InLoginStateID")
             strongSelf.state = .login
             let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
                 strongSelf._dismiss()
             }))
             strongSelf.present(alertController, animated: true, completion: nil)
@@ -399,7 +399,7 @@ extension S1LoginViewController {
         DDLogDebug("debug secure question")
         self.view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
-        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (pciker, selectedIndex, selectedValue) in
+        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (_, selectedIndex, selectedValue) in
                 button.setTitle(selectedValue as? String ?? "??", for: .normal)
                 if selectedIndex == 0 {
                     self.state = .notLogin
@@ -481,7 +481,7 @@ extension S1LoginViewController {
                 UserDefaults.standard.set(username, forKey: "InLoginStateID")
                 strongSelf.state = .login
                 let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { action in
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
                     strongSelf._dismiss()
                 }))
                 strongSelf.present(alertController, animated: true, completion: nil)

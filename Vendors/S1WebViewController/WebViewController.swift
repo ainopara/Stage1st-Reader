@@ -224,7 +224,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             UIView.animate(withDuration: 0.3, animations: {
                 self.progressView.setProgress(newProgress, animated: false)
                 self.progressView.alpha = 0.0
-            }, completion: { finished in
+            }, completion: { _ in
                 self.progressView.setProgress(0.0, animated: false)
             })
         } else {

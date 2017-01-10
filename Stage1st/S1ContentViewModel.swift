@@ -71,7 +71,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
         // TODO: Add logs.
 //        DDLogInfo("[ContentVM] reply count changed: %@", x)
-        previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { (previous, current) in return previous }
+        previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { (previous, _) in return previous }
     }
 
 }

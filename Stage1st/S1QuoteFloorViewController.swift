@@ -220,7 +220,7 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
 
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
                                                     style: .default,
-                                                    handler: { [weak self] (action) in
+                                                    handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.presentType = .background
             DDLogDebug("[ContentVC] Open in Safari: \(url)")

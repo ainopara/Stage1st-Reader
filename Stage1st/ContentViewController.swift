@@ -236,7 +236,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         }
 
         SignalProducer.combineLatest(webPageReadyForAutomaticScrolling.producer, finishFirstLoading.producer, webPageCurrentContentHeight.producer)
-            .startWithValues { [weak self] (webPageReady, finishFirstLoading, currentContentHeight) in
+            .startWithValues { [weak self] (webPageReady, finishFirstLoading, _) in
 
             guard let strongSelf = self else { return }
             DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading)")
@@ -486,7 +486,7 @@ extension S1ContentViewController {
         let picker = ActionSheetStringPicker(title: "",
                                              rows: pageList,
                                              initialSelection: Int(viewModel.currentPage.value - 1),
-                                             doneBlock: { [weak self] (picker, selectedIndex, selectedValue) in
+                                             doneBlock: { [weak self] (_, selectedIndex, _) in
             guard let strongSelf = self else { return }
 
             if strongSelf.viewModel.currentPage.value == UInt(selectedIndex + 1) {
@@ -631,7 +631,7 @@ extension S1ContentViewController {
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""),
                                                       style: .destructive,
-                                                      handler: { [weak self] (action) in
+                                                      handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
                 strongSelf._alertRefresh()
@@ -652,7 +652,7 @@ extension S1ContentViewController {
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""),
                                                       style: .default,
-                                                      handler: { [weak self] (action) in
+                                                      handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
                 strongSelf._alertRefresh()
@@ -819,7 +819,7 @@ extension S1ContentViewController: WKNavigationDelegate {
         // Fallback Open link
         let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""), style: .cancel, handler: nil))
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { (action) in
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { (_) in
             DDLogInfo("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {
@@ -887,7 +887,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
 
                     PHPhotoLibrary.shared().performChanges({
                         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
-                    }, completionHandler: { (success, error) in
+                    }, completionHandler: { (_, error) in
                         if let error = error {
                             DDLogError("\(error)")
                         }
@@ -935,7 +935,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 guard let strongSelf = self else { return }
                 strongSelf.webView.scrollView.setContentOffset(currentContentOffset, animated: false)
                 strongSelf.webView.scrollView.alpha = 0.0
-            }, completion: { [weak self] (finished) in
+            }, completion: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.back(sender: strongSelf.webView)
             })
@@ -965,7 +965,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 guard let strongSelf = self else { return }
                 strongSelf.webView.scrollView.setContentOffset(currentContentOffset, animated: false)
                 strongSelf.webView.scrollView.alpha = 0.0
-            }, completion: { [weak self] (finished) in
+            }, completion: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.forward(sender: strongSelf.webView)
             })
@@ -1256,7 +1256,7 @@ extension S1ContentViewController {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChange = true
                 webView.scrollView.alpha = 1.0
-            }, completion: { (finished) in
+            }, completion: { (_) in
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .pullDownForPrevious:
@@ -1271,7 +1271,7 @@ extension S1ContentViewController {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChange = true
                 webView.scrollView.alpha = 1.0
-            }, completion: { (finished) in
+            }, completion: { (_) in
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .toBottom:

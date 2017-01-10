@@ -20,7 +20,7 @@ func ensureMainThread(_ block: @escaping () -> Void) {
 }
 
 // https://www.youtube.com/watch?v=jzdOkQFekbg `Let's Talk About Let` by `objc.io`
-func mutate<T>(_ value: T, change: (inout T) -> ()) -> T {
+func mutate<T>(_ value: T, change: (inout T) -> Void) -> T {
     var copy = value
     change(&copy)
     return copy

@@ -99,9 +99,9 @@ extension S1TopicListViewModel {
     func initializeMappings() {
         databaseConnection.read { (transaction) in
             if transaction.ext(Ext_FullTextSearch_Archive) != nil {
-                self.viewMappings = YapDatabaseViewMappings(groupFilterBlock: { (group, transaction) -> Bool in
+                self.viewMappings = YapDatabaseViewMappings(groupFilterBlock: { (_, _) -> Bool in
                     return true
-                }, sortBlock: { (group1, group2, transaction) -> ComparisonResult in
+                }, sortBlock: { (group1, group2, _) -> ComparisonResult in
                     return S1Formatter.sharedInstance().compareDateString(group1, withDateString: group2)
                 }, view: Ext_searchResultView_Archive)
                 self.viewMappings?.update(with: transaction)
