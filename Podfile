@@ -28,7 +28,7 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'ReactiveCocoa', '~> 5.0.0-rc.1'
+    pod 'ReactiveCocoa', '= 5.0.0-rc.1'
 
     pod 'Fabric'
     pod 'Crashlytics'
