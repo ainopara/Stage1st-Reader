@@ -1,4 +1,4 @@
-# source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "9.0"
 use_frameworks!
 
@@ -28,7 +28,7 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'ReactiveCocoa', '5.0.0-rc.1'
+    pod 'ReactiveCocoa', '~> 5.0.0-rc.1'
     pod 'ReactiveSwift'
 
     pod 'Fabric'

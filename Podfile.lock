@@ -131,7 +131,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - Reachability
-  - ReactiveCocoa (= 5.0.0-rc.1)
+  - ReactiveCocoa (~> 5.0.0-rc.1)
   - ReactiveSwift
   - Reveal-SDK
   - SnapKit
@@ -187,6 +187,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 0dcb353d18b62a354dc8b5e43a4f75d24dc4ad3e
+PODFILE CHECKSUM: 6e293aab1a0e3559f9ac0c0aeb7bf61e8d60acc0
 
 COCOAPODS: 1.1.1
