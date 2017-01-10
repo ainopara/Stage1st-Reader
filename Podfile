@@ -16,7 +16,7 @@ target "Stage1st" do
     pod 'JTSImageViewController', :git => 'https://github.com/ainopara/JTSImageViewController.git'
 
     pod 'Masonry'
-    pod 'SnapKit'
+    pod 'SnapKit', :git => 'https://github.com/SnapKit/SnapKit.git', :tag => '3.1.2'
 
     pod 'YYKeyboardManager'
     pod 'TextAttributes'
