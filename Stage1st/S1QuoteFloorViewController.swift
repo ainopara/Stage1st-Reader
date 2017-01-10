@@ -10,6 +10,7 @@ import WebKit
 import Crashlytics
 import CocoaLumberjack
 import JTSImageViewController
+import Photos
 
 class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter {
     let viewModel: QuoteFloorViewModel
@@ -143,7 +144,26 @@ extension S1QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate
 
         imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { (_) in
             DispatchQueue.global(qos: .background).async {
-                UIImageWriteToSavedPhotosAlbum(imageViewer.image, nil, nil, nil)
+                PHPhotoLibrary.requestAuthorization { status in
+                    guard case .authorized = status else {
+                        DDLogError("No auth to access photo library")
+                        return
+                    }
+
+                    let imageData = imageViewer.imageData
+                    guard imageData != nil else {
+                        DDLogError("Image data is nil")
+                        return
+                    }
+
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
+                    }, completionHandler: { (_, error) in
+                        if let error = error {
+                            DDLogError("\(error)")
+                        }
+                    })
+                }
             }
         }))
 
