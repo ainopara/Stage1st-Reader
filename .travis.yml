@@ -12,7 +12,7 @@ env:
     - DESTINATION="OS=9.0,name=iPhone 6"           SCHEME="$IOS_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="NO"
 before_install:
   - pod env 
-#  - pod repo update --silent
+  - pod repo update --silent
 script:
   - set -o pipefail
   - xcodebuild -version

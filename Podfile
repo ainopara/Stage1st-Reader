@@ -16,7 +16,7 @@ target "Stage1st" do
     pod 'JTSImageViewController', :git => 'https://github.com/ainopara/JTSImageViewController.git'
 
     pod 'Masonry'
-    pod 'SnapKit', :git => 'https://github.com/SnapKit/SnapKit.git', :tag => '3.1.2'
+    pod 'SnapKit'
 
     pod 'YYKeyboardManager'
     pod 'TextAttributes'
@@ -28,7 +28,7 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'ReactiveCocoa', :git => 'https://github.com/ReactiveCocoa/ReactiveCocoa.git', :tag => '5.0.0-rc.1'
+    pod 'ReactiveCocoa', '~> 5.0.0-rc.1'
     pod 'ReactiveSwift'
 
     pod 'Fabric'
