@@ -13,8 +13,7 @@ env:
 before_install:
   - gem uninstall cocoapods -a
   - gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
-  - pod --version
-  - cat Podfile
+  - pod env 
   - cat Podfile.lock
 script:
   - set -o pipefail
