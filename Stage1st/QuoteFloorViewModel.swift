@@ -31,6 +31,10 @@ final class QuoteFloorViewModel: PageRenderer {
         self.centerFloorID = centerFloorID
         self.baseURL = baseURL
     }
+
+    func userIsBlocked(with userID: UInt) -> Bool {
+        return dataCenter.userIDIsBlocked(userID)
+    }
 }
 
 extension QuoteFloorViewModel: UserViewModelMaker {

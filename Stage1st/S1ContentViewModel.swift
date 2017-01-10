@@ -74,6 +74,9 @@ class S1ContentViewModel: NSObject, PageRenderer {
         previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { (previous, _) in return previous }
     }
 
+    func userIsBlocked(with userID: UInt) -> Bool {
+        return dataCenter.userIDIsBlocked(userID)
+    }
 }
 
 extension S1ContentViewModel {

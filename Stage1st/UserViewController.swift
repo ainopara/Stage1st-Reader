@@ -15,13 +15,13 @@ import AlamofireImage
 final class UserViewController: UIViewController {
     private let viewModel: UserViewModel
 
-    private let scrollView = UIScrollView(frame: .zero)
-    private let containerView = UIView(frame: .zero)
-    private let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
-    private let usernameLabel = UILabel(frame: .zero)
-    private let blockButton = UIButton(type: .system)
-    private let customStatusLabel = UILabel(frame: .zero)
-    private let infoLabel = UILabel(frame: .zero)
+    fileprivate let scrollView = UIScrollView(frame: .zero)
+    fileprivate let containerView = UIView(frame: .zero)
+    fileprivate let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
+    fileprivate let usernameLabel = UILabel(frame: .zero)
+    fileprivate let blockButton = UIButton(type: .system)
+    fileprivate let customStatusLabel = UILabel(frame: .zero)
+    fileprivate let infoLabel = UILabel(frame: .zero)
 
     // MARK: - Life Cycle
     init(viewModel: UserViewModel) {
@@ -43,7 +43,7 @@ final class UserViewController: UIViewController {
                     strongSelf.avatarView.af_setImage(withURL: avatarURL)
                 }
                 strongSelf.customStatusLabel.text = user.customStatus
-                strongSelf.infoLabel.attributedText = strongSelf.viewModel.infoLabelAttributedText()
+                strongSelf.infoLabel.text = strongSelf.viewModel.infoLabelText()
             case .failure(let error):
                 strongSelf.s1_presentAlertView("Error", message: "\(error)")
             }
@@ -122,6 +122,7 @@ final class UserViewController: UIViewController {
             make.top.greaterThanOrEqualTo(customStatusLabel.snp.bottom).offset(10.0)
             make.leading.equalTo(avatarView.snp.leading)
             make.trailing.equalTo(blockButton.snp.trailing)
+            make.bottom.equalTo(containerView.snp.bottom).offset(-10.0)
         }
     }
 
@@ -140,6 +141,9 @@ extension UserViewController {
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         view.backgroundColor = ColorManager.shared.colorForKey("content.background")
+        usernameLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
+        customStatusLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
+        infoLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
         setNeedsStatusBarAppearanceUpdate()
     }
 }

@@ -290,6 +290,10 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                                                selector: #selector(didReceiveFloorCachedNotification(_:)),
                                                name: Notification.Name(rawValue: "S1FloorDidCached"),
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
+                                               name: .UserBlockStatusDidChangedNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -740,6 +744,10 @@ extension S1ContentViewController {
         }
 
         updateToolBar()
+    }
+
+    open func didReceiveUserBlockStatusDidChangedNotification(_ notification: Notification?) {
+      refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
     }
 }
 

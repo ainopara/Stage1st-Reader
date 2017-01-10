@@ -24,8 +24,10 @@ class UserViewModel {
         blocked.producer.startWithValues { (isBlocked) in
             if isBlocked {
                 dataCenter.blockUser(withID: user.ID)
+                NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
             } else {
                 dataCenter.unblockUser(withID: user.ID)
+                NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
             }
         }
     }
@@ -43,25 +45,29 @@ class UserViewModel {
         }
     }
 
-    func infoLabelAttributedText() -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
+    func infoLabelText() -> String {
+        let infoLabelString = NSMutableString()
 
         if let lastVisitDateString = user.value.lastVisitDateString {
-            attributedString.append(NSAttributedString(string: "最后访问：\n\(lastVisitDateString)\n"))
+            infoLabelString.append("最后访问：\n\(lastVisitDateString)\n")
         }
         if let registerDateString = user.value.registerDateString {
-            attributedString.append(NSAttributedString(string: "注册日期：\n\(registerDateString)\n"))
+            infoLabelString.append("注册日期：\n\(registerDateString)\n")
         }
         if let threadCount = user.value.threadCount {
-            attributedString.append(NSAttributedString(string: "发帖数：\n\(threadCount)\n"))
+            infoLabelString.append("发帖数：\n\(threadCount)\n")
         }
         if let postCount = user.value.postCount {
-            attributedString.append(NSAttributedString(string: "回复数：\n\(postCount)\n"))
+            infoLabelString.append("回复数：\n\(postCount)\n")
         }
         if let sigHTML = user.value.sigHTML {
-            attributedString.append(NSAttributedString(string: "签名：\n\(sigHTML)\n"))
+            infoLabelString.append("签名：\n\(sigHTML.s1_htmlStripped(trimWhitespace: false) ?? sigHTML)\n")
         }
 
-        return attributedString
+        return infoLabelString as String
     }
+}
+
+public extension Notification.Name {
+    public static let UserBlockStatusDidChangedNotification = Notification.Name.init(rawValue: "UserBlockStatusDidChangedNotification")
 }

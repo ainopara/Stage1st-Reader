@@ -56,6 +56,10 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
                                                name: .APPaletteDidChangeNotification,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
+                                               name: .UserBlockStatusDidChangedNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -117,6 +121,11 @@ extension S1QuoteFloorViewController {
             webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
         }
     }
+
+    open func didReceiveUserBlockStatusDidChangedNotification(_ notification: Notification?) {
+        webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
+    }
+
 }
 
 // MARK:

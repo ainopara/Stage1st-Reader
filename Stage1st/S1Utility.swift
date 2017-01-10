@@ -226,3 +226,26 @@ extension CGFloat {
         return result > from ? result : from
     }
 }
+
+// From https://github.com/kickstarter/ios-oss/blob/master/Library/String%2BSimpleHTML.swift
+extension String {
+  public func s1_htmlStripped(trimWhitespace: Bool = true) -> String? {
+
+    guard let data = self.data(using: .utf8) else { return nil }
+
+    let options: [String: Any] = [
+      NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+      NSCharacterEncodingDocumentAttribute: String.Encoding.utf8.rawValue
+    ]
+
+    let attributedString = try? NSAttributedString(data: data,
+                                                   options: options,
+                                                   documentAttributes: nil)
+    let result = attributedString?.string
+
+    if trimWhitespace {
+        return result.flatMap { ($0 as NSString).trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+    return result
+  }
+}
