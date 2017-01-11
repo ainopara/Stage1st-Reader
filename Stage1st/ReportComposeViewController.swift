@@ -145,15 +145,15 @@ extension ReportComposeViewController: YYKeyboardObserver {
 extension ReportComposeViewController {
     func submit() {
         view.endEditing(true)
-        MessagePadManager.shared.post(message: "举报发送中", duration: .forever)
+        MessageHUD.shared.post(message: "举报发送中", duration: .forever)
         viewModel.submit { [weak self] (error) in
             guard let strongSelf = self else { return }
             if let error = error {
                 // FIXME: Alert Error
                 DDLogError("Report Submit Error: \(error)")
-                MessagePadManager.shared.post(message: "举报发送失败", duration: .second(2.5))
+                MessageHUD.shared.post(message: "举报发送失败", duration: .second(2.5))
             } else {
-                MessagePadManager.shared.post(message: "举报发送成功", duration: .second(2.5))
+                MessageHUD.shared.post(message: "举报发送成功", duration: .second(2.5))
                 strongSelf.dismiss(animated: true, completion: nil)
             }
         }

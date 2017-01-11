@@ -1,5 +1,5 @@
 //
-//  ProgressHUD.swift
+//  MessageHUD.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 1/11/17.
@@ -9,10 +9,10 @@
 import UIKit
 import SnapKit
 
-class MessagePadManager: UIWindow {
-    static var shared = MessagePadManager(frame: .zero)
+class MessageHUD: UIWindow {
+    static var shared = MessageHUD(frame: .zero)
 
-    let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+    let backgroundView = UIVisualEffectView(effect: nil)
     let textLabel = UILabel(frame: .zero)
 
     override init(frame: CGRect) {
@@ -33,6 +33,13 @@ class MessagePadManager: UIWindow {
         }
 
         windowLevel = UIWindowLevelStatusBar - 1.0
+
+        didReceivePaletteChangeNotification(nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
+                                               name: .APPaletteDidChangeNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -57,5 +64,9 @@ class MessagePadManager: UIWindow {
     enum Duration {
         case second(TimeInterval)
         case forever
+    }
+    func didReceivePaletteChangeNotification(_ notification: Notification?) {
+        backgroundView.effect = ColorManager.shared.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
+        textLabel.textColor = ColorManager.shared.colorForKey("reply.text")
     }
 }

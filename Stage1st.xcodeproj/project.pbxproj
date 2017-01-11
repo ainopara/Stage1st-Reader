@@ -62,7 +62,7 @@
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
 		86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BA383C1C0A106E00D508AC /* S1Application.swift */; };
-		86BEC60F1E2677AA00352976 /* MessagePadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BEC60E1E2677AA00352976 /* MessagePadManager.swift */; };
+		86BEC60F1E2677AA00352976 /* MessageHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BEC60E1E2677AA00352976 /* MessageHUD.swift */; };
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */; };
 		86CA71E41B1B706B00204A5C /* MahjongCategoryOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */; };
@@ -215,7 +215,7 @@
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+MahjongFaceExtension.h"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86BA383C1C0A106E00D508AC /* S1Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Application.swift; sourceTree = "<group>"; };
-		86BEC60E1E2677AA00352976 /* MessagePadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessagePadManager.swift; path = Vendors/ProgressHUD/MessagePadManager.swift; sourceTree = "<group>"; };
+		86BEC60E1E2677AA00352976 /* MessageHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageHUD.swift; path = Vendors/ProgressHUD/MessageHUD.swift; sourceTree = "<group>"; };
 		86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFacePageView.h; path = Stage1st/S1MahjongFacePageView.h; sourceTree = "<group>"; };
 		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFacePageView.m; path = Stage1st/S1MahjongFacePageView.m; sourceTree = "<group>"; };
 		86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1MahjongFaceButton.h; path = Stage1st/S1MahjongFaceButton.h; sourceTree = "<group>"; };
@@ -623,7 +623,7 @@
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
 				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
 				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
-				86BEC60E1E2677AA00352976 /* MessagePadManager.swift */,
+				86BEC60E1E2677AA00352976 /* MessageHUD.swift */,
 				86D20FE31CA6B64A003F2691 /* Logger */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
@@ -1008,7 +1008,7 @@
 				868799211CE629BE00F5C75C /* JASON+Alamofire.swift in Sources */,
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
-				86BEC60F1E2677AA00352976 /* MessagePadManager.swift in Sources */,
+				86BEC60F1E2677AA00352976 /* MessageHUD.swift in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
