@@ -113,7 +113,8 @@ final class UserViewController: UIViewController {
         containerView.addSubview(customStatusLabel)
         customStatusLabel.snp.makeConstraints { (make) in
             make.top.equalTo(usernameLabel.snp.bottom).offset(10.0)
-            make.leading.trailing.equalTo(blockButton.snp.trailing)
+            make.leading.equalTo(usernameLabel.snp.leading)
+            make.trailing.equalTo(blockButton.snp.trailing)
         }
 
         containerView.addSubview(infoLabel)
