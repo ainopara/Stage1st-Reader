@@ -1030,6 +1030,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
             }
 
             let successBlock = { [weak self] in
+                MessagePadManager.shared.post(message: "回复成功", duration: .second(2.5))
 //                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                 guard let strongSelf = self else { return }
                 strongSelf.attributedReplyDraft = nil
@@ -1043,13 +1044,15 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 
                 if nserror.domain == NSURLErrorDomain && nserror.code == NSURLErrorCancelled {
                     DDLogDebug("[Network] NSURLErrorCancelled")
+                    MessagePadManager.shared.post(message: "回复请求取消", duration: .second(1.0))
 //                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else {
                     DDLogDebug("[Network] reply error: \(nserror)")
+                    MessagePadManager.shared.post(message: "回复失败", duration: .second(2.5))
 //                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                 }
             }
-
+            MessagePadManager.shared.post(message: "回复发送中", duration: .forever)
             // [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
 
             if let replyTopicFloor = replyTopicFloor {
