@@ -43,7 +43,7 @@ final class ReportComposeViewModel {
         }
 
         dataCenter.blockUser(withID: floor.author.ID)
- 
+
         submiting.value = true
         _ = apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
             guard let strongSelf = self else { return }

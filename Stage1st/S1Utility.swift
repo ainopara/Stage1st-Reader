@@ -38,6 +38,16 @@ func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
     return false
 }
 
+extension NSDate {
+    func s1_isLaterThan(date: NSDate) -> Bool {
+        return self.compare(date as Date) == .orderedDescending
+    }
+
+    func s1_isEarlierThan(date: NSDate) -> Bool {
+        return self.compare(date as Date) == .orderedAscending
+    }
+}
+
 extension Date {
     func s1_gracefulDateTimeString() -> String {
         let interval = -self.timeIntervalSinceNow

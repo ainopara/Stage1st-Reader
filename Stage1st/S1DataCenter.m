@@ -11,6 +11,7 @@
 #import "S1Topic.h"
 #import "S1Parser.h"
 #import "S1YapDatabaseAdapter.h"
+#import <WebKit/WebKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -332,21 +333,40 @@ NS_ASSUME_NONNULL_BEGIN
     return self.topicListCache[keyID] != nil;
 }
 
-- (void)clearTopicListCache {
-    self.topicListCache = [[NSMutableDictionary alloc] init];
-    self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
-}
 
 #pragma mark - Cleaning
 
 - (void)cleaning {
-    [self.cacheDatabaseManager removeFloorsWithLastUsedBefore:[NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 3600]];
+    [self _cleanHistoryTopic];
+    
+    NSDate *cleaningCacheBeforeDate = [NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 3600];
+    [self.cacheDatabaseManager removeFloorsWithLastUsedBefore:cleaningCacheBeforeDate];
     [self.cacheDatabaseManager cleanInvalidFloorsID];
+
+    // Clean every 2 weeks.
+    static NSString *const previousCleaningDateKey = @"PreviousWebKitCacheCleaningDate";
+    NSDate *previousCleaningDate = [[NSUserDefaults standardUserDefaults] objectForKey:previousCleaningDateKey];
+    if (previousCleaningDate == nil || [previousCleaningDate s1_isEarlierThanWithDate:cleaningCacheBeforeDate]) {
+        NSSet *websiteDataTypes = [NSSet setWithArray:@[WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache]];
+        NSDate *cleaningWebKitCacheBeforeDate = [NSDate dateWithTimeIntervalSince1970:0];
+        [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:cleaningWebKitCacheBeforeDate completionHandler:^{
+            DDLogInfo(@"WebKit disk cache cleaned.");
+            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:previousCleaningDateKey];
+        }];
+    }
+}
+
+- (void)_cleanHistoryTopic {
     NSTimeInterval duration = [[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"] doubleValue];
     if (duration < 0) {
         return;
     }
     [self.tracer removeTopicBeforeDate:[NSDate dateWithTimeIntervalSinceNow:-duration]];
+}
+
+- (void)clearTopicListCache {
+    self.topicListCache = [[NSMutableDictionary alloc] init];
+    self.topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 }
 
 #pragma mark - Mahjongface History
