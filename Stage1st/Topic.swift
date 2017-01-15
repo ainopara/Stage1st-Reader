@@ -42,5 +42,8 @@ extension S1Topic {
             }
             self.setValue(serverValue, forKey: onePropertyName)
         }
+
+        // Always update message
+        message = topic.message
     }
 }

@@ -229,7 +229,8 @@ NS_ASSUME_NONNULL_BEGIN
                 success(floorList, NO);
             }];
         } else {
-            failure([[NSError alloc] initWithDomain:@"Stage1stErrorDomain" code:10 userInfo:nil]);
+            NSString *errorMessage = [NSString stringWithFormat:@"%@", topicFromPageResponse.message];
+            failure([[NSError alloc] initWithDomain:@"Stage1stErrorDomain" code:101 userInfo:@{@"message": errorMessage}]);
         }
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         failure(error);

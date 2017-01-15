@@ -1189,7 +1189,7 @@ extension S1ContentViewController {
                 // Dismiss HUD if exist
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.hideHUDIfNoMessageToShow()
+                    strongSelf.hideHUD()
                 }
 
                 // Auto refresh when current page not full.
@@ -1197,12 +1197,18 @@ extension S1ContentViewController {
                     strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
                 }
             case .failure(let error):
-                if error.code == NSURLErrorCancelled {
+                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
                     DDLogDebug("request cancelled.")
                     // TODO:
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
                     //            }
+                } else if error.domain == "Stage1stErrorDomain" && error.code == 101 {
+                    DDLogInfo("[ContentVC] Permission denied with message: \(error)")
+                    if let message = error.userInfo["message"] as? String, message != "" {
+                        strongSelf.refreshHUD.showMessage(message)
+                        strongSelf.refreshHUD.hide(withDelay: 3.0)
+                    }
                 } else {
                     DDLogDebug("[ContentVC] fetch failed with error: \(error)")
                     strongSelf.refreshHUD.showRefreshButton()
@@ -1334,13 +1340,8 @@ extension S1ContentViewController {
         return view.bounds.width > 320.0 + 1.0
     }
 
-    func hideHUDIfNoMessageToShow() {
-        if let message = viewModel.topic.message, message != "" {
-            refreshHUD.showMessage(message)
-            refreshHUD.hide(withDelay: 3.0)
-        } else {
+    func hideHUD() {
             refreshHUD.hide(withDelay: 0.3)
-        }
     }
 
     func refreshCurrentPage(forceUpdate: Bool, scrollType: ScrollType) {
