@@ -21,7 +21,7 @@ class UserViewModel {
         self.user = MutableProperty(user)
         self.blocked = MutableProperty(dataCenter.userIDIsBlocked(user.ID))
 
-        blocked.producer.startWithValues { (isBlocked) in
+        blocked.signal.observeValues { (isBlocked) in
             if isBlocked {
                 dataCenter.blockUser(withID: user.ID)
                 NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
