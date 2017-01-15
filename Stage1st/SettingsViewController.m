@@ -11,6 +11,7 @@
 #import "CloudKitManager.h"
 #import <Crashlytics/Answers.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
+#import <SafariServices/SafariServices.h>
 
 @interface SettingsViewController ()
 
@@ -183,6 +184,9 @@
     } else if (indexPath.section == 0 && indexPath.row == 0) {
         S1LoginViewController *viewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:viewController animated:YES completion:NULL];
+    } else if (indexPath.section == 2 && indexPath.row == 2) {
+        SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"https://ainopara.github.io/stage1st-reader-EULA.html"]];
+        [self presentViewController:safariViewController animated:YES completion:NULL];
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
