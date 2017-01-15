@@ -43,6 +43,7 @@ final class ReportComposeViewModel {
         }
 
         dataCenter.blockUser(withID: floor.author.ID)
+        NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
 
         submiting.value = true
         _ = apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
