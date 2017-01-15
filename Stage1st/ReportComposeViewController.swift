@@ -15,6 +15,7 @@ import YYKeyboardManager
 import TextAttributes
 
 final class ReportComposeViewModel {
+    let dataCenter: S1DataCenter
     let apiManager: DiscuzAPIManager
     let topic: S1Topic
     let floor: Floor
@@ -23,8 +24,9 @@ final class ReportComposeViewModel {
     let canSubmit = MutableProperty(false)
     let submiting = MutableProperty(false)
 
-    init(apiManager: DiscuzAPIManager, topic: S1Topic, floor: Floor) {
-        self.apiManager = apiManager
+    init(dataCenter: S1DataCenter, topic: S1Topic, floor: Floor) {
+        self.dataCenter = dataCenter
+        self.apiManager = dataCenter.apiManager
         self.topic = topic
         self.floor = floor
 
@@ -39,6 +41,9 @@ final class ReportComposeViewModel {
         guard let forumID = topic.fID, let formhash = topic.formhash else {
             return
         }
+
+        dataCenter.blockUser(withID: floor.author.ID)
+ 
         submiting.value = true
         _ = apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
             guard let strongSelf = self else { return }

@@ -225,7 +225,7 @@ extension S1ContentViewModel: ContentViewModelMaker {
 
 extension S1ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
-        return ReportComposeViewModel(apiManager: apiManager,
+        return ReportComposeViewModel(dataCenter: dataCenter,
                                       topic: topic,
                                       floor: floor)
     }
