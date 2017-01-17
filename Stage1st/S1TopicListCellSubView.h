@@ -10,13 +10,10 @@
 
 @class S1Topic;
 
-@class S1Topic;
-
 @interface S1TopicListCellSubView : UIView
 
 @property (nonatomic, strong) S1Topic *topic;
-@property (nonatomic, strong) NSString *highlight;
-@property BOOL selected;
-@property BOOL highlighted;
+@property (nonatomic, assign) BOOL highlighted;
+@property (nonatomic, assign) BOOL pinningToTop;
 
 @end

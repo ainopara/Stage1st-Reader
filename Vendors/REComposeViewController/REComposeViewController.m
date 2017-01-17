@@ -25,139 +25,87 @@
 
 #import "REComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Masonry/Masonry.h>
 #import "NSAttributedString+MahjongFaceExtension.h"
 
-@interface REComposeViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-
-@property (strong, readonly, nonatomic) UIView *backgroundView;
-@property (strong, readonly, nonatomic) UIView *containerView;
-@property (strong, readonly, nonatomic) REComposeSheetView *sheetView;
-@property (assign, readwrite, nonatomic) BOOL userUpdatedAttachment;
-
-@end
-
-@implementation REComposeViewController {
+@interface REComposeViewController () <REComposeSheetViewDelegate> {
+    UIView *_backgroundView;
+    UIView *_backView;
+    UIView *_containerView;
     CGFloat _keyboardHeight;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+@property (assign, readwrite, nonatomic) BOOL userUpdatedAttachment;
+@property (nonatomic, strong) REComposeSheetView *sheetView;
+
+@end
+
+@implementation REComposeViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _cornerRadius = 6;
         _keyboardHeight = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 387 : 197) : (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 299 : 252.0);
-        _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectMake(0, 0, self.currentWidth - 8, 202)];
-        self.tintColor = [UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:1.0];
+        self.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
     return self;
 }
 
-- (int)currentWidth
-{
-    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-        UIScreen *screen = [UIScreen mainScreen];
-        return (!UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) ? screen.bounds.size.width : screen.bounds.size.height;
-    } else {
-        UIScreen *screen = [UIScreen mainScreen];
-        return screen.bounds.size.width;
-    }
-    
-}
-
-- (void)loadView
-{
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-    if (keyWindow.rootViewController) {
-        self.view = [[UIView alloc] initWithFrame:keyWindow.rootViewController.view.bounds];
-    } else {
-        self.view = [[UIView alloc] initWithFrame:keyWindow.bounds];
-    }
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _backgroundView = [[UIView alloc] initWithFrame:self.view.bounds];
-    _backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    self.view.backgroundColor = [UIColor clearColor];
+
+    _backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
     _backgroundView.opaque = NO;
     _backgroundView.alpha = 0;
     _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
     
     [self.view addSubview:_backgroundView];
+    [_backgroundView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
     
-    _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 202)];
-    _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame), CGRectGetWidth(self.view.frame), 202)];
     _containerView.alpha = 0;
+
+    [self.view addSubview:_containerView];
     
-    NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-        offset *= 2;
-    }
-    _backView = [[UIView alloc] initWithFrame:CGRectMake(offset, 0, self.currentWidth - offset*2, 202)];
+    _backView = [[UIView alloc] initWithFrame:CGRectZero];
     _backView.layer.cornerRadius = _cornerRadius;
     _backView.layer.rasterizationScale = [UIScreen mainScreen].scale;
-    
-    _sheetView.frame = _backView.bounds;
-    _sheetView.layer.cornerRadius = _cornerRadius;
-    _sheetView.clipsToBounds = YES;
-    _sheetView.delegate = self;
-    _sheetView.backgroundColor = self.tintColor;
-    
-    
+
+    [_backView addSubview:self.sheetView];
+    [self.sheetView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(_backView);
+    }];
+
     [_containerView addSubview:_backView];
-    [self.view addSubview:_containerView];
-    [_backView addSubview:_sheetView];
-    
-    if (!_attachmentImage)
-        _attachmentImage = [[UIImage alloc] init];
-    
-    _sheetView.attachmentImageView.image = _attachmentImage;
-    [_sheetView.attachmentViewButton addTarget:self
-                                        action:@selector(didTapAttachmentView:)
-                              forControlEvents:UIControlEventTouchUpInside];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewOrientationDidChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [_backView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(_containerView);
+    }];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateKeyboardFrame:) name:UIKeyboardDidShowNotification object:nil];
 }
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
-{
-    [super didMoveToParentViewController:parent];
-
-    _backgroundView.frame = _rootViewController.view.bounds;
-    
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.containerView.alpha = 1;
-        self.backgroundView.alpha = 1;
-        [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-        [self.sheetView.textView becomeFirstResponder];
-    } completion:nil];
-
-}
-
-- (void)presentFromRootViewController
-{
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [self presentFromViewController:rootViewController];
-}
-
-- (void)presentFromViewController:(UIViewController *)controller
-{
-    _rootViewController = controller;
-    [controller addChildViewController:self];
-    [controller.view addSubview:self.view];
-    [self didMoveToParentViewController:controller];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear: animated];
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)layoutWithOrientation:(UIInterfaceOrientation)interfaceOrientation width:(NSInteger)width height:(NSInteger)height
-{
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self.sheetView.textView becomeFirstResponder];
+    [UIView animateWithDuration:0.3 animations:^{
+        _containerView.alpha = 1;
+        _backgroundView.alpha = 1;
+    }];
+}
+
+- (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height {
+    DDLogDebug(@"layout:w%ld, h%ld",(long)width, (long)height);
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
     NSInteger expectComposeViewHeight = 202;
     NSInteger minimumComposeViewWidth = 320;
@@ -165,6 +113,7 @@
     // decide container's frame ( y position and height)
     CGRect frame = _containerView.frame;
     frame.size.height = expectComposeViewHeight;
+
     NSInteger yPosition = (height - _keyboardHeight - expectComposeViewHeight) / 2;
     if (yPosition < 20) {
         frame.size.height = height - _keyboardHeight - 20 - 4;
@@ -172,245 +121,133 @@
     } else {
         frame.origin.y = yPosition;
     }
-    _containerView.frame = frame;
-    _containerView.clipsToBounds = YES;
-    // decide backview's frame(x position and width)
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation) && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        offset *= 2;
-    }
+
     if (width - offset * 2.0 < minimumComposeViewWidth) {
         offset = (width - minimumComposeViewWidth) / 2.0;
         if (offset < 4.0) {
             offset = 4.0;
         }
     }
-    _backView.frame = CGRectMake(offset, 0, width - offset*2, frame.size.height);
-    _sheetView.frame = _backView.bounds;
-    
-    // decide paperclip's positon
-    CGRect paperclipFrame = _paperclipView.frame;
-    paperclipFrame.origin.x = width - 73 - offset;
-    _paperclipView.frame = paperclipFrame;
-    _paperclipView.hidden = !_hasAttachment;
-    _sheetView.attachmentView.hidden = !_hasAttachment;
-    
-    [_sheetView.navigationBar sizeToFit];
-    
-    CGRect attachmentViewFrame = _sheetView.attachmentView.frame;
-    attachmentViewFrame.origin.x = _sheetView.frame.size.width - 84;
-    attachmentViewFrame.origin.y = _sheetView.navigationBar.frame.size.height + 10;
-    _sheetView.attachmentView.frame = attachmentViewFrame;
-    
-    CGRect textViewFrame = _sheetView.textView.frame;
-    textViewFrame.size.width = !_hasAttachment ? _sheetView.textViewContainer.frame.size.width : _sheetView.textViewContainer.frame.size.width - 84;
-    textViewFrame.size.width -= 14;
-    _sheetView.textView.scrollIndicatorInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, _hasAttachment ? -85 : 0);
-    textViewFrame.size.height = _sheetView.frame.size.height - _sheetView.navigationBar.frame.size.height - 3;
-    _sheetView.textView.frame = textViewFrame;
-    
-    CGRect textViewContainerFrame = _sheetView.textViewContainer.frame;
-    textViewContainerFrame.origin.y = _sheetView.navigationBar.frame.size.height;
-    textViewContainerFrame.size.height = _sheetView.frame.size.height - _sheetView.navigationBar.frame.size.height;
-    _sheetView.textViewContainer.frame = textViewContainerFrame;
+    frame.origin.x = offset;
+    frame.size.width = width - offset * 2.0;
+    _containerView.frame = frame;
 }
 
-- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
-{
-    [_sheetView.textView resignFirstResponder];
-    __typeof(&*self) __weak weakSelf = self;
-    
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    [self.sheetView.textView endEditing:YES];
+
     [UIView animateWithDuration:0.4 animations:^{
-        if (YES) {
-            self.containerView.alpha = 0;
-        } else {
-            CGRect frame = weakSelf.containerView.frame;
-            frame.origin.y =  weakSelf.rootViewController.view.frame.size.height;
-            weakSelf.containerView.frame = frame;
-        }
+        _containerView.alpha = 0;
     }];
     
-    [UIView animateWithDuration:0.4
-                          delay:0.1
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         weakSelf.backgroundView.alpha = 0;
-                     } completion:^(BOOL finished) {
-                         [weakSelf.view removeFromSuperview];
-                         [weakSelf removeFromParentViewController];
-                         if (completion)
-                             completion();
-                     }];
+    [UIView animateWithDuration:0.4 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        _backgroundView.alpha = 0;
+    } completion:^(BOOL finished) {
+        if (completion) {
+            completion();
+        }
+    }];
+
+    [super dismissViewControllerAnimated:flag completion:completion];
 }
 
-#pragma mark -
-#pragma mark Accessors
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
 
-- (UINavigationItem *)navigationItem
-{
-    return _sheetView.navigationItem;
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self layoutWithWidth:CGRectGetWidth(self.view.frame) height:CGRectGetHeight(self.view.frame)];
+    } completion:nil];
 }
 
-- (UINavigationBar *)navigationBar
-{
-    return _sheetView.navigationBar;
+#pragma mark - Accessors
+
+- (UINavigationItem *)navigationItem {
+    return self.sheetView.navigationItem;
 }
 
-- (void)setAttachmentImage:(UIImage *)attachmentImage
-{
-    _attachmentImage = attachmentImage;
-    _sheetView.attachmentImageView.image = _attachmentImage;
+- (UINavigationBar *)navigationBar {
+    return self.sheetView.navigationBar;
 }
 
-- (NSString *)text
-{
-    return [_sheetView.textView.attributedText getPlainString];
+- (NSString *)plainText {
+    return [self.sheetView.textView.attributedText getPlainString];
 }
 
-- (void)setText:(NSString *)text
-{
-    _sheetView.textView.text = text;
+- (void)setSheetBackgroundColor:(UIColor *)sheetBackgroundColor {
+    self.sheetView.backgroundColor = sheetBackgroundColor;
 }
 
-- (NSAttributedString *)attributedText
-{
-    return _sheetView.textView.attributedText;
+- (UIColor *)sheetBackgroundColor {
+    return self.sheetView.backgroundColor;
 }
 
-- (void)setAttributedText:(NSAttributedString *)text
-{
-    _sheetView.textView.attributedText = text;
-}
-
-
-- (NSString *)placeholderText
-{
-    return _sheetView.textView.placeholder;
-}
-
-- (void)setPlaceholderText:(NSString *)placeholderText
-{
-    _sheetView.textView.placeholder = placeholderText;
-}
-
-- (void)setTintColor:(UIColor *)tintColor
-{
-    _tintColor = tintColor;
-    self.sheetView.backgroundColor = tintColor;
-}
-
-- (void)setKeyboardAppearance:(UIKeyboardAppearance)appearance {
-    _sheetView.textView.keyboardAppearance = appearance;
-}
-
-- (void)setTextViewTintColor:(UIColor *)color {
-    self.sheetView.textView.tintColor = color;
+- (REComposeSheetView *)sheetView {
+    if (_sheetView == nil) {
+        _sheetView = [[REComposeSheetView alloc] initWithFrame:CGRectZero];
+        _sheetView.layer.cornerRadius = _cornerRadius;
+        _sheetView.clipsToBounds = YES;
+        _sheetView.delegate = self;
+    }
+    return _sheetView;
 }
 
 #pragma mark - Input View and Accessory View
+
 - (DEComposeTextView *)textView {
-    return _sheetView.textView;
+    return self.sheetView.textView;
 }
+
 - (void)setAccessoryView:(UIView *)view {
-    _sheetView.textView.inputAccessoryView = view;
+    self.sheetView.textView.inputAccessoryView = view;
 }
 
 - (UIView *)accessoryView {
-    return _sheetView.textView.inputAccessoryView;
+    return self.sheetView.textView.inputAccessoryView;
 }
 
 - (void)setInputView:(UIView *)view {
-    _sheetView.textView.inputView = view;
+    self.sheetView.textView.inputView = view;
 }
 
 - (UIView *)inputView {
-    return _sheetView.textView.inputView;
+    return self.sheetView.textView.inputView;
 }
 
 - (void)reloadInputViews {
     [super reloadInputViews];
-    [_sheetView.textView reloadInputViews];
+    [self.sheetView.textView reloadInputViews];
 }
-#pragma mark -
-#pragma mark REComposeSheetViewDelegate
 
-- (void)cancelButtonPressed
-{
+#pragma mark - REComposeSheetViewDelegate
+
+- (void)cancelButtonPressed {
     id<REComposeViewControllerDelegate> localDelegate = _delegate;
     if (localDelegate && [localDelegate respondsToSelector:@selector(composeViewController:didFinishWithResult:)]) {
         [localDelegate composeViewController:self didFinishWithResult:REComposeResultCancelled];
     }
-    if (_completionHandler)
-        _completionHandler(self, REComposeResultCancelled);
 }
 
-- (void)postButtonPressed
-{
+- (void)postButtonPressed {
     id<REComposeViewControllerDelegate> localDelegate = _delegate;
     if (localDelegate && [localDelegate respondsToSelector:@selector(composeViewController:didFinishWithResult:)]) {
         [localDelegate composeViewController:self didFinishWithResult:REComposeResultPosted];
     }
-    if (_completionHandler)
-        _completionHandler(self, REComposeResultPosted);
 }
 
-#pragma mark -
-#pragma mark UIImagePickerControllerDelegate
+#pragma mark - Notification
 
-- (void)didTapAttachmentView:(id)sender
-{
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    // If our device has a cmera, we want to take a picture, otherwise we just pick from the library
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-    [picker setSourceType:UIImagePickerControllerSourceTypeCamera];
-    } else {
-    [picker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    }
-
-    picker.delegate = self;
-    [self presentViewController:picker animated:YES completion:nil];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    [self setAttachmentImage:[info objectForKey:UIImagePickerControllerOriginalImage]];
-    self.userUpdatedAttachment = YES;
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    [self.sheetView.textView becomeFirstResponder];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    [self.sheetView.textView becomeFirstResponder];
-}
-
-#pragma mark -
-#pragma mark Orientation
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskAll;
-}
-
-
-- (void)viewOrientationDidChanged:(NSNotification *)notification
-{
-    [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-}
-
-- (void)updateKeyboardFrame:(NSNotification *)notification
-{
+- (void)updateKeyboardFrame:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
-    CGSize kbSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    NSLog(@"%f", kbSize.height);
-    if (_keyboardHeight != kbSize.height) {
-        _keyboardHeight = kbSize.height;
-        [UIView animateWithDuration:0.4 animations:^{
-            [self layoutWithOrientation:self.interfaceOrientation width:self.view.frame.size.width height:self.view.frame.size.height];
-        }];
+    CGFloat keyboardHeight = CGRectGetHeight([[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue]);
+    NSTimeInterval timeInterval = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+//    UIViewAnimationCurve animationCurve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
+    DDLogDebug(@"keyboard height: %f", keyboardHeight);
+    if (_keyboardHeight != keyboardHeight) {
+        _keyboardHeight = keyboardHeight;
+        [UIView animateWithDuration:timeInterval delay:0.0 options:0 animations:^{
+            [self layoutWithWidth:CGRectGetWidth(self.view.frame) height:CGRectGetHeight(self.view.frame)];
+        } completion:NULL];
     }
-    
-    
 }
 
 @end

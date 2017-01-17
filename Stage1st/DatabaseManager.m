@@ -1,25 +1,28 @@
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
 #import "S1AppDelegate.h"
-#import "YapDatabaseFilteredView.h"
-#import "YapDatabaseFullTextSearch.h"
-#import "YapDatabaseSearchResultsView.h"
 #import "MyDatabaseObject.h"
 #import "S1Topic.h"
-
+#import <YapDatabase/YapDatabase.h>
+#import <YapDatabase/YapDatabaseCloudKit.h>
+#import <YapDatabase/YapDatabaseFilteredView.h>
+#import <YapDatabase/YapDatabaseFullTextSearch.h>
+#import <YapDatabase/YapDatabaseSearchResultsView.h>
 #import <Reachability/Reachability.h>
 
+
 NSString *const UIDatabaseConnectionWillUpdateNotification = @"UIDatabaseConnectionWillUpdateNotification";
-NSString *const UIDatabaseConnectionDidUpdateNotification  = @"UIDatabaseConnectionDidUpdateNotification";
+NSString *const UIDatabaseConnectionDidUpdateNotification = @"UIDatabaseConnectionDidUpdateNotification";
 NSString *const kNotificationsKey = @"notifications";
 
-NSString *const Collection_Topics    = @"topics";
+NSString *const Collection_Topics = @"topics";
+NSString *const Collection_UserBlackList = @"userBlackList";
 NSString *const Collection_CloudKit = @"cloudKit";
 
 NSString *const Ext_View_Archive = @"archive";
 NSString *const Ext_FullTextSearch_Archive = @"fullTextSearchArchive";
 NSString *const Ext_searchResultView_Archive = @"searchResultViewArchive";
-NSString *const Ext_CloudKit   = @"cloudKit";
+NSString *const Ext_CloudKit = @"cloudKit";
 
 NSString *const CloudKitZoneName = @"zone1";
 
@@ -153,7 +156,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupDatabase
 {
 	NSString *databasePath = [[self class] databasePath];
-	// NSLog(@"databasePath: %@", databasePath);
+	DDLogVerbose(@"[DatabaseManager] databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".
@@ -206,12 +209,8 @@ DatabaseManager *MyDatabaseManager;
     [self setupArchiveViewExtension];
     [self setupFullTextSearchExtension];
     [self setupSearchResultViewExtension];
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support cloud kit sync
-        ;
-    } else {
-        // iOS 8 and more
-        [self setupCloudKitExtension];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+         [self setupCloudKitExtension];
     }
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -274,7 +273,7 @@ DatabaseManager *MyDatabaseManager;
 	
     [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_View_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_View_Archive);
         }
     }];
 }
@@ -303,13 +302,13 @@ DatabaseManager *MyDatabaseManager;
         }
     }];
     
-    // TODO: compress the generated search string,They are not build in function so that I must implement them and make them accessed by sqlite.
+    // TODO: compress the generated search string,They are not build-in function, so I must implement them and make them accessed by sqlite.
     // (use sqlite3_create_function to add custom function to sqlite)
-    //NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
+    // NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
     YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
     [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
@@ -319,16 +318,14 @@ DatabaseManager *MyDatabaseManager;
     YapDatabaseSearchResultsView *searchResultView = [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive parentViewName:Ext_View_Archive versionTag:@"1" options:options];
     [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            NSLog(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
 
 - (void)setupCloudKitExtension
 {
-	YapDatabaseCloudKitRecordHandler *recordHandler = [YapDatabaseCloudKitRecordHandler withObjectBlock:
-	    ^(YapDatabaseReadTransaction *transaction, CKRecord *__autoreleasing *inOutRecordPtr, YDBCKRecordInfo *recordInfo,
-		  NSString *collection, NSString *key, S1Topic *topic)
+	YapDatabaseCloudKitRecordHandler *recordHandler = [YapDatabaseCloudKitRecordHandler withObjectBlock:^(YapDatabaseReadTransaction * _Nonnull transaction, CKRecord *__autoreleasing  _Nonnull * _Nullable inOutRecordPtr, YDBCKRecordInfo * _Nonnull recordInfo, NSString * _Nonnull collection, NSString * _Nonnull key, S1Topic * _Nonnull topic)
 	{
 		CKRecord *record = inOutRecordPtr ? *inOutRecordPtr : nil;
 		if (record                          && // not a newly inserted object
@@ -432,18 +429,18 @@ DatabaseManager *MyDatabaseManager;
             NSDate *remoteLastUpdateDate = [remoteRecord valueForKey:@"lastViewedDate"];
             NSDate *localLastUpdateDate = topic.lastViewedDate;
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] != 0) {
-                NSLog(@"Merge: Remote Change");
+                DDLogDebug(@"Merging: Remote Change %lu", (unsigned long)[remoteChangedKeys count]);
                 for (NSString *key in remoteChangedKeys) {
-                    NSLog(@"%@ : %@", key, [remoteRecord valueForKey:key]);
+                    DDLogDebug(@"[R] %@ : %@", key, [remoteRecord valueForKey:key]);
                 }
-                NSLog(@"Merge: Local Change");
+                DDLogDebug(@"Merging: Local Change %lu", (unsigned long)[localChangedKeys count]);
                 for (NSString *key in localChangedKeys) {
-                    NSLog(@"%@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
+                    DDLogDebug(@"[L] %@ : %@", key, [mergeInfo.pendingLocalRecord valueForKey:key]);
                 }
             }
             
             if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] > 0) {
-                NSLog(@"Merge: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Resolve: Remote Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 topic = [topic copy]; // make mutable copy
                 for (NSString *remoteChangedKey in remoteChangedKeys) {
                     id remoteChangedValue = [remoteRecord valueForKey:remoteChangedKey];
@@ -452,7 +449,7 @@ DatabaseManager *MyDatabaseManager;
                 }
                 [transaction setObject:topic forKey:key inCollection:collection];
             } else if ([remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate] < 0){
-                NSLog(@"Merge: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
+                DDLogDebug(@"Resolve: Local Win -> %f seconds", [remoteLastUpdateDate timeIntervalSinceDate:localLastUpdateDate]);
                 for (NSString *localChangedKey in localChangedKeys)
                 {
                     id localChangedValue = [mergeInfo.pendingLocalRecord valueForKey:localChangedKey];
@@ -463,12 +460,12 @@ DatabaseManager *MyDatabaseManager;
                 // But last update date is not enough to make sure all keys of them have same value.
                 // Since favorite state is important, It's batter to make those who favorite is ture win.
                 if ([[remoteRecord valueForKey:@"favorite"] boolValue] == YES && [topic.favorite boolValue] == NO) {
-                    NSLog(@"Merge: Draw -- favorite mismatch -- update local value to fit cloud state");
+                    DDLogDebug(@"Merge: Draw -- favorite mismatch -- update local value to fit cloud state");
                     topic = [topic copy]; // make mutable copy
                     topic.favorite = @YES;
                     [transaction setObject:topic forKey:key inCollection:collection];
                 } else if ([[remoteRecord valueForKey:@"favorite"] boolValue] == NO && [topic.favorite boolValue] == YES) {
-                    NSLog(@"Merge: Draw -- favorite mismatch -- update cloud value to fit local state");
+                    DDLogDebug(@"Merge: Draw -- favorite mismatch -- update cloud value to fit local state");
                     [mergeInfo.updatedPendingLocalRecord setObject:@YES forKey:@"favorite"];
                 }
             }
@@ -479,33 +476,35 @@ DatabaseManager *MyDatabaseManager;
 	YapDatabaseCloudKitOperationErrorBlock opErrorBlock =
 	  ^(NSString *databaseIdentifier, NSError *operationError)
 	{
-		NSInteger ckErrorCode = operationError.code;
-        [MyCloudKitManager reportError:operationError];
-        
-		if (ckErrorCode == CKErrorNetworkUnavailable ||
-		    ckErrorCode == CKErrorNetworkFailure      ) {
-			[MyCloudKitManager handleNetworkError];
-		}
-		else if (ckErrorCode == CKErrorPartialFailure) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [MyCloudKitManager handlePartialFailure];
-            });
-		}
-		else if (ckErrorCode == CKErrorNotAuthenticated) {
-			[MyCloudKitManager handleNotAuthenticated];
-        }
-        else if (ckErrorCode == CKErrorRequestRateLimited ||
-                 ckErrorCode == CKErrorServiceUnavailable  ) {
-            [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
-        }
-        else if (ckErrorCode == CKErrorUserDeletedZone) {
-            [MyCloudKitManager handleUserDeletedZone];
-        }
-		else if (ckErrorCode == CKErrorChangeTokenExpired) {
-            [MyCloudKitManager handleChangeTokenExpired];
-		}
-        else {
-            [MyCloudKitManager handleOtherErrors];
+        if ([operationError.domain isEqualToString:CKErrorDomain]) {
+            NSInteger ckErrorCode = operationError.code;
+            [MyCloudKitManager reportError:operationError];
+
+            if (ckErrorCode == CKErrorNetworkUnavailable ||
+                ckErrorCode == CKErrorNetworkFailure      ) {
+                [MyCloudKitManager handleNetworkError];
+            }
+            else if (ckErrorCode == CKErrorPartialFailure) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [MyCloudKitManager handlePartialFailure];
+                });
+            }
+            else if (ckErrorCode == CKErrorNotAuthenticated) {
+                [MyCloudKitManager handleNotAuthenticated];
+            }
+            else if (ckErrorCode == CKErrorRequestRateLimited ||
+                     ckErrorCode == CKErrorServiceUnavailable  ) {
+                [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
+            }
+            else if (ckErrorCode == CKErrorUserDeletedZone) {
+                [MyCloudKitManager handleUserDeletedZone];
+            }
+            else if (ckErrorCode == CKErrorChangeTokenExpired) {
+                [MyCloudKitManager handleChangeTokenExpired];
+            }
+            else {
+                [MyCloudKitManager handleOtherErrors];
+            }
         }
 	};
 	
@@ -521,16 +520,17 @@ DatabaseManager *MyDatabaseManager;
 	                                                            versionTag:@"1"
 	                                                           versionInfo:nil
 	                                                               options:options];
-	
+
+	[cloudKitExtension suspend]; // Upgrade
 	[cloudKitExtension suspend]; // Create zone(s)
 	[cloudKitExtension suspend]; // Create zone subscription(s)
 	[cloudKitExtension suspend]; // Initial fetchRecordChanges operation
 	
 	[database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
 		if (!ready) {
-			NSLog(@"Error registering %@ !!!", Ext_CloudKit);
+			DDLogDebug(@"Error registering %@ !!!", Ext_CloudKit);
         } else {
-            NSLog(@"Registering %@ finished.", Ext_CloudKit);
+            DDLogDebug(@"Registering %@ finished.", Ext_CloudKit);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
         }
 	}];
@@ -565,7 +565,7 @@ DatabaseManager *MyDatabaseManager;
 #pragma mark Helper
 - (void)unregisterCloudKitExtension {
     [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
-        NSLog(@"Exrension %@ unregistered.",Ext_CloudKit);
+        DDLogDebug(@"Exrension %@ unregistered.",Ext_CloudKit);
     }];
 }
 @end

@@ -11,55 +11,44 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 #import "DatabaseManager.h"
+#import <YapDatabase/YapDatabase.h>
 
 
-@implementation S1Tracer {
+@implementation S1Tracer
 
-}
-
-- (id)init
+- (instancetype)init
 {
     self = [super init];
-    if (!self) return nil;
-    
-    //SQLite database
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *databaseURL = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
-    NSString *databasePath = [databaseURL.path stringByAppendingPathComponent:@"Stage1stReader.db"];
-    
-    _db = [FMDatabase databaseWithPath:databasePath];
-    if (![_db open]) {
-        NSLog(@"Could not open db.");
-        return nil;
+    if (self != nil) {
+        //SQLite database
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *databaseURL = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+        NSString *databasePath = [databaseURL.path stringByAppendingPathComponent:@"Stage1stReader.db"];
+
+        _db = [FMDatabase databaseWithPath:databasePath];
+        if (![_db open]) {
+            DDLogError(@"[S1Tracer] Could not open db:%@", databasePath);
+            return nil;
+        }
+
+        [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position FLOAT, visit_count INTEGER);"];
+        [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
+        [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
     }
-    _backgroundDb = [FMDatabase databaseWithPath:databasePath];
-    if (![_backgroundDb open]) {
-        NSLog(@"Could not open background db.");
-        return nil;
-    }
-    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS threads(topic_id INTEGER PRIMARY KEY NOT NULL,title VARCHAR,reply_count INTEGER,field_id INTEGER,last_visit_time INTEGER, last_visit_page INTEGER, last_viewed_position FLOAT, visit_count INTEGER);"];
-    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS favorite(topic_id INTEGER PRIMARY KEY NOT NULL,favorite_time INTEGER);"];
-    [_db executeUpdate:@"CREATE TABLE IF NOT EXISTS history(topic_id INTEGER PRIMARY KEY NOT NULL);"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronize) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronize) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(synchronize) name:UIApplicationWillTerminateNotification object:nil];
     return self;
 }
 
 - (void)dealloc
 {
-    NSLog(@"Database closed.");
+    DDLogDebug(@"[S1Tracer] Database closed.");
     [_db close];
-    [_backgroundDb close];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Static
 
 + (S1Topic *)topicFromQueryResult:(FMResultSet *)result {
-    S1Topic *topic = [[S1Topic alloc] init];
-    topic.topicID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]];
+    S1Topic *topic = [[S1Topic alloc] initWithTopicID:[NSNumber numberWithLongLong:[result longLongIntForColumn:@"topic_id"]]];
     topic.title = [result stringForColumn:@"title"];
     topic.replyCount = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"reply_count"]];
     topic.fID = [NSNumber numberWithLongLong:[result longLongIntForColumn:@"field_id"]];
@@ -78,14 +67,7 @@
     return topic;
 }
 
-#pragma mark - Archiver
-
-- (void)synchronize
-{
-    //[self purgeStaleItem];
-}
-
-#pragma mark - Upgrade
+#pragma mark - Migrate
 
 + (void)upgradeDatabase
 {
@@ -96,22 +78,19 @@
     if ([fileManager fileExistsAtPath:dbPath]) {
         FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
         if (![db open]) {
-            NSLog(@"Could not open db.");
+            DDLogError(@"[Migrate] Could not open db.");
             return;
         }
         FMResultSet *result = [db executeQuery:@"SELECT last_viewed_position FROM threads;"];
         if (result) {
             ;
         } else {
-            NSLog(@"Database does not have last_viewed_position column.");
+            DDLogInfo(@"[Migrate] Add `last_viewed_position` column.");
             [db executeUpdate:@"ALTER TABLE threads ADD COLUMN last_viewed_position FLOAT;"];
         }
         [db close];
     }
-    
 }
-
-#pragma mark - Migrate
 
 + (void)importTopicsInSet:(FMResultSet *)result {
     __block NSInteger newCount = 0;
@@ -133,7 +112,7 @@
                 }
                 if (tracedTopic) {
                     if (tracedTopic.hasChangedProperties) {
-                        //NSLog(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
+                        //DDLogDebug(@"Insert: %@ %@",tracedTopic.topicID, tracedTopic.changedProperties);
                         [transaction setObject:tracedTopic forKey:[tracedTopic.topicID stringValue] inCollection:Collection_Topics];
                         changeCount += 1;
                     }
@@ -150,7 +129,7 @@
             }
         }];
     }
-    NSLog(@"%ld / %ld Changed.(%ld new) %ld fails.", (long)changeCount, (long)succeedCount, (long)newCount, (long)failCount);
+    DDLogDebug(@"%ld / %ld Changed.(%ld new) %ld fails.", (long)changeCount, (long)succeedCount, (long)newCount, (long)failCount);
 }
 
 + (void)importDatabaseAtPath:(NSURL *)dbPathURL {
@@ -159,38 +138,40 @@
     NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
     FMDatabase *db = [FMDatabase databaseWithPath:dbPath];
     if (![db open]) {
-        NSLog(@"Could not open db.");
+        DDLogError(@"Could not open db.");
         return;
     }
-    NSLog(@"migrateDatabase begin.");
+    DDLogDebug(@"migrateDatabase begin.");
     FMResultSet *result = [db executeQuery:@"SELECT history.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM ((history INNER JOIN threads ON history.topic_id = threads.topic_id) LEFT JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     result = [db executeQuery:@"SELECT threads.topic_id AS topic_id, title, reply_count, field_id, last_visit_time, last_visit_page, last_viewed_position, favorite_time FROM (threads JOIN favorite ON favorite.topic_id = threads.topic_id) ORDER BY last_visit_time DESC;"];
     [S1Tracer importTopicsInSet:result];
     [db close];
-    NSLog(@"migrateDatabase finish.");
+    DDLogDebug(@"migrateDatabase finish.");
     NSError *error;
     [fileManager moveItemAtURL:dbPathURL toURL:[documentDirectory URLByAppendingPathComponent:@"Stage1stReader.dbbackup"] error:&error];
     if (error) {
-        NSLog(@"Fail to Rename Database: %@",error);
+        DDLogError(@"Fail to Rename Database: %@",error);
     }
 }
 
-+ (void)migrateDatabase {
++ (void)migrateToYapDatabase {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
-        NSURL *dbPathURL1 = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.db"];
+        NSURL *dbPathURL1 = [[self documentDirectory] URLByAppendingPathComponent:@"Stage1stReader.db"];
         NSString *dbPath1 = [dbPathURL1 path];
-        NSURL *dbPathURL2 = [documentDirectory URLByAppendingPathComponent:@"Stage1stReader.databasebackup"];
+        NSURL *dbPathURL2 = [[self documentDirectory] URLByAppendingPathComponent:@"Stage1stReader.databasebackup"];
         NSString *dbPath2 = [dbPathURL2 path];
-        if ([fileManager fileExistsAtPath:dbPath1]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:dbPath1]) {
             [S1Tracer importDatabaseAtPath:dbPathURL1];
-        } else if ([fileManager fileExistsAtPath:dbPath2]) {
+        } else if ([[NSFileManager defaultManager] fileExistsAtPath:dbPath2]) {
             [S1Tracer importDatabaseAtPath:dbPathURL2];
         }
-        
     });
+}
+
++ (NSURL *)documentDirectory {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
+    return documentDirectory;
 }
 @end

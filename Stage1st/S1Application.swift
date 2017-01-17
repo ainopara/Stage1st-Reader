@@ -7,24 +7,27 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 class S1Application: UIApplication {
-    override func sendEvent(event: UIEvent) {
+    override func sendEvent(_ event: UIEvent) {
         super.sendEvent(event)
-        // For debug touch events
-        /*
-        if event.type == .Touches {
-            if let touches = event.allTouches(),
-                let touch = touches.first,
-                let grs = touch.gestureRecognizers {
-                    for gr in grs {
-                        if let panGr = gr as? UIPanGestureRecognizer {
-                            print("\(panGr) - \(panGr.minimumNumberOfTouches) - \(panGr.maximumNumberOfTouches)")
-                        }
-                    }
+
+        // Debug touch events
+        guard event.type == .touches else {
+            return
+        }
+
+        guard let touches = event.allTouches,
+              let touch = touches.first,
+              let gestureRecognizers = touch.gestureRecognizers else {
+            return
+        }
+
+        for gestureRecognizer in gestureRecognizers {
+            if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+                DDLogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")
             }
         }
-        */
-        //print("Event sent:\(event)")
     }
 }

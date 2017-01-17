@@ -10,17 +10,14 @@
 
 @interface S1HUD : UIView
 
-@property (nonatomic, copy) NSString *text;
-@property (nonatomic, weak) UIView *parentView;
-
+@property (nonatomic, copy, readonly) NSString *text;
 @property (nonatomic, copy) void (^refreshEventHandler)(S1HUD *aHUD);
 
-+ (S1HUD *)showHUDInView:(UIView *)view;
+- (void)show;
+- (void)hideWithDelay:(NSTimeInterval)delay;
 
 - (void)showActivityIndicator;
 - (void)showRefreshButton;
-
-- (void)setText:(NSString *)text withWidthMultiplier:(NSUInteger)n;
-- (void)hideWithDelay:(NSTimeInterval)delay;
+- (void)showMessage:(NSString *)message;
 
 @end

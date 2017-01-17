@@ -1,9 +1,8 @@
 #import <Foundation/Foundation.h>
 
-#import "YapDatabase.h"
-#import "YapDatabaseView.h"
-#import "YapDatabaseCloudKit.h"
-
+@class YapDatabase;
+@class YapDatabaseCloudKit;
+@class YapDatabaseConnection;
 @class DatabaseManager;
 
 /**
@@ -38,6 +37,7 @@ extern NSString *const kNotificationsKey;
  * E.g.: [transaction objectForKey:todoId inCollection:Collection_Todos]
 **/
 extern NSString *const Collection_Topics;
+extern NSString *const Collection_UserBlackList;
 extern NSString *const Collection_CloudKit;
 
 /**

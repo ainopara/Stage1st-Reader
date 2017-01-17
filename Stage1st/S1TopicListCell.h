@@ -9,13 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @class S1Topic;
-@class S1TopicListCellSubView;
 
 @interface S1TopicListCell : UITableViewCell
 
 @property (nonatomic, strong) S1Topic *topic;
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) NSString *highlight;
-
-- (void)updateSubview;
+@property (nonatomic, assign) BOOL pinningTop;
 
 @end

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stage1st Reader</title>
+    <meta http-equiv="Content-Type" content="text/html;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="../css/content_base.css">
+    <link rel="stylesheet" href="../css/{{font-style-file}}">
+    <style>
+      {{# color}}
+      {{> ../css/color}}
+      {{/ color}}
+    </style>
+  </head>
+  <body vlink="#333333" link="#333333">
+    {{#floors}}
+      {{>floor}}
+    {{/floors}}
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/ResizeSensor.js"></script>
+    <script>
+      $(document).ready(function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "ready"});
+      });
+      $(window).on("load", function () {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "load"});
+      });
+      document.ontouchstart = function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "touch"});
+      }
+      document.ontouchend = function() {
+          window.webkit.messageHandlers.stage1st.postMessage({type: "touch"});
+      }
+      new ResizeSensor($('html, body'), function() {
+        window.webkit.messageHandlers.stage1st.postMessage({type: "heightChanged", height: $(document).height()});
+      });
+    </script>
+  </body>
+</html>

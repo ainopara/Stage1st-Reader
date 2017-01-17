@@ -1,0 +1,18 @@
+disabled_rules: # rule identifiers to exclude from running
+  - line_length
+  - missing_docs
+  - file_length
+  - function_body_length
+  - function_parameter_count 
+  - todo
+  - force_cast
+  - force_try
+  - mark
+included: # paths to include during linting. `--path` is ignored if present.
+  - Stage1st
+  - Vendors
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Carthage
+  - Pods
+variable_name:
+  min_length: 2 # only min_length to make ID valid

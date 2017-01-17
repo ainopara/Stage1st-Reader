@@ -8,6 +8,7 @@
  * [[CloudKitManager sharedInstance] foobar] -> MyCloudKitManager.foobar
 **/
 extern CloudKitManager *MyCloudKitManager;
+
 extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
 extern NSString *const YapDatabaseCloudKitStateChangeNotification;
 
@@ -24,7 +25,7 @@ typedef enum : NSUInteger {
 
 @interface CloudKitManager : NSObject
 
-@property (atomic, readwrite) CKManagerState state;
+@property (nonatomic, assign, readonly) CKManagerState state;
 
 @property (strong, atomic) NSError *lastCloudkitError;
 
@@ -95,7 +96,5 @@ typedef enum : NSUInteger {
  * we provide this method as a way to force another fetch & merge operation.
 **/
 - (void)refetchMissedRecordIDs:(NSArray *)recordIDs withCompletionHandler:(void (^)(NSError *error))completionHandler;
-
-
 
 @end

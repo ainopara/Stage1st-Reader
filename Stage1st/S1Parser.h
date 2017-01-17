@@ -7,19 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+
 @class S1Topic;
 
 @interface S1Parser : NSObject
 
 + (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
 + (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
-+ (NSArray *)contentsFromHTMLData:(NSData *)rawData;
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
-
-+ (NSString *)generateContentPage:(NSArray *)floorList withTopic:(S1Topic *)topic;
-+ (NSString *)generateQuotePage:(NSArray *)floorList withTopic:(S1Topic *)topic;
 
 + (NSString *)formhashFromPage:(NSString *)HTMLString;
 + (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
@@ -33,9 +30,10 @@
 + (NSString *)topicTitleFromPage:(NSData *)rawData;
 + (NSString *)messageFromPage:(NSData *)rawData;
 
-+ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  andPage:(NSNumber *)page;
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  page:(NSNumber *)page withTopicID:(NSNumber *)topicID;
 + (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
-+ (NSDictionary *)extractQuerysFromURLString:(NSString *)URLString;
++ (NSDictionary<NSString *, NSString *> *)extractQuerysFromURLString:(NSString *)URLString;
+
 @end

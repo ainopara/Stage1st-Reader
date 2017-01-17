@@ -1,7 +1,14 @@
-.DS_Store
+*.DS_Store
 xcuserdata
+xcbaselines
 *.xccheckout
 *.xcworkspace
 
-Pods
-ObjcUML
+/Pods
+/Carthage
+/fastlane
+/.idea
+/Archive
+
+ReferenceImages*
+

@@ -9,15 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h> 
 
-#define IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-
-@interface S1ColorManager : NSObject
-
-+ (void)updataSearchBarAppearanceWithColor:(UIColor *)color;
-
-@end
 
 @interface S1Formatter : NSObject
 
@@ -25,10 +18,14 @@
 
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSMutableDictionary *dateCache;
+
+- (void)clearCache;
 - (NSString *)headerForDate:(NSDate *)date;
 - (NSComparisonResult)compareDateString:(NSString *)dateString1 withDateString:(NSString *)dateString2;
+
 @end
 
+// TODO: some method in this should be extension style.
 @interface S1Global : NSObject
 
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;

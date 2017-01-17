@@ -10,43 +10,40 @@
 #import <CloudKit/CloudKit.h>
 #import "MyDatabaseObject.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1Topic : MyDatabaseObject<NSCoding>
 // Basic
-@property (nonatomic, copy) NSNumber *topicID;
-// To show in topic list
-@property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSNumber *replyCount;
-@property (nonatomic, copy) NSNumber *lastReplyCount;
-@property (nonatomic, copy) NSNumber *favorite;
-@property (nonatomic, copy) NSDate *favoriteDate;
-@property (nonatomic, copy) NSDate *lastViewedDate;
-@property (nonatomic, copy) NSNumber *lastViewedPosition;
+@property (nonatomic, copy, readonly) NSNumber *topicID; // traced
 
-// To generate content page & Search post owner
-@property (nonatomic, copy) NSNumber *authorUserID;
-@property (nonatomic, copy) NSString *authorUserName;
+@property (nonatomic, copy, nullable) NSString *title; // traced
+@property (nonatomic, copy, nullable) NSNumber *replyCount; // traced
+@property (nonatomic, copy, nullable) NSNumber *authorUserID; // traced
 
-// Used to update page count in content view
-@property (nonatomic, copy) NSNumber *totalPageCount;
-// Not Used
-@property (nonatomic, copy) NSNumber *fID;
+@property (nonatomic, copy, nullable) NSNumber *favorite; // traced
+@property (nonatomic, copy, nullable) NSDate *favoriteDate; // traced
 
-// For Reply
-@property (nonatomic, copy) NSString *formhash;
+@property (nonatomic, copy, nullable) NSDate *lastViewedDate; // traced
+@property (nonatomic, copy, nullable) NSNumber *lastViewedPage; // traced
+@property (nonatomic, copy, nullable) NSNumber *lastViewedPosition; // traced
 
-// For Tracing
-@property (nonatomic, copy) NSNumber *lastViewedPage;
-@property (nonatomic, copy) NSDictionary *floors;
+@property (nonatomic, copy, nullable) NSNumber *fID; // traced
 
-@property (nonatomic, copy) NSString *message;
+@property (nonatomic, copy, nullable) NSNumber *modelVersion; // traced
 
-// Model Version
-@property (nonatomic, copy) NSNumber *modelVersion;
+@property (nonatomic, copy, nullable) NSNumber *lastReplyCount;
+@property (nonatomic, strong, nullable) NSDate *lastReplyDate;
+@property (nonatomic, copy, nullable) NSNumber *totalPageCount;
+@property (nonatomic, copy, nullable) NSString *authorUserName;
+@property (nonatomic, copy, nullable) NSString *formhash;
+@property (nonatomic, copy, nullable) NSString *message;
 
-
+- (instancetype)initWithTopicID:(NSNumber *)topicID;
 - (instancetype)initWithRecord:(CKRecord *)record;
+
 // Update
-- (void)addDataFromTracedTopic:(S1Topic *)topic;
-- (void)updateFromTopic:(S1Topic *)topic;
 - (void)absorbTopic:(S1Topic *)topic;
+
 @end
+
+NS_ASSUME_NONNULL_END

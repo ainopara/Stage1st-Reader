@@ -8,10 +8,6 @@
 
 #import "S1TabBar.h"
 
-@interface S1TabBar ()
-
-@end
-
 @implementation S1TabBar {
     NSMutableArray *_buttons;
     NSInteger _index;
@@ -20,8 +16,8 @@
     BOOL _needRecalculateButtonWidth;
 }
 
-- (instancetype)init {
-    self = [super init];
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
     if (self) {
         _index = -1;
         _lastFrameWidth = 0;
@@ -29,28 +25,7 @@
         _needRecalculateButtonWidth = YES;
         _minButtonWidth = [NSNumber numberWithDouble:80.0];
         _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
-        self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"tabbar.background"];
-        self.canCancelContentTouches = YES;
-        self.bounces = NO;
-        self.showsHorizontalScrollIndicator = NO;
-        self.scrollsToTop = NO;
-        self.delegate = self;
-        //self.decelerationRate = UIScrollViewDecelerationRateFast;
-    }
-    return self;
-}
-//Init from Storyboard
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        _index = -1;
-        _lastFrameWidth = 0;
-        _enabled = YES;
-        _needRecalculateButtonWidth = YES;
-        _minButtonWidth = [NSNumber numberWithDouble:80.0];
-        _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
-        self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"tabbar.background"];
+        self.backgroundColor = [[ColorManager shared] colorForKey:@"tabbar.background"];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
         self.showsHorizontalScrollIndicator = NO;
@@ -61,11 +36,7 @@
     return self;
 }
 
-
-
-
-- (void)setKeys:(NSArray *)keys
-{
+- (void)setKeys:(NSArray *)keys {
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [(UIView *)obj removeFromSuperview];
     }];
@@ -81,23 +52,22 @@
     }
 }
 
-- (void)addItems
-{
+- (void)addItems {
     if (_keys.count == 0) return;
     
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.25, 80.0, self.bounds.size.height-0.25); // The Width will be reset by layoutSubviews
+        CGRect rect = CGRectMake(width, 0.0, 80.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
-        [btn setTitleColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
+        [btn setTitleColor:[[ColorManager shared] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
@@ -120,8 +90,7 @@
     _lastContentOffset = scrollView.contentOffset.x;
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         CGPoint offset = [self decideOffset:scrollView.contentOffset];
         [scrollView setContentOffset:offset animated:YES];
@@ -132,21 +101,18 @@
     _lastContentOffset = scrollView.contentOffset.x;
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGPoint offset = [self decideOffset:scrollView.contentOffset];
     [scrollView setContentOffset:offset animated:YES];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
     [aScrollView setContentOffset: CGPointMake(aScrollView.contentOffset.x, 0.0f)];
 }
 
 #pragma mark - Action
 
-- (void)tapped:(UIButton *)sender
-{
+- (void)tapped:(UIButton *)sender {
     if (!_enabled) return;
     if (_index >= 0)
         [_buttons[_index] setSelected:NO];
@@ -156,8 +122,7 @@
     return;
 }
 
-- (void)deselectAll
-{
+- (void)deselectAll {
     if (_index >= 0) {
         [[_buttons objectAtIndex:_index] setSelected:NO];
         _index = -1;
@@ -166,11 +131,14 @@
 
 #pragma mark - Layout
 
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(UIViewNoIntrinsicMetric, 44.0);
+}
+
 - (void)layoutSubviews {
     if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {
         return;
     }
-    // NSLog(@"Tabbar layout for width:%.1f", self.frame.size.width);
     CGFloat widthPerItem = [self determineWidthPerItem];
     NSInteger maxIndex = 0;
     for(UIButton *button in _buttons) {
@@ -218,8 +186,7 @@
     return offset;
 }
 
-- (CGFloat) determineWidthPerItem
-{
+- (CGFloat)determineWidthPerItem {
     CGFloat screenWidth = self.bounds.size.width;
     CGFloat keyCountWidth = screenWidth / [_keys count];
     CGFloat expectWidth = fmaxf([self.minButtonWidth doubleValue], screenWidth / [self.expectPresentingButtonCount integerValue]);
@@ -236,23 +203,21 @@
     _index = index;
     [_buttons[_index] setSelected:YES];
     [self scrollRectToVisible:[_buttons[_index] frame] animated:YES];
-    
+
 }
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view {
     return YES;
 }
 
-
 - (void)updateColor {
-    self.backgroundColor = [[APColorManager sharedInstance] colorForKey:@"tabbar.background"];
+    self.backgroundColor = [[ColorManager shared] colorForKey:@"tabbar.background"];
     for (UIButton *btn in _buttons) {
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[APColorManager sharedInstance]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
-        [btn setTitleColor:[[APColorManager sharedInstance] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setTitleColor:[[ColorManager shared] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
     }
-    
-    
 }
+
 @end

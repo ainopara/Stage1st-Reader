@@ -1,141 +1,192 @@
 PODS:
-  - 1PasswordExtension (1.8)
-  - ActionSheetPicker-3.0 (2.0.5)
-  - AFNetworking (3.0.4):
-    - AFNetworking/NSURLSession (= 3.0.4)
-    - AFNetworking/Reachability (= 3.0.4)
-    - AFNetworking/Security (= 3.0.4)
-    - AFNetworking/Serialization (= 3.0.4)
-    - AFNetworking/UIKit (= 3.0.4)
-  - AFNetworking/NSURLSession (3.0.4):
+  - 1PasswordExtension (1.8.4)
+  - ActionSheetPicker-3.0 (2.2.0)
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.0.4)
-  - AFNetworking/Security (3.0.4)
-  - AFNetworking/Serialization (3.0.4)
-  - AFNetworking/UIKit (3.0.4):
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - CocoaLumberjack (2.2.0):
-    - CocoaLumberjack/Default (= 2.2.0)
-    - CocoaLumberjack/Extensions (= 2.2.0)
-  - CocoaLumberjack/Core (2.2.0)
-  - CocoaLumberjack/Default (2.2.0):
+  - Alamofire (4.2.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - CocoaLumberjack (3.0.0):
+    - CocoaLumberjack/Default (= 3.0.0)
+    - CocoaLumberjack/Extensions (= 3.0.0)
+  - CocoaLumberjack/Core (3.0.0)
+  - CocoaLumberjack/Default (3.0.0):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.2.0):
+  - CocoaLumberjack/Extensions (3.0.0):
     - CocoaLumberjack/Default
-  - Crashlytics (3.7.0):
+  - CocoaLumberjack/Swift (3.0.0):
+    - CocoaLumberjack/Extensions
+  - Crashlytics (3.8.3):
     - Fabric (~> 1.6.3)
-  - Fabric (1.6.6)
-  - FMDB (2.6):
-    - FMDB/standard (= 2.6)
-  - FMDB/standard (2.6)
+  - Fabric (1.6.11)
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+  - GRMustache.swift (2.0.0)
+  - GYHttpMock (1.0.1)
+  - JASON (3.1)
   - JTSImageViewController (1.5)
-  - KissXML (5.1.2)
-  - Mantle (2.0.6):
-    - Mantle/extobjc (= 2.0.6)
-  - Mantle/extobjc (2.0.6)
-  - Masonry (0.6.4)
+  - KIF (3.5.1):
+    - KIF/Core (= 3.5.1)
+  - KIF/Core (3.5.1)
+  - KissXML (5.1.2):
+    - KissXML/Core (= 5.1.2)
+  - KissXML/Core (5.1.2)
+  - Masonry (1.0.2)
   - Reachability (3.2)
-  - SVWebViewController (1.0)
-  - YapDatabase (2.8.1):
-    - YapDatabase/Standard (= 2.8.1)
-  - YapDatabase/Standard (2.8.1):
-    - YapDatabase/Standard/Core (= 2.8.1)
-    - YapDatabase/Standard/Extensions (= 2.8.1)
-  - YapDatabase/Standard/Core (2.8.1):
-    - CocoaLumberjack (~> 2)
-  - YapDatabase/Standard/Extensions (2.8.1):
+  - ReactiveCocoa (5.0.0-rc.1):
+    - ReactiveSwift (~> 1.0.0-rc.3)
+  - ReactiveSwift (1.0.0):
+    - Result (~> 3.1)
+  - Result (3.1.0)
+  - Reveal-SDK (5)
+  - SnapKit (3.1.2)
+  - TextAttributes (1.0)
+  - YapDatabase (2.9.2):
+    - YapDatabase/Standard (= 2.9.2)
+  - YapDatabase/Standard (2.9.2):
+    - YapDatabase/Standard/Core (= 2.9.2)
+    - YapDatabase/Standard/Extensions (= 2.9.2)
+  - YapDatabase/Standard/Core (2.9.2):
+    - CocoaLumberjack (~> 3)
+  - YapDatabase/Standard/Extensions (2.9.2):
     - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/CloudKit (= 2.8.1)
-    - YapDatabase/Standard/Extensions/ConnectionProxy (= 2.8.1)
-    - YapDatabase/Standard/Extensions/FilteredViews (= 2.8.1)
-    - YapDatabase/Standard/Extensions/FullTextSearch (= 2.8.1)
-    - YapDatabase/Standard/Extensions/Hooks (= 2.8.1)
-    - YapDatabase/Standard/Extensions/Relationships (= 2.8.1)
-    - YapDatabase/Standard/Extensions/RTreeIndex (= 2.8.1)
-    - YapDatabase/Standard/Extensions/SearchResults (= 2.8.1)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.8.1)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.8.1)
-    - YapDatabase/Standard/Extensions/Views (= 2.8.1)
-  - YapDatabase/Standard/Extensions/CloudKit (2.8.1):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionProxy (2.8.1):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/FilteredViews (2.8.1):
+    - YapDatabase/Standard/Extensions/ActionManager (= 2.9.2)
+    - YapDatabase/Standard/Extensions/CloudKit (= 2.9.2)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 2.9.2)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 2.9.2)
+    - YapDatabase/Standard/Extensions/FilteredViews (= 2.9.2)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Hooks (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Relationships (= 2.9.2)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 2.9.2)
+    - YapDatabase/Standard/Extensions/SearchResults (= 2.9.2)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 2.9.2)
+    - YapDatabase/Standard/Extensions/Views (= 2.9.2)
+  - YapDatabase/Standard/Extensions/ActionManager (2.9.2):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/FullTextSearch (2.8.1):
+  - YapDatabase/Standard/Extensions/CloudKit (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Hooks (2.8.1):
+  - YapDatabase/Standard/Extensions/ConnectionProxy (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Relationships (2.8.1):
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/RTreeIndex (2.8.1):
+  - YapDatabase/Standard/Extensions/FilteredViews (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/SearchResults (2.8.1):
+    - YapDatabase/Standard/Extensions/Views
+  - YapDatabase/Standard/Extensions/FullTextSearch (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Hooks (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Relationships (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (2.9.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResults (2.9.2):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/FullTextSearch
     - YapDatabase/Standard/Extensions/Views
-  - YapDatabase/Standard/Extensions/SecondaryIndex (2.8.1):
+  - YapDatabase/Standard/Extensions/SecondaryIndex (2.9.2):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Views (2.8.1):
+  - YapDatabase/Standard/Extensions/Views (2.9.2):
     - YapDatabase/Standard/Core
+  - YYKeyboardManager (1.0.1)
 
 DEPENDENCIES:
   - 1PasswordExtension
   - ActionSheetPicker-3.0
   - AFNetworking
+  - Alamofire
+  - AlamofireImage
+  - CocoaLumberjack
+  - CocoaLumberjack/Swift
   - Crashlytics
   - Fabric
+  - FBSnapshotTestCase
   - FMDB
+  - GRMustache.swift
+  - GYHttpMock
+  - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
+  - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
-  - Mantle
   - Masonry
   - Reachability
-  - SVWebViewController (from `https://github.com/ainopara/SVWebViewController.git`)
+  - ReactiveCocoa (~> 5.0.0-rc.1)
+  - ReactiveSwift
+  - Reveal-SDK
+  - SnapKit
+  - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YYKeyboardManager
 
 EXTERNAL SOURCES:
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  SVWebViewController:
-    :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
   JTSImageViewController:
-    :commit: 8e9eced2e517f3f9303a218a79e1b3aa6e4d693a
+    :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
-    :commit: df903a27cd23ac35e9ee423669c1c75abc9870ca
+    :commit: 69d88824d428cf6b3407eb778f23c7562f87149b
     :git: https://github.com/ainopara/KissXML.git
-  SVWebViewController:
-    :commit: 92f562d46c00ddff80237338250b4eba7010377e
-    :git: https://github.com/ainopara/SVWebViewController.git
   YapDatabase:
-    :commit: 46174066bd8260df3749922849866fc0e8775e1e
+    :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 627d5aecf210c7636968faf5a4c3546c9531385b
-  ActionSheetPicker-3.0: 8312778b6815578e6a86d630fbcf31dc94c534e7
-  AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
-  CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
-  Crashlytics: c3a2333dea9e2733d2777f730910321fc9e25c0d
-  Fabric: 1abc1e59f11fa39ede6f690ef7309d8563e3ec59
-  FMDB: c1968bab3ab0aed38f66cb778ae1e7fa9a652b6e
+  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
+  ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
+  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
+  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
+  GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
+  JASON: c1204b01c9979eef35b6948ca939aac5e7bef081
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  KissXML: d7c00ddd6e237d7bca4e546e1e3da8565a75544f
-  Mantle: 299966b00759634931699f69cb6a30b9239b944d
-  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
+  KIF: 082eb65279e51c3092923802849eb796a04982ab
+  KissXML: 246c842586bb77110e04fb88e19376d96245c856
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  SVWebViewController: aa2e18a41ff5f45be7aeec8e92ca5bcc50b5ebb1
-  YapDatabase: 861c720d5850a59f9e5c0bad0fd95334012b9dc9
+  ReactiveCocoa: 3e9cad4b77fa199d41e03f603cb55d0701ad6ad8
+  ReactiveSwift: f391724ee318a2cfd3e37dfb041cd49ecf4e7869
+  Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
+  Reveal-SDK: 7e3945c0c3649106c3cc8923672ee545e25605c0
+  SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
+  TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
+  YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
+  YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 6e293aab1a0e3559f9ac0c0aeb7bf61e8d60acc0
+
+COCOAPODS: 1.1.1

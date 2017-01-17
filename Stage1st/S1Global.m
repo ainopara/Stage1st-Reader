@@ -7,15 +7,6 @@
 //
 
 #import "S1Global.h"
-#import "S1CacheDatabaseManager.h"
-
-@implementation S1ColorManager
-
-+ (void)updataSearchBarAppearanceWithColor:(UIColor *)color {
-    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setDefaultTextAttributes:@{NSForegroundColorAttributeName: color, NSFontAttributeName:[UIFont systemFontOfSize:14.0]}];
-}
-
-@end
 
 @implementation S1Formatter
 
@@ -34,6 +25,10 @@
         myGlobalFormatter = [[S1Formatter alloc] init];
     });
     return myGlobalFormatter;
+}
+
+- (void)clearCache {
+    _dateCache = [[NSMutableDictionary alloc] init];
 }
 
 - (NSDateFormatter *)dateFormatter {
@@ -89,15 +84,20 @@
     return [self imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
-// Assumes input like "#00FF00" or "#FF000000" (#(AA)RRGGBB).
+// Assumes input like "#00FF00" (Green Color) or "#AA000000" (Black Color With Alpha 0.67)(#(AA)RRGGBB).
 + (UIColor *)colorFromHexString:(NSString *)hexString {
-    unsigned rgbValue = 0;
+    unsigned int rgbValue = 0;
+
     NSScanner *scanner = [NSScanner scannerWithString:hexString];
     if ( [hexString rangeOfString:@"#"].location == 0 ) {
         [scanner setScanLocation:1]; // bypass '#' character
     }
     [scanner scanHexInt:&rgbValue];
-    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1 - ((rgbValue & 0xFF000000) >> 24)/255.0];
+    if ([hexString length] > 7) {
+        return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:((rgbValue & 0xFF000000) >> 24)/255.0];
+    } else {
+        return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+    }
 }
 
 + (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey
@@ -143,7 +143,7 @@
 + (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern {
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSInteger count = [[re matchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)] count];
-    //NSLog(@"REGEX Match: %ld", (long)count);
+    //DDLogDebug(@"REGEX Match: %ld", (long)count);
     return count != 0;
 }
 + (NSArray *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray *)colums {
@@ -160,11 +160,16 @@
         }
         
     }
-    //NSLog(@"REGEX Extract: %@", mutableArray);
+    //DDLogDebug(@"REGEX Extract: %@", mutableArray);
     return mutableArray;
 }
 + (NSInteger)regexReplaceString:(NSMutableString *)mutableString matchPattern:(NSString *)pattern withTemplate:(NSString *)temp {
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSError *error = nil;
+    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionDotMatchesLineSeparators error:&error];
+    if (error) {
+        DDLogError(@"Regex Replace error: %@ when initialize with pattern: %@", error, pattern);
+        return 0;
+    }
     return [re replaceMatchesInString:mutableString options:NSMatchingReportProgress range:NSMakeRange(0, [mutableString length]) withTemplate:temp];
 }
 

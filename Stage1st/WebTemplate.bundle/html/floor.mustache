@@ -1,0 +1,34 @@
+{{^is-first}}
+<br />
+{{/is-first}}
+<table width="98%" cellspacing="0" cellpadding="1" class="i_table" align="center">
+  <tbody>
+    <tr>
+      <td>
+        <div class="head">
+        <div>
+          <b>{{index-mark}} <a class="user" href="javascript:void(0);" onclick="window.webkit.messageHandlers.stage1st.postMessage({'type': 'user', 'id': {{author-ID}}})">{{author-name}}</a>
+          </b>
+        </div>
+          <div class="smalltext">{{post-time}}</div>
+          <div id="{{ID}}-action" class="action">
+            <a href="javascript:void(0);" onclick="window.webkit.messageHandlers.stage1st.postMessage({'type': 'action', 'id': {{ID}}})">・・・</a>
+          </div>
+        </div>
+        {{poll}}
+        <table cellspacing="0" cellpadding="3" width="100%">
+          <tbody>
+            <tr bgcolor="#FFFFFF">
+              {{{content}}}
+            </tr>
+          </tbody>
+        </table>
+        {{#attachments}}
+        <div class='attachment'>
+          {{>attachment}}
+        </div>
+        {{/attachments}}
+      </td>
+    </tr>
+  </tbody>
+</table>

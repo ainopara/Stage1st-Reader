@@ -9,27 +9,27 @@
 	<key>2</key>
 	<string>#2E3B4D</string>
 	<key>3</key>
-	<string>#CCCCCC</string>
+	<string>#F4F4F4</string>
 	<key>4</key>
-	<string>#B3B3B3</string>
+	<string>#585858</string>
 	<key>5</key>
-	<string>#000000</string>
+	<string>#1F1F1F</string>
 	<key>6</key>
-	<string>#1A1A1A</string>
+	<string>#383838</string>
 	<key>7</key>
 	<string>#4A4A4A</string>
 	<key>8</key>
 	<string>#AAAAAA</string>
 	<key>9</key>
-	<string></string>
+	<string>#4A4A4A</string>
 	<key>10</key>
-	<string></string>
+	<string>#13171E</string>
 	<key>11</key>
-	<string></string>
+	<string>#1C212B</string>
 	<key>12</key>
 	<string></string>
 	<key>13</key>
-	<string>#FF000000</string>
+	<string>#00000000</string>
 	<key>14</key>
 	<string>#333333</string>
 	<key>15</key>
@@ -47,10 +47,10 @@
 	<key>21</key>
 	<string>#9B9B9B</string>
 	<key>22</key>
-	<string>#33333333</string>
+	<string>#CC333333</string>
 	<key>23</key>
 	<string>#E6E6E6</string>
 	<key>24</key>
-	<string>#B21F2733</string>
+	<string>#4E1F2733</string>
 </dict>
 </plist>

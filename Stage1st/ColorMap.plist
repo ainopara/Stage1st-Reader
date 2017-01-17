@@ -4,6 +4,12 @@
 <dict>
 	<key>default</key>
 	<string>1</string>
+	<key>default.text.tint</key>
+	<string>3</string>
+	<key>default.bar.tint</key>
+	<string>1</string>
+	<key>window.background</key>
+	<string>5</string>
 	<key>appearance.toolbar.bartint</key>
 	<string>1</string>
 	<key>appearance.toolbar.tint</key>
@@ -19,7 +25,7 @@
 	<key>appearance.searchbar.text</key>
 	<string>3</string>
 	<key>tabbar.background</key>
-	<string>3</string>
+	<string>1</string>
 	<key>tabbar.button.background.normal</key>
 	<string>1</string>
 	<key>tabbar.button.background.selected</key>
@@ -48,6 +54,10 @@
 	<string>5</string>
 	<key>topiclist.cell.background.highlight</key>
 	<string>6</string>
+	<key>topiclist.cell.pinningTopBackground.normal</key>
+	<string>10</string>
+	<key>topiclist.cell.pinningTopBackground.highlight</key>
+	<string>11</string>
 	<key>topiclist.cell.replycount.border.normal</key>
 	<string>14</string>
 	<key>topiclist.cell.replycount.border.history</key>
@@ -78,7 +88,7 @@
 	<string>5</string>
 	<key>content.decoration.line</key>
 	<string>14</string>
-	<key>content.pagelabel.text</key>
+	<key>content.pagebutton.text</key>
 	<string>3</string>
 	<key>content.tint</key>
 	<string>3</string>
@@ -92,11 +102,19 @@
 	<string>7</string>
 	<key>content.picker.text</key>
 	<string>8</string>
+	<key>quote.tableview.cell.title</key>
+	<string>9</string>
 	<key>reply.background</key>
 	<string>7</string>
 	<key>reply.text</key>
 	<string>8</string>
 	<key>reply.tint</key>
+	<string>3</string>
+	<key>report.background</key>
+	<string>7</string>
+	<key>report.text</key>
+	<string>8</string>
+	<key>report.tint</key>
 	<string>3</string>
 	<key>mahjongface.background</key>
 	<string>5</string>
@@ -115,6 +133,12 @@
 	<key>overlay.background</key>
 	<string>6</string>
 	<key>overlay.text</key>
+	<string>3</string>
+	<key>login.background</key>
+	<string>1</string>
+	<key>login.button</key>
+	<string>4</string>
+	<key>login.text</key>
 	<string>3</string>
 </dict>
 </plist>

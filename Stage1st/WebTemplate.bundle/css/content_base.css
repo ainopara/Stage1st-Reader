@@ -1,0 +1,132 @@
+img {
+    max-width: 100%;
+    display: inline-block;
+}
+
+a {
+    display: inline-block;
+}
+
+a img {
+    vertical-align: bottom;
+}
+
+iframe {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+.text img {
+    max-width: 95%;
+}
+
+.text {
+    padding-left: 10px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.i_table {
+    border-radius: 0px;
+    word-break: break-all;
+    font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    /*width: 90; for iPad in CSS file*/
+}
+
+.t_f {
+    /*font-size: 17px; in CSS file*/
+    /*line-height: 150; in CSS file*/
+}
+
+font {
+    /*font-size: 17px; in CSS file*/
+    font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+
+body {
+    -webkit-touch-callout: none;
+}
+
+h1 {
+    /*font-size: 20px; in CSS file*/
+    text-align:center;
+}
+
+center {
+    display: none;
+}
+
+button {
+    display: none;
+}
+
+.quote {
+    border-left-style: solid;
+}
+
+blockquote {
+    margin: 0;
+    margin: 5px;
+}
+
+.head {
+    font-size: 12px;
+}
+
+.head div {
+    padding: 3px;
+    float: left;
+    position: relative;
+    display: inline-block;
+}
+
+.action {
+    float:right !important;
+    text-align:right;
+}
+
+.action a {
+    text-decoration: none;
+    letter-spacing: -4px;
+}
+
+.attachment {
+    padding: 3px;
+}
+
+.attachment img {
+    display: block;
+}
+
+.smalltext {
+    font-size: 12px;
+    float: initial !important;
+}
+
+.pstatus {
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+    margin-bottom: -25px;
+}
+
+.s1-poll {
+    font-size: 14px;
+}
+
+.s1-alert {
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+}
+
+div.pbg {
+    height: 3px;
+    border-bottom: 1px solid;
+}
+
+div.pbr {
+    height: 3px;
+}

@@ -8,7 +8,7 @@
 
 #import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
-#import "S1ContentViewController.h"
+#import "NavigationControllerDelegate.h"
 #import "S1URLCache.h"
 #import "S1Topic.h"
 #import "S1Tracer.h"
@@ -16,198 +16,128 @@
 #import "S1DataCenter.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "DDTTYLogger.h"
-#import "S1CacheDatabaseManager.h"
+#import "CrashlyticsLogger.h"
+#import "DDErrorLevelFormatter.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <Reachability/Reachability.h>
 
 S1AppDelegate *MyAppDelegate;
 
 @implementation S1AppDelegate
 
 - (instancetype)init {
-    if ((self = [super init])) {
+    self = [super init];
+    if (self != nil) {
         // Store global reference
         MyAppDelegate = self;
+
         // Configure logging
-        //[DDLog addLogger:[DDTTYLogger sharedInstance]];
+#ifdef DEBUG
+        id <DDLogger> logger = [DDTTYLogger sharedInstance];
+        [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(194, 99, 107) backgroundColor:nil forFlag:DDLogFlagError];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(118, 164, 211) backgroundColor:nil forFlag:DDLogFlagInfo];
+        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
+        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
+#else
+        id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
+        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
+#endif
+        [self setLogLevelForSwift];
+        [DDLog addLogger:logger];
     }
     return self;
 }
 
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    // Flurry
-    // [Flurry startSession:@"48VB6MB3WY6JV73VJZCY"];
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Crashlytics
+#ifndef DEBUG
     [Fabric with:@[[Crashlytics class]]];
+#endif
+    // Setup
+    [self setup];
 
-    // Setup User Defaults
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Order"]) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
-        NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+    // Start database & cloudKit (in order)
+    [DatabaseManager initialize];
+    if ([userDefaults boolForKey:@"EnableSync"]) {
+        [CloudKitManager initialize];
     }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"Display"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Display"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
-        } else {
-            [[NSUserDefaults standardUserDefaults] setValue:@"17px" forKey:@"FontSize"];
-        }
-        
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@-1 forKey:@"HistoryLimit"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ReplyIncrement"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ReplyIncrement"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"RemoveTails"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RemoveTails"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"UseAPI"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"UseAPI"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"PrecacheNextPage"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"PrecacheNextPage"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"ForcePortraitForPhone"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"NightMode"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NightMode"];
-    }
-    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"EnableSync"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"EnableSync"];
-    }
-    
-    // Migrate to v3.4.0
-    NSArray *array = [[NSUserDefaults standardUserDefaults] valueForKey:@"Order"];
+
+    // Migrate to v3.4
+    NSArray *array = [userDefaults valueForKey:@"Order"];
     NSArray *array0 =[array firstObject];
     NSArray *array1 =[array lastObject];
-    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"]== NSNotFound) {
-        NSLog(@"Update Order List");
+    if([array0 indexOfObject:@"模玩专区"] == NSNotFound && [array1 indexOfObject:@"模玩专区"] == NSNotFound) {
+        DDLogDebug(@"Update Order List");
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserID"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"UserPassword"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [userDefaults setObject:order forKey:@"Order"];
+        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+        [userDefaults removeObjectForKey:@"UserID"];
+        [userDefaults removeObjectForKey:@"UserPassword"];
     }
-    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
+    if (![[userDefaults objectForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
+        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     
     // Migrate to v3.6
     [S1Tracer upgradeDatabase];
     
     // Migrate to v3.7
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"] isEqualToString:@"17px"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"18px" forKey:@"FontSize"];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [[userDefaults objectForKey:@"FontSize"] isEqualToString:@"17px"]) {
+        [userDefaults setObject:@"18px" forKey:@"FontSize"];
     }
-    // Migrate to v3.8
-    if([array0 indexOfObject:@"真碉堡山"] == NSNotFound && [array1 indexOfObject:@"真碉堡山"]== NSNotFound) {
-        NSArray *order = @[array0, [array1 arrayByAddingObject:@"真碉堡山"]];
-        [[NSUserDefaults standardUserDefaults] setValue:order forKey:@"Order"];
-    }
-    
-    // Start database & cloudKit (in that order)
-    [DatabaseManager initialize];
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support CloudKit
-        ;
-    } else {
-        // iOS 8 and more
-        [CloudKitManager initialize];
-    }
-    
-    // Preload floor cache database
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [S1CacheDatabaseManager sharedInstance];
-    });
 
-    // Migrate Database
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [S1Tracer migrateDatabase];
-    });
-
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7 do not support CloudKit
-        // Nothing to do.
-    } else {
-        // iOS 8 and more
+    // Migrate to v3.8 and later
+    [self migrate];
+    
+    if ([userDefaults boolForKey:@"EnableSync"]) {
         // Register for push notifications
-        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge + UIUserNotificationTypeSound + UIUserNotificationTypeAlert categories:nil];
         [application registerUserNotificationSettings:notificationSettings];
     }
-    
-    
+
     // Reachability
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+
     // URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:10 * 1024 * 1024 diskCapacity:40 * 1024 * 1024 diskPath:nil];
+    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:16 * 1024 * 1024 diskCapacity:128 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
+    S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
+    self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
+    navigationController.delegate = self.navigationDelegate;
+    navigationController.viewControllers = @[[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
+    navigationController.navigationBarHidden = YES;
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.rootViewController = navigationController;
+    [self.window makeKeyAndVisible];
+
     // Appearence
+    [[ColorManager shared] updateGlobalAppearance];
     
-    /*
-    if (SYSTEM_VERSION_LESS_THAN(@"8")) {
-        ;
-    } else {
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setTintColor:[[APColorManager sharedInstance]  colorForKey:@"appearance.navigationbar.tint"]];
-    }
-    */
-    [[APColorManager sharedInstance] updateGlobalAppearance];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    
-    //[KMCGeigerCounter sharedGeigerCounter].enabled = YES;
-    
+#ifdef DEBUG
+    DDLogVerbose(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
+#endif
+
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    // [[NSUserDefaults standardUserDefaults] synchronize]; // This is automatically called.
+- (void)applicationDidEnterBackground:(UIApplication *)application {
     [[S1DataCenter sharedDataCenter] cleaning];
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
-
 #pragma mark - URL Scheme
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    NSLog(@"%@ from %@", url, sourceApplication);
+    DDLogDebug(@"[URL Scheme] %@ from %@", url, sourceApplication);
     
     //Open Specific Topic Case
     NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];
@@ -217,11 +147,10 @@ S1AppDelegate *MyAppDelegate;
         if (topicIDString) {
             NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
             S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
-            if (topic == nil) {
-                topic = [[S1Topic alloc] init];
-                topic.topicID = topicID;
+            if (topic == nil && topicID != nil) {
+                topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
-            [self presentContentViewControllerForTopic:topic];
+            [self pushContentViewControllerForTopic:topic];
             return YES;
         }
     }
@@ -239,7 +168,7 @@ S1AppDelegate *MyAppDelegate;
             }
             if ([key isEqualToString:@"EnableSync"]) {
                 NSString *value = [queryDict valueForKey:key];
-                if ((!SYSTEM_VERSION_LESS_THAN(@"8")) && [value isEqualToString:@"YES"]) {
+                if ([value isEqualToString:@"YES"]) {
                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EnableSync"];
                 }
                 if ([value isEqualToString:@"NO"]) {
@@ -253,28 +182,29 @@ S1AppDelegate *MyAppDelegate;
     return YES;
 }
 
-#pragma mark - Push Notification For Sync (iOS 8)
+#pragma mark - Push Notification For Sync
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    NSLog(@"application:didRegisterUserNotificationSettings: %@", notificationSettings);
+    DDLogDebug(@"[APS] application:didRegisterUserNotificationSettings: %@", notificationSettings);
     [application registerForRemoteNotifications];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSLog(@"Registered for Push notifications with token: %@", deviceToken);
+    DDLogDebug(@"[APS] Registered for Push notifications with token: %@", deviceToken);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    NSLog(@"Push subscription failed: %@", error);
+    DDLogWarn(@"[APS] Push subscription failed: %@", error);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    NSLog(@"Push received: %@", userInfo);
-    if (SYSTEM_VERSION_LESS_THAN(@"8") || ![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        // iOS 7
+    DDLogDebug(@"[APS] Push received: %@", userInfo);
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        DDLogDebug(@"[APS] push notification received when user do not enable sync feature.");
+        completionHandler(UIBackgroundFetchResultNoData);
         return;
     }
-    // iOS 8 and more
+
     __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
     
     [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
@@ -293,37 +223,38 @@ S1AppDelegate *MyAppDelegate;
 }
 
 #pragma mark - Background Sync
-/*
--(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
- 
-}
-*/
 
-#pragma mark - Hand Off (iOS 8)
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    DDLogInfo(@"[Backgournd Fetch] fetch called");
+    completionHandler(UIBackgroundFetchResultNoData);
+    // TODO: user forum notification can be fetched here, then send a local notification to user.
+}
+
+#pragma mark - Hand Off
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
     return YES;
 }
+
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    NSLog(@"Receive Hand Off: %@", userActivity.userInfo);
+    DDLogDebug(@"Receive Hand Off: %@", userActivity.userInfo);
     NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
-    if (topicID) {
+    if (topicID != nil) {
         S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
-        if (topic) {
+        if (topic != nil) {
             NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
             if (lastViewedPage) {
                 topic = [topic copy];
                 topic.lastViewedPage = lastViewedPage;
             }
         } else {
-            topic = [[S1Topic alloc] init];
-            topic.topicID = topicID;
+            topic = [[S1Topic alloc] initWithTopicID:topicID];
             NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
             if (lastViewedPage) {
                 topic.lastViewedPage = lastViewedPage;
             }
         }
-        [self presentContentViewControllerForTopic:topic];
+        [self pushContentViewControllerForTopic:topic];
         return YES;
     } else {
         NSString *urlString = [userActivity.webpageURL absoluteString];
@@ -336,35 +267,36 @@ S1AppDelegate *MyAppDelegate;
                     tracedTopic = [tracedTopic copy];
                     tracedTopic.lastViewedPage = lastViewedPage;
                 }
-                [self presentContentViewControllerForTopic:tracedTopic];
+                [self pushContentViewControllerForTopic:tracedTopic];
                 return YES;
             } else {
-                [self presentContentViewControllerForTopic:parsedTopic];
+                [self pushContentViewControllerForTopic:parsedTopic];
                 return YES;
             }
         }
     }
     return NO;
 }
+
 #pragma mark - Reachability
 
 - (void)reachabilityChanged:(NSNotification *)notification {
     Reachability *reachability = notification.object;
     if ([reachability isReachableViaWiFi]) {
-        NSLog(@"%@",@"display picture");
+        DDLogDebug(@"[Reachability] WIFI: display picture");
     } else {
-        NSLog(@"%@",@"display placeholder");
+        DDLogDebug(@"[Reachability] WWAN: display placeholder");
     }
 }
 
 #pragma mark - Helper
-- (void)presentContentViewControllerForTopic:(S1Topic *)topic {
+
+- (void)pushContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-    if ([rootvc isKindOfClass:[UINavigationController class]]) {
-        S1ContentViewController *contentViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Content"];
-        [contentViewController setTopic:topic];
-        [contentViewController setDataCenter:[S1DataCenter sharedDataCenter]];
+    if ([rootvc isKindOfClass:[UINavigationController class]] && topic != nil) {
+        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[S1DataCenter sharedDataCenter]];
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
     }
 }
+
 @end

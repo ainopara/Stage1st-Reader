@@ -84,7 +84,7 @@
 "con-mD-8cX.text" = "Title";
 
 /* Class = "UITableViewSection"; headerTitle = "Credits"; ObjectID = "e4M-E1-pBD"; */
-"e4M-E1-pBD.headerTitle" = "版权信息";
+"e4M-E1-pBD.headerTitle" = "关于";
 
 /* Class = "UILabel"; text = "清空云端数据"; ObjectID = "e5P-TU-gZI"; */
 "e5P-TU-gZI.text" = "清空云端数据";

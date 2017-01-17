@@ -2,44 +2,54 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>外野</key>
-	<string>75</string>
-	<key>动漫论坛</key>
-	<string>6</string>
 	<key>游戏论坛</key>
 	<string>4</string>
-	<key>ＰＣ数码</key>
-	<string>51</string>
+	<key>动漫论坛</key>
+	<string>6</string>
+	<key>音乐论坛</key>
+	<string>24</string>
+	<key>内野</key>
+	<string>27</string>
+	<key>彼岸文化</key>
+	<string>31</string>
 	<key>影视论坛</key>
 	<string>48</string>
 	<key>文史沙龙</key>
 	<string>50</string>
-	<key>彼岸文化</key>
-	<string>31</string>
-	<key>八卦体育</key>
-	<string>77</string>
-	<key>音乐论坛</key>
-	<string>24</string>
-	<key>二手交易区</key>
-	<string>115</string>
-	<key>英雄联盟</key>
-	<string>111</string>
-	<key>吃货</key>
-	<string>123</string>
-	<key>火暴</key>
-	<string>93</string>
-	<key>马叉虫</key>
-	<string>74</string>
-	<key>车欠女未</key>
-	<string>76</string>
-	<key>犭苗犭句</key>
-	<string>101</string>
-	<key>摄影区</key>
-	<string>80</string>
-	<key>开箱区</key>
-	<string>124</string>
+	<key>ＰＣ数码</key>
+	<string>51</string>
 	<key>魔兽世界</key>
 	<string>53</string>
+	<key>激战2</key>
+	<string>60</string>
+	<key>怪物猎人</key>
+	<string>69</string>
+	<key>马叉虫</key>
+	<string>74</string>
+	<key>外野</key>
+	<string>75</string>
+	<key>车欠女未</key>
+	<string>76</string>
+	<key>八卦体育</key>
+	<string>77</string>
+	<key>摄影区</key>
+	<string>80</string>
+	<key>动漫投票</key>
+	<string>83</string>
+	<key>火暴</key>
+	<string>93</string>
+	<key>犭苗犭句</key>
+	<string>101</string>
+	<key>英雄联盟</key>
+	<string>111</string>
+	<key>二手交易区</key>
+	<string>115</string>
+	<key>真碉堡山</key>
+	<string>118</string>
+	<key>吃货</key>
+	<string>123</string>
+	<key>开箱区</key>
+	<string>124</string>
 	<key>车</key>
 	<string>131</string>
 	<key>炉石传说</key>
@@ -52,15 +62,9 @@
 	<string>135</string>
 	<key>模玩专区</key>
 	<string>136</string>
-	<key>激战2</key>
-	<string>60</string>
-	<key>动漫投票</key>
-	<string>83</string>
-	<key>怪物猎人</key>
-	<string>69</string>
-	<key>内野</key>
-	<string>27</string>
-	<key>真碉堡山</key>
-	<string>118</string>
+	<key>DOTA</key>
+	<string>138</string>
+	<key>欧美动漫</key>
+	<string>144</string>
 </dict>
 </plist>
