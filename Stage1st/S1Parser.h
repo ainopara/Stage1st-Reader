@@ -12,15 +12,10 @@
 
 @interface S1Parser : NSObject
 
-+ (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context;
 + (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
 + (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
-
-+ (NSString *)formhashFromPage:(NSString *)HTMLString;
-+ (NSUInteger)totalPagesFromThreadString:(NSString *)HTMLString;
-+ (NSUInteger)replyCountFromThreadString:(NSString *)HTMLString;
 
 + (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 

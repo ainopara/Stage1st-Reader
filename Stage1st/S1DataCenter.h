@@ -14,14 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class S1Topic;
 @class Floor;
 @class MahjongFaceItem;
-@class DiscuzAPIManager;
+@class DiscuzClient;
 
 @interface S1DataCenter : NSObject
 
 + (S1DataCenter *)sharedDataCenter;
 
 // Mahjong Face
-@property (strong, nonatomic) DiscuzAPIManager *apiManager;
+@property (strong, nonatomic) DiscuzClient *apiManager;
 @property (strong, nonatomic) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
 
 // For topic list View Controller

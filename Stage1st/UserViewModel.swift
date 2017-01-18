@@ -33,7 +33,7 @@ class UserViewModel {
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
-        dataCenter.apiManager.profile(self.user.value.ID) { [weak self] (result) in
+        dataCenter.apiManager.profile(userID: self.user.value.ID) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {
             case .success(let user):

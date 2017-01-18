@@ -1,5 +1,5 @@
 //
-//  DiscuzAPIManager+Login.swift
+//  DiscuzClient+Teleport.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 5/24/16.
@@ -10,24 +10,16 @@ import Foundation
 import Alamofire
 import JASON
 
-let kStage1stDomain = "Stage1stDomain"
+public let kStage1stDomain = "Stage1stDomain"
 
-enum LoginProgress {
-    case notLogin
-    case requestingSechash
-    case requestingSeccode
-    case logging
-    case inLogin
-}
-
-private func generateURLString(_ baseURLString: String, parameters: [String: Any]) -> String {
+private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
     let encodedURLRequest = try? URLEncoding.queryString.encode(urlRequest, with: parameters)
     return encodedURLRequest?.url?.absoluteString ?? "" // FIXME: this should not be nil.
 }
 
 // MARK: - Login
-public extension DiscuzAPIManager {
+public extension DiscuzClient {
     /**
      A check request should be sent to a discuz! server to make sure whether a seccode is necessary for login.
 
@@ -42,8 +34,13 @@ public extension DiscuzAPIManager {
                                hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
                                failureBlock: @escaping (_ error: NSError) -> Void) -> Request {
         logOut()
-        let parameters: [String: Any] = ["module": "secure", "version": 1, "mobile": "no", "type": "login"]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
+        let parameters: Parameters = [
+            "module": "secure",
+            "version": 1,
+            "mobile": "no",
+            "type": "login"
+        ]
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
@@ -77,59 +74,64 @@ public extension DiscuzAPIManager {
      - returns: Request object.
      */
     @discardableResult
-    public func logIn(username: String,
-               password: String,
-               secureQuestionNumber: Int,
-               secureQuestionAnswer: String,
-               authMode: AuthMode,
-               successBlock: @escaping (_ message: String?) -> Void,
-               failureBlock: @escaping (_ error: NSError) -> Void) -> Request {
-        // Generate URLString
-        var URLParameters: [String: Any] = ["module": "login", "version": 1, "loginsubmit": "yes", "loginfield": "auto", "cookietime": 2592000, "mobile": "no"]
+    public func logIn(username: String, password: String, secureQuestionNumber: Int, secureQuestionAnswer: String, authMode: AuthMode, completion: @escaping (Result<String?>) -> Void) -> Request {
+        var URLParameters: Parameters = [
+            "module": "login",
+            "version": 1,
+            "loginsubmit": "yes",
+            "loginfield": "auto",
+            "cookietime": 2592000,
+            "mobile": "no"
+        ]
+
         if case .secure(let hash, let code) = authMode {
             URLParameters["sechash"] = hash
             URLParameters["seccodeverify"] = code
         }
         let URLString = generateURLString(baseURL + "/api/mobile/", parameters: URLParameters)
 
-        let bodyParameters: [String: Any] = ["username": username, "password": password, "questionid": secureQuestionNumber, "answer": secureQuestionAnswer]
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
+        let bodyParameters: Parameters = [
+            "username": username,
+            "password": password,
+            "questionid": secureQuestionNumber,
+            "answer": secureQuestionAnswer
+        ]
+
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseJASON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
-                if let messageValue = json["Message"]["messageval"].string, (messageValue as NSString).contains("login_succeed") {
-                    successBlock(json["Message"]["messagestr"].string)
+                if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
+                    completion(.success(json["Message"]["messagestr"].string))
                 } else {
                     let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    failureBlock(error)
+                    completion(.failure(error))
                 }
             case .failure(let error):
-                failureBlock(error as NSError)
+                completion(.failure(error))
             }
         }
     }
 
     @discardableResult
-    func getSeccodeImage(sechash: String,
-                         successBlock: @escaping (_ image: UIImage) -> Void,
-                         failureBlock: @escaping (_ error: NSError) -> Void) -> Request {
-        let parameters: [String: Any] = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
+    func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
+        let parameters: Parameters = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
         return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseData { (response) in
             switch response.result {
             case .success(let data):
                 if let image = UIImage(data: data) {
-                    successBlock(image)
+                    completion(.success(image))
                 } else {
                     let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    failureBlock(error)
+                    completion(.failure(error))
                 }
             case .failure(let error):
-                failureBlock(error as NSError)
+                completion(.failure(error))
             }
         }
     }
 
-    func logOut(_ finishBlock: () -> Void = {}) {
+    func logOut(_ completionHandler: () -> Void = {}) {
         func clearCookies() {
             let cookieStorage = HTTPCookieStorage.shared
             if let cookies = cookieStorage.cookies {
@@ -140,51 +142,72 @@ public extension DiscuzAPIManager {
         }
         clearCookies() // TODO: only delete cookies about this account.
         UserDefaults.standard.set(nil, forKey: "InLoginStateID") // TODO: move this to finish block.
-        finishBlock()
+        completionHandler()
     }
 
     func isInLogin() -> Bool { // TODO: check cookies rather than a global state.
-        let loginID: String? = UserDefaults.standard.object(forKey: "InLoginStateID") as? String
-        return loginID == nil
+        if let _ = UserDefaults.standard.object(forKey: "InLoginStateID") as? String {
+            return true
+        } else {
+            return false
+        }
     }
 }
 
 // MARK: - Profile
-public extension DiscuzAPIManager {
+public extension DiscuzClient {
     @discardableResult
-    public func profile(_ userID: UInt, responseBlock: @escaping (_ result: Result<User>) -> Void) -> Request {
-        let parameters: [String: Any] = ["module": "profile", "version": 1, "uid": userID, "mobile": "no"]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseJASON { (response) in
+    public func profile(userID: UInt, completion: @escaping (Result<User>) -> Void) -> Request {
+        let parameters: Parameters = [
+            "module": "profile",
+            "version": 1,
+            "uid": userID,
+            "mobile": "no"
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
             switch response.result {
             case .success(let json):
                 guard let user = User(json: json) else {
                     let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
-                    responseBlock(.failure(error))
+                    completion(.failure(error))
                     return
                 }
-                responseBlock(.success(user))
+                completion(.success(user))
             case .failure(let error):
-                responseBlock(.failure(error))
+                completion(.failure(error))
             }
         }
     }
 }
 
 // MARK: - Report
-public extension DiscuzAPIManager {
+public extension DiscuzClient {
     @discardableResult
-    func report(_ topicID: String,
-                floorID: String,
-                forumID: String,
-                reason: String,
-                formhash: String,
-                completion: @escaping (NSError?) -> Void) -> Request {
-        let URLParameters: [String: Any] = ["mod": "report", "inajax": 1]
+    func report(topicID: String, floorID: String, forumID: String, reason: String, formhash: String, completion: @escaping (Error?) -> Void) -> Request {
+        let URLParameters: Parameters = [
+            "mod": "report",
+            "inajax": 1
+        ]
+
         let URLString = generateURLString(baseURL + "/misc.php", parameters: URLParameters)
 
-        let bodyParameters: [String: Any] = ["report_select": "其他", "message": reason, "referer": baseURL + "/forum.php?mod=viewthread&tid=\(topicID)", "reportsubmit": "true", "rtype": "post", "rid": floorID, "fid": forumID, "url": "", "inajax": 1, "handlekey": "miscreport1", "formhash": formhash]
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: URLEncoding.default).responseString { (response) in
-            completion(response.result.error as NSError?)
+        let bodyParameters: Parameters = [
+            "report_select": "其他",
+            "message": reason,
+            "referer": baseURL + "/forum.php?mod=viewthread&tid=\(topicID)",
+            "reportsubmit": "true",
+            "rtype": "post",
+            "rid": floorID,
+            "fid": forumID,
+            "url": "",
+            "inajax": 1,
+            "handlekey": "miscreport1",
+            "formhash": formhash
+        ]
+
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString { (response) in
+            completion(response.result.error)
         }
     }
 }

@@ -15,7 +15,7 @@ import ReactiveSwift
 class S1ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let dataCenter: S1DataCenter
-    let apiManager: DiscuzAPIManager
+    let apiManager: DiscuzClient
 
     let currentPage: MutableProperty<UInt>
     let previousPage: MutableProperty<UInt>

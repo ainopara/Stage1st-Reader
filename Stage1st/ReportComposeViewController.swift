@@ -16,7 +16,7 @@ import TextAttributes
 
 final class ReportComposeViewModel {
     let dataCenter: S1DataCenter
-    let apiManager: DiscuzAPIManager
+    let apiManager: DiscuzClient
     let topic: S1Topic
     let floor: Floor
     let content = MutableProperty("")
@@ -36,7 +36,7 @@ final class ReportComposeViewModel {
             .map { $0 && !$1 }
     }
 
-    func submit(_ completion: @escaping (NSError?) -> Void) {
+    func submit(_ completion: @escaping (Error?) -> Void) {
         DDLogDebug("submit")
         guard let forumID = topic.fID, let formhash = topic.formhash else {
             return
@@ -46,7 +46,7 @@ final class ReportComposeViewModel {
         NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
 
         submiting.value = true
-        _ = apiManager.report("\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
+        _ = apiManager.report(topicID: "\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
             guard let strongSelf = self else { return }
             strongSelf.submiting.value = false
             completion(error)
