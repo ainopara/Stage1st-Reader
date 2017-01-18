@@ -538,16 +538,31 @@ extension S1ContentViewController {
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyTopic",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
             guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyTopic",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                "type": "ReplyTopic",
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf._presentReplyView(toFloor: nil)
         }))
 
@@ -585,6 +600,10 @@ extension S1ContentViewController {
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
 
+            Answers.logCustomEvent(withName: "Share", customAttributes: [
+                "object": "Topic",
+                "source": "Content"
+            ])
             strongSelf.present(activityController, animated: true, completion: nil)
         }))
 
@@ -634,48 +653,69 @@ extension S1ContentViewController {
                                                       message: nil,
                                                       preferredStyle: .actionSheet)
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""),
-                                                      style: .destructive,
-                                                      handler: { [weak self] (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
+                Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
             guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf.presentType = .report
             let reportViewModel = strongSelf.viewModel.reportComposeViewModel(floor: floor)
             let reportComposeViewController = ReportComposeViewController(viewModel: reportViewModel)
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""),
-                                                      style: .default,
-                                                      handler: { [weak self] (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""), style: .default, handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyFloor",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
             guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyFloor",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                "type": "ReplyFloor",
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf._presentReplyView(toFloor: floor)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""),
-                                                      style: .cancel,
-                                                      handler: nil))
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .cancel, handler: nil))
 
         if let popover = floorActionController.popoverPresentationController {
             popover.delegate = self

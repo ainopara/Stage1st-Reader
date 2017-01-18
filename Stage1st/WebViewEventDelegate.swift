@@ -116,6 +116,9 @@ extension UserPresenter where Self: UIViewController {
 
 extension WebViewEventDelegate where Self: UserPresenter {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {
+        Answers.logCustomEvent(withName: "Click User", customAttributes: [
+            "source": "UserPresenter"
+        ])
         showUserViewController(userID: userID)
     }
 }

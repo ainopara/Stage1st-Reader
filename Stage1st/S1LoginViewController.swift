@@ -11,6 +11,7 @@ import SnapKit
 import ActionSheetPicker_3_0
 import OnePasswordExtension
 import CocoaLumberjack
+import Crashlytics
 
 private enum LoginViewControllerState {
     case notLogin
@@ -346,10 +347,12 @@ final class S1LoginViewController: UIViewController {
 extension S1LoginViewController {
 
     func logIn(_ sender: UIButton) {
-        if self.inLoginState() {
-            self.logoutAction()
+        if inLoginState() {
+            Answers.logCustomEvent(withName: "Log Out", customAttributes: nil)
+            logoutAction()
         } else {
-            self.loginAction()
+            Answers.logCustomEvent(withName: "Log In", customAttributes: nil)
+            loginAction()
         }
     }
 
