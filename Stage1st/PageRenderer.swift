@@ -141,7 +141,7 @@ extension PageRenderer {
                             if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
                                 imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
                             } else {
-                                let placeholderURLString = Bundle.main.url(forResource: "Placeholder", withExtension: "png")?.absoluteString!
+                                let placeholderURLString = Bundle.main.url(forResource: "Placeholder", withExtension: "png")!.absoluteString
                                 imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
                             }
 
