@@ -12,6 +12,14 @@ import JASON
 
 public let kStage1stDomain = "Stage1stDomain"
 
+struct DZError: Error {
+    enum Code: Int, _ErrorCodeProtocol {
+        public typealias _ErrorType = DZError
+
+        case loginFailedResponse
+    }
+}
+
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
     let encodedURLRequest = try? URLEncoding.queryString.encode(urlRequest, with: parameters)
