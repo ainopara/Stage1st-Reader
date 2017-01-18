@@ -224,8 +224,10 @@ extension WebViewEventDelegate where Self: ImagePresenter {
         guard let url = URL(string: imageURLString) else {
             return
         }
-
-        Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
+        Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+            "type": "Processed",
+            "source": "ImagePresenter"
+        ])
         showImageViewController(transitionSource: .positionOfElementID(imageID), imageURL: url)
     }
 }

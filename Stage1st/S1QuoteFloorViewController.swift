@@ -214,7 +214,10 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            Answers.logCustomEvent(withName: "[QuoteFloor] Image", customAttributes: ["type": "hijack"])
+            Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+                "type": "hijack",
+                "source": "QuoteFloor"
+            ])
             showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
             return
@@ -232,7 +235,9 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
                     }
                 }
 
-                Answers.logCustomEvent(withName: "[QuoteFloor] Topic Link", customAttributes: nil)
+                Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
+                    "source": "QuoteFloor"
+                ])
                 showContentViewController(topic: topic)
                 decisionHandler(.cancel)
                 return

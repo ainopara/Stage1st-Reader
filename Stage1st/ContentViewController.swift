@@ -785,7 +785,10 @@ extension S1ContentViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
+            Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+                "type": "Hijack",
+                "source": "Content"
+            ])
             showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
             return
@@ -804,7 +807,9 @@ extension S1ContentViewController: WKNavigationDelegate {
                     }
                 }
 
-                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
+                Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
+                    "source": "Content"
+                ])
                 showContentViewController(topic: topic)
                 decisionHandler(.cancel)
                 return
@@ -818,7 +823,9 @@ extension S1ContentViewController: WKNavigationDelegate {
                let pidString = querys["pid"],
                let pid = Int(pidString),
                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
-                Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
+                Answers.logCustomEvent(withName: "Open Quote Link", customAttributes: [
+                    "source": "Content"
+                ])
                 showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
                 decisionHandler(.cancel)
                 return
