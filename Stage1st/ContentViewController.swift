@@ -305,6 +305,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.stop()
+        webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
