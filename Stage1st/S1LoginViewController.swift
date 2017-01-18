@@ -85,7 +85,8 @@ private class UserInfoInputView: UIView {
         answerField.borderStyle = .line
         answerField.autocorrectionType = .no
         answerField.autocapitalizationType = .none
-        answerField.isSecureTextEntry = true
+        // Note: The ability of input chinese characters is necessary. Detail: http://stackoverflow.com/questions/9944769/why-cant-i-use-securetextentry-with-a-utf-8-keyboard
+//        answerField.isSecureTextEntry = true
         answerField.returnKeyType = .go
         answerField.backgroundColor = UIColor.white
         self.addSubview(answerField)
