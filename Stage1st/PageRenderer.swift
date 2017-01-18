@@ -152,9 +152,8 @@ extension PageRenderer {
                             linkElement.removeAttribute(forName: "href")
                             linkElement.addAttribute(withName: "href", stringValue: "javascript:void(0);")
                             linkElement.removeAttribute(forName: "onclick")
-                            let src = (imageElement.attribute(forName: "src")?.stringValue)!
                             let id = (imageElement.attribute(forName: "id")?.stringValue)!
-                            let linkString = "window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '\(src)', 'id': '\(id)'})"
+                            let linkString = "window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '\(finalImageSrcString)', 'id': '\(id)'})"
                             linkElement.addAttribute(withName: "onclick", stringValue: linkString)
                             linkElement.addChild(imageElement)
                         }
