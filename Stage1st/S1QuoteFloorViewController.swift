@@ -70,6 +70,7 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
         DDLogInfo("[QuoteFloorVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
+        webView.scrollView.delegate = nil
         webView.stopLoading()
         DDLogInfo("[QuoteFloorVC] Dealloced")
     }
