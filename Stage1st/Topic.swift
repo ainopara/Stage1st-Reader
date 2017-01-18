@@ -44,6 +44,8 @@ extension S1Topic {
         }
 
         // Always update message
-        message = topic.message
+        if message != topic.message {
+            message = topic.message
+        }
     }
 }
