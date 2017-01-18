@@ -541,7 +541,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
@@ -642,7 +642,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
@@ -663,7 +663,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return

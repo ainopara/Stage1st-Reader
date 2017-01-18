@@ -219,7 +219,11 @@ NS_ASSUME_NONNULL_BEGIN
         if ([loginUsername isEqualToString:@""]) {
             loginUsername = nil;
         }
-        [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+
+        if (loginUsername == nil || [loginUsername isKindOfClass:[NSString class]]) {
+            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+        }
+
         //get floors
         NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
 

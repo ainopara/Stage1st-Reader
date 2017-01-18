@@ -88,7 +88,7 @@
     [super viewWillAppear:animated];
 
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    if (inLoginStateID) {
+    if (inLoginStateID != nil && [inLoginStateID isKindOfClass:[NSString class]]) {
         self.usernameDetail.text = inLoginStateID;
     }
 
