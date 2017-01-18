@@ -15,25 +15,8 @@
 @end
 
 @implementation S1NetworkManager
+
 #pragma mark - Topic List
-+ (void)requestTopicListForKey:(NSString *)keyID
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *, id))success
-                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"forum.php";
-    if ([page isEqualToNumber:@1]) {
-        NSDictionary *params = @{@"mod": @"forumdisplay",
-                                 @"mobile": @"no",
-                                 @"fid": keyID};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
-    } else {
-        NSDictionary *params = @{@"mod": @"forumdisplay",
-                                 @"mobile": @"no",
-                                 @"fid": keyID,
-                                 @"page": page};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
-    }
-}
 
 + (void)requestTopicListAPIForKey:(NSString *)keyID
                          withPage:(NSNumber *)page
@@ -53,25 +36,6 @@
 }
 
 #pragma mark - Content
-+ (void)requestTopicContentForID:(NSNumber *)topicID
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *, id))success
-                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"forum.php";
-    if ([page isEqualToNumber: @1]) {
-        NSDictionary *params = @{@"mod": @"viewthread",
-                                 @"mobile": @"no",
-                                 @"tid": topicID};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
-    } else {
-        NSDictionary *params = @{@"mod": @"viewthread",
-                                 @"mobile": @"no",
-                                 @"tid": topicID,
-                                 @"page": page};
-        [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
-    }
-}
-
 
 + (void)requestTopicContentAPIForID:(NSNumber *)topicID
                            withPage:(NSNumber *)page
@@ -97,83 +61,6 @@
     NSDictionary *params = @{@"module": @"login"};
     [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
     
-}
-
-#pragma mark - Login
-
-+ (void)postLoginForUsername:(NSString *)username
-                 andPassword:(NSString *)password
-                     success:(void (^)(NSURLSessionDataTask *, id))success
-                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
-    NSDictionary *params = @{@"fastloginfield" : @"username",
-                             @"username" : username,
-                             @"password" : password,
-                             @"handlekey" : @"ls",
-                             @"quickforward" : @"yes",
-                             @"cookietime" : @"2592000"};
-    [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
-}
-
-+ (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
-                                        success:(void (^)(NSURLSessionDataTask *, id))success
-                                        failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"member.php";
-    NSDictionary *params = @{@"mod" : @"logging",
-                             @"action" : @"logout",
-                             @"formhash" : formhash};
-    [[S1HTTPSessionManager sharedHTTPClient] GET:url parameters:params progress:nil success:success failure:failure];
-}
-
-#pragma mark - Login with seccode
-
-+ (void)getSechashSuccess:(void (^)(NSURLSessionDataTask *, id))success
-                  failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/index.php";
-    NSDictionary *params = @{@"module": @"secure",
-                             @"version": @1,
-                             @"mobile": @"no",
-                             @"type": @"login"};
-    [[S1HTTPSessionManager sharedJSONClient] GET:url parameters:params progress:nil success:success failure:failure];
-}
-
-+ (void)getSeccodeImageWithSechash:(NSString *)sechash
-                           Success:(void (^)(NSURLSessionDataTask *, id))success
-                       failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/index.php";
-    NSDictionary *params = @{@"module": @"seccode",
-                             @"version": @1,
-                             @"mobile": @"no",
-                             @"sechash": sechash};
-    [[S1HTTPSessionManager sharedImageClient] GET:url parameters:params progress:nil success:success failure:failure];
-
-}
-
-+ (void)postLoginForUsername:(NSString *)username
-                    password:(NSString *)password
-                  questionID:(NSNumber *)questionID
-                      answer:(NSString *)answer
-                    formhash:(NSString *)formhash
-                     sechash:(NSString *)sechash
-                  andSeccode:(NSString *)seccode
-                     success:(void (^)(NSURLSessionDataTask *, id))success
-                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSDictionary *queryParams = @{@"module": @"login",
-                                  @"version": @1,
-                                  @"loginsubmit": @"yes",
-                                  @"loginfield": @"auto",
-                                  @"seccodeverify": seccode,
-                                  @"sechash": sechash,
-                                  @"mobile": @"no"};
-    AFHTTPRequestSerializer *serilizer = [AFHTTPRequestSerializer serializer];
-    NSMutableURLRequest *request = [serilizer requestWithMethod:@"GET" URLString:@"api/mobile/index.php" parameters:queryParams error:nil];
-    NSDictionary *params = @{@"username": username,
-                             @"password": password,
-                             @"questionid": questionID,
-                             @"answer": answer,
-                             @"formhash": formhash};
-    NSString *url = [[request URL] absoluteString];
-    [[S1HTTPSessionManager sharedJSONClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
 
 #pragma mark - Reply

@@ -12,20 +12,6 @@
 
 @interface S1NetworkManager : NSObject
 
-+ (void)requestTopicListForKey:(NSString *)key
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
-+ (void)requestTopicContentForID:(NSNumber *)topicID
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
-//API
-+ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                              failureBlock:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
 + (void)requestTopicListAPIForKey:(NSString *)key
                       withPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
@@ -36,6 +22,8 @@
                             success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                             failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
++ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                              failureBlock:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
 + (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
@@ -56,32 +44,6 @@
                   andParams:(NSDictionary *)params
                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-// Login
-+ (void)postLoginForUsername:(NSString *)username
-                 andPassword:(NSString *)password
-                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
-+ (void)requestLogoutCurrentAccountWithFormhash:(NSString *)formhash
-                                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
-
-+ (void)getSechashSuccess:(void (^)(NSURLSessionDataTask *, id))success
-                  failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
-
-+ (void)getSeccodeImageWithSechash:(NSString *)sechash
-                           Success:(void (^)(NSURLSessionDataTask *, id))success
-                           failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
-
-+ (void)postLoginForUsername:(NSString *)username
-                    password:(NSString *)password
-                  questionID:(NSNumber *)questionID
-                      answer:(NSString *)answer
-                    formhash:(NSString *)formhash
-                     sechash:(NSString *)sechash
-                  andSeccode:(NSString *)seccode
-                     success:(void (^)(NSURLSessionDataTask *, id))success
-                     failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
 
 + (void)findTopicFloor:(NSNumber *)floorID
              inTopicID:(NSNumber *)topicID
