@@ -352,11 +352,23 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if ([self isPresentingDatabaseList:self.currentKey]) {
+        // TODO: Reuse?
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 20)];
         [view setBackgroundColor:[[ColorManager shared] colorForKey:@"topiclist.tableview.header.background"]];
         
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.view.bounds.size.width, 20)];
-        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:[self.viewModel.viewMappings groupForSection:section] attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0], NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"topiclist.tableview.header.text"]}];
+        NSString *groupName = [self.viewModel.viewMappings groupForSection:section];
+        if (groupName == nil) {
+            [CrashlyticsKit recordError:[NSError errorWithDomain:@"Stage1stReaderApplicationDomain" code:12 userInfo:nil] withAdditionalUserInfo:@{
+                @"requestingSection": @(section),
+                @"numberOfSections": @(self.viewModel.viewMappings.numberOfSections)
+            }];
+            groupName = @"Unknown";
+        }
+        NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:groupName attributes:@{
+            NSFontAttributeName: [UIFont boldSystemFontOfSize:12.0],
+            NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"topiclist.tableview.header.text"]
+        }];
         [label setAttributedText:labelTitle];
         label.backgroundColor = [UIColor clearColor];
         [view addSubview:label];
