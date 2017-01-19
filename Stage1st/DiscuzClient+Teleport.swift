@@ -149,7 +149,7 @@ public extension DiscuzClient {
             }
         }
         clearCookies() // TODO: only delete cookies about this account.
-        UserDefaults.standard.set(nil, forKey: "InLoginStateID") // TODO: move this to finish block.
+        UserDefaults.standard.removeObject(forKey: "InLoginStateID") // TODO: move this to finish block.
         completionHandler()
     }
 
