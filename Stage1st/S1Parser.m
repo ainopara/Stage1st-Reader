@@ -53,44 +53,6 @@
 
 #pragma mark - Page Parsing
 
-+ (NSArray *)topicsFromHTMLData:(NSData *)rawData withContext:(NSDictionary *)context
-{
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//table[@id='threadlisttableid']//tbody"];
-    NSMutableArray *topics = [NSMutableArray array];
-    
-    DDLogDebug(@"[Parser] Topic count: %lu",(unsigned long)[elements count]);
-    if ([elements count]) {
-        for (TFHppleElement *element in elements){
-            if (![[element objectForKey:@"id"] hasPrefix:@"normal"]) {
-                continue;
-            }
-            TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
-            TFHppleElement *leftPart  = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='s xst']"] firstObject];
-            NSString *content = [leftPart text];
-            NSString *href = [leftPart objectForKey:@"href"];
-            TFHppleElement *rightPart = [[xpathParserForRow searchWithXPathQuery:@"//a[@class='xi2']"] firstObject];
-            NSString *replyCount = [rightPart text];
-            TFHppleElement *authorPart = [[xpathParserForRow searchWithXPathQuery:@"//td[@class='by'][1]/cite/a"] firstObject];
-            NSString *authorName = [authorPart text];
-            NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
-
-            NSNumber *topicID = [NSNumber numberWithInteger:[[[href componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]];
-            if (topicID != nil) {
-                S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
-                [topic setTitle:content];
-                [topic setReplyCount:[NSNumber numberWithInteger:[replyCount integerValue]]];
-                [topic setFID:[NSNumber numberWithInteger:[context[@"FID"] integerValue]]];
-                [topic setAuthorUserID:[NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]]];
-                [topic setAuthorUserName:authorName];
-                [topics addObject:topic];
-            }
-        }
-    }
-
-    return (NSArray *)topics;
-}
-
 + (NSMutableArray<S1Topic *> *)topicsFromAPI:(NSDictionary *)responseDict {
     NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
     NSMutableArray *topics = [[NSMutableArray alloc] init];

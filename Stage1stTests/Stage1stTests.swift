@@ -49,48 +49,40 @@ class S1TopicTests: XCTestCase {
         serverTopic.makeImmutable()
         tracedTopic.update(serverTopic)
 
-        XCTAssert(tracedTopic.title == "server", "should be updated")
-        XCTAssert(tracedTopic.replyCount == 2, "should be updated")
-        XCTAssert(tracedTopic.lastReplyCount == 1, "should be updated")
-        XCTAssert(tracedTopic.authorUserID == 2, "should be updated")
-        XCTAssert(tracedTopic.fID == 2, "should be updated")
+        XCTAssertEqual(tracedTopic.title, "server", "should be updated")
+        XCTAssertEqual(tracedTopic.replyCount, 2, "should be updated")
+        XCTAssertEqual(tracedTopic.lastReplyCount, 1, "should be updated")
+        XCTAssertEqual(tracedTopic.authorUserID, 2, "should be updated")
+        XCTAssertEqual(tracedTopic.fID, 2, "should be updated")
 
-        XCTAssert(tracedTopic.hasChangedProperties, "should be changed after update")
-        XCTAssert(tracedTopic.changedProperties.count == 5, "should be changed after update")
-        XCTAssert(tracedTopic.changedCloudProperties.count == 4, "should be changed after update")
+        XCTAssertTrue(tracedTopic.hasChangedProperties, "should be changed after update")
+        XCTAssertEqual(tracedTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(tracedTopic.changedProperties)")
+        XCTAssertEqual(tracedTopic.changedCloudProperties.count, 4, "should be changed after update")
     }
     
     func testUpdate2() {
         serverTopic.makeImmutable()
         voidTopic.update(serverTopic)
 
-        XCTAssert(voidTopic.title == "server", "should be updated")
-        XCTAssert(voidTopic.replyCount == 2, "should be updated")
-        XCTAssert(voidTopic.lastReplyCount == nil, "should be nil")
-        XCTAssert(voidTopic.authorUserID == 2, "should be updated")
-        XCTAssert(voidTopic.fID == 2, "should be updated")
+        XCTAssertEqual(voidTopic.title, "server", "should be updated")
+        XCTAssertEqual(voidTopic.replyCount, 2, "should be updated")
+        XCTAssertEqual(voidTopic.lastReplyCount, nil, "should be nil")
+        XCTAssertEqual(voidTopic.authorUserID, 2, "should be updated")
+        XCTAssertEqual(voidTopic.fID, 2, "should be updated")
 
-        XCTAssert(voidTopic.hasChangedProperties, "should be changed after update")
-        XCTAssert(voidTopic.changedProperties.count == 5, "should be changed after update")
-        XCTAssert(voidTopic.changedCloudProperties.count == 4, "should be changed after update")
+        XCTAssertTrue(voidTopic.hasChangedProperties, "should be changed after update")
+        XCTAssertEqual(voidTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(voidTopic.changedProperties)")
+        XCTAssertEqual(voidTopic.changedCloudProperties.count, 4, "should be changed after update")
     }
 
     func testUpdate3() {
         voidTopic.makeImmutable()
         tracedTopic.update(voidTopic)
 
-        XCTAssert(tracedTopic.title == "traced", "should not be updated")
-        XCTAssert(tracedTopic.changedProperties.count == 1, "should not change any property but lastReplyCount")
-        XCTAssert(tracedTopic.changedProperties.contains("lastReplyCount"), "should not change any property but lastReplyCount")
+        XCTAssertEqual(tracedTopic.title, "traced", "should not be updated")
+        XCTAssertEqual(tracedTopic.changedProperties.count, 1, "should not change any property but lastReplyCount, but got \(tracedTopic.changedProperties)")
+        XCTAssertTrue(tracedTopic.changedProperties.contains("lastReplyCount"), "should not change any property but lastReplyCount")
     }
-    
-    func testPerformanceUpdate() {
-
-        self.measure {
-
-        }
-    }
-    
 }
 
 extension XCTestCase {
@@ -124,7 +116,6 @@ class S1UITests: KIFTestCase {
 }
 
 class S1SnapshotTests: FBSnapshotTestCase {
-
     override func setUp() {
         super.setUp()
 //        recordMode = true

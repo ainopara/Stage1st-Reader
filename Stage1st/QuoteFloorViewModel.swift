@@ -13,13 +13,13 @@ final class QuoteFloorViewModel: PageRenderer {
     let floors: [Floor]
 
     let dataCenter: S1DataCenter
-    let discuzAPIManager: DiscuzAPIManager
+    let discuzAPIManager: DiscuzClient
 
     let centerFloorID: Int
     let baseURL: URL
 
     init(dataCenter: S1DataCenter,
-         manager: DiscuzAPIManager,
+         manager: DiscuzClient,
          topic: S1Topic,
          floors: [Floor],
          centerFloorID: Int,

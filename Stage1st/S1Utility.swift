@@ -113,18 +113,6 @@ extension UIView {
         UIGraphicsEndImageContext()
         return viewScreenShot
     }
-
-//    func s1_screenShot() -> UIImage? {
-//        return s1_screenShot(rect: self.bounds)
-//    }
-    // TODO:
-    //    - (UIImage *)screenShot {
-    //    //clip
-    //    CGImageRef imageRef = CGImageCreateWithImageInRect([viewImage CGImage], CGRectMake(0.0, 20.0 * viewImage.scale, viewImage.size.width * viewImage.scale, viewImage.size.height * viewImage.scale - 20.0 * viewImage.scale));
-    //    viewImage = [UIImage imageWithCGImage:imageRef scale:1 orientation:viewImage.imageOrientation];
-    //    CGImageRelease(imageRef);
-    //    return viewImage;
-    //    }
 }
 
 extension UIViewController {

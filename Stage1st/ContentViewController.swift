@@ -305,6 +305,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.stop()
+        webView.stopLoading()
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
@@ -537,16 +538,31 @@ extension S1ContentViewController {
                                                 handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyTopic",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyTopic",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                "type": "ReplyTopic",
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf._presentReplyView(toFloor: nil)
         }))
 
@@ -584,6 +600,10 @@ extension S1ContentViewController {
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
 
+            Answers.logCustomEvent(withName: "Share", customAttributes: [
+                "object": "Topic",
+                "source": "Content"
+            ])
             strongSelf.present(activityController, animated: true, completion: nil)
         }))
 
@@ -633,48 +653,69 @@ extension S1ContentViewController {
                                                       message: nil,
                                                       preferredStyle: .actionSheet)
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""),
-                                                      style: .destructive,
-                                                      handler: { [weak self] (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
+                Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Report", customAttributes: [
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf.presentType = .report
             let reportViewModel = strongSelf.viewModel.reportComposeViewModel(floor: floor)
             let reportComposeViewController = ReportComposeViewController(viewModel: reportViewModel)
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""),
-                                                      style: .default,
-                                                      handler: { [weak self] (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Reply", comment: ""), style: .default, handler: { [weak self] (_) in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyFloor",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 strongSelf._alertRefresh()
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") != nil else {
+            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyFloor",
+                    "source": "Content",
+                    "result": "Failed"
+                ])
                 let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
 
+            Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                "type": "ReplyFloor",
+                "source": "Content",
+                "result": "Succeeded"
+            ])
             strongSelf._presentReplyView(toFloor: floor)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""),
-                                                      style: .cancel,
-                                                      handler: nil))
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("S1ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .cancel, handler: nil))
 
         if let popover = floorActionController.popoverPresentationController {
             popover.delegate = self
@@ -784,7 +825,10 @@ extension S1ContentViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "hijack"])
+            Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+                "type": "Hijack",
+                "source": "Content"
+            ])
             showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
             return
@@ -803,7 +847,9 @@ extension S1ContentViewController: WKNavigationDelegate {
                     }
                 }
 
-                Answers.logCustomEvent(withName: "[Content] Topic Link", customAttributes: nil)
+                Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
+                    "source": "Content"
+                ])
                 showContentViewController(topic: topic)
                 decisionHandler(.cancel)
                 return
@@ -817,7 +863,9 @@ extension S1ContentViewController: WKNavigationDelegate {
                let pidString = querys["pid"],
                let pid = Int(pidString),
                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
-                Answers.logCustomEvent(withName: "[Content] Quote Link", customAttributes: nil)
+                Answers.logCustomEvent(withName: "Open Quote Link", customAttributes: [
+                    "source": "Content"
+                ])
                 showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
                 decisionHandler(.cancel)
                 return
@@ -1031,7 +1079,6 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 
             let successBlock = { [weak self] in
                 MessageHUD.shared.post(message: "回复成功", duration: .second(2.5))
-//                [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"回复成功" duration:2.5 animated:YES];
                 guard let strongSelf = self else { return }
                 strongSelf.attributedReplyDraft = nil
                 if strongSelf.viewModel.isInLastPage() {
@@ -1040,20 +1087,15 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
             }
 
             let failureBlock = { (error: Error) in
-                let nserror = error as NSError
-
-                if nserror.domain == NSURLErrorDomain && nserror.code == NSURLErrorCancelled {
+                if let urlError = error as? URLError, urlError.code == .cancelled {
                     DDLogDebug("[Network] NSURLErrorCancelled")
                     MessageHUD.shared.post(message: "回复请求取消", duration: .second(1.0))
-//                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复请求取消" duration:1.0 animated:YES];
                 } else {
-                    DDLogDebug("[Network] reply error: \(nserror)")
+                    DDLogDebug("[Network] reply error: \(error)")
                     MessageHUD.shared.post(message: "回复失败", duration: .second(2.5))
-//                    [[MTStatusBarOverlay sharedInstance] postErrorMessage:@"回复失败" duration:2.5 animated:YES];
                 }
             }
             MessageHUD.shared.post(message: "回复发送中", duration: .forever)
-            // [[MTStatusBarOverlay sharedInstance] postMessage:@"回复发送中" animated:YES];
 
             if let replyTopicFloor = replyTopicFloor {
                 viewModel.dataCenter.replySpecificFloor(replyTopicFloor, in: viewModel.topic, atPage: NSNumber(value: viewModel.currentPage.value), withText: composeViewController.plainText, success: successBlock, failure: failureBlock)

@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super init];
     
     _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
-    _apiManager = [[DiscuzAPIManager alloc] initWithBaseURL:@"http://bbs.saraba1st.com/2b"];
+    _apiManager = [[DiscuzClient alloc] initWithBaseURL:@"http://bbs.saraba1st.com/2b"];
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
 
@@ -219,7 +219,11 @@ NS_ASSUME_NONNULL_BEGIN
         if ([loginUsername isEqualToString:@""]) {
             loginUsername = nil;
         }
-        [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+
+        if (loginUsername == nil || [loginUsername isKindOfClass:[NSString class]]) {
+            [[NSUserDefaults standardUserDefaults] setValue:loginUsername forKey:@"InLoginStateID"];
+        }
+
         //get floors
         NSArray *floorList = [S1Parser contentsFromAPI:responseDict];
 

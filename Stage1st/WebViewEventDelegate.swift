@@ -116,6 +116,9 @@ extension UserPresenter where Self: UIViewController {
 
 extension WebViewEventDelegate where Self: UserPresenter {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {
+        Answers.logCustomEvent(withName: "Click User", customAttributes: [
+            "source": "UserPresenter"
+        ])
         showUserViewController(userID: userID)
     }
 }
@@ -224,8 +227,10 @@ extension WebViewEventDelegate where Self: ImagePresenter {
         guard let url = URL(string: imageURLString) else {
             return
         }
-
-        Answers.logCustomEvent(withName: "[Content] Image", customAttributes: ["type": "processed"])
+        Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+            "type": "Processed",
+            "source": "ImagePresenter"
+        ])
         showImageViewController(transitionSource: .positionOfElementID(imageID), imageURL: url)
     }
 }

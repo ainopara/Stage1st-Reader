@@ -11,6 +11,7 @@ import SnapKit
 import ActionSheetPicker_3_0
 import OnePasswordExtension
 import CocoaLumberjack
+import Crashlytics
 
 private enum LoginViewControllerState {
     case notLogin
@@ -85,7 +86,8 @@ private class UserInfoInputView: UIView {
         answerField.borderStyle = .line
         answerField.autocorrectionType = .no
         answerField.autocapitalizationType = .none
-        answerField.isSecureTextEntry = true
+        // Note: The ability of input chinese characters is necessary. Detail: http://stackoverflow.com/questions/9944769/why-cant-i-use-securetextentry-with-a-utf-8-keyboard
+//        answerField.isSecureTextEntry = true
         answerField.returnKeyType = .go
         answerField.backgroundColor = UIColor.white
         self.addSubview(answerField)
@@ -171,7 +173,7 @@ final class S1LoginViewController: UIViewController {
 
     fileprivate var loginButtonTopConstraint: Constraint?
 
-    fileprivate let networkManager: DiscuzAPIManager
+    fileprivate let networkManager: DiscuzClient
     fileprivate var sechash: String?
 
     fileprivate var state: LoginViewControllerState = .notLogin {
@@ -241,7 +243,7 @@ final class S1LoginViewController: UIViewController {
 
     // MARK: - Life Cycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.networkManager = DiscuzAPIManager(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
+        self.networkManager = DiscuzClient(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .overFullScreen
         self.modalTransitionStyle = .crossDissolve
@@ -345,10 +347,12 @@ final class S1LoginViewController: UIViewController {
 extension S1LoginViewController {
 
     func logIn(_ sender: UIButton) {
-        if self.inLoginState() {
-            self.logoutAction()
+        if inLoginState() {
+            Answers.logCustomEvent(withName: "Log Out", customAttributes: nil)
+            logoutAction()
         } else {
-            self.loginAction()
+            Answers.logCustomEvent(withName: "Log In", customAttributes: nil)
+            loginAction()
         }
     }
 
@@ -360,20 +364,24 @@ extension S1LoginViewController {
             return
         }
         self.seccodeInputView.seccodeSubmitButton.isEnabled = false
-        networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: .secure(hash: currentSechash(), code: currentSeccode()), successBlock: { [weak self] (message) in
+        let authMode: DiscuzClient.AuthMode = .secure(hash: currentSechash(), code: currentSeccode())
+        networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: authMode) { [weak self] (result) in
             guard let strongSelf = self else { return }
-            strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
-            UserDefaults.standard.set(username, forKey: "InLoginStateID")
-            strongSelf.state = .login
-            let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
-                strongSelf._dismiss()
-            }))
-            strongSelf.present(alertController, animated: true, completion: nil)
-            }) { [weak self] (error) in
-                guard let strongSelf = self else { return }
+
+            switch result {
+            case .success(let message):
+                strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
+                UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                strongSelf.state = .login
+                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
+                    strongSelf._dismiss()
+                }))
+                strongSelf.present(alertController, animated: true, completion: nil)
+            case .failure(let error):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
                 strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
+            }
         }
     }
 
@@ -475,32 +483,39 @@ extension S1LoginViewController {
         userInfoInputView.loginButton.isEnabled = false
         networkManager.checkLoginType(noSechashBlock: { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.networkManager.logIn(username: username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .basic, successBlock: { [weak self] (message) in
+            strongSelf.networkManager.logIn(username: username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .basic) { [weak self] (result) in
                 guard let strongSelf = self else { return }
-                strongSelf.userInfoInputView.loginButton.isEnabled = true
-                UserDefaults.standard.set(username, forKey: "InLoginStateID")
-                strongSelf.state = .login
-                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
-                    strongSelf._dismiss()
-                }))
-                strongSelf.present(alertController, animated: true, completion: nil)
-                }, failureBlock: { (error) in
+                switch result {
+                case .success(let message):
+                    strongSelf.userInfoInputView.loginButton.isEnabled = true
+                    UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                    strongSelf.state = .login
+                    let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
+                        strongSelf._dismiss()
+                    }))
+                    strongSelf.present(alertController, animated: true, completion: nil)
+                case .failure(let error):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
                     strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
-            })
+                }
+            }
         }, hasSeccodeBlock: { [weak self] (sechash) in
             guard let strongSelf = self else { return }
             strongSelf.userInfoInputView.loginButton.isEnabled = true
 
             strongSelf.sechash = sechash
             strongSelf.seccodeInputView.isHidden = false
-            strongSelf.networkManager.getSeccodeImage(sechash: sechash, successBlock: { (image) in
-                strongSelf.seccodeInputView.seccodeImageView.image = image
-            }, failureBlock: { (error) in
-                strongSelf.alert(title: "下载验证码失败", message: error.localizedDescription)
-                strongSelf.userInfoInputView.loginButton.isEnabled = true
-            })
+            strongSelf.networkManager.getSeccodeImage(sechash: sechash) { [weak self] (result) in
+                guard let strongSelf = self else { return }
+                switch result {
+                case .success(let image):
+                    strongSelf.seccodeInputView.seccodeImageView.image = image
+                case .failure(let error):
+                    strongSelf.alert(title: "下载验证码失败", message: error.localizedDescription)
+                    strongSelf.userInfoInputView.loginButton.isEnabled = true
+                }
+            }
 
         }, failureBlock: { [weak self] (error) in
             guard let strongSelf = self else { return }

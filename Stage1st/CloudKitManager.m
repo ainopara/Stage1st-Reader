@@ -985,7 +985,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delaySeconds * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.needsResume = YES;
         });
-        [Answers logCustomEventWithName:@"CloudKit Rerty Interval" customAttributes:@{@"interval": retryDelay}];
+        [Answers logCustomEventWithName:@"CloudKit Rerty Interval" customAttributes:@{
+            @"interval": retryDelay
+        }];
     } else {
         self.state = CKManagerStateHalt;
     }
@@ -1015,8 +1017,10 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
             errorDescription = subErrorDescription;
         }
         code = [code stringByAppendingString:[NSString stringWithFormat:@"(%@)", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
-        [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{@"code": code,
-                                                                             @"description": errorDescription}];
+        [Answers logCustomEventWithName:@"CloudKit Error" customAttributes:@{
+            @"code": code,
+            @"description": errorDescription
+        }];
         DDLogDebug(@"[CloudKit] ckErrorCode:%ld description:%@", (long)code, errorDescription);
     }
 #ifdef DEBUG
