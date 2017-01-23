@@ -42,7 +42,6 @@ PODS:
   - FMDB/standard (2.6.2)
   - GRMustache.swift (2.0.0)
   - GYHttpMock (1.0.1)
-  - JASON (3.1)
   - JTSImageViewController (1.5)
   - KIF (3.5.1):
     - KIF/Core (= 3.5.1)
@@ -59,6 +58,7 @@ PODS:
   - Result (3.1.0)
   - Reveal-SDK (5)
   - SnapKit (3.1.2)
+  - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
     - YapDatabase/Standard (= 2.9.2)
@@ -125,7 +125,6 @@ DEPENDENCIES:
   - FMDB
   - GRMustache.swift
   - GYHttpMock
-  - JASON
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
@@ -135,6 +134,7 @@ DEPENDENCIES:
   - ReactiveSwift
   - Reveal-SDK
   - SnapKit
+  - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYKeyboardManager
@@ -144,6 +144,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
+  SwiftyJSON:
+    :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
     :branch: limit-cloudkit-upload
     :git: https://github.com/ainopara/YapDatabase.git
@@ -155,6 +157,9 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: 69d88824d428cf6b3407eb778f23c7562f87149b
     :git: https://github.com/ainopara/KissXML.git
+  SwiftyJSON:
+    :commit: 27393ffd0fdd86ee3e41f1f2daa775fd597c31bf
+    :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
     :commit: 6af4584dfb5296cac5beb40cb3bd2e865e9c69ae
     :git: https://github.com/ainopara/YapDatabase.git
@@ -172,7 +177,6 @@ SPEC CHECKSUMS:
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
-  JASON: c1204b01c9979eef35b6948ca939aac5e7bef081
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 082eb65279e51c3092923802849eb796a04982ab
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
@@ -183,10 +187,11 @@ SPEC CHECKSUMS:
   Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
   Reveal-SDK: 7e3945c0c3649106c3cc8923672ee545e25605c0
   SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
+  SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 6e293aab1a0e3559f9ac0c0aeb7bf61e8d60acc0
+PODFILE CHECKSUM: beab86de516a27e239dc650d787244d22f73a1ef
 
 COCOAPODS: 1.1.1

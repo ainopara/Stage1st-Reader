@@ -8,17 +8,7 @@
 
 import Foundation
 import Alamofire
-import JASON
-
-public let kStage1stDomain = "Stage1stDomain"
-
-//struct DZError: Error {
-//    enum Code: Int, _ErrorCodeProtocol {
-//        public typealias _ErrorType = DZError
-//
-//        case loginFailedResponse
-//    }
-//}
+import SwiftyJSON
 
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
@@ -48,7 +38,7 @@ public extension DiscuzClient {
             "mobile": "no",
             "type": "login"
         ]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
@@ -105,7 +95,7 @@ public extension DiscuzClient {
             "answer": secureQuestionAnswer
         ]
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseJASON { (response) in
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseSwiftyJSON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
@@ -114,8 +104,7 @@ public extension DiscuzClient {
                     NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
                     completion(.success(json["Message"]["messagestr"].string))
                 } else {
-                    let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    completion(.failure(error))
+                    completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].string, messageString: json["Message"]["messagestr"].string)))
                 }
             case .failure(let error):
                 completion(.failure(error))
@@ -126,15 +115,10 @@ public extension DiscuzClient {
     @discardableResult
     func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
         let parameters: Parameters = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseData { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseImage { (response) in
             switch response.result {
-            case .success(let data):
-                if let image = UIImage(data: data) {
-                    completion(.success(image))
-                } else {
-                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    completion(.failure(error))
-                }
+            case .success(let image):
+                completion(.success(image))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -176,12 +160,11 @@ public extension DiscuzClient {
             "mobile": "no"
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
             switch response.result {
             case .success(let json):
                 guard let user = User(json: json) else {
-                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
-                    completion(.failure(error))
+                    completion(.failure(DZError.userInfoParsedFailed(responseJSONString: json.rawString() ?? "")))
                     return
                 }
                 completion(.success(user))
@@ -221,8 +204,4 @@ public extension DiscuzClient {
             completion(response.result.error)
         }
     }
-}
-
-public extension Notification.Name {
-    public static let DZLoginStatusDidChangeNotification = Notification.Name.init(rawValue: "DZLoginStatusDidChangeNotification")
 }

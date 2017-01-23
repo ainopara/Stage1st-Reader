@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import JASON
+import SwiftyJSON
 import CocoaLumberjack
 
 private let kFloorID = "floorID"
