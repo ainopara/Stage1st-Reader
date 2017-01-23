@@ -371,7 +371,6 @@ extension S1LoginViewController {
             switch result {
             case .success(let message):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
-                UserDefaults.standard.set(username, forKey: "InLoginStateID")
                 strongSelf.state = .login
                 let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in

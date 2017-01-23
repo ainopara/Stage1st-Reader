@@ -110,6 +110,8 @@ public extension DiscuzClient {
             switch response.result {
             case .success(let json):
                 if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
+                    UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                    NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
                     completion(.success(json["Message"]["messagestr"].string))
                 } else {
                     let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
@@ -150,6 +152,7 @@ public extension DiscuzClient {
         }
         clearCookies() // TODO: only delete cookies about this account.
         UserDefaults.standard.removeObject(forKey: "InLoginStateID") // TODO: move this to finish block.
+        NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
         completionHandler()
     }
 
@@ -218,4 +221,8 @@ public extension DiscuzClient {
             completion(response.result.error)
         }
     }
+}
+
+public extension Notification.Name {
+    public static let DZLoginStatusDidChangeNotification = Notification.Name.init(rawValue: "DZLoginStatusDidChangeNotification")
 }
