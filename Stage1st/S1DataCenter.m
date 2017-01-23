@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadNextPageForKey:(NSString *)keyID success:(void (^)(NSArray<S1Topic *> *))success failure:(void (^)(NSError *))failure {
     
     if (self.topicListCachePageNumber[keyID] == nil) {
-        failure([NSError errorWithDomain:@"Stage1stDomain" code:0 userInfo:nil]);
+        failure([NSError errorWithDomain:@"Stage1stReaderApplicationDomain" code:0 userInfo:nil]);
         return;
     }
     
