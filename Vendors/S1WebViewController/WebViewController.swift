@@ -11,7 +11,7 @@ import WebKit
 import SnapKit
 import CocoaLumberjack
 
-class WebViewController: UIViewController, WKNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var URLToOpen: URL
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
@@ -43,6 +43,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
         webView.scrollView.indicatorStyle = .default
         webView.isOpaque = false
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
 
         statusBarSeparatorView.backgroundColor = UIColor.black
@@ -213,6 +214,14 @@ class WebViewController: UIViewController, WKNavigationDelegate {
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         DDLogError("[WebVC] \(#function)")
+    }
+
+    // MARK: WKWebViewUIDelegate
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
     }
 
     // MARK: KVO
