@@ -28,7 +28,7 @@ public final class S1TopicListViewModel: NSObject {
         initializeMappings()
     }
 
-    func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: NSError) -> Void) {
+    func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
         self.dataCenter.topics(forKey: key, shouldRefresh: refresh, success: { [weak self] (topicList) in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
@@ -41,12 +41,12 @@ public final class S1TopicListViewModel: NSObject {
 
         }, failure: { (error) in
             ensureMainThread({
-                failure(error as NSError)
+                failure(error)
             })
         })
     }
 
-    func loadNextPageForKey(_ key: String, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: NSError) -> Void) {
+    func loadNextPageForKey(_ key: String, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
         self.dataCenter.loadNextPage(forKey: key, success: { [weak self] (topicList) in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
@@ -58,7 +58,7 @@ public final class S1TopicListViewModel: NSObject {
             })
         }, failure: { (error) in
             ensureMainThread({
-                failure(error as NSError)
+                failure(error)
             })
         })
     }

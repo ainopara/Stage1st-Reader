@@ -30,7 +30,7 @@ public extension DiscuzClient {
     @discardableResult
     public func checkLoginType(noSechashBlock: @escaping () -> Void,
                                hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
-                               failureBlock: @escaping (_ error: NSError) -> Void) -> Request {
+                               failureBlock: @escaping (_ error: Error) -> Void) -> Request {
         logOut()
         let parameters: Parameters = [
             "module": "secure",
@@ -48,7 +48,7 @@ public extension DiscuzClient {
                     noSechashBlock()
                 }
             case .failure(let error):
-                failureBlock(error as NSError)
+                failureBlock(error)
             }
         }
     }

@@ -1239,21 +1239,24 @@ extension S1ContentViewController {
                     strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
                 }
             case .failure(let error):
-                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled {
+                if let urlError = error as? URLError, urlError.code == .cancelled {
                     DDLogDebug("request cancelled.")
                     // TODO:
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
                     //            }
-                } else if error.domain == "Stage1stErrorDomain" && error.code == 101 {
-                    DDLogInfo("[ContentVC] Permission denied with message: \(error)")
-                    if let message = error.userInfo["message"] as? String, message != "" {
-                        strongSelf.refreshHUD.showMessage(message)
-                        strongSelf.refreshHUD.hide(withDelay: 3.0)
-                    }
                 } else {
-                    DDLogDebug("[ContentVC] fetch failed with error: \(error)")
-                    strongSelf.refreshHUD.showRefreshButton()
+                    let nsError = error as NSError
+                    if nsError.domain == "Stage1stErrorDomain" && nsError.code == 101 {
+                        DDLogInfo("[ContentVC] Permission denied with message: \(error)")
+                        if let message = nsError.userInfo["message"] as? String, message != "" {
+                            strongSelf.refreshHUD.showMessage(message)
+                            strongSelf.refreshHUD.hide(withDelay: 3.0)
+                        }
+                    } else {
+                        DDLogDebug("[ContentVC] fetch failed with error: \(error)")
+                        strongSelf.refreshHUD.showRefreshButton()
+                    }
                 }
             }
         }

@@ -6,7 +6,6 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Result
 import ReactiveCocoa
 import ReactiveSwift
 import SnapKit
