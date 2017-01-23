@@ -154,10 +154,10 @@ private class SeccodeInputView: UIView {
     }
 }
 
-final class S1LoginViewController: UIViewController {
+final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
 
-    fileprivate let backgroundBlurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-    fileprivate let containerView = UIView(frame: CGRect.zero)
+    let backgroundBlurView = UIVisualEffectView(effect: nil)
+    let containerView = UIView(frame: CGRect.zero)
 
     fileprivate let userInfoInputView = UserInfoInputView(frame: .zero)
     fileprivate let seccodeInputView = SeccodeInputView(frame: .zero)
@@ -245,7 +245,8 @@ final class S1LoginViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.networkManager = DiscuzClient(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.modalPresentationStyle = .overFullScreen
+        self.modalPresentationStyle = .custom
+        self.transitioningDelegate = self
         self.modalTransitionStyle = .crossDissolve
     }
 
@@ -329,13 +330,13 @@ final class S1LoginViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        containerView.center = centerOfContainerView()
+        containerView.center = expectedCenterOfContainerView()
         if let dynamicAnimator = self.dynamicAnimator {
             // update snap point
             if let snapBehavior = self.snapBehavior {
-                snapBehavior.snapPoint = centerOfContainerView()
+                snapBehavior.snapPoint = expectedCenterOfContainerView()
             } else {
-                let snapBehavior = UISnapBehavior(item: containerView, snapTo: centerOfContainerView())
+                let snapBehavior = UISnapBehavior(item: containerView, snapTo: expectedCenterOfContainerView())
                 dynamicAnimator.addBehavior(snapBehavior)
                 self.snapBehavior = snapBehavior
             }
@@ -544,11 +545,14 @@ extension S1LoginViewController {
 
         switch gesture.state {
         case .began:
-            dynamicAnimator.removeAllBehaviors()
+            DDLogInfo("before: \(containerView.center)")
+            let centerOfCurrentContainerView = containerView.center
+            dynamicAnimator.removeAllBehaviors() // containerView.center will changed immdediately when doing this since iOS 10
             DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
-                                                       offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: containerView.center),
+                                                       offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
                                                        attachedToAnchor: gesture.location(in: self.view))
+            DDLogInfo("after: \(containerView.center)")
             dynamicAnimator.addBehavior(attachmentBehavior!)
             dynamicItemBehavior = UIDynamicItemBehavior(items: [containerView])
             dynamicAnimator.addBehavior(dynamicItemBehavior!)
@@ -582,7 +586,7 @@ extension S1LoginViewController {
         }
     }
 
-    fileprivate func centerOfContainerView() -> CGPoint {
+    fileprivate func expectedCenterOfContainerView() -> CGPoint {
         return CGPoint(x: self.visibleLayoutGuide.center.x, y: self.visibleLayoutGuide.center.y)
     }
 
@@ -590,7 +594,14 @@ extension S1LoginViewController {
         return UIOffset(horizontal: touchPointInView.x - viewCenter.x, vertical: touchPointInView.y - viewCenter.y)
     }
 }
-
+extension S1LoginViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return S1ModalAnimator(presentType: .present)
+    }
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return S1ModalAnimator(presentType: .dismissal)
+    }
+}
 // MARK: View Model
 extension S1LoginViewController {
 
