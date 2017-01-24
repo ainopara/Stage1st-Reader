@@ -11,9 +11,6 @@
 @interface S1HTTPSessionManager : AFHTTPSessionManager
 
 + (S1HTTPSessionManager *)sharedHTTPClient;
-
 + (S1HTTPSessionManager *)sharedJSONClient;
-
-+ (S1HTTPSessionManager *)sharedImageClient;
 
 @end

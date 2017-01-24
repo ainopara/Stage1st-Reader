@@ -149,6 +149,65 @@ public extension DiscuzClient {
     }
 }
 
+// MARK: - Topic List
+public struct FieldInfo {
+
+}
+
+public extension DiscuzClient {
+    @discardableResult
+    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(FieldInfo, [S1Topic])>) -> Void) -> Alamofire.Request {
+        let parameters: Parameters = [
+            "module": "forumdisplay",
+            "version": 1,
+            "tpp": 50,
+            "submodule": "checkpost",
+            "mobile": "no",
+            "fid": fieldID,
+            "page": page,
+            "orderby": "dblastpost"
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+            switch response.result {
+            case .success(let json):
+                completion(.success((FieldInfo(), [S1Topic]())))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
+// MARK: - Content
+public struct TopicInfo {
+
+}
+
+public extension DiscuzClient {
+    @discardableResult
+    public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(TopicInfo, [Floor])>) -> Void) -> Alamofire.Request {
+        let parameters: Parameters = [
+            "module": "viewthread",
+            "version": 1,
+            "ppp": 30,
+            "submodule": "checkpost",
+            "mobile": "no",
+            "tid": topicID,
+            "page": page
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+            switch response.result {
+            case .success(let json):
+                completion(.success((TopicInfo(), [Floor]())))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
 // MARK: - Profile
 public extension DiscuzClient {
     @discardableResult
