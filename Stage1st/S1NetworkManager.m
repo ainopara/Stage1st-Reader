@@ -207,6 +207,16 @@
             [task cancel];
         }
     }];
+    
+    [[[S1HTTPSessionManager sharedJSONClient] session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        // DDLogDebug(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
+        for (NSURLSessionDataTask* task in downloadTasks) {
+            [task cancel];
+        }
+        for (NSURLSessionDataTask* task in dataTasks) {
+            [task cancel];
+        }
+    }];
 }
 
 @end
