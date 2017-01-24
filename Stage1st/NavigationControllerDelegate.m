@@ -96,10 +96,15 @@
         self.interactionController = nil;
         self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
     } else {
-        DDLogWarn(@"[NavPan] Other Interaction Event:%ld", (long)recognizer.state);
+        DDLogError(@"[NavPan] Other Interaction Event:%ld", (long)recognizer.state);
+        MyAppDelegate.crashIssueTrackingModeEnabled = YES;
+        DDLogError(@"[Tracking] 0");
         [self.interactionController cancelInteractiveTransition];
+        DDLogError(@"[Tracking] 1");
         self.interactionController = nil;
+        DDLogError(@"[Tracking] 2");
         self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
+        DDLogError(@"[Tracking] 3");
     }
 }
 

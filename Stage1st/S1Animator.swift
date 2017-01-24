@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 @objc enum TransitionDirection: Int {
     case push
@@ -66,10 +67,20 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 fromViewController.view.transform = CGAffineTransform(translationX: containerViewWidth, y: 0.0)
                 toViewController.view.transform = .identity
             }
-        }) { (_) in
+        }) { (finished) in
+            if MyAppDelegate.crashIssueTrackingModeEnabled {
+                DDLogError("[Tracking] A: \(finished)")
+                DDLogError("[Tracking] B: \(transitionContext.transitionWasCancelled)")
+                DDLogError("[Tracking] C: \(transitionContext.containerView)")
+                DDLogError("[Tracking] D: \(transitionContext.containerView.subviews)")
+                DDLogError("[Tracking] E: \(transitionContext.viewController(forKey: .from))")
+                DDLogError("[Tracking] F: \(transitionContext.viewController(forKey: .to))")
+            }
             fromViewController.view.transform = .identity
             toViewController.view.transform = .identity
+            DDLogError("[Tracking] G")
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            DDLogError("[Tracking] H")
         }
     }
 }

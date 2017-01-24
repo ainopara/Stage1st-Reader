@@ -105,7 +105,7 @@
         UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
         [strongButton setImage:theImage forState:UIControlStateNormal];
     } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
-        NSLog(@"Unexpected failure when request mahjong face image:%@", error);
+        DDLogError(@"Unexpected failure when request mahjong face image:%@", error);
     }];
 }
 
