@@ -195,6 +195,8 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
 
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.questionSelectButton.snp.bottom).offset(12.0).constraint
                 }
+                dynamicAnimator?.removeAllBehaviors()
+                containerView.setNeedsLayout()
             case .notLoginWithAnswerField:
                 userInfoInputView.usernameField.isEnabled = true
                 userInfoInputView.passwordField.alpha = 1.0
@@ -211,6 +213,8 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
 
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.answerField.snp.bottom).offset(12.0).constraint
                 }
+                dynamicAnimator?.removeAllBehaviors()
+                containerView.setNeedsLayout()
             case .login:
                 userInfoInputView.usernameField.isEnabled = false
                 userInfoInputView.passwordField.alpha = 0.0
@@ -226,6 +230,8 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
 
                     self.loginButtonTopConstraint = make.top.equalTo(self.userInfoInputView.usernameField.snp.bottom).offset(12.0).constraint
                 }
+                dynamicAnimator?.removeAllBehaviors()
+                containerView.setNeedsLayout()
             }
         }
     }
@@ -533,7 +539,6 @@ extension S1LoginViewController {
 
 // MARK: Helper
 extension S1LoginViewController {
-
     fileprivate func alert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: nil))
@@ -548,6 +553,7 @@ extension S1LoginViewController {
             DDLogInfo("before: \(containerView.center)")
             let centerOfCurrentContainerView = containerView.center
             dynamicAnimator.removeAllBehaviors() // containerView.center will changed immdediately when doing this since iOS 10
+            containerView.center = centerOfCurrentContainerView
             DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
                                                        offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
@@ -578,7 +584,9 @@ extension S1LoginViewController {
                     }
                 }
             } else {
-                dynamicAnimator.removeAllBehaviors()
+                let centerOfCurrentContainerView = containerView.center
+                dynamicAnimator.removeAllBehaviors() // containerView.center will changed immdediately when doing this since iOS 10
+                containerView.center = centerOfCurrentContainerView
                 if let snapBehavior = self.snapBehavior {
                     dynamicAnimator.addBehavior(snapBehavior)
                 }
