@@ -11,6 +11,4 @@
 
 @interface DDErrorLevelFormatter : NSObject <DDLogFormatter>
 
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
-
 @end

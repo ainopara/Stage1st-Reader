@@ -78,9 +78,13 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
             }
             fromViewController.view.transform = .identity
             toViewController.view.transform = .identity
-            DDLogError("[Tracking] G")
+            if MyAppDelegate.crashIssueTrackingModeEnabled {
+                DDLogError("[Tracking] G")
+            }
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            DDLogError("[Tracking] H")
+            if MyAppDelegate.crashIssueTrackingModeEnabled {
+                DDLogError("[Tracking] H")
+            }
         }
     }
 }

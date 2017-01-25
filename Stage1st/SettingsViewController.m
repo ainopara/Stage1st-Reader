@@ -183,8 +183,13 @@
         S1LoginViewController *viewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:viewController animated:YES completion:NULL];
     } else if (indexPath.section == 2 && indexPath.row == 2) {
+#ifdef DEBUG
+        InMemoryLogViewController *logViewController = [[InMemoryLogViewController alloc] initInMemoryLogger:[InMemoryLogger shared]];
+        [self.navigationController pushViewController:logViewController animated:YES];
+#else
         SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"https://ainopara.github.io/stage1st-reader-EULA.html"]];
         [self presentViewController:safariViewController animated:YES completion:NULL];
+#endif
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

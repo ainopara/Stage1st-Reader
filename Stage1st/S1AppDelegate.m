@@ -33,6 +33,9 @@ S1AppDelegate *MyAppDelegate;
         MyAppDelegate = self;
 
         // Configure logging
+        DDMultiFormatter *formatter = [[DDMultiFormatter alloc] init];
+        [formatter addFormatter:[[DDErrorLevelFormatter alloc] init]];
+        [formatter addFormatter:[[DDDispatchQueueLogFormatter alloc] init]];
 #ifdef DEBUG
         id <DDLogger> logger = [DDTTYLogger sharedInstance];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
@@ -40,13 +43,21 @@ S1AppDelegate *MyAppDelegate;
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(118, 164, 211) backgroundColor:nil forFlag:DDLogFlagInfo];
         [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
-        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
-#else
-        id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
-        [logger setLogFormatter:[[DDErrorLevelFormatter alloc] init]];
-#endif
+        [logger setLogFormatter:formatter];
         [self setLogLevelForSwift];
         [DDLog addLogger:logger];
+
+        // In-Memory Logger
+        InMemoryLogger *inMemoryLogger = [InMemoryLogger shared];
+        [inMemoryLogger setLogFormatter:formatter];
+        [DDLog addLogger:inMemoryLogger];
+#else
+        id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
+        [logger setLogFormatter:formatter];
+        [self setLogLevelForSwift];
+        [DDLog addLogger:logger];
+#endif
+        
     }
     return self;
 }

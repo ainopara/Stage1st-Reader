@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3602181F1DF124E40034E109 /* S1NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3602181E1DF124E40034E109 /* S1NavigationViewController.swift */; };
 		361860201DB5D39100D11504 /* S1Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3618601F1DB5D39100D11504 /* S1Error.swift */; };
+		36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */; };
+		36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */; };
 		7B670747DD553D17A8D1236F /* Pods_Stage1stTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806C850B09C10F1B9F1345A0 /* Pods_Stage1stTests.framework */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
@@ -136,6 +138,8 @@
 /* Begin PBXFileReference section */
 		3602181E1DF124E40034E109 /* S1NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1NavigationViewController.swift; path = Stage1st/S1NavigationViewController.swift; sourceTree = "<group>"; };
 		3618601F1DB5D39100D11504 /* S1Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Error.swift; path = Stage1st/S1Error.swift; sourceTree = "<group>"; };
+		36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogger.swift; path = Vendors/CrashlyticsLogger/InMemoryLogger.swift; sourceTree = "<group>"; };
+		36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogViewController.swift; path = Vendors/CrashlyticsLogger/InMemoryLogViewController.swift; sourceTree = "<group>"; };
 		4358B1D3313628BA0A5AAF21 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		806C850B09C10F1B9F1345A0 /* Pods_Stage1stTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1stTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
@@ -504,6 +508,8 @@
 				86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */,
 				86D20FE01CA6B638003F2691 /* DDErrorLevelFormatter.h */,
 				86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */,
+				36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */,
+				36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */,
 			);
 			name = Logger;
 			sourceTree = "<group>";
@@ -1046,6 +1052,7 @@
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86221B861CA65E3600015522 /* S1Utility.swift in Sources */,
+				36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */,
 				868799231CE629D700F5C75C /* S1LoginViewController.swift in Sources */,
 				86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
@@ -1056,6 +1063,7 @@
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
 				361860201DB5D39100D11504 /* S1Error.swift in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
+				36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,
 				C08334F516E2245B0035C1AA /* ODRefreshControl.m in Sources */,
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
