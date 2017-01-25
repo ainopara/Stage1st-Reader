@@ -122,19 +122,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		869D687B1D8C290A0039D4CB /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		3602181E1DF124E40034E109 /* S1NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1NavigationViewController.swift; path = Stage1st/S1NavigationViewController.swift; sourceTree = "<group>"; };
 		3618601F1DB5D39100D11504 /* S1Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Error.swift; path = Stage1st/S1Error.swift; sourceTree = "<group>"; };
@@ -759,10 +746,8 @@
 				C095873216CA8A36007E0119 /* Resources */,
 				86221B871CA6719400015522 /* Swiftlint */,
 				864E51F81BFAAF3B00CAF010 /* Setup Fabric */,
-				86A766CF1BA43703009BAD0D /* Auto Increase Build Number */,
 				FEA0C5DDF38BA7893E28CD69 /* [CP] Embed Pods Frameworks */,
 				93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */,
-				869D687B1D8C290A0039D4CB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -886,20 +871,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 9c2555274ce1394305fd28e35310ab35c425d0e3 67779c61b0098102e5eb69534c83c3bdf063b0554bc3e1c7a76c3765524a67f5";
-		};
-		86A766CF1BA43703009BAD0D /* Auto Increase Build Number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Auto Increase Build Number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n# Auto Increment Version Script\nREV=`git rev-list develop | wc -l | awk '{print $1}'`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion ${REV}\" \"$INFOPLIST_FILE\"\n\nCFBundleVersion=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nBUILD_NR=$((${CFBundleVersion} + 4000))\nCFBundleVersion=$BUILD_NR\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $CFBundleVersion\" \"$INFOPLIST_FILE\"";
 		};
 		93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
