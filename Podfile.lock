@@ -1,5 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.4)
+  - AcknowList (1.2)
   - ActionSheetPicker-3.0 (2.2.0)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
@@ -113,6 +114,7 @@ PODS:
 
 DEPENDENCIES:
   - 1PasswordExtension
+  - AcknowList
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
@@ -166,6 +168,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
+  AcknowList: 18ccee4d933a153622416cce2d36e6864ec147ea
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
@@ -192,6 +195,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 50c96f3b4e6b5dc62a824ae788690a00140dbdee
+PODFILE CHECKSUM: 55fd90cf333136a2e98c10ef6ac96ea7dd8de7b1
 
 COCOAPODS: 1.1.1

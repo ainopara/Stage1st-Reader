@@ -41,6 +41,7 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'GRMustache.swift'
     pod '1PasswordExtension'
+    pod 'AcknowList'
 
     target "Stage1stTests" do
         inherit! :search_paths
