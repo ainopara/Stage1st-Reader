@@ -35,15 +35,4 @@
     return jsonClient;
 }
 
-+ (S1HTTPSessionManager *)sharedImageClient
-{
-    static S1HTTPSessionManager *imageClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        imageClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
-        imageClient.responseSerializer = [AFImageResponseSerializer serializer];
-    });
-    return imageClient;
-}
-
 @end

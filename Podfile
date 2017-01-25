@@ -9,7 +9,7 @@ target "Stage1st" do
     pod 'AlamofireImage'
 
     # Model
-    pod 'JASON'
+    pod 'SwiftyJSON', :git => 'https://github.com/ainopara/SwiftyJSON.git'
 
     # UI
     pod 'ActionSheetPicker-3.0'

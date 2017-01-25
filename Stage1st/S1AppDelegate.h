@@ -20,4 +20,6 @@ extern S1AppDelegate *MyAppDelegate;
 @property (nonatomic, strong) NavigationControllerDelegate *navigationDelegate;
 @property (nonatomic, strong, readonly) Reachability *reachability;
 
+@property (nonatomic, assign) BOOL crashIssueTrackingModeEnabled;
+
 @end

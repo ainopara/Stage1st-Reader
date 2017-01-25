@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import JASON
+import SwiftyJSON
 
 private let kUserID = "userID"
 private let kUserName = "userName"

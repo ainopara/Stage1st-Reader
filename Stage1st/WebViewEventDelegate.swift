@@ -206,11 +206,11 @@ extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControl
                 imageInfo.referenceView = strongSelf.view
             }
 
-            let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
-            imageViewController?.interactionsDelegate = strongSelf
-            imageViewController?.optionsDelegate = strongSelf
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
+                let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
+                imageViewController?.interactionsDelegate = strongSelf
+                imageViewController?.optionsDelegate = strongSelf
                 switch transitionSource {
                 case .offScreen:
                     imageViewController?.show(from: strongSelf, transition: .fromOffscreen)

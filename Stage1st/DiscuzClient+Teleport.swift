@@ -8,17 +8,7 @@
 
 import Foundation
 import Alamofire
-import JASON
-
-public let kStage1stDomain = "Stage1stDomain"
-
-//struct DZError: Error {
-//    enum Code: Int, _ErrorCodeProtocol {
-//        public typealias _ErrorType = DZError
-//
-//        case loginFailedResponse
-//    }
-//}
+import SwiftyJSON
 
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
@@ -40,7 +30,7 @@ public extension DiscuzClient {
     @discardableResult
     public func checkLoginType(noSechashBlock: @escaping () -> Void,
                                hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
-                               failureBlock: @escaping (_ error: NSError) -> Void) -> Request {
+                               failureBlock: @escaping (_ error: Error) -> Void) -> Request {
         logOut()
         let parameters: Parameters = [
             "module": "secure",
@@ -48,7 +38,7 @@ public extension DiscuzClient {
             "mobile": "no",
             "type": "login"
         ]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
@@ -58,7 +48,7 @@ public extension DiscuzClient {
                     noSechashBlock()
                 }
             case .failure(let error):
-                failureBlock(error as NSError)
+                failureBlock(error)
             }
         }
     }
@@ -105,15 +95,16 @@ public extension DiscuzClient {
             "answer": secureQuestionAnswer
         ]
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseJASON { (response) in
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseSwiftyJSON { (response) in
             debugPrint(response.request as Any)
             switch response.result {
             case .success(let json):
                 if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
+                    UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                    NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
                     completion(.success(json["Message"]["messagestr"].string))
                 } else {
-                    let error = NSError(domain: kStage1stDomain, code: 1, userInfo: [NSLocalizedDescriptionKey: json["Message"]["messagestr"].string ?? NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    completion(.failure(error))
+                    completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].string, messageString: json["Message"]["messagestr"].string)))
                 }
             case .failure(let error):
                 completion(.failure(error))
@@ -124,15 +115,10 @@ public extension DiscuzClient {
     @discardableResult
     func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
         let parameters: Parameters = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseData { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseImage { (response) in
             switch response.result {
-            case .success(let data):
-                if let image = UIImage(data: data) {
-                    completion(.success(image))
-                } else {
-                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("LoginView_Get_Login_Status_Failure_Message", comment: "")])
-                    completion(.failure(error))
-                }
+            case .success(let image):
+                completion(.success(image))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -149,7 +135,8 @@ public extension DiscuzClient {
             }
         }
         clearCookies() // TODO: only delete cookies about this account.
-        UserDefaults.standard.set(nil, forKey: "InLoginStateID") // TODO: move this to finish block.
+        UserDefaults.standard.removeObject(forKey: "InLoginStateID") // TODO: move this to finish block.
+        NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
         completionHandler()
     }
 
@@ -158,6 +145,65 @@ public extension DiscuzClient {
             return true
         } else {
             return false
+        }
+    }
+}
+
+// MARK: - Topic List
+public struct FieldInfo {
+
+}
+
+public extension DiscuzClient {
+    @discardableResult
+    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(FieldInfo, [S1Topic])>) -> Void) -> Alamofire.Request {
+        let parameters: Parameters = [
+            "module": "forumdisplay",
+            "version": 1,
+            "tpp": 50,
+            "submodule": "checkpost",
+            "mobile": "no",
+            "fid": fieldID,
+            "page": page,
+            "orderby": "dblastpost"
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+            switch response.result {
+            case .success(let json):
+                completion(.success((FieldInfo(), [S1Topic]())))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
+// MARK: - Content
+public struct TopicInfo {
+
+}
+
+public extension DiscuzClient {
+    @discardableResult
+    public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(TopicInfo, [Floor])>) -> Void) -> Alamofire.Request {
+        let parameters: Parameters = [
+            "module": "viewthread",
+            "version": 1,
+            "ppp": 30,
+            "submodule": "checkpost",
+            "mobile": "no",
+            "tid": topicID,
+            "page": page
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+            switch response.result {
+            case .success(let json):
+                completion(.success((TopicInfo(), [Floor]())))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }
@@ -173,12 +219,11 @@ public extension DiscuzClient {
             "mobile": "no"
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJASON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
             switch response.result {
             case .success(let json):
                 guard let user = User(json: json) else {
-                    let error = NSError(domain: kStage1stDomain, code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to parse user info."])
-                    completion(.failure(error))
+                    completion(.failure(DZError.userInfoParsedFailed(responseJSONString: json.rawString() ?? "")))
                     return
                 }
                 completion(.success(user))

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import JASON
+import SwiftyJSON
 
 typealias HEXColor = String
 
@@ -55,7 +55,7 @@ class Poll: NSObject {
     let remainTime: TimeInterval?
 
     init?(json: JSON) {
-        guard let optionsDictionary = json["polloptions"].jsonDictionary else { return nil }
+        guard let optionsDictionary = json["polloptions"].dictionary else { return nil }
         self.options = optionsDictionary.values.flatMap { (json) -> PollOption? in
             return PollOption(json: json)
         }

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import JASON
+import SwiftyJSON
 import CocoaLumberjack
 
 private let kFloorID = "floorID"
@@ -21,7 +21,7 @@ private let kMessage = "message"
 private let kImageAttachmentURLStringList = "imageAttachmentList"
 private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
 
-final class Floor: NSObject, NSCoding {
+public final class Floor: NSObject, NSCoding {
     let ID: Int
     var indexMark: String?
     var author: User
@@ -51,14 +51,13 @@ final class Floor: NSObject, NSCoding {
         // FIXME: finish this.
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
         let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? UInt ?? UInt(aDecoder.decodeInteger(forKey: kAuthorID))
-        guard
-            ID != 0,
-            authorID != 0,
-            let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String else {
-                return nil
+        guard ID != 0,
+              authorID != 0,
+              let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String else {
+            return nil
         }
 
         self.ID = ID
@@ -74,7 +73,7 @@ final class Floor: NSObject, NSCoding {
         self.imageAttachmentURLStringList = aDecoder.decodeObject(forKey: kImageAttachmentURLStringList) as? [String]
     }
 
-    func encode(with aCoder: NSCoder) {
+    public func encode(with aCoder: NSCoder) {
         aCoder.encode(self.ID, forKey: kFloorID)
         aCoder.encode(self.indexMark, forKey: kIndexMark)
         aCoder.encode(self.author.name, forKey: kAuthor)
@@ -88,14 +87,13 @@ final class Floor: NSObject, NSCoding {
 
 extension Floor {
     var firstQuoteReplyFloorID: Int? {
-        guard
-            let content = self.content,
-            let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
-            let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),
-            let floorIDString = resultDict["pid"],
-            let floorID = Int(floorIDString) else { return nil }
-        DDLogDebug("First Quote Floor ID: \(floorID)")
+        guard let content = self.content,
+              let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
+              let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),
+              let floorIDString = resultDict["pid"],
+              let floorID = Int(floorIDString) else { return nil }
 
+        DDLogDebug("First Quote Floor ID: \(floorID)")
         return floorID
     }
 }

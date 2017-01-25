@@ -7,7 +7,7 @@
 //
 
 import CocoaLumberjack
-import Result
+import Alamofire
 import Mustache
 import ReactiveCocoa
 import ReactiveSwift
@@ -80,13 +80,13 @@ class S1ContentViewModel: NSObject, PageRenderer {
 }
 
 extension S1ContentViewModel {
-    func currentContentPage(completion: @escaping (Result<(String, Bool), NSError>) -> Void) {
+    func currentContentPage(completion: @escaping (Result<(String, Bool)>) -> Void) {
         dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] (floors, isFromCache) in
             guard let strongSelf = self else { return }
             let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
             completion(.success(strongSelf.generatePage(with: floors), shouldRefetch))
         }) { (error) in
-            completion(.failure(error as NSError))
+            completion(.failure(error))
         }
     }
 }

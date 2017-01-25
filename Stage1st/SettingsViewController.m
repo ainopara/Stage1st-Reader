@@ -82,20 +82,18 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveLoginStatusChangeNotification:) name:@"DZLoginStatusDidChangeNotification" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    if (inLoginStateID != nil && [inLoginStateID isKindOfClass:[NSString class]]) {
-        self.usernameDetail.text = inLoginStateID;
-    }
+    [self _resetLoginStatus];
 
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
 
-    [self updateiCloudStatus];
+    [self _updateiCloudStatus];
     [self didReceivePaletteChangeNotification:nil];
 }
 
@@ -235,12 +233,16 @@
 }
 
 - (void)cloudKitStateChanged:(NSNotification *)notification {
-    [self updateiCloudStatus];
+    [self _updateiCloudStatus];
+}
+
+- (void)didReceiveLoginStatusChangeNotification:(NSNotification *)notification {
+    [self _resetLoginStatus];
 }
 
 #pragma mark - Helper
 
-- (void)updateiCloudStatus {
+- (void)_updateiCloudStatus {
     NSString *titleString;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
         titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
@@ -281,6 +283,15 @@
     }
     
     self.iCloudSyncCell.detailTextLabel.text = titleString;
+}
+
+- (void)_resetLoginStatus {
+    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
+    if (inLoginStateID != nil && [inLoginStateID isKindOfClass:[NSString class]]) {
+        self.usernameDetail.text = inLoginStateID;
+    } else {
+        self.usernameDetail.text = NSLocalizedString(@"SettingView_Not_Login_State_Mark", @"");
+    }
 }
 
 @end
