@@ -1,0 +1,50 @@
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
+
+fastlane_version "1.89.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    cocoapods
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    scan
+  end
+
+  desc "Submit a new Beta Build to Apple TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :beta do |options|
+    if !options[:version]
+      raise "No version specified!".red
+    end
+
+    ensure_git_branch(branch: 'develop')
+    ensure_git_status_clean
+
+    increment_version_number(version_number: options[:version])
+    build_number_string = `git rev-list develop | wc -l | awk '{print $1}'`
+    build_number = (build_number_string.to_i + 4000).to_s
+    increment_build_number(build_number: build_number)
+
+    gym(scheme: 'Stage1st', output_directory: "Archive/#{options[:version]}") # Build your app - more options available
+    pilot
+    commit_version_bump
+  end
+
+  after_all do |lane|
+    slack(
+        message: "Successfully execute lane."
+    )
+  end
+
+  error do |lane, exception|
+    slack(
+        message: exception.message,
+        success: false
+    )
+  end
+end
