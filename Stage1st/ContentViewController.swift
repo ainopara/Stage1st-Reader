@@ -51,7 +51,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var topDecorateLine = UIView(frame: .zero)
     var bottomDecorateLine = UIView(frame: .zero)
 
-    var attributedReplyDraft: NSMutableAttributedString? = nil
+    var attributedReplyDraft: NSMutableAttributedString?
     weak var replyTopicFloor: Floor?
 
     var scrollType: ScrollType = .restorePosition {
@@ -1162,7 +1162,7 @@ extension S1ContentViewController {
             activity.userInfo = strongSelf.viewModel.activityUserInfo()
             activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL() as URL?
             activity.isEligibleForSearch = true
-            activity.requiredUserInfoKeys = Set(arrayLiteral: "topicID")
+            activity.requiredUserInfoKeys = Set(["topicID"])
 
             DispatchQueue.main.async(execute: {
                 guard let strongSelf = self else { return }

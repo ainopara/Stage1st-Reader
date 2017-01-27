@@ -17,7 +17,7 @@ final class QuoteFloorCell: UITableViewCell {
     let floorLabel = UILabel(frame: .zero)
     let moreActionButton = UIButton(type: .system)
     let contentLabel = UILabel(frame: .zero)
-    var webViewHeightConstraint: Constraint? = nil
+    var webViewHeightConstraint: Constraint?
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

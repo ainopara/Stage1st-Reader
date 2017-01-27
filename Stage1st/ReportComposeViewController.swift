@@ -57,7 +57,7 @@ final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)
     let loadingHUD = S1HUD(frame: .zero)
     let keyboardManager = YYKeyboardManager.default()
-    var textViewBottomConstraint: Constraint? = nil
+    var textViewBottomConstraint: Constraint?
 
     let viewModel: ReportComposeViewModel
 
