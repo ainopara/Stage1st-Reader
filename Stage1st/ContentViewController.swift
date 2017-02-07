@@ -229,7 +229,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
         // Binding
         viewModel.currentPage.producer
-            .combineLatest(with: viewModel.totalPages.producer).startWithValues { [weak self] (currentPage, totalPage) in
+            .combineLatest(with: viewModel.totalPages.producer)
+            .startWithValues { [weak self] (currentPage, totalPage) in
             DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
             guard let strongSelf = self else { return }
             strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
@@ -254,12 +255,17 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             strongSelf.viewModel.toggleFavorite()
         }
 
-        viewModel.favorite.producer.map { $0?.boolValue ?? false }.startWithValues { [weak self] (_) in
+        viewModel.favorite.producer
+            .take(during: self.reactive.lifetime)
+            .map { $0?.boolValue ?? false }
+            .startWithValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
         }
 
-        viewModel.title.producer.startWithValues { [weak self] (title) in
+        viewModel.title.producer
+            .take(during: self.reactive.lifetime)
+            .startWithValues { [weak self] (title) in
             guard let strongSelf = self else { return }
             if let title = title, title != "" {
                 strongSelf.titleLabel.text = title as String
