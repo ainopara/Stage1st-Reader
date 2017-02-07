@@ -15,4 +15,6 @@ typedef enum {
 
 @interface S1TopicListViewController : UIViewController
 
+@property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
+
 @end

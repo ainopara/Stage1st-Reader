@@ -32,6 +32,7 @@ public enum TopicListPresentationType {
 extension S1TopicListViewController {
 
     open override func didReceiveMemoryWarning() {
+        self.dataCenter.clearTopicListCache()
         S1Formatter.sharedInstance().clearCache()
     }
     func isPresentingDatabaseList(_ key: String) -> Bool {
