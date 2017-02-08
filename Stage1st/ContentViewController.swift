@@ -179,8 +179,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         bottomDecorateLine.isHidden = true
 
         // Pull to action
-        pullToActionController.setConfiguration(withName: "top", baseLine: .top, beginPosition: 0.0, endPosition: Double(topOffset))
-        pullToActionController.setConfiguration(withName: "bottom", baseLine: .bottom, beginPosition: 0.0, endPosition: Double(bottomOffset))
+        pullToActionController.addObservation(withName: "top", baseLine: .top, beginPosition: 0.0, endPosition: Double(topOffset))
+        pullToActionController.addObservation(withName: "bottom", baseLine: .bottom, beginPosition: 0.0, endPosition: Double(bottomOffset))
         pullToActionController.delegate = self
 
         // Title label
@@ -236,11 +236,13 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
         }
 
-        SignalProducer.combineLatest(webPageReadyForAutomaticScrolling.producer, finishFirstLoading.producer, webPageCurrentContentHeight.producer)
-            .startWithValues { [weak self] (webPageReady, finishFirstLoading, _) in
+        SignalProducer
+            .combineLatest(webPageReadyForAutomaticScrolling.producer, webPageCurrentContentHeight.producer)
+            .startWithValues { [weak self] (webPageReady, currentHeight) in
 
             guard let strongSelf = self else { return }
-            DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading)")
+            let finishFirstLoading = strongSelf.finishFirstLoading.value
+            DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
 
             if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
                 DispatchQueue.main.async { [weak self] in
@@ -896,7 +898,7 @@ extension S1ContentViewController: WKNavigationDelegate {
         return
     }
 }
-// MARK: WebViewEventDelegate
+// MARK: - WebViewEventDelegate
 extension S1ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
         webPageReadyForAutomaticScrolling.value = true
@@ -907,10 +909,6 @@ extension S1ContentViewController: WebViewEventDelegate {
             DDLogInfo("User Touch detected. Stop tracking scroll type \(scrollType)")
             webPageAutomaticScrollingEnabled = false
         }
-    }
-
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, heightChangedTo height: Double) {
-        webPageCurrentContentHeight.value = CGFloat(height)
     }
 
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
@@ -928,7 +926,7 @@ extension S1ContentViewController {
     }
 }
 
-// MARK: JTSImageViewControllerInteractionsDelegate
+// MARK: - JTSImageViewControllerInteractionsDelegate
 extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -977,8 +975,14 @@ extension S1ContentViewController: JTSImageViewControllerOptionsDelegate {
     }
 }
 
-// MARK: PullToActionDelagete
+// MARK: - PullToActionDelagete
 extension S1ContentViewController: PullToActionDelagete {
+
+    // To fix bug in WKWebView
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+    }
+
     public func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat) {
         guard
             offset < topOffset,
@@ -1036,6 +1040,7 @@ extension S1ContentViewController: PullToActionDelagete {
 
     public func scrollViewContentSizeDidChange(_ contentSize: CGSize) {
         _updateDecorationLines(contentSize: contentSize)
+        webPageCurrentContentHeight.value = CGFloat(contentSize.height)
     }
 
     public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
@@ -1071,7 +1076,7 @@ extension S1ContentViewController: PullToActionDelagete {
     }
 }
 
-// MARK: REComposeViewControllerDelegate
+// MARK: - REComposeViewControllerDelegate
 extension S1ContentViewController: REComposeViewControllerDelegate {
     func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
         attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
@@ -1114,7 +1119,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
     }
 }
 
-// MARK: UIPopoverPresentationControllerDelegate
+// MARK: - UIPopoverPresentationControllerDelegate
 extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
     func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
         // TODO: find a solution.
@@ -1296,7 +1301,7 @@ extension S1ContentViewController {
 }
 
 // MARK: Helper
-extension S1ContentViewController {
+private extension S1ContentViewController {
 
     func _hook_preChangeCurrentPage() {
         DDLogDebug("[webView] pre change current page")
@@ -1309,14 +1314,23 @@ extension S1ContentViewController {
     }
 
     func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
+        func changeOffsetIfNeeded(to offset: CGFloat) {
+            if abs(webView.scrollView.contentOffset.y - offset) > 0.01 {
+                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: offset), animated: false)
+                webView.scrollView.flashScrollIndicators()
+            }
+        }
+
         DDLogDebug("[webView] basic page loaded with scrollType \(scrollType) firstAnimationSkipped: \(webPageDidFinishFirstAutomaticScrolling)")
-        let maxOffset = webView.scrollView.contentSize.height - webView.scrollView.bounds.height
+        let maxOffset = max(0.0, webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
 
         switch scrollType {
         case .pullUpForNext:
-            guard !webPageDidFinishFirstAutomaticScrolling else {
+            if webPageDidFinishFirstAutomaticScrolling {
+                changeOffsetIfNeeded(to: 0.0)
                 return
             }
+
             // Set position
             webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: -webView.bounds.height), animated: false)
             // Animated scroll
@@ -1328,10 +1342,11 @@ extension S1ContentViewController {
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .pullDownForPrevious:
-            guard !webPageDidFinishFirstAutomaticScrolling else {
-                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: $(document).height()}, 0);", completionHandler: nil)
+            if webPageDidFinishFirstAutomaticScrolling {
+                changeOffsetIfNeeded(to: maxOffset)
                 return
             }
+
             // Set position
             webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: webView.scrollView.contentSize.height), animated: false)
             // Animated scroll
@@ -1343,13 +1358,18 @@ extension S1ContentViewController {
                 webView.scrollView.s1_ignoringContentOffsetChange = false
             })
         case .toBottom:
+            if webPageDidFinishFirstAutomaticScrolling {
+                changeOffsetIfNeeded(to: maxOffset)
+                return
+            }
+
             webView.evaluateJavaScript("$('html, body').animate({ scrollTop: $(document).height()}, 300);", completionHandler: nil)
         case .restorePosition:
-            if let positionForPage = viewModel.cachedOffsetForCurrentPage() {
-                // Restore last view position from cached position in this view controller.
+            // Restore last view position from cached position in this view controller.
+            if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.s1_limit(0.0, to: maxOffset) {
                 DDLogInfo("Trying to restore position of \(positionForPage)")
-                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(positionForPage)}, 0);", completionHandler: nil)
-                webView.scrollView.flashScrollIndicators()
+
+                changeOffsetIfNeeded(to: positionForPage)
             }
         }
 

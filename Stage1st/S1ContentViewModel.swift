@@ -25,7 +25,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
     let replyCount: DynamicProperty<NSNumber>
     let favorite: DynamicProperty<NSNumber>
 
-    var cachedViewPosition: [UInt: Double] = [:]
+    var cachedViewPosition: [UInt: CGFloat] = [:]
 
     init(topic: S1Topic, dataCenter: S1DataCenter) {
         self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
@@ -60,7 +60,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
         }
 
         if let lastViewedPosition = topic.lastViewedPosition?.doubleValue, let lastViewedPage = topic.lastViewedPage?.uintValue {
-            cachedViewPosition[lastViewedPage] = lastViewedPosition
+            cachedViewPosition[lastViewedPage] = CGFloat(lastViewedPosition)
         }
 
         currentPage.producer.startWithValues { (page) in
@@ -204,14 +204,14 @@ extension S1ContentViewModel {
 // MARK: - Cache Page Offset
 extension S1ContentViewModel {
     func cacheOffsetForCurrentPage(_ offset: CGFloat) {
-        cachedViewPosition[currentPage.value] = Double(offset)
+        cachedViewPosition[currentPage.value] = offset
     }
 
     func cacheOffsetForPreviousPage(_ offset: CGFloat) {
-        cachedViewPosition[previousPage.value] = Double(offset)
+        cachedViewPosition[previousPage.value] = offset
     }
 
-    func cachedOffsetForCurrentPage() -> Double? {
+    func cachedOffsetForCurrentPage() -> CGFloat? {
         return cachedViewPosition[currentPage.value]
     }
 }
