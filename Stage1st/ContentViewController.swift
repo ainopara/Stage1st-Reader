@@ -245,6 +245,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
 
             if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
+                strongSelf.pullToActionController.filterDuplicatedSizeEvent = true
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
                     strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView)
@@ -1311,6 +1312,7 @@ private extension S1ContentViewController {
         webPageReadyForAutomaticScrolling.value = false
         webPageDidFinishFirstAutomaticScrolling = false
         webPageAutomaticScrollingEnabled = true
+        pullToActionController.filterDuplicatedSizeEvent = false
     }
 
     func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
@@ -1340,6 +1342,7 @@ private extension S1ContentViewController {
                 webView.scrollView.alpha = 1.0
             }, completion: { (_) in
                 webView.scrollView.s1_ignoringContentOffsetChange = false
+                webView.scrollView.flashScrollIndicators()
             })
         case .pullDownForPrevious:
             if webPageDidFinishFirstAutomaticScrolling {
@@ -1356,6 +1359,7 @@ private extension S1ContentViewController {
                 webView.scrollView.alpha = 1.0
             }, completion: { (_) in
                 webView.scrollView.s1_ignoringContentOffsetChange = false
+                webView.scrollView.flashScrollIndicators()
             })
         case .toBottom:
             if webPageDidFinishFirstAutomaticScrolling {

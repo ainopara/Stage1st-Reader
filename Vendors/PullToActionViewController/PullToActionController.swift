@@ -31,6 +31,8 @@ public class PullToActionController: NSObject {
     public var size: CGSize = .zero
     public var inset: UIEdgeInsets = .zero
 
+    public var filterDuplicatedSizeEvent = false
+
     fileprivate var progressActions = [String: OffsetRange]()
 
     // MARK: -
@@ -94,8 +96,13 @@ public class PullToActionController: NSObject {
                   let newSizeValue = changes[.newKey] as? NSValue else {
                 return
             }
+            let oldSize = size
 
             size = newSizeValue.cgSizeValue
+            
+            if filterDuplicatedSizeEvent && abs(size.height - oldSize.height) < 0.01 && abs(size.width - oldSize.width) < 0.01 {
+                return
+            }
 
             DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
             delegate?.scrollViewContentSizeDidChange?(size)
