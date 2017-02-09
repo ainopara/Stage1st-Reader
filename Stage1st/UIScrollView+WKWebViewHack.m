@@ -19,8 +19,8 @@
 
 - (void)s1_setContentOffset:(CGPoint)contentOffset {
     if ([self isKindOfClass:NSClassFromString(@"WKScrollView")]) {
-        DDLogVerbose(@"WKScrollView<%p> offsetY: %f -> %f", self, self.contentOffset.y, contentOffset.y);
-        if (![self s1_ignoringContentOffsetChange]) {
+//        DDLogVerbose(@"WKScrollView<%p> offsetY: %f -> %f", self, self.contentOffset.y, contentOffset.y);
+        if (![self s1_ignoringContentOffsetChangedToZero]) {
             [self s1_setContentOffset:contentOffset];
         } else {
             if (contentOffset.y != 0.0) {
@@ -34,11 +34,11 @@
     }
 }
 
-- (void)setS1_ignoringContentOffsetChange:(BOOL)s1_ignoringContentOffsetChange {
-    objc_setAssociatedObject(self, @selector(s1_ignoringContentOffsetChange), @(s1_ignoringContentOffsetChange), OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setS1_ignoringContentOffsetChangedToZero:(BOOL)s1_ignoringContentOffsetChangedToZero {
+    objc_setAssociatedObject(self, @selector(s1_ignoringContentOffsetChangedToZero), @(s1_ignoringContentOffsetChangedToZero), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)s1_ignoringContentOffsetChange {
+- (BOOL)s1_ignoringContentOffsetChangedToZero {
     NSNumber *number = objc_getAssociatedObject(self, _cmd);
     if (number == nil) {
         return NO; // default to false

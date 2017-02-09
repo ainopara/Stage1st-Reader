@@ -20,6 +20,7 @@ private let topOffset: CGFloat = -80.0
 private let bottomOffset: CGFloat = 60.0
 private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
+// swiftlint:disable type_body_length
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: S1ContentViewModel
 
@@ -318,6 +319,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
+// swiftlint:enable type_body_length
 
 // MARK: - Life Cycle
 extension S1ContentViewController {
@@ -907,8 +909,9 @@ extension S1ContentViewController: WebViewEventDelegate {
 
     func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler) {
         if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled {
-            DDLogInfo("User Touch detected. Stop tracking scroll type \(scrollType)")
+            DDLogInfo("[ContentVC] User Touch detected. Stop tracking scroll type: \(scrollType)")
             webPageAutomaticScrollingEnabled = false
+            webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
         }
     }
 
@@ -1192,6 +1195,7 @@ extension S1ContentViewController {
 
 // MARK: - Main Function
 extension S1ContentViewController {
+    // swiftlint:disable cyclomatic_complexity
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func showHud() {
             if !viewModel.hasPrecachedCurrentPage() {
@@ -1273,6 +1277,7 @@ extension S1ContentViewController {
             }
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     func _presentReplyView(toFloor floor: Floor?) {
         let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
@@ -1338,10 +1343,10 @@ private extension S1ContentViewController {
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
-                webView.scrollView.s1_ignoringContentOffsetChange = true
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
             }, completion: { (_) in
-                webView.scrollView.s1_ignoringContentOffsetChange = false
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
                 webView.scrollView.flashScrollIndicators()
             })
         case .pullDownForPrevious:
@@ -1355,10 +1360,10 @@ private extension S1ContentViewController {
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
-                webView.scrollView.s1_ignoringContentOffsetChange = true
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
             }, completion: { (_) in
-                webView.scrollView.s1_ignoringContentOffsetChange = false
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
                 webView.scrollView.flashScrollIndicators()
             })
         case .toBottom:
@@ -1370,8 +1375,9 @@ private extension S1ContentViewController {
             webView.evaluateJavaScript("$('html, body').animate({ scrollTop: $(document).height()}, 300);", completionHandler: nil)
         case .restorePosition:
             // Restore last view position from cached position in this view controller.
+            webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
             if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.s1_limit(0.0, to: maxOffset) {
-                DDLogInfo("Trying to restore position of \(positionForPage)")
+                DDLogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
 
                 changeOffsetIfNeeded(to: positionForPage)
             }

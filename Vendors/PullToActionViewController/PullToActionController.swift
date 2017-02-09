@@ -99,7 +99,7 @@ public class PullToActionController: NSObject {
             let oldSize = size
 
             size = newSizeValue.cgSizeValue
-            
+
             if filterDuplicatedSizeEvent && abs(size.height - oldSize.height) < 0.01 && abs(size.width - oldSize.width) < 0.01 {
                 return
             }

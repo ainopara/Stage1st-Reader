@@ -10,6 +10,6 @@
 
 @interface UIScrollView (S1Inspect)
 
-@property (nonatomic, assign) BOOL s1_ignoringContentOffsetChange;
+@property (nonatomic, assign) BOOL s1_ignoringContentOffsetChangedToZero;
 
 @end

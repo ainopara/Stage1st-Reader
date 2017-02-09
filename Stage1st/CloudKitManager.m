@@ -1023,9 +1023,8 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         }];
         DDLogDebug(@"[CloudKit] ckErrorCode:%ld description:%@", (long)code, errorDescription);
     }
-#ifdef DEBUG
+
     [[Crashlytics sharedInstance] recordError:error];
-#endif
 }
 
 - (void)_refetchMissedRecordIDs
