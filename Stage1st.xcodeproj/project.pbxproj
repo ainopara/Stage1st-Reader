@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3602181F1DF124E40034E109 /* S1NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3602181E1DF124E40034E109 /* S1NavigationViewController.swift */; };
-		361860201DB5D39100D11504 /* S1Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3618601F1DB5D39100D11504 /* S1Error.swift */; };
+		366714091E4C4CD400813310 /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366714081E4C4CD400813310 /* Field.swift */; };
 		36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */; };
 		36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
@@ -125,7 +125,7 @@
 
 /* Begin PBXFileReference section */
 		3602181E1DF124E40034E109 /* S1NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1NavigationViewController.swift; path = Stage1st/S1NavigationViewController.swift; sourceTree = "<group>"; };
-		3618601F1DB5D39100D11504 /* S1Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Error.swift; path = Stage1st/S1Error.swift; sourceTree = "<group>"; };
+		366714081E4C4CD400813310 /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Field.swift; path = Stage1st/Field.swift; sourceTree = "<group>"; };
 		36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogger.swift; path = Vendors/CrashlyticsLogger/InMemoryLogger.swift; sourceTree = "<group>"; };
 		36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogViewController.swift; path = Vendors/CrashlyticsLogger/InMemoryLogViewController.swift; sourceTree = "<group>"; };
 		36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-Stage1st-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -659,11 +659,11 @@
 				860573581B762C3B00C70781 /* MyDatabaseObject.m */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
+				366714081E4C4CD400813310 /* Field.swift */,
 				8681E6B61CEF4683004269D3 /* Topic.swift */,
 				86319B401CA69EEB004F7586 /* Floor.swift */,
 				862DB7A91C8AB1870068F75F /* User.swift */,
 				86DD319E1D129406009C2F44 /* Poll.swift */,
-				3618601F1DB5D39100D11504 /* S1Error.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1027,6 +1027,7 @@
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86221B861CA65E3600015522 /* S1Utility.swift in Sources */,
+				366714091E4C4CD400813310 /* Field.swift in Sources */,
 				36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */,
 				868799231CE629D700F5C75C /* S1LoginViewController.swift in Sources */,
 				86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */,
@@ -1036,7 +1037,6 @@
 				86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
-				361860201DB5D39100D11504 /* S1Error.swift in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
 				36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */,
 				C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */,

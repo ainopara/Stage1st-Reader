@@ -8,8 +8,42 @@
 
 import Foundation
 import CocoaLumberjack
+import SwiftyJSON
 
 extension S1Topic {
+
+    convenience init?(json: JSON, fieldID: UInt?) {
+        guard let topicID = json["tid"].string.flatMap({ Int($0) }) else {
+            return nil
+        }
+
+        self.init(topicID: topicID as NSNumber)
+
+        if let title = json["subject"].string.flatMap({ $0 as NSString }),
+           let unescapedTitle = title.gtm_stringByUnescapingFromHTML() {
+            self.title = unescapedTitle
+        }
+
+        if let replyCount = json["replies"].string.flatMap({ Int($0) }) {
+            self.replyCount = replyCount as NSNumber
+        }
+
+        if let fieldID = fieldID {
+            self.fID = fieldID as NSNumber
+        }
+
+        if let authorUserID = json["authorid"].string.flatMap({ Int($0) }) {
+            self.authorUserID = authorUserID as NSNumber
+        }
+
+        if let authorUserName = json["author"].string {
+            self.authorUserName = authorUserName
+        }
+
+        if let lastPostDate = json["dblastpost"].string.flatMap({ Date(timeIntervalSince1970: TimeInterval(Int($0) ?? 0)) }) {
+            self.lastReplyDate = lastPostDate
+        }
+    }
 
     /**
      Update current topic, which should be traced topic generated from database with information from network API.
