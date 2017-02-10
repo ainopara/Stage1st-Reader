@@ -11,7 +11,7 @@ import CocoaLumberjack
 
 public class InMemoryLogger: DDAbstractLogger {
     public static let shared = InMemoryLogger()
-    public var maxMessageEntity = 300
+    public var maxMessageEntity = 1000
     public override var loggerName: String { return "com.ainopara.inMemoryLogger" }
 
     public var messageQueue: [String] { return _messageQueue }
