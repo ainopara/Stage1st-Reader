@@ -1252,11 +1252,13 @@ extension S1ContentViewController {
 
                 // Auto refresh when current page not full.
                 if shouldRefetch {
+                    DDLogInfo("[ContentVC] Auto refresh.")
+                    // FIXME: Handle edge case that this is called when pullUpToNext not finished first animation.
                     strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
                 }
             case .failure(let error):
                 if let urlError = error as? URLError, urlError.code == .cancelled {
-                    DDLogDebug("request cancelled.")
+                    DDLogDebug("[ContentVC] request cancelled.")
                     // TODO:
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
