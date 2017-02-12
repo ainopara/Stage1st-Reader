@@ -65,7 +65,7 @@
         roundRectangleRect = CGRectInset(roundRectangleRect, -2, 0);
         replyCountRect = CGRectMake(20, 20, 35, 18);
         replyCountRect = CGRectInset(replyCountRect, -2, 0);
-        replyIncrementCountRect = CGRectMake(20, 38, 35, 16);
+        replyIncrementCountRect = CGRectMake(16, 38, 43, 16);
         break;
     
     default:
@@ -73,7 +73,7 @@
         roundRectangleRect = CGRectInset(roundRectangleRect, -2, 0);
         replyCountRect = CGRectMake(20+10, 19.5, 35, 18);
         replyCountRect = CGRectInset(replyCountRect, -2, 0);
-        replyIncrementCountRect = CGRectMake(20+10, 38, 35, 16);
+        replyIncrementCountRect = CGRectMake(16+10, 38, 43, 16);
     }
 
     // Rounded Rectangle Drawing
