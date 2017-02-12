@@ -32,7 +32,7 @@ platform :ios do
 
     gym(scheme: 'Stage1st', output_directory: "Archive/#{options[:version]}") # Build your app - more options available
     pilot
-    commit_version_bump(message: "Version bump to `#{options[:version]}`."
+    commit_version_bump(message: "Version bump to #{options[:version]}(#{build_number})."
   end
 
   after_all do |lane|
