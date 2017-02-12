@@ -80,11 +80,17 @@ class S1ContentViewModel: NSObject, PageRenderer {
 }
 
 extension S1ContentViewModel {
-    func currentContentPage(completion: @escaping (Result<(String, Bool)>) -> Void) {
+    func currentContentPage(completion: @escaping (Result<(String)>) -> Void) {
         dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] (floors, isFromCache) in
             guard let strongSelf = self else { return }
             let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
-            completion(.success(strongSelf.generatePage(with: floors), shouldRefetch))
+            guard !shouldRefetch else {
+                strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, withPage: NSNumber(value: strongSelf.currentPage.value))
+                strongSelf.currentContentPage(completion: completion)
+                return
+            }
+
+            completion(.success(strongSelf.generatePage(with: floors)))
         }) { (error) in
             completion(.failure(error))
         }
@@ -129,19 +135,23 @@ extension S1ContentViewModel {
 // MARK: - ToolBar
 extension S1ContentViewModel {
     func hasPrecachedPreviousPage() -> Bool {
-        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value - 1))
+        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value - 1)
     }
 
-    func hasPrecachedCurrentPage() -> Bool {
-        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value))
+    func hasValidPrecachedCurrentPage() -> Bool {
+        if isInLastPage() {
+            return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value)
+        } else {
+            return dataCenter.hasFullPrecachedFloors(for: Int(topic.topicID), page: currentPage.value)
+        }
     }
 
     func hasPrecachedNextPage() -> Bool {
-        return dataCenter.hasPrecacheFloors(for: topic, withPage: NSNumber(value: currentPage.value + 1))
+        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page:currentPage.value + 1)
     }
 
     func forwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value + 1)) {
+        if dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value + 1) {
             return #imageLiteral(resourceName: "Forward-Cached")
         } else {
             return #imageLiteral(resourceName: "Forward")
@@ -149,7 +159,7 @@ extension S1ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if self.dataCenter.hasPrecacheFloors(for: self.topic, withPage: NSNumber(value: self.currentPage.value - 1)) {
+        if dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value - 1) {
             return #imageLiteral(resourceName: "Back-Cached")
         } else {
             return #imageLiteral(resourceName: "Back")

@@ -25,6 +25,7 @@
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
 		8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
+		860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860F11C61E4EC21E00875AB9 /* DataCenter.swift */; };
 		86221B841CA6594D00015522 /* S1ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* S1ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* S1Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* S1Utility.swift */; };
 		862DB79A1C8891070068F75F /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* UserViewController.swift */; };
@@ -151,6 +152,7 @@
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
 		8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CacheDatabaseManager.swift; path = Stage1st/CacheDatabaseManager.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
+		860F11C61E4EC21E00875AB9 /* DataCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataCenter.swift; path = Stage1st/DataCenter.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* S1ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1ContentViewModel.swift; path = Stage1st/S1ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* S1Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Utility.swift; path = Stage1st/S1Utility.swift; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewController.swift; path = Stage1st/UserViewController.swift; sourceTree = "<group>"; };
@@ -453,6 +455,7 @@
 				86A5AD871B56BAAE00E80790 /* Database */,
 				86040B7E19DE3A74004BF2BC /* S1DataCenter.h */,
 				86040B7F19DE3A74004BF2BC /* S1DataCenter.m */,
+				860F11C61E4EC21E00875AB9 /* DataCenter.swift */,
 				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
 			);
@@ -1048,6 +1051,7 @@
 				866CDB971B526DB100FBB133 /* S1QuoteFloorViewController.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
+				860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */,
 				86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */,
 				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */,

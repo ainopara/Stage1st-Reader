@@ -487,7 +487,7 @@ extension S1ContentViewController {
             var pageList = [String]()
 
             for page in 1...max(viewModel.currentPage.value, viewModel.totalPages.value) {
-                if viewModel.dataCenter.hasPrecacheFloors(for: viewModel.topic, withPage: NSNumber(value: page)) {
+                if viewModel.dataCenter.hasPrecachedFloors(for: Int(viewModel.topic.topicID), page: UInt(page)) {
                     pageList.append("✓第 \(page) 页✓")
                 } else {
                     pageList.append("第 \(page) 页")
@@ -1197,20 +1197,14 @@ extension S1ContentViewController {
 extension S1ContentViewController {
     // swiftlint:disable cyclomatic_complexity
     func fetchContentForCurrentPage(forceUpdate: Bool) {
-        func showHud() {
-            if !viewModel.hasPrecachedCurrentPage() {
-                // only show hud when no cached floors
-                DDLogVerbose("[ContentVC] check precache: not hit. shows HUD")
-                refreshHUD.showActivityIndicator()
+        func _showHud() {
+            refreshHUD.showActivityIndicator()
 
-                refreshHUD.refreshEventHandler = { [weak self] (hud) in
-                    guard let strongSelf = self else { return }
+            refreshHUD.refreshEventHandler = { [weak self] (hud) in
+                guard let strongSelf = self else { return }
 
-                    hud?.hide(withDelay: 0.0)
-                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
-                }
-            } else {
-                DDLogVerbose("[ContentVC] check precache: hit.")
+                hud?.hide(withDelay: 0.0)
+                strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: strongSelf.scrollType)
             }
         }
 
@@ -1224,13 +1218,20 @@ extension S1ContentViewController {
         }
 
         // Set up HUD
-        showHud()
+        if !viewModel.hasValidPrecachedCurrentPage() {
+            // only show hud when no cached floors
+            DDLogVerbose("[ContentVC] check precache: not hit. shows HUD")
+            _showHud()
+        } else {
+            DDLogVerbose("[ContentVC] check precache: hit.")
+        }
 
         viewModel.currentContentPage { [weak self] (result) in
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let contents, let shouldRefetch):
+            case .success(let contents):
+                DDLogInfo("[ContentVC] page finish fetching.")
                 strongSelf.updateToolBar() /// TODO: Is it still necessary?
 
                 if strongSelf.finishFirstLoading.value {
@@ -1247,15 +1248,9 @@ extension S1ContentViewController {
                 // Dismiss HUD if exist
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.hideHUD()
+                    strongSelf.refreshHUD.hide(withDelay: 0.3)
                 }
 
-                // Auto refresh when current page not full.
-                if shouldRefetch {
-                    DDLogInfo("[ContentVC] Auto refresh.")
-                    // FIXME: Handle edge case that this is called when pullUpToNext not finished first animation.
-                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
-                }
             case .failure(let error):
                 if let urlError = error as? URLError, urlError.code == .cancelled {
                     DDLogDebug("[ContentVC] request cancelled.")
@@ -1325,7 +1320,10 @@ private extension S1ContentViewController {
     func _hook_didFinishBasicPageLoad(for webView: WKWebView) {
         func changeOffsetIfNeeded(to offset: CGFloat) {
             if abs(webView.scrollView.contentOffset.y - offset) > 0.01 {
+                let originalOption = webView.scrollView.s1_ignoringContentOffsetChangedToZero
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: offset), animated: false)
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = originalOption
                 webView.scrollView.flashScrollIndicators()
             }
         }
@@ -1382,6 +1380,8 @@ private extension S1ContentViewController {
                 DDLogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
 
                 changeOffsetIfNeeded(to: positionForPage)
+            } else {
+                changeOffsetIfNeeded(to: 0.0)
             }
         }
 
@@ -1421,10 +1421,6 @@ private extension S1ContentViewController {
 
     func shouldPresentingFavoriteButtonOnToolBar() -> Bool {
         return view.bounds.width > 320.0 + 1.0
-    }
-
-    func hideHUD() {
-            refreshHUD.hide(withDelay: 0.3)
     }
 
     func refreshCurrentPage(forceUpdate: Bool, scrollType: ScrollType) {

@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface S1DataCenter ()
 
 @property (strong, nonatomic) S1YapDatabaseAdapter *tracer;
-@property (strong, nonatomic) CacheDatabaseManager *cacheDatabaseManager;
 
 @property (strong, nonatomic) NSString *formhash;
 
@@ -138,14 +137,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Network (Content Cache)
 
-- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page {
-    return [self.cacheDatabaseManager hasFloorsIn:[topic.topicID integerValue] page:[page integerValue]];
-}
-
 - (void)precacheFloorsForTopic:(S1Topic *)topic withPage:(NSNumber *)page shouldUpdate:(BOOL)shouldUpdate {
     DDLogVerbose(@"[Network] Precache %@-%@ begin", topic.topicID, page);
 
-    if (shouldUpdate == NO && [self hasPrecacheFloorsForTopic:topic withPage:page]) {
+    
+    if (shouldUpdate == NO && [self hasPrecachedFloorsFor:topic.topicID.integerValue page:page.unsignedIntegerValue]) {
         DDLogVerbose(@"[Database] Precache %@-%@ hit", topic.topicID, page);
         return;
     }
