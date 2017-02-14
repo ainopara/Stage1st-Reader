@@ -478,7 +478,7 @@ extension S1ContentViewController {
 
         scrollType = .restorePosition
         _hook_preChangeCurrentPage()
-        viewModel.currentPage.value = viewModel.totalPages.value
+        viewModel.currentPage.value = max(viewModel.totalPages.value, 1)
         fetchContentForCurrentPage(forceUpdate: false)
     }
 

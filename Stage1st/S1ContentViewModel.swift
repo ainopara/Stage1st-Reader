@@ -31,7 +31,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
         self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
 
         if let currentPage = topic.lastViewedPage?.uintValue {
-            self.currentPage = MutableProperty(currentPage)
+            self.currentPage = MutableProperty(max(currentPage, 1))
         } else {
             self.currentPage = MutableProperty(1)
         }
