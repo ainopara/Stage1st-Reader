@@ -140,25 +140,30 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    DDLogInfo(@"[TopicListVC] viewWillAppear");
+
     [self updateArchiveIcon];
 
-    [self.navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top);
-        make.leading.with.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
-    }];
-    [self.scrollTabBar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.tableView.mas_bottom);
-        make.leading.with.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
-    }];
+    if (_beforeLaunchingAnimation) {
+        DDLogInfo(@"[TopicListVC] viewWillAppear with animation");
+        [self.navigationBar mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top);
+            make.leading.with.trailing.equalTo(self.view);
+            make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
+        }];
+        [self.scrollTabBar mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.tableView.mas_bottom);
+            make.leading.with.trailing.equalTo(self.view);
+            make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
+        }];
 
-    _beforeLaunchingAnimation = NO;
-    [UIView animateWithDuration:0.3 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.1 options:0 animations:^{
-        [self setNeedsStatusBarAppearanceUpdate];
-        [self.view layoutIfNeeded];
-    } completion:^(BOOL finished) {
-    }];
+        _beforeLaunchingAnimation = NO;
+        [UIView animateWithDuration:0.3 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.1 options:0 animations:^{
+            [self setNeedsStatusBarAppearanceUpdate];
+            [self.view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+        }];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
