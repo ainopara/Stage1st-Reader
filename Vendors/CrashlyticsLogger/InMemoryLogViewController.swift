@@ -121,6 +121,7 @@ extension InMemoryLogViewController: UITableViewDataSource {
         cell.textLabel?.numberOfLines = 0
         let logString = filteredSnapshot[indexPath.row]
         cell.textLabel?.text = logString
+        cell.textLabel?.font = UIFont(name: "Menlo-Bold", size: 13.0)
         cell.textLabel?.textColor = color(for: logString)
         cell.backgroundColor = S1Global.color(fromHexString: "#F0F2F5")
         return cell
