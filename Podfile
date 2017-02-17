@@ -1,3 +1,4 @@
+plugin 'cocoapods-amimono'
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "9.0"
 use_frameworks!
@@ -54,6 +55,9 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
+        require 'cocoapods-amimono/patcher'
+        Amimono::Patcher.patch!(installer)
+
         target.build_configurations.each do |config|
             config.build_settings['SWIFT_VERSION'] = '3.0.1'
         end
