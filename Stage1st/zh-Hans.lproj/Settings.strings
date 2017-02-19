@@ -6,7 +6,7 @@
 "174-Ea-QdT.text" = "关闭";
 
 /* Class = "UILabel"; text = "iCloud Sync"; ObjectID = "2Df-Zp-Qy9"; */
-"2Df-Zp-Qy9.text" = "iCloud同步";
+"2Df-Zp-Qy9.text" = "iCloud 同步";
 
 /* Class = "UILabel"; text = "Upload Queue"; ObjectID = "2UX-Wg-p1U"; */
 "2UX-Wg-p1U.text" = "上传队列";
@@ -30,10 +30,10 @@
 "AMT-Bb-S6D.text" = "使用API";
 
 /* Class = "UITableViewSection"; footerTitle = "启用iCloud同步意味着您的浏览历史、收藏等信息将与您当前登录的iCloud帐号进行同步。"; ObjectID = "Apk-Sc-qdJ"; */
-"Apk-Sc-qdJ.footerTitle" = "启用iCloud同步意味着您的浏览历史、收藏等信息将与您当前登录的iCloud帐号进行同步。";
+"Apk-Sc-qdJ.footerTitle" = "启用 iCloud 同步意味着您的浏览历史、收藏等信息将与您当前登录的 iCloud 帐号进行同步。";
 
 /* Class = "UITableViewSection"; headerTitle = "iCloud Sync"; ObjectID = "Apk-Sc-qdJ"; */
-"Apk-Sc-qdJ.headerTitle" = "iCloud同步";
+"Apk-Sc-qdJ.headerTitle" = "iCloud 同步";
 
 /* Class = "UIBarButtonItem"; title = "返回"; ObjectID = "CV4-G8-ASX"; */
 "CV4-G8-ASX.title" = "返回";
@@ -48,7 +48,7 @@
 "E8b-PX-rjK.text" = "Detail";
 
 /* Class = "UITableViewSection"; headerTitle = "CloudKit Status"; ObjectID = "I7y-yo-kbq"; */
-"I7y-yo-kbq.headerTitle" = "CloudKit状态";
+"I7y-yo-kbq.headerTitle" = "CloudKit 状态";
 
 /* Class = "UILabel"; text = "Night Mode"; ObjectID = "Iaq-ft-rzy"; */
 "Iaq-ft-rzy.text" = "夜间模式";
@@ -72,7 +72,7 @@
 "ZB5-71-yaj.text" = "板块自定义";
 
 /* Class = "UILabel"; text = "Enable iCloud Sync"; ObjectID = "ZEt-r3-VHz"; */
-"ZEt-r3-VHz.text" = "开启iCloud同步";
+"ZEt-r3-VHz.text" = "开启 iCloud 同步";
 
 /* Class = "UITextField"; placeholder = "密码"; ObjectID = "a7E-Z0-WQq"; */
 "a7E-Z0-WQq.placeholder" = "密码";
@@ -121,3 +121,5 @@
 
 /* Class = "UILabel"; text = "预缓存下一页"; ObjectID = "zBD-2E-6nE"; */
 "zBD-2E-6nE.text" = "预缓存下一页";
+"NMt-Wj-mxr.text" = "高级选项";
+"Hje-fj-JEC.text" = "致谢";
