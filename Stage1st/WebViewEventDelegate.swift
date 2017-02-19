@@ -161,7 +161,7 @@ extension QuoteFloorPresenter where Self: UIViewController {
         mutableSelf.presentType = .quote
 
         let quoteFloorViewModel = viewModel.quoteFloorViewModel(floors: floors, centerFloorID: centerFloorID)
-        let quoteFloorViewController = S1QuoteFloorViewController(viewModel: quoteFloorViewModel)
+        let quoteFloorViewController = QuoteFloorViewController(viewModel: quoteFloorViewModel)
         navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }
 }

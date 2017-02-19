@@ -1,5 +1,5 @@
 //
-//  S1QuoteFloorViewController.swift
+//  QuoteFloorViewController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 7/12/15.
@@ -12,7 +12,7 @@ import CocoaLumberjack
 import JTSImageViewController
 import Photos
 
-class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter {
+class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter {
     let viewModel: QuoteFloorViewModel
 
     lazy var webView: WKWebView = {
@@ -111,7 +111,7 @@ class S1QuoteFloorViewController: UIViewController, ImagePresenter, UserPresente
 }
 
 // MARK: - Actions
-extension S1QuoteFloorViewController {
+extension QuoteFloorViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         view.backgroundColor = ColorManager.shared.colorForKey("content.background")
         webView.backgroundColor = ColorManager.shared.colorForKey("content.webview.background")
@@ -130,7 +130,7 @@ extension S1QuoteFloorViewController {
 }
 
 // MARK:
-extension S1QuoteFloorViewController {
+extension QuoteFloorViewController {
     func sharedConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
@@ -141,14 +141,14 @@ extension S1QuoteFloorViewController {
 }
 
 // MARK: - WKScriptMessageHandler
-extension S1QuoteFloorViewController: WebViewEventDelegate {
+extension QuoteFloorViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
 //        actionButtonTapped(for: floorID)
     }
 }
 
 // MARK: JTSImageViewControllerInteractionsDelegate
-extension S1QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
+extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
@@ -190,14 +190,14 @@ extension S1QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate
 }
 
 // MARK: JTSImageViewControllerOptionsDelegate
-extension S1QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
+extension QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
     func alphaForBackgroundDimmingOverlay(inImageViewer imageViewer: JTSImageViewController!) -> CGFloat {
         return 0.3
     }
 }
 
 // MARK: WKNavigationDelegate
-extension S1QuoteFloorViewController: WKNavigationDelegate {
+extension QuoteFloorViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
@@ -288,7 +288,7 @@ extension S1QuoteFloorViewController: WKNavigationDelegate {
 }
 
 // MARK: UIScrollViewDelegate
-extension S1QuoteFloorViewController: UIScrollViewDelegate {
+extension QuoteFloorViewController: UIScrollViewDelegate {
     // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
@@ -296,7 +296,7 @@ extension S1QuoteFloorViewController: UIScrollViewDelegate {
 }
 
 // MARK: - Helper
-extension S1QuoteFloorViewController {
+extension QuoteFloorViewController {
     func topPositionOfMessageWithId(_ elementID: Int) -> CGFloat {
         if let rect = webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
             return rect.minY
@@ -315,7 +315,7 @@ extension S1QuoteFloorViewController {
 }
 
 // MARK: - Style
-extension S1QuoteFloorViewController {
+extension QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
