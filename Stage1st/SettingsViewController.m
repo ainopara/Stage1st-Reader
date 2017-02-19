@@ -181,7 +181,7 @@
         }];
         [self.navigationController pushViewController:controller animated:YES];
     } else if (indexPath.section == 0 && indexPath.row == 0) {
-        S1LoginViewController *viewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
+        LoginViewController *viewController = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:viewController animated:YES completion:NULL];
     } else if (indexPath.section == 0 && indexPath.row == 9) {
         [self.navigationController pushViewController:[[AdvancedSettingsViewController alloc] initWithNibName:nil bundle:nil] animated:YES];

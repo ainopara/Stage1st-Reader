@@ -1,5 +1,5 @@
 //
-//  S1LoginViewController.swift
+//  LoginViewController.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 5/8/16.
@@ -154,7 +154,7 @@ private class SeccodeInputView: UIView {
     }
 }
 
-final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
+final class LoginViewController: UIViewController, CardWithBlurredBackground {
 
     let backgroundBlurView = UIVisualEffectView(effect: nil)
     let containerView = UIView(frame: CGRect.zero)
@@ -279,12 +279,12 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
         userInfoInputView.usernameField.text = self.cachedUserID() ?? ""
         userInfoInputView.passwordField.delegate = self
         userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
-        userInfoInputView.onepasswordButton.addTarget(self, action: #selector(S1LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
+        userInfoInputView.onepasswordButton.addTarget(self, action: #selector(LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
         userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: .normal)
         userInfoInputView.questionSelectButton.tintColor = ColorManager.shared.colorForKey("login.text")
-        userInfoInputView.questionSelectButton.addTarget(self, action: #selector(S1LoginViewController.selectSecureQuestion(_:)), for: .touchUpInside)
+        userInfoInputView.questionSelectButton.addTarget(self, action: #selector(LoginViewController.selectSecureQuestion(_:)), for: .touchUpInside)
         userInfoInputView.answerField.delegate = self
-        userInfoInputView.loginButton.addTarget(self, action: #selector(S1LoginViewController.logIn(_:)), for: .touchUpInside)
+        userInfoInputView.loginButton.addTarget(self, action: #selector(LoginViewController.logIn(_:)), for: .touchUpInside)
         userInfoInputView.loginButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
         userInfoInputView.loginButton.tintColor = ColorManager.shared.colorForKey("login.text")
 
@@ -311,7 +311,7 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
         seccodeInputView.seccodeField.backgroundColor = UIColor.white
         seccodeInputView.seccodeSubmitButton.setTitle("提交", for: .normal)
         seccodeInputView.seccodeSubmitButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
-        seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(S1LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
+        seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
 
         state = self.inLoginState() ? .login : .notLogin
 
@@ -322,11 +322,11 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
         let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
         self.dynamicAnimator = dynamicAnimator
 
-        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(S1LoginViewController.pan(_:)))
+        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(LoginViewController.pan(_:)))
         self.view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
 
-        NotificationCenter.default.addObserver(self, selector: #selector(S1LoginViewController.keyboardFrameWillChange(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardFrameWillChange(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
     deinit {
@@ -351,7 +351,7 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
 }
 
 // MARK: - Actions
-extension S1LoginViewController {
+extension LoginViewController {
 
     func logIn(_ sender: UIButton) {
         if inLoginState() {
@@ -446,7 +446,7 @@ extension S1LoginViewController {
 }
 
 // MARK: - UITextFieldDelegate
-extension S1LoginViewController: UITextFieldDelegate {
+extension LoginViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == userInfoInputView.usernameField {
@@ -473,7 +473,7 @@ extension S1LoginViewController: UITextFieldDelegate {
 }
 
 // MARK: Login Logic
-extension S1LoginViewController {
+extension LoginViewController {
 
     fileprivate func loginAction() {
         let username = currentUsername()
@@ -538,7 +538,7 @@ extension S1LoginViewController {
 }
 
 // MARK: Helper
-extension S1LoginViewController {
+extension LoginViewController {
     fileprivate func alert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: nil))
@@ -602,7 +602,7 @@ extension S1LoginViewController {
         return UIOffset(horizontal: touchPointInView.x - viewCenter.x, vertical: touchPointInView.y - viewCenter.y)
     }
 }
-extension S1LoginViewController: UIViewControllerTransitioningDelegate {
+extension LoginViewController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return S1ModalAnimator(presentType: .present)
     }
@@ -611,7 +611,7 @@ extension S1LoginViewController: UIViewControllerTransitioningDelegate {
     }
 }
 // MARK: View Model
-extension S1LoginViewController {
+extension LoginViewController {
 
     fileprivate func currentSecureQuestionNumber() -> Int {
         if let text = userInfoInputView.questionSelectButton.currentTitle, let index = self.secureQuestionChoices.index(of: text) {

@@ -54,7 +54,7 @@
 		8681E6B71CEF4683004269D3 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6B61CEF4683004269D3 /* Topic.swift */; };
 		8681E6BF1CEF61ED004269D3 /* Stage1stTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */; };
 		868799211CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */; };
-		868799231CE629D700F5C75C /* S1LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799221CE629D700F5C75C /* S1LoginViewController.swift */; };
+		868799231CE629D700F5C75C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799221CE629D700F5C75C /* LoginViewController.swift */; };
 		8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */; };
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
 		8694BCD61CEC42C200756C4A /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD51CEC42C200756C4A /* WebViewController.swift */; };
@@ -197,7 +197,7 @@
 		8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stTests.swift; sourceTree = "<group>"; };
 		8681E6C01CEF61ED004269D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "SwiftyJSON+Alamofire.swift"; path = "Stage1st/SwiftyJSON+Alamofire.swift"; sourceTree = "<group>"; };
-		868799221CE629D700F5C75C /* S1LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1LoginViewController.swift; path = Stage1st/S1LoginViewController.swift; sourceTree = "<group>"; };
+		868799221CE629D700F5C75C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Stage1st/LoginViewController.swift; sourceTree = "<group>"; };
 		8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MahjongFaceItem.swift; path = Stage1st/MahjongFaceItem.swift; sourceTree = "<group>"; };
 		868A98041CA7F22500498C38 /* AnimationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnimationButton.swift; path = Stage1st/AnimationButton.swift; sourceTree = "<group>"; };
 		8694BCD51CEC42C200756C4A /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewController.swift; path = Vendors/S1WebViewController/WebViewController.swift; sourceTree = "<group>"; };
@@ -428,8 +428,8 @@
 		8671E56F1CFDEB1800F4A854 /* User */ = {
 			isa = PBXGroup;
 			children = (
-				8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */,
 				862DB7991C8891070068F75F /* UserViewController.swift */,
+				8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -722,7 +722,7 @@
 				C09587A416CB623E007E0119 /* SettingsViewController.h */,
 				C09587A516CB623E007E0119 /* SettingsViewController.m */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
-				868799221CE629D700F5C75C /* S1LoginViewController.swift */,
+				868799221CE629D700F5C75C /* LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
 				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
@@ -1046,7 +1046,7 @@
 				86221B861CA65E3600015522 /* S1Utility.swift in Sources */,
 				366714091E4C4CD400813310 /* Field.swift in Sources */,
 				36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */,
-				868799231CE629D700F5C75C /* S1LoginViewController.swift in Sources */,
+				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
 				86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */,

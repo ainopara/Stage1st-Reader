@@ -564,7 +564,7 @@ extension S1ContentViewController {
                     "source": "Content",
                     "result": "Failed"
                 ])
-                let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
+                let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
@@ -677,7 +677,7 @@ extension S1ContentViewController {
                     "source": "Content",
                     "result": "Failed"
                     ])
-                let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
+                let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
@@ -716,7 +716,7 @@ extension S1ContentViewController {
                     "source": "Content",
                     "result": "Failed"
                 ])
-                let loginViewController = S1LoginViewController(nibName: nil, bundle: nil)
+                let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
             }
