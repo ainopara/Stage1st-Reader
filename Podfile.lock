@@ -55,11 +55,11 @@ PODS:
   - Reachability (3.2)
   - ReactiveCocoa (5.0.0):
     - ReactiveSwift (~> 1.0.0)
-  - ReactiveSwift (1.0.0):
+  - ReactiveSwift (1.0.1):
     - Result (~> 3.1)
   - Result (3.1.0)
   - Reveal-SDK (6)
-  - SnapKit (3.1.2)
+  - SnapKit (3.2.0)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -189,10 +189,10 @@ SPEC CHECKSUMS:
   QuickTableViewController: 7f984b4af21e9f2fc7ef840e40a7f46a0198039a
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 60ef0da915b4f70c34ebecc3f4fb8f96af0e53d6
-  ReactiveSwift: f391724ee318a2cfd3e37dfb041cd49ecf4e7869
+  ReactiveSwift: b1453c8885ebfb9b09b6d60bc5bc3303f56dc72c
   Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
   Reveal-SDK: 67460e58f93711c7b18631d12c2b5de7740e48b5
-  SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
+  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
