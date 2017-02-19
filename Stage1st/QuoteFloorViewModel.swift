@@ -45,7 +45,7 @@ extension QuoteFloorViewModel: UserViewModelMaker {
 }
 
 extension QuoteFloorViewModel: ContentViewModelMaker {
-    func contentViewModel(topic: S1Topic) -> S1ContentViewModel {
-        return S1ContentViewModel(topic: topic, dataCenter: dataCenter)
+    func contentViewModel(topic: S1Topic) -> ContentViewModel {
+        return ContentViewModel(topic: topic, dataCenter: dataCenter)
     }
 }

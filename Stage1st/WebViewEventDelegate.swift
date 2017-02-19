@@ -120,7 +120,7 @@ extension WebViewEventDelegate where Self: UserPresenter {
 
 // MARK: - Content
 protocol ContentViewModelMaker {
-    func contentViewModel(topic: S1Topic) -> S1ContentViewModel
+    func contentViewModel(topic: S1Topic) -> ContentViewModel
 }
 
 protocol ContentPresenter {

@@ -22,7 +22,7 @@ private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=
 
 // swiftlint:disable type_body_length
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
-    let viewModel: S1ContentViewModel
+    let viewModel: ContentViewModel
 
     var toolBar = UIToolbar(frame: .zero)
     lazy var webView: WKWebView = {
@@ -126,10 +126,10 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
     // MARK: -
     convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
-        self.init(viewModel: S1ContentViewModel(topic: topic, dataCenter: dataCenter))
+        self.init(viewModel: ContentViewModel(topic: topic, dataCenter: dataCenter))
     }
 
-    init(viewModel: S1ContentViewModel) {
+    init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
@@ -1247,7 +1247,7 @@ extension S1ContentViewController {
                     strongSelf.saveViewPositionForPreviousPage()
                 }
                 strongSelf.finishFirstLoading.value = true
-                strongSelf.webView.loadHTMLString(contents, baseURL: S1ContentViewModel.pageBaseURL())
+                strongSelf.webView.loadHTMLString(contents, baseURL: ContentViewModel.pageBaseURL())
 
                 // Prepare next page
                 if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {

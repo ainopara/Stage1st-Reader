@@ -1,5 +1,5 @@
 //
-//  S1ContentViewModel.swift
+//  ContentViewModel.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 3/26/16.
@@ -12,7 +12,7 @@ import Mustache
 import ReactiveCocoa
 import ReactiveSwift
 
-class S1ContentViewModel: NSObject, PageRenderer {
+class ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let dataCenter: S1DataCenter
     let apiManager: DiscuzClient
@@ -79,7 +79,7 @@ class S1ContentViewModel: NSObject, PageRenderer {
     }
 }
 
-extension S1ContentViewModel {
+extension ContentViewModel {
     func currentContentPage(completion: @escaping (Result<(String)>) -> Void) {
         dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] (floors, isFromCache) in
             guard let strongSelf = self else { return }
@@ -98,7 +98,7 @@ extension S1ContentViewModel {
 }
 
 // MARK: - Quote Floor
-extension S1ContentViewModel {
+extension ContentViewModel {
     func searchFloorInCache(_ floorID: Int) -> Floor? {
         guard floorID != 0 else {
             return nil
@@ -133,7 +133,7 @@ extension S1ContentViewModel {
 }
 
 // MARK: - ToolBar
-extension S1ContentViewModel {
+extension ContentViewModel {
     func hasPrecachedPreviousPage() -> Bool {
         return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value - 1)
     }
@@ -181,7 +181,7 @@ extension S1ContentViewModel {
 }
 
 // MARK: - NSUserActivity
-extension S1ContentViewModel {
+extension ContentViewModel {
     func correspondingWebPageURL() -> URL? {
         guard let baseURL = UserDefaults.standard.object(forKey: "BaseURL") as? String else { return nil }
         return URL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage.value)-1.html")
@@ -200,7 +200,7 @@ extension S1ContentViewModel {
 }
 
 // MARK: - Actions
-extension S1ContentViewModel {
+extension ContentViewModel {
     func toggleFavorite() {
         if let isFavorite = self.topic.favorite, isFavorite.boolValue {
             topic.favorite = false
@@ -212,7 +212,7 @@ extension S1ContentViewModel {
 }
 
 // MARK: - Cache Page Offset
-extension S1ContentViewModel {
+extension ContentViewModel {
     func cacheOffsetForCurrentPage(_ offset: CGFloat) {
         cachedViewPosition[currentPage.value] = offset
     }
@@ -227,13 +227,13 @@ extension S1ContentViewModel {
 }
 
 // MARK: - View Model
-extension S1ContentViewModel: ContentViewModelMaker {
-    func contentViewModel(topic: S1Topic) -> S1ContentViewModel {
-        return S1ContentViewModel(topic: topic, dataCenter: dataCenter)
+extension ContentViewModel: ContentViewModelMaker {
+    func contentViewModel(topic: S1Topic) -> ContentViewModel {
+        return ContentViewModel(topic: topic, dataCenter: dataCenter)
     }
 }
 
-extension S1ContentViewModel {
+extension ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
         return ReportComposeViewModel(dataCenter: dataCenter,
                                       topic: topic,
@@ -241,7 +241,7 @@ extension S1ContentViewModel {
     }
 }
 
-extension S1ContentViewModel: QuoteFloorViewModelMaker {
+extension ContentViewModel: QuoteFloorViewModelMaker {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(dataCenter: dataCenter,
                                    manager: apiManager,
@@ -252,7 +252,7 @@ extension S1ContentViewModel: QuoteFloorViewModelMaker {
     }
 }
 
-extension S1ContentViewModel: UserViewModelMaker {
+extension ContentViewModel: UserViewModelMaker {
     func userViewModel(userID: UInt) -> UserViewModel {
         return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
@@ -260,7 +260,7 @@ extension S1ContentViewModel: UserViewModelMaker {
 }
 
 // MARK: - Misc
-extension S1ContentViewModel {
+extension ContentViewModel {
     func saveTopicViewedState(lastViewedPosition: Double?) {
 
         DDLogInfo("[ContentVM] Save Topic View State Begin")
