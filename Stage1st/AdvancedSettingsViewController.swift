@@ -14,30 +14,35 @@ let HideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
 final class AdvancedSettingsViewController: QuickTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         updateTable()
     }
 
     func updateTable() {
         tableContents = [
-            Section(title: "Content", rows: [
-                SwitchRow(title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
-                          switchValue: UserDefaults.standard.bool(forKey: ReverseActionKey),
-                          action: { (row) in
-                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: ReverseActionKey)
-                })
-            ]),
-            Section(title: "Topic List", rows: [
+            Section(title: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.header", comment: ""), rows: [
                 SwitchRow(title: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.title", comment: ""),
                           switchValue: UserDefaults.standard.bool(forKey: HideStickTopicsKey),
                           action: { (row) in
                     UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: HideStickTopicsKey)
                 })
-            ]),
-            Section(title: "Reset", rows: [
+                ], footer: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.footer", comment: "")),
+
+            Section(title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.header", comment: ""), rows: [
+                SwitchRow(title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
+                          switchValue: UserDefaults.standard.bool(forKey: ReverseActionKey),
+                          action: { (row) in
+                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: ReverseActionKey)
+                })
+                ], footer: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.footer", comment: "")),
+
+            Section(title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""), rows: [
                 TapActionRow(title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.title", comment: ""),
                              action: resetDefaultSettings)
-            ])
+            ], footer: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.footer", comment: ""))
         ]
         tableView.reloadData()
     }

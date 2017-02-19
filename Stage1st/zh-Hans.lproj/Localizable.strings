@@ -177,9 +177,16 @@
 "SettingView_CloudKit_Status_Recover" = "错误恢复中";
 "SettingView_CloudKit_Status_Halt" = "挂起";
 
-"AdvancedSettingsViewController.ReverseFloorActionRow.title" = "反转楼层功能键";
+"AdvancedSettingsViewController.HideStickTopicsRow.header" = "帖子列表";
 "AdvancedSettingsViewController.HideStickTopicsRow.title" = "隐藏置顶贴";
-"AdvancedSettingsViewController.ResetSettingsRow.title" = "重置默认设置";
+"AdvancedSettingsViewController.HideStickTopicsRow.footer" = "隐藏各板块的置顶贴。";
+"AdvancedSettingsViewController.ReverseFloorActionRow.header" = "帖子浏览";
+"AdvancedSettingsViewController.ReverseFloorActionRow.title" = "楼层功能键回复";
+"AdvancedSettingsViewController.ReverseFloorActionRow.footer" = "点击楼层功能键回复该楼层，开启此选项后，将没办法触发楼层功能键中的其他操作。";
+"AdvancedSettingsViewController.ResetSettingsRow.header" = "重置";
+"AdvancedSettingsViewController.ResetSettingsRow.title" = "重置为默认设置";
+"AdvancedSettingsViewController.ResetSettingsRow.footer" = "将高级选项中的设置重置为默认设置。";
+
 
 "ReportComposeViewController.title" = "举报";
 
