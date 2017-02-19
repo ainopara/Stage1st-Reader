@@ -90,6 +90,10 @@ extension S1AppDelegate {
         userDefaults.s1_setObjectIfNotExist(object: true, key: "ForcePortraitForPhone")
         userDefaults.s1_setObjectIfNotExist(object: false, key: "NightMode")
         userDefaults.s1_setObjectIfNotExist(object: false, key: "EnableSync")
+        UserDefaults.standard.register(defaults: [
+            ReverseActionKey: false,
+            HideStickTopicsKey: true
+        ])
     }
 }
 
