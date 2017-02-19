@@ -12,7 +12,7 @@ platform :ios do
 
   desc "Runs all the tests"
   lane :test do
-    scan
+    scan(scheme:"Stage1st", devices: ["iPhone 7 Plus"])
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
