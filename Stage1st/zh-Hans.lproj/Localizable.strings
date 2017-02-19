@@ -154,7 +154,7 @@
 "TopicListView_NavigationBar_Settings" = "设置";
 
 /* Search */
-"TopicListView_SearchBar_Detail_Hint" = "在%@主题中搜索";
+"TopicListView_SearchBar_Detail_Hint" = "在 %@ 主题中搜索";
 "TopicListView_SearchBar_Hint" = "搜索";
 
 /* Favorite */
@@ -166,8 +166,8 @@
 "SettingView_CloudKit_Enable_Message" = "设置将于下次启动时生效";
 
 "SettingView_CloudKit_Status_Off" = "关闭";
-"SettingView_CloudKit_Status_Suspended" = "暂停(%lu)(%lu-%lu)";
-"SettingView_CloudKit_Status_Resumed" = "恢复(%lu-%lu)";
+"SettingView_CloudKit_Status_Suspended" = "暂停 (%lu)(%lu-%lu)";
+"SettingView_CloudKit_Status_Resumed" = "恢复 (%lu-%lu)";
 
 "SettingView_CloudKit_Status_Init" = "初始化";
 "SettingView_CloudKit_Status_Setup" = "配置中";
