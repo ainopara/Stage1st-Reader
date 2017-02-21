@@ -24,21 +24,24 @@ public struct OffsetRange {
 
 // MARK: -
 public class PullToActionController: NSObject {
-    weak var scrollView: UIScrollView? // ???: Should I make this strong?
-    weak var delegate: PullToActionDelagete?
+    public weak var scrollView: UIScrollView?
+    public weak var delegate: PullToActionDelagete?
 
-    var offset: CGPoint = .zero
-    var size: CGSize = .zero
-    var inset: UIEdgeInsets = .zero
+    public var offset: CGPoint = .zero
+    public var size: CGSize = .zero
+    public var inset: UIEdgeInsets = .zero
+
+    public var filterDuplicatedSizeEvent = false
+
     fileprivate var progressActions = [String: OffsetRange]()
 
     // MARK: -
-    init(scrollView: UIScrollView) {
+    public init(scrollView: UIScrollView) {
         self.scrollView = scrollView
 
         super.init()
 
-        scrollView.delegate = self // TODO: forward message to original delegate of the scroll view.
+        scrollView.delegate = self
         scrollView.addObserver(self, forKeyPath: "contentOffset", options: .new, context: nil)
         scrollView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
         scrollView.addObserver(self, forKeyPath: "contentInset", options: .new, context: nil)
@@ -48,8 +51,16 @@ public class PullToActionController: NSObject {
         DDLogDebug("[PullToAction] deinit")
     }
 
-    public func setConfiguration(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
+    public func addObservation(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
         progressActions.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
+    }
+
+    public func removeObservation(withName name: String) {
+        progressActions.removeValue(forKey: name)
+    }
+
+    public var observationNames: [String] {
+        return Array(progressActions.keys)
     }
 
     public func stop() {
@@ -61,50 +72,45 @@ public class PullToActionController: NSObject {
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "contentOffset" {
-            guard
-                let changes = change,
-                let newOffsetValue = changes[.newKey] as? NSValue else {
+            guard let changes = change,
+                  let newOffsetValue = changes[.newKey] as? NSValue else {
                 return
             }
 
             offset = newOffsetValue.cgPointValue
-
-            guard let delegateFunction = delegate?.scrollViewContentOffsetProgress else {
-                return
-            }
 
             var progress = [String: Double]()
             for (name, actionOffset) in progressActions {
                 let progressValue = actionOffset.progress(for: currentOffset(relativeTo: actionOffset.baseLine))
                 progress.updateValue(progressValue, forKey: name)
             }
-            delegateFunction(progress)
+
+            if let delegateFunction = delegate?.scrollViewContentOffsetProgress {
+                delegateFunction(progress)
+            }
 //            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
         }
 
         if keyPath == "contentSize" {
-            guard
-                let changes = change,
-                let newSizeValue = changes[.newKey] as? NSValue else {
+            guard let changes = change,
+                  let newSizeValue = changes[.newKey] as? NSValue else {
                 return
             }
+            let oldSize = size
 
-            let newSize = newSizeValue.cgSizeValue
+            size = newSizeValue.cgSizeValue
 
-            guard abs(size.width - newSize.width) > 0.1 || abs(size.height - newSize.height) > 0.1 else {
+            if filterDuplicatedSizeEvent && abs(size.height - oldSize.height) < 0.01 && abs(size.width - oldSize.width) < 0.01 {
                 return
             }
-
-            size = newSize
 
             DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
             delegate?.scrollViewContentSizeDidChange?(size)
         }
 
         if keyPath == "contentInset" {
-            guard
-                let changes = change,
-                let newInsetValue = changes[.newKey] as? NSValue else {
+            guard let changes = change,
+                  let newInsetValue = changes[.newKey] as? NSValue else {
                 return
             }
 
@@ -131,8 +137,45 @@ public class PullToActionController: NSObject {
     }
 }
 
+private let forwardingScrollViewDelegateMethods = [
+    #selector(UIScrollViewDelegate.scrollViewDidScroll(_:)),
+    #selector(UIScrollViewDelegate.scrollViewDidZoom(_:)),
+    #selector(UIScrollViewDelegate.scrollViewWillBeginDragging(_:)),
+    #selector(UIScrollViewDelegate.scrollViewWillEndDragging(_:withVelocity:targetContentOffset:)),
+//    #selector(UIScrollViewDelegate.scrollViewDidEndDragging(_:willDecelerate:)), // Implimented by PullToActionController
+    #selector(UIScrollViewDelegate.scrollViewWillBeginDecelerating(_:)),
+    #selector(UIScrollViewDelegate.scrollViewDidEndDecelerating(_:)),
+    #selector(UIScrollViewDelegate.scrollViewDidEndScrollingAnimation(_:)),
+    #selector(UIScrollViewDelegate.viewForZooming(in:)),
+    #selector(UIScrollViewDelegate.scrollViewWillBeginZooming(_:with:)),
+    #selector(UIScrollViewDelegate.scrollViewDidEndZooming(_:with:atScale:)),
+    #selector(UIScrollViewDelegate.scrollViewShouldScrollToTop(_:)),
+    #selector(UIScrollViewDelegate.scrollViewDidScrollToTop(_:))
+]
+
 // MARK: UIScrollViewDelegate
 extension PullToActionController: UIScrollViewDelegate {
+    public override func responds(to aSelector: Selector!) -> Bool {
+        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods {
+            if aSelector == aForwardingScrollViewDelegateMethod {
+                return delegate?.responds(to: aSelector) ?? false
+            }
+        }
+
+        return super.responds(to: aSelector)
+    }
+
+    public override func forwardingTarget(for aSelector: Selector!) -> Any? {
+        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods {
+            if aSelector == aForwardingScrollViewDelegateMethod {
+                return delegate
+            }
+        }
+
+        return super.forwardingTarget(for: aSelector)
+    }
+
+    // MARK: -
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         //TODO: consider content inset
         let topOffset = offset.y
@@ -150,14 +193,10 @@ extension PullToActionController: UIScrollViewDelegate {
         }
     }
 
-    // To fix bug in WKWebView
-    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-    }
 }
 
 // MARK: -
-@objc public protocol PullToActionDelagete {
+@objc public protocol PullToActionDelagete: UIScrollViewDelegate {
     @objc optional func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat)
     @objc optional func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat)
     @objc optional func scrollViewContentSizeDidChange(_ contentSize: CGSize)

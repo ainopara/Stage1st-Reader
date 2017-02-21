@@ -43,12 +43,16 @@ public final class User: NSObject, NSCoding {
         if let sigHTML = space["sightml"].string, sigHTML != "" {
             self.sigHTML = sigHTML
         }
+
         self.lastVisitDateString = space["lastvisit"].string
         self.registerDateString = space["regdate"].string
-        if let threadCountString = space["threads"].string, let threadCount = UInt(threadCountString) {
+
+        if let threadCountString = space["threads"].string,
+           let threadCount = UInt(threadCountString) {
             self.threadCount = threadCount
         }
-        if let postCountString = space["posts"].string, let postCount = UInt(postCountString) {
+        if let postCountString = space["posts"].string,
+           let postCount = UInt(postCountString) {
             self.postCount = postCount
         }
     }

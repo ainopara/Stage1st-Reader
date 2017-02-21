@@ -76,7 +76,7 @@
                 break;
             }
         }
-        if (isStickThread == NO) {
+        if (isStickThread == NO || ![[NSUserDefaults standardUserDefaults] boolForKey:@"Stage1st.TopicList.HideStickTopics"]) {
             [topics addObject:topic];
         }
     }

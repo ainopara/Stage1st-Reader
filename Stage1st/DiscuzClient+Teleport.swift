@@ -150,13 +150,9 @@ public extension DiscuzClient {
 }
 
 // MARK: - Topic List
-public struct FieldInfo {
-
-}
-
 public extension DiscuzClient {
     @discardableResult
-    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(FieldInfo, [S1Topic])>) -> Void) -> Alamofire.Request {
+    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(Field, [S1Topic])>) -> Void) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
             "version": 1,
@@ -171,7 +167,19 @@ public extension DiscuzClient {
         return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
             switch response.result {
             case .success(let json):
-                completion(.success((FieldInfo(), [S1Topic]())))
+                guard let topicList = json["Variables"]["forum_threadlist"].array else {
+                    completion(.failure(DZError.noThreadListReturned(jsonString: json.rawString() ?? "")))
+                    return
+                }
+
+                guard let field = Field(json: json) else {
+                    completion(.failure(DZError.noFieldInfoReturned(jsonString: json.rawString() ?? "")))
+                    return
+                }
+
+                let topics = topicList.map { S1Topic(json: $0, fieldID: field.ID) }.flatMap { $0 }
+
+                completion(.success((field, topics)))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -223,7 +231,7 @@ public extension DiscuzClient {
             switch response.result {
             case .success(let json):
                 guard let user = User(json: json) else {
-                    completion(.failure(DZError.userInfoParsedFailed(responseJSONString: json.rawString() ?? "")))
+                    completion(.failure(DZError.userInfoParseFailed(jsonString: json.rawString() ?? "")))
                     return
                 }
                 completion(.success(user))

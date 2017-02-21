@@ -14,7 +14,10 @@ public extension Notification.Name {
 
 public enum DZError: Error {
     case loginFailed(messageValue: String?, messageString: String?)
-    case userInfoParsedFailed(responseJSONString: String)
+    case userInfoParseFailed(jsonString: String)
+    case noFieldInfoReturned(jsonString: String)
+    case noThreadListReturned(jsonString: String)
+    case threadParseFailed(jsonString: String)
 }
 
 extension DZError: CustomStringConvertible {
@@ -22,8 +25,14 @@ extension DZError: CustomStringConvertible {
         switch self {
         case .loginFailed(let messageValue, let messageString):
             return "Login failed due to `login_success` can not be founded in messageval `\(messageValue)` with messagestr: `\(messageString)`"
-        case .userInfoParsedFailed(let responseJSONString):
-            return "User info failed to parse for json `\(responseJSONString)`"
+        case .userInfoParseFailed(let jsonString):
+            return "User info failed to parse for json `\(jsonString)`"
+        case .noFieldInfoReturned(let jsonString):
+            return "No field information in json `\(jsonString)`"
+        case .noThreadListReturned(let jsonString):
+            return "No thread list in json `\(jsonString)`"
+        case .threadParseFailed(let jsonString):
+            return "Thread failed to parse for json `\(jsonString)`"
         }
     }
 }

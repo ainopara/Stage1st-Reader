@@ -15,19 +15,17 @@
 {
     NSString *logMsg = logMessage->_message;
 
-    if (_logFormatter)
-    {
+    if (_logFormatter) {
         logMsg = [_logFormatter formatLogMessage:logMessage];
     }
 
-    if (logMsg)
-    {
+    if (logMsg) {
         CLSLog(@"%@",logMsg);
     }
 }
 
 
-+ (CrashlyticsLogger*)sharedInstance
++ (CrashlyticsLogger *)sharedInstance
 {
     static dispatch_once_t pred = 0;
     static CrashlyticsLogger *_sharedInstance = nil;
@@ -37,6 +35,11 @@
     });
 
     return _sharedInstance;
+}
+
+- (NSString *)loggerName
+{
+    return @"com.ainopara.crashlyticsLogger";
 }
 
 @end

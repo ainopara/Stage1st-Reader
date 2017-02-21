@@ -9,15 +9,15 @@
 import UIKit
 import CocoaLumberjack
 
-public class ColorManager: NSObject {
+public final class ColorManager: NSObject {
     fileprivate var palette: NSDictionary = NSDictionary()
     fileprivate var colorMap: NSDictionary = NSDictionary()
     fileprivate let fallbackColor = UIColor.black
     fileprivate let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
-    public static let shared = { return ColorManager() }()
+    public static let shared = ColorManager()
 
-    override init () {
+    override init() {
         let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette": "DefaultPalette"
 
         let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")

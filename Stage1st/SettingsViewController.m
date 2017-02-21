@@ -12,6 +12,7 @@
 #import <Crashlytics/Answers.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
 #import <SafariServices/SafariServices.h>
+#import <AcknowList/AcknowList-Swift.h>
 
 @interface SettingsViewController ()
 
@@ -182,9 +183,20 @@
     } else if (indexPath.section == 0 && indexPath.row == 0) {
         S1LoginViewController *viewController = [[S1LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:viewController animated:YES completion:NULL];
+    } else if (indexPath.section == 0 && indexPath.row == 9) {
+        [self.navigationController pushViewController:[[AdvancedSettingsViewController alloc] initWithNibName:nil bundle:nil] animated:YES];
     } else if (indexPath.section == 2 && indexPath.row == 2) {
+#ifdef DEBUG
+        InMemoryLogViewController *logViewController = [[InMemoryLogViewController alloc] initInMemoryLogger:[InMemoryLogger shared]];
+        [self.navigationController pushViewController:logViewController animated:YES];
+#else
         SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"https://ainopara.github.io/stage1st-reader-EULA.html"]];
         [self presentViewController:safariViewController animated:YES completion:NULL];
+#endif
+    } else if (indexPath.section == 2 && indexPath.row == 3) {
+        NSString *acknowledgmentPlistFilePath = [[NSBundle mainBundle] pathForResource:@"Pods-Stage1st-acknowledgements" ofType:@"plist"];
+        AcknowListViewController *acknowledgementViewController = [[AcknowListViewController alloc] initWithAcknowledgementsPlistPath:acknowledgmentPlistFilePath];
+        [self.navigationController pushViewController:acknowledgementViewController animated:YES];
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

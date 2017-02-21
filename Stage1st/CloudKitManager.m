@@ -530,8 +530,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	}});
 }
 
-- (void)_fetchRecordChangesWithCompletionHandler:
-        (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
+- (void)_fetchRecordChangesWithCompletionHandler:(void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
 	__block CKServerChangeToken *prevServerChangeToken = nil;
 	[databaseConnection asyncReadWithBlock:^(YapDatabaseReadTransaction *transaction) {
@@ -546,47 +545,44 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 }
 
 - (void)_fetchRecordChangesWithPrevServerChangeToken:(CKServerChangeToken *)prevServerChangeToken
-								  completionHandler:
-        (void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
+                                   completionHandler:(void (^)(UIBackgroundFetchResult result, BOOL moreComing))completionHandler
 {
-	CKRecordZoneID *recordZoneID =
-	  [[CKRecordZoneID alloc] initWithZoneName:CloudKitZoneName ownerName:CKOwnerDefaultName];
+	CKRecordZoneID *recordZoneID = [[CKRecordZoneID alloc] initWithZoneName:CloudKitZoneName ownerName:CKOwnerDefaultName];
 	
-	CKFetchRecordChangesOperation *operation =
-	  [[CKFetchRecordChangesOperation alloc] initWithRecordZoneID:recordZoneID
-	                                    previousServerChangeToken:prevServerChangeToken];
+    CKFetchRecordChangesOperation *operation = [[CKFetchRecordChangesOperation alloc] initWithRecordZoneID:recordZoneID
+                                                                                 previousServerChangeToken:prevServerChangeToken];
 	
 	__block NSMutableArray *deletedRecordIDs = nil;
 	__block NSMutableArray *changedRecords = nil;
 	
-	operation.recordWithIDWasDeletedBlock = ^(CKRecordID *recordID){
+	operation.recordWithIDWasDeletedBlock = ^(CKRecordID *recordID) {
 		
-		if (deletedRecordIDs == nil)
-			deletedRecordIDs = [[NSMutableArray alloc] init];
+        if (deletedRecordIDs == nil) {
+            deletedRecordIDs = [[NSMutableArray alloc] init];
+        }
 		
 		[deletedRecordIDs addObject:recordID];
 	};
-	
-	operation.recordChangedBlock = ^(CKRecord *record){
+
+	operation.recordChangedBlock = ^(CKRecord *record) {
 		
-		if (changedRecords == nil)
-			changedRecords = [[NSMutableArray alloc] init];
+        if (changedRecords == nil) {
+            changedRecords = [[NSMutableArray alloc] init];
+        }
 		
 		[changedRecords addObject:record];
 	};
 	
 	__weak CKFetchRecordChangesOperation *weakOperation = operation;
     __weak __typeof__(self) weakSelf = self;
-	operation.fetchRecordChangesCompletionBlock =
-	^(CKServerChangeToken *newServerChangeToken, NSData *clientChangeTokenData, NSError *operationError){
+	operation.fetchRecordChangesCompletionBlock = ^(CKServerChangeToken *newServerChangeToken, NSData *clientChangeTokenData, NSError *operationError) {
         __strong __typeof__(self) strongSelf = weakSelf;
 		DDLogDebug(@"CKFetchRecordChangesOperation.fetchRecordChangesCompletionBlock");
 		
-		DDLogDebug(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
-		DDLogDebug(@"CKFetchRecordChangesOperation: clientChangeTokenData: %@", clientChangeTokenData);
+		DDLogVerbose(@"CKFetchRecordChangesOperation: serverChangeToken: %@", newServerChangeToken);
+		DDLogVerbose(@"CKFetchRecordChangesOperation: clientChangeTokenData: %@", clientChangeTokenData);
 
-        if (operationError)
-        {
+        if (operationError) {
             // I've seen:
             //
             // - CKErrorNotAuthenticated - "CloudKit access was denied by user settings"; Retry after 3.0 seconds
@@ -679,8 +675,8 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		}
 		else // if (hasChanges || moreComing)
 		{
-			DDLogDebug(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
-			DDLogDebug(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
+			DDLogVerbose(@"CKFetchRecordChangesOperation: deletedRecordIDs: %@", deletedRecordIDs);
+			DDLogVerbose(@"CKFetchRecordChangesOperation: changedRecords: %@", changedRecords);
 			
 			[strongSelf->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
@@ -1021,11 +1017,9 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
             @"code": code,
             @"description": errorDescription
         }];
-        DDLogDebug(@"[CloudKit] ckErrorCode:%ld description:%@", (long)code, errorDescription);
+        DDLogWarn(@"[CloudKit] ckErrorCode:%ld description:%@", (long)code, errorDescription);
+        [[Crashlytics sharedInstance] recordError:error];
     }
-#ifdef DEBUG
-    [[Crashlytics sharedInstance] recordError:error];
-#endif
 }
 
 - (void)_refetchMissedRecordIDs

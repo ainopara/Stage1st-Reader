@@ -1,5 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.4)
+  - AcknowList (1.2)
   - ActionSheetPicker-3.0 (2.2.0)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
@@ -16,7 +17,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - Alamofire (4.2.0)
+  - Alamofire (4.3.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
   - CocoaLumberjack (3.0.0):
@@ -50,13 +51,14 @@ PODS:
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
+  - QuickTableViewController (0.5.1)
   - Reachability (3.2)
-  - ReactiveCocoa (5.0.0-rc.1):
-    - ReactiveSwift (~> 1.0.0-rc.3)
+  - ReactiveCocoa (5.0.0):
+    - ReactiveSwift (~> 1.0.0)
   - ReactiveSwift (1.0.0):
     - Result (~> 3.1)
   - Result (3.1.0)
-  - Reveal-SDK (5)
+  - Reveal-SDK (6)
   - SnapKit (3.1.2)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
@@ -113,6 +115,7 @@ PODS:
 
 DEPENDENCIES:
   - 1PasswordExtension
+  - AcknowList
   - ActionSheetPicker-3.0
   - AFNetworking
   - Alamofire
@@ -129,8 +132,9 @@ DEPENDENCIES:
   - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
+  - QuickTableViewController (~> 0.5.0)
   - Reachability
-  - ReactiveCocoa (~> 5.0.0-rc.1)
+  - ReactiveCocoa
   - ReactiveSwift
   - Reveal-SDK
   - SnapKit
@@ -166,9 +170,10 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
+  AcknowList: 18ccee4d933a153622416cce2d36e6864ec147ea
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
   CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
@@ -181,17 +186,18 @@ SPEC CHECKSUMS:
   KIF: 082eb65279e51c3092923802849eb796a04982ab
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
+  QuickTableViewController: 7f984b4af21e9f2fc7ef840e40a7f46a0198039a
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 3e9cad4b77fa199d41e03f603cb55d0701ad6ad8
+  ReactiveCocoa: 60ef0da915b4f70c34ebecc3f4fb8f96af0e53d6
   ReactiveSwift: f391724ee318a2cfd3e37dfb041cd49ecf4e7869
   Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
-  Reveal-SDK: 7e3945c0c3649106c3cc8923672ee545e25605c0
+  Reveal-SDK: 67460e58f93711c7b18631d12c2b5de7740e48b5
   SnapKit: 12b24f569cb7c143acc9c22b9d91b23e7b1c84a2
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: beab86de516a27e239dc650d787244d22f73a1ef
+PODFILE CHECKSUM: a544310d176d2121d02805593da31aef2ea3c38b
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0

@@ -275,10 +275,10 @@ final class S1LoginViewController: UIViewController, CardWithBlurredBackground {
         self.view.addSubview(containerView)
 
         userInfoInputView.usernameField.delegate = self
-        userInfoInputView.usernameField.placeholder = NSLocalizedString("S1LoginViewController.usernameField.placeholder", comment: "")
+        userInfoInputView.usernameField.placeholder = NSLocalizedString("LoginViewController.usernameField.placeholder", comment: "")
         userInfoInputView.usernameField.text = self.cachedUserID() ?? ""
         userInfoInputView.passwordField.delegate = self
-        userInfoInputView.passwordField.placeholder = NSLocalizedString("S1LoginViewController.passwordField.placeholder", comment: "")
+        userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(S1LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
         userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: .normal)
         userInfoInputView.questionSelectButton.tintColor = ColorManager.shared.colorForKey("login.text")

@@ -1,3 +1,4 @@
+plugin 'cocoapods-amimono'
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "9.0"
 use_frameworks!
@@ -28,7 +29,7 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'ReactiveCocoa', '~> 5.0.0-rc.1'
+    pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
 
     pod 'Fabric'
@@ -41,6 +42,8 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'GRMustache.swift'
     pod '1PasswordExtension'
+    pod 'AcknowList'
+    pod 'QuickTableViewController', '~> 0.5.0'
 
     target "Stage1stTests" do
         inherit! :search_paths
@@ -52,6 +55,9 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
+        require 'cocoapods-amimono/patcher'
+        Amimono::Patcher.patch!(installer)
+
         target.build_configurations.each do |config|
             config.build_settings['SWIFT_VERSION'] = '3.0.1'
         end

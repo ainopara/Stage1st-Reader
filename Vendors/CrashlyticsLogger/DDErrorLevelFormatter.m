@@ -8,28 +8,45 @@
 
 #import "DDErrorLevelFormatter.h"
 
-@implementation DDErrorLevelFormatter
+NS_ASSUME_NONNULL_BEGIN
 
-- (instancetype)init {
-    self = [super init];
-    if (self != nil) {
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss:SSS"];
-    }
-    return self;
-}
+@implementation DDErrorLevelFormatter
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
     NSString *logLevel;
-    switch (logMessage->_flag) {
-        case DDLogFlagError    : logLevel = @"E"; break;
-        case DDLogFlagWarning  : logLevel = @"W"; break;
-        case DDLogFlagInfo     : logLevel = @"I"; break;
-        case DDLogFlagDebug    : logLevel = @"D"; break;
-        default                : logLevel = @"V"; break;
+    if (logMessage->_context != 1024) {
+        switch (logMessage->_flag) {
+            case DDLogFlagError    : logLevel = @"Error  "; break;
+            case DDLogFlagWarning  : logLevel = @"Warning"; break;
+            case DDLogFlagInfo     : logLevel = @"Info   "; break;
+            case DDLogFlagDebug    : logLevel = @"Debug  "; break;
+            default                : logLevel = @"Verbose"; break;
+        }
+    } else {
+        logLevel = @"Tracing"; // Use `Tracing` rather than `Tracking` to limit to 7 characters.
     }
-    NSString *dateString = logMessage->_timestamp == nil ? @"" : [_dateFormatter stringFromDate:logMessage->_timestamp];
-    return [NSString stringWithFormat:@"%@ @%@|%@|%@", dateString, logMessage->_queueLabel, logLevel, logMessage->_message];
+
+    return [NSString stringWithFormat:@"|%@| %@", logLevel, logMessage->_message];
 }
 
 @end
+
+@implementation DDSimpleDispatchQueueLogFormatter
+
+- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
+    NSString *queueThreadLabel = [self queueThreadLabelForLogMessage:logMessage];
+    return [NSString stringWithFormat:@"@%@ %@", queueThreadLabel, logMessage->_message];
+}
+
+@end
+
+@implementation DDSimpleDateLogFormatter
+
+- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
+    NSString *timestamp = [self stringFromDate:(logMessage->_timestamp)];
+    return [NSString stringWithFormat:@"%@ %@", timestamp, logMessage->_message];
+}
+
+@end
+
+NS_ASSUME_NONNULL_END

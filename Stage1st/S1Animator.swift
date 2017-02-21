@@ -69,18 +69,22 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
             }
         }) { (finished) in
             if MyAppDelegate.crashIssueTrackingModeEnabled {
-                DDLogError("[Tracking] A: \(finished)")
-                DDLogError("[Tracking] B: \(transitionContext.transitionWasCancelled)")
-                DDLogError("[Tracking] C: \(transitionContext.containerView)")
-                DDLogError("[Tracking] D: \(transitionContext.containerView.subviews)")
-                DDLogError("[Tracking] E: \(transitionContext.viewController(forKey: .from))")
-                DDLogError("[Tracking] F: \(transitionContext.viewController(forKey: .to))")
+                DDLogTracking("finshed: \(finished)")
+                DDLogTracking("transitionWasCancelled: \(transitionContext.transitionWasCancelled)")
+                DDLogTracking("containerView: \(transitionContext.containerView)")
+                DDLogTracking("containerView.subviews: \(transitionContext.containerView.subviews)")
+                DDLogTracking("fromViewController: \(transitionContext.viewController(forKey: .from))")
+                DDLogTracking("toViewController: \(transitionContext.viewController(forKey: .to))")
             }
             fromViewController.view.transform = .identity
             toViewController.view.transform = .identity
-            DDLogError("[Tracking] G")
+            if MyAppDelegate.crashIssueTrackingModeEnabled {
+                DDLogTracking("G")
+            }
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            DDLogError("[Tracking] H")
+            if MyAppDelegate.crashIssueTrackingModeEnabled {
+                DDLogTracking("H")
+            }
         }
     }
 }

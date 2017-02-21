@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class Floor;
 @class MahjongFaceItem;
 @class DiscuzClient;
+@class CacheDatabaseManager;
 
 @interface S1DataCenter : NSObject
 
@@ -23,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 // Mahjong Face
 @property (strong, nonatomic) DiscuzClient *apiManager;
 @property (strong, nonatomic) NSArray<MahjongFaceItem *> *mahjongFaceHistoryArray;
+@property (strong, nonatomic) CacheDatabaseManager *cacheDatabaseManager;
 
 // For topic list View Controller
 - (BOOL)hasCacheForKey:(NSString *)keyID;
@@ -43,9 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
                        failure:(void (^)(NSError *error))failure;
 
 // For Content View Controller
-- (BOOL)hasPrecacheFloorsForTopic:(S1Topic *)topic
-                         withPage:(NSNumber *)page;
-
 - (void)precacheFloorsForTopic:(S1Topic *)topic
                       withPage:(NSNumber *)page
                   shouldUpdate:(BOOL)shouldUpdate;
