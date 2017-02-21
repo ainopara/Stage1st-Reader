@@ -9,6 +9,8 @@
 #import "CrashlyticsLogger.h"
 #import <Crashlytics/Crashlytics.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation CrashlyticsLogger
 
 - (void)logMessage:(DDLogMessage *)logMessage
@@ -43,3 +45,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
