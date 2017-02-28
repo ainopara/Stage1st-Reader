@@ -502,6 +502,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.viewModel topicListForKey:forumID refresh:refresh success:^(NSArray *topicList) {
         //reload data
         __strong __typeof__(self) strongSelf = weakSelf;
+        if (![strongSelf.currentKey isEqualToString:key]) {
+          return;
+        }
         if (topicList.count > 0) {
             if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
