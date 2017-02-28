@@ -20,17 +20,15 @@ PODS:
   - Alamofire (4.3.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
-  - CocoaLumberjack (3.0.0):
-    - CocoaLumberjack/Default (= 3.0.0)
-    - CocoaLumberjack/Extensions (= 3.0.0)
-  - CocoaLumberjack/Core (3.0.0)
-  - CocoaLumberjack/Default (3.0.0):
-    - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (3.0.0):
+  - CocoaLumberjack (3.1.0):
+    - CocoaLumberjack/Default (= 3.1.0)
+    - CocoaLumberjack/Extensions (= 3.1.0)
+  - CocoaLumberjack/Default (3.1.0)
+  - CocoaLumberjack/Extensions (3.1.0):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (3.0.0):
-    - CocoaLumberjack/Extensions
-  - Crashlytics (3.8.3):
+  - CocoaLumberjack/Swift (3.1.0):
+    - CocoaLumberjack/Default
+  - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
   - Fabric (1.6.11)
   - FBSnapshotTestCase (2.1.4):
@@ -58,7 +56,7 @@ PODS:
   - ReactiveSwift (1.0.1):
     - Result (~> 3.1)
   - Result (3.1.0)
-  - Reveal-SDK (6)
+  - Reveal-SDK (7)
   - SnapKit (3.2.0)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
@@ -175,8 +173,8 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
-  CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
-  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
+  CocoaLumberjack: 8311463ddf9ee86a06ef92a071dd656c89244500
+  Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
@@ -191,7 +189,7 @@ SPEC CHECKSUMS:
   ReactiveCocoa: 60ef0da915b4f70c34ebecc3f4fb8f96af0e53d6
   ReactiveSwift: b1453c8885ebfb9b09b6d60bc5bc3303f56dc72c
   Result: 4e3ed5995ed94d0cd6a09be9a431fce3f3624bbf
-  Reveal-SDK: 67460e58f93711c7b18631d12c2b5de7740e48b5
+  Reveal-SDK: 564657bc66c93d2718b1c0121cdebe99d354ddab
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638

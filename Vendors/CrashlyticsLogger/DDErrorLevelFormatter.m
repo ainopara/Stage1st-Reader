@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation DDErrorLevelFormatter
 
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
+- (NSString *_Nullable)formatLogMessage:(DDLogMessage *)logMessage {
     NSString *logLevel;
     if (logMessage->_context != 1024) {
         switch (logMessage->_flag) {

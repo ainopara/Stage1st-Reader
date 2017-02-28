@@ -17,9 +17,9 @@ public class InMemoryLogger: DDAbstractLogger {
     public var messageQueue: [String] { return _messageQueue }
     private var _messageQueue: [String] = []
 
-    public override func log(message logMessage: DDLogMessage!) {
+    public override func log(message logMessage: DDLogMessage) {
         if let logFormatter = self.value(forKey: "_logFormatter") as? DDLogFormatter {
-            _messageQueue.append(logFormatter.format(message: logMessage))
+            _messageQueue.append(logFormatter.format(message: logMessage)!)
         } else {
             _messageQueue.append(logMessage.message)
         }
