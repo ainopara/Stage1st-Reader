@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super init];
     
     _tracer = [[S1YapDatabaseAdapter alloc] initWithDatabase:MyDatabaseManager];
-    _apiManager = [[DiscuzClient alloc] initWithBaseURL:@"http://bbs.saraba1st.com/2b"];
+    _apiManager = [[DiscuzClient alloc] initWithBaseURL:@"http://119.23.22.79/2b"];
 //    _apiManager = 
     _topicListCache = [[NSMutableDictionary alloc] init];
     _topicListCachePageNumber = [[NSMutableDictionary alloc] init];
