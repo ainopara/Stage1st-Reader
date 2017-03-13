@@ -81,7 +81,6 @@ extension S1AppDelegate {
         }
 
         // TODO: Use register domain.
-        userDefaults.s1_setObjectIfNotExist(object: "http://bbs.saraba1st.com/2b/", key: "BaseURL")
         userDefaults.s1_setObjectIfNotExist(object: NSNumber(value: -1), key: "HistoryLimit")
         userDefaults.s1_setObjectIfNotExist(object: true, key: "Display")
         userDefaults.s1_setObjectIfNotExist(object: true, key: "ReplyIncrement")

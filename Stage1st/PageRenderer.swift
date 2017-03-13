@@ -129,8 +129,7 @@ extension PageRenderer {
                             image.addAttribute(withName: "src", stringValue: fileString)
                         } else if let srcString = srcString, !srcString.hasPrefix("http") {
                             image.removeAttribute(forName: "src")
-                            let baseURLString = UserDefaults.standard.object(forKey: "BaseURL") as! String
-                            image.addAttribute(withName: "src", stringValue: baseURLString + srcString)
+                            image.addAttribute(withName: "src", stringValue: AppEnvironment.current.baseURL + "/" + srcString)
                         }
 
                         if let finalImageSrcString = image.attribute(forName: "src")?.stringValue, !isMahjongFaceImage(imageSourceString: srcString) {

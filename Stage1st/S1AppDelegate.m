@@ -9,7 +9,6 @@
 #import "S1AppDelegate.h"
 #import "S1TopicListViewController.h"
 #import "NavigationControllerDelegate.h"
-#import "S1URLCache.h"
 #import "S1Topic.h"
 #import "S1Tracer.h"
 #import "S1Parser.h"
@@ -90,12 +89,8 @@ S1AppDelegate *MyAppDelegate;
         NSString *path = [[NSBundle mainBundle] pathForResource:@"InitialOrder" ofType:@"plist"];
         NSArray *order = [NSArray arrayWithContentsOfFile:path];
         [userDefaults setObject:order forKey:@"Order"];
-        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
         [userDefaults removeObjectForKey:@"UserID"];
         [userDefaults removeObjectForKey:@"UserPassword"];
-    }
-    if (![[userDefaults objectForKey:@"BaseURL"] isEqualToString:@"http://bbs.saraba1st.com/2b/"]) {
-        [userDefaults setObject:@"http://bbs.saraba1st.com/2b/" forKey:@"BaseURL"];
     }
     
     // Migrate to v3.6
@@ -121,7 +116,7 @@ S1AppDelegate *MyAppDelegate;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
 
     // URL Cache
-    S1URLCache *URLCache = [[S1URLCache alloc] initWithMemoryCapacity:16 * 1024 * 1024 diskCapacity:128 * 1024 * 1024 diskPath:nil];
+    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:16 * 1024 * 1024 diskCapacity:128 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
     S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];

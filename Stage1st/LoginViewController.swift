@@ -249,7 +249,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 
     // MARK: - Life Cycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.networkManager = DiscuzClient(baseURL: "http://bbs.saraba1st.com/2b")  // FIXME: base URL should not be hard coded.
+        self.networkManager = AppEnvironment.current.apiService
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
@@ -392,7 +392,7 @@ extension LoginViewController {
     }
 
     func findLoginFromOnePassword(_ button: UIButton) {
-        OnePasswordExtension.shared().findLogin(forURLString: UserDefaults.standard.object(forKey: "BaseURL") as? String ?? "", for: self, sender: button) { [weak self] (loginDict, error) in
+        OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.baseURL, for: self, sender: button) { [weak self] (loginDict, error) in
             guard let strongSelf = self else {
                 return
             }

@@ -183,8 +183,7 @@ extension ContentViewModel {
 // MARK: - NSUserActivity
 extension ContentViewModel {
     func correspondingWebPageURL() -> URL? {
-        guard let baseURL = UserDefaults.standard.object(forKey: "BaseURL") as? String else { return nil }
-        return URL(string: "\(baseURL)thread-\(self.topic.topicID)-\(self.currentPage.value)-1.html")
+        return URL(string: "\(AppEnvironment.current.baseURL)/thread-\(self.topic.topicID)-\(self.currentPage.value)-1.html")
     }
 
     func activityTitle() -> String? {

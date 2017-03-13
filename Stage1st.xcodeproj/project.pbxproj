@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3602181F1DF124E40034E109 /* S1NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3602181E1DF124E40034E109 /* S1NavigationViewController.swift */; };
 		366714091E4C4CD400813310 /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366714081E4C4CD400813310 /* Field.swift */; };
+		3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF3E1E763DD600629E25 /* AppEnvironment.swift */; };
+		3674BF411E763DE100629E25 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF401E763DE100629E25 /* Environment.swift */; };
 		36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */; };
 		36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
@@ -100,7 +102,6 @@
 		C083351916E363870035C1AA /* S1Tracer.m in Sources */ = {isa = PBXBuildFile; fileRef = C083351816E363870035C1AA /* S1Tracer.m */; };
 		C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083353616E4FB220035C1AA /* InitialOrder.plist */; };
 		C083353F16E647A80035C1AA /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = C083353E16E647A80035C1AA /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		C08A441016DA779E003BF44C /* S1URLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C08A440F16DA779E003BF44C /* S1URLCache.m */; };
 		C08DB46916DE3152002B4A92 /* S1TopicListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C08DB46816DE3152002B4A92 /* S1TopicListCell.m */; };
 		C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */ = {isa = PBXBuildFile; fileRef = C08DB46E16DE41FB002B4A92 /* Mahjong */; };
 		C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C090DA8E16D8F39F00BF7780 /* S1HUD.m */; };
@@ -131,6 +132,8 @@
 /* Begin PBXFileReference section */
 		3602181E1DF124E40034E109 /* S1NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1NavigationViewController.swift; path = Stage1st/S1NavigationViewController.swift; sourceTree = "<group>"; };
 		366714081E4C4CD400813310 /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Field.swift; path = Stage1st/Field.swift; sourceTree = "<group>"; };
+		3674BF3E1E763DD600629E25 /* AppEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		3674BF401E763DE100629E25 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogger.swift; path = Vendors/CrashlyticsLogger/InMemoryLogger.swift; sourceTree = "<group>"; };
 		36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogViewController.swift; path = Vendors/CrashlyticsLogger/InMemoryLogViewController.swift; sourceTree = "<group>"; };
 		36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-Stage1st-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -263,8 +266,6 @@
 		C083353C16E647A80035C1AA /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		C083353D16E647A80035C1AA /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		C083353E16E647A80035C1AA /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		C08A440E16DA779E003BF44C /* S1URLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1URLCache.h; path = Stage1st/S1URLCache.h; sourceTree = "<group>"; };
-		C08A440F16DA779E003BF44C /* S1URLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1URLCache.m; path = Stage1st/S1URLCache.m; sourceTree = "<group>"; };
 		C08DB46716DE3152002B4A92 /* S1TopicListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = S1TopicListCell.h; path = Stage1st/S1TopicListCell.h; sourceTree = "<group>"; };
 		C08DB46816DE3152002B4A92 /* S1TopicListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = S1TopicListCell.m; path = Stage1st/S1TopicListCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C08DB46E16DE41FB002B4A92 /* Mahjong */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Mahjong; sourceTree = "<group>"; };
@@ -557,8 +558,6 @@
 				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
 				86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */,
 				86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */,
-				C08A440E16DA779E003BF44C /* S1URLCache.h */,
-				C08A440F16DA779E003BF44C /* S1URLCache.m */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -622,6 +621,8 @@
 				865616821AC6C48C00CFD773 /* Stage1st.entitlements */,
 				C095874316CA8A36007E0119 /* main.m */,
 				86BA383C1C0A106E00D508AC /* S1Application.swift */,
+				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
+				3674BF401E763DE100629E25 /* Environment.swift */,
 			);
 			path = Stage1st;
 			sourceTree = "<group>";
@@ -1012,6 +1013,7 @@
 				867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */,
 				86BEC60F1E2677AA00352976 /* MessageHUD.swift in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
+				3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */,
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */,
@@ -1053,7 +1055,6 @@
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
-				C08A441016DA779E003BF44C /* S1URLCache.m in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
 				36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */,
 				36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */,
@@ -1070,6 +1071,7 @@
 				86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */,
 				86CA71E21B197D7B00204A5C /* S1MahjongFaceButton.m in Sources */,
 				862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */,
+				3674BF411E763DE100629E25 /* Environment.swift in Sources */,
 				86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,

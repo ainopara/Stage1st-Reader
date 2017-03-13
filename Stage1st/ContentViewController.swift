@@ -854,7 +854,7 @@ extension S1ContentViewController: WKNavigationDelegate {
             return
         }
 
-        if let baseURL = UserDefaults.standard.string(forKey: "BaseURL"), url.absoluteString.hasPrefix(baseURL) {
+        if url.absoluteString.hasPrefix(AppEnvironment.current.baseURL) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 // TODO: Make this logic easy to understand.
