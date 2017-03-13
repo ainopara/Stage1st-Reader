@@ -10,6 +10,7 @@ import Mustache
 import KissXML
 import CocoaLumberjack
 import Reachability
+import Crashlytics
 
 protocol PageRenderer {
     var topic: S1Topic { get }
@@ -132,29 +133,39 @@ extension PageRenderer {
                             image.addAttribute(withName: "src", stringValue: AppEnvironment.current.baseURL + "/" + srcString)
                         }
 
-                        if let finalImageSrcString = image.attribute(forName: "src")?.stringValue, !isMahjongFaceImage(imageSourceString: srcString) {
-                            // Prepare new image element.
-                            let imageElement = DDXMLElement(name: "img")
-                            imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
-                            imageIndexInCurrentFloor += 1
-                            if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
-                                imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
-                            } else {
-                                let placeholderURLString = Bundle.main.url(forResource: "Placeholder", withExtension: "png")!.absoluteString
-                                imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
-                            }
+                        if !isMahjongFaceImage(imageSourceString: srcString) {
+                            if let finalImageSrcString = image.attribute(forName: "src")?.stringValue {
+                                // Prepare new image element.
+                                let imageElement = DDXMLElement(name: "img")
+                                imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
+                                imageIndexInCurrentFloor += 1
+                                if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
+                                    imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
+                                } else {
+                                    let placeholderURLString = Bundle.main.url(forResource: "Placeholder", withExtension: "png")!.absoluteString
+                                    imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
+                                }
 
-                            // Transform original image element to link element.
-                            let linkElement = image
-                            linkElement.name = "a"
-                            linkElement.removeAttribute(forName: "src")
-                            linkElement.removeAttribute(forName: "href")
-                            linkElement.addAttribute(withName: "href", stringValue: "javascript:void(0);")
-                            linkElement.removeAttribute(forName: "onclick")
-                            let id = (imageElement.attribute(forName: "id")?.stringValue)!
-                            let linkString = "window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '\(finalImageSrcString)', 'id': '\(id)'})"
-                            linkElement.addAttribute(withName: "onclick", stringValue: linkString)
-                            linkElement.addChild(imageElement)
+                                // Transform original image element to link element.
+                                let linkElement = image
+                                linkElement.name = "a"
+                                linkElement.removeAttribute(forName: "src")
+                                linkElement.removeAttribute(forName: "href")
+                                linkElement.addAttribute(withName: "href", stringValue: "javascript:void(0);")
+                                linkElement.removeAttribute(forName: "onclick")
+                                let id = (imageElement.attribute(forName: "id")?.stringValue)!
+                                let linkString = "window.webkit.messageHandlers.stage1st.postMessage({'type': 'image', 'src': '\(finalImageSrcString)', 'id': '\(id)'})"
+                                linkElement.addAttribute(withName: "onclick", stringValue: linkString)
+                                linkElement.addChild(imageElement)
+                            }
+                        } else {
+                            let mahjongFacePath = srcString!.replacingOccurrences(of: "static/image/smiley/", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString)
+                            if FileManager.default.fileExists(atPath: mahjongFacePath) {
+                                image.removeAttribute(forName: "src")
+                                image.addAttribute(withName: "src", stringValue: mahjongFacePath)
+                            } else {
+                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss", customAttributes: ["url": srcString!.replacingOccurrences(of: "static/image/smiley/", with: "")])
+                            }
                         }
 
                         // clean image's attribute (if it is not a mahjong face, it is the linkElement)
