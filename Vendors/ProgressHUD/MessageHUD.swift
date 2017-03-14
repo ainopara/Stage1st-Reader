@@ -14,6 +14,7 @@ class MessageHUD: UIWindow {
 
     let backgroundView = UIVisualEffectView(effect: nil)
     let textLabel = UILabel(frame: .zero)
+    let decorationLine = UIView(frame: .zero)
 
     override init(frame: CGRect) {
         var statusBarFrame = UIApplication.shared.statusBarFrame
@@ -32,10 +33,20 @@ class MessageHUD: UIWindow {
             make.height.equalTo(44.0)
         }
 
+        backgroundView.addSubview(decorationLine)
+        decorationLine.snp.makeConstraints { (make) in
+            make.leading.trailing.bottom.equalTo(backgroundView)
+            make.height.equalTo(1.0 / UIScreen.main.scale)
+        }
+
         windowLevel = UIWindowLevelStatusBar - 1.0
 
         didReceivePaletteChangeNotification(nil)
 
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceiveStatusBarFrameWillChangeNotification(_:)),
+                                               name: .UIApplicationWillChangeStatusBarFrame,
+                                               object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
                                                name: .APPaletteDidChangeNotification,
@@ -65,8 +76,26 @@ class MessageHUD: UIWindow {
         case second(TimeInterval)
         case forever
     }
+
     func didReceivePaletteChangeNotification(_ notification: Notification?) {
         backgroundView.effect = ColorManager.shared.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
         textLabel.textColor = ColorManager.shared.colorForKey("reply.text")
+        decorationLine.backgroundColor = ColorManager.shared.colorForKey("reply.text")
+    }
+
+    func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {
+        guard let newFrame = notification?.userInfo?[UIApplicationStatusBarFrameUserInfoKey] as? CGRect else {
+            return
+        }
+
+        let finalFrame = mutate(newFrame) { (value: inout CGRect) in
+            value.size.height += 44.0
+        }
+
+        UIView.animate(withDuration: 0.3) {
+            self.frame = finalFrame
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
+        }
     }
 }
