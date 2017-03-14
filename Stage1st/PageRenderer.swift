@@ -285,7 +285,7 @@ extension PageRenderer {
             "post-time": floor.creationDate?.s1_gracefulDateTimeString() ?? "无日期",
             "ID": "\(floor.ID)",
             "poll": nil,
-            "content": userIsBlocked(with: floor.author.ID) ? "<i class=\"pstatus\">该用户已被您屏蔽</i><br>" : processContent(content: floor.content),
+            "content": userIsBlocked(with: floor.author.ID) ? "<td class=\"t_f\"><div class=\"s1-alert\">该用户已被您屏蔽</i></td>" : processContent(content: floor.content),
             "attachments": floor.imageAttachmentURLStringList.flatMap { (list: [String]) in list.map { ["url": $0, "ID": UUID().uuidString] } },
             "is-first": isFirstInPage
         ]
