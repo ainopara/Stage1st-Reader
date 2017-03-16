@@ -164,7 +164,7 @@ extension PageRenderer {
                                 image.removeAttribute(forName: "src")
                                 image.addAttribute(withName: "src", stringValue: mahjongFacePath)
                             } else {
-                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss", customAttributes: ["url": srcString!.replacingOccurrences(of: "static/image/smiley/", with: "")])
+                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v2", customAttributes: ["url": srcString!.replacingOccurrences(of: "static/image/smiley/", with: "")])
                             }
                         }
 
