@@ -27,6 +27,7 @@ extension S1AppDelegate {
     func migrate() {
         migrateTo3800()
         migrateTo3900()
+        migrateTo3940()
     }
 
     func migrateTo3800() {
@@ -54,6 +55,20 @@ extension S1AppDelegate {
         let hiddenForumArray = orderForumArray[1]
         if !(displayForumArray + hiddenForumArray).contains("DOTA") {
             UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["DOTA", "欧美动漫"]], forKey: "Order")
+        }
+    }
+
+    func migrateTo3940() {
+        guard
+            let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
+            orderForumArray.count == 2 else {
+                DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+                return
+        }
+        let displayForumArray = orderForumArray[0]
+        let hiddenForumArray = orderForumArray[1]
+        if !(displayForumArray + hiddenForumArray).contains("泥潭") {
+            UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
         }
     }
 }
