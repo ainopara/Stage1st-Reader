@@ -316,9 +316,8 @@
 }
 
 - (NSURL *)URLForKey:(NSString *)key inCategory:(NSString *)category {
-    NSString *prefix = [[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"] stringByAppendingString:@"static/image/smiley/"];
-    NSString *mahjongURLString = [prefix stringByAppendingString:[[self.mahjongMap valueForKey:category] valueForKey:key]];
-    return [NSURL URLWithString:mahjongURLString];
+    NSURL *base = [[[NSBundle mainBundle] bundleURL] URLByAppendingPathComponent:@"Mahjong"];
+    return [base URLByAppendingPathComponent:[[self.mahjongMap valueForKey:category] valueForKey:key]];
 }
 
 - (NSUInteger)numberOfColumnsForFrameSize:(CGSize)frameSize {

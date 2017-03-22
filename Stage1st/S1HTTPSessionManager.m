@@ -17,7 +17,7 @@
     static S1HTTPSessionManager *httpClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        httpClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
+        httpClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://119.23.22.79/2b"]];
         httpClient.responseSerializer = [AFHTTPResponseSerializer serializer];
     });
     return httpClient;
@@ -28,7 +28,7 @@
     static S1HTTPSessionManager *jsonClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        jsonClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] valueForKey:@"BaseURL"]]];
+        jsonClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://119.23.22.79/2b"]];
         jsonClient.responseSerializer = [AFJSONResponseSerializer serializer];
         jsonClient.responseSerializer.acceptableContentTypes = [jsonClient.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
     });

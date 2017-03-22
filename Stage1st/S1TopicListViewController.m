@@ -502,8 +502,11 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.viewModel topicListForKey:forumID refresh:refresh success:^(NSArray *topicList) {
         //reload data
         __strong __typeof__(self) strongSelf = weakSelf;
+//        if (![strongSelf.currentKey isEqualToString:key]) {
+//          return;
+//        }
         if (topicList.count > 0) {
-            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
+            if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -521,9 +524,9 @@ static NSString * const cellIdentifier = @"TopicCell";
             if (strongSelf.tableView.contentOffset.y < 0) {
                 [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
             }
-            [self.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
+            [strongSelf.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
         } else {
-            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
+            if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -535,7 +538,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         //hud hide
         if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
-            [self.refreshHUD hideWithDelay:0.3];
+            [strongSelf.refreshHUD hideWithDelay:0.3];
         }
         //others
         strongSelf.scrollTabBar.enabled = YES;
@@ -550,7 +553,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         __strong __typeof__(self) strongSelf = weakSelf;
         if (error.code == NSURLErrorCancelled) {
             DDLogDebug(@"[Network] NSURLErrorCancelled");
-            [self.refreshHUD hideWithDelay:0];
+            [strongSelf.refreshHUD hideWithDelay:0];
             //others
             strongSelf.scrollTabBar.enabled = YES;
             if (strongSelf.refreshControl.refreshing) {
@@ -559,7 +562,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             _loadingFlag = NO;
         } else {
             //reload data
-            if (strongSelf.currentKey && [self isPresentingForumList:self.currentKey]) {
+            if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
@@ -572,11 +575,11 @@ static NSString * const cellIdentifier = @"TopicCell";
             if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
-                    [self.refreshHUD hideWithDelay:0];
+                    [strongSelf.refreshHUD hideWithDelay:0];
                 } else {
                     DDLogWarn(@"[Network] error: %ld (%@)", (long)error.code, error.description);
-                    [self.refreshHUD showMessage:@"Request Failed"];
-                    [self.refreshHUD hideWithDelay:0.3];
+                    [strongSelf.refreshHUD showMessage:@"Request Failed"];
+                    [strongSelf.refreshHUD hideWithDelay:0.3];
                 }
             }
 

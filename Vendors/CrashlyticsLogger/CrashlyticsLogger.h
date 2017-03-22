@@ -8,8 +8,12 @@
 
 @class DDAbstractLogger;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface CrashlyticsLogger : DDAbstractLogger
 
-+ (CrashlyticsLogger*)sharedInstance;
++ (CrashlyticsLogger *)sharedInstance;
 
 @end
+
+NS_ASSUME_NONNULL_END

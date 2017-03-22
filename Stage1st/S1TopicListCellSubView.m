@@ -104,9 +104,11 @@
     NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
     replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-    [textContent drawInRect:replyCountRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
-                                                      NSParagraphStyleAttributeName: replyCountParagraphStyle,
-                                                      NSForegroundColorAttributeName: replyCountFinalColor}];
+    [textContent drawInRect:replyCountRect withAttributes:@{
+        NSFontAttributeName: [UIFont systemFontOfSize:12.0f],
+        NSParagraphStyleAttributeName: replyCountParagraphStyle,
+        NSForegroundColorAttributeName: replyCountFinalColor
+    }];
     
     // Draw Reply Increment Text
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReplyIncrement"]) {
@@ -117,9 +119,11 @@
                 NSMutableParagraphStyle *replyCountParagraphStyle = [[NSMutableParagraphStyle alloc] init];
                 replyCountParagraphStyle.lineBreakMode = NSLineBreakByClipping;
                 replyCountParagraphStyle.alignment = NSTextAlignmentCenter;
-                [replyChangeContent drawInRect:replyIncrementCountRect withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
-                                                                                           NSParagraphStyleAttributeName: replyCountParagraphStyle,
-                                                                                           NSForegroundColorAttributeName: replyCountFinalColor}];
+                [replyChangeContent drawInRect:replyIncrementCountRect withAttributes:@{
+                    NSFontAttributeName: [UIFont systemFontOfSize:10.0f],
+                    NSParagraphStyleAttributeName: replyCountParagraphStyle,
+                    NSForegroundColorAttributeName: replyCountFinalColor
+                }];
             }
         }
     }

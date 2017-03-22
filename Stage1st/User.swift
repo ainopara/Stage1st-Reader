@@ -81,6 +81,6 @@ public final class User: NSObject, NSCoding {
 
 extension User {
     var avatarURL: URL? {
-        return URL(string: "http://bbs.saraba1st.com/2b/uc_server/avatar.php?uid=\(self.ID)")
+        return URL(string: AppEnvironment.current.baseURL + "/uc_server/avatar.php?uid=\(self.ID)")
     }
 }

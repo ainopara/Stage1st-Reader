@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>泥潭</key>
+	<string>141</string>
 	<key>游戏论坛</key>
 	<string>4</string>
 	<key>动漫论坛</key>

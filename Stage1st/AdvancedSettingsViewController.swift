@@ -66,6 +66,6 @@ final class DebugViewController: QuickTableViewController {
     }
 
     private func showLoggingViewController(_ row: Row) {
-        
+
     }
 }
