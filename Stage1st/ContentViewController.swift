@@ -690,7 +690,7 @@ extension S1ContentViewController {
             strongSelf._presentReplyView(toFloor: floor)
         }
 
-        if UserDefaults.standard.bool(forKey: ReverseActionKey) {
+        if UserDefaults.standard.bool(forKey: Constants.defaults.reverseActionKey) {
             replyFloorBlock()
             return
         }
@@ -1247,7 +1247,7 @@ extension S1ContentViewController {
                     strongSelf.saveViewPositionForPreviousPage()
                 }
                 strongSelf.finishFirstLoading.value = true
-                strongSelf.webView.loadHTMLString(contents, baseURL: ContentViewModel.pageBaseURL())
+                strongSelf.webView.loadHTMLString(contents, baseURL: strongSelf.viewModel.pageBaseURL())
 
                 // Prepare next page
                 if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {

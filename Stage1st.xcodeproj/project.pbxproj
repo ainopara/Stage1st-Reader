@@ -14,6 +14,7 @@
 		36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */; };
 		36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
+		36D36FC21E823FCE009D40A3 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D36FC11E823FCE009D40A3 /* R.generated.swift */; };
 		36D6D04F1E554F4A003098B8 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D04E1E554F4A003098B8 /* Stage1stLog.swift */; };
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
 		36D6D09D1E56B590003098B8 /* Fabric in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D6D09C1E56B590003098B8 /* Fabric */; };
@@ -70,7 +71,6 @@
 		86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */; };
 		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
-		86B1EBBD1E2FBAB600480C49 /* Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 86B1EBBC1E2FBAB600480C49 /* Placeholder.png */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
 		86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BA383C1C0A106E00D508AC /* S1Application.swift */; };
 		86BEC60F1E2677AA00352976 /* MessageHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86BEC60E1E2677AA00352976 /* MessageHUD.swift */; };
@@ -137,6 +137,7 @@
 		36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogger.swift; path = Vendors/CrashlyticsLogger/InMemoryLogger.swift; sourceTree = "<group>"; };
 		36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogViewController.swift; path = Vendors/CrashlyticsLogger/InMemoryLogViewController.swift; sourceTree = "<group>"; };
 		36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-Stage1st-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-acknowledgements.plist"; sourceTree = "<group>"; };
+		36D36FC11E823FCE009D40A3 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		36D6D04E1E554F4A003098B8 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Stage1stLog.swift; path = Vendors/CrashlyticsLogger/Stage1stLog.swift; sourceTree = "<group>"; };
 		36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AdvancedSettingsViewController.swift; path = Stage1st/AdvancedSettingsViewController.swift; sourceTree = "<group>"; };
 		36D6D09C1E56B590003098B8 /* Fabric */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = Fabric; path = Pods/Fabric/iOS/Fabric.framework/Fabric; sourceTree = "<group>"; };
@@ -220,7 +221,6 @@
 		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = S1MahjongFaceTextAttachment.m; path = Stage1st/S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
 		86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAttributedString+MahjongFaceExtension.m"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.m"; sourceTree = "<group>"; };
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSAttributedString+MahjongFaceExtension.h"; path = "Stage1st/NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
-		86B1EBBC1E2FBAB600480C49 /* Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Placeholder.png; path = resources.xcassets/Placeholder.imageset/Placeholder.png; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DarkPalette.plist; path = Stage1st/DarkPalette.plist; sourceTree = "<group>"; };
 		86BA383C1C0A106E00D508AC /* S1Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Application.swift; sourceTree = "<group>"; };
 		86BEC60E1E2677AA00352976 /* MessageHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageHUD.swift; path = Vendors/ProgressHUD/MessageHUD.swift; sourceTree = "<group>"; };
@@ -654,6 +654,7 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				36D36FC11E823FCE009D40A3 /* R.generated.swift */,
 				36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				865673171A7A7B190025D22E /* Settings.storyboard */,
@@ -663,7 +664,6 @@
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
-				86B1EBBC1E2FBAB600480C49 /* Placeholder.png */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
 			);
 			name = Resources;
@@ -762,6 +762,7 @@
 			buildConfigurationList = C095875116CA8A36007E0119 /* Build configuration list for PBXNativeTarget "Stage1st" */;
 			buildPhases = (
 				9CEB48858BDA6BB93C693500 /* [CP] Check Pods Manifest.lock */,
+				36D36FC01E823F7B009D40A3 /* ShellScript */,
 				18D04A8E58CCEF18CB2A7242 /* [Amimono] Create filelist per architecture */,
 				C095873016CA8A36007E0119 /* Sources */,
 				C095873116CA8A36007E0119 /* Frameworks */,
@@ -851,7 +852,6 @@
 				86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */,
 				86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */,
 				36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */,
-				86B1EBBD1E2FBAB600480C49 /* Placeholder.png in Resources */,
 				864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */,
 				C095874216CA8A36007E0119 /* Localizable.strings in Resources */,
 				C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */,
@@ -878,7 +878,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "declare -a DEPENDENCIES=('1PasswordExtension' 'AFNetworking' 'AcknowList' 'ActionSheetPicker-3.0' 'Alamofire' 'AlamofireImage' 'CocoaLumberjack' 'FMDB' 'GRMustache.swift' 'JTSImageViewController' 'KissXML' 'Masonry' 'QuickTableViewController' 'Reachability' 'ReactiveCocoa' 'ReactiveSwift' 'Result' 'SnapKit' 'SwiftyJSON' 'TextAttributes' 'YYKeyboardManager' 'YapDatabase');\nIFS=\" \" read -r -a SPLIT <<< \"$ARCHS\"\nfor ARCH in \"${SPLIT[@]}\"; do\n  cd \"$OBJROOT/Pods.build\"\n  filelist=\"\"\n  for dependency in \"${DEPENDENCIES[@]}\"; do\n    path=\"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${dependency}.build/Objects-normal/${ARCH}\"\n    if [ -d \"$path\" ]; then\n      search_path=\"$path/*.o\"\n      for obj_file in $search_path; do\n        filelist+=\"${OBJROOT}/Pods.build/${obj_file}\"\n        filelist+=$'\\n'\n      done\n    fi\n  done\n  filelist=${filelist%$'\\n'}\n  echo \"$filelist\" > \"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}-${TARGET_NAME}-${ARCH}.objects.filelist\"\ndone\n";
+			shellScript = "declare -a DEPENDENCIES=('1PasswordExtension' 'AFNetworking' 'AcknowList' 'ActionSheetPicker-3.0' 'Alamofire' 'AlamofireImage' 'CocoaLumberjack' 'FMDB' 'GRMustache.swift' 'JTSImageViewController' 'KissXML' 'Masonry' 'QuickTableViewController' 'R.swift.Library' 'Reachability' 'ReactiveCocoa' 'ReactiveSwift' 'Result' 'SnapKit' 'SwiftyJSON' 'TextAttributes' 'YYKeyboardManager' 'YapDatabase');\nIFS=\" \" read -r -a SPLIT <<< \"$ARCHS\"\nfor ARCH in \"${SPLIT[@]}\"; do\n  cd \"$OBJROOT/Pods.build\"\n  filelist=\"\"\n  for dependency in \"${DEPENDENCIES[@]}\"; do\n    path=\"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${dependency}.build/Objects-normal/${ARCH}\"\n    if [ -d \"$path\" ]; then\n      search_path=\"$path/*.o\"\n      for obj_file in $search_path; do\n        filelist+=\"${OBJROOT}/Pods.build/${obj_file}\"\n        filelist+=$'\\n'\n      done\n    fi\n  done\n  filelist=${filelist%$'\\n'}\n  echo \"$filelist\" > \"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}-${TARGET_NAME}-${ARCH}.objects.filelist\"\ndone\n";
+		};
+		36D36FC01E823F7B009D40A3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/R.swift/rswift\" \"$SRCROOT\"";
 		};
 		86221B871CA6719400015522 /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1074,6 +1087,7 @@
 				3674BF411E763DE100629E25 /* Environment.swift in Sources */,
 				86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
+				36D36FC21E823FCE009D40A3 /* R.generated.swift in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				8694BCD61CEC42C200756C4A /* WebViewController.swift in Sources */,
 				86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */,

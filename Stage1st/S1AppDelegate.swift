@@ -9,6 +9,23 @@
 import Foundation
 import CocoaLumberjack
 
+// swiftlint:disable type_name
+struct Constants {
+    struct defaults {
+        static let displayImageKey = "Display"
+        static let showsReplyIncrementKey = "ReplyIncrement"
+        static let removeTailsKey = "RemoveTails"
+        static let precacheNextPageKey = "PrecacheNextPage"
+        static let forcePortraitForPhoneKey = "ForcePortraitForPhone"
+        static let nightMode = "NightMode"
+        static let enableCloudKitSync = "EnableSync"
+
+        static let reverseActionKey = "Stage1st.Content.ReverseFloorAction"
+        static let hideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
+    }
+}
+// swiftlint:enable type_name
+
 // MARK: Logging
 extension S1AppDelegate {
 
@@ -97,16 +114,17 @@ extension S1AppDelegate {
 
         // TODO: Use register domain.
         userDefaults.s1_setObjectIfNotExist(object: NSNumber(value: -1), key: "HistoryLimit")
-        userDefaults.s1_setObjectIfNotExist(object: true, key: "Display")
-        userDefaults.s1_setObjectIfNotExist(object: true, key: "ReplyIncrement")
-        userDefaults.s1_setObjectIfNotExist(object: true, key: "RemoveTails")
-        userDefaults.s1_setObjectIfNotExist(object: true, key: "PrecacheNextPage")
-        userDefaults.s1_setObjectIfNotExist(object: true, key: "ForcePortraitForPhone")
-        userDefaults.s1_setObjectIfNotExist(object: false, key: "NightMode")
-        userDefaults.s1_setObjectIfNotExist(object: false, key: "EnableSync")
         UserDefaults.standard.register(defaults: [
-            ReverseActionKey: false,
-            HideStickTopicsKey: true
+            Constants.defaults.displayImageKey: true,
+            Constants.defaults.showsReplyIncrementKey: true,
+            Constants.defaults.removeTailsKey: true,
+            Constants.defaults.precacheNextPageKey: true,
+            Constants.defaults.forcePortraitForPhoneKey: true,
+            Constants.defaults.nightMode: false,
+            Constants.defaults.enableCloudKitSync: false,
+
+            Constants.defaults.reverseActionKey: false,
+            Constants.defaults.hideStickTopicsKey: true
         ])
     }
 }

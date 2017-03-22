@@ -122,12 +122,12 @@ extension ContentViewModel {
         return result
     }
 
-    static func templateBundle() -> Bundle {
-        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
-        return Bundle.init(url: templateBundleURL)!
-    }
+//    func templateBundle() -> Bundle {
+//        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
+//        return Bundle.init(url: templateBundleURL)!
+//    }
 
-    static func pageBaseURL() -> URL {
+    func pageBaseURL() -> URL {
         return self.templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
     }
 }
@@ -247,7 +247,7 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
                                    topic: topic,
                                    floors: floors,
                                    centerFloorID: centerFloorID,
-                                   baseURL: type(of: self).pageBaseURL())
+                                   baseURL: self.pageBaseURL())
     }
 }
 

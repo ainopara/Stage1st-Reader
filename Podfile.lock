@@ -50,6 +50,9 @@ PODS:
   - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
   - QuickTableViewController (0.5.1)
+  - R.swift (3.2.0):
+    - R.swift.Library (~> 3.0.2)
+  - R.swift.Library (3.0.2)
   - Reachability (3.2)
   - ReactiveCocoa (5.0.1):
     - ReactiveSwift (~> 1.1)
@@ -131,6 +134,7 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - QuickTableViewController (~> 0.5.0)
+  - R.swift
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
@@ -185,6 +189,8 @@ SPEC CHECKSUMS:
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   QuickTableViewController: 7f984b4af21e9f2fc7ef840e40a7f46a0198039a
+  R.swift: 207a372a2b5977caef440c696a368009460641d1
+  R.swift.Library: fbdec16c9802ad104fc1ba53415dc190e6ec5c73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: f577006aa6c7b0b08020109ebaae3b77ada00adc
   ReactiveSwift: 2f4e4a02e5a5c87ea63f5fe667163ce2a67cbb57
@@ -196,6 +202,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: a544310d176d2121d02805593da31aef2ea3c38b
+PODFILE CHECKSUM: ea68c5be2ccff969d5b56e0234c4e2e811068cde
 
 COCOAPODS: 1.2.0

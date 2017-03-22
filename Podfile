@@ -44,6 +44,7 @@ target "Stage1st" do
     pod '1PasswordExtension'
     pod 'AcknowList'
     pod 'QuickTableViewController', '~> 0.5.0'
+    pod 'R.swift'
 
     target "Stage1stTests" do
         inherit! :search_paths

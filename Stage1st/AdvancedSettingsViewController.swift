@@ -7,10 +7,7 @@
 //
 
 import QuickTableViewController
-// swiftlint:disable variable_name
-let ReverseActionKey = "Stage1st.Content.ReverseFloorAction"
-let HideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
-// swiftlint:enable variable_name
+
 final class AdvancedSettingsViewController: QuickTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,17 +22,17 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         tableContents = [
             Section(title: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.header", comment: ""), rows: [
                 SwitchRow(title: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.title", comment: ""),
-                          switchValue: UserDefaults.standard.bool(forKey: HideStickTopicsKey),
+                          switchValue: UserDefaults.standard.bool(forKey: Constants.defaults.hideStickTopicsKey),
                           action: { (row) in
-                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: HideStickTopicsKey)
+                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: Constants.defaults.hideStickTopicsKey)
                 })
                 ], footer: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.footer", comment: "")),
 
             Section(title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.header", comment: ""), rows: [
                 SwitchRow(title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
-                          switchValue: UserDefaults.standard.bool(forKey: ReverseActionKey),
+                          switchValue: UserDefaults.standard.bool(forKey: Constants.defaults.reverseActionKey),
                           action: { (row) in
-                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: ReverseActionKey)
+                    UserDefaults.standard.set((row as! SwitchRow).switchValue, forKey: Constants.defaults.reverseActionKey)
                 })
                 ], footer: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.footer", comment: "")),
 
@@ -48,8 +45,8 @@ final class AdvancedSettingsViewController: QuickTableViewController {
     }
 
     private func resetDefaultSettings(_ row: Row) {
-        UserDefaults.standard.removeObject(forKey: ReverseActionKey)
-        UserDefaults.standard.removeObject(forKey: HideStickTopicsKey)
+        UserDefaults.standard.removeObject(forKey: Constants.defaults.reverseActionKey)
+        UserDefaults.standard.removeObject(forKey: Constants.defaults.hideStickTopicsKey)
         updateTable()
     }
 }
