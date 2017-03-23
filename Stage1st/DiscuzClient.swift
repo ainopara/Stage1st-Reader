@@ -13,7 +13,7 @@ public extension Notification.Name {
 }
 
 public enum DZError: Error {
-    case loginFailed(messageValue: String?, messageString: String?)
+    case loginFailed(messageValue: String, messageString: String)
     case userInfoParseFailed(jsonString: String)
     case noFieldInfoReturned(jsonString: String)
     case noThreadListReturned(jsonString: String)
@@ -34,6 +34,12 @@ extension DZError: CustomStringConvertible {
         case .threadParseFailed(let jsonString):
             return "Thread failed to parse for json `\(jsonString)`"
         }
+    }
+}
+
+extension DZError: LocalizedError {
+    public var errorDescription: String? {
+        return description
     }
 }
 

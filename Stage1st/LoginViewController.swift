@@ -503,7 +503,7 @@ extension LoginViewController {
                     strongSelf.present(alertController, animated: true, completion: nil)
                 case .failure(let error):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
-                    strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
+                    strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "\(error)")
                 }
             }
         }, hasSeccodeBlock: { [weak self] (sechash) in

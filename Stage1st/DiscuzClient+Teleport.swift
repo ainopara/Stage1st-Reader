@@ -104,7 +104,7 @@ public extension DiscuzClient {
                     NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
                     completion(.success(json["Message"]["messagestr"].string))
                 } else {
-                    completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].string, messageString: json["Message"]["messagestr"].string)))
+                    completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].stringValue, messageString: json["Message"]["messagestr"].stringValue)))
                 }
             case .failure(let error):
                 completion(.failure(error))
