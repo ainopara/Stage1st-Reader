@@ -40,7 +40,7 @@ class ContentImageActivityItemProvider: UIActivityItemProvider {
     let rect: CGRect
 
     override var item: Any {
-        var image: UIImage? = nil
+        var image: UIImage?
         DispatchQueue.main.sync {
             image = view?.s1_screenShot()?.s1_crop(to: self.rect)
         }

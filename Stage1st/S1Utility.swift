@@ -40,17 +40,17 @@ func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
 
 extension NSDate {
     func s1_isLaterThan(date: NSDate) -> Bool {
-        return self.compare(date as Date) == .orderedDescending
+        return compare(date as Date) == .orderedDescending
     }
 
     func s1_isEarlierThan(date: NSDate) -> Bool {
-        return self.compare(date as Date) == .orderedAscending
+        return compare(date as Date) == .orderedAscending
     }
 }
 
 extension Date {
     func s1_gracefulDateTimeString() -> String {
-        let interval = -self.timeIntervalSinceNow
+        let interval = -timeIntervalSinceNow
         if interval < 60 { return "刚刚" }
         if interval < 60 * 60 { return "\(UInt(interval / 60.0))分钟前" }
         if interval < 60 * 60 * 2 { return "1小时前" }
@@ -98,15 +98,15 @@ extension UIView {
             return false
         }
 
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, UIScreen.main.scale)
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         guard let currentContext = UIGraphicsGetCurrentContext() else {
             return nil
         }
 
         if viewHierarchyContainsWKWebView(self) {
-            self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
+            drawHierarchy(in: bounds, afterScreenUpdates: true)
         } else {
-            self.layer.render(in: currentContext)
+            layer.render(in: currentContext)
         }
 
         let viewScreenShot: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
@@ -120,14 +120,14 @@ extension UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let defaultAction = UIAlertAction(title: NSLocalizedString("Message_OK", comment: "OK"), style: .default, handler: nil)
         alert.addAction(defaultAction)
-        self.present(alert, animated:true, completion:nil)
+        present(alert, animated: true, completion: nil)
     }
 }
 
 extension UIWebView {
     func s1_positionOfElementWithId(_ elementID: String) -> CGRect? {
         let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        if let result = self.stringByEvaluatingJavaScript(from: script) {
+        if let result = stringByEvaluatingJavaScript(from: script) {
             let rect = CGRectFromString(result)
             return rect == CGRect.zero ? nil : rect
         } else {
@@ -136,8 +136,8 @@ extension UIWebView {
     }
 
     func s1_atBottom() -> Bool {
-        let offsetY = self.scrollView.contentOffset.y
-        let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
+        let offsetY = scrollView.contentOffset.y
+        let maxOffsetY = scrollView.contentSize.height - bounds.size.height
         return offsetY >= maxOffsetY
     }
 }
@@ -151,9 +151,9 @@ extension WKWebView {
         }
 
         let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        var rect: CGRect? = nil
+        var rect: CGRect?
         let semaphore = DispatchSemaphore(value: 0)
-        evaluateJavaScript(script) { (result, error) in
+        evaluateJavaScript(script) { result, error in
             defer {
                 semaphore.signal()
             }
@@ -176,8 +176,8 @@ extension WKWebView {
     }
 
     func s1_atBottom() -> Bool {
-        let offsetY = self.scrollView.contentOffset.y
-        let maxOffsetY = self.scrollView.contentSize.height - self.bounds.size.height
+        let offsetY = scrollView.contentOffset.y
+        let maxOffsetY = scrollView.contentSize.height - bounds.size.height
         return offsetY >= maxOffsetY
     }
 
@@ -189,11 +189,11 @@ extension WKWebView {
 
 extension UIImage {
     func s1_tintWithColor(_ color: UIColor) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.main.scale)
+        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
         color.setFill()
-        let rect = CGRect(x: 0.0, y: 0.0, width: self.size.width, height: self.size.height)
+        let rect = CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height)
         UIRectFill(rect)
-        self.draw(in: rect, blendMode: .sourceIn, alpha: 1.0)
+        draw(in: rect, blendMode: .sourceIn, alpha: 1.0)
 
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -227,23 +227,23 @@ extension CGFloat {
 
 // From https://github.com/kickstarter/ios-oss/blob/master/Library/String%2BSimpleHTML.swift
 extension String {
-  public func s1_htmlStripped(trimWhitespace: Bool = true) -> String? {
+    public func s1_htmlStripped(trimWhitespace: Bool = true) -> String? {
 
-    guard let data = self.data(using: .utf8) else { return nil }
+        guard let data = self.data(using: .utf8) else { return nil }
 
-    let options: [String: Any] = [
-      NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-      NSCharacterEncodingDocumentAttribute: String.Encoding.utf8.rawValue
-    ]
+        let options: [String: Any] = [
+            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+            NSCharacterEncodingDocumentAttribute: String.Encoding.utf8.rawValue,
+        ]
 
-    let attributedString = try? NSAttributedString(data: data,
-                                                   options: options,
-                                                   documentAttributes: nil)
-    let result = attributedString?.string
+        let attributedString = try? NSAttributedString(data: data,
+                                                       options: options,
+                                                       documentAttributes: nil)
+        let result = attributedString?.string
 
-    if trimWhitespace {
-        return result.flatMap { ($0 as NSString).trimmingCharacters(in: .whitespacesAndNewlines) }
+        if trimWhitespace {
+            return result.flatMap { ($0 as NSString).trimmingCharacters(in: .whitespacesAndNewlines) }
+        }
+        return result
     }
-    return result
-  }
 }

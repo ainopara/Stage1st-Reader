@@ -24,7 +24,7 @@ class PollOption: NSObject {
             return nil
         }
         self.ID = ID
-        self.name = json["polloption"].string
+        name = json["polloption"].string
 
         if let votesString = json["votes"].string, let votes = Int(votesString) {
             self.votes = votes
@@ -38,9 +38,9 @@ class PollOption: NSObject {
             self.percent = nil
         }
 
-        self.color = json["color"].string
+        color = json["color"].string
 
-        self.imageInfo = nil // FIXME: Finish this.
+        imageInfo = nil // FIXME: Finish this.
 
         super.init()
     }
@@ -56,18 +56,18 @@ class Poll: NSObject {
 
     init?(json: JSON) {
         guard let optionsDictionary = json["polloptions"].dictionary else { return nil }
-        self.options = optionsDictionary.values.flatMap { (json) -> PollOption? in
+        options = optionsDictionary.values.flatMap { (json) -> PollOption? in
             return PollOption(json: json)
         }
 
-        guard self.options.count != 0 else {
+        guard options.count != 0 else {
             return nil
         }
 
         if let expirationString = json["expirations"].string, let expirationSeconds = Double(expirationString) {
             self.expirationDate = Date(timeIntervalSince1970: expirationSeconds)
         } else {
-            self.expirationDate = nil
+            expirationDate = nil
         }
 
         if let maxChoicesString = json["maxchoices"].string, let maxChoices = Int(maxChoicesString) {
@@ -79,20 +79,20 @@ class Poll: NSObject {
         if let visibleString = json["visiblepool"].string, let visibleInt = Int(visibleString) {
             self.visible = visibleInt == 0 ? false : true
         } else {
-            self.visible = nil
+            visible = nil
         }
 
         if let allowVoteString = json["allowvote"].string, let allowVoteInt = Int(allowVoteString) {
             self.allowVote = allowVoteInt == 0 ? false : true
         } else {
-            self.allowVote = nil
+            allowVote = nil
         }
 
         // FIXME: check this api.
         if let remainTimeString = json["remaintime"].string, let remainTimeSeconds = Double(remainTimeString) {
             self.remainTime = remainTimeSeconds
         } else {
-            self.remainTime = nil
+            remainTime = nil
         }
 
         super.init()

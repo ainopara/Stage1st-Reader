@@ -8,11 +8,11 @@
 
 extension S1DataCenter {
     func hasPrecachedFloors(for topicID: Int, page: UInt) -> Bool {
-        return self.cacheDatabaseManager.hasFloors(in: topicID, page: Int(page))
+        return cacheDatabaseManager.hasFloors(in: topicID, page: Int(page))
     }
 
     func hasFullPrecachedFloors(for topicID: Int, page: UInt) -> Bool {
-        guard let floors = self.cacheDatabaseManager.floors(in: topicID, page: Int(page)), floors.count >= 30 else {
+        guard let floors = cacheDatabaseManager.floors(in: topicID, page: Int(page)), floors.count >= 30 else {
             return false
         }
 

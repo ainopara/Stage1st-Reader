@@ -35,9 +35,9 @@ private class UserInfoInputView: UIView {
         usernameField.autocapitalizationType = .none
         usernameField.returnKeyType = .next
         usernameField.backgroundColor = UIColor.white
-        self.addSubview(usernameField)
+        addSubview(usernameField)
 
-        usernameField.snp.makeConstraints { (make) in
+        usernameField.snp.makeConstraints { make in
             make.width.equalTo(300.0)
             make.height.equalTo(30.0)
             make.top.equalTo(self.snp.top).offset(20.0)
@@ -49,9 +49,9 @@ private class UserInfoInputView: UIView {
         passwordField.isSecureTextEntry = true
         passwordField.returnKeyType = .go
         passwordField.backgroundColor = UIColor.white
-        self.addSubview(passwordField)
+        addSubview(passwordField)
 
-        passwordField.snp.makeConstraints { (make) in
+        passwordField.snp.makeConstraints { make in
             make.width.equalTo(self.usernameField.snp.width)
             make.height.equalTo(30.0)
             make.centerX.equalTo(self.usernameField.snp.centerX)
@@ -62,22 +62,22 @@ private class UserInfoInputView: UIView {
         onepasswordButton.tintColor = ColorManager.shared.colorForKey("default.text.tint")
 
         let buttonContainer = UIView(frame: CGRect.zero)
-        buttonContainer.snp.makeConstraints { (make) in
+        buttonContainer.snp.makeConstraints { make in
             make.height.equalTo(24.0)
             make.width.equalTo(28.0)
         }
         buttonContainer.addSubview(onepasswordButton)
 
-        onepasswordButton.snp.makeConstraints { (make) in
+        onepasswordButton.snp.makeConstraints { make in
             make.top.leading.bottom.equalTo(buttonContainer)
             make.trailing.equalTo(buttonContainer).offset(-4.0)
         }
         passwordField.rightView = buttonContainer
         passwordField.rightViewMode = OnePasswordExtension.shared().isAppExtensionAvailable() ? .always : .never
 
-        self.addSubview(questionSelectButton)
+        addSubview(questionSelectButton)
 
-        self.questionSelectButton.snp.makeConstraints { (make) in
+        questionSelectButton.snp.makeConstraints { make in
             make.width.centerX.equalTo(self.usernameField)
             make.height.equalTo(30.0)
             make.top.equalTo(self.passwordField.snp.bottom).offset(12.0)
@@ -87,28 +87,27 @@ private class UserInfoInputView: UIView {
         answerField.autocorrectionType = .no
         answerField.autocapitalizationType = .none
         // Note: The ability of input chinese characters is necessary. Detail: http://stackoverflow.com/questions/9944769/why-cant-i-use-securetextentry-with-a-utf-8-keyboard
-//        answerField.isSecureTextEntry = true
+        //        answerField.isSecureTextEntry = true
         answerField.returnKeyType = .go
         answerField.backgroundColor = UIColor.white
-        self.addSubview(answerField)
+        addSubview(answerField)
 
-        answerField.snp.makeConstraints { (make) in
+        answerField.snp.makeConstraints { make in
             make.width.centerX.equalTo(self.questionSelectButton)
             make.height.equalTo(30.0)
             make.top.equalTo(self.questionSelectButton.snp.bottom).offset(12.0)
         }
 
-        self.addSubview(loginButton)
+        addSubview(loginButton)
 
-        loginButton.snp.makeConstraints { (make) in
+        loginButton.snp.makeConstraints { make in
             make.width.centerX.equalTo(self.usernameField)
             make.height.equalTo(34.0)
             make.bottom.equalTo(self.snp.bottom).offset(-12.0)
         }
-
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -121,8 +120,8 @@ private class SeccodeInputView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.addSubview(self.seccodeImageView)
-        seccodeImageView.snp.makeConstraints { (make) in
+        addSubview(seccodeImageView)
+        seccodeImageView.snp.makeConstraints { make in
             make.centerX.equalTo(self)
             make.top.equalTo(self.snp.top).offset(10.0)
             make.width.equalTo(100.0)
@@ -133,23 +132,22 @@ private class SeccodeInputView: UIView {
         seccodeField.autocorrectionType = .no
         seccodeField.autocapitalizationType = .none
         seccodeField.returnKeyType = .go
-        self.addSubview(self.seccodeField)
-        seccodeField.snp.makeConstraints { (make) in
+        addSubview(seccodeField)
+        seccodeField.snp.makeConstraints { make in
             make.centerX.equalTo(self)
             make.width.equalTo(self.snp.width).offset(-24.0)
             make.top.equalTo(self.seccodeImageView.snp.bottom).offset(10.0)
         }
 
-        self.addSubview(self.seccodeSubmitButton)
-        seccodeSubmitButton.snp.makeConstraints { (make) in
+        addSubview(seccodeSubmitButton)
+        seccodeSubmitButton.snp.makeConstraints { make in
             make.centerX.equalTo(self)
             make.width.equalTo(self.snp.width).offset(-24.0)
             make.bottom.equalTo(self.snp.bottom).offset(-10.0)
         }
-
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -188,7 +186,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
                 userInfoInputView.passwordField.returnKeyType = .go
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
                     make.height.equalTo(34.0)
                     make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
@@ -206,7 +204,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
                 userInfoInputView.passwordField.returnKeyType = .next
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
                     make.height.equalTo(34.0)
                     make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
@@ -223,7 +221,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 
                 userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
-                userInfoInputView.loginButton.snp.remakeConstraints { (make) in
+                userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
                     make.height.equalTo(34.0)
                     make.bottom.equalTo(self.userInfoInputView.snp.bottom).offset(-12.0)
@@ -244,27 +242,27 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         "您其中一位老师的名字",
         "您个人计算机的型号",
         "您最喜欢的餐馆名称",
-        "驾驶执照最后四位数字"
+        "驾驶执照最后四位数字",
     ]
 
     // MARK: - Life Cycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.networkManager = AppEnvironment.current.apiService
+        networkManager = AppEnvironment.current.apiService
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.modalPresentationStyle = .custom
-        self.transitioningDelegate = self
-        self.modalTransitionStyle = .crossDissolve
+        modalPresentationStyle = .custom
+        transitioningDelegate = self
+        modalTransitionStyle = .crossDissolve
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.addSubview(backgroundBlurView)
-        backgroundBlurView.snp.makeConstraints { (make) in
+        view.addSubview(backgroundBlurView)
+        backgroundBlurView.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
 
@@ -272,11 +270,11 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         containerView.layer.cornerRadius = 4.0
         containerView.clipsToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(containerView)
+        view.addSubview(containerView)
 
         userInfoInputView.usernameField.delegate = self
         userInfoInputView.usernameField.placeholder = NSLocalizedString("LoginViewController.usernameField.placeholder", comment: "")
-        userInfoInputView.usernameField.text = self.cachedUserID() ?? ""
+        userInfoInputView.usernameField.text = cachedUserID() ?? ""
         userInfoInputView.passwordField.delegate = self
         userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
@@ -289,13 +287,13 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         userInfoInputView.loginButton.tintColor = ColorManager.shared.colorForKey("login.text")
 
         containerView.addSubview(userInfoInputView)
-        userInfoInputView.snp.makeConstraints { (make) in
+        userInfoInputView.snp.makeConstraints { make in
             make.edges.equalTo(self.containerView)
         }
 
-        self.view.insertSubview(visibleLayoutGuide, at: 0)
+        view.insertSubview(visibleLayoutGuide, at: 0)
         visibleLayoutGuide.isUserInteractionEnabled = false
-        visibleLayoutGuide.snp.makeConstraints { (make) in
+        visibleLayoutGuide.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
 
@@ -303,7 +301,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         seccodeInputView.backgroundColor = ColorManager.shared.colorForKey("login.background")
 
         containerView.addSubview(seccodeInputView)
-        seccodeInputView.snp.makeConstraints { (make) in
+        seccodeInputView.snp.makeConstraints { make in
             make.edges.equalTo(containerView)
         }
 
@@ -313,17 +311,17 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         seccodeInputView.seccodeSubmitButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
         seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
 
-        state = self.inLoginState() ? .login : .notLogin
+        state = inLoginState() ? .login : .notLogin
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self._dismiss))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(_dismiss))
         self.tapGesture = tapGesture
-        self.backgroundBlurView.addGestureRecognizer(tapGesture)
+        backgroundBlurView.addGestureRecognizer(tapGesture)
 
-        let dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+        let dynamicAnimator = UIDynamicAnimator(referenceView: view)
         self.dynamicAnimator = dynamicAnimator
 
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(LoginViewController.pan(_:)))
-        self.view.addGestureRecognizer(dragGesture)
+        view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
 
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardFrameWillChange(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
@@ -353,7 +351,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 // MARK: - Actions
 extension LoginViewController {
 
-    func logIn(_ sender: UIButton) {
+    func logIn(_: UIButton) {
         if inLoginState() {
             Answers.logCustomEvent(withName: "Log Out", customAttributes: nil)
             logoutAction()
@@ -363,36 +361,36 @@ extension LoginViewController {
         }
     }
 
-    func LogInWithSeccode(_ sender: UIButton) {
+    func LogInWithSeccode(_: UIButton) {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "用户名和密码不能为空")
+            self.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
         self.seccodeInputView.seccodeSubmitButton.isEnabled = false
         let authMode: DiscuzClient.AuthMode = .secure(hash: currentSechash(), code: currentSeccode())
-        networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: authMode) { [weak self] (result) in
+        networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: authMode) { [weak self] result in
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let message):
+            case let .success(message):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
                 strongSelf.state = .login
-                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
+                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: { _ in
                     strongSelf._dismiss()
                 }))
                 strongSelf.present(alertController, animated: true, completion: nil)
-            case .failure(let error):
+            case let .failure(error):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
-                strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
+                strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: error.localizedDescription)
             }
         }
     }
 
     func findLoginFromOnePassword(_ button: UIButton) {
-        OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.baseURL, for: self, sender: button) { [weak self] (loginDict, error) in
+        OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.baseURL, for: self, sender: button) { [weak self] loginDict, error in
             guard let strongSelf = self else {
                 return
             }
@@ -413,14 +411,14 @@ extension LoginViewController {
         DDLogDebug("debug secure question")
         self.view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
-        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { (_, selectedIndex, selectedValue) in
-                button.setTitle(selectedValue as? String ?? "??", for: .normal)
-                if selectedIndex == 0 {
-                    self.state = .notLogin
-                } else {
-                    self.state = .notLoginWithAnswerField
-                }
-            }, cancel: nil, origin: button)!
+        let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { _, selectedIndex, selectedValue in
+            button.setTitle(selectedValue as? String ?? "??", for: .normal)
+            if selectedIndex == 0 {
+                self.state = .notLogin
+            } else {
+                self.state = .notLoginWithAnswerField
+            }
+        }, cancel: nil, origin: button)!
         picker.toolbarBackgroundColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
         picker.toolbarButtonsColor = ColorManager.shared.colorForKey("appearance.toolbar.tint")
         picker.show()
@@ -439,7 +437,7 @@ extension LoginViewController {
 
         let keyboardHeightInView = self.view.bounds.maxY - endFrame.minY
         DDLogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
-        visibleLayoutGuide.snp.updateConstraints { (make) in
+        visibleLayoutGuide.snp.updateConstraints { make in
             make.bottom.equalTo(self.view).offset(-keyboardHeightInView)
         }
     }
@@ -479,7 +477,7 @@ extension LoginViewController {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            self.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "用户名和密码不能为空")
+            self.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
         UserDefaults.standard.set(username, forKey: "UserIDCached")
@@ -489,51 +487,51 @@ extension LoginViewController {
         userInfoInputView.loginButton.isEnabled = false
         networkManager.checkLoginType(noSechashBlock: { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.networkManager.logIn(username: username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .basic) { [weak self] (result) in
+            strongSelf.networkManager.logIn(username: username, password: password, secureQuestionNumber: secureQuestionNumber, secureQuestionAnswer: secureQuestionAnswer, authMode: .basic) { [weak self] result in
                 guard let strongSelf = self else { return }
                 switch result {
-                case .success(let message):
+                case let .success(message):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
                     UserDefaults.standard.set(username, forKey: "InLoginStateID")
                     strongSelf.state = .login
-                    let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment:""), message: message ?? "登录成功", preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: { _ in
+                    let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: { _ in
                         strongSelf._dismiss()
                     }))
                     strongSelf.present(alertController, animated: true, completion: nil)
-                case .failure(let error):
+                case let .failure(error):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
-                    strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: "\(error)")
+                    strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "\(error)")
                 }
             }
-        }, hasSeccodeBlock: { [weak self] (sechash) in
+        }, hasSeccodeBlock: { [weak self] sechash in
             guard let strongSelf = self else { return }
             strongSelf.userInfoInputView.loginButton.isEnabled = true
 
             strongSelf.sechash = sechash
             strongSelf.seccodeInputView.isHidden = false
-            strongSelf.networkManager.getSeccodeImage(sechash: sechash) { [weak self] (result) in
+            strongSelf.networkManager.getSeccodeImage(sechash: sechash) { [weak self] result in
                 guard let strongSelf = self else { return }
                 switch result {
-                case .success(let image):
+                case let .success(image):
                     strongSelf.seccodeInputView.seccodeImageView.image = image
-                case .failure(let error):
+                case let .failure(error):
                     strongSelf.alert(title: "下载验证码失败", message: error.localizedDescription)
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
                 }
             }
 
-        }, failureBlock: { [weak self] (error) in
+        }, failureBlock: { [weak self] error in
             guard let strongSelf = self else { return }
             strongSelf.userInfoInputView.loginButton.isEnabled = true
-            strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment:""), message: error.localizedDescription)
+            strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: error.localizedDescription)
         })
     }
 
     fileprivate func logoutAction() {
         self.networkManager.logOut()
         self.state = .notLogin
-        self.alert(title: NSLocalizedString("SettingView_LogOut", comment:""), message: NSLocalizedString("LoginView_Logout_Message", comment:""))
+        self.alert(title: NSLocalizedString("SettingView_LogOut", comment: ""), message: NSLocalizedString("LoginView_Logout_Message", comment: ""))
     }
 }
 
@@ -541,7 +539,7 @@ extension LoginViewController {
 extension LoginViewController {
     fileprivate func alert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment:""), style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: nil))
         self.present(alertController, animated: true, completion: nil)
     }
 
@@ -556,8 +554,8 @@ extension LoginViewController {
             containerView.center = centerOfCurrentContainerView
             DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
-                                                       offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
-                                                       attachedToAnchor: gesture.location(in: self.view))
+                                                      offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
+                                                      attachedToAnchor: gesture.location(in: self.view))
             DDLogInfo("after: \(containerView.center)")
             dynamicAnimator.addBehavior(attachmentBehavior!)
             dynamicItemBehavior = UIDynamicItemBehavior(items: [containerView])
@@ -569,7 +567,7 @@ extension LoginViewController {
         default:
             let velocity = gesture.velocity(in: self.view)
             DDLogVerbose("[LoginVC] pan velocity: \(velocity)")
-            if velocity.x * velocity.x + velocity.y * velocity.y > 1000000 {
+            if velocity.x * velocity.x + velocity.y * velocity.y > 1_000_000 {
                 if let attachmentBehavior = attachmentBehavior {
                     dynamicAnimator.removeBehavior(attachmentBehavior)
                 }
@@ -602,14 +600,17 @@ extension LoginViewController {
         return UIOffset(horizontal: touchPointInView.x - viewCenter.x, vertical: touchPointInView.y - viewCenter.y)
     }
 }
+
 extension LoginViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return S1ModalAnimator(presentType: .present)
     }
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+
+    func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return S1ModalAnimator(presentType: .dismissal)
     }
 }
+
 // MARK: View Model
 extension LoginViewController {
 

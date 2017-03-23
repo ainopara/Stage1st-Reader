@@ -64,8 +64,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var backButtonState: BackButtonState = .back(rotateAngle: 0.0) {
         didSet {
             switch backButtonState {
-            case .back(let rotateAngle):
-                if case .back(let oldRotateAngle) = oldValue {
+            case let .back(rotateAngle):
+                if case let .back(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
                         backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
@@ -80,8 +80,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var forwardButtonState: ForwardButtonState = .forward(rotateAngle: 0.0) {
         didSet {
             switch forwardButtonState {
-            case .forward(let rotateAngle):
-                if case .forward(let oldRotateAngle) = oldValue {
+            case let .forward(rotateAngle):
+                if case let .forward(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
                         forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
@@ -89,8 +89,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                     forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
                     forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
-            case .refresh(let rotateAngle):
-                if case .refresh(let oldRotateAngle) = oldValue {
+            case let .refresh(rotateAngle):
+                if case let .refresh(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
                         forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
@@ -225,36 +225,36 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             flexItem,
             favoriteItem,
             fixItem2,
-            actionBarButtonItem
-            ], animated: false)
+            actionBarButtonItem,
+        ], animated: false)
 
         // Binding
         viewModel.currentPage.producer
             .combineLatest(with: viewModel.totalPages.producer)
-            .startWithValues { [weak self] (currentPage, totalPage) in
-            DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
-            guard let strongSelf = self else { return }
-            strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
-        }
+            .startWithValues { [weak self] currentPage, totalPage in
+                DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
+                guard let strongSelf = self else { return }
+                strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
+            }
 
         SignalProducer
             .combineLatest(webPageReadyForAutomaticScrolling.producer, webPageCurrentContentHeight.producer)
-            .startWithValues { [weak self] (webPageReady, currentHeight) in
+            .startWithValues { [weak self] webPageReady, currentHeight in
 
-            guard let strongSelf = self else { return }
-            let finishFirstLoading = strongSelf.finishFirstLoading.value
-            DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
+                guard let strongSelf = self else { return }
+                let finishFirstLoading = strongSelf.finishFirstLoading.value
+                DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
 
-            if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
-                strongSelf.pullToActionController.filterDuplicatedSizeEvent = true
-                DispatchQueue.main.async { [weak self] in
-                    guard let strongSelf = self else { return }
-                    strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView)
+                if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
+                    strongSelf.pullToActionController.filterDuplicatedSizeEvent = true
+                    DispatchQueue.main.async { [weak self] in
+                        guard let strongSelf = self else { return }
+                        strongSelf._hook_didFinishBasicPageLoad(for: strongSelf.webView)
+                    }
                 }
             }
-        }
 
-        favoriteButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] (_) in
+        favoriteButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
             guard let strongSelf = self else { return }
             strongSelf.viewModel.toggleFavorite()
         }
@@ -262,23 +262,23 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         viewModel.favorite.producer
             .take(during: self.reactive.lifetime)
             .map { $0?.boolValue ?? false }
-            .startWithValues { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
-        }
+            .startWithValues { [weak self] _ in
+                guard let strongSelf = self else { return }
+                strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
+            }
 
         viewModel.title.producer
             .take(during: self.reactive.lifetime)
-            .startWithValues { [weak self] (title) in
-            guard let strongSelf = self else { return }
-            if let title = title, title != "" {
-                strongSelf.titleLabel.text = title as String
-                strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.normal")
-            } else {
-                strongSelf.titleLabel.text = "\(strongSelf.viewModel.topic.topicID) 载入中..."
-                strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.disable")
+            .startWithValues { [weak self] title in
+                guard let strongSelf = self else { return }
+                if let title = title, title != "" {
+                    strongSelf.titleLabel.text = title as String
+                    strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.normal")
+                } else {
+                    strongSelf.titleLabel.text = "\(strongSelf.viewModel.topic.topicID) 载入中..."
+                    strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.disable")
+                }
             }
-        }
 
         // Activity
         _setupActivity()
@@ -306,7 +306,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                                                object: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -319,6 +319,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
+
 // swiftlint:enable type_body_length
 
 // MARK: - Life Cycle
@@ -327,13 +328,13 @@ extension S1ContentViewController {
         super.viewDidLoad()
 
         view.addSubview(toolBar)
-        toolBar.snp.makeConstraints { (make) in
+        toolBar.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.view)
             make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
 
         view.addSubview(webView)
-        webView.snp.makeConstraints { (make) in
+        webView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.view)
             make.top.equalTo(self.topLayoutGuide.snp.bottom)
             make.bottom.equalTo(self.toolBar.snp.top)
@@ -342,34 +343,34 @@ extension S1ContentViewController {
         view.layoutIfNeeded()
 
         webView.scrollView.addSubview(topDecorateLine)
-        topDecorateLine.snp.makeConstraints { (make) in
+        topDecorateLine.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.webView)
             make.height.equalTo(1.0)
             make.bottom.equalTo(self.webView.scrollView.subviews[0].snp.top).offset(topOffset)
         }
 
         webView.scrollView.addSubview(bottomDecorateLine)
-        bottomDecorateLine.snp.makeConstraints { (make) in
+        bottomDecorateLine.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.webView)
             make.height.equalTo(1.0)
             make.top.equalTo(self.webView.scrollView.subviews[0].snp.bottom).offset(bottomOffset)
         }
 
         webView.scrollView.insertSubview(titleLabel, at: 0)
-        titleLabel.snp.makeConstraints { (make) in
+        titleLabel.snp.makeConstraints { make in
             make.bottom.equalTo(self.webView.scrollView.subviews[1].snp.top)
             make.centerX.equalTo(self.webView.scrollView.snp.centerX)
             make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
         }
 
         view.addSubview(refreshHUD)
-        refreshHUD.snp.makeConstraints { (make) in
+        refreshHUD.snp.makeConstraints { make in
             make.center.equalTo(self.view)
             make.width.lessThanOrEqualTo(self.view).priority(250.0)
         }
 
         view.addSubview(hintHUD)
-        hintHUD.snp.makeConstraints { (make) in
+        hintHUD.snp.makeConstraints { make in
             make.centerX.equalTo(self.view.snp.centerX)
             make.bottom.equalTo(self.toolBar.snp.top).offset(-10.0)
             make.width.lessThanOrEqualTo(self.view.snp.width)
@@ -482,11 +483,11 @@ extension S1ContentViewController {
         fetchContentForCurrentPage(forceUpdate: false)
     }
 
-    open func pickPage(sender: Any?) {
+    open func pickPage(sender _: Any?) {
         func generatePageList() -> [String] {
             var pageList = [String]()
 
-            for page in 1...max(viewModel.currentPage.value, viewModel.totalPages.value) {
+            for page in 1 ... max(viewModel.currentPage.value, viewModel.totalPages.value) {
                 if viewModel.dataCenter.hasPrecachedFloors(for: Int(viewModel.topic.topicID), page: UInt(page)) {
                     pageList.append("✓第 \(page) 页✓")
                 } else {
@@ -502,17 +503,17 @@ extension S1ContentViewController {
         let picker = ActionSheetStringPicker(title: "",
                                              rows: pageList,
                                              initialSelection: Int(viewModel.currentPage.value - 1),
-                                             doneBlock: { [weak self] (_, selectedIndex, _) in
-            guard let strongSelf = self else { return }
+                                             doneBlock: { [weak self] _, selectedIndex, _ in
+                                                 guard let strongSelf = self else { return }
 
-            if strongSelf.viewModel.currentPage.value == UInt(selectedIndex + 1) {
-                strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
-            } else {
-                strongSelf.scrollType = .restorePosition
-                strongSelf._hook_preChangeCurrentPage()
-                strongSelf.viewModel.currentPage.value = UInt(selectedIndex + 1)
-                strongSelf.fetchContentForCurrentPage(forceUpdate: false)
-            }
+                                                 if strongSelf.viewModel.currentPage.value == UInt(selectedIndex + 1) {
+                                                     strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
+                                                 } else {
+                                                     strongSelf.scrollType = .restorePosition
+                                                     strongSelf._hook_preChangeCurrentPage()
+                                                     strongSelf.viewModel.currentPage.value = UInt(selectedIndex + 1)
+                                                     strongSelf.fetchContentForCurrentPage(forceUpdate: false)
+                                                 }
         }, cancel: nil, origin: pageButton)
 
         picker?.pickerBackgroundColor = ColorManager.shared.colorForKey("content.picker.background")
@@ -524,7 +525,7 @@ extension S1ContentViewController {
         picker?.pickerTextAttributes = [
             NSParagraphStyleAttributeName: labelParagraphStyle,
             NSFontAttributeName: UIFont.systemFont(ofSize: 19.0),
-            NSForegroundColorAttributeName: ColorManager.shared.colorForKey("content.picker.text")
+            NSForegroundColorAttributeName: ColorManager.shared.colorForKey("content.picker.text"),
         ]
         picker?.show()
     }
@@ -538,7 +539,7 @@ extension S1ContentViewController {
         refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
     }
 
-    open func action(sender: Any?) {
+    open func action(sender _: Any?) {
         let moreActionSheet = UIAlertController(title: nil,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)
@@ -546,35 +547,35 @@ extension S1ContentViewController {
         // Reply Action
         moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Reply", comment: "Reply"),
                                                 style: .default,
-                                                handler: { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
-                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
-                    "type": "ReplyTopic",
-                    "source": "Content",
-                    "result": "Failed"
-                ])
-                strongSelf._alertRefresh()
-                return
-            }
+                                                handler: { [weak self] _ in
+                                                    guard let strongSelf = self else { return }
+                                                    guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
+                                                        Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                                                            "type": "ReplyTopic",
+                                                            "source": "Content",
+                                                            "result": "Failed",
+                                                        ])
+                                                        strongSelf._alertRefresh()
+                                                        return
+                                                    }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
-                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
-                    "type": "ReplyTopic",
-                    "source": "Content",
-                    "result": "Failed"
-                ])
-                let loginViewController = LoginViewController(nibName: nil, bundle: nil)
-                strongSelf.present(loginViewController, animated: true, completion: nil)
-                return
-            }
+                                                    guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+                                                        Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                                                            "type": "ReplyTopic",
+                                                            "source": "Content",
+                                                            "result": "Failed",
+                                                        ])
+                                                        let loginViewController = LoginViewController(nibName: nil, bundle: nil)
+                                                        strongSelf.present(loginViewController, animated: true, completion: nil)
+                                                        return
+                                                    }
 
-            Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
-                "type": "ReplyTopic",
-                "source": "Content",
-                "result": "Succeeded"
-            ])
-            strongSelf._presentReplyView(toFloor: nil)
+                                                    Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                                                        "type": "ReplyTopic",
+                                                        "source": "Content",
+                                                        "result": "Succeeded",
+                                                    ])
+                                                    strongSelf._presentReplyView(toFloor: nil)
         }))
 
         if !shouldPresentingFavoriteButtonOnToolBar() {
@@ -582,67 +583,68 @@ extension S1ContentViewController {
             let title = viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite") : NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite")
             moreActionSheet.addAction(UIAlertAction(title: title,
                                                     style: .default,
-                                                    handler: { [weak self] (_) in
-                guard let strongSelf = self else { return }
-                strongSelf.viewModel.toggleFavorite()
-                let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite") : NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite")
-                strongSelf.hintHUD.showMessage(message)
-                strongSelf.hintHUD.hide(withDelay: 0.5)
+                                                    handler: { [weak self] _ in
+                                                        guard let strongSelf = self else { return }
+                                                        strongSelf.viewModel.toggleFavorite()
+                                                        let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite") : NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite")
+                                                        strongSelf.hintHUD.showMessage(message)
+                                                        strongSelf.hintHUD.hide(withDelay: 0.5)
             }))
         }
 
         // Share Action
         moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Share", comment: "Share"),
                                                 style: .default,
-                                                handler: { [weak self] (_) in
-            guard let strongSelf = self else { return }
+                                                handler: { [weak self] _ in
+                                                    guard let strongSelf = self else { return }
 
-            let rect = mutate(strongSelf.view.bounds) { (value: inout CGRect) in
-                value.origin.y += 20.0
-                value.size.height -= 20.0
-            }
+                                                    let rect = mutate(strongSelf.view.bounds) { (value: inout CGRect) in
+                                                        value.origin.y += 20.0
+                                                        value.size.height -= 20.0
+                                                    }
 
-            let items: [Any] = ([
-                ContentTextActivityItemProvider(title: strongSelf.viewModel.topic.title ?? ""),
-                strongSelf.viewModel.correspondingWebPageURL(),
-                ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect)] as [Any?])
-                .flatMap { $0 }
+                                                    let items: [Any] = ([
+                                                        ContentTextActivityItemProvider(title: strongSelf.viewModel.topic.title ?? ""),
+                                                        strongSelf.viewModel.correspondingWebPageURL(),
+                                                        ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect),
+                                                    ] as [Any?])
+                                                        .flatMap { $0 }
 
-            let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-            activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
+                                                    let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+                                                    activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
 
-            Answers.logCustomEvent(withName: "Share", customAttributes: [
-                "object": "Topic",
-                "source": "Content"
-            ])
-            strongSelf.present(activityController, animated: true, completion: nil)
+                                                    Answers.logCustomEvent(withName: "Share", customAttributes: [
+                                                        "object": "Topic",
+                                                        "source": "Content",
+                                                    ])
+                                                    strongSelf.present(activityController, animated: true, completion: nil)
         }))
 
         // Copy Link
         moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"),
                                                 style: .default,
-                                                handler: { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            if let urlString = strongSelf.viewModel.correspondingWebPageURL()?.absoluteString {
-                UIPasteboard.general.string = urlString
-                strongSelf.hintHUD.showMessage(NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"))
-                strongSelf.hintHUD.hide(withDelay: 0.3)
-            } else {
-                DDLogWarn("[ContentVC] can not generate corresponding web page url.")
-            }
+                                                handler: { [weak self] _ in
+                                                    guard let strongSelf = self else { return }
+                                                    if let urlString = strongSelf.viewModel.correspondingWebPageURL()?.absoluteString {
+                                                        UIPasteboard.general.string = urlString
+                                                        strongSelf.hintHUD.showMessage(NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"))
+                                                        strongSelf.hintHUD.hide(withDelay: 0.3)
+                                                    } else {
+                                                        DDLogWarn("[ContentVC] can not generate corresponding web page url.")
+                                                    }
         }))
 
         // Origin Page Action
         moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_OriginPage", comment: "Origin"),
                                                 style: .default,
-                                                handler: { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
-                let webViewController = WebViewController(URL: urlToOpen)
-                strongSelf.present(webViewController, animated: true, completion: nil)
-            } else {
-                DDLogWarn("[ContentVC] can not generate corresponding web page url.")
-            }
+                                                handler: { [weak self] _ in
+                                                    guard let strongSelf = self else { return }
+                                                    if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
+                                                        let webViewController = WebViewController(URL: urlToOpen)
+                                                        strongSelf.present(webViewController, animated: true, completion: nil)
+                                                    } else {
+                                                        DDLogWarn("[ContentVC] can not generate corresponding web page url.")
+                                                    }
         }))
 
         // Cancel Action
@@ -665,8 +667,8 @@ extension S1ContentViewController {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
-                    "result": "Failed"
-                    ])
+                    "result": "Failed",
+                ])
                 strongSelf._alertRefresh()
                 return
             }
@@ -675,8 +677,8 @@ extension S1ContentViewController {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
-                    "result": "Failed"
-                    ])
+                    "result": "Failed",
+                ])
                 let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
@@ -685,8 +687,8 @@ extension S1ContentViewController {
             Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                 "type": "ReplyFloor",
                 "source": "Content",
-                "result": "Succeeded"
-                ])
+                "result": "Succeeded",
+            ])
             strongSelf._presentReplyView(toFloor: floor)
         }
 
@@ -700,12 +702,12 @@ extension S1ContentViewController {
                                                       message: nil,
                                                       preferredStyle: .actionSheet)
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
                 Answers.logCustomEvent(withName: "Click Report", customAttributes: [
                     "source": "Content",
-                    "result": "Failed"
+                    "result": "Failed",
                 ])
                 strongSelf._alertRefresh()
                 return
@@ -714,7 +716,7 @@ extension S1ContentViewController {
             guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
                 Answers.logCustomEvent(withName: "Click Report", customAttributes: [
                     "source": "Content",
-                    "result": "Failed"
+                    "result": "Failed",
                 ])
                 let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
@@ -723,7 +725,7 @@ extension S1ContentViewController {
 
             Answers.logCustomEvent(withName: "Click Report", customAttributes: [
                 "source": "Content",
-                "result": "Succeeded"
+                "result": "Succeeded",
             ])
             strongSelf.presentType = .report
             let reportViewModel = strongSelf.viewModel.reportComposeViewModel(floor: floor)
@@ -731,7 +733,7 @@ extension S1ContentViewController {
             strongSelf.present(UINavigationController(rootViewController: reportComposeViewController), animated: true, completion: nil)
         }))
 
-        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Reply", comment: ""), style: .default, handler: { (_) in
+        floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Reply", comment: ""), style: .default, handler: { _ in
             replyFloorBlock()
         }))
 
@@ -763,7 +765,7 @@ extension S1ContentViewController {
         present(refreshAlertController, animated: true, completion: nil)
     }
 
-    open func saveTopicViewedState(sender: Any?) {
+    open func saveTopicViewedState(sender _: Any?) {
         if finishFirstLoading.value {
             viewModel.saveTopicViewedState(lastViewedPosition: Double(webView.scrollView.contentOffset.y))
         } else {
@@ -807,27 +809,27 @@ extension S1ContentViewController {
         updateToolBar()
     }
 
-    open func didReceiveUserBlockStatusDidChangedNotification(_ notification: Notification?) {
-      refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
+    open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
+        refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
     }
 }
 
 // MARK: -
 // MARK: WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(_: WKWebView, didFinish _: WKNavigation!) {
         DDLogInfo("[ContentVC] webViewDidFinishLoad")
     }
 
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    func webView(_: WKWebView, didFail _: WKNavigation!, withError error: Error) {
         DDLogWarn("[ContentVC] webview failed to load with error: \(error)")
     }
 
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    func webViewWebContentProcessDidTerminate(_: WKWebView) {
         DDLogError("[ContentVC] webViewWebContentProcessDidTerminate")
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
@@ -847,7 +849,7 @@ extension S1ContentViewController: WKNavigationDelegate {
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
             Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
                 "type": "Hijack",
-                "source": "Content"
+                "source": "Content",
             ])
             showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
@@ -868,7 +870,7 @@ extension S1ContentViewController: WKNavigationDelegate {
                 }
 
                 Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
-                    "source": "Content"
+                    "source": "Content",
                 ])
                 showContentViewController(topic: topic)
                 decisionHandler(.cancel)
@@ -877,14 +879,14 @@ extension S1ContentViewController: WKNavigationDelegate {
 
             // Open Quote Link
             if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString),
-               let mod = querys["mod"], mod == "redirect",
-               let tidString = querys["ptid"],
-               let tid = Int(tidString), tid == viewModel.topic.topicID.intValue,
-               let pidString = querys["pid"],
-               let pid = Int(pidString),
-               let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
+                let mod = querys["mod"], mod == "redirect",
+                let tidString = querys["ptid"],
+                let tid = Int(tidString), tid == viewModel.topic.topicID.intValue,
+                let pidString = querys["pid"],
+                let pid = Int(pidString),
+                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
                 Answers.logCustomEvent(withName: "Open Quote Link", customAttributes: [
-                    "source": "Content"
+                    "source": "Content",
                 ])
                 showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
                 decisionHandler(.cancel)
@@ -895,7 +897,7 @@ extension S1ContentViewController: WKNavigationDelegate {
         // Fallback Open link
         let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""), style: .cancel, handler: nil))
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { (_) in
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { _ in
             DDLogInfo("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {
@@ -910,13 +912,14 @@ extension S1ContentViewController: WKNavigationDelegate {
         return
     }
 }
+
 // MARK: - WebViewEventDelegate
 extension S1ContentViewController: WebViewEventDelegate {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String : Any]) {
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, readyWith _: [String: Any]) {
         webPageReadyForAutomaticScrolling.value = true
     }
 
-    func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler) {
+    func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {
         if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled {
             DDLogInfo("[ContentVC] User Touch detected. Stop tracking scroll type: \(scrollType)")
             webPageAutomaticScrollingEnabled = false
@@ -924,7 +927,7 @@ extension S1ContentViewController: WebViewEventDelegate {
         }
     }
 
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
         actionButtonTapped(for: floorID)
     }
 }
@@ -944,7 +947,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { (_) in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { _ in
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
@@ -960,7 +963,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
 
                     PHPhotoLibrary.shared().performChanges({
                         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
-                    }, completionHandler: { (_, error) in
+                    }, completionHandler: { _, error in
                         if let error = error {
                             DDLogError("\(error)")
                         }
@@ -969,7 +972,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
             }
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { (_) in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
             UIPasteboard.general.string = imageViewer.imageInfo.imageURL.absoluteString
         }))
 
@@ -983,7 +986,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
 
 // MARK: JTSImageViewControllerOptionsDelegate
 extension S1ContentViewController: JTSImageViewControllerOptionsDelegate {
-    func alphaForBackgroundDimmingOverlay(inImageViewer imageViewer: JTSImageViewController!) -> CGFloat {
+    func alphaForBackgroundDimmingOverlay(inImageViewer _: JTSImageViewController!) -> CGFloat {
         return 0.3
     }
 }
@@ -1005,7 +1008,7 @@ extension S1ContentViewController: PullToActionDelagete {
         }
 
         var currentContentOffset = self.webView.scrollView.contentOffset
-//        currentContentOffset.y = -self.webView.bounds.height
+        //        currentContentOffset.y = -self.webView.bounds.height
         currentContentOffset.y -= self.webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
@@ -1014,7 +1017,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 guard let strongSelf = self else { return }
                 strongSelf.webView.scrollView.setContentOffset(currentContentOffset, animated: false)
                 strongSelf.webView.scrollView.alpha = 0.0
-            }, completion: { [weak self] (_) in
+            }, completion: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.back(sender: strongSelf.webView)
             })
@@ -1035,7 +1038,7 @@ extension S1ContentViewController: PullToActionDelagete {
         }
 
         var currentContentOffset = self.webView.scrollView.contentOffset
-//        currentContentOffset.y = self.webView.scrollView.contentSize.height
+        //        currentContentOffset.y = self.webView.scrollView.contentSize.height
         currentContentOffset.y += self.webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
@@ -1044,7 +1047,7 @@ extension S1ContentViewController: PullToActionDelagete {
                 guard let strongSelf = self else { return }
                 strongSelf.webView.scrollView.setContentOffset(currentContentOffset, animated: false)
                 strongSelf.webView.scrollView.alpha = 0.0
-            }, completion: { [weak self] (_) in
+            }, completion: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.forward(sender: strongSelf.webView)
             })
@@ -1056,7 +1059,7 @@ extension S1ContentViewController: PullToActionDelagete {
         webPageCurrentContentHeight.value = CGFloat(contentSize.height)
     }
 
-    public func scrollViewContentOffsetProgress(_ progress: [String : Double]) {
+    public func scrollViewContentOffsetProgress(_ progress: [String: Double]) {
         guard finishFirstLoading.value else {
             if viewModel.isInLastPage() {
                 forwardButtonState = .refresh(rotateAngle: 0.0)
@@ -1134,13 +1137,13 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 
 // MARK: - UIPopoverPresentationControllerDelegate
 extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
-    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
+    func popoverPresentationController(_: UIPopoverPresentationController, willRepositionPopoverTo _: UnsafeMutablePointer<CGRect>, in _: AutoreleasingUnsafeMutablePointer<UIView>) {
         // TODO: find a solution.
-//        guard case .action(let floorID) = presentType else { return }
-//        DispatchQueue.global(qos: .default).async { [weak self] in
-//            guard let strongSelf = self else { return }
-//            rect.pointee = strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action")
-//        }
+        //        guard case .action(let floorID) = presentType else { return }
+        //        DispatchQueue.global(qos: .default).async { [weak self] in
+        //            guard let strongSelf = self else { return }
+        //            rect.pointee = strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action")
+        //        }
     }
 }
 
@@ -1209,7 +1212,7 @@ extension S1ContentViewController {
         func _showHud() {
             refreshHUD.showActivityIndicator()
 
-            refreshHUD.refreshEventHandler = { [weak self] (hud) in
+            refreshHUD.refreshEventHandler = { [weak self] hud in
                 guard let strongSelf = self else { return }
 
                 hud?.hide(withDelay: 0.0)
@@ -1235,11 +1238,11 @@ extension S1ContentViewController {
             DDLogVerbose("[ContentVC] check precache: hit.")
         }
 
-        viewModel.currentContentPage { [weak self] (result) in
+        viewModel.currentContentPage { [weak self] result in
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let contents):
+            case let .success(contents):
                 DDLogInfo("[ContentVC] page finish fetching.")
                 strongSelf.updateToolBar() /// TODO: Is it still necessary?
 
@@ -1260,7 +1263,7 @@ extension S1ContentViewController {
                     strongSelf.refreshHUD.hide(withDelay: 0.3)
                 }
 
-            case .failure(let error):
+            case let .failure(error):
                 if let urlError = error as? URLError, urlError.code == .cancelled {
                     DDLogDebug("[ContentVC] request cancelled.")
                     // TODO:
@@ -1283,6 +1286,7 @@ extension S1ContentViewController {
             }
         }
     }
+
     // swiftlint:enable cyclomatic_complexity
 
     func _presentReplyView(toFloor floor: Floor?) {
@@ -1354,7 +1358,7 @@ private extension S1ContentViewController {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
-            }, completion: { (_) in
+            }, completion: { _ in
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
                 webView.scrollView.flashScrollIndicators()
             })
@@ -1371,7 +1375,7 @@ private extension S1ContentViewController {
                 webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
-            }, completion: { (_) in
+            }, completion: { _ in
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
                 webView.scrollView.flashScrollIndicators()
             })
@@ -1404,9 +1408,9 @@ private extension S1ContentViewController {
         backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
     }
 
-    func _updateDecorationLines(contentSize: CGSize) {
+    func _updateDecorationLines(contentSize _: CGSize) {
         topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading.value
-        bottomDecorateLine.isHidden = !self.finishFirstLoading.value
+        bottomDecorateLine.isHidden = !finishFirstLoading.value
     }
 
     func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {

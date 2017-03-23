@@ -18,10 +18,10 @@ public struct Field {
 
     init?(json: JSON) {
         guard let ID = json["forum"]["fid"].string.flatMap({ UInt($0) }),
-              let name = json["forum"]["name"].string,
-              let threadCounts = json["forum"]["threads"].string.flatMap({ UInt($0) }),
-              let postCounts = json["forum"]["posts"].string.flatMap({ UInt($0) }),
-              let rules = json["forum"]["rules"].string else {
+            let name = json["forum"]["name"].string,
+            let threadCounts = json["forum"]["threads"].string.flatMap({ UInt($0) }),
+            let postCounts = json["forum"]["posts"].string.flatMap({ UInt($0) }),
+            let rules = json["forum"]["rules"].string else {
             return nil
         }
 

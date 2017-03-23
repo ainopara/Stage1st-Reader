@@ -10,7 +10,7 @@ import UIKit
 public enum TopicListPresentationType {
     case history, favorite
     case search
-    case forum(key : String)
+    case forum(key: String)
     case blank
 
     init(key: String) {
@@ -32,9 +32,10 @@ public enum TopicListPresentationType {
 extension S1TopicListViewController {
 
     open override func didReceiveMemoryWarning() {
-        self.dataCenter.clearTopicListCache()
+        dataCenter.clearTopicListCache()
         S1Formatter.sharedInstance().clearCache()
     }
+
     func isPresentingDatabaseList(_ key: String) -> Bool {
         switch TopicListPresentationType(key: key) {
         case .favorite, .history:

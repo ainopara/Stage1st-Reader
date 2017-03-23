@@ -23,13 +23,13 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
         super.init()
     }
 
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    func transitionDuration(using _: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toViewController = transitionContext.viewController(forKey: .to),
-              let fromViewController = transitionContext.viewController(forKey: .from) else {
+            let fromViewController = transitionContext.viewController(forKey: .from) else {
             assert(false)
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             return
@@ -67,7 +67,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 fromViewController.view.transform = CGAffineTransform(translationX: containerViewWidth, y: 0.0)
                 toViewController.view.transform = .identity
             }
-        }) { (finished) in
+        }) { finished in
             if MyAppDelegate.crashIssueTrackingModeEnabled {
                 DDLogTracking("finshed: \(finished)")
                 DDLogTracking("transitionWasCancelled: \(transitionContext.transitionWasCancelled)")
@@ -89,7 +89,7 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     }
 }
 
-//MARK: -
+// MARK: -
 
 protocol CardWithBlurredBackground {
     var backgroundBlurView: UIVisualEffectView { get }
@@ -102,11 +102,12 @@ class S1ModalAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         case present
         case dismissal
     }
+
     init(presentType: PresentType) {
         self.presentType = presentType
     }
 
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    func transitionDuration(using _: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
 
@@ -137,14 +138,14 @@ class S1ModalAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 blurredBackgroundView.effect = UIBlurEffect(style: .dark)
                 contentView.alpha = 1.0
                 contentView.transform = CGAffineTransform.identity
-            }) { (_) in
+            }) { _ in
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
         case .dismissal:
             guard let fromViewController = transitionContext.viewController(forKey: .from) else {
-                    assert(false)
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-                    return
+                assert(false)
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                return
             }
 
             guard let targetViewController = fromViewController as? CardWithBlurredBackground else {
@@ -160,7 +161,7 @@ class S1ModalAnimator: NSObject, UIViewControllerAnimatedTransitioning {
                 contentView.alpha = 0.0
                 contentView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
                 blurredBackgroundView.effect = nil
-            }) { (_) in
+            }) { _ in
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
         }

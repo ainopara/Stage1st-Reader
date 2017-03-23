@@ -29,7 +29,7 @@ final class QuoteFloorCell: UITableViewCell {
         avatarView.layer.cornerRadius = 16.0
         avatarView.clipsToBounds = true
         contentView.addSubview(avatarView)
-        avatarView.snp.makeConstraints { (make) in
+        avatarView.snp.makeConstraints { make in
             make.leading.equalTo(self.contentView.snp.leading).offset(5.0)
             make.top.equalTo(self.contentView.snp.top).offset(5.0)
             make.width.height.equalTo(32.0)
@@ -42,25 +42,25 @@ final class QuoteFloorCell: UITableViewCell {
         }
 
         contentView.addSubview(dateTimeLabel)
-        dateTimeLabel.snp.makeConstraints { (make) in
+        dateTimeLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self.avatarView.snp.centerY)
             make.leading.equalTo(authorLabel.snp.trailing).offset(10.0)
         }
 
         moreActionButton.setTitle("更多", for: .normal)
         contentView.addSubview(moreActionButton)
-        moreActionButton.snp.makeConstraints { (make) in
+        moreActionButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.avatarView.snp.centerY)
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-10.0)
         }
 
         contentView.addSubview(floorLabel)
-        floorLabel.snp.makeConstraints { (make) in
+        floorLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self.avatarView.snp.centerY)
             make.trailing.equalTo(self.moreActionButton.snp.leading).offset(-10.0)
         }
 
-//        contentLabel.layoutFrameHeightIsConstrainedByBounds = false
+        //        contentLabel.layoutFrameHeightIsConstrainedByBounds = false
         contentView.addSubview(contentLabel)
         contentLabel.snp.makeConstraints { (make) -> Void in
             make.leading.trailing.equalTo(contentView)
@@ -69,7 +69,7 @@ final class QuoteFloorCell: UITableViewCell {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

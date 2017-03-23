@@ -45,6 +45,7 @@ target "Stage1st" do
     pod 'AcknowList'
     pod 'QuickTableViewController', '~> 0.5.0'
     pod 'R.swift'
+    pod 'SwiftFormat/CLI'
 
     target "Stage1stTests" do
         inherit! :search_paths

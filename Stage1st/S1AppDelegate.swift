@@ -24,6 +24,7 @@ struct Constants {
         static let hideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
     }
 }
+
 // swiftlint:enable type_name
 
 // MARK: Logging
@@ -51,8 +52,8 @@ extension S1AppDelegate {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-                DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-                return
+            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            return
         }
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
@@ -65,8 +66,8 @@ extension S1AppDelegate {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-                DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-                return
+            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            return
         }
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
@@ -79,8 +80,8 @@ extension S1AppDelegate {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-                DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-                return
+            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            return
         }
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
@@ -124,15 +125,15 @@ extension S1AppDelegate {
             Constants.defaults.enableCloudKitSync: false,
 
             Constants.defaults.reverseActionKey: false,
-            Constants.defaults.hideStickTopicsKey: true
+            Constants.defaults.hideStickTopicsKey: true,
         ])
     }
 }
 
 fileprivate extension UserDefaults {
     func s1_setObjectIfNotExist(object: Any, key: String) {
-        if self.value(forKey: key) == nil {
-            self.set(object, forKey: key)
+        if value(forKey: key) == nil {
+            `set`(object, forKey: key)
         }
     }
 }

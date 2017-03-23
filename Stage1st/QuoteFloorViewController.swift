@@ -62,7 +62,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
                                                object: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -79,7 +79,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.addSubview(webView)
+        view.addSubview(webView)
         webView.snp.makeConstraints({ (make) -> Void in
             make.top.equalTo(self.topLayoutGuide.snp.bottom)
             make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
@@ -94,7 +94,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
         // FIXME: find a way to make sure this only called once. Prefer this not work.
-        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+        if let colorPanRecognizer = (navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
         }
 
@@ -123,10 +123,9 @@ extension QuoteFloorViewController {
         }
     }
 
-    open func didReceiveUserBlockStatusDidChangedNotification(_ notification: Notification?) {
+    open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
         webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
     }
-
 }
 
 // MARK:
@@ -142,8 +141,8 @@ extension QuoteFloorViewController {
 
 // MARK: - WKScriptMessageHandler
 extension QuoteFloorViewController: WebViewEventDelegate {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {
-//        actionButtonTapped(for: floorID)
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, actionButtonTappedFor _: Int) {
+        //        actionButtonTapped(for: floorID)
     }
 }
 
@@ -152,7 +151,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { (_) in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { _ in
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
@@ -168,7 +167,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
 
                     PHPhotoLibrary.shared().performChanges({
                         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
-                    }, completionHandler: { (_, error) in
+                    }, completionHandler: { _, error in
                         if let error = error {
                             DDLogError("\(error)")
                         }
@@ -177,7 +176,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
             }
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { (_) in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
             UIPasteboard.general.string = imageViewer.imageInfo.imageURL.absoluteString
         }))
 
@@ -191,7 +190,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
 
 // MARK: JTSImageViewControllerOptionsDelegate
 extension QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
-    func alphaForBackgroundDimmingOverlay(inImageViewer imageViewer: JTSImageViewController!) -> CGFloat {
+    func alphaForBackgroundDimmingOverlay(inImageViewer _: JTSImageViewController!) -> CGFloat {
         return 0.3
     }
 }
@@ -199,7 +198,7 @@ extension QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
 // MARK: WKNavigationDelegate
 extension QuoteFloorViewController: WKNavigationDelegate {
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = navigationAction.request.url else {
             decisionHandler(.cancel)
             return
@@ -216,7 +215,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
             Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
                 "type": "hijack",
-                "source": "QuoteFloor"
+                "source": "QuoteFloor",
             ])
             showImageViewController(transitionSource: .offScreen, imageURL: url)
             decisionHandler(.cancel)
@@ -236,7 +235,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
                 }
 
                 Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
-                    "source": "QuoteFloor"
+                    "source": "QuoteFloor",
                 ])
                 showContentViewController(topic: topic)
                 decisionHandler(.cancel)
@@ -255,14 +254,14 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
                                                     style: .default,
-                                                    handler: { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            strongSelf.presentType = .background
-            DDLogDebug("[ContentVC] Open in Safari: \(url)")
+                                                    handler: { [weak self] _ in
+                                                        guard let strongSelf = self else { return }
+                                                        strongSelf.presentType = .background
+                                                        DDLogDebug("[ContentVC] Open in Safari: \(url)")
 
-            if !UIApplication.shared.openURL(url) {
-                DDLogWarn("Failed to open url: \(url)")
-            }
+                                                        if !UIApplication.shared.openURL(url) {
+                                                            DDLogWarn("Failed to open url: \(url)")
+                                                        }
         }))
 
         present(alertViewController, animated: true, completion: nil)
@@ -272,11 +271,11 @@ extension QuoteFloorViewController: WKNavigationDelegate {
         return
     }
 
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    func webViewWebContentProcessDidTerminate(_: WKWebView) {
         DDLogError("[QuoteFloor] \(#function)")
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
         DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
             let computedOffset: CGFloat = strongSelf.topPositionOfMessageWithId(strongSelf.viewModel.centerFloorID) - 32

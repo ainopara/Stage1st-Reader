@@ -25,7 +25,7 @@ final class QuoteFloorViewModel: PageRenderer {
          centerFloorID: Int,
          baseURL: URL) {
         self.dataCenter = dataCenter
-        self.discuzAPIManager = manager
+        discuzAPIManager = manager
         self.topic = topic
         self.floors = floors
         self.centerFloorID = centerFloorID

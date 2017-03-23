@@ -18,7 +18,7 @@ extension SettingsViewController {
         guard
             let shortVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
             let versionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") else {
-                return "?"
+            return "?"
         }
         return "\(shortVersionString) (\(versionString))"
     }

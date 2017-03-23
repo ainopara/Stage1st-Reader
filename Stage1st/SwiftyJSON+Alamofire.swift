@@ -6,9 +6,9 @@ extension Alamofire.DataRequest {
         return DataResponseSerializer { _, response, data, error in
             let jsonObjectResult = Request.serializeResponseJSON(options: options, response: response, data: data, error: error)
             switch jsonObjectResult {
-            case .success(let jsonObject):
+            case let .success(jsonObject):
                 return .success(JSON(jsonObject: jsonObject))
-            case .failure(let error):
+            case let .failure(error):
                 return .failure(error)
             }
         }

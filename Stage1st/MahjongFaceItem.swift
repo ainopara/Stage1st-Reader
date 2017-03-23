@@ -37,8 +37,8 @@ class MahjongFaceItem: NSObject, NSCoding {
     }
 
     func encode(with aCoder: NSCoder) {
-        aCoder.encode(self.key, forKey: kKey)
-        aCoder.encode(self.category, forKey: kCategory)
-        aCoder.encode(self.url, forKey: kURL)
+        aCoder.encode(key, forKey: kKey)
+        aCoder.encode(category, forKey: kCategory)
+        aCoder.encode(url, forKey: kURL)
     }
 }

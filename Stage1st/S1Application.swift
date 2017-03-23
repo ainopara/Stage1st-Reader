@@ -19,8 +19,8 @@ class S1Application: UIApplication {
         }
 
         guard let touches = event.allTouches,
-              let touch = touches.first,
-              let gestureRecognizers = touch.gestureRecognizers else {
+            let touch = touches.first,
+            let gestureRecognizers = touch.gestureRecognizers else {
             return
         }
 

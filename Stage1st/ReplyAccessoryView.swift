@@ -25,30 +25,30 @@ class ReplyAccessoryView: UIView {
         self.composeViewController = composeViewController
         super.init(frame: frame)
 
-        //Setup faceButton
+        // Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
         faceButton.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
         faceButton.addTarget(self, action: #selector(ReplyAccessoryView.toggleFace(_:)), for: .touchUpInside)
         let faceItem = UIBarButtonItem(customView: faceButton)
 
-        //Setup spoilerButton
+        // Setup spoilerButton
         spoilerButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
         spoilerButton.setTitle("H", for: .normal)
         spoilerButton.addTarget(self, action: #selector(ReplyAccessoryView.insertSpoilerMark(_:)), for: .touchUpInside)
         let spoilerItem = UIBarButtonItem(customView: spoilerButton)
 
-        //Setup toolBar
+        // Setup toolBar
         let fixItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixItem.width = 26.0
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
-        self.addSubview(toolBar)
+        addSubview(toolBar)
         toolBar.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self)
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -87,39 +87,39 @@ extension ReplyAccessoryView {
         }
     }
 
-    func insertSpoilerMark(_ button: UIButton) {
+    func insertSpoilerMark(_: UIButton) {
         self.insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
     }
 
-    func insertQuoteMark(_ button: UIButton) {
+    func insertQuoteMark(_: UIButton) {
         self.insertMarkWithAPart("[quote]", andBPart: "[/quote]")
     }
 
-    func insertBoldMark(_ button: UIButton) {
+    func insertBoldMark(_: UIButton) {
         self.insertMarkWithAPart("[b]", andBPart: "[/b]")
     }
 
-    func insertDeleteMark(_ button: UIButton) {
+    func insertDeleteMark(_: UIButton) {
         self.insertMarkWithAPart("[s]", andBPart: "[/s]")
     }
 }
 
-//MARK: - S1MahjongFaceViewDelegate
+// MARK: - S1MahjongFaceViewDelegate
 extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
 
-    func mahjongFaceViewController(_ mahjongFaceView: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
+    func mahjongFaceViewController(_: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
         guard let textView = composeViewController?.textView else {
             return
         }
-        //Insert Mahjong Face Attachment
+        // Insert Mahjong Face Attachment
         textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
-        //Move selection location
+        // Move selection location
         textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
-        //Reset Text Style
+        // Reset Text Style
         textView.s1_resetToReplyStyle()
     }
 
-    func mahjongFaceViewControllerDidPressBackSpace(_ mahjongFaceViewController: S1MahjongFaceView) {
+    func mahjongFaceViewControllerDidPressBackSpace(_: S1MahjongFaceView) {
         guard let textView = composeViewController?.textView else {
             return
         }

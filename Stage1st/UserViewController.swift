@@ -36,24 +36,24 @@ final class UserViewController: UIViewController {
         viewModel.updateCurrentUserProfile { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
-            case .success(let user):
+            case let .success(user):
                 strongSelf.usernameLabel.text = user.name
                 if let avatarURL = user.avatarURL {
                     strongSelf.avatarView.af_setImage(withURL: avatarURL)
                 }
                 strongSelf.customStatusLabel.text = user.customStatus
                 strongSelf.infoLabel.text = strongSelf.viewModel.infoLabelText()
-            case .failure(let error):
+            case let .failure(error):
                 strongSelf.s1_presentAlertView("Error", message: "\(error)")
             }
         }
 
-        viewModel.blocked.producer.startWithValues { [weak self] (isBlocked) in
+        viewModel.blocked.producer.startWithValues { [weak self] isBlocked in
             guard let strongSelf = self else { return }
             strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
         }
 
-        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] (_) in
+        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
             guard let strongSelf = self else { return }
             strongSelf.viewModel.blocked.value = !strongSelf.viewModel.blocked.value
         }
@@ -64,7 +64,7 @@ final class UserViewController: UIViewController {
                                                object: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -76,33 +76,33 @@ final class UserViewController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(scrollView)
-        scrollView.snp.makeConstraints { (make) in
+        scrollView.snp.makeConstraints { make in
             make.edges.equalTo(self.view)
         }
 
         scrollView.addSubview(containerView)
-        containerView.snp.makeConstraints { (make) in
+        containerView.snp.makeConstraints { make in
             make.edges.equalTo(scrollView) // To decide scrollView's content size
             make.width.equalTo(scrollView.snp.width) // To decide containerView's width
         }
 
         containerView.addSubview(avatarView)
 
-        avatarView.snp.makeConstraints { (make) in
+        avatarView.snp.makeConstraints { make in
             make.leading.equalTo(containerView.snp.leading).offset(10.0)
             make.top.equalTo(containerView.snp.top).offset(10.0)
             make.width.height.equalTo(80.0)
         }
 
         containerView.addSubview(usernameLabel)
-        usernameLabel.snp.makeConstraints { (make) in
+        usernameLabel.snp.makeConstraints { make in
             make.top.equalTo(avatarView.snp.top)
             make.leading.equalTo(avatarView.snp.trailing).offset(10.0)
         }
 
         blockButton.setContentHuggingPriority(UILayoutPriorityDefaultLow + 1, for: .horizontal)
         containerView.addSubview(blockButton)
-        blockButton.snp.makeConstraints { (make) in
+        blockButton.snp.makeConstraints { make in
             make.leading.equalTo(usernameLabel.snp.trailing).offset(10.0)
             make.trailing.equalTo(containerView.snp.trailing).offset(-10.0)
             make.top.equalTo(usernameLabel.snp.top)
@@ -110,14 +110,14 @@ final class UserViewController: UIViewController {
         }
 
         containerView.addSubview(customStatusLabel)
-        customStatusLabel.snp.makeConstraints { (make) in
+        customStatusLabel.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(10.0)
             make.leading.equalTo(usernameLabel.snp.leading)
             make.trailing.equalTo(blockButton.snp.trailing)
         }
 
         containerView.addSubview(infoLabel)
-        infoLabel.snp.makeConstraints { (make) in
+        infoLabel.snp.makeConstraints { make in
             make.top.greaterThanOrEqualTo(avatarView.snp.bottom).offset(10.0)
             make.top.greaterThanOrEqualTo(customStatusLabel.snp.bottom).offset(10.0)
             make.leading.equalTo(avatarView.snp.leading)
@@ -139,7 +139,7 @@ extension UserViewController {
         return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }
 
-    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    override func didReceivePaletteChangeNotification(_: Notification?) {
         view.backgroundColor = ColorManager.shared.colorForKey("content.background")
         usernameLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
         customStatusLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")

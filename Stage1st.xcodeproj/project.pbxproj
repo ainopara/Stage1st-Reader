@@ -762,12 +762,13 @@
 			buildConfigurationList = C095875116CA8A36007E0119 /* Build configuration list for PBXNativeTarget "Stage1st" */;
 			buildPhases = (
 				9CEB48858BDA6BB93C693500 /* [CP] Check Pods Manifest.lock */,
-				36D36FC01E823F7B009D40A3 /* ShellScript */,
 				18D04A8E58CCEF18CB2A7242 /* [Amimono] Create filelist per architecture */,
+				36D36FC01E823F7B009D40A3 /* R.swift */,
+				867A99C41E8427BF00ED131A /* SwiftFormat */,
+				86221B871CA6719400015522 /* Swiftlint */,
 				C095873016CA8A36007E0119 /* Sources */,
 				C095873116CA8A36007E0119 /* Frameworks */,
 				C095873216CA8A36007E0119 /* Resources */,
-				86221B871CA6719400015522 /* Swiftlint */,
 				864E51F81BFAAF3B00CAF010 /* Setup Fabric */,
 				93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */,
 			);
@@ -880,13 +881,14 @@
 			shellPath = /bin/bash;
 			shellScript = "declare -a DEPENDENCIES=('1PasswordExtension' 'AFNetworking' 'AcknowList' 'ActionSheetPicker-3.0' 'Alamofire' 'AlamofireImage' 'CocoaLumberjack' 'FMDB' 'GRMustache.swift' 'JTSImageViewController' 'KissXML' 'Masonry' 'QuickTableViewController' 'R.swift.Library' 'Reachability' 'ReactiveCocoa' 'ReactiveSwift' 'Result' 'SnapKit' 'SwiftyJSON' 'TextAttributes' 'YYKeyboardManager' 'YapDatabase');\nIFS=\" \" read -r -a SPLIT <<< \"$ARCHS\"\nfor ARCH in \"${SPLIT[@]}\"; do\n  cd \"$OBJROOT/Pods.build\"\n  filelist=\"\"\n  for dependency in \"${DEPENDENCIES[@]}\"; do\n    path=\"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${dependency}.build/Objects-normal/${ARCH}\"\n    if [ -d \"$path\" ]; then\n      search_path=\"$path/*.o\"\n      for obj_file in $search_path; do\n        filelist+=\"${OBJROOT}/Pods.build/${obj_file}\"\n        filelist+=$'\\n'\n      done\n    fi\n  done\n  filelist=${filelist%$'\\n'}\n  echo \"$filelist\" > \"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}-${TARGET_NAME}-${ARCH}.objects.filelist\"\ndone\n";
 		};
-		36D36FC01E823F7B009D40A3 /* ShellScript */ = {
+		36D36FC01E823F7B009D40A3 /* R.swift */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = R.swift;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -920,6 +922,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 9c2555274ce1394305fd28e35310ab35c425d0e3 67779c61b0098102e5eb69534c83c3bdf063b0554bc3e1c7a76c3765524a67f5";
+		};
+		867A99C41E8427BF00ED131A /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Stage1st/\"";
 		};
 		93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

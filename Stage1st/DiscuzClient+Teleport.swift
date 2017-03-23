@@ -36,18 +36,18 @@ public extension DiscuzClient {
             "module": "secure",
             "version": 1,
             "mobile": "no",
-            "type": "login"
+            "type": "login",
         ]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
             debugPrint(response.request as Any)
             switch response.result {
-            case .success(let json):
+            case let .success(json):
                 if let sechash = json["Variables"]["sechash"].string {
                     hasSeccodeBlock(sechash)
                 } else {
                     noSechashBlock()
                 }
-            case .failure(let error):
+            case let .failure(error):
                 failureBlock(error)
             }
         }
@@ -78,11 +78,11 @@ public extension DiscuzClient {
             "version": 1,
             "loginsubmit": "yes",
             "loginfield": "auto",
-            "cookietime": 2592000,
-            "mobile": "no"
+            "cookietime": 2_592_000,
+            "mobile": "no",
         ]
 
-        if case .secure(let hash, let code) = authMode {
+        if case let .secure(hash, code) = authMode {
             URLParameters["sechash"] = hash
             URLParameters["seccodeverify"] = code
         }
@@ -92,13 +92,13 @@ public extension DiscuzClient {
             "username": username,
             "password": password,
             "questionid": secureQuestionNumber,
-            "answer": secureQuestionAnswer
+            "answer": secureQuestionAnswer,
         ]
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseSwiftyJSON { (response) in
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseSwiftyJSON { response in
             debugPrint(response.request as Any)
             switch response.result {
-            case .success(let json):
+            case let .success(json):
                 if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
                     UserDefaults.standard.set(username, forKey: "InLoginStateID")
                     NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
@@ -106,7 +106,7 @@ public extension DiscuzClient {
                 } else {
                     completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].stringValue, messageString: json["Message"]["messagestr"].stringValue)))
                 }
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -115,11 +115,11 @@ public extension DiscuzClient {
     @discardableResult
     func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
         let parameters: Parameters = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseImage { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseImage { response in
             switch response.result {
-            case .success(let image):
+            case let .success(image):
                 completion(.success(image))
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -161,12 +161,12 @@ public extension DiscuzClient {
             "mobile": "no",
             "fid": fieldID,
             "page": page,
-            "orderby": "dblastpost"
+            "orderby": "dblastpost",
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
             switch response.result {
-            case .success(let json):
+            case let .success(json):
                 guard let topicList = json["Variables"]["forum_threadlist"].array else {
                     completion(.failure(DZError.noThreadListReturned(jsonString: json.rawString() ?? "")))
                     return
@@ -180,7 +180,7 @@ public extension DiscuzClient {
                 let topics = topicList.map { S1Topic(json: $0, fieldID: field.ID) }.flatMap { $0 }
 
                 completion(.success((field, topics)))
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -189,7 +189,6 @@ public extension DiscuzClient {
 
 // MARK: - Content
 public struct TopicInfo {
-
 }
 
 public extension DiscuzClient {
@@ -202,14 +201,14 @@ public extension DiscuzClient {
             "submodule": "checkpost",
             "mobile": "no",
             "tid": topicID,
-            "page": page
+            "page": page,
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
             switch response.result {
-            case .success(let json):
+            case let .success(json):
                 completion(.success((TopicInfo(), [Floor]())))
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -224,18 +223,18 @@ public extension DiscuzClient {
             "module": "profile",
             "version": 1,
             "uid": userID,
-            "mobile": "no"
+            "mobile": "no",
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { (response) in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
             switch response.result {
-            case .success(let json):
+            case let .success(json):
                 guard let user = User(json: json) else {
                     completion(.failure(DZError.userInfoParseFailed(jsonString: json.rawString() ?? "")))
                     return
                 }
                 completion(.success(user))
-            case .failure(let error):
+            case let .failure(error):
                 completion(.failure(error))
             }
         }
@@ -248,7 +247,7 @@ public extension DiscuzClient {
     func report(topicID: String, floorID: String, forumID: String, reason: String, formhash: String, completion: @escaping (Error?) -> Void) -> Request {
         let URLParameters: Parameters = [
             "mod": "report",
-            "inajax": 1
+            "inajax": 1,
         ]
 
         let URLString = generateURLString(baseURL + "/misc.php", parameters: URLParameters)
@@ -264,10 +263,10 @@ public extension DiscuzClient {
             "url": "",
             "inajax": 1,
             "handlekey": "miscreport1",
-            "formhash": formhash
+            "formhash": formhash,
         ]
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString { (response) in
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString { response in
             completion(response.result.error)
         }
     }

@@ -19,10 +19,10 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 
     // swiftlint:disable cyclomatic_complexity
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    func userContentController(_: WKUserContentController, didReceive message: WKScriptMessage) {
         DDLogVerbose("[ContentVC] message body: \(message.body)")
         guard let messageDictionary = message.body as? [String: Any],
-              let type = messageDictionary["type"] as? String else {
+            let type = messageDictionary["type"] as? String else {
             DDLogWarn("[ContentVC] unexpected message format")
             return
         }
@@ -51,7 +51,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             delegate?.generalScriptMessageHandler(self, showUserProfileWith: userID)
         case "image":
             guard let imageID = messageDictionary["id"] as? String,
-               let imageURLString = messageDictionary["src"] as? String else {
+                let imageURLString = messageDictionary["src"] as? String else {
                 DDLogError("unexpected message format: \(messageDictionary)")
                 return
             }
@@ -61,6 +61,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             delegate?.generalScriptMessageHandler(self, handleUnkonwnEventWith: messageDictionary)
         }
     }
+
     // swiftlint:enable cyclomatic_complexity
 }
 
@@ -76,13 +77,13 @@ protocol WebViewEventDelegate: class {
 }
 
 extension WebViewEventDelegate {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, readyWith messageDictionary: [String: Any]) {}
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String: Any]) {}
-    func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler) {}
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int) {}
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {}
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {}
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String: Any]) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, readyWith _: [String: Any]) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, loadWith _: [String: Any]) {}
+    func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, actionButtonTappedFor _: Int) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith _: UInt) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showImageWith _: String, imageURLString _: String) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, handleUnkonwnEventWith _: [String: Any]) {}
 }
 
 // MARK: - User
@@ -110,9 +111,9 @@ extension UserPresenter where Self: UIViewController {
 }
 
 extension WebViewEventDelegate where Self: UserPresenter {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {
         Answers.logCustomEvent(withName: "Click User", customAttributes: [
-            "source": "UserPresenter"
+            "source": "UserPresenter",
         ])
         showUserViewController(userID: userID)
     }
@@ -193,10 +194,10 @@ extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControl
             switch transitionSource {
             case .offScreen:
                 break
-            case .positionOfElementID(let imageID):
+            case let .positionOfElementID(imageID):
                 imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: imageID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
                 imageInfo.referenceView = strongSelf.webView
-            case .position(let positionRect):
+            case let .position(positionRect):
                 imageInfo.referenceRect = positionRect
                 imageInfo.referenceView = strongSelf.view
             }
@@ -218,13 +219,13 @@ extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControl
 }
 
 extension WebViewEventDelegate where Self: ImagePresenter {
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String) {
         guard let url = URL(string: imageURLString) else {
             return
         }
         Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
             "type": "Processed",
-            "source": "ImagePresenter"
+            "source": "ImagePresenter",
         ])
         showImageViewController(transitionSource: .positionOfElementID(imageID), imageURL: url)
     }

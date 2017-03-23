@@ -25,7 +25,7 @@ final class ReportComposeViewModel {
 
     init(dataCenter: S1DataCenter, topic: S1Topic, floor: Floor) {
         self.dataCenter = dataCenter
-        self.apiManager = dataCenter.apiManager
+        apiManager = dataCenter.apiManager
         self.topic = topic
         self.floor = floor
 
@@ -45,7 +45,7 @@ final class ReportComposeViewModel {
         NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
 
         submiting.value = true
-        _ = apiManager.report(topicID: "\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] (error) in
+        _ = apiManager.report(topicID: "\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] error in
             guard let strongSelf = self else { return }
             strongSelf.submiting.value = false
             completion(error)
@@ -67,25 +67,25 @@ final class ReportComposeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = NSLocalizedString("ReportComposeViewController.title", comment: "")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self._dismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.submit))
+        title = NSLocalizedString("ReportComposeViewController.title", comment: "")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(_dismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(submit))
 
         view.addSubview(textView)
-        textView.snp.makeConstraints { (make) in
+        textView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(self.view)
             self.textViewBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
         }
 
         view.addSubview(loadingHUD)
-        loadingHUD.snp.makeConstraints { (make) in
+        loadingHUD.snp.makeConstraints { make in
             make.center.equalTo(self.view.snp.center)
         }
 
@@ -94,12 +94,12 @@ final class ReportComposeViewController: UIViewController {
         // Binding
         viewModel.content <~ textView.reactive.continuousTextValues.map { $0 ?? "" }
 
-        viewModel.canSubmit.producer.startWithValues { [weak self] (canSubmit) in
+        viewModel.canSubmit.producer.startWithValues { [weak self] canSubmit in
             guard let strongSelf = self else { return }
             strongSelf.navigationItem.rightBarButtonItem?.isEnabled = canSubmit
         }
 
-        viewModel.submiting.producer.startWithValues { [weak self] (submiting) in
+        viewModel.submiting.producer.startWithValues { [weak self] submiting in
             guard let strongSelf = self else { return }
             if submiting {
                 strongSelf.loadingHUD.showActivityIndicator()
@@ -136,7 +136,7 @@ final class ReportComposeViewController: UIViewController {
 // MARK: - YYKeyboardObserver
 extension ReportComposeViewController: YYKeyboardObserver {
     func keyboardChanged(with transition: YYKeyboardTransition) {
-         let offset = transition.toFrame.minY - view.frame.maxY
+        let offset = transition.toFrame.minY - view.frame.maxY
 
         self.textViewBottomConstraint?.update(offset: offset)
 
@@ -151,7 +151,7 @@ extension ReportComposeViewController {
     func submit() {
         view.endEditing(true)
         MessageHUD.shared.post(message: "举报发送中", duration: .forever)
-        viewModel.submit { [weak self] (error) in
+        viewModel.submit { [weak self] error in
             guard let strongSelf = self else { return }
             if let error = error {
                 // FIXME: Alert Error
@@ -169,7 +169,7 @@ extension ReportComposeViewController {
     }
 
     // MARK: - Notification
-    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    override func didReceivePaletteChangeNotification(_: Notification?) {
         textView.backgroundColor = ColorManager.shared.colorForKey("report.background")
         textView.tintColor = ColorManager.shared.colorForKey("report.tint")
         textView.textColor = ColorManager.shared.colorForKey("report.text")

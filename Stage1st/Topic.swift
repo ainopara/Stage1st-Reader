@@ -20,7 +20,7 @@ extension S1Topic {
         self.init(topicID: topicID as NSNumber)
 
         if let title = json["subject"].string.flatMap({ $0 as NSString }),
-           let unescapedTitle = title.gtm_stringByUnescapingFromHTML() {
+            let unescapedTitle = title.gtm_stringByUnescapingFromHTML() {
             self.title = unescapedTitle
         }
 
@@ -51,23 +51,23 @@ extension S1Topic {
      - parameter topic: the topic holding information from network API.
      */
     func update(_ topic: S1Topic) {
-        guard !self.isImmutable else {
+        guard !isImmutable else {
             DDLogError("[S1Topic] Trying to update a immutable topic")
             assert(false)
             return
         }
 
-        guard self.topicID.intValue == topic.topicID.intValue else {
+        guard topicID.intValue == topic.topicID.intValue else {
             DDLogError("[S1Topic] Trying to update from a topic with different ID")
             assert(false)
             return
         }
 
         // Recored database reply count for presenting in topic list table cell
-        self.lastReplyCount = self.replyCount
+        lastReplyCount = replyCount
 
         let properties = ["title", "replyCount", "totalPageCount", "authorUserID", "authorUserName", "formhash", "message", "fID", "lastReplyDate"]
-        properties.forEach { (onePropertyName) in
+        properties.forEach { onePropertyName in
             let localValue = self.value(forKey: onePropertyName)
             let serverValue = topic.value(forKey: onePropertyName)
 

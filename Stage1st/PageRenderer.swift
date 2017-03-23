@@ -26,7 +26,7 @@ extension PageRenderer {
         return Bundle(url: templateBundleURL)!
     }
 
-    func userIsBlocked(with userID: UInt) -> Bool {
+    func userIsBlocked(with _: UInt) -> Bool {
         return false
     }
 
@@ -70,7 +70,7 @@ extension PageRenderer {
                 "background": ColorManager.shared.htmlColorStringWithID("5"),
                 "text": ColorManager.shared.htmlColorStringWithID("21"),
                 "border": ColorManager.shared.htmlColorStringWithID("14"),
-                "borderText": ColorManager.shared.htmlColorStringWithID("17")
+                "borderText": ColorManager.shared.htmlColorStringWithID("17"),
             ]
         }
 
@@ -87,7 +87,7 @@ extension PageRenderer {
         return [
             "font-style-file": fontStyleFile(),
             "color": colorStyle(),
-            "floors": floorsData()
+            "floors": floorsData(),
         ]
     }
 
@@ -188,7 +188,7 @@ extension PageRenderer {
                         "//font[@color='#fffacd']",
                         "//font[@color='#FFFFCC']",
                         "//font[@color='White']",
-                        "//font[@color='#ffffff']"
+                        "//font[@color='#ffffff']",
                     ]
 
                     let spoilers = spoilerXpathList
@@ -234,8 +234,8 @@ extension PageRenderer {
                 guard
                     let data = HTMLString.data(using: .utf8),
                     let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
-                        DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
-                        return HTMLString
+                    DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
+                    return HTMLString
                 }
 
                 let processedDocument = processIndent(xmlDocument: processSpoiler(xmlDocument: processImages(xmlDocument: xmlDocument)))
@@ -271,7 +271,7 @@ extension PageRenderer {
             switch indexMark {
             case .none:
                 return "N"
-            case .some(let mark) where mark != "楼主":
+            case let .some(mark) where mark != "楼主":
                 return "#\(mark)"
             default:
                 return "楼主"
@@ -287,8 +287,9 @@ extension PageRenderer {
             "poll": nil,
             "content": userIsBlocked(with: floor.author.ID) ? "<td class=\"t_f\"><div class=\"s1-alert\">该用户已被您屏蔽</i></td>" : processContent(content: floor.content),
             "attachments": floor.imageAttachmentURLStringList.flatMap { (list: [String]) in list.map { ["url": $0, "ID": UUID().uuidString] } },
-            "is-first": isFirstInPage
+            "is-first": isFirstInPage,
         ]
     }
+
     // swiftlint:enable nesting
 }

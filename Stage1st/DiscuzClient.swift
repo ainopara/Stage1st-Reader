@@ -23,15 +23,15 @@ public enum DZError: Error {
 extension DZError: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .loginFailed(let messageValue, let messageString):
+        case let .loginFailed(messageValue, messageString):
             return "Login failed due to `login_success` can not be founded in messageval `\(messageValue)` with messagestr: `\(messageString)`"
-        case .userInfoParseFailed(let jsonString):
+        case let .userInfoParseFailed(jsonString):
             return "User info failed to parse for json `\(jsonString)`"
-        case .noFieldInfoReturned(let jsonString):
+        case let .noFieldInfoReturned(jsonString):
             return "No field information in json `\(jsonString)`"
-        case .noThreadListReturned(let jsonString):
+        case let .noThreadListReturned(jsonString):
             return "No thread list in json `\(jsonString)`"
-        case .threadParseFailed(let jsonString):
+        case let .threadParseFailed(jsonString):
             return "Thread failed to parse for json `\(jsonString)`"
         }
     }

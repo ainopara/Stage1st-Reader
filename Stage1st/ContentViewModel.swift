@@ -36,22 +36,22 @@ class ContentViewModel: NSObject, PageRenderer {
             self.currentPage = MutableProperty(1)
         }
 
-        self.previousPage = MutableProperty(self.currentPage.value)
+        previousPage = MutableProperty(self.currentPage.value)
 
         if let replyCount = topic.replyCount?.uintValue {
             self.totalPages = MutableProperty(replyCount / 30 + 1)
         } else {
-            self.totalPages = MutableProperty(self.currentPage.value)
+            totalPages = MutableProperty(self.currentPage.value)
         }
 
         DDLogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
 
         self.dataCenter = dataCenter
-        self.apiManager = dataCenter.apiManager
+        apiManager = dataCenter.apiManager
 
-        self.title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
-        self.replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
-        self.favorite = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.favorite))
+        title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
+        replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
+        favorite = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.favorite))
 
         super.init()
 
@@ -63,15 +63,15 @@ class ContentViewModel: NSObject, PageRenderer {
             cachedViewPosition[lastViewedPage] = CGFloat(lastViewedPosition)
         }
 
-        currentPage.producer.startWithValues { (page) in
+        currentPage.producer.startWithValues { page in
             DDLogInfo("[ContentVM] Current page changed to: \(page)")
         }
 
         totalPages <~ replyCount.producer
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
         // TODO: Add logs.
-//        DDLogInfo("[ContentVM] reply count changed: %@", x)
-        previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { (previous, _) in return previous }
+        //        DDLogInfo("[ContentVM] reply count changed: %@", x)
+        previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { previous, _ in return previous }
     }
 
     func userIsBlocked(with userID: UInt) -> Bool {
@@ -80,8 +80,8 @@ class ContentViewModel: NSObject, PageRenderer {
 }
 
 extension ContentViewModel {
-    func currentContentPage(completion: @escaping (Result<(String)>) -> Void) {
-        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] (floors, isFromCache) in
+    func currentContentPage(completion: @escaping (Result<String>) -> Void) {
+        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] floors, isFromCache in
             guard let strongSelf = self else { return }
             let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
             guard !shouldRefetch else {
@@ -91,7 +91,7 @@ extension ContentViewModel {
             }
 
             completion(.success(strongSelf.generatePage(with: floors)))
-        }) { (error) in
+        }) { error in
             completion(.failure(error))
         }
     }
@@ -122,10 +122,10 @@ extension ContentViewModel {
         return result
     }
 
-//    func templateBundle() -> Bundle {
-//        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
-//        return Bundle.init(url: templateBundleURL)!
-//    }
+    //    func templateBundle() -> Bundle {
+    //        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
+    //        return Bundle.init(url: templateBundleURL)!
+    //    }
 
     func pageBaseURL() -> URL {
         return self.templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
@@ -147,7 +147,7 @@ extension ContentViewModel {
     }
 
     func hasPrecachedNextPage() -> Bool {
-        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page:currentPage.value + 1)
+        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value + 1)
     }
 
     func forwardButtonImage() -> UIImage {
@@ -193,7 +193,7 @@ extension ContentViewModel {
     func activityUserInfo() -> [AnyHashable: Any] {
         return [
             "topicID": self.topic.topicID,
-            "page": self.currentPage.value
+            "page": self.currentPage.value,
         ]
     }
 }
@@ -247,7 +247,7 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
                                    topic: topic,
                                    floors: floors,
                                    centerFloorID: centerFloorID,
-                                   baseURL: self.pageBaseURL())
+                                   baseURL: pageBaseURL())
     }
 }
 
@@ -285,6 +285,7 @@ extension ContentViewModel {
     func isInFirstPage() -> Bool {
         return currentPage.value == 1
     }
+
     func isInLastPage() -> Bool {
         return currentPage.value >= totalPages.value
     }

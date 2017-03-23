@@ -16,23 +16,24 @@ class AnimationView: UIView {
     fileprivate var cgImages: [AnyObject] {
         if self.tintColor == nil {
             return images.flatMap({ image in
-                return image.cgImage
+                image.cgImage
             })
         }
         return images.flatMap({ templateImage in
-            return templateImage.s1_tintWithColor(self.tintColor).cgImage
+            templateImage.s1_tintWithColor(self.tintColor).cgImage
         })
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.isUserInteractionEnabled = false
+        isUserInteractionEnabled = false
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
+
 // MARK: - Public
 extension AnimationView {
     func removeAllAnimations() {
@@ -52,6 +53,7 @@ extension AnimationView {
         self.resumeAnimation(self.animation())
     }
 }
+
 // MARK: - Private
 extension AnimationView {
     fileprivate func animation() -> CAKeyframeAnimation {
@@ -66,19 +68,19 @@ extension AnimationView {
 
 extension AnimationView {
     fileprivate func startAnimation(_ animation: CAKeyframeAnimation) {
-        self.layer.add(animation, forKey: "ABAnimation")
-        self.isPlayingAnimation = true
+        layer.add(animation, forKey: "ABAnimation")
+        isPlayingAnimation = true
     }
 
     fileprivate func pauseAnimation(_ animation: CAKeyframeAnimation) {
-        self.beginTime = animation.beginTime
-        self.layer.removeAnimation(forKey: "ABAnimation")
-        self.isPlayingAnimation = false
+        beginTime = animation.beginTime
+        layer.removeAnimation(forKey: "ABAnimation")
+        isPlayingAnimation = false
     }
 
     fileprivate func resumeAnimation(_ animation: CAKeyframeAnimation) {
-        animation.beginTime = self.beginTime
-        self.startAnimation(animation)
+        animation.beginTime = beginTime
+        startAnimation(animation)
     }
 }
 
@@ -100,6 +102,7 @@ class AnimationButton: UIButton {
     var isPlayingAnimation: Bool {
         return animationView.isPlayingAnimation
     }
+
     fileprivate var previousHighlighted: Bool = false
     override var isHighlighted: Bool {
         didSet {
@@ -116,6 +119,7 @@ class AnimationButton: UIButton {
             }
         }
     }
+
     override var tintColor: UIColor! {
         didSet {
             if isHighlighted {
@@ -131,27 +135,27 @@ class AnimationButton: UIButton {
         self.image = image
         super.init(frame: frame)
 
-        self.animationView.images = images
-        self.setStaticImage(self.image)
+        animationView.images = images
+        setStaticImage(self.image)
 
-        self.addSubview(animationView)
-        animationView.snp.makeConstraints { (make) in
+        addSubview(animationView)
+        animationView.snp.makeConstraints { make in
             make.center.equalTo(self)
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     func startAnimation() {
-        self.animationView.reloadAnimation()
-        self.setStaticImage(nil)
+        animationView.reloadAnimation()
+        setStaticImage(nil)
     }
 
     func stopAnimation() {
-        self.animationView.removeAllAnimations()
-        self.setStaticImage(self.image)
+        animationView.removeAllAnimations()
+        setStaticImage(image)
     }
 
     /**
@@ -160,14 +164,14 @@ class AnimationButton: UIButton {
      */
     func recover() {
         if isPlayingAnimation {
-            self.startAnimation()
+            startAnimation()
         } else {
-            self.stopAnimation()
+            stopAnimation()
         }
     }
 
     fileprivate func setStaticImage(_ image: UIImage?) {
-        self.setImage(image?.s1_tintWithColor(self.tintColor), for: .normal)
-        self.setImage(image?.s1_tintWithColor(self.tintColor.withAlphaComponent(self.hightlightAlpha)), for: .highlighted)
+        setImage(image?.s1_tintWithColor(tintColor), for: .normal)
+        setImage(image?.s1_tintWithColor(tintColor.withAlphaComponent(hightlightAlpha)), for: .highlighted)
     }
 }

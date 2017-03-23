@@ -19,9 +19,9 @@ class UserViewModel {
     init(dataCenter: S1DataCenter, user: User) {
         self.dataCenter = dataCenter
         self.user = MutableProperty(user)
-        self.blocked = MutableProperty(dataCenter.userIDIsBlocked(user.ID))
+        blocked = MutableProperty(dataCenter.userIDIsBlocked(user.ID))
 
-        blocked.signal.observeValues { (isBlocked) in
+        blocked.signal.observeValues { isBlocked in
             if isBlocked {
                 dataCenter.blockUser(withID: user.ID)
                 NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
@@ -33,13 +33,13 @@ class UserViewModel {
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
-        dataCenter.apiManager.profile(userID: self.user.value.ID) { [weak self] (result) in
+        dataCenter.apiManager.profile(userID: user.value.ID) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
-            case .success(let user):
+            case let .success(user):
                 strongSelf.user.value = user
                 resultBlock(.success(user))
-            case .failure(let error):
+            case let .failure(error):
                 resultBlock(.failure(error))
             }
         }
