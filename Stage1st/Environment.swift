@@ -13,8 +13,8 @@ struct Environment {
     let apiService: DiscuzClient
     let cookieStorage: HTTPCookieStorage
 
-    init(baseURL: String = "http://119.23.22.79/2b",
-         apiService: DiscuzClient = DiscuzClient(baseURL: "http://119.23.22.79/2b"),
+    init(baseURL: String = "http://bbs.stage1.cc",
+         apiService: DiscuzClient = DiscuzClient(baseURL: "http://bbs.stage1.cc"),
          cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared) {
         self.baseURL = baseURL
         self.apiService = apiService

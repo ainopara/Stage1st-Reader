@@ -147,7 +147,7 @@
                              @"searchsubmit" : @"true"};
     [[S1HTTPSessionManager sharedHTTPClient] POST:url parameters:params progress:nil success:success failure:failure];
 }
-//http://119.23.22.79/2b/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
+//http://bbs.stage1.cc/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
 + (void)requestSearchResultPageForSearchID:(NSString *)searchID
                                   withPage:(NSNumber *)page
                                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
