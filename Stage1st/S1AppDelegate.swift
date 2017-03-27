@@ -8,6 +8,7 @@
 
 import Foundation
 import CocoaLumberjack
+import CloudKit
 
 // swiftlint:disable type_name
 struct Constants {
@@ -93,7 +94,6 @@ extension S1AppDelegate {
 
 // MARK: Setup
 extension S1AppDelegate {
-
     func setup() {
         // NSCoding Mapping
         NSKeyedUnarchiver.setClass(Floor.self, forClassName: "S1Floor")
@@ -127,6 +127,80 @@ extension S1AppDelegate {
             Constants.defaults.reverseActionKey: false,
             Constants.defaults.hideStickTopicsKey: true,
         ])
+
+        updateStage1stDomainIfNecessary()
+    }
+
+    func updateStage1stDomainIfNecessary() {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
+        let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
+        let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])
+        fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
+            guard let stage1stDomainRecord = recordsDictionary?[stage1stDomainRecordID] else {
+                DDLogError("fetchedRecords: \(recordsDictionary) error: \(error)")
+                return
+            }
+
+            let modificationDate = stage1stDomainRecord.modificationDate ?? Date.distantPast
+            guard let mainURL = stage1stDomainRecord["mainURL"] as? String else {
+                DDLogError("No mainURL in \(stage1stDomainRecord)")
+                return
+            }
+
+            let serverAddress: ServerAddress
+
+            if let usedURLs = stage1stDomainRecord["usedURLs"] as? [String] {
+                serverAddress = ServerAddress(main: mainURL, used: usedURLs, lastUpdateDate: modificationDate)
+            } else {
+                serverAddress = ServerAddress(main: mainURL, used: [], lastUpdateDate: modificationDate)
+            }
+
+            DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
+//            if modificationDate.compare()
+            DispatchQueue.main.async {
+                MessageHUD.shared.post(message: "论坛地址已更新", duration: .second(2.5))
+            }
+        }
+        publicDatabase.add(fetchRecordOperation)
+    }
+}
+
+class ServerAddress: NSCoding {
+    struct Constants {
+        static let mainURLKey = "main"
+        static let usedURLsKey = "used"
+        static let lastUpdateDateKey = "date"
+    }
+    let main: String
+    let used: [String]
+    let lastUpdateDate: Date
+
+    static let `default` = ServerAddress(main: "http://bbs.stage1.cc", used: [], lastUpdateDate: Date.distantPast)
+    static var traced: ServerAddress { return .default }
+
+    init(main: String, used: [String], lastUpdateDate: Date) {
+        self.main = main
+        self.used = used
+        self.lastUpdateDate = lastUpdateDate
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
+            let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
+            let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
+                return nil
+        }
+
+        main = mainURL
+        used = usedURLs
+        self.lastUpdateDate = lastUpdateDate
+    }
+
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(main, forKey: Constants.mainURLKey)
+        aCoder.encode(used, forKey: Constants.usedURLsKey)
+        aCoder.encode(lastUpdateDate, forKey: Constants.lastUpdateDateKey)
     }
 }
 

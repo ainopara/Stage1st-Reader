@@ -540,6 +540,8 @@ extension S1ContentViewController {
     }
 
     open func action(sender _: Any?) {
+        MessageHUD.shared.post(message: UUID().uuidString, duration: .second(1.0))
+        return;
         let moreActionSheet = UIAlertController(title: nil,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)

@@ -12,8 +12,10 @@ import CocoaLumberjack
 private let collectionPageFloors = "topicFloors"
 private let collectionFloorIDs = "floorIDs"
 private let collectionMahjongFace = "mahjongFace"
+private let collectionServerAddress = "serverAddress"
 private let metadataLastUsed = "lastUsed"
 private let keyMahjongFaceHistory = "mahjongFaceHistory"
+private let keyServerAddress = "serverAddress"
 
 class CacheDatabaseManager: NSObject {
     let cacheDatabase: YapDatabase
@@ -161,7 +163,6 @@ extension CacheDatabaseManager {
 // MARK: - Mahjong Face History
 extension CacheDatabaseManager {
     func set(mahjongFaceHistory: [MahjongFaceItem]) {
-        // Array<(String, String, URL)>
         self.backgroundWriteConnection.asyncReadWrite { transaction in
             transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace)
         }
@@ -173,6 +174,23 @@ extension CacheDatabaseManager {
             mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
         return mahjongFaceHistory ?? [MahjongFaceItem]()
+    }
+}
+
+// MARK: - Server Address
+extension CacheDatabaseManager {
+    func set(serverAddress: ServerAddress) {
+        self.backgroundWriteConnection.asyncReadWrite { transaction in
+            transaction.setObject(serverAddress, forKey: keyServerAddress, inCollection: collectionServerAddress)
+        }
+    }
+
+    func serverAddress() -> ServerAddress? {
+        var serverAddress: ServerAddress?
+        self.readConnection.read { transaction in
+            serverAddress = transaction.object(forKey: keyServerAddress, inCollection: collectionServerAddress) as? ServerAddress
+        }
+        return serverAddress
     }
 }
 

@@ -9,15 +9,19 @@
 import Foundation
 
 struct Environment {
+    let forumName: String
     let baseURL: String
     let apiService: DiscuzClient
     let cookieStorage: HTTPCookieStorage
+    let serverAddress: ServerAddress
 
-    init(baseURL: String = "http://bbs.stage1.cc",
-         apiService: DiscuzClient = DiscuzClient(baseURL: "http://bbs.stage1.cc"),
+    init(forumName: String = "Stage1st",
+         serverAddress: ServerAddress = ServerAddress.traced,
          cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared) {
-        self.baseURL = baseURL
-        self.apiService = apiService
+        self.forumName = forumName
+        self.serverAddress = serverAddress
+        baseURL = serverAddress.main
+        apiService = DiscuzClient(baseURL: baseURL)
         self.cookieStorage = cookieStorage
     }
 }

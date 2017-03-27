@@ -8,13 +8,25 @@
 
 import UIKit
 import SnapKit
+import CocoaLumberjack
 
 class MessageHUD: UIWindow {
+    enum State {
+        case hidden
+        case appearing
+        case presenting
+        case hiding
+    }
     static var shared = MessageHUD(frame: .zero)
 
     let backgroundView = UIVisualEffectView(effect: nil)
     let textLabel = UILabel(frame: .zero)
     let decorationLine = UIView(frame: .zero)
+    var state: State = .hidden { didSet {
+        print(state)
+        }
+    }
+    var currentHidingToken = ""
 
     override init(frame: CGRect) {
         var statusBarFrame = UIApplication.shared.statusBarFrame
@@ -59,17 +71,64 @@ class MessageHUD: UIWindow {
 
     func post(message: String, duration: Duration = .forever, animated: Bool = true) {
         makeKeyAndVisible()
+        guard case .hidden = state else {
+            switch state {
+            case .presenting:
+            textLabel.text = message
+            default:
+            DDLogError("missed \(state)")
+            }
+            return
+        }
         textLabel.text = message
+        if animated {
+            self.state = .appearing
+            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 10.0, options: [], animations: {
+                self.alpha = 1.0
+            }) { [weak self] (_) in
+                guard let strongSelf = self else { return }
+                strongSelf.state = .presenting
+                strongSelf.hide(after: duration, animated: animated)
+            }
+        } else {
+            self.alpha = 1.0
+            self.state = .presenting
+            hide(after: duration, animated: animated)
+        }
+    }
+
+    private func hide(after duration: Duration, animated: Bool) {
         if case .second(let time) = duration {
+            let token = UUID().uuidString
+            self.currentHidingToken = token
             DispatchQueue.main.asyncAfter(deadline: .now() + time) { [weak self] in
                 guard let strongSelf = self else { return }
-                strongSelf.hide()
+                guard strongSelf.currentHidingToken == token else { return }
+                strongSelf.hide(animated: animated)
             }
         }
     }
 
-    func hide() {
-        isHidden = true
+    func hide(animated: Bool = true) {
+        guard state == .presenting || state == .appearing else {
+            DDLogWarn("Ignoring message hud hide operation with state: \(state)")
+            return
+        }
+
+        currentHidingToken = ""
+
+        if animated {
+            self.state = .hiding
+            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: [], animations: {
+                self.alpha = 0.0
+            }, completion: { [weak self] (_) in
+                guard let strongSelf = self else { return }
+                strongSelf.state = .hidden
+            })
+        } else {
+            self.alpha = 0.0
+            state = .hidden
+        }
     }
 
     enum Duration {
