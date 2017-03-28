@@ -73,8 +73,8 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 DDLogTracking("transitionWasCancelled: \(transitionContext.transitionWasCancelled)")
                 DDLogTracking("containerView: \(transitionContext.containerView)")
                 DDLogTracking("containerView.subviews: \(transitionContext.containerView.subviews)")
-                DDLogTracking("fromViewController: \(transitionContext.viewController(forKey: .from))")
-                DDLogTracking("toViewController: \(transitionContext.viewController(forKey: .to))")
+                DDLogTracking("fromViewController: \(String(describing: transitionContext.viewController(forKey: .from)))")
+                DDLogTracking("toViewController: \(String(describing: transitionContext.viewController(forKey: .to)))")
             }
             fromViewController.view.transform = .identity
             toViewController.view.transform = .identity

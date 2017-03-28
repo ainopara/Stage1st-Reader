@@ -67,11 +67,11 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             case let .back(rotateAngle):
                 if case let .back(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
-                        backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                        backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
                 } else {
                     backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
-                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
             }
         }
@@ -83,20 +83,20 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             case let .forward(rotateAngle):
                 if case let .forward(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
-                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
                 } else {
                     forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
-                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
             case let .refresh(rotateAngle):
                 if case let .refresh(oldRotateAngle) = oldValue {
                     if rotateAngle != oldRotateAngle {
-                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                        forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                     }
                 } else {
                     forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
-                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(M_PI_2 * rotateAngle), 0.0, 0.0, 1.0)
+                    forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
                 }
             }
         }

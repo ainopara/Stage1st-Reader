@@ -159,12 +159,12 @@ extension WKWebView {
             }
 
             guard error == nil else {
-                DDLogWarn("failed to get position of element: \(ID) with error: \(error)")
+                DDLogWarn("failed to get position of element: \(ID) with error: \(String(describing: error))")
                 return
             }
 
             guard let resultString = result as? String else {
-                DDLogWarn("failed to get position of element: \(ID) with result: \(result)")
+                DDLogWarn("failed to get position of element: \(ID) with result: \(String(describing: result))")
                 return
             }
 

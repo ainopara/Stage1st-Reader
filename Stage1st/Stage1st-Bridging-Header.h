@@ -14,7 +14,7 @@
 #import "S1TopicListViewController.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
-#import "S1Appdelegate.h"
+#import "S1AppDelegate.h"
 #import "NavigationControllerDelegate.h"
 #import "S1TabBar.h"
 #import "S1Parser.h"

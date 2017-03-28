@@ -397,7 +397,7 @@ extension LoginViewController {
             guard let loginDict = loginDict else {
                 return
             }
-            if let error = error as? NSError, error.code != Int(AppExtensionErrorCodeCancelledByUser) {
+            if let error = error as NSError?, error.code != Int(AppExtensionErrorCodeCancelledByUser) {
                 DDLogInfo("Error invoking 1Password App Extension for find login: \(error)")
                 return
             }
@@ -571,7 +571,7 @@ extension LoginViewController {
                 if let attachmentBehavior = attachmentBehavior {
                     dynamicAnimator.removeBehavior(attachmentBehavior)
                 }
-                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(dynamicItemBehavior?.linearVelocity(for: containerView))")
+                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(String(describing: dynamicItemBehavior?.linearVelocity(for: containerView)))")
                 dynamicItemBehavior?.addLinearVelocity(velocity, for: containerView)
                 dynamicItemBehavior?.action = { [weak self] in
                     guard let strongSelf = self else { return }

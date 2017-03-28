@@ -138,7 +138,7 @@ extension S1AppDelegate {
         let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])
         fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
             guard let stage1stDomainRecord = recordsDictionary?[stage1stDomainRecordID] else {
-                DDLogError("fetchedRecords: \(recordsDictionary) error: \(error)")
+                DDLogError("fetchedRecords: \(String(describing: recordsDictionary)) error: \(String(describing: error))")
                 return
             }
 
@@ -157,7 +157,7 @@ extension S1AppDelegate {
             }
 
             DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
-//            if modificationDate.compare()
+            //            if modificationDate.compare()
             DispatchQueue.main.async {
                 MessageHUD.shared.post(message: "论坛地址已更新", duration: .second(2.5))
             }
@@ -172,6 +172,7 @@ class ServerAddress: NSCoding {
         static let usedURLsKey = "used"
         static let lastUpdateDateKey = "date"
     }
+
     let main: String
     let used: [String]
     let lastUpdateDate: Date
@@ -189,7 +190,7 @@ class ServerAddress: NSCoding {
         guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
             let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
             let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
-                return nil
+            return nil
         }
 
         main = mainURL
