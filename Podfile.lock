@@ -56,8 +56,8 @@ PODS:
   - Reachability (3.2)
   - ReactiveCocoa (5.0.1):
     - ReactiveSwift (~> 1.1)
-  - ReactiveSwift (1.1.0):
-    - Result (~> 3.1)
+  - ReactiveSwift (1.1.1):
+    - Result (~> 3.2)
   - Result (3.2.1)
   - Reveal-SDK (7)
   - SnapKit (3.2.0)
@@ -195,7 +195,7 @@ SPEC CHECKSUMS:
   R.swift.Library: fbdec16c9802ad104fc1ba53415dc190e6ec5c73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: f577006aa6c7b0b08020109ebaae3b77ada00adc
-  ReactiveSwift: 2f4e4a02e5a5c87ea63f5fe667163ce2a67cbb57
+  ReactiveSwift: 2489549e3231a6ff68ec99f3d320bb264f10ba0a
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
   Reveal-SDK: 564657bc66c93d2718b1c0121cdebe99d354ddab
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
@@ -205,6 +205,6 @@ SPEC CHECKSUMS:
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: ee9d106a78526dc8f98d1f3333e97612091a6811
+PODFILE CHECKSUM: eddb521a9e234f4e134df620a392c632d5e35050
 
 COCOAPODS: 1.2.0
