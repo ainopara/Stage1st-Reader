@@ -61,7 +61,7 @@ PODS:
   - Result (3.2.1)
   - Reveal-SDK (8)
   - SnapKit (3.2.0)
-  - SwiftFormat/CLI (0.26.2)
+  - SwiftFormat/CLI (0.28.2)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -199,7 +199,7 @@ SPEC CHECKSUMS:
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
   Reveal-SDK: 43be4e662864e937960d0d04d005135e29c4e53b
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
-  SwiftFormat: 06b917664661f63c3f09d6b0e0fc92986bf5641a
+  SwiftFormat: f000e128c6f7b61ae0d5010b7745119734adeaa1
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
