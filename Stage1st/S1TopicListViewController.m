@@ -13,7 +13,6 @@
 #import "S1HUD.h"
 #import "S1Topic.h"
 #import "S1TabBar.h"
-#import "S1DataCenter.h"
 #import "Masonry.h"
 
 #import "ODRefreshControl.h"
@@ -49,7 +48,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @property (nonatomic, strong) S1HUD *refreshHUD;
 // Model
-@property (nonatomic, strong) S1DataCenter *dataCenter;
+@property (nonatomic, strong) DataCenter *dataCenter;
 @property (nonatomic, strong) S1TopicListViewModel *viewModel;
 
 @property (nonatomic, strong) NSString *currentKey;
@@ -85,7 +84,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.dataCenter = [S1DataCenter sharedDataCenter];
+    self.dataCenter = [[AppEnvironment current] dataCenter];
     self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
     
     self.view.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.background"];
@@ -414,7 +413,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         NSString *text = searchBar.text;
         NSNumber *topicID = [[[NSNumberFormatter alloc] init] numberFromString:text];
         if (topicID != nil) {
-            S1Topic *topic = [self.dataCenter tracedTopic:topicID];
+            S1Topic *topic = [self.dataCenter tracedWithTopicID:topicID.integerValue];
             if (topic == nil) {
                 topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
@@ -436,7 +435,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         self.searchKeyword = self.searchBar.text;
         self.refreshControl.hidden = YES;
         
-        [self.dataCenter searchTopicsForKeyword:searchBar.text success:^(NSArray *topicList) {
+        [self.dataCenter searchTopicsFor:searchBar.text successBlock:^(NSArray *topicList) {
             self.topics = [topicList mutableCopy];
             [self.tableView reloadData];
             if (self.topics && self.topics.count > 0) {
@@ -446,7 +445,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             self.scrollTabBar.enabled = YES;
             [self.refreshHUD hideWithDelay:0.3];
             _loadingFlag = NO;
-        } failure:^(NSError *error) {
+        } failureBlock:^(NSError *error) {
             if (error.code == NSURLErrorCancelled) {
                 DDLogDebug(@"[Network] NSURLErrorCancelled");
                 [self.refreshHUD hideWithDelay:0];
@@ -494,7 +493,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     _loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
-    if (refresh || ![self.dataCenter hasCacheForKey:forumID]) {
+    if (refresh || ![self.dataCenter hasCacheFor:forumID]) {
         [self.refreshHUD showActivityIndicator];
     }
     
@@ -537,7 +536,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
         }
         //hud hide
-        if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+        if (refresh || ![strongSelf.dataCenter hasCacheFor:key]) {
             [strongSelf.refreshHUD hideWithDelay:0.3];
         }
         //others
@@ -572,7 +571,7 @@ static NSString * const cellIdentifier = @"TopicCell";
                 [strongSelf.tableView reloadData];
             }
             //hud hide
-            if (refresh || ![strongSelf.dataCenter hasCacheForKey:key]) {
+            if (refresh || ![strongSelf.dataCenter hasCacheFor:key]) {
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [strongSelf.refreshHUD hideWithDelay:0];

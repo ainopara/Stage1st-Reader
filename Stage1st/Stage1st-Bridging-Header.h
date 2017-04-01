@@ -4,7 +4,6 @@
 
 #import "S1Global.h"
 #import "S1Topic.h"
-#import "S1DataCenter.h"
 #import "S1Tracer.h"
 #import "S1HUD.h"
 #import "CloudKitManager.h"
@@ -20,3 +19,5 @@
 #import "S1Parser.h"
 #import "GTMNSString+HTML.h"
 #import "UIScrollView+WKWebViewHack.h"
+#import "S1YapDatabaseAdapter.h"
+#import "S1NetworkManager.h"

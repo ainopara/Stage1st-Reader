@@ -22,6 +22,8 @@ class CacheDatabaseManager: NSObject {
     let readConnection: YapDatabaseConnection
     let backgroundWriteConnection: YapDatabaseConnection
 
+    static var shared = CacheDatabaseManager(path: Environment.cacheDatabasePath())
+
     init(path: String) {
         cacheDatabase = YapDatabase(path: path)
         readConnection = cacheDatabase.newConnection()
@@ -180,7 +182,7 @@ extension CacheDatabaseManager {
 // MARK: - Server Address
 extension CacheDatabaseManager {
     func set(serverAddress: ServerAddress) {
-        self.backgroundWriteConnection.asyncReadWrite { transaction in
+        self.backgroundWriteConnection.readWrite { transaction in
             transaction.setObject(serverAddress, forKey: keyServerAddress, inCollection: collectionServerAddress)
         }
     }

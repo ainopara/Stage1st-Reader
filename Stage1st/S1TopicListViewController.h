@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class DataCenter;
+
 typedef enum {
     S1TopicListHistory,
     S1TopicListFavorite
@@ -15,6 +17,6 @@ typedef enum {
 
 @interface S1TopicListViewController : UIViewController
 
-@property (nonatomic, strong, readonly) S1DataCenter *dataCenter;
+@property (nonatomic, strong, readonly) DataCenter *dataCenter;
 
 @end

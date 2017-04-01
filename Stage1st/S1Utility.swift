@@ -38,13 +38,13 @@ func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
     return false
 }
 
-extension NSDate {
-    func s1_isLaterThan(date: NSDate) -> Bool {
-        return compare(date as Date) == .orderedDescending
+extension Date {
+    func s1_isLaterThan(date: Date) -> Bool {
+        return compare(date) == .orderedDescending
     }
 
-    func s1_isEarlierThan(date: NSDate) -> Bool {
-        return compare(date as Date) == .orderedAscending
+    func s1_isEarlierThan(date: Date) -> Bool {
+        return compare(date) == .orderedAscending
     }
 }
 

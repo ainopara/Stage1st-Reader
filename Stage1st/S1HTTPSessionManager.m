@@ -9,30 +9,33 @@
 #import "S1HTTPSessionManager.h"
 #import "AFNetworking.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @implementation S1HTTPSessionManager
 
-+ (S1HTTPSessionManager *)sharedHTTPClient
+- (instancetype)initToHTTPClientWithBaseURL:(NSString *)baseURL
 {
-    static S1HTTPSessionManager *httpClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        httpClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://bbs.stage1.cc"]];
-        httpClient.responseSerializer = [AFHTTPResponseSerializer serializer];
-    });
-    return httpClient;
+    self = [super initWithBaseURL:[NSURL URLWithString:baseURL]];
+
+    if (self != nil) {
+        self.responseSerializer = [AFHTTPResponseSerializer serializer];
+    }
+
+    return self;
 }
 
-+ (S1HTTPSessionManager *)sharedJSONClient
+- (instancetype)initToJSONClientWithBaseURL:(NSString *)baseURL
 {
-    static S1HTTPSessionManager *jsonClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        jsonClient = [[S1HTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://bbs.stage1.cc"]];
-        jsonClient.responseSerializer = [AFJSONResponseSerializer serializer];
-        jsonClient.responseSerializer.acceptableContentTypes = [jsonClient.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-    });
-    return jsonClient;
+    self = [super initWithBaseURL:[NSURL URLWithString:baseURL]];
+
+    if (self != nil) {
+        self.responseSerializer = [AFJSONResponseSerializer serializer];
+        self.responseSerializer.acceptableContentTypes = [self.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    }
+
+    return self;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

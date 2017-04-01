@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct AppEnvironment {
+class AppEnvironment: NSObject {
     static var current: Environment = Environment()
 }

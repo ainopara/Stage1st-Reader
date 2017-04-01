@@ -8,9 +8,13 @@
 
 #import "AFHTTPSessionManager.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1HTTPSessionManager : AFHTTPSessionManager
 
-+ (S1HTTPSessionManager *)sharedHTTPClient;
-+ (S1HTTPSessionManager *)sharedJSONClient;
+- (instancetype)initToHTTPClientWithBaseURL:(NSString *)baseURL;
+- (instancetype)initToJSONClientWithBaseURL:(NSString *)baseURL;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -222,11 +222,11 @@ extension QuoteFloorViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString.hasPrefix(AppEnvironment.current.baseURL) {
+        if AppEnvironment.current.serverAddress.hasSameDomain(with: url) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 var topic = topic
-                if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
+                if let tracedTopic = viewModel.dataCenter.traced(topicID: topic.topicID.intValue) {
                     let lastViewedPage = topic.lastViewedPage
                     topic = tracedTopic.copy() as! S1Topic
                     if lastViewedPage != nil {

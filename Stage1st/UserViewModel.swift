@@ -12,21 +12,21 @@ import ReactiveCocoa
 import ReactiveSwift
 
 class UserViewModel {
-    let dataCenter: S1DataCenter
+    let dataCenter: DataCenter
     let user: MutableProperty<User>
     let blocked: MutableProperty<Bool>
 
-    init(dataCenter: S1DataCenter, user: User) {
+    init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
         self.user = MutableProperty(user)
-        blocked = MutableProperty(dataCenter.userIDIsBlocked(user.ID))
+        blocked = MutableProperty(dataCenter.userIDIsBlocked(ID: user.ID))
 
         blocked.signal.observeValues { isBlocked in
             if isBlocked {
-                dataCenter.blockUser(withID: user.ID)
+                dataCenter.blockUser(with: user.ID)
                 NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
             } else {
-                dataCenter.unblockUser(withID: user.ID)
+                dataCenter.unblockUser(with: user.ID)
                 NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
             }
         }

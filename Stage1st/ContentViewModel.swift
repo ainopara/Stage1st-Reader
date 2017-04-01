@@ -14,7 +14,7 @@ import ReactiveSwift
 
 class ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
-    let dataCenter: S1DataCenter
+    let dataCenter: DataCenter
     let apiManager: DiscuzClient
 
     let currentPage: MutableProperty<UInt>
@@ -27,7 +27,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
     var cachedViewPosition: [UInt: CGFloat] = [:]
 
-    init(topic: S1Topic, dataCenter: S1DataCenter) {
+    init(topic: S1Topic, dataCenter: DataCenter) {
         self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
 
         if let currentPage = topic.lastViewedPage?.uintValue {
@@ -75,17 +75,17 @@ class ContentViewModel: NSObject, PageRenderer {
     }
 
     func userIsBlocked(with userID: UInt) -> Bool {
-        return dataCenter.userIDIsBlocked(userID)
+        return dataCenter.userIDIsBlocked(ID: userID)
     }
 }
 
 extension ContentViewModel {
     func currentContentPage(completion: @escaping (Result<String>) -> Void) {
-        dataCenter.floors(for: topic, withPage: NSNumber(value: currentPage.value), success: { [weak self] floors, isFromCache in
+        dataCenter.floors(for: topic, with: Int(currentPage.value), successBlock: { [weak self] floors, isFromCache in
             guard let strongSelf = self else { return }
             let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
             guard !shouldRefetch else {
-                strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, withPage: NSNumber(value: strongSelf.currentPage.value))
+                strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, with: Int(strongSelf.currentPage.value))
                 strongSelf.currentContentPage(completion: completion)
                 return
             }
@@ -104,7 +104,7 @@ extension ContentViewModel {
             return nil
         }
 
-        return self.dataCenter.searchFloorInCache(byFloorID: NSNumber(value: floorID))
+        return self.dataCenter.searchFloorInCache(by: floorID)
     }
 
     func chainSearchQuoteFloorInCache(_ firstFloorID: Int) -> [Floor] {
@@ -273,7 +273,7 @@ extension ContentViewModel {
         topic.lastViewedPage = NSNumber(value: currentPage.value)
         topic.lastViewedDate = Date()
         topic.lastReplyCount = topic.replyCount
-        dataCenter.hasViewed(topic)
+        dataCenter.hasViewed(topic: topic)
 
         DDLogInfo("[ContentVM] Save Topic View State Finish")
     }

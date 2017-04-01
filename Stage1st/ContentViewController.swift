@@ -125,7 +125,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     }
 
     // MARK: -
-    convenience init(topic: S1Topic, dataCenter: S1DataCenter) {
+    convenience init(topic: S1Topic, dataCenter: DataCenter) {
         self.init(viewModel: ContentViewModel(topic: topic, dataCenter: dataCenter))
     }
 
@@ -540,8 +540,6 @@ extension S1ContentViewController {
     }
 
     open func action(sender _: Any?) {
-        MessageHUD.shared.post(message: UUID().uuidString, duration: .second(1.0))
-        return;
         let moreActionSheet = UIAlertController(title: nil,
                                                 message: nil,
                                                 preferredStyle: .actionSheet)
@@ -858,12 +856,12 @@ extension S1ContentViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString.hasPrefix(AppEnvironment.current.baseURL) {
+        if AppEnvironment.current.serverAddress.hasSameDomain(with: url) {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 // TODO: Make this logic easy to understand.
                 var topic = topic
-                if let tracedTopic = viewModel.dataCenter.tracedTopic(topic.topicID) {
+                if let tracedTopic = viewModel.dataCenter.traced(topicID: topic.topicID.intValue) {
                     let lastViewedPage = topic.lastViewedPage
                     topic = tracedTopic.copy() as! S1Topic
                     if lastViewedPage != nil {
@@ -1127,9 +1125,9 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
             MessageHUD.shared.post(message: "回复发送中", duration: .forever)
 
             if let replyTopicFloor = replyTopicFloor {
-                viewModel.dataCenter.replySpecificFloor(replyTopicFloor, in: viewModel.topic, atPage: NSNumber(value: viewModel.currentPage.value), withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
+                viewModel.dataCenter.reply(floor: replyTopicFloor, in: viewModel.topic, at: Int(viewModel.currentPage.value), text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
             } else {
-                viewModel.dataCenter.reply(viewModel.topic, withText: composeViewController.plainText, success: successBlock, failure: failureBlock)
+                viewModel.dataCenter.reply(topic: viewModel.topic, text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
             }
 
             composeViewController.dismiss(animated: true, completion: nil)
@@ -1228,7 +1226,7 @@ extension S1ContentViewController {
 
         // remove cache for last page
         if forceUpdate {
-            viewModel.dataCenter.removePrecachedFloors(for: viewModel.topic, withPage: NSNumber(value: viewModel.currentPage.value))
+            viewModel.dataCenter.removePrecachedFloors(for: viewModel.topic, with: Int(viewModel.currentPage.value))
         }
 
         // Set up HUD
@@ -1256,7 +1254,7 @@ extension S1ContentViewController {
 
                 // Prepare next page
                 if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
-                    strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, withPage: NSNumber(value: strongSelf.viewModel.currentPage.value + 1), shouldUpdate: false)
+                    strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, with: Int(strongSelf.viewModel.currentPage.value) + 1, shouldUpdate: false)
                 }
 
                 // Dismiss HUD if exist

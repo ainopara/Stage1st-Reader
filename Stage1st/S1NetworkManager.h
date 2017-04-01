@@ -10,63 +10,69 @@
 
 @class S1Topic;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1NetworkManager : NSObject
 
-+ (void)requestTopicListAPIForKey:(NSString *)key
+- (instancetype)initWithBaseURL:(NSString *)baseURL;
+
+- (void)requestTopicListAPIForKey:(NSString *)key
                       withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                       success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-+ (void)requestTopicContentAPIForID:(NSNumber *)topicID
+- (void)requestTopicContentAPIForID:(NSNumber *)topicID
                            withPage:(NSNumber *)page
-                            success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                            failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                            success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                            failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-+ (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                              failureBlock:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+- (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                              failureBlock:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-+ (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
+- (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
                                         floorID:(NSNumber *)floorID
                                         forumID:(NSNumber *)forumID
-                                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                                        success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                                        failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 // Reply Specific Floor.
-+ (void)postReplyForTopicID:(NSNumber *)topicID
+- (void)postReplyForTopicID:(NSNumber *)topicID
                    withPage:(NSNumber *)page
                     forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
-                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                    success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                    failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 // Reply Topic.
-+ (void)postReplyForTopicID:(NSNumber *)topicID
+- (void)postReplyForTopicID:(NSNumber *)topicID
                     forumID:(NSNumber *)forumID
                   andParams:(NSDictionary *)params
-                    success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                    failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                    success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                    failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-+ (void)findTopicFloor:(NSNumber *)floorID
+- (void)findTopicFloor:(NSNumber *)floorID
              inTopicID:(NSNumber *)topicID
                success:(void (^)(NSURLSessionDataTask *, id))success
                failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
 
 // Search
-+ (void)postSearchForKeyword:(NSString *)keyword
+- (void)postSearchForKeyword:(NSString *)keyword
                  andFormhash:(NSString *)formhash
-                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                     success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                     failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 // User Info
-+ (void)requestThreadListForID:(NSNumber *)userID
+- (void)requestThreadListForID:(NSNumber *)userID
                        andPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                       success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                       failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-+ (void)requestReplyListForID:(NSNumber *)userID
+- (void)requestReplyListForID:(NSNumber *)userID
                       andPage:(NSNumber *)page
-                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+                      success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
+                      failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
 
-+ (void)cancelRequest;
+- (void)cancelRequest;
 
 @end
+
+NS_ASSUME_NONNULL_END

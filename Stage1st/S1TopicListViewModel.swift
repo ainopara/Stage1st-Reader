@@ -12,13 +12,13 @@ import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
 import YapDatabase.YapDatabaseFilteredView
 
-public final class S1TopicListViewModel: NSObject {
-    public let dataCenter: S1DataCenter
+final class S1TopicListViewModel: NSObject {
+    let dataCenter: DataCenter
     var viewMappings: YapDatabaseViewMappings?
     var databaseConnection: YapDatabaseConnection = MyDatabaseManager.uiDatabaseConnection
     lazy var searchQueue = YapDatabaseSearchQueue()
 
-    init(dataCenter: S1DataCenter) {
+    init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
         super.init()
 
@@ -29,7 +29,7 @@ public final class S1TopicListViewModel: NSObject {
     }
 
     func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
-        dataCenter.topics(forKey: key, shouldRefresh: refresh, success: { [weak self] topicList in
+        dataCenter.topics(for: key, shouldRefresh: refresh, successBlock: { [weak self] topicList in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
             for topic in topicList {
@@ -39,7 +39,7 @@ public final class S1TopicListViewModel: NSObject {
                 success(processedList)
             })
 
-        }, failure: { error in
+            }, failureBlock: { error in
             ensureMainThread({
                 failure(error)
             })
@@ -47,7 +47,7 @@ public final class S1TopicListViewModel: NSObject {
     }
 
     func loadNextPageForKey(_ key: String, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
-        dataCenter.loadNextPage(forKey: key, success: { [weak self] topicList in
+        dataCenter.loadNextPage(for: key, successBlock: { [weak self] topicList in
             guard let strongSelf = self else { return }
             var processedList = [S1Topic]()
             for topic in topicList {
@@ -56,7 +56,7 @@ public final class S1TopicListViewModel: NSObject {
             ensureMainThread({
                 success(processedList)
             })
-        }, failure: { error in
+            }, failureBlock: { error in
             ensureMainThread({
                 failure(error)
             })
@@ -73,18 +73,18 @@ public final class S1TopicListViewModel: NSObject {
 
     func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopic(fromFavorite: topic.topicID)
+            self.dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
         }
     }
 
     func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopic(fromHistory: topic.topicID)
+            self.dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
         }
     }
 
     func topicWithTracedDataForTopic(_ topic: S1Topic) -> S1Topic {
-        if let tracedTopic = dataCenter.tracedTopic(topic.topicID)?.copy() as? S1Topic {
+        if let tracedTopic = dataCenter.traced(topicID: topic.topicID.intValue)?.copy() as? S1Topic {
             tracedTopic.update(topic)
             return tracedTopic
         } else {
@@ -145,6 +145,6 @@ extension S1TopicListViewModel {
 
     func searchBarPlaceholderStringForCurrentKey(_ key: String) -> String {
         let count = key == "Favorite" ? self.dataCenter.numberOfFavorite() : self.dataCenter.numberOfTopics()
-        return NSString(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment: "Search") as NSString, count) as String
+        return String(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment: "Search"), NSNumber(value: count))
     }
 }

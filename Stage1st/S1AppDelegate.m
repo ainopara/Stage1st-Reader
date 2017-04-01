@@ -12,7 +12,6 @@
 #import "S1Topic.h"
 #import "S1Tracer.h"
 #import "S1Parser.h"
-#import "S1DataCenter.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
 #import "CrashlyticsLogger.h"
@@ -140,7 +139,7 @@ S1AppDelegate *MyAppDelegate;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[S1DataCenter sharedDataCenter] cleaning];
+    [self notifyCleaning];
 }
 
 #pragma mark - URL Scheme
@@ -155,7 +154,7 @@ S1AppDelegate *MyAppDelegate;
         
         if (topicIDString) {
             NSNumber *topicID = [NSNumber numberWithInteger:[topicIDString integerValue]];
-            S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
+            S1Topic *topic = [[[AppEnvironment current] dataCenter] tracedWithTopicID:[topicIDString integerValue]];
             if (topic == nil && topicID != nil) {
                 topic = [[S1Topic alloc] initWithTopicID:topicID];
             }
@@ -249,7 +248,7 @@ S1AppDelegate *MyAppDelegate;
     DDLogDebug(@"Receive Hand Off: %@", userActivity.userInfo);
     NSNumber *topicID = [userActivity.userInfo valueForKey:@"topicID"];
     if (topicID != nil) {
-        S1Topic *topic = [[S1DataCenter sharedDataCenter] tracedTopic:topicID];
+        S1Topic *topic = [[[AppEnvironment current] dataCenter] tracedWithTopicID:topicID.integerValue];
         if (topic != nil) {
             NSNumber *lastViewedPage = [userActivity.userInfo valueForKey:@"page"];
             if (lastViewedPage) {
@@ -269,7 +268,7 @@ S1AppDelegate *MyAppDelegate;
         NSString *urlString = [userActivity.webpageURL absoluteString];
         S1Topic *parsedTopic = [S1Parser extractTopicInfoFromLink:urlString];
         if (parsedTopic.topicID) {
-            S1Topic *tracedTopic = [[S1DataCenter sharedDataCenter] tracedTopic:parsedTopic.topicID];
+            S1Topic *tracedTopic = [[[AppEnvironment current] dataCenter] tracedWithTopicID:parsedTopic.topicID.integerValue];
             if (tracedTopic) {
                 NSNumber *lastViewedPage = parsedTopic.lastViewedPage;
                 if (lastViewedPage) {
@@ -303,7 +302,7 @@ S1AppDelegate *MyAppDelegate;
 - (void)pushContentViewControllerForTopic:(S1Topic *)topic {
     id rootvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     if ([rootvc isKindOfClass:[UINavigationController class]] && topic != nil) {
-        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[S1DataCenter sharedDataCenter]];
+        S1ContentViewController *contentViewController = [[S1ContentViewController alloc] initWithTopic:topic dataCenter:[[AppEnvironment current] dataCenter]];
         [(UINavigationController *)rootvc pushViewController:contentViewController animated:YES];
     }
 }

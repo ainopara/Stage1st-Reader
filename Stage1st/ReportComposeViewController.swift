@@ -14,7 +14,7 @@ import YYKeyboardManager
 import TextAttributes
 
 final class ReportComposeViewModel {
-    let dataCenter: S1DataCenter
+    let dataCenter: DataCenter
     let apiManager: DiscuzClient
     let topic: S1Topic
     let floor: Floor
@@ -23,7 +23,7 @@ final class ReportComposeViewModel {
     let canSubmit = MutableProperty(false)
     let submiting = MutableProperty(false)
 
-    init(dataCenter: S1DataCenter, topic: S1Topic, floor: Floor) {
+    init(dataCenter: DataCenter, topic: S1Topic, floor: Floor) {
         self.dataCenter = dataCenter
         apiManager = dataCenter.apiManager
         self.topic = topic
@@ -41,7 +41,7 @@ final class ReportComposeViewModel {
             return
         }
 
-        dataCenter.blockUser(withID: floor.author.ID)
+        dataCenter.blockUser(with: floor.author.ID)
         NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
 
         submiting.value = true

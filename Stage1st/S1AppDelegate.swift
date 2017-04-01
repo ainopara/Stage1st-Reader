@@ -18,11 +18,14 @@ struct Constants {
         static let removeTailsKey = "RemoveTails"
         static let precacheNextPageKey = "PrecacheNextPage"
         static let forcePortraitForPhoneKey = "ForcePortraitForPhone"
-        static let nightMode = "NightMode"
-        static let enableCloudKitSync = "EnableSync"
+        static let nightModeKey = "NightMode"
+        static let enableCloudKitSyncKey = "EnableSync"
 
         static let reverseActionKey = "Stage1st.Content.ReverseFloorAction"
         static let hideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
+
+        static let historyLimitKey = "HistoryLimit"
+        static let previousWebKitCacheCleaningDateKey = "PreviousWebKitCacheCleaningDate"
     }
 }
 
@@ -121,8 +124,8 @@ extension S1AppDelegate {
             Constants.defaults.removeTailsKey: true,
             Constants.defaults.precacheNextPageKey: true,
             Constants.defaults.forcePortraitForPhoneKey: true,
-            Constants.defaults.nightMode: false,
-            Constants.defaults.enableCloudKitSync: false,
+            Constants.defaults.nightModeKey: false,
+            Constants.defaults.enableCloudKitSyncKey: false,
 
             Constants.defaults.reverseActionKey: false,
             Constants.defaults.hideStickTopicsKey: true,
@@ -136,6 +139,7 @@ extension S1AppDelegate {
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
         let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
         let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])
+
         fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
             guard let stage1stDomainRecord = recordsDictionary?[stage1stDomainRecordID] else {
                 DDLogError("fetchedRecords: \(String(describing: recordsDictionary)) error: \(String(describing: error))")
@@ -157,51 +161,27 @@ extension S1AppDelegate {
             }
 
             DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
-            //            if modificationDate.compare()
+
+            if let persistedServerAddress = AppEnvironment.current.cacheDatabaseManager.serverAddress(), modificationDate.timeIntervalSince(persistedServerAddress.lastUpdateDate) <= 0.0 {
+                DDLogInfo("Server address do not need to update.")
+                return
+            }
+
+            AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
+            AppEnvironment.current = Environment()
+
             DispatchQueue.main.async {
-                MessageHUD.shared.post(message: "论坛地址已更新", duration: .second(2.5))
+                MessageHUD.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
             }
         }
+
         publicDatabase.add(fetchRecordOperation)
     }
 }
 
-class ServerAddress: NSCoding {
-    struct Constants {
-        static let mainURLKey = "main"
-        static let usedURLsKey = "used"
-        static let lastUpdateDateKey = "date"
-    }
-
-    let main: String
-    let used: [String]
-    let lastUpdateDate: Date
-
-    static let `default` = ServerAddress(main: "http://bbs.stage1.cc", used: [], lastUpdateDate: Date.distantPast)
-    static var traced: ServerAddress { return .default }
-
-    init(main: String, used: [String], lastUpdateDate: Date) {
-        self.main = main
-        self.used = used
-        self.lastUpdateDate = lastUpdateDate
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
-            let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
-            let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
-            return nil
-        }
-
-        main = mainURL
-        used = usedURLs
-        self.lastUpdateDate = lastUpdateDate
-    }
-
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(main, forKey: Constants.mainURLKey)
-        aCoder.encode(used, forKey: Constants.usedURLsKey)
-        aCoder.encode(lastUpdateDate, forKey: Constants.lastUpdateDateKey)
+extension S1AppDelegate {
+    func notifyCleaning() {
+        AppEnvironment.current.dataCenter.cleaning()
     }
 }
 

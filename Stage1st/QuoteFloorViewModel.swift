@@ -12,13 +12,13 @@ final class QuoteFloorViewModel: PageRenderer {
     let topic: S1Topic
     let floors: [Floor]
 
-    let dataCenter: S1DataCenter
+    let dataCenter: DataCenter
     let discuzAPIManager: DiscuzClient
 
     let centerFloorID: Int
     let baseURL: URL
 
-    init(dataCenter: S1DataCenter,
+    init(dataCenter: DataCenter,
          manager: DiscuzClient,
          topic: S1Topic,
          floors: [Floor],
@@ -33,7 +33,7 @@ final class QuoteFloorViewModel: PageRenderer {
     }
 
     func userIsBlocked(with userID: UInt) -> Bool {
-        return dataCenter.userIDIsBlocked(userID)
+        return dataCenter.userIDIsBlocked(ID: userID)
     }
 }
 

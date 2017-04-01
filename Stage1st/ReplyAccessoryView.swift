@@ -55,7 +55,7 @@ class ReplyAccessoryView: UIView {
     deinit {
         if let historyArray = self.mahjongFaceView?.historyArray {
             DispatchQueue.global().async {
-                S1DataCenter.shared().mahjongFaceHistoryArray = historyArray
+                AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
             }
         }
     }
@@ -72,7 +72,7 @@ extension ReplyAccessoryView {
                 let newMahjongfaceView = S1MahjongFaceView()
                 newMahjongfaceView.delegate = self
                 newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = S1DataCenter.shared().mahjongFaceHistoryArray
+                newMahjongfaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
                 mahjongFaceView = newMahjongfaceView
             }
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
