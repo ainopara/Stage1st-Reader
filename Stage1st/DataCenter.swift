@@ -98,7 +98,7 @@ extension DataCenter {
                 topicListCache[key] = [S1Topic]()
                 topicListCachePageNumber[key] = 1
             }
-            
+
             return
         }
 
@@ -208,7 +208,7 @@ extension DataCenter {
             return
         }
 
-        floors(for: topic, with: page, successBlock: { (floors, fromCache) in
+        floors(for: topic, with: page, successBlock: { (_, _) in
             DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
             NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: ["topicID": topic.topicID, "page": page])
         }) { (error) in
@@ -240,7 +240,7 @@ extension DataCenter {
             "message": text
         ]
 
-        networkManager.postReply(forTopicID: topic.topicID, forumID: forumID, andParams: parameters, success: { (_, responseObject) in
+        networkManager.postReply(forTopicID: topic.topicID, forumID: forumID, andParams: parameters, success: { (_, _) in
             successblock()
         }) { (_, error) in
             failureBlock(error)

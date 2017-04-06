@@ -309,7 +309,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         seccodeInputView.seccodeField.backgroundColor = UIColor.white
         seccodeInputView.seccodeSubmitButton.setTitle("提交", for: .normal)
         seccodeInputView.seccodeSubmitButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
-        seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(LoginViewController.LogInWithSeccode(_:)), for: .touchUpInside)
+        seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(LoginViewController.logInWithSeccode(_:)), for: .touchUpInside)
 
         state = inLoginState() ? .login : .notLogin
 
@@ -361,7 +361,7 @@ extension LoginViewController {
         }
     }
 
-    func LogInWithSeccode(_: UIButton) {
+    func logInWithSeccode(_: UIButton) {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
@@ -464,7 +464,7 @@ extension LoginViewController: UITextFieldDelegate {
             self.logIn(userInfoInputView.loginButton)
         } else if textField === seccodeInputView.seccodeField {
             textField.resignFirstResponder()
-            self.LogInWithSeccode(seccodeInputView.seccodeSubmitButton)
+            self.logInWithSeccode(seccodeInputView.seccodeSubmitButton)
         }
         return true
     }

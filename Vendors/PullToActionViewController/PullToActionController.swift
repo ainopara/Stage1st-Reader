@@ -156,20 +156,16 @@ private let forwardingScrollViewDelegateMethods = [
 // MARK: UIScrollViewDelegate
 extension PullToActionController: UIScrollViewDelegate {
     public override func responds(to aSelector: Selector!) -> Bool {
-        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods {
-            if aSelector == aForwardingScrollViewDelegateMethod {
-                return delegate?.responds(to: aSelector) ?? false
-            }
+        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods where aSelector == aForwardingScrollViewDelegateMethod {
+            return delegate?.responds(to: aSelector) ?? false
         }
 
         return super.responds(to: aSelector)
     }
 
     public override func forwardingTarget(for aSelector: Selector!) -> Any? {
-        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods {
-            if aSelector == aForwardingScrollViewDelegateMethod {
-                return delegate
-            }
+        for aForwardingScrollViewDelegateMethod in forwardingScrollViewDelegateMethods where aSelector == aForwardingScrollViewDelegateMethod {
+            return delegate
         }
 
         return super.forwardingTarget(for: aSelector)

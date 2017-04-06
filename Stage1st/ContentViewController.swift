@@ -426,7 +426,7 @@ extension S1ContentViewController {
         if viewModel.isInFirstPage() {
             _ = navigationController?.popViewController(animated: true)
         } else {
-            if let _ = sender as? WKWebView {
+            if sender as? WKWebView != nil {
                 scrollType = .pullDownForPrevious
             } else {
                 scrollType = .restorePosition
@@ -444,7 +444,7 @@ extension S1ContentViewController {
         case (true, true):
             refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
         case (false, _):
-            if let _ = sender as? WKWebView {
+            if sender as? WKWebView != nil {
                 scrollType = .pullUpForNext
             } else {
                 scrollType = .restorePosition

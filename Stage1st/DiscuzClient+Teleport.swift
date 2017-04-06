@@ -141,7 +141,7 @@ public extension DiscuzClient {
     }
 
     func isInLogin() -> Bool { // TODO: check cookies rather than a global state.
-        if let _ = UserDefaults.standard.object(forKey: "InLoginStateID") as? String {
+        if UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil {
             return true
         } else {
             return false

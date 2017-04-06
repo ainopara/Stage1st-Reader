@@ -71,7 +71,7 @@ class CacheDatabaseManager: NSObject {
         let key = _key(for: topicID, page: page)
         var hasFloors: Bool = false
         readConnection.read { transaction in
-            if let _ = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] {
+            if transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] != nil {
                 hasFloors = true
             }
         }
@@ -148,9 +148,7 @@ extension CacheDatabaseManager {
                     DDLogWarn("floorID \(floorID) index to \(key) which is not a string key as expected.")
                     return
                 }
-                if let _ = transaction.object(forKey: keyString, inCollection: collectionPageFloors) as? [Floor] {
-                    // Nothing to do
-                } else {
+                if transaction.object(forKey: keyString, inCollection: collectionPageFloors) as? [Floor] == nil {
                     floorIDsToRemove.append(floorID)
                 }
             })

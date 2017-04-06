@@ -36,7 +36,7 @@ extension PageRenderer {
                                         bundle: templateBundle(),
                                         templateExtension: "mustache",
                                         encoding: .utf8)
-            let data = Box(_pageData(with: floors, topic: topic))
+            let data = Box(pageData(with: floors, topic: topic))
             let result = try template.render(data)
             return result
         } catch let error {
@@ -45,7 +45,7 @@ extension PageRenderer {
         }
     }
 
-    func _pageData(with floors: [Floor], topic: S1Topic) -> [String: Any] {
+    private func pageData(with floors: [Floor], topic: S1Topic) -> [String: Any] {
         func fontStyleFile() -> String {
             switch (UIDevice.current.userInterfaceIdiom, UserDefaults.standard.object(forKey: "FontSize") as? String) {
             case (.phone, .some("15px")):
@@ -78,7 +78,7 @@ extension PageRenderer {
             var isFirstInPage = true
             var data = [[String: Any?]]()
             for floor in floors {
-                data.append(_floorData(with: floor, topicAuthorID: topic.authorUserID as? UInt, isFirstInPage: isFirstInPage))
+                data.append(floorData(with: floor, topicAuthorID: topic.authorUserID as? UInt, isFirstInPage: isFirstInPage))
                 isFirstInPage = false
             }
             return data
@@ -92,7 +92,7 @@ extension PageRenderer {
     }
 
     // swiftlint:disable nesting
-    func _floorData(with floor: Floor, topicAuthorID: UInt?, isFirstInPage: Bool) -> [String: Any?] {
+    private func floorData(with floor: Floor, topicAuthorID: UInt?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
             func stripTails(content: String) -> String {
                 let mutableString = (content as NSString).mutableCopy() as! NSMutableString

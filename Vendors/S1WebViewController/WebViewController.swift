@@ -143,12 +143,12 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         self.didReceivePaletteChangeNotification(nil)
         DDLogInfo("[WebVC] view will appear")
 
-        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
+        tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     func applicationWillEnterForeground() {
         DDLogDebug("[WebVC] \(self) will enter foreground begin")
-        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
+        tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     // MARK: Layout
@@ -266,7 +266,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
     }
 
-    func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
+    fileprivate func tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
         guard let title = webView.title, title != "" else {
             webView.load(URLRequest(url: currentValidURL()))
             return
