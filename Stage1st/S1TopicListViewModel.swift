@@ -39,7 +39,7 @@ final class S1TopicListViewModel: NSObject {
                 success(processedList)
             })
 
-            }, failureBlock: { error in
+        }, failureBlock: { error in
             ensureMainThread({
                 failure(error)
             })
@@ -56,7 +56,7 @@ final class S1TopicListViewModel: NSObject {
             ensureMainThread({
                 success(processedList)
             })
-            }, failureBlock: { error in
+        }, failureBlock: { error in
             ensureMainThread({
                 failure(error)
             })
@@ -73,13 +73,13 @@ final class S1TopicListViewModel: NSObject {
 
     func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
+            dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
         }
     }
 
     func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
         if let topic = topicAtIndexPath(indexPath) {
-            self.dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
+            dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
         }
     }
 
@@ -138,13 +138,13 @@ extension S1TopicListViewModel {
     }
 
     func updateMappings() {
-        self.databaseConnection.read { transaction in
+        databaseConnection.read { transaction in
             self.viewMappings?.update(with: transaction)
         }
     }
 
     func searchBarPlaceholderStringForCurrentKey(_ key: String) -> String {
-        let count = key == "Favorite" ? self.dataCenter.numberOfFavorite() : self.dataCenter.numberOfTopics()
+        let count = key == "Favorite" ? dataCenter.numberOfFavorite() : dataCenter.numberOfTopics()
         return String(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment: "Search"), NSNumber(value: count))
     }
 }

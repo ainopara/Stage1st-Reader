@@ -29,7 +29,7 @@ extension S1Topic {
         }
 
         if let fieldID = fieldID {
-            self.fID = fieldID as NSNumber
+            fID = fieldID as NSNumber
         }
 
         if let authorUserID = json["authorid"].string.flatMap({ Int($0) }) {
@@ -41,7 +41,7 @@ extension S1Topic {
         }
 
         if let lastPostDate = json["dblastpost"].string.flatMap({ Date(timeIntervalSince1970: TimeInterval(Int($0) ?? 0)) }) {
-            self.lastReplyDate = lastPostDate
+            lastReplyDate = lastPostDate
         }
     }
 

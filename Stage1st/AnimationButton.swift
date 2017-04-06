@@ -14,7 +14,7 @@ class AnimationView: UIView {
     var isPlayingAnimation: Bool = false
     var images: [UIImage] = []
     fileprivate var cgImages: [AnyObject] {
-        if self.tintColor == nil {
+        if tintColor == nil {
             return images.flatMap({ image in
                 image.cgImage
             })
@@ -38,19 +38,19 @@ class AnimationView: UIView {
 extension AnimationView {
     func removeAllAnimations() {
         DDLogDebug("[AnimationButton] stop animation")
-        self.layer.removeAllAnimations()
-        self.isPlayingAnimation = false
+        layer.removeAllAnimations()
+        isPlayingAnimation = false
     }
 
     func reloadAnimation() {
         guard let animation = self.layer.animation(forKey: "ABAnimation") as? CAKeyframeAnimation else {
             DDLogDebug("[AnimationButton] start animation")
-            self.startAnimation(self.animation())
+            startAnimation(self.animation())
             return
         }
         DDLogDebug("[AnimationButton] reload animation")
-        self.pauseAnimation(animation)
-        self.resumeAnimation(self.animation())
+        pauseAnimation(animation)
+        resumeAnimation(self.animation())
     }
 }
 
@@ -59,7 +59,7 @@ extension AnimationView {
     fileprivate func animation() -> CAKeyframeAnimation {
         let animation = CAKeyframeAnimation(keyPath: "contents")
         animation.duration = 3.0
-        animation.values = self.cgImages
+        animation.values = cgImages
         animation.repeatCount = HUGE
         animation.fillMode = kCAFillModeForwards
         return animation
@@ -108,9 +108,9 @@ class AnimationButton: UIButton {
         didSet {
             if isHighlighted != previousHighlighted {
                 if isHighlighted {
-                    animationView.tintColor = self.tintColor.withAlphaComponent(self.hightlightAlpha)
+                    animationView.tintColor = tintColor.withAlphaComponent(hightlightAlpha)
                 } else {
-                    animationView.tintColor = self.tintColor
+                    animationView.tintColor = tintColor
                 }
                 if animationView.isPlayingAnimation {
                     animationView.reloadAnimation()
@@ -123,11 +123,11 @@ class AnimationButton: UIButton {
     override var tintColor: UIColor! {
         didSet {
             if isHighlighted {
-                animationView.tintColor = self.tintColor.withAlphaComponent(self.hightlightAlpha)
+                animationView.tintColor = tintColor.withAlphaComponent(hightlightAlpha)
             } else {
-                animationView.tintColor = self.tintColor
+                animationView.tintColor = tintColor
             }
-            self.recover()
+            recover()
         }
     }
 

@@ -110,7 +110,7 @@ extension CacheDatabaseManager {
 // MARK: - Cleaning
 extension CacheDatabaseManager {
     func removeAllCaches() {
-        self.backgroundWriteConnection.readWrite { transaction in
+        backgroundWriteConnection.readWrite { transaction in
             transaction.removeAllObjects(inCollection: collectionPageFloors)
             transaction.removeAllObjects(inCollection: collectionFloorIDs)
         }
@@ -118,7 +118,7 @@ extension CacheDatabaseManager {
 
     /// Note: this operation will leave tings in collectionFloors (i.e. the index) uncleaned. make sure to clean them.
     func removeFloors(lastUsedBefore date: Date) {
-        self.backgroundWriteConnection.readWrite { transaction in
+        backgroundWriteConnection.readWrite { transaction in
             var keysToRemove = [String]()
             transaction.enumerateKeysAndMetadata(inCollection: collectionPageFloors, using: { key, metadata, _ in
                 guard
@@ -141,7 +141,7 @@ extension CacheDatabaseManager {
     }
 
     func cleanInvalidFloorsID() {
-        self.backgroundWriteConnection.readWrite { transaction in
+        backgroundWriteConnection.readWrite { transaction in
             var floorIDsToRemove = [String]()
             transaction.enumerateKeysAndObjects(inCollection: collectionFloorIDs, using: { floorID, key, _ in
                 guard let keyString = key as? String else {
@@ -163,14 +163,14 @@ extension CacheDatabaseManager {
 // MARK: - Mahjong Face History
 extension CacheDatabaseManager {
     func set(mahjongFaceHistory: [MahjongFaceItem]) {
-        self.backgroundWriteConnection.asyncReadWrite { transaction in
+        backgroundWriteConnection.asyncReadWrite { transaction in
             transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace)
         }
     }
 
     func mahjongFaceHistory() -> [MahjongFaceItem] {
         var mahjongFaceHistory: [MahjongFaceItem]?
-        self.readConnection.read { transaction in
+        readConnection.read { transaction in
             mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
         return mahjongFaceHistory ?? [MahjongFaceItem]()
@@ -180,14 +180,14 @@ extension CacheDatabaseManager {
 // MARK: - Server Address
 extension CacheDatabaseManager {
     func set(serverAddress: ServerAddress) {
-        self.backgroundWriteConnection.readWrite { transaction in
+        backgroundWriteConnection.readWrite { transaction in
             transaction.setObject(serverAddress, forKey: keyServerAddress, inCollection: collectionServerAddress)
         }
     }
 
     func serverAddress() -> ServerAddress? {
         var serverAddress: ServerAddress?
-        self.readConnection.read { transaction in
+        readConnection.read { transaction in
             serverAddress = transaction.object(forKey: keyServerAddress, inCollection: collectionServerAddress) as? ServerAddress
         }
         return serverAddress

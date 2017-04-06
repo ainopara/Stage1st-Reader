@@ -60,7 +60,7 @@ extension DataCenter {
     }
 
     private func topicsFromServer(for key: String, page: Int, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
-        networkManager.requestTopicListAPI(forKey: key, withPage: page as NSNumber, success: { [weak self] (_, responseObject) in
+        networkManager.requestTopicListAPI(forKey: key, withPage: page as NSNumber, success: { [weak self] _, responseObject in
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
 
@@ -87,7 +87,7 @@ extension DataCenter {
 
                 successBlock(strongSelf.topicListCache[key]!)
             }
-        }) { (_, error) in
+        }) { _, error in
             failureBlock(error)
         }
     }
@@ -127,7 +127,7 @@ extension DataCenter {
     }
 
     func searchTopics(for keyword: String, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
-        networkManager.postSearch(forKeyword: keyword, andFormhash: formHash!, success: { [weak self] (_, responseObject) in
+        networkManager.postSearch(forKeyword: keyword, andFormhash: formHash!, success: { [weak self] _, responseObject in
             guard let strongSelf = self else { return }
 
             guard let responseData = responseObject as? Data else {
@@ -136,7 +136,7 @@ extension DataCenter {
             }
 
             let topics = S1Parser.topics(fromSearchResultHTMLData: responseData) as! [S1Topic]
-            let processedTopics = topics.map { topic -> (S1Topic) in
+            let processedTopics = topics.map { topic -> S1Topic in
                 guard let tracedTopic = strongSelf.traced(topicID: Int(topic.topicID))?.copy() as? S1Topic else {
                     return topic
                 }
@@ -147,7 +147,7 @@ extension DataCenter {
             }
 
             successBlock(processedTopics)
-        }) { (_, error) in
+        }) { _, error in
             failureBlock(error)
         }
     }
@@ -167,7 +167,7 @@ extension DataCenter {
         }
 
         let profileStartDate = Date()
-        networkManager.requestTopicContentAPI(forID: topic.topicID, withPage: page as NSNumber, success: { [weak self] (_, responseObject) in
+        networkManager.requestTopicContentAPI(forID: topic.topicID, withPage: page as NSNumber, success: { [weak self] _, responseObject in
             guard let strongSelf = self else { return }
 
             DDLogDebug("[Network] Content Finish Fetch:\(-profileStartDate.timeIntervalSinceNow)")
@@ -196,10 +196,9 @@ extension DataCenter {
                 successBlock(floorsFromPageResponse, false)
             })
 
-        }) { (_, error) in
+        }) { _, error in
             failureBlock(error)
         }
-
     }
 
     func precacheFloors(for topic: S1Topic, with page: Int, shouldUpdate: Bool) {
@@ -208,10 +207,10 @@ extension DataCenter {
             return
         }
 
-        floors(for: topic, with: page, successBlock: { (_, _) in
+        floors(for: topic, with: page, successBlock: { _, _ in
             DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
             NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: ["topicID": topic.topicID, "page": page])
-        }) { (error) in
+        }) { error in
             DDLogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
         }
     }
@@ -237,12 +236,12 @@ extension DataCenter {
             "formhash": formhash,
             "usesig": "1",
             "subject": "",
-            "message": text
+            "message": text,
         ]
 
-        networkManager.postReply(forTopicID: topic.topicID, forumID: forumID, andParams: parameters, success: { (_, _) in
+        networkManager.postReply(forTopicID: topic.topicID, forumID: forumID, andParams: parameters, success: { _, _ in
             successblock()
-        }) { (_, error) in
+        }) { _, error in
             failureBlock(error)
         }
     }
@@ -254,27 +253,27 @@ extension DataCenter {
             return
         }
 
-        networkManager.requestReplyRefereanceContent(forTopicID: topic.topicID, withPage: page as NSNumber, floorID: floor.ID as NSNumber, forumID: forumID, success: { [weak self] (_, responseObject) in
+        networkManager.requestReplyRefereanceContent(forTopicID: topic.topicID, withPage: page as NSNumber, floorID: floor.ID as NSNumber, forumID: forumID, success: { [weak self] _, responseObject in
             guard let strongSelf = self else { return }
             guard let responseData = responseObject as? Data,
                 let responseString = String(data: responseData, encoding: .utf8),
                 let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString),
                 mutableParameters["requestSuccess"] as! Bool == true else {
-                    failureBlock("bad response from server.")
-                    return
+                failureBlock("bad response from server.")
+                return
             }
 
             mutableParameters.removeObject(forKey: "requestSuccess")
             mutableParameters["replysubmit"] = "true"
             mutableParameters["message"] = text
 
-            strongSelf.networkManager.postReply(forTopicID: topic.topicID, withPage: page as NSNumber, forumID: forumID, andParams: mutableParameters as! [AnyHashable : Any], success: { (_, _) in
+            strongSelf.networkManager.postReply(forTopicID: topic.topicID, withPage: page as NSNumber, forumID: forumID, andParams: mutableParameters as! [AnyHashable: Any], success: { _, _ in
                 successblock()
-            }, failure: { (_, error) in
+            }, failure: { _, error in
                 failureBlock(error)
             })
 
-        }) { (_, error) in
+        }) { _, error in
             failureBlock(error)
         }
     }

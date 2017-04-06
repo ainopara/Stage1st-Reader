@@ -30,7 +30,7 @@ class Environment: NSObject {
         self.cookieStorage = cookieStorage
 
         cacheDatabaseManager = CacheDatabaseManager.shared
-        self.serverAddress = cacheDatabaseManager.serverAddress() ?? ServerAddress.default
+        serverAddress = cacheDatabaseManager.serverAddress() ?? ServerAddress.default
         apiService = DiscuzClient(baseURL: serverAddress.main)
 
         databaseManager = DatabaseManager.sharedInstance()

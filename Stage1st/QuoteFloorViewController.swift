@@ -16,11 +16,11 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
     let viewModel: QuoteFloorViewModel
 
     lazy var webView: WKWebView = {
-        return WKWebView(frame: .zero, configuration: self.sharedConfiguration())
+        WKWebView(frame: .zero, configuration: self.sharedConfiguration())
     }()
 
     lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
-        return GeneralScriptMessageHandler(delegate: self)
+        GeneralScriptMessageHandler(delegate: self)
     }()
 
     var presentType: PresentType = .none {

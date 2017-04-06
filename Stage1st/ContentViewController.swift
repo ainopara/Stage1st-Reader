@@ -26,15 +26,15 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
     var toolBar = UIToolbar(frame: .zero)
     lazy var webView: WKWebView = {
-        return WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
+        WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
 
     lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
-        return GeneralScriptMessageHandler(delegate: self)
+        GeneralScriptMessageHandler(delegate: self)
     }()
 
     lazy var pullToActionController: PullToActionController = {
-        return PullToActionController(scrollView: self.webView.scrollView)
+        PullToActionController(scrollView: self.webView.scrollView)
     }()
 
     var refreshHUD = S1HUD(frame: .zero)
@@ -45,7 +45,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var pageButton = UIButton(frame: .zero)
     var favoriteButton = UIButton(type: .system)
     lazy var actionBarButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
+        UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
     }()
 
     var titleLabel = UILabel(frame: .zero)
@@ -260,7 +260,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         }
 
         viewModel.favorite.producer
-            .take(during: self.reactive.lifetime)
+            .take(during: reactive.lifetime)
             .map { $0?.boolValue ?? false }
             .startWithValues { [weak self] _ in
                 guard let strongSelf = self else { return }
@@ -268,7 +268,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             }
 
         viewModel.title.producer
-            .take(during: self.reactive.lifetime)
+            .take(during: reactive.lifetime)
             .startWithValues { [weak self] title in
                 guard let strongSelf = self else { return }
                 if let title = title, title != "" {
@@ -438,7 +438,7 @@ extension S1ContentViewController {
     }
 
     open func forward(sender: Any?) {
-        switch (viewModel.isInLastPage(), self.webView.s1_atBottom()) {
+        switch (viewModel.isInLastPage(), webView.s1_atBottom()) {
         case (true, false):
             webView.s1_scrollToBottom(animated: true)
         case (true, true):
@@ -652,7 +652,7 @@ extension S1ContentViewController {
                                                 style: .cancel,
                                                 handler: nil))
 
-        moreActionSheet.popoverPresentationController?.barButtonItem = self.actionBarButtonItem
+        moreActionSheet.popoverPresentationController?.barButtonItem = actionBarButtonItem
         present(moreActionSheet, animated: true, completion: nil)
     }
 
@@ -1002,14 +1002,14 @@ extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat) {
         guard
             offset < topOffset,
-            self.finishFirstLoading.value,
-            !self.viewModel.isInFirstPage() else {
+            finishFirstLoading.value,
+            !viewModel.isInFirstPage() else {
             return
         }
 
-        var currentContentOffset = self.webView.scrollView.contentOffset
+        var currentContentOffset = webView.scrollView.contentOffset
         //        currentContentOffset.y = -self.webView.bounds.height
-        currentContentOffset.y -= self.webView.bounds.height / 2
+        currentContentOffset.y -= webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -1027,19 +1027,19 @@ extension S1ContentViewController: PullToActionDelagete {
     public func scrollViewDidEndDraggingOutsideBottomBound(with offset: CGFloat) {
         guard
             offset > bottomOffset,
-            self.finishFirstLoading.value else {
+            finishFirstLoading.value else {
             return
         }
 
-        guard !self.viewModel.isInLastPage() else {
+        guard !viewModel.isInLastPage() else {
             // Only refresh triggered in last page
-            self.forward(sender: nil)
+            forward(sender: nil)
             return
         }
 
-        var currentContentOffset = self.webView.scrollView.contentOffset
+        var currentContentOffset = webView.scrollView.contentOffset
         //        currentContentOffset.y = self.webView.scrollView.contentSize.height
-        currentContentOffset.y += self.webView.bounds.height / 2
+        currentContentOffset.y += webView.bounds.height / 2
 
         // DIRTYHACK: delay 0.01 second to avoid animation to overrided by other animation setted by iOS
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {

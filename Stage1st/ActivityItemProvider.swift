@@ -17,7 +17,7 @@ class ContentTextActivityItemProvider: UIActivityItemProvider {
 
     override var item: Any {
         guard let activityType = self.activityType else {
-            return self.title
+            return title
         }
         switch activityType {
         case UIActivityType.postToWeibo, UIActivityType.moke2:
@@ -25,7 +25,7 @@ class ContentTextActivityItemProvider: UIActivityItemProvider {
         case UIActivityType.postToTwitter:
             return "\(self.title) #Stage1stReader "
         default:
-            return self.title
+            return title
         }
     }
 
@@ -42,7 +42,7 @@ class ContentImageActivityItemProvider: UIActivityItemProvider {
     override var item: Any {
         var image: UIImage?
         DispatchQueue.main.sync {
-            image = view?.s1_screenShot()?.s1_crop(to: self.rect)
+            image = view?.s1_screenShot()?.s1_crop(to: rect)
         }
         return image ?? UIImage()
     }

@@ -138,7 +138,7 @@ extension ReportComposeViewController: YYKeyboardObserver {
     func keyboardChanged(with transition: YYKeyboardTransition) {
         let offset = transition.toFrame.minY - view.frame.maxY
 
-        self.textViewBottomConstraint?.update(offset: offset)
+        textViewBottomConstraint?.update(offset: offset)
 
         UIView.animate(withDuration: transition.animationDuration, delay: 0.0, options: transition.animationOption, animations: {
             self.view.layoutIfNeeded()
@@ -165,7 +165,7 @@ extension ReportComposeViewController {
     }
 
     func _dismiss() {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 
     // MARK: - Notification
@@ -176,7 +176,7 @@ extension ReportComposeViewController {
         textView.typingAttributes = TextAttributes().font(UIFont.systemFont(ofSize: 15.0)).foregroundColor(ColorManager.shared.colorForKey("report.text")).dictionary
         textView.keyboardAppearance = ColorManager.shared.isDarkTheme() ? .dark : .light
 
-        self.navigationController?.navigationBar.barStyle = ColorManager.shared.isDarkTheme() ? .black : .default
+        navigationController?.navigationBar.barStyle = ColorManager.shared.isDarkTheme() ? .black : .default
     }
 }
 

@@ -365,10 +365,10 @@ extension LoginViewController {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            self.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
+            alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
-        self.seccodeInputView.seccodeSubmitButton.isEnabled = false
+        seccodeInputView.seccodeSubmitButton.isEnabled = false
         let authMode: DiscuzClient.AuthMode = .secure(hash: currentSechash(), code: currentSeccode())
         networkManager.logIn(username: username, password: password, secureQuestionNumber: currentSecureQuestionNumber(), secureQuestionAnswer: currentSecureQuestionAnswer(), authMode: authMode) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -409,7 +409,7 @@ extension LoginViewController {
 
     func selectSecureQuestion(_ button: UIButton) {
         DDLogDebug("debug secure question")
-        self.view.endEditing(true)
+        view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
         let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { _, selectedIndex, selectedValue in
             button.setTitle(selectedValue as? String ?? "??", for: .normal)
@@ -428,14 +428,14 @@ extension LoginViewController {
         if let presentingViewController = self.presentingViewController {
             presentingViewController.dismiss(animated: true, completion: nil)
         } else {
-            self.dismiss(animated: true, completion: nil)
+            dismiss(animated: true, completion: nil)
         }
     }
 
     func keyboardFrameWillChange(_ notification: Notification) {
         guard let userInfo = (notification as NSNotification).userInfo, let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else { return }
 
-        let keyboardHeightInView = self.view.bounds.maxY - endFrame.minY
+        let keyboardHeightInView = view.bounds.maxY - endFrame.minY
         DDLogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
         visibleLayoutGuide.snp.updateConstraints { make in
             make.bottom.equalTo(self.view).offset(-keyboardHeightInView)
@@ -453,7 +453,7 @@ extension LoginViewController: UITextFieldDelegate {
             switch state {
             case .notLogin:
                 textField.resignFirstResponder()
-                self.logIn(userInfoInputView.loginButton)
+                logIn(userInfoInputView.loginButton)
             case .notLoginWithAnswerField:
                 userInfoInputView.answerField.becomeFirstResponder()
             case .login:
@@ -461,10 +461,10 @@ extension LoginViewController: UITextFieldDelegate {
             }
         } else if textField == userInfoInputView.answerField {
             textField.resignFirstResponder()
-            self.logIn(userInfoInputView.loginButton)
+            logIn(userInfoInputView.loginButton)
         } else if textField === seccodeInputView.seccodeField {
             textField.resignFirstResponder()
-            self.logInWithSeccode(seccodeInputView.seccodeSubmitButton)
+            logInWithSeccode(seccodeInputView.seccodeSubmitButton)
         }
         return true
     }
@@ -477,12 +477,12 @@ extension LoginViewController {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            self.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
+            alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
         UserDefaults.standard.set(username, forKey: "UserIDCached")
-        let secureQuestionNumber = self.currentSecureQuestionNumber()
-        let secureQuestionAnswer = self.currentSecureQuestionAnswer()
+        let secureQuestionNumber = currentSecureQuestionNumber()
+        let secureQuestionAnswer = currentSecureQuestionAnswer()
 
         userInfoInputView.loginButton.isEnabled = false
         networkManager.checkLoginType(noSechashBlock: { [weak self] in
@@ -529,9 +529,9 @@ extension LoginViewController {
     }
 
     fileprivate func logoutAction() {
-        self.networkManager.logOut()
-        self.state = .notLogin
-        self.alert(title: NSLocalizedString("SettingView_LogOut", comment: ""), message: NSLocalizedString("LoginView_Logout_Message", comment: ""))
+        networkManager.logOut()
+        state = .notLogin
+        alert(title: NSLocalizedString("SettingView_LogOut", comment: ""), message: NSLocalizedString("LoginView_Logout_Message", comment: ""))
     }
 }
 
@@ -540,7 +540,7 @@ extension LoginViewController {
     fileprivate func alert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: nil))
-        self.present(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
 
     func pan(_ gesture: UIPanGestureRecognizer) {
@@ -555,7 +555,7 @@ extension LoginViewController {
             DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
                                                       offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
-                                                      attachedToAnchor: gesture.location(in: self.view))
+                                                      attachedToAnchor: gesture.location(in: view))
             DDLogInfo("after: \(containerView.center)")
             dynamicAnimator.addBehavior(attachmentBehavior!)
             dynamicItemBehavior = UIDynamicItemBehavior(items: [containerView])
@@ -563,9 +563,9 @@ extension LoginViewController {
 
         case .changed:
             DDLogDebug("[LoginVC] pan location \(gesture.location(in: self.view))")
-            attachmentBehavior?.anchorPoint = gesture.location(in: self.view)
+            attachmentBehavior?.anchorPoint = gesture.location(in: view)
         default:
-            let velocity = gesture.velocity(in: self.view)
+            let velocity = gesture.velocity(in: view)
             DDLogVerbose("[LoginVC] pan velocity: \(velocity)")
             if velocity.x * velocity.x + velocity.y * velocity.y > 1_000_000 {
                 if let attachmentBehavior = attachmentBehavior {
@@ -593,7 +593,7 @@ extension LoginViewController {
     }
 
     fileprivate func expectedCenterOfContainerView() -> CGPoint {
-        return CGPoint(x: self.visibleLayoutGuide.center.x, y: self.visibleLayoutGuide.center.y)
+        return CGPoint(x: visibleLayoutGuide.center.x, y: visibleLayoutGuide.center.y)
     }
 
     fileprivate func offsetFromCenter(_ touchPointInView: CGPoint, viewCenter: CGPoint) -> UIOffset {

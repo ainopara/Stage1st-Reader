@@ -30,7 +30,7 @@ class ServerAddress: NSObject, NSCoding {
         guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
             let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
             let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
-                return nil
+            return nil
         }
 
         main = mainURL

@@ -88,19 +88,19 @@ extension ReplyAccessoryView {
     }
 
     func insertSpoilerMark(_: UIButton) {
-        self.insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
+        insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
     }
 
     func insertQuoteMark(_: UIButton) {
-        self.insertMarkWithAPart("[quote]", andBPart: "[/quote]")
+        insertMarkWithAPart("[quote]", andBPart: "[/quote]")
     }
 
     func insertBoldMark(_: UIButton) {
-        self.insertMarkWithAPart("[b]", andBPart: "[/b]")
+        insertMarkWithAPart("[b]", andBPart: "[/b]")
     }
 
     func insertDeleteMark(_: UIButton) {
-        self.insertMarkWithAPart("[s]", andBPart: "[/s]")
+        insertMarkWithAPart("[s]", andBPart: "[/s]")
     }
 }
 

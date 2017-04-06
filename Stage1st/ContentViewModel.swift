@@ -33,15 +33,15 @@ class ContentViewModel: NSObject, PageRenderer {
         if let currentPage = topic.lastViewedPage?.uintValue {
             self.currentPage = MutableProperty(max(currentPage, 1))
         } else {
-            self.currentPage = MutableProperty(1)
+            currentPage = MutableProperty(1)
         }
 
-        previousPage = MutableProperty(self.currentPage.value)
+        previousPage = MutableProperty(currentPage.value)
 
         if let replyCount = topic.replyCount?.uintValue {
-            self.totalPages = MutableProperty(replyCount / 30 + 1)
+            totalPages = MutableProperty(replyCount / 30 + 1)
         } else {
-            totalPages = MutableProperty(self.currentPage.value)
+            totalPages = MutableProperty(currentPage.value)
         }
 
         DDLogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
@@ -71,7 +71,7 @@ class ContentViewModel: NSObject, PageRenderer {
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
         // TODO: Add logs.
         //        DDLogInfo("[ContentVM] reply count changed: %@", x)
-        previousPage <~ currentPage.combinePrevious(self.currentPage.value).producer.map { previous, _ in return previous }
+        previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { previous, _ in return previous }
     }
 
     func userIsBlocked(with userID: UInt) -> Bool {
@@ -104,7 +104,7 @@ extension ContentViewModel {
             return nil
         }
 
-        return self.dataCenter.searchFloorInCache(by: floorID)
+        return dataCenter.searchFloorInCache(by: floorID)
     }
 
     func chainSearchQuoteFloorInCache(_ firstFloorID: Int) -> [Floor] {
@@ -128,7 +128,7 @@ extension ContentViewModel {
     //    }
 
     func pageBaseURL() -> URL {
-        return self.templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
+        return templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
     }
 }
 
@@ -175,7 +175,7 @@ extension ContentViewModel {
     }
 
     func pageButtonString() -> String {
-        let presentingTotalPages = max(self.currentPage.value, self.totalPages.value)
+        let presentingTotalPages = max(currentPage.value, totalPages.value)
         return "\(self.currentPage.value)/\(presentingTotalPages)"
     }
 }
@@ -187,7 +187,7 @@ extension ContentViewModel {
     }
 
     func activityTitle() -> String? {
-        return self.topic.title
+        return topic.title
     }
 
     func activityUserInfo() -> [AnyHashable: Any] {

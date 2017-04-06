@@ -29,13 +29,13 @@ class PollOption: NSObject {
         if let votesString = json["votes"].string, let votes = Int(votesString) {
             self.votes = votes
         } else {
-            self.votes = nil
+            votes = nil
         }
 
         if let percentString = json["percent"].string, let percent = Double(percentString) {
             self.percent = percent
         } else {
-            self.percent = nil
+            percent = nil
         }
 
         color = json["color"].string
@@ -65,7 +65,7 @@ class Poll: NSObject {
         }
 
         if let expirationString = json["expirations"].string, let expirationSeconds = Double(expirationString) {
-            self.expirationDate = Date(timeIntervalSince1970: expirationSeconds)
+            expirationDate = Date(timeIntervalSince1970: expirationSeconds)
         } else {
             expirationDate = nil
         }
@@ -73,24 +73,24 @@ class Poll: NSObject {
         if let maxChoicesString = json["maxchoices"].string, let maxChoices = Int(maxChoicesString) {
             self.maxChoices = maxChoices
         } else {
-            self.maxChoices = nil
+            maxChoices = nil
         }
 
         if let visibleString = json["visiblepool"].string, let visibleInt = Int(visibleString) {
-            self.visible = visibleInt == 0 ? false : true
+            visible = visibleInt == 0 ? false : true
         } else {
             visible = nil
         }
 
         if let allowVoteString = json["allowvote"].string, let allowVoteInt = Int(allowVoteString) {
-            self.allowVote = allowVoteInt == 0 ? false : true
+            allowVote = allowVoteInt == 0 ? false : true
         } else {
             allowVote = nil
         }
 
         // FIXME: check this api.
         if let remainTimeString = json["remaintime"].string, let remainTimeSeconds = Double(remainTimeString) {
-            self.remainTime = remainTimeSeconds
+            remainTime = remainTimeSeconds
         } else {
             remainTime = nil
         }
