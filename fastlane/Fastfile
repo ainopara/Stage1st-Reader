@@ -30,7 +30,7 @@ platform :ios do
     build_number = (build_number_string.to_i + 4000).to_s
     increment_build_number(build_number: build_number)
 
-    gym(scheme: 'Stage1st', output_directory: "Archive/#{options[:version]}") # Build your app - more options available
+    gym(scheme: 'Stage1st', export_method: "app-store", output_directory: "Archive/#{options[:version]}") # Build your app - more options available
     pilot
     commit_version_bump(message: "Version bump to #{options[:version]}(#{build_number}).")
   end
