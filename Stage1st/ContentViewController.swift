@@ -24,7 +24,7 @@ private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: ContentViewModel
 
-    var toolBar = UIToolbar(frame: .zero)
+    let toolBar = UIToolbar(frame: .zero)
     lazy var webView: WKWebView = {
         WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
@@ -37,20 +37,20 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         PullToActionController(scrollView: self.webView.scrollView)
     }()
 
-    var refreshHUD = S1HUD(frame: .zero)
-    var hintHUD = S1HUD(frame: .zero)
+    let refreshHUD = S1HUD(frame: .zero)
+    let hintHUD = S1HUD(frame: .zero)
 
-    var backButton = UIButton(type: .system)
-    var forwardButton = UIButton(type: .system)
-    var pageButton = UIButton(frame: .zero)
-    var favoriteButton = UIButton(type: .system)
+    let backButton = UIButton(type: .system)
+    let forwardButton = UIButton(type: .system)
+    let pageButton = UIButton(frame: .zero)
+    let favoriteButton = UIButton(type: .system)
     lazy var actionBarButtonItem: UIBarButtonItem = {
         UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
     }()
 
-    var titleLabel = UILabel(frame: .zero)
-    var topDecorateLine = UIView(frame: .zero)
-    var bottomDecorateLine = UIView(frame: .zero)
+    let titleLabel = UILabel(frame: .zero)
+    let topDecorateLine = UIView(frame: .zero)
+    let bottomDecorateLine = UIView(frame: .zero)
 
     var attributedReplyDraft: NSMutableAttributedString?
     weak var replyTopicFloor: Floor?
