@@ -93,12 +93,26 @@ extension DataCenter {
     }
 
     private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) {
-        guard topics.count > 0 else {
+        func topicsIsValid() -> Bool {
+            return topics.count > 0
+        }
+
+        func shouldReplaceTopics() -> Bool {
+            return page == 1
+        }
+
+        guard topicsIsValid() else {
             if topicListCache[key] == nil {
                 topicListCache[key] = [S1Topic]()
                 topicListCachePageNumber[key] = 1
             }
 
+            return
+        }
+
+        if shouldReplaceTopics() {
+            topicListCache[key] = topics
+            topicListCachePageNumber[key] = page
             return
         }
 
@@ -155,10 +169,7 @@ extension DataCenter {
 
 // MARK: - Content
 extension DataCenter {
-    func floors(for topic: S1Topic,
-                with page: Int,
-                successBlock: @escaping ([Floor], Bool) -> Void,
-                failureBlock: @escaping (Error) -> Void) {
+    func floors(for topic: S1Topic, with page: Int, successBlock: @escaping ([Floor], Bool) -> Void, failureBlock: @escaping (Error) -> Void) {
         assert(!topic.isImmutable)
 
         if let cachedFloors = cacheDatabaseManager.floors(in: topic.topicID.intValue, page: page), cachedFloors.count > 0 {
