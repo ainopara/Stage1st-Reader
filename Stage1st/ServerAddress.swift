@@ -17,8 +17,17 @@ class ServerAddress: NSObject, NSCoding {
     let used: [String]
     let lastUpdateDate: Date
 
-    static let `default` = ServerAddress(main: "http://bbs.saraba1st.com/2b", used: [], lastUpdateDate: Date.distantPast)
-    static var traced: ServerAddress { return .default }
+    static let `default` = ServerAddress(main: "http://bbs.saraba1st.com/2b", used: [
+        "http://bbs.saraba1st.com",
+        "http://www.stage1st.com",
+    ], lastUpdateDate: DateComponents(calendar: Calendar.current,
+                                      year: 2017,
+                                      month: 4,
+                                      day: 8,
+                                      hour: 8,
+                                      minute: 8,
+                                      second: 0,
+                                      nanosecond: 0).date ?? Date.distantPast)
 
     init(main: String, used: [String], lastUpdateDate: Date) {
         self.main = main
@@ -54,5 +63,9 @@ extension ServerAddress {
         }
 
         return false
+    }
+
+    func isPreferedOver(serverAddress: ServerAddress) -> Bool {
+        return lastUpdateDate.s1_isLaterThan(date: serverAddress.lastUpdateDate)
     }
 }

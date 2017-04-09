@@ -162,7 +162,7 @@ extension S1AppDelegate {
 
             DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
 
-            if let persistedServerAddress = AppEnvironment.current.cacheDatabaseManager.serverAddress(), modificationDate.timeIntervalSince(persistedServerAddress.lastUpdateDate) <= 0.0 {
+            if serverAddress.isPreferedOver(serverAddress: AppEnvironment.current.serverAddress) {
                 DDLogInfo("Server address do not need to update.")
                 return
             }
