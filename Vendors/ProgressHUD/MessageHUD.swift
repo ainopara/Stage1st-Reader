@@ -71,29 +71,30 @@ class MessageHUD: UIWindow {
 
     func post(message: String, duration: Duration = .forever, animated: Bool = true) {
         makeKeyAndVisible()
-            switch state {
-            case .presenting:
-                textLabel.text = message
-                hide(after: duration, animated: animated)
-            case .hidden:
-                textLabel.text = message
-                if animated {
-                    self.state = .appearing
-                    UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 10.0, options: [], animations: {
-                        self.alpha = 1.0
-                    }) { [weak self] (_) in
-                        guard let strongSelf = self else { return }
-                        strongSelf.state = .presenting
-                        strongSelf.hide(after: duration, animated: animated)
-                    }
-                } else {
+        switch state {
+        case .presenting:
+            textLabel.text = message
+            hide(after: duration, animated: animated)
+        case .hidden:
+            textLabel.text = message
+            isHidden = false
+            if animated {
+                self.state = .appearing
+                UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 10.0, options: [], animations: {
                     self.alpha = 1.0
-                    self.state = .presenting
-                    hide(after: duration, animated: animated)
+                }) { [weak self] (_) in
+                    guard let strongSelf = self else { return }
+                    strongSelf.state = .presenting
+                    strongSelf.hide(after: duration, animated: animated)
                 }
-            default:
-            DDLogError("missed \(state)")
+            } else {
+                self.alpha = 1.0
+                self.state = .presenting
+                hide(after: duration, animated: animated)
             }
+        default:
+            DDLogError("missed \(state)")
+        }
     }
 
     private func hide(after duration: Duration, animated: Bool) {
@@ -123,10 +124,12 @@ class MessageHUD: UIWindow {
             }, completion: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.state = .hidden
+                strongSelf.isHidden = true
             })
         } else {
             self.alpha = 0.0
             state = .hidden
+            isHidden = true
         }
     }
 
