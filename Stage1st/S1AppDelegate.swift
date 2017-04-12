@@ -162,7 +162,7 @@ extension S1AppDelegate {
 
             DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
 
-            if serverAddress.isPreferedOver(serverAddress: AppEnvironment.current.serverAddress) {
+            guard serverAddress.isPreferedOver(serverAddress: AppEnvironment.current.serverAddress) else {
                 DDLogInfo("Server address do not need to update.")
                 return
             }
