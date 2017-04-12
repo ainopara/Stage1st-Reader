@@ -54,7 +54,7 @@ PODS:
     - R.swift.Library (~> 3.0.2)
   - R.swift.Library (3.0.2)
   - Reachability (3.2)
-  - ReactiveCocoa (5.0.2):
+  - ReactiveCocoa (5.0.3):
     - ReactiveSwift (~> 1.1)
   - ReactiveSwift (1.1.1):
     - Result (~> 3.2)
@@ -194,7 +194,7 @@ SPEC CHECKSUMS:
   R.swift: 207a372a2b5977caef440c696a368009460641d1
   R.swift.Library: fbdec16c9802ad104fc1ba53415dc190e6ec5c73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 17bc0968fd6c69c72dba8b272bc3c4700a0d3ea3
+  ReactiveCocoa: 066a855f613fb72f68258771095805fdb10312d2
   ReactiveSwift: 2489549e3231a6ff68ec99f3d320bb264f10ba0a
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
   Reveal-SDK: 43be4e662864e937960d0d04d005135e29c4e53b
