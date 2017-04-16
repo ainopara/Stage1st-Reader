@@ -1279,7 +1279,7 @@ extension S1ContentViewController {
                             strongSelf.refreshHUD.hide(withDelay: 3.0)
                         }
                     } else {
-                        DDLogDebug("[ContentVC] fetch failed with error: \(error)")
+                        DDLogWarn("[ContentVC] fetch failed with error: \(error)")
                         strongSelf.refreshHUD.showRefreshButton()
                     }
                 }
