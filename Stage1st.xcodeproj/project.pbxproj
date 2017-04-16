@@ -388,14 +388,14 @@
 				86CA71E31B1B706B00204A5C /* MahjongCategoryOrder.plist */,
 				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */,
 				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */,
-				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
-				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
-				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
-				86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */,
 				86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */,
 				86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */,
 				86CA71E01B197D7B00204A5C /* S1MahjongFaceButton.h */,
 				86CA71E11B197D7B00204A5C /* S1MahjongFaceButton.m */,
+				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
+				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
+				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
+				86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */,
 				8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */,
 			);
 			name = S1MahjongFaceView;

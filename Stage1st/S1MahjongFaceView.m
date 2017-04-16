@@ -33,6 +33,7 @@
 
 - (instancetype)init {
     self = [super init];
+
     self.shouldIngnoreScrollEvent = NO;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.backgroundColor = [[ColorManager shared] colorForKey:@"mahjongface.background"];
@@ -49,6 +50,7 @@
         @"carton":@"动漫",
         @"bundam":@"雀高达"
     };
+
     self.pageViews = [[NSMutableArray alloc] init];
     NSString *path = [[NSBundle mainBundle] pathForResource:@"MahjongMap" ofType:@"plist"];
     self.mahjongMap = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -74,6 +76,7 @@
         make.left.equalTo(self.mas_left);
         make.height.equalTo(@35.0);
     }];
+
     // init page control
     self.pageControl = [[UIPageControl alloc] init];
     self.pageControl.currentPage = 0;
@@ -101,7 +104,9 @@
         make.top.equalTo(self.mas_top);
         make.bottom.equalTo(self.pageControl.mas_top);
     }];
+
     [self setNeedsLayout];
+
     return self;
 }
 
