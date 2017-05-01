@@ -49,7 +49,7 @@ PODS:
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
-  - QuickTableViewController (0.5.1)
+  - QuickTableViewController (0.5.3)
   - R.swift (3.2.0):
     - R.swift.Library (~> 3.0.2)
   - R.swift.Library (3.0.2)
@@ -61,7 +61,7 @@ PODS:
   - Result (3.2.1)
   - Reveal-SDK (8)
   - SnapKit (3.2.0)
-  - SwiftFormat/CLI (0.28.2)
+  - SwiftFormat/CLI (0.28.4)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -190,7 +190,7 @@ SPEC CHECKSUMS:
   KIF: 082eb65279e51c3092923802849eb796a04982ab
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  QuickTableViewController: 7f984b4af21e9f2fc7ef840e40a7f46a0198039a
+  QuickTableViewController: fa0791b3f8d4a9b880041fce1252d71505b03f5d
   R.swift: 207a372a2b5977caef440c696a368009460641d1
   R.swift.Library: fbdec16c9802ad104fc1ba53415dc190e6ec5c73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
@@ -199,7 +199,7 @@ SPEC CHECKSUMS:
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
   Reveal-SDK: 43be4e662864e937960d0d04d005135e29c4e53b
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
-  SwiftFormat: f000e128c6f7b61ae0d5010b7745119734adeaa1
+  SwiftFormat: c48c1981bb39a0cacf5bc459785f9bae22f7a1a4
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
@@ -207,4 +207,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: eddb521a9e234f4e134df620a392c632d5e35050
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.2.1

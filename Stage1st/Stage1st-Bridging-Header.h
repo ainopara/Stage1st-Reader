@@ -21,3 +21,4 @@
 #import "UIScrollView+WKWebViewHack.h"
 #import "S1YapDatabaseAdapter.h"
 #import "S1NetworkManager.h"
+#import "S1MahjongFaceView.h"

@@ -7,7 +7,6 @@
 //
 
 #import "S1MahjongFacePageView.h"
-#import "S1MahjongFaceButton.h"
 #import "UIButton+AFNetworking.h"
 #import "S1MahjongFaceView.h"
 
@@ -31,11 +30,10 @@
         buttonIndex = rowIndex * columns + columnIndex;
         if (buttonIndex < [list count] && buttonIndex < rows * columns) {
             MahjongFaceItem *item = [list objectAtIndex:buttonIndex];
-            if ([button.mahjongFaceKey isEqualToString:item.key]) {
+            if ([button.mahjongFaceItem.key isEqualToString:item.key]) {
                 DDLogVerbose(@"face button hit, skip.");
             } else {
-                button.mahjongFaceKey = item.key;
-                button.category = item.category;
+                button.mahjongFaceItem = item;
                 [self setImageURL:item.url forButton:button];
             }
 
@@ -55,8 +53,7 @@
 
     while (buttonIndex < [list count] && buttonIndex < rows * columns) {
         MahjongFaceItem *item = [list objectAtIndex:buttonIndex];
-        S1MahjongFaceButton *button = [self mahjongFaceButtonForKey:item.key andURL:item.url];
-        button.category = item.category;
+        S1MahjongFaceButton *button = [self mahjongFaceButtonForItem:item];
         [button setFrame:CGRectMake(columnIndex * 50 + 10,rowIndex * 50 + heightOffset, 50, 50)];
         columnIndex += 1;
         if (columnIndex == columns) {
@@ -84,15 +81,15 @@
     return  request;
 }
 
-- (S1MahjongFaceButton *)mahjongFaceButtonForKey:(NSString *)key andURL:(NSURL *)URL {
+- (S1MahjongFaceButton *)mahjongFaceButtonForItem:(MahjongFaceItem *)item {
     S1MahjongFaceButton *button = [[S1MahjongFaceButton alloc] init];
     button.contentMode = UIViewContentModeCenter;
     [button addTarget:self action:@selector(mahjongFacePressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:button];
     [self.buttons addObject:button];
     button.adjustsImageWhenHighlighted = NO;
-    button.mahjongFaceKey = key;
-    [self setImageURL:URL forButton:button];
+    button.mahjongFaceItem = item;
+    [self setImageURL:item.url forButton:button];
     
     return button;
 }

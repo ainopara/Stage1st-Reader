@@ -247,3 +247,55 @@ extension String {
         return result
     }
 }
+
+extension Dictionary {
+    static func s1_dictionary(from jsonFile: URL) -> [String: Any]? {
+        guard let jsonString = try? String(contentsOf: jsonFile) else {
+            return nil
+        }
+
+        return s1_dictionary(from: jsonString)
+    }
+
+    static func s1_dictionary(from jsonString: String) -> [String: Any]? {
+        guard let data = jsonString.data(using: .utf8) else {
+            return nil
+        }
+
+        return s1_dictionary(from: data)
+    }
+
+    static func s1_dictionary(from jsonData: Data) -> [String: Any]? {
+        do {
+            return try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any]
+        } catch {
+            return nil
+        }
+    }
+}
+
+extension Array {
+    static func s1_array(from jsonFile: URL) -> [Any]? {
+        guard let jsonString = try? String(contentsOf: jsonFile) else {
+            return nil
+        }
+
+        return s1_array(from: jsonString)
+    }
+
+    static func s1_array(from jsonString: String) -> [Any]? {
+        guard let data = jsonString.data(using: .utf8) else {
+            return nil
+        }
+
+        return s1_array(from: data)
+    }
+
+    static func s1_array(from jsonData: Data) -> [Any]? {
+        do {
+            return try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any]
+        } catch {
+            return nil
+        }
+    }
+}

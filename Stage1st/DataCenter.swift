@@ -16,7 +16,16 @@ class DataCenter: NSObject {
     let cacheDatabaseManager: CacheDatabaseManager
     let networkManager: S1NetworkManager
 
-    var mahjongFaceHistorys = [MahjongFaceItem]()
+    var mahjongFaceHistorys: [MahjongFaceItem] {
+        get {
+            return cacheDatabaseManager.mahjongFaceHistory()
+        }
+
+        set {
+            cacheDatabaseManager.set(mahjongFaceHistory: newValue)
+        }
+    }
+
     var formHash: String?
 
     fileprivate var topicListCache = [String: [S1Topic]]()

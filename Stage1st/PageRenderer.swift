@@ -159,7 +159,7 @@ extension PageRenderer {
                                 linkElement.addChild(imageElement)
                             }
                         } else {
-                            let mahjongFacePath = srcString!.replacingOccurrences(of: "static/image/smiley/", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
+                            let mahjongFacePath = srcString!.replacingOccurrences(of: "image/smiley/", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
                             if FileManager.default.fileExists(atPath: mahjongFacePath) {
                                 image.removeAttribute(forName: "src")
                                 image.addAttribute(withName: "src", stringValue: mahjongFacePath)

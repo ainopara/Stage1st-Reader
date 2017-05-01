@@ -10,6 +10,7 @@
 
 @class S1MahjongFaceButton;
 @class S1MahjongFaceTextAttachment;
+@class MahjongFaceCategory;
 @class MahjongFaceItem;
 @protocol S1MahjongFaceViewDelegate;
 
@@ -17,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface S1MahjongFaceView : UIView
 
-@property (nonatomic, strong) NSString * currentCategory;
+@property (nonatomic, strong) NSArray<MahjongFaceCategory *> *mahjongCategories; // Exposed for swift extension.
+@property (nonatomic, strong) NSString *currentCategory;
 @property (nonatomic, assign) NSUInteger historyCountLimit;
 @property (nonatomic, strong) NSArray<MahjongFaceItem *> *historyArray;
 @property (weak, nonatomic, nullable) id<S1MahjongFaceViewDelegate> delegate;

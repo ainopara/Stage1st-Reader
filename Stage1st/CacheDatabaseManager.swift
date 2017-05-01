@@ -14,7 +14,7 @@ private let collectionFloorIDs = "floorIDs"
 private let collectionMahjongFace = "mahjongFace"
 private let collectionServerAddress = "serverAddress"
 private let metadataLastUsed = "lastUsed"
-private let keyMahjongFaceHistory = "mahjongFaceHistory"
+private let keyMahjongFaceHistoryV2 = "mahjongFaceHistoryV2"
 private let keyServerAddress = "serverAddress"
 
 class CacheDatabaseManager: NSObject {
@@ -164,14 +164,14 @@ extension CacheDatabaseManager {
 extension CacheDatabaseManager {
     func set(mahjongFaceHistory: [MahjongFaceItem]) {
         backgroundWriteConnection.asyncReadWrite { transaction in
-            transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace)
+            transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistoryV2, inCollection: collectionMahjongFace)
         }
     }
 
     func mahjongFaceHistory() -> [MahjongFaceItem] {
         var mahjongFaceHistory: [MahjongFaceItem]?
         readConnection.read { transaction in
-            mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistory, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
+            mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistoryV2, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
         return mahjongFaceHistory ?? [MahjongFaceItem]()
     }
