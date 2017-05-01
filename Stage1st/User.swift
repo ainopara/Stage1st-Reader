@@ -78,9 +78,3 @@ public final class User: NSObject, NSCoding {
         // FIXME: Finish it.
     }
 }
-
-extension User {
-    var avatarURL: URL? {
-        return URL(string: "http://centeru.saraba1st.com/avatar.php?uid=\(self.ID)&size=middle")
-    }
-}

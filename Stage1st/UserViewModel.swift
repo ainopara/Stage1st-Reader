@@ -66,6 +66,10 @@ class UserViewModel {
 
         return infoLabelString as String
     }
+
+    var avatarURL: URL? {
+        return URL(string: "http://centeru.saraba1st.com/avatar.php?uid=\(user.value.ID)&size=middle")
+    }
 }
 
 public extension Notification.Name {

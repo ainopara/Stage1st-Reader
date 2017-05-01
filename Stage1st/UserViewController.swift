@@ -38,7 +38,7 @@ final class UserViewController: UIViewController {
             switch result {
             case let .success(user):
                 strongSelf.usernameLabel.text = user.name
-                if let avatarURL = user.avatarURL {
+                if let avatarURL = strongSelf.viewModel.avatarURL {
                     strongSelf.avatarView.af_setImage(withURL: avatarURL)
                 }
                 strongSelf.customStatusLabel.text = user.customStatus
