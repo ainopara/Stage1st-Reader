@@ -9,6 +9,7 @@
 #import "S1MahjongFacePageView.h"
 #import "UIButton+AFNetworking.h"
 #import "S1MahjongFaceView.h"
+#import <JTSImageViewController/JTSAnimatedGIFUtility.h>
 
 @implementation S1MahjongFacePageView
 
@@ -75,12 +76,6 @@
     [self.backspaceButton setFrame:CGRectMake((columns - 1) * 50 + 10,(rows - 1) * 50 + heightOffset, 50, 50)];
 }
 
-- (NSMutableURLRequest *)requestForURL:(NSURL *)URL {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
-    return  request;
-}
-
 - (S1MahjongFaceButton *)mahjongFaceButtonForItem:(MahjongFaceItem *)item {
     S1MahjongFaceButton *button = [[S1MahjongFaceButton alloc] init];
     button.contentMode = UIViewContentModeCenter;
@@ -96,14 +91,13 @@
 
 - (void)setImageURL:(NSURL *)URL forButton:(S1MahjongFaceButton *)button {
     [button setImage:[UIImage imageNamed:@"MahjongFacePlaceholder"] forState:UIControlStateNormal];
-    __weak S1MahjongFaceButton *weakButton = button;
-    [button setImageForState:UIControlStateNormal withURLRequest:[self requestForURL:URL] placeholderImage:[UIImage imageNamed:@"MahjongFacePlaceholder"] success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-        __strong S1MahjongFaceButton *strongButton = weakButton;
-        UIImage * theImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
-        [strongButton setImage:theImage forState:UIControlStateNormal];
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse * _Nullable response, NSError *error) {
-        DDLogError(@"Unexpected failure when request mahjong face image:%@", error);
-    }];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage *image = [JTSAnimatedGIFUtility animatedImageWithAnimatedGIFURL:URL];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [button setImage:image forState:UIControlStateNormal];
+        });
+    });
 }
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button {
