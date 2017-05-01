@@ -110,7 +110,7 @@ extension PageRenderer {
             func process(HTMLString: String, with floorID: Int) -> String {
                 func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     func isMahjongFaceImage(imageSourceString: String?) -> Bool {
-                        if let srcString = imageSourceString, srcString.hasPrefix("static/image/smiley") {
+                        if let srcString = imageSourceString, srcString.hasPrefix("http://static.saraba1st.com/image/smiley") {
                             return true
                         }
                         return false
@@ -159,12 +159,12 @@ extension PageRenderer {
                                 linkElement.addChild(imageElement)
                             }
                         } else {
-                            let mahjongFacePath = srcString!.replacingOccurrences(of: "image/smiley/", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
+                            let mahjongFacePath = srcString!.replacingOccurrences(of: "http://static.saraba1st.com/image/smiley", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
                             if FileManager.default.fileExists(atPath: mahjongFacePath) {
                                 image.removeAttribute(forName: "src")
                                 image.addAttribute(withName: "src", stringValue: mahjongFacePath)
                             } else {
-                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v2", customAttributes: ["url": srcString!.replacingOccurrences(of: "static/image/smiley/", with: "")])
+                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v3", customAttributes: ["url": srcString!.replacingOccurrences(of: "http://static.saraba1st.com/image/smiley", with: "")])
                             }
                         }
 
