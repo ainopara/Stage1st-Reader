@@ -58,7 +58,7 @@
 
 - (IBAction)switchiCloud:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:self.iCloudSwitch.on forKey:@"EnableSync"];
-    NSString *title = NSLocalizedString(@"SettingView_CloudKit_Enable_Message", @"");
+    NSString *title = NSLocalizedString(@"SettingsViewController.CloudKit_Enable_Message", @"");
     NSString *message = @"";
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];

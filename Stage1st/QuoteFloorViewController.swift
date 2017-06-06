@@ -151,7 +151,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { _ in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewController.ActionSheet.Save", comment: "Save"), style: .default, handler: { _ in
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
@@ -176,11 +176,11 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
             }
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewController.ActionSheet.CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
             UIPasteboard.general.string = imageViewer.imageInfo.imageURL.absoluteString
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"), style: .cancel, handler: nil))
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Cancel", comment: "Cancel"), style: .cancel, handler: nil))
 
         imageActionSheet.popoverPresentationController?.sourceView = imageViewer.view
         imageActionSheet.popoverPresentationController?.sourceRect = rect
@@ -244,15 +244,15 @@ extension QuoteFloorViewController: WKNavigationDelegate {
         }
 
         // Fallback Open link
-        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""),
+        let alertViewController = UIAlertController(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""),
                                                     message: url.absoluteString,
                                                     preferredStyle: .alert)
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""),
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Cancel", comment: ""),
                                                     style: .cancel,
                                                     handler: nil))
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""),
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""),
                                                     style: .default,
                                                     handler: { [weak self] _ in
                                                         guard let strongSelf = self else { return }

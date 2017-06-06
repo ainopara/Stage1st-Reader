@@ -371,7 +371,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
     self.naviItem.titleView = self.titleLabel;
     self.searchBar.text = @"";
-    self.searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
+    self.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
     _loadingMore = NO;
     [self cancelRequest];
     [self.naviItem setRightBarButtonItem:self.historyItem];
@@ -870,7 +870,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         _searchBar.tintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.bartint"];
-        _searchBar.placeholder = NSLocalizedString(@"TopicListView_SearchBar_Hint", @"Search");
+        _searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
 
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
@@ -882,7 +882,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (UISegmentedControl *)segControl {
     if (!_segControl) {
-        _segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListView_SegmentControl_History", @"History"),NSLocalizedString(@"TopicListView_SegmentControl_Favorite", @"Favorite")]];
+        _segControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"TopicListViewController.SegmentControl_History", @"History"),NSLocalizedString(@"TopicListViewController.SegmentControl_Favorite", @"Favorite")]];
         [_segControl setWidth:80 forSegmentAtIndex:0];
         [_segControl setWidth:80 forSegmentAtIndex:1];
         [_segControl addTarget:self action:@selector(segSelected:) forControlEvents:UIControlEventValueChanged];

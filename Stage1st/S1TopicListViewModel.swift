@@ -145,6 +145,6 @@ extension S1TopicListViewModel {
 
     func searchBarPlaceholderStringForCurrentKey(_ key: String) -> String {
         let count = key == "Favorite" ? dataCenter.numberOfFavorite() : dataCenter.numberOfTopics()
-        return String(format: NSLocalizedString("TopicListView_SearchBar_Detail_Hint", comment: "Search"), NSNumber(value: count))
+        return String(format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"), NSNumber(value: count))
     }
 }

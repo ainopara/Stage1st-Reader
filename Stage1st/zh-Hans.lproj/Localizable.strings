@@ -1,28 +1,28 @@
-﻿"SystemLanguage" = "ChineseSimp";
+"SystemLanguage" = "ChineseSimp";
 
 /* Cancel */
-"ContentView_ActionSheet_Cancel" = "取消";
+"ContentViewController.ActionSheet.Cancel" = "取消";
 
 /* Cancel Favorite */
-"ContentView_ActionSheet_Cancel_Favorite" = "取消收藏";
+"ContentViewController.ActionSheet.CancelFavorite" = "取消收藏";
 
 /* Copy Link */
-"ContentView_ActionSheet_CopyLink" = "复制链接";
+"ContentViewController.ActionSheet.CopyLink" = "复制链接";
 
 /* Favorite */
-"ContentView_ActionSheet_Favorite" = "收藏";
+"ContentViewController.ActionSheet.Favorite" = "收藏";
 
 /* Origin */
-"ContentView_ActionSheet_OriginPage" = "打开原网页";
+"ContentViewController.ActionSheet.OriginPage" = "打开原网页";
 
 /* Reply */
-"ContentView_ActionSheet_Reply" = "回复";
+"ContentViewController.ActionSheet.Reply" = "回复";
 
 /* Weibo */
-"ContentView_ActionSheet_Weibo" = "分享到微博";
+"ContentViewController.ActionSheet.Weibo" = "分享到微博";
 
-"ContentView_ActionSheet_Share" = "分享";
-"ContentView_ActionSheet_Report" = "举报";
+"ContentViewController.ActionSheet.Share" = "分享";
+"ContentViewController.ActionSheet.Report" = "举报";
 
 /* No comment provided by engineer. */
 "ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "需要启用中文键盘才能使用";
@@ -34,43 +34,43 @@
 "ContentView_Reply_Title" = "回复";
 
 /* No comment provided by engineer. */
-"ContentView_WebView_Open_Link_Alert_Cancel" = "取消";
+"ContentViewController.WebView.OpenLinkAlert.Cancel" = "取消";
 
 /* No comment provided by engineer. */
-"ContentView_WebView_Open_Link_Alert_Open" = "打开";
+"ContentViewController.WebView.OpenLinkAlert.Open" = "打开";
 
 /* No comment provided by engineer. */
-"ContentView_WebView_Open_Link_Alert_Title" = "打开链接";
+"ContentViewController.WebView.OpenLinkAlert.Title" = "打开链接";
 
 /* DEComposeTextView.m */
 "From:" = "来自:";
 
 /* Copy URL */
-"ImageViewer_ActionSheet_CopyURL" = "复制图像地址";
+"ImageViewController.ActionSheet.CopyURL" = "复制图像地址";
 
 /* Save */
-"ImageViewer_ActionSheet_Save" = "保存图像";
+"ImageViewController.ActionSheet.Save" = "保存图像";
 
 /* (No Commment) */
-"LoginView_Get_Login_Status" = "获取登录状态";
+"LoginViewController.Get_Login_Status" = "获取登录状态";
 
 /* No comment provided by engineer. */
-"LoginView_Get_Login_Status_Failure_Message" = "获取登录状态未成功";
+"LoginViewController.Get_Login_Status_Failure_Message" = "获取登录状态未成功";
 
 /* No comment provided by engineer. */
-"LoginView_Get_Login_Status_Success_Message" = "获取登录状态成功";
+"LoginViewController.Get_Login_Status_Success_Message" = "获取登录状态成功";
 
 /* No comment provided by engineer. */
-"LoginView_Logout_Message" = "成功退出登录";
+"LoginViewController.Logout_Message" = "成功退出登录";
 
 /* Password */
-"LoginView_Password" = "密码";
+"LoginViewController.Password" = "密码";
 
 /* (No Commment) */
-"LoginView_Title" = "登录设置";
+"LoginViewController.Title" = "登录设置";
 
 /* Username */
-"LoginView_Username" = "用户名";
+"LoginViewController.Username" = "用户名";
 
 "LoginViewController.usernameField.placeholder" = "用户名";
 "LoginViewController.passwordField.placeholder" = "密码";
@@ -79,103 +79,103 @@
 "Message_OK" = "完成";
 
 /* Cancel */
-"REComposeSheetView_Cancel" = "取消";
+"REComposeSheetView.Cancel" = "取消";
 
 /* Post */
-"REComposeSheetView_Post" = "发送";
+"REComposeSheetView.Post" = "发送";
 
 /* (No Commment) */
-"SettingView_Append_Suffix" = "回复尾巴";
+"SettingsViewController.Append_Suffix" = "回复尾巴";
 
 /* (No Commment) */
-"SettingView_Developer" = "开发者";
+"SettingsViewController.Developer" = "开发者";
 
 /* (No Commment) */
-"SettingView_Display_Image" = "显示图片";
+"SettingsViewController.Display_Image" = "显示图片";
 
 /* Font Size */
-"SettingView_Font_Size" = "字体大小";
+"SettingsViewController.Font_Size" = "字体大小";
 
 /* Forum Order */
-"SettingView_Forum_Order_Custom" = "板块自定义";
+"SettingsViewController.Forum_Order_Custom" = "板块自定义";
 
 /* (No Commment) */
-"SettingView_HistoryLimit" = "保存历史记录";
+"SettingsViewController.HistoryLimit" = "保存历史记录";
 
-"SettingView_HistoryLimit_3months" = "3个月";
-"SettingView_HistoryLimit_6months" = "6个月";
-"SettingView_HistoryLimit_1year" = "1年";
+"SettingsViewController.HistoryLimit.3months" = "3个月";
+"SettingsViewController.HistoryLimit.6months" = "6个月";
+"SettingsViewController.HistoryLimit.1year" = "1年";
 /* 1 month */
-"SettingView_HistoryLimit_1month" = "1个月";
+"SettingsViewController.HistoryLimit.1month" = "1个月";
 
 /* 1 week */
-"SettingView_HistoryLimit_1week" = "1周";
+"SettingsViewController.HistoryLimit.1week" = "1周";
 
 /* 2 weeks */
-"SettingView_HistoryLimit_2weeks" = "2周";
+"SettingsViewController.HistoryLimit.2weeks" = "2周";
 
 /* 3 days */
-"SettingView_HistoryLimit_3days" = "3天";
+"SettingsViewController.HistoryLimit.3days" = "3天";
 
 /* Forever */
-"SettingView_HistoryLimit_Forever" = "永久";
+"SettingsViewController.HistoryLimit.Forever" = "永久";
 
 /* Login */
-"SettingView_LogIn" = "登录";
+"SettingsViewController.LogIn" = "登录";
 
 /* Logout */
-"SettingView_LogOut" = "退出登录";
+"SettingsViewController.LogOut" = "退出登录";
 
 /* (No Commment) */
-"SettingView_NavigationBar_Back" = "返回";
+"SettingsViewController.NavigationBar_Back" = "返回";
 
 /* Settings */
-"SettingView_NavigationBar_Title" = "设置";
+"SettingsViewController.NavigationBar_Title" = "设置";
 
 /* (No Commment) */
-"SettingView_Not_Login_State_Mark" = "未登录";
+"SettingsViewController.Not_Login_State_Mark" = "未登录";
 
 /* (No Commment) */
-"SettingView_ReplyIncrement" = "显示回复数增量";
+"SettingsViewController.ReplyIncrement" = "显示回复数增量";
 
 /* (No Commment) */
-"SettingView_Version" = "版本";
+"SettingsViewController.Version" = "版本";
 
 /* (No Commment) */
-"TopicListView_ListHeader_Short_Style" = "M月d日";
+"TopicListViewController.ListHeader_Short_Style" = "M月d日";
 
 /* Header Style */
-"TopicListView_ListHeader_Style" = "yyyy年M月d日";
+"TopicListViewController.ListHeader_Style" = "yyyy年M月d日";
 
 /* Today */
-"TopicListView_ListHeader_Today" = "（今天）";
+"TopicListViewController.ListHeader_Today" = "（今天）";
 
 /* (No Commment) */
-"TopicListView_NavigationBar_Settings" = "设置";
+"TopicListViewController.NavigationBar_Settings" = "设置";
 
 /* Search */
-"TopicListView_SearchBar_Detail_Hint" = "在 %@ 主题中搜索";
-"TopicListView_SearchBar_Hint" = "搜索";
+"TopicListViewController.SearchBar_Detail_Hint" = "在 %@ 主题中搜索";
+"TopicListViewController.SearchBar_Hint" = "搜索";
 
 /* Favorite */
-"TopicListView_SegmentControl_Favorite" = "收藏";
+"TopicListViewController.SegmentControl_Favorite" = "收藏";
 
 /* History */
-"TopicListView_SegmentControl_History" = "历史";
+"TopicListViewController.SegmentControl_History" = "历史";
 
-"SettingView_CloudKit_Enable_Message" = "设置将于下次启动时生效";
+"SettingsViewController.CloudKit_Enable_Message" = "设置将于下次启动时生效";
 
-"SettingView_CloudKit_Status_Off" = "关闭";
-"SettingView_CloudKit_Status_Suspended" = "暂停 (%lu)(%lu-%lu)";
-"SettingView_CloudKit_Status_Resumed" = "恢复 (%lu-%lu)";
+"SettingsViewController.CloudKit.Status.Off" = "关闭";
+"SettingsViewController.CloudKit.Status.Suspended" = "暂停 (%lu)(%lu-%lu)";
+"SettingsViewController.CloudKit.Status.Resumed" = "恢复 (%lu-%lu)";
 
-"SettingView_CloudKit_Status_Init" = "初始化";
-"SettingView_CloudKit_Status_Setup" = "配置中";
-"SettingView_CloudKit_Status_Fetch" = "获取更新";
-"SettingView_CloudKit_Status_Upload" = "上传中";
-"SettingView_CloudKit_Status_Ready" = "就绪";
-"SettingView_CloudKit_Status_Recover" = "错误恢复中";
-"SettingView_CloudKit_Status_Halt" = "挂起";
+"SettingsViewController.CloudKit.Status.Init" = "初始化";
+"SettingsViewController.CloudKit.Status.Setup" = "配置中";
+"SettingsViewController.CloudKit.Status.Fetch" = "获取更新";
+"SettingsViewController.CloudKit.Status.Upload" = "上传中";
+"SettingsViewController.CloudKit.Status.Ready" = "就绪";
+"SettingsViewController.CloudKit.Status.Recover" = "错误恢复中";
+"SettingsViewController.CloudKit.Status.Halt" = "挂起";
 
 "AdvancedSettingsViewController.HideStickTopicsRow.header" = "帖子列表";
 "AdvancedSettingsViewController.HideStickTopicsRow.title" = "隐藏置顶贴";

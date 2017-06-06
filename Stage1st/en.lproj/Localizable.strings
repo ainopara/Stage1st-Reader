@@ -1,79 +1,79 @@
-﻿/* Localized versions of Info.plist keys */
+/* Localized versions of Info.plist keys */
 "SystemLanguage" = "English";
 
 "ContentViewController.FloorActionSheet.Report" = "Report";
 "ContentViewController.FloorActionSheet.Reply" = "Reply";
 "ContentViewController.FloorActionSheet.Cancel" = "Cancel";
 
-"ContentView_ActionSheet_Cancel" = "Cancel";
-"ContentView_ActionSheet_Report" = "Report";
-"ContentView_ActionSheet_Reply" = "Reply";
-"ContentView_ActionSheet_Weibo" = "Sina Weibo";
-"ContentView_ActionSheet_Share" = "Share";
-"ContentView_ActionSheet_OriginPage" = "Original Page";
-"ContentView_ActionSheet_Favorite" = "Favorite";
-"ContentView_ActionSheet_Cancel_Favorite" = "Cancel Favorite";
-"ContentView_ActionSheet_CopyLink" = "Copy Link";
+"ContentViewController.ActionSheet.Cancel" = "Cancel";
+"ContentViewController.ActionSheet.Report" = "Report";
+"ContentViewController.ActionSheet.Reply" = "Reply";
+"ContentViewController.ActionSheet.Weibo" = "Sina Weibo";
+"ContentViewController.ActionSheet.Share" = "Share";
+"ContentViewController.ActionSheet.OriginPage" = "Original Page";
+"ContentViewController.ActionSheet.Favorite" = "Favorite";
+"ContentViewController.ActionSheet.CancelFavorite" = "Cancel Favorite";
+"ContentViewController.ActionSheet.CopyLink" = "Copy Link";
 
 "ReportComposeViewController.title" = "Report";
 
-"ImageViewer_ActionSheet_Save" = "Save Image";
-"ImageViewer_ActionSheet_CopyURL" = "Copy Image URL";
+"ImageViewController.ActionSheet.Save" = "Save Image";
+"ImageViewController.ActionSheet.CopyURL" = "Copy Image URL";
 
-"ContentView_WebView_Open_Link_Alert_Title" = "Open Link";
-"ContentView_WebView_Open_Link_Alert_Cancel" = "Cancel";
-"ContentView_WebView_Open_Link_Alert_Open" = "Open";
+"ContentViewController.WebView.OpenLinkAlert.Title" = "Open Link";
+"ContentViewController.WebView.OpenLinkAlert.Cancel" = "Cancel";
+"ContentViewController.WebView.OpenLinkAlert.Open" = "Open";
 
 "ContentView_Reply_Title" = "Reply";
 "ContentView_Reply_Need_Login_Message" = "Please Login in Settings";
 "ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "Need Chinese keyboard to open sina weibo service";
 "Message_OK" = "OK";
 
-"TopicListView_NavigationBar_Settings" = "Settings";
-"TopicListView_SegmentControl_History" = "History";
-"TopicListView_SegmentControl_Favorite" = "Favorite";
-"TopicListView_ListHeader_Style" = "EEEE, MMMM d, yyyy";
-"TopicListView_ListHeader_Short_Style" = "MMMM d";
-"TopicListView_ListHeader_Today" = " (Today)";
-"TopicListView_SearchBar_Hint" = "Search";
-"TopicListView_SearchBar_Detail_Hint" = "Search %@ Topics";
+"TopicListViewController.NavigationBar_Settings" = "Settings";
+"TopicListViewController.SegmentControl_History" = "History";
+"TopicListViewController.SegmentControl_Favorite" = "Favorite";
+"TopicListViewController.ListHeader_Style" = "EEEE, MMMM d, yyyy";
+"TopicListViewController.ListHeader_Short_Style" = "MMMM d";
+"TopicListViewController.ListHeader_Today" = " (Today)";
+"TopicListViewController.SearchBar_Hint" = "Search";
+"TopicListViewController.SearchBar_Detail_Hint" = "Search %@ Topics";
 
-"SettingView_NavigationBar_Title" = "Settings";
-"SettingView_NavigationBar_Back" = "Back";
-"SettingView_LogIn" = "Log In";
-"SettingView_LogOut" = "Log Out";
-"SettingView_Not_Login_State_Mark" = "Not Login";
-"SettingView_Forum_Order_Custom" = "Forum Order";
-"SettingView_Font_Size" = "Font Size";
-"SettingView_Display_Image" = "Display Image";
-"SettingView_Append_Suffix" = "Reply Suffix";
-"SettingView_HistoryLimit" = "Keep History";
-"SettingView_ReplyIncrement" = "Show Reply Increment";
-"SettingView_CloudKit_Status_Off" = "Off";
-"SettingView_CloudKit_Status_Suspended" = "Suspended(%lu)(%lu-%lu)";
-"SettingView_CloudKit_Status_Resumed" = "Resumed(%lu-%lu)";
+"SettingsViewController.NavigationBar_Title" = "Settings";
+"SettingsViewController.NavigationBar_Back" = "Back";
+"SettingsViewController.LogIn" = "Log In";
+"SettingsViewController.LogOut" = "Log Out";
+"SettingsViewController.Not_Login_State_Mark" = "Not Login";
+"SettingsViewController.Forum_Order_Custom" = "Forum Order";
+"SettingsViewController.Font_Size" = "Font Size";
+"SettingsViewController.Display_Image" = "Display Image";
+"SettingsViewController.Append_Suffix" = "Reply Suffix";
+"SettingsViewController.HistoryLimit" = "Keep History";
+"SettingsViewController.ReplyIncrement" = "Show Reply Increment";
+"SettingsViewController.CloudKit.Status.Off" = "Off";
+"SettingsViewController.CloudKit.Status.Suspended" = "Suspended(%lu)(%lu-%lu)";
+"SettingsViewController.CloudKit.Status.Resumed" = "Resumed(%lu-%lu)";
 
-"SettingView_CloudKit_Status_Init" = "Init";
-"SettingView_CloudKit_Status_Setup" = "Setup";
-"SettingView_CloudKit_Status_Fetch" = "Fetching";
-"SettingView_CloudKit_Status_Upload" = "Uploading";
-"SettingView_CloudKit_Status_Ready" = "Ready";
-"SettingView_CloudKit_Status_Recover" = "Recovering";
-"SettingView_CloudKit_Status_Halt" = "Halt";
+"SettingsViewController.CloudKit.Status.Init" = "Init";
+"SettingsViewController.CloudKit.Status.Setup" = "Setup";
+"SettingsViewController.CloudKit.Status.Fetch" = "Fetching";
+"SettingsViewController.CloudKit.Status.Upload" = "Uploading";
+"SettingsViewController.CloudKit.Status.Ready" = "Ready";
+"SettingsViewController.CloudKit.Status.Recover" = "Recovering";
+"SettingsViewController.CloudKit.Status.Halt" = "Halt";
 
-"SettingView_HistoryLimit_3days" = "3 days";
-"SettingView_HistoryLimit_1week" = "1 week";
-"SettingView_HistoryLimit_2weeks" = "2 weeks";
-"SettingView_HistoryLimit_1month" = "1 month";
-"SettingView_HistoryLimit_3months" = "3 months";
-"SettingView_HistoryLimit_6months" = "6 months";
-"SettingView_HistoryLimit_1year" = "1 year";
-"SettingView_HistoryLimit_Forever" = "Forever";
+"SettingsViewController.HistoryLimit.3days" = "3 days";
+"SettingsViewController.HistoryLimit.1week" = "1 week";
+"SettingsViewController.HistoryLimit.2weeks" = "2 weeks";
+"SettingsViewController.HistoryLimit.1month" = "1 month";
+"SettingsViewController.HistoryLimit.3months" = "3 months";
+"SettingsViewController.HistoryLimit.6months" = "6 months";
+"SettingsViewController.HistoryLimit.1year" = "1 year";
+"SettingsViewController.HistoryLimit.Forever" = "Forever";
 
-"SettingView_CloudKit_Enable_Message" = "Settings will take effect on next start";
+"SettingsViewController.CloudKit_Enable_Message" = "Settings will take effect on next start";
 
-"SettingView_Version" = "Version";
-"SettingView_Developer" = "Developer";
+"SettingsViewController.Version" = "Version";
+"SettingsViewController.Developer" = "Developer";
 
 "AdvancedSettingsViewController.HideStickTopicsRow.header" = "Topic List";
 "AdvancedSettingsViewController.HideStickTopicsRow.title" = "Hide Stick Topics";
@@ -85,15 +85,15 @@
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "Reset to Default Settings";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "Reset settings in advanced settings to default.";
 
-"LoginView_Title" = "Login";
-"LoginView_Username" = "Username";
-"LoginView_Password" = "Password";
-"LoginView_Get_Login_Status" = "Get Login Status";
-"LoginView_Get_Login_Status_Success_Message" = "Getting Login Status Succeed";
-"LoginView_Get_Login_Status_Failure_Message" = "Getting Login Status Failed";
-"LoginView_Logout_Message" = "Logout Succeed";
+"LoginViewController.Title" = "Login";
+"LoginViewController.Username" = "Username";
+"LoginViewController.Password" = "Password";
+"LoginViewController.Get_Login_Status" = "Get Login Status";
+"LoginViewController.Get_Login_Status_Success_Message" = "Getting Login Status Succeed";
+"LoginViewController.Get_Login_Status_Failure_Message" = "Getting Login Status Failed";
+"LoginViewController.Logout_Message" = "Logout Succeed";
 "LoginViewController.usernameField.placeholder" = "Username";
 "LoginViewController.passwordField.placeholder" = "Password";
 
-"REComposeSheetView_Cancel" = "Cancel";
-"REComposeSheetView_Post" = "Post";
+"REComposeSheetView.Cancel" = "Cancel";
+"REComposeSheetView.Post" = "Post";

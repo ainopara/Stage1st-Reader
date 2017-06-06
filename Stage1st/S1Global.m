@@ -34,7 +34,7 @@
 - (NSDateFormatter *)dateFormatter {
     if (_dateFormatter == nil) {
         _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setDateFormat:NSLocalizedString(@"TopicListView_ListHeader_Style", @"Header Style")];
+        [_dateFormatter setDateFormat:NSLocalizedString(@"TopicListViewController.ListHeader_Style", @"Header Style")];
     }
     return _dateFormatter;
 }
@@ -102,19 +102,19 @@
 
 + (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey
 {
-    if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_3days",@"")]){
+    if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.3days",@"")]){
         return @259200;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1week",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1week",@"")]){
         return @604800;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_2weeks",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks",@"")]){
         return @1209600;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1month",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1month",@"")]){
         return @2592000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_3months",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.3months",@"")]){
         return @7884000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_6months",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.6months",@"")]){
         return @15768000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingView_HistoryLimit_1year",@"")]){
+    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1year",@"")]){
         return @31536000;
     }
     return @-1;
@@ -123,21 +123,21 @@
 + (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey
 {
     if ([numberKey isEqualToNumber:@259200]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_3days",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.3days",@"");
     } else if ([numberKey isEqualToNumber:@604800]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_1week",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1week",@"");
     } else if ([numberKey isEqualToNumber:@1209600]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_2weeks",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks",@"");
     } else if ([numberKey isEqualToNumber:@2592000]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_1month",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1month",@"");
     } else if ([numberKey isEqualToNumber:@7884000]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_3months",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.3months",@"");
     } else if ([numberKey isEqualToNumber:@15768000]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_6months",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.6months",@"");
     } else if ([numberKey isEqualToNumber:@31536000]) {
-        return NSLocalizedString(@"SettingView_HistoryLimit_1year",@"");
+        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1year",@"");
     }
-    return NSLocalizedString(@"SettingView_HistoryLimit_Forever",@"");
+    return NSLocalizedString(@"SettingsViewController.HistoryLimit.Forever",@"");
 }
 
 + (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern {

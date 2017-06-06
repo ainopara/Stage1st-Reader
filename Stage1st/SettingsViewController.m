@@ -51,7 +51,7 @@
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
 
-    self.forumOrderCell.textLabel.text = NSLocalizedString(@"SettingView_Forum_Order_Custom", @"Forum Order");
+    self.forumOrderCell.textLabel.text = NSLocalizedString(@"SettingsViewController.Forum_Order_Custom", @"Forum Order");
 
     self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
     self.forcePortraitSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"];
@@ -65,14 +65,14 @@
     
     self.versionDetail.text = [self applicationVersion];
 
-    self.navigationItem.title = NSLocalizedString(@"SettingView_NavigationBar_Title", @"Settings");
+    self.navigationItem.title = NSLocalizedString(@"SettingsViewController.NavigationBar_Title", @"Settings");
     
-    self.fontSizeCell.textLabel.text = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
+    self.fontSizeCell.textLabel.text = NSLocalizedString(@"SettingsViewController.Font_Size", @"Font Size");
     self.fontSizeCell.detailTextLabel.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.fontSizeCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.fontSizeCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-    self.keepHistoryCell.textLabel.text = NSLocalizedString(@"SettingView_HistoryLimit", @"History Limit");
+    self.keepHistoryCell.textLabel.text = NSLocalizedString(@"SettingsViewController.HistoryLimit", @"History Limit");
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -165,17 +165,17 @@
             keys = @[@"18px", @"20px", @"22px"];
         }
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:[[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"]];
-        controller.title = NSLocalizedString(@"SettingView_Font_Size", @"Font Size");
+        controller.title = NSLocalizedString(@"SettingsViewController.Font_Size", @"Font Size");
         [controller setCompletionHandler:^(NSString *key) {
             [[NSUserDefaults standardUserDefaults] setValue:key forKey:@"FontSize"];
         }];
         [self.navigationController pushViewController:controller animated:YES];
     } else if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-        NSArray *keys = @[NSLocalizedString(@"SettingView_HistoryLimit_3days", @"3 days"), NSLocalizedString(@"SettingView_HistoryLimit_1week", @"1 week"), NSLocalizedString(@"SettingView_HistoryLimit_2weeks", @"2 weeks"), NSLocalizedString(@"SettingView_HistoryLimit_1month", @"1 month"), NSLocalizedString(@"SettingView_HistoryLimit_3months", @"3 months"), NSLocalizedString(@"SettingView_HistoryLimit_6months", @"6 months"), NSLocalizedString(@"SettingView_HistoryLimit_1year", @"1 year"), NSLocalizedString(@"SettingView_HistoryLimit_Forever", @"Forever")];
+        NSArray *keys = @[NSLocalizedString(@"SettingsViewController.HistoryLimit.3days", @"3 days"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1week", @"1 week"), NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks", @"2 weeks"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1month", @"1 month"), NSLocalizedString(@"SettingsViewController.HistoryLimit.3months", @"3 months"), NSLocalizedString(@"SettingsViewController.HistoryLimit.6months", @"6 months"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1year", @"1 year"), NSLocalizedString(@"SettingsViewController.HistoryLimit.Forever", @"Forever")];
         
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:selectedKey];
-        controller.title = NSLocalizedString(@"SettingView_HistoryLimit", @"HistoryLimit");
+        controller.title = NSLocalizedString(@"SettingsViewController.HistoryLimit", @"HistoryLimit");
         [controller setCompletionHandler:^(NSString *key) {
             [[NSUserDefaults standardUserDefaults] setValue:[S1Global HistoryLimitString2Number:key] forKey:@"HistoryLimit"];
         }];
@@ -257,7 +257,7 @@
 - (void)_updateiCloudStatus {
     NSString *titleString;
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Off", @"Off");
+        titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Off", @"Off");
     } else {
         NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
         
@@ -267,27 +267,27 @@
         
         switch ([MyCloudKitManager state]) {
             case CKManagerStateInit:
-                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Init", @"Init");
+                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Init", @"Init");
                 break;
             case CKManagerStateSetup:
-                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Setup", @"Setup");
+                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Setup", @"Setup");
                 break;
             case CKManagerStateFetching:
-                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Fetch", @"Fetch");
+                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Fetch", @"Fetch");
                 break;
             case CKManagerStateUploading:
                 titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
-                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Upload", @"Upload") stringByAppendingString:titleString];
+                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Upload", @"Upload") stringByAppendingString:titleString];
                 break;
             case CKManagerStateReady:
-                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Ready", @"Ready");
+                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Ready", @"Ready");
                 break;
             case CKManagerStateRecovering:
-                titleString = NSLocalizedString(@"SettingView_CloudKit_Status_Recover", @"Recover");
+                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Recover", @"Recover");
                 break;
             case CKManagerStateHalt:
                 titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
-                titleString = [NSLocalizedString(@"SettingView_CloudKit_Status_Halt", @"Halt") stringByAppendingString:titleString];
+                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Halt", @"Halt") stringByAppendingString:titleString];
                 break;
             default:
                 break;
@@ -302,7 +302,7 @@
     if (inLoginStateID != nil && [inLoginStateID isKindOfClass:[NSString class]]) {
         self.usernameDetail.text = inLoginStateID;
     } else {
-        self.usernameDetail.text = NSLocalizedString(@"SettingView_Not_Login_State_Mark", @"");
+        self.usernameDetail.text = NSLocalizedString(@"SettingsViewController.Not_Login_State_Mark", @"");
     }
 }
 

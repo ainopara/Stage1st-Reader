@@ -184,7 +184,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
                 userInfoInputView.answerField.alpha = 0.0
 
                 userInfoInputView.passwordField.returnKeyType = .go
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingsViewController.LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
@@ -202,7 +202,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
                 userInfoInputView.answerField.alpha = 1.0
 
                 userInfoInputView.passwordField.returnKeyType = .next
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogIn", comment: "LogIn"), for: .normal)
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingsViewController.LogIn", comment: "LogIn"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
@@ -219,7 +219,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
                 userInfoInputView.questionSelectButton.alpha = 0.0
                 userInfoInputView.answerField.alpha = 0.0
 
-                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingView_LogOut", comment: "LogOut"), for: .normal)
+                userInfoInputView.loginButton.setTitle(NSLocalizedString("SettingsViewController.LogOut", comment: "LogOut"), for: .normal)
                 loginButtonTopConstraint?.deactivate()
                 userInfoInputView.loginButton.snp.remakeConstraints { make in
                     make.width.centerX.equalTo(self.userInfoInputView.usernameField)
@@ -365,7 +365,7 @@ extension LoginViewController {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
+            alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
         seccodeInputView.seccodeSubmitButton.isEnabled = false
@@ -377,14 +377,14 @@ extension LoginViewController {
             case let .success(message):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
                 strongSelf.state = .login
-                let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
+                let alertController = UIAlertController(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: { _ in
                     strongSelf._dismiss()
                 }))
                 strongSelf.present(alertController, animated: true, completion: nil)
             case let .failure(error):
                 strongSelf.seccodeInputView.seccodeSubmitButton.isEnabled = true
-                strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: error.localizedDescription)
+                strongSelf.alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: error.localizedDescription)
             }
         }
     }
@@ -477,7 +477,7 @@ extension LoginViewController {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
-            alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "用户名和密码不能为空")
+            alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
         UserDefaults.standard.set(username, forKey: "UserIDCached")
@@ -494,14 +494,14 @@ extension LoginViewController {
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
                     UserDefaults.standard.set(username, forKey: "InLoginStateID")
                     strongSelf.state = .login
-                    let alertController = UIAlertController(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
+                    let alertController = UIAlertController(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
                     alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: { _ in
                         strongSelf._dismiss()
                     }))
                     strongSelf.present(alertController, animated: true, completion: nil)
                 case let .failure(error):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
-                    strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: "\(error)")
+                    strongSelf.alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: "\(error)")
                 }
             }
         }, hasSeccodeBlock: { [weak self] sechash in
@@ -524,14 +524,14 @@ extension LoginViewController {
         }, failureBlock: { [weak self] error in
             guard let strongSelf = self else { return }
             strongSelf.userInfoInputView.loginButton.isEnabled = true
-            strongSelf.alert(title: NSLocalizedString("SettingView_LogIn", comment: ""), message: error.localizedDescription)
+            strongSelf.alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: error.localizedDescription)
         })
     }
 
     fileprivate func logoutAction() {
         networkManager.logOut()
         state = .notLogin
-        alert(title: NSLocalizedString("SettingView_LogOut", comment: ""), message: NSLocalizedString("LoginView_Logout_Message", comment: ""))
+        alert(title: NSLocalizedString("SettingsViewController.LogOut", comment: ""), message: NSLocalizedString("LoginViewController.Logout_Message", comment: ""))
     }
 }
 

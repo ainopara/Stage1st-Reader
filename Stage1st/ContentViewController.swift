@@ -529,7 +529,7 @@ extension S1ContentViewController {
         let moreActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         // Reply Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Reply", comment: "Reply"), style: .default, handler: { [weak self] _ in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Reply", comment: "Reply"), style: .default, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
@@ -562,18 +562,18 @@ extension S1ContentViewController {
 
         if !shouldPresentingFavoriteButtonOnToolBar() {
             // Favorite Action
-            let title = viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite") : NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite")
+            let title = viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentViewController.ActionSheet.CancelFavorite", comment: "Cancel Favorite") : NSLocalizedString("ContentViewController.ActionSheet.Favorite", comment: "Favorite")
             moreActionSheet.addAction(UIAlertAction(title: title, style: .default, handler: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.toggleFavorite()
-                let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentView_ActionSheet_Favorite", comment: "Favorite") : NSLocalizedString("ContentView_ActionSheet_Cancel_Favorite", comment: "Cancel Favorite")
+                let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentViewController.ActionSheet.Favorite", comment: "Favorite") : NSLocalizedString("ContentViewController.ActionSheet.CancelFavorite", comment: "Cancel Favorite")
                 strongSelf.hintHUD.showMessage(message)
                 strongSelf.hintHUD.hide(withDelay: 0.5)
             }))
         }
 
         // Share Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Share", comment: "Share"), style: .default, handler: { [weak self] _ in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Share", comment: "Share"), style: .default, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
 
             let rect = mutate(strongSelf.view.bounds) { (value: inout CGRect) in
@@ -599,11 +599,11 @@ extension S1ContentViewController {
         }))
 
         // Copy Link
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"), style: .default, handler: { [weak self] _ in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.CopyLink", comment: "Copy Link"), style: .default, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
             if let urlString = strongSelf.viewModel.correspondingWebPageURL()?.absoluteString {
                 UIPasteboard.general.string = urlString
-                strongSelf.hintHUD.showMessage(NSLocalizedString("ContentView_ActionSheet_CopyLink", comment: "Copy Link"))
+                strongSelf.hintHUD.showMessage(NSLocalizedString("ContentViewController.ActionSheet.CopyLink", comment: "Copy Link"))
                 strongSelf.hintHUD.hide(withDelay: 0.3)
             } else {
                 DDLogWarn("[ContentVC] can not generate corresponding web page url.")
@@ -611,7 +611,7 @@ extension S1ContentViewController {
         }))
 
         // Origin Page Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_OriginPage", comment: "Origin"), style: .default, handler: { [weak self] _ in
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.OriginPage", comment: "Origin"), style: .default, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
             if let urlToOpen = strongSelf.viewModel.correspondingWebPageURL() {
                 let webViewController = WebViewController(URL: urlToOpen)
@@ -622,7 +622,7 @@ extension S1ContentViewController {
         }))
 
         // Cancel Action
-        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"), style: .cancel, handler: nil))
+        moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Cancel", comment: "Cancel"), style: .cancel, handler: nil))
 
         moreActionSheet.popoverPresentationController?.barButtonItem = actionBarButtonItem
         present(moreActionSheet, animated: true, completion: nil)
@@ -867,9 +867,9 @@ extension S1ContentViewController: WKNavigationDelegate {
         }
 
         // Fallback Open link
-        let alertViewController = UIAlertController(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Cancel", comment: ""), style: .cancel, handler: nil))
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentView_WebView_Open_Link_Alert_Open", comment: ""), style: .default, handler: { _ in
+        let alertViewController = UIAlertController(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Cancel", comment: ""), style: .cancel, handler: nil))
+        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""), style: .default, handler: { _ in
             DDLogInfo("[ContentVC] Open in Safari: \(url)")
 
             if !UIApplication.shared.openURL(url) {
@@ -919,7 +919,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_Save", comment: "Save"), style: .default, handler: { _ in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewController.ActionSheet.Save", comment: "Save"), style: .default, handler: { _ in
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
@@ -944,11 +944,11 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
             }
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewer_ActionSheet_CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ImageViewController.ActionSheet.CopyURL", comment: "Copy URL"), style: .default, handler: { _ in
             UIPasteboard.general.string = imageViewer.imageInfo.imageURL.absoluteString
         }))
 
-        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentView_ActionSheet_Cancel", comment: "Cancel"), style: .cancel, handler: nil))
+        imageActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Cancel", comment: "Cancel"), style: .cancel, handler: nil))
 
         imageActionSheet.popoverPresentationController?.sourceView = imageViewer.view
         imageActionSheet.popoverPresentationController?.sourceRect = rect
