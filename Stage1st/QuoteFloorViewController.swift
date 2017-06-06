@@ -103,7 +103,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
-    func applicationWillEnterForeground() {
+    @objc func applicationWillEnterForeground() {
         DDLogDebug("[QuoteFloorVC] \(self) will enter foreground begin")
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
         DDLogDebug("[QuoteFloorVC] \(self) will enter foreground end")
@@ -123,7 +123,7 @@ extension QuoteFloorViewController {
         }
     }
 
-    open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
+    @objc open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
         webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
     }
 }

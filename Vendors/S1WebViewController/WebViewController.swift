@@ -146,7 +146,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
-    func applicationWillEnterForeground() {
+    @objc func applicationWillEnterForeground() {
         DDLogDebug("[WebVC] \(self) will enter foreground begin")
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
@@ -160,29 +160,29 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     }
 
     // MARK: - Actions
-    func _dismiss() {
+    @objc func _dismiss() {
         self.dismiss(animated: true, completion: nil)
     }
 
-    func back() {
+    @objc func back() {
         webView.goBack()
     }
 
-    func forward() {
+    @objc func forward() {
         webView.goForward()
     }
 
-    func refresh() {
+    @objc func refresh() {
         webView.reload()
     }
 
-    func stop() {
+    @objc func stop() {
         webView.stopLoading()
 
         updateBarItems()
     }
 
-    func openInSafari() {
+    @objc func openInSafari() {
         let URLToOpenInSafari = currentValidURL()
         DDLogDebug("[WebVC] open in safari:\(URLToOpenInSafari)")
         if UIApplication.shared.openURL(URLToOpenInSafari) != true {

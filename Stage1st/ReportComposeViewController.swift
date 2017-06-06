@@ -148,7 +148,7 @@ extension ReportComposeViewController: YYKeyboardObserver {
 
 // MARK: - Actions
 extension ReportComposeViewController {
-    func submit() {
+    @objc func submit() {
         view.endEditing(true)
         MessageHUD.shared.post(message: "举报发送中", duration: .forever)
         viewModel.submit { [weak self] error in
@@ -164,7 +164,7 @@ extension ReportComposeViewController {
         }
     }
 
-    func _dismiss() {
+    @objc func _dismiss() {
         dismiss(animated: true, completion: nil)
     }
 

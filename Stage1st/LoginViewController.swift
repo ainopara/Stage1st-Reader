@@ -351,7 +351,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 // MARK: - Actions
 extension LoginViewController {
 
-    func logIn(_: UIButton) {
+    @objc func logIn(_: UIButton) {
         if inLoginState() {
             Answers.logCustomEvent(withName: "Log Out", customAttributes: nil)
             logoutAction()
@@ -361,7 +361,7 @@ extension LoginViewController {
         }
     }
 
-    func logInWithSeccode(_: UIButton) {
+    @objc func logInWithSeccode(_: UIButton) {
         let username = currentUsername()
         let password = currentPassword()
         guard username != "" && password != "" else {
@@ -389,7 +389,7 @@ extension LoginViewController {
         }
     }
 
-    func findLoginFromOnePassword(_ button: UIButton) {
+    @objc func findLoginFromOnePassword(_ button: UIButton) {
         OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.baseURL, for: self, sender: button) { [weak self] loginDict, error in
             guard let strongSelf = self else {
                 return
@@ -407,7 +407,7 @@ extension LoginViewController {
         }
     }
 
-    func selectSecureQuestion(_ button: UIButton) {
+    @objc func selectSecureQuestion(_ button: UIButton) {
         DDLogDebug("debug secure question")
         view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
@@ -424,7 +424,7 @@ extension LoginViewController {
         picker.show()
     }
 
-    func _dismiss() {
+    @objc func _dismiss() {
         if let presentingViewController = self.presentingViewController {
             presentingViewController.dismiss(animated: true, completion: nil)
         } else {
@@ -432,7 +432,7 @@ extension LoginViewController {
         }
     }
 
-    func keyboardFrameWillChange(_ notification: Notification) {
+    @objc func keyboardFrameWillChange(_ notification: Notification) {
         guard let userInfo = (notification as NSNotification).userInfo, let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else { return }
 
         let keyboardHeightInView = view.bounds.maxY - endFrame.minY
@@ -543,7 +543,7 @@ extension LoginViewController {
         present(alertController, animated: true, completion: nil)
     }
 
-    func pan(_ gesture: UIPanGestureRecognizer) {
+    @objc func pan(_ gesture: UIPanGestureRecognizer) {
         guard let dynamicAnimator = dynamicAnimator else { return }
 
         switch gesture.state {
