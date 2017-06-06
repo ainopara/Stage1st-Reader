@@ -71,7 +71,10 @@ class ContentViewModel: NSObject, PageRenderer {
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
         // TODO: Add logs.
         //        DDLogInfo("[ContentVM] reply count changed: %@", x)
-        previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { previous, _ in return previous }
+        previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
+            let (previous, _) = arg
+            return previous
+        }
     }
 
     func userIsBlocked(with userID: UInt) -> Bool {

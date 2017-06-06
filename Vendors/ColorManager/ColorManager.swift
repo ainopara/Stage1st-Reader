@@ -54,9 +54,15 @@ public final class ColorManager: NSObject {
         UIToolbar.appearance().tintColor = colorForKey("appearance.toolbar.tint")
         UINavigationBar.appearance().barTintColor = colorForKey("appearance.navigationbar.bartint")
         UINavigationBar.appearance().tintColor = colorForKey("appearance.navigationbar.tint")
-        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: colorForKey("appearance.navigationbar.title"), NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)]
+        UINavigationBar.appearance().titleTextAttributes = [
+            NSAttributedStringKey.foregroundColor.rawValue: colorForKey("appearance.navigationbar.title"),
+            NSAttributedStringKey.font.rawValue: UIFont.boldSystemFont(ofSize: 17.0)
+        ]
         UISwitch.appearance().onTintColor = colorForKey("appearance.switch.tint")
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"), NSFontAttributeName: UIFont.systemFont(ofSize: 14.0)]
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [
+            NSAttributedStringKey.foregroundColor.rawValue: self.colorForKey("appearance.searchbar.text"),
+            NSAttributedStringKey.font.rawValue: UIFont.systemFont(ofSize: 14.0)
+        ]
 
         UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
         UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default

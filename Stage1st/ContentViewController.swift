@@ -220,7 +220,9 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         // Binding
         viewModel.currentPage.producer
             .combineLatest(with: viewModel.totalPages.producer)
-            .startWithValues { [weak self] currentPage, totalPage in
+            .startWithValues { [weak self] arg in
+                let (currentPage, totalPage) = arg
+
                 DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
                 guard let strongSelf = self else { return }
                 strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
@@ -228,7 +230,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
         SignalProducer
             .combineLatest(webPageReadyForAutomaticScrolling.producer, webPageCurrentContentHeight.producer)
-            .startWithValues { [weak self] webPageReady, currentHeight in
+            .startWithValues { [weak self] arg in
+                let (webPageReady, currentHeight) = arg
 
                 guard let strongSelf = self else { return }
                 let finishFirstLoading = strongSelf.finishFirstLoading.value
@@ -509,9 +512,9 @@ extension S1ContentViewController {
         let labelParagraphStyle = NSMutableParagraphStyle()
         labelParagraphStyle.alignment = .center
         picker?.pickerTextAttributes = [
-            NSParagraphStyleAttributeName: labelParagraphStyle,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 19.0),
-            NSForegroundColorAttributeName: ColorManager.shared.colorForKey("content.picker.text"),
+            NSAttributedStringKey.paragraphStyle: labelParagraphStyle,
+            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 19.0),
+            NSAttributedStringKey.foregroundColor: ColorManager.shared.colorForKey("content.picker.text"),
         ]
         picker?.show()
     }

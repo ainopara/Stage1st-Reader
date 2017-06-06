@@ -138,13 +138,13 @@ class MessageHUD: UIWindow {
         case forever
     }
 
-    func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    @objc func didReceivePaletteChangeNotification(_ notification: Notification?) {
         backgroundView.effect = ColorManager.shared.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
         textLabel.textColor = ColorManager.shared.colorForKey("reply.text")
         decorationLine.backgroundColor = ColorManager.shared.colorForKey("reply.text")
     }
 
-    func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {
+    @objc func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {
         guard let newFrame = notification?.userInfo?[UIApplicationStatusBarFrameUserInfoKey] as? CGRect else {
             return
         }

@@ -238,9 +238,9 @@ extension String {
 
         guard let data = self.data(using: .utf8) else { return nil }
 
-        let options: [String: Any] = [
-            NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-            NSCharacterEncodingDocumentAttribute: String.Encoding.utf8.rawValue,
+        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue,
         ]
 
         let attributedString = try? NSAttributedString(data: data,

@@ -32,7 +32,7 @@ final class ReportComposeViewModel {
         canSubmit <~ content.producer
             .map { $0.characters.count > 0 }
             .combineLatest(with: submiting.producer)
-            .map { $0 && !$1 }
+            .map { arg in arg.0 && !arg.1 }
     }
 
     func submit(_ completion: @escaping (Error?) -> Void) {

@@ -93,7 +93,7 @@ public final class InMemoryLogViewController: UIViewController {
         }
     }
 
-    public func refreshButtonDidTapped() {
+    @objc public func refreshButtonDidTapped() {
         snapshot = logger.messageQueue
     }
 }
