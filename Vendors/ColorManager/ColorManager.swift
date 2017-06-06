@@ -99,7 +99,7 @@ private extension ColorManager {
 
 // MARK: - Miscs
 public extension UIViewController {
-    public func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    @objc public func didReceivePaletteChangeNotification(_ notification: Notification?) {
     }
 }
 
