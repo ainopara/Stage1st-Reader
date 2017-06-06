@@ -124,6 +124,8 @@ extension UIViewController {
     }
 }
 
+// MARK: - WebView
+
 extension UIWebView {
     func s1_positionOfElementWithId(_ elementID: String) -> CGRect? {
         let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
@@ -187,6 +189,8 @@ extension WKWebView {
     }
 }
 
+// MARK: -
+
 extension UIImage {
     func s1_tintWithColor(_ color: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.main.scale)
@@ -215,13 +219,16 @@ extension UIImage {
     }
 }
 
-// TODO: extend to any comparable types
-extension CGFloat {
-    func s1_limit(_ from: CGFloat, to: CGFloat) -> CGFloat {
-        assert(to >= from)
-        guard to >= from else { return from }
-        let result = self < to ? self : to
-        return result > from ? result : from
+// From: https://github.com/apple/swift-evolution/blob/master/proposals/0177-add-clamped-to-method.md
+extension Comparable {
+    func s1_clamped(to range: ClosedRange<Self>) -> Self {
+        if self > range.upperBound {
+            return range.upperBound
+        } else if self < range.lowerBound {
+            return range.lowerBound
+        } else {
+            return self
+        }
     }
 }
 
@@ -296,6 +303,28 @@ extension Array {
             return try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any]
         } catch {
             return nil
+        }
+    }
+}
+
+// MARK: - Regex
+
+extension String {
+    func s1_replace(pattern: String, with template: String) -> String {
+        let mutableString = self.mutableCopy() as! NSMutableString
+        _ = mutableString.s1_replace(pattern: pattern, with: template)
+        return mutableString as String
+    }
+}
+
+extension NSMutableString {
+    func s1_replace(pattern: String, with template: String) -> Int {
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators])
+            return regex.replaceMatches(in: self, options: [.reportProgress], range: NSMakeRange(0, self.length), withTemplate: template)
+        } catch let error {
+            DDLogError("Regex Replace error: \(error) when initialize with pattern: \(pattern)")
+            return 0
         }
     }
 }
