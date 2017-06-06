@@ -25,13 +25,13 @@
 "ContentViewController.ActionSheet.Report" = "举报";
 
 /* No comment provided by engineer. */
-"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "需要启用中文键盘才能使用";
+"ContentViewController.Share.ChineseKeyboardHint" = "需要启用中文键盘才能使用";
 
 /* Need Login in Settings */
-"ContentView_Reply_Need_Login_Message" = "请先获取登录状态";
+"ContentViewController.Reply.Need_Login_Message" = "请先获取登录状态";
 
 /* Reply */
-"ContentView_Reply_Title" = "回复";
+"ContentViewController.Reply.Title" = "回复";
 
 /* No comment provided by engineer. */
 "ContentViewController.WebView.OpenLinkAlert.Cancel" = "取消";

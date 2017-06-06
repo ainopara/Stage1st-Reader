@@ -1273,7 +1273,7 @@ extension S1ContentViewController {
         if let floor = floor { // Reply Floor
             replyViewController.title = "@\(floor.author.name)"
         } else { // Reply Topic
-            replyViewController.title = NSLocalizedString("ContentView_Reply_Title", comment: "Reply")
+            replyViewController.title = NSLocalizedString("ContentViewController.Reply.Title", comment: "Reply")
         }
 
         if let replyDraft = attributedReplyDraft {

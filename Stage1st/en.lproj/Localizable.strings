@@ -24,9 +24,9 @@
 "ContentViewController.WebView.OpenLinkAlert.Cancel" = "Cancel";
 "ContentViewController.WebView.OpenLinkAlert.Open" = "Open";
 
-"ContentView_Reply_Title" = "Reply";
-"ContentView_Reply_Need_Login_Message" = "Please Login in Settings";
-"ContentView_Need_Chinese_Keyboard_To_Open_Weibo_Service_Message" = "Need Chinese keyboard to open sina weibo service";
+"ContentViewController.Reply.Title" = "Reply";
+"ContentViewController.Reply.Need_Login_Message" = "Please Login in Settings";
+"ContentViewController.Share.ChineseKeyboardHint" = "Need Chinese keyboard to open sina weibo service";
 "Message_OK" = "OK";
 
 "TopicListViewController.NavigationBar_Settings" = "Settings";

@@ -15,7 +15,6 @@
 		36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */; };
 		36D1E8011E3859DA0035E319 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
-		36D36FC21E823FCE009D40A3 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D36FC11E823FCE009D40A3 /* R.generated.swift */; };
 		36D6D04F1E554F4A003098B8 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D04E1E554F4A003098B8 /* Stage1stLog.swift */; };
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
 		36D6D09D1E56B590003098B8 /* Fabric in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D6D09C1E56B590003098B8 /* Fabric */; };
@@ -34,7 +33,7 @@
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860F11C61E4EC21E00875AB9 /* DataCenter.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
-		86221B861CA65E3600015522 /* S1Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* S1Utility.swift */; };
+		86221B861CA65E3600015522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* Utilities.swift */; };
 		862DB79A1C8891070068F75F /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* UserViewController.swift */; };
 		862DB7A21C8AB0000068F75F /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A01C8AB0000068F75F /* ColorManager.swift */; };
 		862DB7A31C8AB0000068F75F /* PullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A11C8AB0000068F75F /* PullToActionController.swift */; };
@@ -139,7 +138,6 @@
 		36D1E7FE1E3851640035E319 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogger.swift; path = Vendors/CrashlyticsLogger/InMemoryLogger.swift; sourceTree = "<group>"; };
 		36D1E8001E3859DA0035E319 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InMemoryLogViewController.swift; path = Vendors/CrashlyticsLogger/InMemoryLogViewController.swift; sourceTree = "<group>"; };
 		36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-Stage1st-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-acknowledgements.plist"; sourceTree = "<group>"; };
-		36D36FC11E823FCE009D40A3 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		36D6D04E1E554F4A003098B8 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Stage1stLog.swift; path = Vendors/CrashlyticsLogger/Stage1stLog.swift; sourceTree = "<group>"; };
 		36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AdvancedSettingsViewController.swift; path = Stage1st/AdvancedSettingsViewController.swift; sourceTree = "<group>"; };
 		36D6D09C1E56B590003098B8 /* Fabric */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = Fabric; path = Pods/Fabric/iOS/Fabric.framework/Fabric; sourceTree = "<group>"; };
@@ -166,7 +164,7 @@
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		860F11C61E4EC21E00875AB9 /* DataCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataCenter.swift; path = Stage1st/DataCenter.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentViewModel.swift; path = Stage1st/ContentViewModel.swift; sourceTree = "<group>"; };
-		86221B851CA65E3600015522 /* S1Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Utility.swift; path = Stage1st/S1Utility.swift; sourceTree = "<group>"; };
+		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Stage1st/Utilities.swift; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewController.swift; path = Stage1st/UserViewController.swift; sourceTree = "<group>"; };
 		862DB7A01C8AB0000068F75F /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorManager.swift; path = Vendors/ColorManager/ColorManager.swift; sourceTree = "<group>"; };
 		862DB7A11C8AB0000068F75F /* PullToActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PullToActionController.swift; path = Vendors/PullToActionViewController/PullToActionController.swift; sourceTree = "<group>"; };
@@ -629,7 +627,7 @@
 			isa = PBXGroup;
 			children = (
 				868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */,
-				86221B851CA65E3600015522 /* S1Utility.swift */,
+				86221B851CA65E3600015522 /* Utilities.swift */,
 				862DB7A01C8AB0000068F75F /* ColorManager.swift */,
 				862DB7A11C8AB0000068F75F /* PullToActionController.swift */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
@@ -652,7 +650,6 @@
 		C095875516CA8A43007E0119 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				36D36FC11E823FCE009D40A3 /* R.generated.swift */,
 				36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
 				865673171A7A7B190025D22E /* Settings.storyboard */,
@@ -762,7 +759,6 @@
 			buildPhases = (
 				9CEB48858BDA6BB93C693500 /* [CP] Check Pods Manifest.lock */,
 				18D04A8E58CCEF18CB2A7242 /* [Amimono] Create filelist per architecture */,
-				36D36FC01E823F7B009D40A3 /* R.swift */,
 				867A99C41E8427BF00ED131A /* SwiftFormat */,
 				86221B871CA6719400015522 /* Swiftlint */,
 				C095873016CA8A36007E0119 /* Sources */,
@@ -789,17 +785,17 @@
 				CLASSPREFIX = S1;
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = Renaissance;
 				TargetAttributes = {
 					8681E6BB1CEF61ED004269D3 = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						TestTargetID = C095873316CA8A36007E0119;
 					};
 					C095873316CA8A36007E0119 = {
 						DevelopmentTeam = ZXQ9B2EVU5;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -878,21 +874,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "declare -a DEPENDENCIES=('1PasswordExtension' 'AFNetworking' 'AcknowList' 'ActionSheetPicker-3.0' 'Alamofire' 'AlamofireImage' 'CocoaLumberjack' 'FMDB' 'GRMustache.swift' 'JTSImageViewController' 'KissXML' 'Masonry' 'QuickTableViewController' 'R.swift.Library' 'Reachability' 'ReactiveCocoa' 'ReactiveSwift' 'Result' 'SnapKit' 'SwiftyJSON' 'TextAttributes' 'YYKeyboardManager' 'YapDatabase');\nIFS=\" \" read -r -a SPLIT <<< \"$ARCHS\"\nfor ARCH in \"${SPLIT[@]}\"; do\n  cd \"$OBJROOT/Pods.build\"\n  filelist=\"\"\n  for dependency in \"${DEPENDENCIES[@]}\"; do\n    path=\"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${dependency}.build/Objects-normal/${ARCH}\"\n    if [ -d \"$path\" ]; then\n      search_path=\"$path/*.o\"\n      for obj_file in $search_path; do\n        filelist+=\"${OBJROOT}/Pods.build/${obj_file}\"\n        filelist+=$'\\n'\n      done\n    fi\n  done\n  filelist=${filelist%$'\\n'}\n  echo \"$filelist\" > \"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}-${TARGET_NAME}-${ARCH}.objects.filelist\"\ndone\n";
-		};
-		36D36FC01E823F7B009D40A3 /* R.swift */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = R.swift;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$PODS_ROOT/R.swift/rswift\" \"$SRCROOT\"";
+			shellScript = "declare -a DEPENDENCIES=('1PasswordExtension' 'AFNetworking' 'AcknowList' 'ActionSheetPicker-3.0' 'Alamofire' 'AlamofireImage' 'CocoaLumberjack' 'FMDB' 'GRMustache.swift' 'JTSImageViewController' 'KissXML' 'Masonry' 'QuickTableViewController' 'Reachability' 'ReactiveCocoa' 'ReactiveSwift' 'Result' 'SnapKit' 'SwiftyJSON' 'TextAttributes' 'YYKeyboardManager' 'YapDatabase');\nIFS=\" \" read -r -a SPLIT <<< \"$ARCHS\"\nfor ARCH in \"${SPLIT[@]}\"; do\n  cd \"$OBJROOT/Pods.build\"\n  filelist=\"\"\n  for dependency in \"${DEPENDENCIES[@]}\"; do\n    path=\"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/${dependency}.build/Objects-normal/${ARCH}\"\n    if [ -d \"$path\" ]; then\n      search_path=\"$path/*.o\"\n      for obj_file in $search_path; do\n        filelist+=\"${OBJROOT}/Pods.build/${obj_file}\"\n        filelist+=$'\\n'\n      done\n    fi\n  done\n  filelist=${filelist%$'\\n'}\n  echo \"$filelist\" > \"${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}-${TARGET_NAME}-${ARCH}.objects.filelist\"\ndone\n";
 		};
 		86221B871CA6719400015522 /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -934,7 +916,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Stage1st/\" --disable unusedArguments";
+			shellScript = "# \"${SRCROOT}/Pods/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Stage1st/\" --disable unusedArguments";
 		};
 		93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1073,7 +1055,7 @@
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
-				86221B861CA65E3600015522 /* S1Utility.swift in Sources */,
+				86221B861CA65E3600015522 /* Utilities.swift in Sources */,
 				366714091E4C4CD400813310 /* Field.swift in Sources */,
 				36D1E7FF1E3851640035E319 /* InMemoryLogger.swift in Sources */,
 				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
@@ -1103,7 +1085,6 @@
 				3674BF411E763DE100629E25 /* Environment.swift in Sources */,
 				86BA383D1C0A106E00D508AC /* S1Application.swift in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
-				36D36FC21E823FCE009D40A3 /* R.generated.swift in Sources */,
 				862F51BE189136000038A289 /* TFHppleElement.m in Sources */,
 				8694BCD61CEC42C200756C4A /* WebViewController.swift in Sources */,
 				86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */,
@@ -1177,7 +1158,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ainopara.Stage1stTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stage1st.app/Stage1st";
 			};
 			name = Debug;
@@ -1206,7 +1188,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ainopara.Stage1stTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stage1st.app/Stage1st";
 			};
 			name = Release;
@@ -1219,12 +1202,18 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1261,12 +1250,18 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1318,6 +1313,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st/Stage1st-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -1351,6 +1347,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st/Stage1st-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

@@ -20,13 +20,13 @@ PODS:
   - Alamofire (4.4.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
-  - CocoaLumberjack (3.1.0):
-    - CocoaLumberjack/Default (= 3.1.0)
-    - CocoaLumberjack/Extensions (= 3.1.0)
-  - CocoaLumberjack/Default (3.1.0)
-  - CocoaLumberjack/Extensions (3.1.0):
+  - CocoaLumberjack (3.2.0):
+    - CocoaLumberjack/Default (= 3.2.0)
+    - CocoaLumberjack/Extensions (= 3.2.0)
+  - CocoaLumberjack/Default (3.2.0)
+  - CocoaLumberjack/Extensions (3.2.0):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (3.1.0):
+  - CocoaLumberjack/Swift (3.2.0):
     - CocoaLumberjack/Default
   - Crashlytics (3.8.4):
     - Fabric (~> 1.6.3)
@@ -42,26 +42,23 @@ PODS:
   - GRMustache.swift (2.0.0)
   - GYHttpMock (1.0.1)
   - JTSImageViewController (1.5)
-  - KIF (3.5.1):
-    - KIF/Core (= 3.5.1)
-  - KIF/Core (3.5.1)
+  - KIF (3.5.2):
+    - KIF/Core (= 3.5.2)
+  - KIF/Core (3.5.2)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
   - Masonry (1.0.2)
   - QuickTableViewController (0.5.3)
-  - R.swift (3.2.0):
-    - R.swift.Library (~> 3.0.2)
-  - R.swift.Library (3.0.2)
   - Reachability (3.2)
   - ReactiveCocoa (5.0.3):
     - ReactiveSwift (~> 1.1)
-  - ReactiveSwift (1.1.1):
+  - ReactiveSwift (1.1.3):
     - Result (~> 3.2)
-  - Result (3.2.1)
+  - Result (3.2.3)
   - Reveal-SDK (8)
   - SnapKit (3.2.0)
-  - SwiftFormat/CLI (0.28.4)
+  - SwiftFormat/CLI (0.28.6)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (2.9.2):
@@ -135,7 +132,6 @@ DEPENDENCIES:
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - QuickTableViewController (~> 0.5.0)
-  - R.swift
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
@@ -179,7 +175,7 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
-  CocoaLumberjack: 8311463ddf9ee86a06ef92a071dd656c89244500
+  CocoaLumberjack: 9b4aed7073d242f29cc2f62068d995faf67f703a
   Crashlytics: 79e236942ca1e7fc641df1feb9a275360a78ab6a
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -187,24 +183,22 @@ SPEC CHECKSUMS:
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  KIF: 082eb65279e51c3092923802849eb796a04982ab
+  KIF: f2a6025bb3f11692df675054a134d43a9ec2d7db
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   QuickTableViewController: fa0791b3f8d4a9b880041fce1252d71505b03f5d
-  R.swift: 207a372a2b5977caef440c696a368009460641d1
-  R.swift.Library: fbdec16c9802ad104fc1ba53415dc190e6ec5c73
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 066a855f613fb72f68258771095805fdb10312d2
-  ReactiveSwift: 2489549e3231a6ff68ec99f3d320bb264f10ba0a
-  Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
+  ReactiveSwift: f54ba12c2e799003432930fa55495315ae44f32b
+  Result: 128640a6347e8d2ae48b142556739a2d13f90ce6
   Reveal-SDK: 43be4e662864e937960d0d04d005135e29c4e53b
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
-  SwiftFormat: c48c1981bb39a0cacf5bc459785f9bae22f7a1a4
+  SwiftFormat: 9acb099fdbb44d4ca83e031361b1e3c701cd25ed
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 9597ececba5e7044a6b6cd7ca8fff56d06fdbffb
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: eddb521a9e234f4e134df620a392c632d5e35050
+PODFILE CHECKSUM: 76b9312c1e5429988e3a4f805ef857000709d020
 
 COCOAPODS: 1.2.1
