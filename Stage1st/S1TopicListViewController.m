@@ -34,6 +34,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 @interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, S1TabBarDelegate>
 // UI
+@property (nonatomic, strong) UIView *placeholderView;
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UINavigationItem *naviItem;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -90,25 +91,40 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.view.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.background"];
     
     //Setup Navigation Bar
-    [self.view addSubview:self.navigationBar];
-    [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top);
-        make.leading.with.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
-    }];
+    if (@available(iOS 11, *)) {
+        [self.view addSubview:self.placeholderView];
+        [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top);
+            make.leading.and.trailing.equalTo(self.view);
+            make.bottom.equalTo(self.mas_topLayoutGuideBottom);
+        }];
+
+        [self.view addSubview:self.navigationBar];
+        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.mas_topLayoutGuideBottom);
+            make.leading.and.trailing.equalTo(self.view);
+        }];
+    } else {
+        [self.view addSubview:self.navigationBar];
+        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top);
+            make.leading.and.trailing.equalTo(self.view);
+            make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
+        }];
+    }
 
     //Setup Table View
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.navigationBar.mas_bottom);
-        make.leading.with.trailing.equalTo(self.view);
+        make.leading.and.trailing.equalTo(self.view);
     }];
     
     //Setup Tab Bar
     [self.view addSubview:self.scrollTabBar];
     [self.scrollTabBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.tableView.mas_bottom);
-        make.leading.with.trailing.equalTo(self.view);
+        make.leading.and.trailing.equalTo(self.view);
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
@@ -139,6 +155,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     DDLogInfo(@"[TopicListVC] viewWillAppear");
 
     [self updateArchiveIcon];
+    [self didReceivePaletteChangeNotification:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -639,10 +656,17 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
-    [self.navigationBar setBarTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.bartint"]];
-    [self.navigationBar setTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
-                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+
+    if (@available(iOS 11, *)) {
+        [self.placeholderView setBackgroundColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
+    }
+
+    [self.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
+    [self.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationBar setTitleTextAttributes:@{
+        NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
+        NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
+    }];
     self.archiveButton.tintColor = [[ColorManager shared] colorForKey:@"topiclist.navigationbar.titlelabel"];
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -768,6 +792,14 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 #pragma mark - Getters and Setters
+
+- (UIView *)placeholderView {
+    if (_placeholderView == nil) {
+        _placeholderView = [[UIView alloc] initWithFrame:CGRectZero];
+    }
+
+    return _placeholderView;
+}
 
 - (UINavigationBar *)navigationBar {
     if (!_navigationBar) {
