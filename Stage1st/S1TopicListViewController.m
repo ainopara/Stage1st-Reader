@@ -902,6 +902,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         _searchBar.tintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.bartint"];
+        _searchBar.backgroundImage = [[UIImage alloc] init];
         _searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
 
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
