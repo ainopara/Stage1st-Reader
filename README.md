@@ -24,8 +24,7 @@ iOS Client for Stage1st. Get it on [App Store](https://itunes.apple.com/app/appl
 - Clone this repo.
 - `pod install`
 - (Optional) Install [swiftlint](https://github.com/realm/SwiftLint).
-- (Optional) Remove `XcodeColors = YES` in Run Environment Variables in Scheme, if you're not using XcodeColors.
-- Build & run with Xcode
+- Build & run with Xcode 9 beta1.
 
 ## License
 BSD License. See [LICENSE](https://github.com/ainopara/Stage1st-Reader/blob/develop/LICENSE.txt) for details.
