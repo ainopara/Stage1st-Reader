@@ -85,6 +85,7 @@
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
 		86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EBF1F01CE720FB00641A2D /* S1Animator.swift */; };
+		86EF616B1EFA1420000E3F77 /* dirty.txt in Resources */ = {isa = PBXBuildFile; fileRef = 86EF616A1EFA13CC000E3F77 /* dirty.txt */; };
 		86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
@@ -240,6 +241,7 @@
 		86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CrashlyticsLogger.m; path = Vendors/CrashlyticsLogger/CrashlyticsLogger.m; sourceTree = "<group>"; };
 		86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = WebTemplate.bundle; path = Stage1st/WebTemplate.bundle; sourceTree = "<group>"; };
 		86EBF1F01CE720FB00641A2D /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = S1Animator.swift; path = Stage1st/S1Animator.swift; sourceTree = "<group>"; };
+		86EF616A1EFA13CC000E3F77 /* dirty.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = dirty.txt; sourceTree = "<group>"; };
 		86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QuoteFloorViewModel.swift; path = Stage1st/QuoteFloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QuoteFloorCell.swift; path = Stage1st/QuoteFloorCell.swift; sourceTree = "<group>"; };
@@ -659,6 +661,7 @@
 				C083353616E4FB220035C1AA /* InitialOrder.plist */,
 				860DAD4C18900A1D0098EA3F /* resources.xcassets */,
 				C095874016CA8A36007E0119 /* Localizable.strings */,
+				86EF616A1EFA13CC000E3F77 /* dirty.txt */,
 				C08DB46E16DE41FB002B4A92 /* Mahjong */,
 			);
 			name = Resources;
@@ -842,6 +845,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86EF616B1EFA1420000E3F77 /* dirty.txt in Resources */,
 				86600FBC1AAD969D004394E6 /* MahjongMap.plist in Resources */,
 				86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
