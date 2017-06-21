@@ -50,6 +50,14 @@ S1AppDelegate *MyAppDelegate;
         InMemoryLogger *inMemoryLogger = [InMemoryLogger shared];
         [inMemoryLogger setLogFormatter:formatter];
         [DDLog addLogger:inMemoryLogger];
+
+        // OS Logger
+        if (@available(iOS 10.0, *)) {
+            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
+            [osLogger setLogFormatter:formatter];
+            [DDLog addLogger:osLogger];
+        }
+
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
         [formatter addFormatter:[[DDSimpleDispatchQueueLogFormatter alloc] init]];
