@@ -73,10 +73,9 @@
         DDLogVerbose(@"[NavPan] Begin.");
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        CGFloat screenWidth = screenRect.size.width;
-        [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / screenWidth : 0];
-        DDLogVerbose(@"[NavPan] Update: %f.", translation.x > 0 ? translation.x / screenWidth : 0);
+        CGFloat windowWidth = MyAppDelegate.window.bounds.size.width;
+        [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / windowWidth : 0];
+        DDLogVerbose(@"[NavPan] Update: %f.", translation.x > 0 ? translation.x / windowWidth : 0);
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         CGFloat velocityX = [recognizer velocityInView:view].x;
         CGRect screenRect = [[UIScreen mainScreen] bounds];
