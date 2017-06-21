@@ -39,7 +39,7 @@ public final class InMemoryLogViewController: UIViewController {
 
     private var needsToScrollToBottom = true
 
-    public init(inMemoryLogger: InMemoryLogger = InMemoryLogger.shared) {
+    @objc public init(inMemoryLogger: InMemoryLogger = InMemoryLogger.shared) {
         self.logger = inMemoryLogger
 
         super.init(nibName: nil, bundle: nil)

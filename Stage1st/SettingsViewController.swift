@@ -14,7 +14,7 @@ extension SettingsViewController {
 }
 
 extension SettingsViewController {
-    func applicationVersion() -> String {
+    @objc func applicationVersion() -> String {
         guard
             let shortVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"),
             let versionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") else {

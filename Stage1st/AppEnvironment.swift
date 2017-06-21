@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objcMembers
 class AppEnvironment: NSObject {
     static var current: Environment = Environment()
 }

@@ -23,7 +23,7 @@ public final class User: NSObject, NSCoding {
     var threadCount: UInt?
     var postCount: UInt?
 
-    public init(ID: UInt, name: String) {
+    @objc public init(ID: UInt, name: String) {
         self.ID = ID
         self.name = name
         super.init()

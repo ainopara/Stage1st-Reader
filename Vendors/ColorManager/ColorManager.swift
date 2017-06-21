@@ -9,6 +9,7 @@
 import UIKit
 import CocoaLumberjack
 
+@objcMembers
 public final class ColorManager: NSObject {
     fileprivate var palette: NSDictionary = NSDictionary()
     fileprivate var colorMap: NSDictionary = NSDictionary()

@@ -10,6 +10,7 @@ import YapDatabase
 import WebKit
 import CocoaLumberjack
 
+@objcMembers
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
     let tracer: S1YapDatabaseAdapter

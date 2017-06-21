@@ -34,7 +34,7 @@ struct Constants {
 // MARK: Logging
 extension S1AppDelegate {
 
-    func setLogLevelForSwift() {
+    @objc func setLogLevelForSwift() {
         #if DEBUG
             defaultDebugLevel = .verbose
         #else
@@ -46,7 +46,7 @@ extension S1AppDelegate {
 // MARK: Migration
 extension S1AppDelegate {
 
-    func migrate() {
+    @objc func migrate() {
         migrateTo3800()
         migrateTo3900()
         migrateTo3940()
@@ -97,7 +97,7 @@ extension S1AppDelegate {
 
 // MARK: Setup
 extension S1AppDelegate {
-    func setup() {
+    @objc func setup() {
         // NSCoding Mapping
         NSKeyedUnarchiver.setClass(Floor.self, forClassName: "S1Floor")
 
@@ -134,7 +134,7 @@ extension S1AppDelegate {
         updateStage1stDomainIfNecessary()
     }
 
-    func updateStage1stDomainIfNecessary() {
+    private func updateStage1stDomainIfNecessary() {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
         let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
@@ -180,7 +180,7 @@ extension S1AppDelegate {
 }
 
 extension S1AppDelegate {
-    func notifyCleaning() {
+    @objc func notifyCleaning() {
         AppEnvironment.current.dataCenter.cleaning()
     }
 }

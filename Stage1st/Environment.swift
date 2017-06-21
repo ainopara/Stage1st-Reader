@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objcMembers
 class Environment: NSObject {
     let forumName: String
     let serverAddress: ServerAddress

@@ -28,29 +28,29 @@ extension S1MahjongFaceView {
         }
     }
 
-    func categoriesWithHistory() -> [MahjongFaceCategory] {
+    @objc func categoriesWithHistory() -> [MahjongFaceCategory] {
         return [MahjongFaceCategory(id: "history", name: "历史", content: self.historyArray)] + categories()
     }
 
-    func categoryNames() -> [String] {
+    @objc func categoryNames() -> [String] {
         return mahjongCategories.map { $0.name }
     }
 
-    func categoryIDs() -> [String] {
+    @objc func categoryIDs() -> [String] {
         return mahjongCategories.map { $0.id }
     }
 
-    func category(withName name: String) -> MahjongFaceCategory? {
+    @objc func category(withName name: String) -> MahjongFaceCategory? {
         return mahjongCategories.first { $0.name == name }
     }
 
-    func category(withID id: String) -> MahjongFaceCategory? {
+    @objc func category(withID id: String) -> MahjongFaceCategory? {
         return mahjongCategories.first { $0.id == id }
     }
 }
 
 class S1MahjongFaceButton: UIButton {
-    var mahjongFaceItem: MahjongFaceItem?
+    @objc var mahjongFaceItem: MahjongFaceItem?
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         UIView.animate(withDuration: 0.1) {

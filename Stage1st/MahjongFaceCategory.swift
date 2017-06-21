@@ -8,6 +8,7 @@
 
 import UIKit
 
+@objcMembers
 class MahjongFaceCategory: NSObject {
     let id: String
     let name: String

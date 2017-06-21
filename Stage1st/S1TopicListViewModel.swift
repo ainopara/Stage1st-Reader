@@ -12,6 +12,7 @@ import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
 import YapDatabase.YapDatabaseFilteredView
 
+@objcMembers
 final class S1TopicListViewModel: NSObject {
     let dataCenter: DataCenter
     var viewMappings: YapDatabaseViewMappings?

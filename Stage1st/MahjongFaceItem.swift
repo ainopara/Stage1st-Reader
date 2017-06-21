@@ -12,6 +12,7 @@ private let kKey = "Key"
 private let kCategory = "Category"
 private let kPath = "Path"
 
+@objcMembers
 class MahjongFaceItem: NSObject, NSCoding {
     let key: String
     let category: String

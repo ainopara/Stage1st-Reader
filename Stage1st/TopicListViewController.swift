@@ -29,6 +29,7 @@ public enum TopicListPresentationType {
     }
 }
 
+@objc
 extension S1TopicListViewController {
 
     open override func didReceiveMemoryWarning() {

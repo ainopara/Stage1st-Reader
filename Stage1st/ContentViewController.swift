@@ -114,11 +114,11 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     }
 
     // MARK: -
-    convenience init(topic: S1Topic, dataCenter: DataCenter) {
+    @objc convenience init(topic: S1Topic, dataCenter: DataCenter) {
         self.init(viewModel: ContentViewModel(topic: topic, dataCenter: dataCenter))
     }
 
-    init(viewModel: ContentViewModel) {
+    @objc init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)

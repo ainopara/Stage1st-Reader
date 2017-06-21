@@ -10,7 +10,7 @@ import UIKit
 import CocoaLumberjack
 
 public class InMemoryLogger: DDAbstractLogger {
-    public static let shared = InMemoryLogger()
+    @objc public static let shared = InMemoryLogger()
     public var maxMessageEntity = 1000
     public override var loggerName: String { return "com.ainopara.inMemoryLogger" }
 

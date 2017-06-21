@@ -14,6 +14,7 @@ import CocoaLumberjack
     case pop
 }
 
+@objcMembers
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     let direction: TransitionDirection
     var curve: UIViewAnimationOptions = .curveEaseInOut

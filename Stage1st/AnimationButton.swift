@@ -95,6 +95,7 @@ extension AnimationView {
     }
 }
 
+@objcMembers
 class AnimationButton: UIButton {
     var hightlightAlpha: CGFloat = 0.4
     fileprivate let image: UIImage
