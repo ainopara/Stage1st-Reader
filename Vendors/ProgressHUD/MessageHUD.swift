@@ -39,15 +39,15 @@ class MessageHUD: UIWindow {
         }
 
         textLabel.textAlignment = .center
-        backgroundView.addSubview(textLabel)
+        backgroundView.contentView.addSubview(textLabel)
         textLabel.snp.makeConstraints { (make) in
-            make.leading.trailing.bottom.equalTo(backgroundView)
+            make.leading.trailing.bottom.equalTo(backgroundView.contentView)
             make.height.equalTo(44.0)
         }
 
-        backgroundView.addSubview(decorationLine)
+        addSubview(decorationLine)
         decorationLine.snp.makeConstraints { (make) in
-            make.leading.trailing.bottom.equalTo(backgroundView)
+            make.leading.trailing.bottom.equalTo(self)
             make.height.equalTo(1.0 / UIScreen.main.scale)
         }
 
