@@ -277,22 +277,25 @@
     }
 }
 
-+ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)responseString {
++ (NSMutableDictionary *_Nullable)replyFloorInfoFromResponseString:(NSString *)responseString {
     NSMutableDictionary *infoDict = [[NSMutableDictionary alloc] init];
-    [infoDict setObject:@NO forKey:@"requestSuccess"];
     if (responseString == nil) {
-        return infoDict;
+        return nil;
     }
     NSString *pattern = @"<input[^>]*name=\"([^>\"]*)\"[^>]*value=\"([^>\"]*)\"";
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSArray *results = [re matchesInString:responseString options:NSMatchingReportProgress range:NSMakeRange(0, responseString.length)];
-    if ([results count]) {
-        [infoDict setObject:@YES forKey:@"requestSuccess"];
+    if ([results count] == 0) {
+        return nil;
     }
     for (NSTextCheckingResult *result in results) {
         NSString *key = [responseString substringWithRange:[result rangeAtIndex:1]];
         NSString *value = [responseString substringWithRange:[result rangeAtIndex:2]];
-        [infoDict setObject:value forKey:key];
+        if ([key isEqualToString:@"noticetrimstr"]) {
+            [infoDict setObject:[value gtm_stringByUnescapingFromHTML] forKey:key];
+        } else {
+            [infoDict setObject:value forKey:key];
+        }
     }
     return infoDict;
 }

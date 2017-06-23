@@ -278,13 +278,12 @@ extension DataCenter {
             guard let strongSelf = self else { return }
             guard let responseData = responseObject as? Data,
                 let responseString = String(data: responseData, encoding: .utf8),
-                let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString),
-                mutableParameters["requestSuccess"] as! Bool == true else {
+                let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString) else {
+
                 failureBlock("bad response from server.")
                 return
             }
 
-            mutableParameters.removeObject(forKey: "requestSuccess")
             mutableParameters["replysubmit"] = "true"
             mutableParameters["message"] = text
 
