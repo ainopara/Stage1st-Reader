@@ -99,7 +99,8 @@
 }
 
 + (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData {
-    NSData * cleanedData = [self preprocessMalformedTextsInHTMLData:rawData];
+//    NSData *cleanedData = [self preprocessMalformedTextsInHTMLData:rawData];
+    NSData *cleanedData = rawData;
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:cleanedData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
     NSMutableArray<S1Topic *> *topics = [NSMutableArray array];
