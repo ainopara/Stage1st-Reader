@@ -170,7 +170,7 @@ extension DataCenter {
 // MARK: - Content
 extension DataCenter {
     @discardableResult
-    fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ successBlock: @escaping ([Floor], Bool) -> Void, _ failureBlock: @escaping (Error) -> Void) -> Request {
+    fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ completion: @escaping (Result<([Floor], Bool)>) -> Void) -> Request {
         return apiManager.floors(in: UInt(topic.topicID), page: UInt(page)) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
@@ -181,21 +181,21 @@ extension DataCenter {
                     topic.update(topicInfo)
                 }
                 strongSelf.cacheDatabaseManager.set(floors: floors, topicID: topic.topicID.intValue, page: page, completion: {
-                    successBlock(floors, false)
+                    completion(.success((floors, false)))
                 })
             case let .failure(error):
-                failureBlock(error)
+                completion(.failure(error))
             }
         }
     }
 
-    func floors(for topic: S1Topic, with page: Int, successBlock: @escaping ([Floor], Bool) -> Void, failureBlock: @escaping (Error) -> Void) {
+    func floors(for topic: S1Topic, with page: Int, completion: @escaping (Result<([Floor], Bool)>) -> Void) {
         assert(!topic.isImmutable)
 
         if let cachedFloors = cacheDatabaseManager.floors(in: topic.topicID.intValue, page: page), cachedFloors.count > 0 {
-            successBlock(cachedFloors, true)
+            completion(.success((cachedFloors, true)))
         } else {
-            requestFloorsFromServer(topic, page, successBlock, failureBlock)
+            requestFloorsFromServer(topic, page, completion)
         }
     }
 
@@ -205,14 +205,17 @@ extension DataCenter {
             return
         }
 
-        floors(for: topic, with: page, successBlock: { _, _ in
-            DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
-            NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: [
-                "topicID": topic.topicID,
-                "page": page
-            ])
-        }) { error in
-            DDLogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
+        floors(for: topic, with: page) { result in
+            switch result {
+            case .success(_):
+                DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
+                NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: [
+                    "topicID": topic.topicID,
+                    "page": page
+                ])
+            case let .failure(error):
+                DDLogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
+            }
         }
     }
 

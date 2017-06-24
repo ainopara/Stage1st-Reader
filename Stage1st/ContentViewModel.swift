@@ -69,8 +69,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
         totalPages <~ replyCount.producer
             .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
-        // TODO: Add logs.
-        //        DDLogInfo("[ContentVM] reply count changed: %@", x)
+
         previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
             let (previous, _) = arg
             return previous
@@ -84,18 +83,21 @@ class ContentViewModel: NSObject, PageRenderer {
 
 extension ContentViewModel {
     func currentContentPage(completion: @escaping (Result<String>) -> Void) {
-        dataCenter.floors(for: topic, with: Int(currentPage.value), successBlock: { [weak self] floors, isFromCache in
+        dataCenter.floors(for: topic, with: Int(currentPage.value)) { [weak self] result in
             guard let strongSelf = self else { return }
-            let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
-            guard !shouldRefetch else {
-                strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, with: Int(strongSelf.currentPage.value))
-                strongSelf.currentContentPage(completion: completion)
-                return
-            }
+            switch result {
+            case let .success(floors, isFromCache):
+                let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
+                guard !shouldRefetch else {
+                    strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, with: Int(strongSelf.currentPage.value))
+                    strongSelf.currentContentPage(completion: completion)
+                    return
+                }
 
-            completion(.success(strongSelf.generatePage(with: floors)))
-        }) { error in
-            completion(.failure(error))
+                completion(.success(strongSelf.generatePage(with: floors)))
+            case let .failure(error):
+                completion(.failure(error))
+            }
         }
     }
 }
@@ -124,11 +126,6 @@ extension ContentViewModel {
 
         return result
     }
-
-    //    func templateBundle() -> Bundle {
-    //        let templateBundleURL = Bundle.main.url(forResource: "WebTemplate", withExtension: "bundle")!
-    //        return Bundle.init(url: templateBundleURL)!
-    //    }
 
     func pageBaseURL() -> URL {
         return templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
