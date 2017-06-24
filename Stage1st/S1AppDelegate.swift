@@ -146,32 +146,22 @@ extension S1AppDelegate {
                 return
             }
 
-            let modificationDate = stage1stDomainRecord.modificationDate ?? Date.distantPast
-            guard let mainURL = stage1stDomainRecord["mainURL"] as? String else {
-                DDLogError("No mainURL in \(stage1stDomainRecord)")
+            guard let serverAddress = ServerAddress(record: stage1stDomainRecord) else {
+                DDLogError("Failed to parse server address from record: \(String(describing: recordsDictionary))")
                 return
             }
 
-            let serverAddress: ServerAddress
+            DDLogInfo("Updated \(serverAddress) modificationDate: \(serverAddress.lastUpdateDate)")
 
-            if let usedURLs = stage1stDomainRecord["usedURLs"] as? [String] {
-                serverAddress = ServerAddress(main: mainURL, used: usedURLs, lastUpdateDate: modificationDate)
+            if serverAddress.isPrefered(to: AppEnvironment.current.serverAddress) {
+                AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
+                AppEnvironment.current = Environment()
+
+                DispatchQueue.main.async {
+                    MessageHUD.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
+                }
             } else {
-                serverAddress = ServerAddress(main: mainURL, used: [], lastUpdateDate: modificationDate)
-            }
-
-            DDLogInfo("Updated \(serverAddress) modificationDate: \(modificationDate)")
-
-            guard serverAddress.isPreferedOver(serverAddress: AppEnvironment.current.serverAddress) else {
                 DDLogInfo("Server address do not need to update.")
-                return
-            }
-
-            AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
-            AppEnvironment.current = Environment()
-
-            DispatchQueue.main.async {
-                MessageHUD.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
             }
         }
 

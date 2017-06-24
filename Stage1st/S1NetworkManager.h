@@ -16,18 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithBaseURL:(NSString *)baseURL;
 
-- (void)requestTopicListAPIForKey:(NSString *)key
-                      withPage:(NSNumber *)page
-                       success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                       failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-
 - (void)requestTopicContentAPIForID:(NSNumber *)topicID
                            withPage:(NSNumber *)page
                             success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
                             failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-- (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                              failureBlock:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
+#pragma mark - Reply
 
 - (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
                                        withPage:(NSNumber *)page
@@ -49,17 +43,15 @@ NS_ASSUME_NONNULL_BEGIN
                     success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
                     failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
-- (void)findTopicFloor:(NSNumber *)floorID
-             inTopicID:(NSNumber *)topicID
-               success:(void (^)(NSURLSessionDataTask *, id))success
-               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure;
+#pragma mark - Search
 
-// Search
 - (void)postSearchForKeyword:(NSString *)keyword
                  andFormhash:(NSString *)formhash
                      success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-// User Info
+
+#pragma mark - User Info
+
 - (void)requestThreadListForID:(NSNumber *)userID
                        andPage:(NSNumber *)page
                        success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
@@ -70,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
                       success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
+#pragma mark - Misc
 
 - (void)cancelRequest;
 

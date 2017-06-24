@@ -152,7 +152,7 @@ public extension DiscuzClient {
 // MARK: - Topic List
 public extension DiscuzClient {
     @discardableResult
-    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(Field, [S1Topic])>) -> Void) -> Alamofire.Request {
+    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(Field, [S1Topic], String?, String?)>) -> Void) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
             "version": 1,
@@ -172,14 +172,19 @@ public extension DiscuzClient {
                     return
                 }
 
-                guard let field = Field(json: json) else {
+                guard let field = Field(json: json["Variables"]) else {
                     completion(.failure(DZError.noFieldInfoReturned(jsonString: json.rawString() ?? "")))
                     return
                 }
 
-                let topics = topicList.map { S1Topic(json: $0, fieldID: field.ID) }.flatMap { $0 }
+                let topics = topicList
+                    .map { S1Topic(json: $0, fieldID: field.ID) }
+                    .flatMap { $0 }
 
-                completion(.success((field, topics)))
+                let username = json["Variables"]["member_username"].string
+                let formhash = json["Variables"]["formhash"].string
+
+                completion(.success((field, topics, username, formhash)))
             case let .failure(error):
                 completion(.failure(error))
             }
@@ -188,12 +193,10 @@ public extension DiscuzClient {
 }
 
 // MARK: - Content
-public struct TopicInfo {
-}
 
 public extension DiscuzClient {
     @discardableResult
-    public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(TopicInfo, [Floor])>) -> Void) -> Alamofire.Request {
+    public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(S1Topic?, [Floor], String?)>) -> Void) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "viewthread",
             "version": 1,
@@ -204,10 +207,27 @@ public extension DiscuzClient {
             "page": page,
         ]
 
-        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseJSON { response in
             switch response.result {
             case let .success(json):
-                completion(.success((TopicInfo(), [Floor]())))
+
+                guard let jsonDictionary = json as? [String: Any] else {
+                    completion(.failure("Invalid response."))
+                    return
+                }
+
+                let variables = jsonDictionary["Variables"] as? [String: Any]
+                let username = variables.flatMap { $0["member_username"] as? String }
+
+                let topicFromPageResponse = S1Parser.topicInfo(fromAPI: jsonDictionary)
+                let floorsFromPageResponse = S1Parser.contents(fromAPI: jsonDictionary)
+
+                guard floorsFromPageResponse.count > 0 else {
+                    completion(.failure("Empty floors."))
+                    return
+                }
+
+                completion(.success((topicFromPageResponse, floorsFromPageResponse, username)))
             case let .failure(error):
                 completion(.failure(error))
             }

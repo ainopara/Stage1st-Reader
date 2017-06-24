@@ -290,7 +290,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveFloorCachedNotification(_:)),
-                                               name: Notification.Name(rawValue: "S1FloorDidCached"),
+                                               name: .S1FloorsDidCachedNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),

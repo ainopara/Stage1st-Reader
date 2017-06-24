@@ -10,22 +10,16 @@ import UIKit
 
 extension S1MahjongFaceView {
 
-    func categories() -> [MahjongFaceCategory] {
-        func indexPath() -> URL {
-            return Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true).appendingPathComponent("index").appendingPathExtension("json")
-        }
+    private func categories() -> [MahjongFaceCategory] {
+        let categoryIndexFileURL = Bundle.main.bundleURL
+            .appendingPathComponent("Mahjong", isDirectory: true)
+            .appendingPathComponent("index").appendingPathExtension("json")
 
-        func index() -> [Any] {
-            return Array<Any>.s1_array(from: indexPath()) ?? []
-        }
+        // swiftlint:disable syntactic_sugar
+        let categoryData = Array<[String: Any]>.s1_array(fromJSONFileURL: categoryIndexFileURL) ?? []
+        // swiftlint:enable syntactic_sugar
 
-        return index().flatMap {
-            guard let model = $0 as? [String: Any] else {
-                return nil
-            }
-
-            return MahjongFaceCategory(dictionary: model)
-        }
+        return categoryData.flatMap { MahjongFaceCategory(dictionary: $0) }
     }
 
     @objc func categoriesWithHistory() -> [MahjongFaceCategory] {

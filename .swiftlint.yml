@@ -10,6 +10,7 @@ disabled_rules: # rule identifiers to exclude from running
   - mark
   - trailing_comma
   - identifier_name
+  - large_tuple
 included: # paths to include during linting. `--path` is ignored if present.
   - Stage1st
   - Vendors

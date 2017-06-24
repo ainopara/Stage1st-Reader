@@ -9,26 +9,31 @@
 #import <Foundation/Foundation.h>
 
 @class S1Topic;
+@class Floor;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface S1Parser : NSObject
 
-+ (NSMutableArray *)topicsFromAPI:(NSDictionary *)responseDict;
-+ (NSArray *)contentsFromAPI:(NSDictionary *)responseDict;
++ (NSMutableArray<S1Topic *> *)topicsFromAPI:(NSDictionary *)responseDict;
++ (NSArray<Floor *> *)contentsFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromSearchResultHTMLData:(NSData *)rawData;
 
-+ (NSMutableDictionary *)replyFloorInfoFromResponseString:(NSString *)ResponseString;
++ (NSMutableDictionary *_Nullable)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 
-+ (NSString *)loginUserName:(NSString *)HTMLString;
++ (NSString *_Nullable)loginUserName:(NSString *)HTMLString;
 
-+ (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString;
-+ (NSString *)topicTitleFromPage:(NSData *)rawData;
-+ (NSString *)messageFromPage:(NSData *)rawData;
++ (S1Topic *_Nullable)extractTopicInfoFromLink:(NSString *)URLString;
++ (NSString *_Nullable)topicTitleFromPage:(NSData *)rawData;
++ (NSString *_Nullable)messageFromPage:(NSData *)rawData;
 
-+ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData  page:(NSNumber *)page withTopicID:(NSNumber *)topicID;
-+ (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict;
++ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData page:(NSNumber *)page withTopicID:(NSNumber *)topicID;
++ (S1Topic *_Nullable)topicInfoFromAPI:(NSDictionary *)responseDict;
 
 + (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
-+ (NSDictionary<NSString *, NSString *> *)extractQuerysFromURLString:(NSString *)URLString;
++ (NSDictionary<NSString *, NSString *> *_Nullable)extractQuerysFromURLString:(NSString *)URLString;
 
 @end
+
+NS_ASSUME_NONNULL_END

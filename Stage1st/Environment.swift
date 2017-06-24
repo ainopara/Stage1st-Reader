@@ -14,6 +14,7 @@ class Environment: NSObject {
     let serverAddress: ServerAddress
     let cookieStorage: HTTPCookieStorage
     let apiService: DiscuzClient
+    let networkManager: S1NetworkManager
     let databaseManager: DatabaseManager
     let cacheDatabaseManager: CacheDatabaseManager
 
@@ -32,17 +33,20 @@ class Environment: NSObject {
 
         cacheDatabaseManager = CacheDatabaseManager.shared
 
-        if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPreferedOver(serverAddress: ServerAddress.default) {
+        if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
             serverAddress = cachedServerAddress
         } else {
             serverAddress = ServerAddress.default
         }
 
-        apiService = DiscuzClient(baseURL: serverAddress.main)
+        apiService = DiscuzClient(baseURL: serverAddress.api)
+        networkManager = S1NetworkManager(baseURL: serverAddress.main)
 
         databaseManager = DatabaseManager.sharedInstance()
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
-        dataCenter = DataCenter(client: apiService,
+
+        dataCenter = DataCenter(apiManager: apiService,
+                                networkManager: networkManager,
                                 databaseManager: databaseManager,
                                 cacheDatabaseManager: cacheDatabaseManager)
     }

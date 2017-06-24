@@ -9,13 +9,14 @@
 import YapDatabase
 import WebKit
 import CocoaLumberjack
+import Alamofire
 
 @objcMembers
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
+    let networkManager: S1NetworkManager
     let tracer: S1YapDatabaseAdapter
     let cacheDatabaseManager: CacheDatabaseManager
-    let networkManager: S1NetworkManager
 
     var mahjongFaceHistorys: [MahjongFaceItem] {
         get {
@@ -32,12 +33,13 @@ class DataCenter: NSObject {
     fileprivate var topicListCache = [String: [S1Topic]]()
     fileprivate var topicListCachePageNumber = [String: Int]()
 
-    init(client: DiscuzClient,
+    init(apiManager: DiscuzClient,
+         networkManager: S1NetworkManager,
          databaseManager: DatabaseManager,
          cacheDatabaseManager: CacheDatabaseManager) {
 
-        apiManager = client
-        networkManager = S1NetworkManager(baseURL: client.baseURL)
+        self.apiManager = apiManager
+        self.networkManager = networkManager
         tracer = S1YapDatabaseAdapter(database: databaseManager)
         self.cacheDatabaseManager = cacheDatabaseManager
     }
@@ -52,66 +54,54 @@ extension DataCenter {
     }
 
     func topics(for key: String, shouldRefresh: Bool, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
-        guard let cachedTopics = topicListCache[key], !shouldRefresh else {
+        if let cachedTopics = topicListCache[key], !shouldRefresh {
+            successBlock(cachedTopics)
+        } else {
             topicsFromServer(for: key, page: 1, successBlock: successBlock, failureBlock: failureBlock)
-            return
         }
-
-        successBlock(cachedTopics)
     }
 
     func loadNextPage(for key: String, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
-        guard let currentPageNumber = topicListCachePageNumber[key] else {
+        if let currentPageNumber = topicListCachePageNumber[key] {
+            topicsFromServer(for: key, page: currentPageNumber + 1, successBlock: successBlock, failureBlock: failureBlock)
+        } else {
             failureBlock("loadNextPage called when no currentPageNumber in cache.")
-            return
         }
+    }
 
-        topicsFromServer(for: key, page: currentPageNumber + 1, successBlock: successBlock, failureBlock: failureBlock)
+    fileprivate func updateLoginState(_ username: String?) {
+        if let loginUsername = username, loginUsername != "" {
+            UserDefaults.standard.setValue(loginUsername, forKey: "InLoginStateID")
+        } else {
+            UserDefaults.standard.removeObject(forKey: "InLoginStateID")
+        }
     }
 
     private func topicsFromServer(for key: String, page: Int, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
-        networkManager.requestTopicListAPI(forKey: key, withPage: page as NSNumber, success: { [weak self] _, responseObject in
+        apiManager.topics(in: UInt(key)!, page: UInt(page)) { [weak self] (result) in
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
 
-                guard let responseDict = responseObject as? [String: Any],
-                    let variable = responseDict["Variables"] as? [String: Any] else {
+                switch result {
+                case let .success(_, topics, username, formhash):
 
-                    failureBlock("Invalid API response format")
-                    return
+                    strongSelf.updateLoginState(username)
+
+                    if let formhash = formhash {
+                        strongSelf.formHash = formhash
+                    }
+
+                    strongSelf.processAndCacheTopics(topics, key: key, page: page)
+                    successBlock(strongSelf.topicListCache[key]!)
+                case let .failure(error):
+                    failureBlock(error)
                 }
-
-                if let loginUsername = variable["member_username"] as? String, loginUsername != "" {
-                    UserDefaults.standard.setValue(loginUsername, forKey: "InLoginStateID")
-                } else {
-                    UserDefaults.standard.removeObject(forKey: "InLoginStateID")
-                }
-
-                if let formhash = variable["formhash"] as? String {
-                    strongSelf.formHash = formhash
-                }
-
-                let topics = S1Parser.topics(fromAPI: responseDict) as! [S1Topic]
-
-                strongSelf.processAndCacheTopics(topics, key: key, page: page)
-
-                successBlock(strongSelf.topicListCache[key]!)
             }
-        }) { _, error in
-            failureBlock(error)
         }
     }
 
     private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) {
-        func topicsIsValid() -> Bool {
-            return topics.count > 0
-        }
-
-        func shouldReplaceTopics() -> Bool {
-            return page == 1
-        }
-
-        guard topicsIsValid() else {
+        guard topics.count > 0 else {
             if topicListCache[key] == nil {
                 topicListCache[key] = [S1Topic]()
                 topicListCachePageNumber[key] = 1
@@ -120,13 +110,13 @@ extension DataCenter {
             return
         }
 
-        if shouldReplaceTopics() {
+        if page == 1 {
             topicListCache[key] = topics
             topicListCachePageNumber[key] = page
             return
         }
 
-        // filter duplicated topics
+        // eliminate duplicated topics
         let processedTopics: [S1Topic]
         if let cachedTopics = topicListCache[key] {
             let filteredTopics = topics.filter { aTopic in
@@ -179,46 +169,33 @@ extension DataCenter {
 
 // MARK: - Content
 extension DataCenter {
+    @discardableResult
+    fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ successBlock: @escaping ([Floor], Bool) -> Void, _ failureBlock: @escaping (Error) -> Void) -> Request {
+        return apiManager.floors(in: UInt(topic.topicID), page: UInt(page)) { [weak self] (result) in
+            guard let strongSelf = self else { return }
+
+            switch result {
+            case let .success(topicInfo, floors, username):
+                strongSelf.updateLoginState(username)
+                if let topicInfo = topicInfo {
+                    topic.update(topicInfo)
+                }
+                strongSelf.cacheDatabaseManager.set(floors: floors, topicID: topic.topicID.intValue, page: page, completion: {
+                    successBlock(floors, false)
+                })
+            case let .failure(error):
+                failureBlock(error)
+            }
+        }
+    }
+
     func floors(for topic: S1Topic, with page: Int, successBlock: @escaping ([Floor], Bool) -> Void, failureBlock: @escaping (Error) -> Void) {
         assert(!topic.isImmutable)
 
         if let cachedFloors = cacheDatabaseManager.floors(in: topic.topicID.intValue, page: page), cachedFloors.count > 0 {
             successBlock(cachedFloors, true)
-            return
-        }
-
-        let profileStartDate = Date()
-        networkManager.requestTopicContentAPI(forID: topic.topicID, withPage: page as NSNumber, success: { [weak self] _, responseObject in
-            guard let strongSelf = self else { return }
-
-            DDLogDebug("[Network] Content Finish Fetch:\(-profileStartDate.timeIntervalSinceNow)")
-
-            guard let responseDict = responseObject as? [String: Any], let variable = responseDict["Variables"] as? [String: Any] else {
-                failureBlock("Invalid API response format")
-                return
-            }
-
-            if let loginUsername = variable["member_username"] as? String, loginUsername != "" {
-                UserDefaults.standard.setValue(loginUsername, forKey: "InLoginStateID")
-            } else {
-                UserDefaults.standard.removeObject(forKey: "InLoginStateID")
-            }
-
-            if let topicFromPageResponse = S1Parser.topicInfo(fromAPI: responseDict) {
-                topic.update(topicFromPageResponse)
-            }
-
-            guard let floorsFromPageResponse = S1Parser.contents(fromAPI: responseDict) as? [Floor], floorsFromPageResponse.count > 0 else {
-                failureBlock("Failed to get floors.")
-                return
-            }
-
-            strongSelf.cacheDatabaseManager.set(floors: floorsFromPageResponse, topicID: topic.topicID.intValue, page: page, completion: {
-                successBlock(floorsFromPageResponse, false)
-            })
-
-        }) { _, error in
-            failureBlock(error)
+        } else {
+            requestFloorsFromServer(topic, page, successBlock, failureBlock)
         }
     }
 
@@ -230,7 +207,10 @@ extension DataCenter {
 
         floors(for: topic, with: page, successBlock: { _, _ in
             DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
-            NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: ["topicID": topic.topicID, "page": page])
+            NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: [
+                "topicID": topic.topicID,
+                "page": page
+            ])
         }) { error in
             DDLogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
         }
@@ -245,7 +225,7 @@ extension DataCenter {
     }
 }
 
-// MARK: - Reply
+// MARK: Reply
 extension DataCenter {
     func reply(topic: S1Topic, text: String, successblock: @escaping () -> Void, failureBlock: @escaping (Error) -> Void) {
         guard let formhash = topic.formhash, let forumID = topic.fID else {

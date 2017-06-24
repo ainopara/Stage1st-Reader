@@ -762,7 +762,6 @@
 			buildPhases = (
 				9CEB48858BDA6BB93C693500 /* [CP] Check Pods Manifest.lock */,
 				18D04A8E58CCEF18CB2A7242 /* [Amimono] Create filelist per architecture */,
-				867A99C41E8427BF00ED131A /* SwiftFormat */,
 				86221B871CA6719400015522 /* Swiftlint */,
 				C095873016CA8A36007E0119 /* Sources */,
 				C095873116CA8A36007E0119 /* Frameworks */,
@@ -907,20 +906,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\" 9c2555274ce1394305fd28e35310ab35c425d0e3 67779c61b0098102e5eb69534c83c3bdf063b0554bc3e1c7a76c3765524a67f5";
-		};
-		867A99C41E8427BF00ED131A /* SwiftFormat */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = SwiftFormat;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# \"${SRCROOT}/Pods/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Stage1st/\" --disable unusedArguments";
 		};
 		93822A73E7096B319B5F9598 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

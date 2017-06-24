@@ -282,25 +282,25 @@ extension Dictionary {
 }
 
 extension Array {
-    static func s1_array(from jsonFile: URL) -> [Any]? {
-        guard let jsonString = try? String(contentsOf: jsonFile) else {
+    static func s1_array(fromJSONFileURL jsonFileURL: URL) -> [Element]? {
+        guard let jsonString = try? String(contentsOf: jsonFileURL) else {
             return nil
         }
 
-        return s1_array(from: jsonString)
+        return s1_array(fromJSONString: jsonString)
     }
 
-    static func s1_array(from jsonString: String) -> [Any]? {
+    static func s1_array(fromJSONString jsonString: String) -> [Element]? {
         guard let data = jsonString.data(using: .utf8) else {
             return nil
         }
 
-        return s1_array(from: data)
+        return s1_array(fromJSONData: data)
     }
 
-    static func s1_array(from jsonData: Data) -> [Any]? {
+    static func s1_array(fromJSONData jsonData: Data) -> [Element]? {
         do {
-            return try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any]
+            return try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Element]
         } catch {
             return nil
         }
@@ -312,7 +312,7 @@ extension Array {
 extension String {
     func s1_replace(pattern: String, with template: String) -> String {
         let mutableString = self.mutableCopy() as! NSMutableString
-        _ = mutableString.s1_replace(pattern: pattern, with: template)
+        mutableString.s1_replace(pattern: pattern, with: template)
         return mutableString as String
     }
 }
