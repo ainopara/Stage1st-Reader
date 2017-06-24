@@ -24,18 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-- (instancetype)initToJSONClientWithBaseURL:(NSString *)baseURL
-{
-    self = [super initWithBaseURL:[NSURL URLWithString:baseURL]];
-
-    if (self != nil) {
-        self.responseSerializer = [AFJSONResponseSerializer serializer];
-        self.responseSerializer.acceptableContentTypes = [self.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-    }
-
-    return self;
-}
-
 @end
 
 NS_ASSUME_NONNULL_END

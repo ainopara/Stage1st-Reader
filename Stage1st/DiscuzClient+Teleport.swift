@@ -193,7 +193,6 @@ public extension DiscuzClient {
 }
 
 // MARK: - Content
-
 public extension DiscuzClient {
     @discardableResult
     public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(S1Topic?, [Floor], String?)>) -> Void) -> Alamofire.Request {

@@ -16,11 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithBaseURL:(NSString *)baseURL;
 
-- (void)requestTopicContentAPIForID:(NSNumber *)topicID
-                           withPage:(NSNumber *)page
-                            success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                            failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-
 #pragma mark - Reply
 
 - (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID

@@ -12,71 +12,21 @@
 
 @interface S1NetworkManager ()
 
-@property (nonatomic, strong) S1HTTPSessionManager *jsonClient;
 @property (nonatomic, strong) S1HTTPSessionManager *httpClient;
 
 @end
 
 @implementation S1NetworkManager
 
-
 - (instancetype)initWithBaseURL:(NSString *)baseURL
 {
     self = [super init];
 
     if (self != nil) {
-        _jsonClient = [[S1HTTPSessionManager alloc] initToJSONClientWithBaseURL:baseURL];
         _httpClient = [[S1HTTPSessionManager alloc] initToHTTPClientWithBaseURL:baseURL];
     }
 
     return self;
-}
-
-#pragma mark - Topic List
-
-- (void)requestTopicListAPIForKey:(NSString *)keyID
-                         withPage:(NSNumber *)page
-                          success:(void (^)(NSURLSessionDataTask *, id))success
-                          failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/index.php";
-    NSDictionary *params = @{@"module": @"forumdisplay",
-                             @"version": @1,
-                             @"tpp": @50,
-                             @"submodule": @"checkpost",
-                             @"mobile": @"no",
-                             @"fid": keyID,
-                             @"page": page,
-                             @"orderby": @"dblastpost"};
-    [self.jsonClient GET:url parameters:params progress:nil success:success failure:failure];
-    
-}
-
-#pragma mark - Content
-
-- (void)requestTopicContentAPIForID:(NSNumber *)topicID
-                           withPage:(NSNumber *)page
-                            success:(void (^)(NSURLSessionDataTask *, id))success
-                            failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/index.php";
-    NSDictionary *params = @{@"module": @"viewthread",
-                             @"version": @1,
-                             @"ppp": @30,
-                             @"submodule": @"checkpost",
-                             @"mobile": @"no",
-                             @"tid": topicID,
-                             @"page": page};
-    DDLogDebug(@"[Network] Request Topic Content API:%@-%@",topicID, page);
-    [self.jsonClient GET:url parameters:params progress:nil success:success failure:failure];
-}
-
-#pragma mark - Check Login State
-
-- (void)checkLoginStateAPIwithSuccessBlock:(void (^)(NSURLSessionDataTask *, id))success
-                              failureBlock:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"api/mobile/";
-    NSDictionary *params = @{@"module": @"login"};
-    [self.jsonClient GET:url parameters:params progress:nil success:success failure:failure];
-    
 }
 
 #pragma mark - Reply
@@ -123,29 +73,6 @@
     [self.httpClient POST:url parameters:params progress:nil success:success failure:failure];
 }
 
-#pragma mark - Redirect (Not Finish)
-
-- (void)findTopicFloor:(NSNumber *)floorID
-             inTopicID:(NSNumber *)topicID
-               success:(void (^)(NSURLSessionDataTask *, id))success
-               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure {
-    NSString *url = @"forum.php";
-    NSDictionary *params = @{@"mod" : @"redirect",
-                             @"goto" : @"findpost",
-                             @"pid" : floorID,
-                             @"ptid" : topicID};
-    [self.httpClient setTaskWillPerformHTTPRedirectionBlock:^NSURLRequest *(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request) {
-        DDLogDebug(@"%@",response);
-        DDLogDebug(@"%@",request);
-        if (request.URL) {
-            ;
-        }
-        return request;
-    }];
-    [self.httpClient GET:url parameters:params progress:nil success:success failure:failure];
-}
-
-
 #pragma mark - Search
 
 - (void)postSearchForKeyword:(NSString *)keyword
@@ -163,6 +90,7 @@
                              @"searchsubmit" : @"true"};
     [self.httpClient POST:url parameters:params progress:nil success:success failure:failure];
 }
+
 //http://bbs.stage1.cc/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
 - (void)requestSearchResultPageForSearchID:(NSString *)searchID
                                   withPage:(NSNumber *)page
@@ -217,16 +145,6 @@
 - (void)cancelRequest
 {
     [[self.httpClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // DDLogDebug(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
-        for (NSURLSessionDataTask* task in downloadTasks) {
-            [task cancel];
-        }
-        for (NSURLSessionDataTask* task in dataTasks) {
-            [task cancel];
-        }
-    }];
-    
-    [[self.jsonClient session] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         // DDLogDebug(@"%lu,%lu,%lu",(unsigned long)dataTasks.count, (unsigned long)uploadTasks.count, (unsigned long)downloadTasks.count);
         for (NSURLSessionDataTask* task in downloadTasks) {
             [task cancel];

@@ -100,6 +100,43 @@ extension DataCenter {
         }
     }
 
+    private func eliminateDuplicatedTopics(_ topics: [S1Topic], key: String) -> [S1Topic] {
+        if let cachedTopics = topicListCache[key] {
+            let filteredTopics = topics.filter { aTopic in
+                cachedTopics.first(where: { bTopic in bTopic.topicID == aTopic.topicID }) == nil
+            }
+
+            return cachedTopics + filteredTopics
+        } else {
+            return topics
+        }
+    }
+
+    private func removeStickTopics(_ topics: [S1Topic]) -> [S1Topic] {
+        func isTopicNotOlderThanAllTopicsInSlice(_ topic: S1Topic, slice:ArraySlice<S1Topic>) -> Bool {
+            for nextTopic in slice {
+                let topicTimestamp = topic.lastReplyDate?.timeIntervalSince1970 ?? 0
+                let nextTopicTimestamp = nextTopic.lastReplyDate?.timeIntervalSince1970 ?? 0
+
+                if topicTimestamp < nextTopicTimestamp {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        var processedTopics = [S1Topic]()
+
+        for (index, topic) in topics.enumerated() {
+            if isTopicNotOlderThanAllTopicsInSlice(topic, slice: topics[index...]) {
+                processedTopics.append(topic)
+            }
+        }
+
+        return processedTopics
+    }
+
     private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) {
         guard topics.count > 0 else {
             if topicListCache[key] == nil {
@@ -110,25 +147,16 @@ extension DataCenter {
             return
         }
 
-        if page == 1 {
-            topicListCache[key] = topics
-            topicListCachePageNumber[key] = page
-            return
+        var processedTopics = topics
+
+        if UserDefaults.standard.bool(forKey: Constants.defaults.hideStickTopicsKey) == true {
+            processedTopics = removeStickTopics(processedTopics)
         }
 
-        // eliminate duplicated topics
-        let processedTopics: [S1Topic]
-        if let cachedTopics = topicListCache[key] {
-            let filteredTopics = topics.filter { aTopic in
-                cachedTopics.first(where: { bTopic in bTopic.topicID == aTopic.topicID }) == nil
-            }
-
-            processedTopics = cachedTopics + filteredTopics
-        } else {
-            processedTopics = topics
+        if page != 1 {
+            processedTopics = eliminateDuplicatedTopics(processedTopics, key: key)
         }
 
-        // update topic cache
         topicListCache[key] = processedTopics
         topicListCachePageNumber[key] = page
     }

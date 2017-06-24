@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface S1HTTPSessionManager : AFHTTPSessionManager
 
 - (instancetype)initToHTTPClientWithBaseURL:(NSString *)baseURL;
-- (instancetype)initToJSONClientWithBaseURL:(NSString *)baseURL;
 
 @end
 
