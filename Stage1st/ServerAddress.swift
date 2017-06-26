@@ -13,11 +13,15 @@ class ServerAddress: NSObject, NSCoding {
         static let mainURLKey = "main"
         static let usedURLsKey = "used"
         static let apiURLKey = "api"
+        static let pageURLKey = "page"
         static let lastUpdateDateKey = "date"
     }
 
-    /// HTTP page requests / share / original page should use this domain.
+    /// HTTP share / original page should use this domain.
     let main: String
+
+    /// HTTP page requests should use this domain.
+    let page: String
 
     /// Discuz! API requests should sent to this domain.
     let api: String
@@ -30,6 +34,7 @@ class ServerAddress: NSObject, NSCoding {
 
     static let `default` = ServerAddress(
         main: "http://bbs.saraba1st.com/2b",
+        page: "http://bbs.saraba1st.com/2b",
         api: "http://bbs.saraba1st.com/2b",
         used: [
             "http://bbs.saraba1st.com",
@@ -37,15 +42,16 @@ class ServerAddress: NSObject, NSCoding {
         ],
         lastUpdateDate: DateComponents(calendar: Calendar.current,
                                        year: 2017,
-                                       month: 5,
-                                       day: 1,
+                                       month: 6,
+                                       day: 26,
                                        hour: 8,
-                                       minute: 8,
+                                       minute: 0,
                                        second: 0,
                                        nanosecond: 0).date ?? Date.distantPast)
 
-    init(main: String, api: String, used: [String], lastUpdateDate: Date) {
+    init(main: String, page: String, api: String, used: [String], lastUpdateDate: Date) {
         self.main = main
+        self.page = page
         self.api = api
         self.used = used
         self.lastUpdateDate = lastUpdateDate
@@ -58,6 +64,7 @@ class ServerAddress: NSObject, NSCoding {
         }
 
         self.main = mainURL
+        self.page = record["pageURL"] as? String ?? mainURL
         self.api = record["apiURL"] as? String ?? mainURL
         self.used = record["usedURLs"] as? [String] ?? [String]()
         self.lastUpdateDate = record.modificationDate ?? Date.distantPast
@@ -65,6 +72,7 @@ class ServerAddress: NSObject, NSCoding {
 
     required init?(coder aDecoder: NSCoder) {
         guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
+            let pageURL = aDecoder.decodeObject(forKey: Constants.pageURLKey) as? String,
             let apiURL = aDecoder.decodeObject(forKey: Constants.apiURLKey) as? String,
             let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
             let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
@@ -72,6 +80,7 @@ class ServerAddress: NSObject, NSCoding {
         }
 
         main = mainURL
+        page = pageURL
         api = apiURL
         used = usedURLs
         self.lastUpdateDate = lastUpdateDate
@@ -79,6 +88,7 @@ class ServerAddress: NSObject, NSCoding {
 
     func encode(with aCoder: NSCoder) {
         aCoder.encode(main, forKey: Constants.mainURLKey)
+        aCoder.encode(page, forKey: Constants.pageURLKey)
         aCoder.encode(api, forKey: Constants.apiURLKey)
         aCoder.encode(used, forKey: Constants.usedURLsKey)
         aCoder.encode(lastUpdateDate, forKey: Constants.lastUpdateDateKey)
