@@ -52,11 +52,12 @@ S1AppDelegate *MyAppDelegate;
         [DDLog addLogger:inMemoryLogger];
 
         // OS Logger
-        if (@available(iOS 10.0, *)) {
-            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
-            [osLogger setLogFormatter:formatter];
-            [DDLog addLogger:osLogger];
-        }
+        // FIXME: Uncomment this in Xcode 9
+//        if (@available(iOS 10.0, *)) {
+//            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
+//            [osLogger setLogFormatter:formatter];
+//            [DDLog addLogger:osLogger];
+//        }
 
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];

@@ -21,7 +21,9 @@ private let kMessage = "message"
 private let kImageAttachmentURLStringList = "imageAttachmentList"
 private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
 
+#if swift(>=4.0)
 @objcMembers
+#endif
 public final class Floor: NSObject, NSCoding {
     let ID: Int
     var indexMark: String?

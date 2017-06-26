@@ -91,27 +91,28 @@ static NSString * const cellIdentifier = @"TopicCell";
     self.view.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.background"];
     
     //Setup Navigation Bar
-    if (@available(iOS 11, *)) {
-        [self.view addSubview:self.placeholderView];
-        [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top);
-            make.leading.and.trailing.equalTo(self.view);
-            make.bottom.equalTo(self.mas_topLayoutGuideBottom);
-        }];
-
-        [self.view addSubview:self.navigationBar];
-        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.mas_topLayoutGuideBottom);
-            make.leading.and.trailing.equalTo(self.view);
-        }];
-    } else {
+    // FIXME: Uncomment this in Xcode 9
+//    if (@available(iOS 11, *)) {
+//        [self.view addSubview:self.placeholderView];
+//        [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(self.view.mas_top);
+//            make.leading.and.trailing.equalTo(self.view);
+//            make.bottom.equalTo(self.mas_topLayoutGuideBottom);
+//        }];
+//
+//        [self.view addSubview:self.navigationBar];
+//        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(self.mas_topLayoutGuideBottom);
+//            make.leading.and.trailing.equalTo(self.view);
+//        }];
+//    } else {
         [self.view addSubview:self.navigationBar];
         [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view.mas_top);
             make.leading.and.trailing.equalTo(self.view);
             make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
         }];
-    }
+//    }
 
     //Setup Table View
     [self.view addSubview:self.tableView];
@@ -657,9 +658,10 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
 
-    if (@available(iOS 11, *)) {
-        [self.placeholderView setBackgroundColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
-    }
+    // FIXME: Uncomment this in Xcode 9
+//    if (@available(iOS 11, *)) {
+//        [self.placeholderView setBackgroundColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
+//    }
 
     [self.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
     [self.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];

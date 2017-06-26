@@ -12,7 +12,9 @@ private let kKey = "Key"
 private let kCategory = "Category"
 private let kPath = "Path"
 
+#if swift(>=4.0)
 @objcMembers
+#endif
 class MahjongFaceItem: NSObject, NSCoding {
     let key: String
     let category: String

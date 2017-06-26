@@ -14,7 +14,9 @@ import CocoaLumberjack
     case pop
 }
 
+#if swift(>=4.0)
 @objcMembers
+#endif
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     let direction: TransitionDirection
     var curve: UIViewAnimationOptions = .curveEaseInOut

@@ -12,7 +12,9 @@ import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
 import YapDatabase.YapDatabaseFilteredView
 
+#if swift(>=4.0)
 @objcMembers
+#endif
 final class S1TopicListViewModel: NSObject {
     let dataCenter: DataCenter
     var viewMappings: YapDatabaseViewMappings?

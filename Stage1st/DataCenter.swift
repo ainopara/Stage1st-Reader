@@ -11,7 +11,9 @@ import WebKit
 import CocoaLumberjack
 import Alamofire
 
+#if swift(>=4.0)
 @objcMembers
+#endif
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
     let networkManager: S1NetworkManager
@@ -129,7 +131,7 @@ extension DataCenter {
         var processedTopics = [S1Topic]()
 
         for (index, topic) in topics.enumerated() {
-            if isTopicNotOlderThanAllTopicsInSlice(topic, slice: topics[index...]) {
+            if isTopicNotOlderThanAllTopicsInSlice(topic, slice: topics[index..<topics.count]) {
                 processedTopics.append(topic)
             }
         }
