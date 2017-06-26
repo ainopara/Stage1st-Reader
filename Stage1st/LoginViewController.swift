@@ -390,7 +390,7 @@ extension LoginViewController {
     }
 
     @objc func findLoginFromOnePassword(_ button: UIButton) {
-        OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.baseURL, for: self, sender: button) { [weak self] loginDict, error in
+        OnePasswordExtension.shared().findLogin(forURLString: AppEnvironment.current.serverAddress.main, for: self, sender: button) { [weak self] loginDict, error in
             guard let strongSelf = self else {
                 return
             }

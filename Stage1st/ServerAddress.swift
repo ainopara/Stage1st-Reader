@@ -39,11 +39,13 @@ class ServerAddress: NSObject, NSCoding {
         used: [
             "http://bbs.saraba1st.com",
             "http://www.stage1st.com",
+            "http://bbs.stage1.cc",
+            "http://119.23.22.79"
         ],
         lastUpdateDate: DateComponents(calendar: Calendar.current,
                                        year: 2017,
                                        month: 6,
-                                       day: 26,
+                                       day: 27,
                                        hour: 8,
                                        minute: 0,
                                        second: 0,
@@ -97,7 +99,7 @@ class ServerAddress: NSObject, NSCoding {
 
 extension ServerAddress {
     func hasSameDomain(with url: URL) -> Bool {
-        for baseURL in [main] + used {
+        for baseURL in [main, page, api] + used {
             if url.absoluteString.hasPrefix(baseURL) {
                 return true
             }

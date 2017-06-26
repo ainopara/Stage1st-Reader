@@ -21,10 +21,6 @@ class Environment: NSObject {
     let databaseAdapter: S1YapDatabaseAdapter
     let dataCenter: DataCenter
 
-    var baseURL: String {
-        return serverAddress.main
-    }
-
     init(forumName: String = "Stage1st",
          cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared) {
 
@@ -40,7 +36,7 @@ class Environment: NSObject {
         }
 
         apiService = DiscuzClient(baseURL: serverAddress.api)
-        networkManager = S1NetworkManager(baseURL: serverAddress.main)
+        networkManager = S1NetworkManager(baseURL: serverAddress.page)
 
         databaseManager = DatabaseManager.sharedInstance()
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
