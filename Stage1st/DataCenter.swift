@@ -113,7 +113,7 @@ extension DataCenter {
     }
 
     private func removeStickTopics(_ topics: [S1Topic]) -> [S1Topic] {
-        func isTopicNotOlderThanAllTopicsInSlice(_ topic: S1Topic, slice:ArraySlice<S1Topic>) -> Bool {
+        func isTopicNotOlderThanAllTopicsInSlice(_ topic: S1Topic, slice: ArraySlice<S1Topic>) -> Bool {
             for nextTopic in slice {
                 let topicTimestamp = topic.lastReplyDate?.timeIntervalSince1970 ?? 0
                 let nextTopicTimestamp = nextTopic.lastReplyDate?.timeIntervalSince1970 ?? 0
