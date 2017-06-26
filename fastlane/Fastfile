@@ -22,11 +22,11 @@ platform :ios do
       raise "No version specified!".red
     end
 
-    ensure_git_branch(branch: 'develop')
+    ensure_git_branch(branch: 'master')
     ensure_git_status_clean
 
     increment_version_number(version_number: options[:version])
-    build_number_string = `git rev-list develop | wc -l | awk '{print $1}'`
+    build_number_string = `git rev-list master | wc -l | awk '{print $1}'`
     build_number = (build_number_string.to_i + 4000).to_s
     increment_build_number(build_number: build_number)
 
