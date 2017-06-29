@@ -29,6 +29,10 @@
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
+		86064F5F1F04D54100FF1B76 /* AnimationUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86064F5B1F04D54100FF1B76 /* AnimationUtilities.swift */; };
+		86064F601F04D54100FF1B76 /* Gagat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86064F5C1F04D54100FF1B76 /* Gagat.swift */; };
+		86064F611F04D54100FF1B76 /* PessimisticPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86064F5D1F04D54100FF1B76 /* PessimisticPanGestureRecognizer.swift */; };
+		86064F621F04D54100FF1B76 /* TransitionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86064F5E1F04D54100FF1B76 /* TransitionCoordinator.swift */; };
 		8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */; };
 		860DAD4D18900A1D0098EA3F /* resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* resources.xcassets */; };
 		860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860F11C61E4EC21E00875AB9 /* DataCenter.swift */; };
@@ -161,6 +165,10 @@
 		860573561B762C3B00C70781 /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatabaseManager.m; path = Stage1st/DatabaseManager.m; sourceTree = "<group>"; };
 		860573571B762C3B00C70781 /* MyDatabaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyDatabaseObject.h; path = Stage1st/MyDatabaseObject.h; sourceTree = "<group>"; };
 		860573581B762C3B00C70781 /* MyDatabaseObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyDatabaseObject.m; path = Stage1st/MyDatabaseObject.m; sourceTree = "<group>"; };
+		86064F5B1F04D54100FF1B76 /* AnimationUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationUtilities.swift; sourceTree = "<group>"; };
+		86064F5C1F04D54100FF1B76 /* Gagat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gagat.swift; sourceTree = "<group>"; };
+		86064F5D1F04D54100FF1B76 /* PessimisticPanGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PessimisticPanGestureRecognizer.swift; sourceTree = "<group>"; };
+		86064F5E1F04D54100FF1B76 /* TransitionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionCoordinator.swift; sourceTree = "<group>"; };
 		8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CacheDatabaseManager.swift; path = Stage1st/CacheDatabaseManager.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = resources.xcassets; sourceTree = "<group>"; };
 		860F11C61E4EC21E00875AB9 /* DataCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataCenter.swift; path = Stage1st/DataCenter.swift; sourceTree = "<group>"; };
@@ -343,6 +351,18 @@
 				C083351816E363870035C1AA /* S1Tracer.m */,
 			);
 			name = Sqlite3;
+			sourceTree = "<group>";
+		};
+		86064F5A1F04D54100FF1B76 /* Gagat */ = {
+			isa = PBXGroup;
+			children = (
+				86064F5B1F04D54100FF1B76 /* AnimationUtilities.swift */,
+				86064F5C1F04D54100FF1B76 /* Gagat.swift */,
+				86064F5D1F04D54100FF1B76 /* PessimisticPanGestureRecognizer.swift */,
+				86064F5E1F04D54100FF1B76 /* TransitionCoordinator.swift */,
+			);
+			name = Gagat;
+			path = Vendors/Gagat;
 			sourceTree = "<group>";
 		};
 		862F51B61891359A0038A289 /* TFHpple */ = {
@@ -636,6 +656,7 @@
 				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
 				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
 				86BEC60E1E2677AA00352976 /* MessageHUD.swift */,
+				86064F5A1F04D54100FF1B76 /* Gagat */,
 				86D20FE31CA6B64A003F2691 /* Logger */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				867C7F4D1899420D00DF55E8 /* REComposeViewController */,
@@ -1006,6 +1027,7 @@
 				36D6D04F1E554F4A003098B8 /* Stage1stLog.swift in Sources */,
 				8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */,
 				86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */,
+				86064F5F1F04D54100FF1B76 /* AnimationUtilities.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				868799211CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift in Sources */,
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
@@ -1018,6 +1040,7 @@
 				86A22D261D69BB1D004D2307 /* ReportComposeViewController.swift in Sources */,
 				86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */,
 				86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */,
+				86064F621F04D54100FF1B76 /* TransitionCoordinator.swift in Sources */,
 				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				C095879D16CB61FC007E0119 /* GSReorderableTableViewController.m in Sources */,
@@ -1039,6 +1062,7 @@
 				8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */,
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				C09587A216CB61FC007E0119 /* UIControl+BlockWrapper.m in Sources */,
+				86064F611F04D54100FF1B76 /* PessimisticPanGestureRecognizer.swift in Sources */,
 				8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */,
 				C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
@@ -1053,6 +1077,7 @@
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */,
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
+				86064F601F04D54100FF1B76 /* Gagat.swift in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
