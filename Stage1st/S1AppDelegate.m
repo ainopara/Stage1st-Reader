@@ -139,7 +139,11 @@ S1AppDelegate *MyAppDelegate;
 
     // Appearence
     [[ColorManager shared] updateGlobalAppearance];
-    
+
+    if (!SYSTEM_VERSION_LESS_THAN(@"10.0")) {
+        [self.navigationDelegate setUpGagat];
+    }
+
 #ifdef DEBUG
     DDLogVerbose(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
 #endif

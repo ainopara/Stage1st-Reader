@@ -34,5 +34,5 @@ class PessimisticPanGestureRecognizer: UIPanGestureRecognizer {
 		let translation = self.translation(in: view)
 		return sqrt(pow(translation.x, 2) + pow(translation.y, 2))
 	}
-	
+
 }

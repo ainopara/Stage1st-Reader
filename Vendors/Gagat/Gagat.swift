@@ -17,6 +17,8 @@ public protocol GagatStyleable {
 	/// and at the end of a _cancelled_ transition (to revert to the
 	/// previous style).
 	func toggleActiveStyle()
+
+    func shouldStartTransition(with direction: TransitionCoordinator.Direction) -> Bool
 }
 
 public struct Gagat {
@@ -43,7 +45,7 @@ public struct Gagat {
 	/// access properties that can be modified after configuration.
 	public struct TransitionHandle {
 		private let coordinator: TransitionCoordinator
-		
+
 		fileprivate init(coordinator: TransitionCoordinator) {
 			self.coordinator = coordinator
 		}

@@ -21,7 +21,7 @@ private func timeRequiredToMove(from source: CGPoint, to destination: CGPoint, w
 }
 
 private func maximumReasonableTimeToMove(from source: CGPoint, to destination: CGPoint) -> TimeInterval {
-	let minimumReasonableVelocity: CGFloat = 300.0 // points per second, chosen empirically
+	let minimumReasonableVelocity: CGFloat = 1200.0 // points per second, chosen empirically
 	let distanceToMove = distance(from: source, to: destination)
 	return TimeInterval(distanceToMove / minimumReasonableVelocity)
 }
@@ -29,7 +29,7 @@ private func maximumReasonableTimeToMove(from source: CGPoint, to destination: C
 func animate(_ layer: CALayer, to targetPoint: CGPoint, withVelocity velocity: CGPoint, completion: @escaping () -> Void) {
 	let startPoint = layer.position
 	layer.position = targetPoint
-	
+
 	let positionAnimation = CABasicAnimation(keyPath: "position")
 	positionAnimation.duration = min(
 		maximumReasonableTimeToMove(from: startPoint, to: targetPoint),
@@ -37,11 +37,11 @@ func animate(_ layer: CALayer, to targetPoint: CGPoint, withVelocity velocity: C
 	)
 	positionAnimation.fromValue = NSValue(cgPoint: startPoint)
 	positionAnimation.toValue = NSValue(cgPoint: targetPoint)
-	
+
 	CATransaction.begin()
 	CATransaction.setCompletionBlock(completion)
-	
+
 	layer.add(positionAnimation, forKey: "position")
-	
+
 	CATransaction.commit()
 }

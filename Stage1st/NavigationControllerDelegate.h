@@ -8,11 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@class S1NavigationViewController;
+
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NavigationControllerDelegate : NSObject <UINavigationControllerDelegate>
 
-@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
-@property (strong, nonatomic) UIPanGestureRecognizer *colorPanRecognizer;
+@property (weak, nonatomic, nullable) S1NavigationViewController *navigationController;
 
-- (instancetype)initWithNavigationController:(UINavigationController *)navigationController;
+@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+@property (strong, nonatomic, nullable) UIPanGestureRecognizer *colorPanRecognizer;
+
+- (instancetype)initWithNavigationController:(S1NavigationViewController *)navigationController;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -869,10 +869,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         _tableView.rowHeight = 54.0;
-        if (!SYSTEM_VERSION_LESS_THAN(@"9.0")) {
-            _tableView.cellLayoutMarginsFollowReadableWidth = NO;
-        }
-
+        _tableView.cellLayoutMarginsFollowReadableWidth = NO;
         _tableView.separatorInset = UIEdgeInsetsZero;
         _tableView.delegate = self;
         _tableView.dataSource = self;
@@ -883,7 +880,9 @@ static NSString * const cellIdentifier = @"TopicCell";
         }
         _tableView.hidden = YES;
         _tableView.tableHeaderView = self.searchBar;
-        [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
+        if (SYSTEM_VERSION_LESS_THAN(@"10.0")) {
+            [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
+        }
 
         self.refreshControl = [[ODRefreshControl alloc] initInScrollView:_tableView];
         self.refreshControl.tintColor = [[ColorManager shared] colorForKey:@"topiclist.refreshcontrol.tint"];

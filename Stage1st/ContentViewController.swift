@@ -903,7 +903,9 @@ extension S1ContentViewController: WebViewEventDelegate {
     }
 
     func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {
-        if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled {
+        let currentColorPanGestureState = MyAppDelegate.navigationDelegate.navigationController?.gagat?.panGestureRecognizer.state ?? .possible
+        let shouldIgnoreTouchEvent = currentColorPanGestureState == .began || currentColorPanGestureState == .changed
+        if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled && !shouldIgnoreTouchEvent {
             DDLogInfo("[ContentVC] User Touch detected. Stop tracking scroll type: \(scrollType)")
             webPageAutomaticScrollingEnabled = false
             webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
