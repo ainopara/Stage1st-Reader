@@ -18,6 +18,7 @@ public enum DZError: Error {
     case noFieldInfoReturned(jsonString: String)
     case noThreadListReturned(jsonString: String)
     case threadParseFailed(jsonString: String)
+    case serverError(message: String)
 }
 
 extension DZError: CustomStringConvertible {
@@ -33,6 +34,8 @@ extension DZError: CustomStringConvertible {
             return "No thread list in json `\(jsonString)`"
         case let .threadParseFailed(jsonString):
             return "Thread failed to parse for json `\(jsonString)`"
+        case let .serverError(message):
+            return message
         }
     }
 }

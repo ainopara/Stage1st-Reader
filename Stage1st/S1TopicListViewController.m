@@ -132,6 +132,8 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.view addSubview:self.refreshHUD];
     [self.refreshHUD mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
+        make.width.lessThanOrEqualTo(self.view);
+        make.height.lessThanOrEqualTo(self.view);
     }];
 
     //Notifications
@@ -568,16 +570,7 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     } failure:^(NSError *error) {
         __strong __typeof__(self) strongSelf = weakSelf;
-        if (error.code == NSURLErrorCancelled) {
-            DDLogDebug(@"[Network] NSURLErrorCancelled");
-            [strongSelf.refreshHUD hideWithDelay:0];
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
-            _loadingFlag = NO;
-        } else {
+        if ([error.domain isEqualToString:@"Stage1st.DZError"] && error.code == 5) {
             //reload data
             if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
@@ -588,7 +581,28 @@ static NSString * const cellIdentifier = @"TopicCell";
                 strongSelf.topics = [[NSMutableArray alloc] init];
                 [strongSelf.tableView reloadData];
             }
-            //hud hide
+
+            // show message then hide hud
+            DDLogWarn(@"[Network] error: %@", error.description);
+            [strongSelf.refreshHUD showMessage:error.localizedDescription];
+            [strongSelf.refreshHUD hideWithDelay:5.0];
+        } else if (error.code == NSURLErrorCancelled) {
+            // hide hud
+            DDLogDebug(@"[Network] NSURLErrorCancelled");
+            [strongSelf.refreshHUD hideWithDelay:0];
+        } else {
+            // reload data
+            if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
+                strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
+            }
+            strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
+            strongSelf.currentKey = key;
+            if (![key isEqualToString:strongSelf.previousKey]) {
+                strongSelf.topics = [[NSMutableArray alloc] init];
+                [strongSelf.tableView reloadData];
+            }
+
+            // hide hud
             if (refresh || ![strongSelf.dataCenter hasCacheFor:key]) {
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
@@ -599,14 +613,14 @@ static NSString * const cellIdentifier = @"TopicCell";
                     [strongSelf.refreshHUD hideWithDelay:0.3];
                 }
             }
-
-            //others
-            strongSelf.scrollTabBar.enabled = YES;
-            if (strongSelf.refreshControl.refreshing) {
-                [strongSelf.refreshControl endRefreshing];
-            }
-            _loadingFlag = NO;
         }
+
+        // clean up
+        strongSelf.scrollTabBar.enabled = YES;
+        if (strongSelf.refreshControl.refreshing) {
+            [strongSelf.refreshControl endRefreshing];
+        }
+        _loadingFlag = NO;
     }];
 }
 

@@ -167,6 +167,11 @@ public extension DiscuzClient {
         return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseSwiftyJSON { response in
             switch response.result {
             case let .success(json):
+                if let serverErrorMessage = json["error"].string, serverErrorMessage != "" {
+                    completion(.failure(DZError.serverError(message: serverErrorMessage)))
+                    return
+                }
+
                 guard let topicList = json["Variables"]["forum_threadlist"].array else {
                     completion(.failure(DZError.noThreadListReturned(jsonString: json.rawString() ?? "")))
                     return
