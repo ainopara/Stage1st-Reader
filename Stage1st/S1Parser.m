@@ -83,23 +83,7 @@
     return topics;
 }
 
-+ (NSData *)preprocessMalformedTextsInHTMLData:(NSData *)rawData {
-    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"dirty" withExtension:@"txt"];
-    NSData *misEncodingPartsData = [NSData dataWithContentsOfURL:fileURL];
-    NSRange range = [rawData rangeOfData:misEncodingPartsData options:0 range:NSMakeRange(0, rawData.length)];
-    NSData *cleanedData = rawData;
-    if (range.location != NSNotFound) {
-        NSMutableData *mutableRawData = [rawData mutableCopy];
-        NSString *emptyString = @"";
-        const char *utf8String = [emptyString UTF8String];
-        [mutableRawData replaceBytesInRange:range withBytes:utf8String length:0];
-        cleanedData = mutableRawData;
-    }
-    return cleanedData;
-}
-
 + (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData {
-//    NSData *cleanedData = [self preprocessMalformedTextsInHTMLData:rawData];
     NSData *cleanedData = rawData;
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:cleanedData];
     NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
