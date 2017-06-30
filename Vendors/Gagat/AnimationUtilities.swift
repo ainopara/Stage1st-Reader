@@ -32,7 +32,7 @@ func animate(_ layer: CALayer, to targetPoint: CGPoint, withVelocity velocity: C
 
 	let positionAnimation = CABasicAnimation(keyPath: "position")
 	positionAnimation.duration = min(
-		maximumReasonableTimeToMove(from: startPoint, to: targetPoint),
+		0.3,
 		timeRequiredToMove(from: startPoint, to: targetPoint, withVelocity: velocity)
 	)
 	positionAnimation.fromValue = NSValue(cgPoint: startPoint)
