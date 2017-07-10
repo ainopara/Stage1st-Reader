@@ -235,45 +235,38 @@ DatabaseManager *MyDatabaseManager;
 	//
 	
 	YapDatabaseViewGrouping *orderGrouping = [YapDatabaseViewGrouping withObjectBlock:^NSString *(YapDatabaseReadTransaction *transaction, NSString *collection, NSString *key, id object) {
-		if ([object isKindOfClass:[S1Topic class]])
-		{
+		if ([object isKindOfClass:[S1Topic class]]) {
+            // include in view
             S1Topic *topic = object;
             
-            if (topic.lastViewedDate) {
+            if (topic.lastViewedDate != nil) {
                 return [[S1Formatter sharedInstance] headerForDate:topic.lastViewedDate];
             } else {
                 return @"Unknown Date";
             }
-            // include in view
 		}
 		
 		return nil; // exclude from view
 	}];
 	
-    YapDatabaseViewSorting *orderSorting = [YapDatabaseViewSorting withObjectBlock:^NSComparisonResult(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection1, NSString *key1, id object1, NSString *collection2, NSString *key2, id object2) {
+    YapDatabaseViewSorting *orderSorting = [YapDatabaseViewSorting withObjectBlock:^NSComparisonResult(YapDatabaseReadTransaction *transaction, NSString *group, NSString *collection1, NSString *key1, S1Topic *topic1, NSString *collection2, NSString *key2, S1Topic *topic2) {
 		// We want:
 		// - Most recently created Todo at index 0.
 		// - Least recent created Todo at the end.
 		//
 		// This is descending order (opposite of "standard" in Cocoa) so we swap the normal comparison.
-        S1Topic *topic1 = object1;
-        S1Topic *topic2 = object2;
-		NSComparisonResult cmp = [topic1.lastViewedDate compare:topic2.lastViewedDate];
-		
-		if (cmp == NSOrderedAscending) return NSOrderedDescending;
-		if (cmp == NSOrderedDescending) return NSOrderedAscending;
-		
-		return NSOrderedSame;
+
+		return [topic2.lastViewedDate compare:topic1.lastViewedDate];
 	}];
 	
 	YapDatabaseView *orderView =
-	  [[YapDatabaseView alloc] initWithGrouping:orderGrouping
-	                                    sorting:orderSorting
-	                                 versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
+	  [[YapDatabaseAutoView alloc] initWithGrouping:orderGrouping
+                                            sorting:orderSorting
+                                         versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
 	
     [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
         if (!ready) {
-            DDLogDebug(@"Error registering %@ !!!", Ext_View_Archive);
+            DDLogError(@"Error registering %@ !!!", Ext_View_Archive);
         }
     }];
 }
