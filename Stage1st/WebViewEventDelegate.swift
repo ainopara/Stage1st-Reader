@@ -183,26 +183,32 @@ protocol ImagePresenter {
 
 extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControllerInteractionsDelegate, Self: JTSImageViewControllerOptionsDelegate {
     func showImageViewController(transitionSource: ImagePresenterTransitionSource, imageURL: URL) {
-        DispatchQueue.global(qos: .default).async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
             var mutableStrongSelf = strongSelf // FIXME: Make swift complier happy, remove this when the issue fixed.
             mutableStrongSelf.presentType = .image
             DDLogDebug("[ImagePresenter] JTS View Image: \(imageURL)")
 
-            let imageInfo = JTSImageInfo()
-            imageInfo.imageURL = imageURL
-            switch transitionSource {
-            case .offScreen:
-                break
-            case let .positionOfElementID(imageID):
-                imageInfo.referenceRect = strongSelf.webView.s1_positionOfElement(with: imageID) ?? CGRect(origin: strongSelf.webView.center, size: .zero)
-                imageInfo.referenceView = strongSelf.webView
-            case let .position(positionRect):
-                imageInfo.referenceRect = positionRect
-                imageInfo.referenceView = strongSelf.view
+            func configureImageInfo(completion: @escaping (JTSImageInfo) -> Void) {
+                let imageInfo = JTSImageInfo()
+                imageInfo.imageURL = imageURL
+                switch transitionSource {
+                case .offScreen:
+                    completion(imageInfo)
+                case let .positionOfElementID(imageID):
+                    strongSelf.webView.s1_positionOfElement(with: imageID, completion: { (rect) in
+                        imageInfo.referenceRect = rect ?? CGRect(origin: strongSelf.webView.center, size: .zero)
+                        imageInfo.referenceView = strongSelf.webView
+                        completion(imageInfo)
+                    })
+                case let .position(positionRect):
+                    imageInfo.referenceRect = positionRect
+                    imageInfo.referenceView = strongSelf.view
+                    completion(imageInfo)
+                }
             }
 
-            DispatchQueue.main.async { [weak self] in
+            configureImageInfo { [weak self] (imageInfo) in
                 guard let strongSelf = self else { return }
                 let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
                 imageViewController?.interactionsDelegate = strongSelf

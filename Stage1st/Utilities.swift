@@ -145,36 +145,30 @@ extension UIWebView {
 }
 
 extension WKWebView {
-    func s1_positionOfElement(with ID: String) -> CGRect? {
-        // TODO: Find a better solution for avoid dead lock.
-        assert(!Thread.current.isMainThread)
-        guard !Thread.current.isMainThread else {
-            return nil
+
+    func s1_positionOfElement(with ID: String, completion: @escaping (CGRect?) -> Void) {
+        assert(Thread.current.isMainThread)
+        guard Thread.current.isMainThread else {
+            completion(nil)
+            return
         }
 
         let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        var rect: CGRect?
-        let semaphore = DispatchSemaphore(value: 0)
         evaluateJavaScript(script) { result, error in
-            defer {
-                semaphore.signal()
-            }
-
             guard error == nil else {
                 DDLogWarn("failed to get position of element: \(ID) with error: \(String(describing: error))")
+                completion(nil)
                 return
             }
 
             guard let resultString = result as? String else {
                 DDLogWarn("failed to get position of element: \(ID) with result: \(String(describing: result))")
+                completion(nil)
                 return
             }
 
-            rect = CGRectFromString(resultString)
+            completion(CGRectFromString(resultString))
         }
-
-        semaphore.wait()
-        return rect
     }
 
     func s1_atBottom() -> Bool {

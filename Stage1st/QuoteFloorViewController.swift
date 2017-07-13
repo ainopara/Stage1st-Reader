@@ -276,12 +276,14 @@ extension QuoteFloorViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
-        DispatchQueue.global().async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
-            let computedOffset: CGFloat = strongSelf.topPositionOfMessageWithId(strongSelf.viewModel.centerFloorID) - 32
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(computedOffset)}, 0);", completionHandler: nil)
-            }
+            strongSelf.topPositionOfMessageWithId(strongSelf.viewModel.centerFloorID, completion: { (topPosition) in
+                let computedOffset: CGFloat = topPosition - 32.0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    webView.evaluateJavaScript("$('html, body').animate({ scrollTop: \(computedOffset)}, 0);", completionHandler: nil)
+                }
+            })
         }
     }
 }
@@ -296,12 +298,14 @@ extension QuoteFloorViewController: UIScrollViewDelegate {
 
 // MARK: - Helper
 extension QuoteFloorViewController {
-    func topPositionOfMessageWithId(_ elementID: Int) -> CGFloat {
-        if let rect = webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
-            return rect.minY
-        } else {
-            DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
-            return 0.0
+    func topPositionOfMessageWithId(_ elementID: Int, completion: @escaping (CGFloat) -> Void) {
+        webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
+            if let rect = $0 {
+                completion(rect.minY)
+            } else {
+                DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
+                completion(0.0)
+            }
         }
     }
 

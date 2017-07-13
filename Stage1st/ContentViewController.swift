@@ -724,12 +724,12 @@ extension S1ContentViewController {
 
         if let popover = floorActionController.popoverPresentationController {
             popover.delegate = self
-            DispatchQueue.global(qos: .default).async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 popover.sourceView = strongSelf.webView
-                popover.sourceRect = strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action") ?? CGRect(origin: strongSelf.webView.center, size: .zero)
-                DispatchQueue.main.async { [weak self] in
+                strongSelf.webView.s1_positionOfElement(with: "\(floorID)-action") { [weak self] (rect) in
                     guard let strongSelf = self else { return }
+                    popover.sourceRect = rect ?? CGRect(origin: strongSelf.webView.center, size: .zero)
                     strongSelf.present(floorActionController, animated: true, completion: nil)
                 }
             }
