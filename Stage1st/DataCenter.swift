@@ -237,7 +237,7 @@ extension DataCenter {
 
         floors(for: topic, with: page) { result in
             switch result {
-            case .success(_):
+            case .success:
                 DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
                 NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: [
                     "topicID": topic.topicID,

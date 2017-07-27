@@ -184,7 +184,7 @@ extension PageRenderer {
                     return xmlDocument
                 }
 
-                func processSpoiler(xmlDocument: DDXMLDocument) -> DDXMLDocument {
+                func processSpoilers(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     let spoilerXpathList = [
                         "//font[@color='LemonChiffon']",
                         "//font[@color='Yellow']",
@@ -192,6 +192,7 @@ extension PageRenderer {
                         "//font[@color='#FFFFCC']",
                         "//font[@color='White']",
                         "//font[@color='#ffffff']",
+                        "//font[@color='Black']/font[@style='background-color:Black']",
                     ]
 
                     let spoilers = spoilerXpathList
@@ -225,7 +226,7 @@ extension PageRenderer {
                     return xmlDocument
                 }
 
-                func processIndent(xmlDocument: DDXMLDocument) -> DDXMLDocument {
+                func processIndents(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     if let paragraphs = (try? xmlDocument.nodes(forXPath: "//td[@class='t_f']//p[@style]")) as? [DDXMLElement] {
                         for paragraph in paragraphs {
                             paragraph.removeAttribute(forName: "style")
@@ -241,7 +242,13 @@ extension PageRenderer {
                     return HTMLString
                 }
 
-                let processedDocument = processIndent(xmlDocument: processSpoiler(xmlDocument: processImages(xmlDocument: xmlDocument)))
+                let processes = [
+                    processImages,
+                    processSpoilers,
+                    processIndents
+                ]
+
+                let processedDocument = processes.reduce(xmlDocument) { $1($0) }
                 let processedString = processedDocument.xmlString(withOptions: UInt(DDXMLNodePrettyPrint)) as NSString
                 let cuttedString = processedString.substring(with: NSRange(location: 183, length: processedString.length - 183 - 17))
 
