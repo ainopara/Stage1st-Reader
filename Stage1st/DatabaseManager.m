@@ -264,7 +264,7 @@ DatabaseManager *MyDatabaseManager;
                                             sorting:orderSorting
                                          versionTag:NSLocalizedString(@"SystemLanguage", @"Just Identifier")];
 	
-    [database asyncRegisterExtension:orderView withName:Ext_View_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    [database asyncRegisterExtension:orderView withName:Ext_View_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
             DDLogError(@"Error registering %@ !!!", Ext_View_Archive);
         }
@@ -299,7 +299,7 @@ DatabaseManager *MyDatabaseManager;
     // (use sqlite3_create_function to add custom function to sqlite)
     // NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
     YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
-    [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
             DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
@@ -309,7 +309,7 @@ DatabaseManager *MyDatabaseManager;
 - (void)setupSearchResultViewExtension {
     YapDatabaseSearchResultsViewOptions *options = [[YapDatabaseSearchResultsViewOptions alloc] init];
     YapDatabaseSearchResultsView *searchResultView = [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive parentViewName:Ext_View_Archive versionTag:@"1" options:options];
-    [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive connection:self.bgDatabaseConnection completionQueue:NULL completionBlock:^(BOOL ready) {
+    [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
             DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
