@@ -193,6 +193,7 @@ extension PageRenderer {
                         "//font[@color='White']",
                         "//font[@color='#ffffff']",
                         "//font[@color='Black']/font[@style='background-color:Black']",
+                        "//font[@color='#000000']/font[@style='background-color:black']",
                     ]
 
                     let spoilers = spoilerXpathList
