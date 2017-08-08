@@ -8,9 +8,7 @@
 
 import UIKit
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 class MahjongFaceCategory: NSObject {
     let id: String
     let name: String

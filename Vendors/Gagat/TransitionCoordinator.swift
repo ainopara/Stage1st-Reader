@@ -55,7 +55,7 @@ public class TransitionCoordinator: NSObject {
 		self.panGestureRecognizer = panGestureRecognizer
 	}
 
-	func panRecognizerDidChange(_ panRecognizer: PessimisticPanGestureRecognizer) {
+	@objc func panRecognizerDidChange(_ panRecognizer: PessimisticPanGestureRecognizer) {
 		switch panRecognizer.state {
 		case .began:
             direction = direction(for: panRecognizer)

@@ -130,8 +130,8 @@ DEPENDENCIES:
   - AFNetworking
   - Alamofire
   - AlamofireImage
-  - CocoaLumberjack
-  - CocoaLumberjack/Swift
+  - CocoaLumberjack (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
+  - CocoaLumberjack/Swift (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
   - Crashlytics
   - Fabric
   - FBSnapshotTestCase
@@ -155,6 +155,8 @@ DEPENDENCIES:
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
+  CocoaLumberjack:
+    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -166,6 +168,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
+  CocoaLumberjack:
+    :commit: d9bed4d739d47fee8f17ae918a0665829f2f1736
+    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
   JTSImageViewController:
     :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -186,7 +191,7 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
-  CocoaLumberjack: 9b4aed7073d242f29cc2f62068d995faf67f703a
+  CocoaLumberjack: 0d8cb05e834c1b391771fb3397d9a553accd33a9
   Crashlytics: dfbae35ef22ca189240d230ad501feea4ee85d2d
   Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -210,6 +215,6 @@ SPEC CHECKSUMS:
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 76b9312c1e5429988e3a4f805ef857000709d020
+PODFILE CHECKSUM: 8e3910bc70c1c3909217586eba23a4db7a63eb86
 
 COCOAPODS: 1.2.1

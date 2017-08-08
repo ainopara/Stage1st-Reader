@@ -8,9 +8,7 @@
 
 import Foundation
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 class AppEnvironment: NSObject {
     static var current: Environment = Environment()
 }

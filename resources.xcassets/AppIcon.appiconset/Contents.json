@@ -97,6 +97,12 @@
       "idiom" : "ipad",
       "filename" : "Final Copy 5@2x.png",
       "scale" : "2x"
+    },
+    {
+      "size" : "1024x1024",
+      "idiom" : "ios-marketing",
+      "filename" : "Stage1stReaderIcon.png",
+      "scale" : "1x"
     }
   ],
   "info" : {

@@ -11,9 +11,7 @@ import WebKit
 import CocoaLumberjack
 import Alamofire
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
     let networkManager: S1NetworkManager

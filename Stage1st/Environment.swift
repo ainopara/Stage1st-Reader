@@ -8,9 +8,7 @@
 
 import Foundation
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 class Environment: NSObject {
     let forumName: String
     let serverAddress: ServerAddress

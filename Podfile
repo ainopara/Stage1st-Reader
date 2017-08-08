@@ -27,8 +27,8 @@ target "Stage1st" do
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
 
     # Debug
-    pod 'CocoaLumberjack'
-    pod 'CocoaLumberjack/Swift'
+    pod 'CocoaLumberjack', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git'
+    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git'
     pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
 

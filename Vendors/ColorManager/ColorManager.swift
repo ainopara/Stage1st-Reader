@@ -9,9 +9,7 @@
 import UIKit
 import CocoaLumberjack
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 public final class ColorManager: NSObject {
     fileprivate var palette: NSDictionary = NSDictionary()
     fileprivate var colorMap: NSDictionary = NSDictionary()
@@ -59,8 +57,8 @@ public final class ColorManager: NSObject {
         UINavigationBar.appearance().tintColor = colorForKey("appearance.navigationbar.tint")
         #if swift(>=4.0)
         UINavigationBar.appearance().titleTextAttributes = [
-            NSAttributedStringKey.foregroundColor.rawValue: colorForKey("appearance.navigationbar.title"),
-            NSAttributedStringKey.font.rawValue: UIFont.boldSystemFont(ofSize: 17.0)
+            NSAttributedStringKey.foregroundColor: colorForKey("appearance.navigationbar.title"),
+            NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
         #else
         UINavigationBar.appearance().titleTextAttributes = [

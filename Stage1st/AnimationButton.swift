@@ -95,9 +95,7 @@ extension AnimationView {
     }
 }
 
-#if swift(>=4.0)
 @objcMembers
-#endif
 class AnimationButton: UIButton {
     var hightlightAlpha: CGFloat = 0.4
     fileprivate let image: UIImage
