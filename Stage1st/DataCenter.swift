@@ -179,7 +179,7 @@ extension DataCenter {
 
             let topics = S1Parser.topics(fromSearchResultHTMLData: responseData) as! [S1Topic]
             let processedTopics = topics.map { topic -> S1Topic in
-                guard let tracedTopic = strongSelf.traced(topicID: Int(topic.topicID))?.copy() as? S1Topic else {
+                guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
                     return topic
                 }
 
@@ -199,7 +199,7 @@ extension DataCenter {
 extension DataCenter {
     @discardableResult
     fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ completion: @escaping (Result<([Floor], Bool)>) -> Void) -> Request {
-        return apiManager.floors(in: UInt(topic.topicID), page: UInt(page)) { [weak self] (result) in
+        return apiManager.floors(in: UInt(truncating: topic.topicID), page: UInt(page)) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
             switch result {
@@ -329,11 +329,11 @@ extension DataCenter {
     }
 
     func numberOfTopics() -> Int {
-        return Int(tracer.numberOfTopicsInDatabse())
+        return Int(truncating: tracer.numberOfTopicsInDatabse())
     }
 
     func numberOfFavorite() -> Int {
-        return Int(tracer.numberOfFavoriteTopicsInDatabse())
+        return Int(truncating: tracer.numberOfFavoriteTopicsInDatabse())
     }
 }
 

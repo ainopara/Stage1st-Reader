@@ -78,7 +78,7 @@ extension PageRenderer {
             var isFirstInPage = true
             var data = [[String: Any?]]()
             for floor in floors {
-                data.append(floorData(with: floor, topicAuthorID: topic.authorUserID.flatMap({ UInt($0) }), isFirstInPage: isFirstInPage))
+                data.append(floorData(with: floor, topicAuthorID: topic.authorUserID.flatMap({ UInt(truncating: $0) }), isFirstInPage: isFirstInPage))
                 isFirstInPage = false
             }
             return data

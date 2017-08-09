@@ -135,23 +135,23 @@ extension ContentViewModel {
 // MARK: - ToolBar
 extension ContentViewModel {
     func hasPrecachedPreviousPage() -> Bool {
-        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value - 1)
+        return dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value - 1)
     }
 
     func hasValidPrecachedCurrentPage() -> Bool {
         if isInLastPage() {
-            return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value)
+            return dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value)
         } else {
-            return dataCenter.hasFullPrecachedFloors(for: Int(topic.topicID), page: currentPage.value)
+            return dataCenter.hasFullPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value)
         }
     }
 
     func hasPrecachedNextPage() -> Bool {
-        return dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value + 1)
+        return dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value + 1)
     }
 
     func forwardButtonImage() -> UIImage {
-        if dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value + 1) {
+        if dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value + 1) {
             return #imageLiteral(resourceName: "Forward-Cached")
         } else {
             return #imageLiteral(resourceName: "Forward")
@@ -159,7 +159,7 @@ extension ContentViewModel {
     }
 
     func backwardButtonImage() -> UIImage {
-        if dataCenter.hasPrecachedFloors(for: Int(topic.topicID), page: currentPage.value - 1) {
+        if dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value - 1) {
             return #imageLiteral(resourceName: "Back-Cached")
         } else {
             return #imageLiteral(resourceName: "Back")

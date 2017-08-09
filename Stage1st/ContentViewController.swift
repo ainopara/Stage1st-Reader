@@ -480,7 +480,7 @@ extension S1ContentViewController {
             var pageList = [String]()
 
             for page in 1 ... max(viewModel.currentPage.value, viewModel.totalPages.value) {
-                if viewModel.dataCenter.hasPrecachedFloors(for: Int(viewModel.topic.topicID), page: UInt(page)) {
+                if viewModel.dataCenter.hasPrecachedFloors(for: Int(truncating: viewModel.topic.topicID), page: UInt(page)) {
                     pageList.append("✓第 \(page) 页✓")
                 } else {
                     pageList.append("第 \(page) 页")
