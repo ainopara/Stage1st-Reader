@@ -84,6 +84,7 @@
 		86D20FE21CA6B638003F2691 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */; };
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
+		86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DF79F71F3B058600324880 /* LoadingFooterView.swift */; };
 		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86E5F1DE1C8BDD4100DFFF12 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5F1DD1C8BDD4100DFFF12 /* CrashlyticsLogger.m */; };
@@ -239,6 +240,7 @@
 		86D20FE11CA6B638003F2691 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDErrorLevelFormatter.m; path = Vendors/CrashlyticsLogger/DDErrorLevelFormatter.m; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Poll.swift; path = Stage1st/Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DefaultPalette.plist; path = Stage1st/DefaultPalette.plist; sourceTree = "<group>"; };
+		86DF79F71F3B058600324880 /* LoadingFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoadingFooterView.swift; path = Stage1st/LoadingFooterView.swift; sourceTree = "<group>"; };
 		86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebViewEventDelegate.swift; path = Stage1st/WebViewEventDelegate.swift; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Stage1st/en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E4396F1BEC478700027FFA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Stage1st/zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
@@ -709,6 +711,7 @@
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
+				86DF79F71F3B058600324880 /* LoadingFooterView.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1099,6 +1102,7 @@
 				8694BCD61CEC42C200756C4A /* WebViewController.swift in Sources */,
 				86EBF1F11CE720FB00641A2D /* S1Animator.swift in Sources */,
 				867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */,
+				86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,

@@ -36,18 +36,25 @@ extension S1TopicListViewController {
         dataCenter = AppEnvironment.current.dataCenter
         viewModel = S1TopicListViewModel(dataCenter: dataCenter)
 
-        view.addSubview(tableView)
+        view.addSubview(navigationBar)
         if #available(iOS 11.0, *) {
-            tableView.snp.makeConstraints({ (make) in
-                make.leading.trailing.equalTo(view)
+            navigationBar.snp.makeConstraints({ (make) in
+                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.leading.trailing.equalTo(self.view)
             })
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         } else {
-            tableView.snp.makeConstraints({ (make) in
-                make.leading.trailing.equalTo(view)
-                make.top.equalTo(navigationController!.navigationBar.snp.bottom)
+            navigationBar.snp.makeConstraints({ (make) in
+                make.top.equalTo(view.snp.top)
+                make.leading.trailing.equalTo(self.view)
+                make.bottom.equalTo(self.topLayoutGuide.snp.bottom).offset(44.0)
             })
         }
+
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints({ (make) in
+            make.leading.trailing.equalTo(view)
+            make.top.equalTo(navigationBar.snp.bottom)
+        })
 
         view.addSubview(scrollTabBar)
         scrollTabBar.snp.makeConstraints { (make) in
@@ -119,7 +126,6 @@ extension S1TopicListViewController {
 
 // MARK: Style
 extension S1TopicListViewController {
-
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return ColorManager.shared.isDarkTheme() ? .lightContent : .default
     }

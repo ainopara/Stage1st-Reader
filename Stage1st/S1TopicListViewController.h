@@ -7,23 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "S1TabBar.h"
 
 @class DataCenter;
 @class AnimationButton;
 @class ODRefreshControl;
 @class S1TabBar;
 @class S1TopicListViewModel;
-@protocol S1TabBarDelegate;
+@class LoadingFooterView;
+
 
 typedef enum {
     S1TopicListHistory,
     S1TopicListFavorite
 } S1InternalTopicListType;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface S1TopicListViewController : UIViewController<
     UITableViewDelegate,
     UITableViewDataSource,
     UISearchBarDelegate,
+    UINavigationBarDelegate,
     S1TabBarDelegate
     >
 // UI
@@ -31,6 +36,7 @@ typedef enum {
 @property (nonatomic, strong) UINavigationItem *navigationItem;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) AnimationButton *archiveButton;
 @property (nonatomic, strong) UIBarButtonItem *settingsItem;
 @property (nonatomic, strong) UISegmentedControl *segControl;
@@ -38,6 +44,7 @@ typedef enum {
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) S1TabBar *scrollTabBar;
+@property (nonatomic, strong) LoadingFooterView *footerView;
 
 @property (nonatomic, strong) S1HUD *refreshHUD;
 // Model
@@ -49,7 +56,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *searchKeyword;
 @property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *_Nullable cachedContentOffset;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
 @property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
 
@@ -60,3 +67,5 @@ typedef enum {
 - (void)cloudKitStateChanged:(NSNotification *)notification;
 
 @end
+
+NS_ASSUME_NONNULL_END

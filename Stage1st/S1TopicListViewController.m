@@ -6,32 +6,28 @@
 //  Copyright (c) 2013 Renaissance. All rights reserved.
 //
 
-#import "S1AppDelegate.h"
-#import "S1TopicListViewController.h"
-#import "SettingsViewController.h"
-#import "S1TopicListCell.h"
-#import "S1HUD.h"
-#import "S1Topic.h"
-#import "S1TabBar.h"
-#import "Masonry.h"
-
-#import "ODRefreshControl.h"
-#import "DatabaseManager.h"
-#import "CloudKitManager.h"
-
-#import "NavigationControllerDelegate.h"
 #import <Crashlytics/Answers.h>
-
 #import <YapDatabase/YapDatabase.h>
 #import <YapDatabase/YapDatabaseFilteredView.h>
 #import <YapDatabase/YapDatabaseSearchResultsView.h>
 #import <YapDatabase/YapDatabaseView.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
 
+#import "S1TopicListViewController.h"
+#import "S1AppDelegate.h"
+#import "SettingsViewController.h"
+#import "S1TopicListCell.h"
+#import "S1HUD.h"
+#import "S1Topic.h"
+#import "S1TabBar.h"
+#import "ODRefreshControl.h"
+#import "DatabaseManager.h"
+#import "CloudKitManager.h"
+#import "NavigationControllerDelegate.h"
+
 static NSString * const cellIdentifier = @"TopicCell";
 
 #define _SEARCH_BAR_HEIGHT 40.0f
-
 
 #pragma mark -
 
@@ -244,7 +240,7 @@ static NSString * const cellIdentifier = @"TopicCell";
         if ([self.currentKey isEqual: @"Search"]) {
             return;
         }
-        self.tableView.tableFooterView = [self footerView];
+        self.tableView.tableFooterView = self.footerView;
         DDLogDebug(@"[TopicListVC] Reach (almost) last topic, load more.");
         _loadingMore = YES;
         __weak __typeof__(self) weakSelf = self;
@@ -401,6 +397,12 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (self.tableView.contentOffset.y > 0) {
         [self.searchBar resignFirstResponder];
     }
+}
+
+#pragma mark UINavigationBarDelegate
+
+- (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar {
+    return UIBarPositionTopAttached;
 }
 
 #pragma mark - Layout
@@ -583,11 +585,13 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
 
     [self.tableView reloadData];
+    self.footerView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.background"];
+    self.footerView.label.textColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.text"];
     [self.scrollTabBar updateColor];
 
-    [self.navigationController.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
-    [self.navigationController.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{
+    [self.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
+    [self.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationBar setTitleTextAttributes:@{
         NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
         NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
     }];
@@ -716,6 +720,15 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 #pragma mark - Getters and Setters
+
+- (UINavigationBar *)navigationBar {
+    if (!_navigationBar) {
+        _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
+        _navigationBar.delegate = self;
+        [_navigationBar pushNavigationItem:self.navigationItem animated:NO];
+    }
+    return _navigationBar;
+}
 
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
@@ -852,24 +865,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _cachedLastRefreshTime;
 }
 
-- (UIView *)footerView {
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.bounds.size.width, 40.0)];
-    footerView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.background"];
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    NSDictionary *attributes = @{
-        NSFontAttributeName: [UIFont systemFontOfSize:16.0],
-        NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.text"]
-    };
-    NSMutableAttributedString *labelTitle = [[NSMutableAttributedString alloc] initWithString:@"Loading..." attributes:attributes];
-    label.attributedText = labelTitle;
-    [footerView addSubview:label];
+- (LoadingFooterView *)footerView {
+    if (_footerView == nil) {
+        _footerView = [[LoadingFooterView alloc] init];
+        _footerView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.background"];
+        _footerView.label.textColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.text"];
+    }
 
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(footerView.mas_centerX);
-        make.centerY.equalTo(footerView.mas_centerY);
-    }];
-    return footerView;
+    return _footerView;
 }
 
 - (S1HUD *)refreshHUD {
