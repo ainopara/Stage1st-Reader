@@ -19,7 +19,7 @@ class S1NavigationViewController: UINavigationController {
 }
 
 extension NavigationControllerDelegate {
-    func setUpGagat() {
+    @objc func setUpGagat() {
         let handle = Gagat.configure(for: MyAppDelegate.window, with: self)
         self.navigationController?.gagat = handle
         self.colorPanRecognizer = handle.panGestureRecognizer
