@@ -32,36 +32,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #define _SEARCH_BAR_HEIGHT 40.0f
 
-@interface S1TopicListViewController () <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, S1TabBarDelegate>
-// UI
-@property (nonatomic, strong) UIView *placeholderView;
-@property (nonatomic, strong) UINavigationBar *navigationBar;
-@property (nonatomic, strong) UINavigationItem *naviItem;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIBarButtonItem *historyItem;
-@property (nonatomic, strong) AnimationButton *archiveButton;
-@property (nonatomic, strong) UIBarButtonItem *settingsItem;
-@property (nonatomic, strong) UISegmentedControl *segControl;
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) ODRefreshControl *refreshControl;
-@property (nonatomic, strong) UISearchBar *searchBar;
-@property (nonatomic, strong) S1TabBar *scrollTabBar;
-
-@property (nonatomic, strong) S1HUD *refreshHUD;
-// Model
-@property (nonatomic, strong) DataCenter *dataCenter;
-@property (nonatomic, strong) S1TopicListViewModel *viewModel;
-
-@property (nonatomic, strong) NSString *currentKey;
-@property (nonatomic, strong) NSString *previousKey;
-@property (nonatomic, strong) NSString *searchKeyword;
-@property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
-
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
-@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
-
-@end
 
 #pragma mark -
 
@@ -74,75 +44,18 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+    if (self != nil) {
         _loadingFlag = NO;
         _loadingMore = NO;
         _currentKey = @"";
         _previousKey = @"";
+
+        self.navigationItem = [[UINavigationItem alloc] init];
+        self.navigationItem.titleView = self.titleLabel;
+        self.navigationItem.leftBarButtonItem = self.settingsItem;
+        self.navigationItem.rightBarButtonItem = self.historyItem;
     }
     return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.dataCenter = [[AppEnvironment current] dataCenter];
-    self.viewModel = [[S1TopicListViewModel alloc] initWithDataCenter:self.dataCenter];
-    
-    self.view.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.background"];
-    
-    //Setup Navigation Bar
-    // FIXME: Uncomment this in Xcode 9
-//    if (@available(iOS 11, *)) {
-//        [self.view addSubview:self.placeholderView];
-//        [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(self.view.mas_top);
-//            make.leading.and.trailing.equalTo(self.view);
-//            make.bottom.equalTo(self.mas_topLayoutGuideBottom);
-//        }];
-//
-//        [self.view addSubview:self.navigationBar];
-//        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.top.equalTo(self.mas_topLayoutGuideBottom);
-//            make.leading.and.trailing.equalTo(self.view);
-//        }];
-//    } else {
-        [self.view addSubview:self.navigationBar];
-        [self.navigationBar mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top);
-            make.leading.and.trailing.equalTo(self.view);
-            make.bottom.equalTo(self.mas_topLayoutGuideBottom).offset(44);
-        }];
-//    }
-
-    //Setup Table View
-    [self.view addSubview:self.tableView];
-    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.navigationBar.mas_bottom);
-        make.leading.and.trailing.equalTo(self.view);
-    }];
-    
-    //Setup Tab Bar
-    [self.view addSubview:self.scrollTabBar];
-    [self.scrollTabBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.tableView.mas_bottom);
-        make.leading.and.trailing.equalTo(self.view);
-        make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
-    }];
-
-    [self.view addSubview:self.refreshHUD];
-    [self.refreshHUD mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-        make.width.lessThanOrEqualTo(self.view);
-        make.height.lessThanOrEqualTo(self.view);
-    }];
-
-    //Notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar:) name:@"S1UserMayReorderedNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData:) name:@"S1TopicUpdateNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseConnectionDidUpdate:) name:UIDatabaseConnectionDidUpdateNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)dealloc {
@@ -188,9 +101,9 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 - (void)archive:(id)sender {
-    [self.naviItem setRightBarButtonItems:@[]];
+    [self.navigationItem setRightBarButtonItems:@[]];
     [self cancelRequest];
-    self.naviItem.titleView = self.segControl;
+    self.navigationItem.titleView = self.segControl;
     if (self.segControl.selectedSegmentIndex == 0) {
         [self presentInternalListForType:S1TopicListHistory];
     } else {
@@ -389,12 +302,12 @@ static NSString * const cellIdentifier = @"TopicCell";
 #pragma mark S1TabBarDelegate
 
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key {
-    self.naviItem.titleView = self.titleLabel;
+    self.navigationItem.titleView = self.titleLabel;
     self.searchBar.text = @"";
     self.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
     _loadingMore = NO;
     [self cancelRequest];
-    [self.naviItem setRightBarButtonItem:self.historyItem];
+    [self.navigationItem setRightBarButtonItem:self.historyItem];
     [self.archiveButton recover];
     
     if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
@@ -672,14 +585,9 @@ static NSString * const cellIdentifier = @"TopicCell";
     [self.tableView reloadData];
     [self.scrollTabBar updateColor];
 
-    // FIXME: Uncomment this in Xcode 9
-//    if (@available(iOS 11, *)) {
-//        [self.placeholderView setBackgroundColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
-//    }
-
-    [self.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
-    [self.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationBar setTitleTextAttributes:@{
+    [self.navigationController.navigationBar setBarTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.bartint"]];
+    [self.navigationController.navigationBar setTintColor:[[ColorManager shared] colorForKey:@"appearance.navigationbar.tint"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
         NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
         NSFontAttributeName: [UIFont boldSystemFontOfSize:17.0]
     }];
@@ -808,32 +716,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 }
 
 #pragma mark - Getters and Setters
-
-- (UIView *)placeholderView {
-    if (_placeholderView == nil) {
-        _placeholderView = [[UIView alloc] initWithFrame:CGRectZero];
-    }
-
-    return _placeholderView;
-}
-
-- (UINavigationBar *)navigationBar {
-    if (!_navigationBar) {
-        _navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
-        [_navigationBar pushNavigationItem:self.naviItem animated:NO];
-    }
-    return _navigationBar;
-}
-
-- (UINavigationItem *)naviItem {
-    if (!_naviItem) {
-        _naviItem = [[UINavigationItem alloc] initWithTitle:@""];
-        _naviItem.titleView = self.titleLabel;
-        _naviItem.leftBarButtonItem = self.settingsItem;
-        _naviItem.rightBarButtonItem = self.historyItem;
-    }
-    return _naviItem;
-}
 
 - (UILabel *)titleLabel {
     if (!_titleLabel) {

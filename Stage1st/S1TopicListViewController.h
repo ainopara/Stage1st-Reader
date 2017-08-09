@@ -9,14 +9,54 @@
 #import <UIKit/UIKit.h>
 
 @class DataCenter;
+@class AnimationButton;
+@class ODRefreshControl;
+@class S1TabBar;
+@class S1TopicListViewModel;
+@protocol S1TabBarDelegate;
 
 typedef enum {
     S1TopicListHistory,
     S1TopicListFavorite
 } S1InternalTopicListType;
 
-@interface S1TopicListViewController : UIViewController
+@interface S1TopicListViewController : UIViewController<
+    UITableViewDelegate,
+    UITableViewDataSource,
+    UISearchBarDelegate,
+    S1TabBarDelegate
+    >
+// UI
 
-@property (nonatomic, strong, readonly) DataCenter *dataCenter;
+@property (nonatomic, strong) UINavigationItem *navigationItem;
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIBarButtonItem *historyItem;
+@property (nonatomic, strong) AnimationButton *archiveButton;
+@property (nonatomic, strong) UIBarButtonItem *settingsItem;
+@property (nonatomic, strong) UISegmentedControl *segControl;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) ODRefreshControl *refreshControl;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) S1TabBar *scrollTabBar;
+
+@property (nonatomic, strong) S1HUD *refreshHUD;
+// Model
+@property (nonatomic, strong) DataCenter *dataCenter;
+@property (nonatomic, strong) S1TopicListViewModel *viewModel;
+
+@property (nonatomic, strong) NSString *currentKey;
+@property (nonatomic, strong) NSString *previousKey;
+@property (nonatomic, strong) NSString *searchKeyword;
+@property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
+
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
+@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
+
+
+- (void)updateTabbar:(NSNotification *)notification;
+- (void)reloadTableData:(NSNotification *)notification;
+- (void)databaseConnectionDidUpdate:(NSNotification *)notification;
+- (void)cloudKitStateChanged:(NSNotification *)notification;
 
 @end

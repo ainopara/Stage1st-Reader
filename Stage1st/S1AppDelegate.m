@@ -52,12 +52,11 @@ S1AppDelegate *MyAppDelegate;
         [DDLog addLogger:inMemoryLogger];
 
         // OS Logger
-        // FIXME: Uncomment this in Xcode 9
-//        if (@available(iOS 10.0, *)) {
-//            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
-//            [osLogger setLogFormatter:formatter];
-//            [DDLog addLogger:osLogger];
-//        }
+        if (@available(iOS 10.0, *)) {
+            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
+            [osLogger setLogFormatter:formatter];
+            [DDLog addLogger:osLogger];
+        }
 
 #else
         id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
@@ -127,11 +126,9 @@ S1AppDelegate *MyAppDelegate;
     NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:16 * 1024 * 1024 diskCapacity:128 * 1024 * 1024 diskPath:nil];
     [NSURLCache setSharedURLCache:URLCache];
 
-    S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
+    S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithRootViewController:[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
     navigationController.delegate = self.navigationDelegate;
-    navigationController.viewControllers = @[[[S1TopicListViewController alloc] initWithNibName:nil bundle:nil]];
-    navigationController.navigationBarHidden = YES;
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navigationController;

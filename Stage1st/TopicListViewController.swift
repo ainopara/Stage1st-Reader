@@ -29,6 +29,49 @@ public enum TopicListPresentationType {
     }
 }
 
+extension S1TopicListViewController {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+
+        dataCenter = AppEnvironment.current.dataCenter
+        viewModel = S1TopicListViewModel(dataCenter: dataCenter)
+
+        view.addSubview(tableView)
+        if #available(iOS 11.0, *) {
+            tableView.snp.makeConstraints({ (make) in
+                make.leading.trailing.equalTo(view)
+            })
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        } else {
+            tableView.snp.makeConstraints({ (make) in
+                make.leading.trailing.equalTo(view)
+                make.top.equalTo(navigationController!.navigationBar.snp.bottom)
+            })
+        }
+
+        view.addSubview(scrollTabBar)
+        scrollTabBar.snp.makeConstraints { (make) in
+            make.top.equalTo(tableView.snp.bottom)
+            make.leading.trailing.equalTo(view)
+            make.bottom.equalTo(view.snp.bottom)
+        }
+
+        view.addSubview(refreshHUD)
+        refreshHUD.snp.makeConstraints { (make) in
+            make.center.equalTo(view)
+            make.width.lessThanOrEqualTo(view)
+            make.height.lessThanOrEqualTo(view)
+        }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.updateTabbar), name: Notification.Name.init(rawValue: "S1UserMayReorderedNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.reloadTableData), name: Notification.Name.init(rawValue: "S1TopicUpdateNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(S1TopicListViewController.didReceivePaletteChangeNotification), name: .APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.databaseConnectionDidUpdate), name: .UIDatabaseConnectionDidUpdate, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.cloudKitStateChanged), name: .YapDatabaseCloudKitStateChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.cloudKitStateChanged), name: .UIApplicationWillEnterForeground, object: nil)
+    }
+}
+
 @objc
 extension S1TopicListViewController {
 
