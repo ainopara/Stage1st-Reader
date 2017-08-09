@@ -58,7 +58,6 @@ PODS:
   - Result (3.2.3)
   - Reveal-SDK (9)
   - SnapKit (3.2.0)
-  - SwiftFormat/CLI (0.29.3)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (3.0.1):
@@ -148,7 +147,6 @@ DEPENDENCIES:
   - ReactiveSwift
   - Reveal-SDK
   - SnapKit
-  - SwiftFormat/CLI
   - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
@@ -209,12 +207,11 @@ SPEC CHECKSUMS:
   Result: 128640a6347e8d2ae48b142556739a2d13f90ce6
   Reveal-SDK: d977a1ec41e7c076025c1005da6e6d7c1b8ed254
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
-  SwiftFormat: 7455708e7d4b7e822803c5237500cd03b756bc4a
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 527ac40cf63ab87e0019648ca9d9112e48d1f742
+PODFILE CHECKSUM: c0b75aeb545354c92c15a12b14a0ec39383da2db
 
 COCOAPODS: 1.3.1
