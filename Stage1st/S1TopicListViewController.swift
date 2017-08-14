@@ -241,6 +241,8 @@ extension S1TopicListViewController: UINavigationBarDelegate {
     }
 }
 
+// MARK: -
+
 extension S1TopicListViewController {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         viewModel.traitCollection.value = traitCollection
