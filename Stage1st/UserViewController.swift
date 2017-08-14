@@ -60,7 +60,7 @@ final class UserViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChangeNotification,
+                                               name: .APPaletteDidChange,
                                                object: nil)
     }
 

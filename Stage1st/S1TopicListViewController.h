@@ -24,13 +24,7 @@ typedef enum {
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface S1TopicListViewController : UIViewController<
-    UITableViewDelegate,
-    UITableViewDataSource,
-    UISearchBarDelegate,
-    UINavigationBarDelegate,
-    S1TabBarDelegate
-    >
+@interface S1TopicListViewController : UIViewController<S1TabBarDelegate>
 // UI
 
 @property (nonatomic, strong) UINavigationItem *navigationItem;
@@ -54,17 +48,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *currentKey;
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSString *searchKeyword;
-@property (nonatomic, strong) NSMutableArray<S1Topic *> *topics;
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *_Nullable cachedContentOffset;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
 @property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
+
+@property (nonatomic, assign) BOOL loadingFlag;
+@property (nonatomic, assign) BOOL loadingMore;
 
 
 - (void)updateTabbar:(NSNotification *)notification;
 - (void)reloadTableData:(NSNotification *)notification;
 - (void)databaseConnectionDidUpdate:(NSNotification *)notification;
 - (void)cloudKitStateChanged:(NSNotification *)notification;
+
+- (void)objc_searchBarSearchButtonClicked:(UISearchBar *)searchBar;
 
 @end
 

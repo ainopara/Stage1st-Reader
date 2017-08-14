@@ -286,7 +286,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChangeNotification,
+                                               name: .APPaletteDidChange,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveFloorCachedNotification(_:)),

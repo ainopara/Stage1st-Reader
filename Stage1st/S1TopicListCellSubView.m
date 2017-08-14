@@ -82,7 +82,7 @@
     [replyCountRectFillColor setFill];
     [roundedRectanglePath fill];
     CGContextRestoreGState(context);
-    if ([self.topic.favorite  isEqual: @1]) {
+    if (self.topic.favorite.boolValue) {
         [replyCountRectStrokeColorOfFavoriteThread setStroke];
     } else if (self.topic.lastViewedPosition) {
         [replyCountRectStrokeColorOfHistoryThread setStroke];
@@ -94,7 +94,7 @@
 
     //// Reply Count Text Drawing
     UIColor *replyCountFinalColor = nil;
-    if ([self.topic.favorite  isEqual: @1]) {
+    if (self.topic.favorite.boolValue) {
         replyCountFinalColor = replyCountTextColorOfFavoriteThread;
     } else if (self.topic.lastViewedPosition) {
         replyCountFinalColor = replyCountTextColorOfHistoryThread;

@@ -105,7 +105,7 @@ private extension ColorManager {
         self.palette = palette
         updateGlobalAppearance()
         if shouldPush {
-            NotificationCenter.default.post(name: .APPaletteDidChangeNotification, object: nil)
+            NotificationCenter.default.post(name: .APPaletteDidChange, object: nil)
         }
     }
 
@@ -126,7 +126,7 @@ public extension UIViewController {
 }
 
 public extension Notification.Name {
-    public static let APPaletteDidChangeNotification = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
+    public static let APPaletteDidChange = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
 }
 
 @objc public enum PaletteType: NSInteger {

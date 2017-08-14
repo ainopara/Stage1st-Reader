@@ -111,12 +111,12 @@ final class ReportComposeViewController: UIViewController {
         keyboardManager.add(self)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChangeNotification,
+                                               name: .APPaletteDidChange,
                                                object: nil)
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .APPaletteDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .APPaletteDidChange, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {

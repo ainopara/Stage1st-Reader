@@ -61,7 +61,7 @@ class MessageHUD: UIWindow {
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChangeNotification,
+                                               name: .APPaletteDidChange,
                                                object: nil)
     }
 
