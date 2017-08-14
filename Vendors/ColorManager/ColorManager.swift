@@ -57,8 +57,8 @@ public final class ColorManager: NSObject {
         UINavigationBar.appearance().tintColor = colorForKey("appearance.navigationbar.tint")
         #if swift(>=4.0)
         UINavigationBar.appearance().titleTextAttributes = [
-            NSAttributedStringKey.foregroundColor: colorForKey("appearance.navigationbar.title"),
-            NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 17.0)
+            .foregroundColor: colorForKey("appearance.navigationbar.title"),
+            .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
         #else
         UINavigationBar.appearance().titleTextAttributes = [

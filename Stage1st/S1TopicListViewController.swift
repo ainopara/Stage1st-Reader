@@ -134,14 +134,28 @@ extension S1TopicListViewController: UITableViewDelegate {
         return isPresentingDatabaseList(currentKey)
     }
 
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            if currentKey == "History" {
-                viewModel.deleteTopicAtIndexPath(indexPath)
-            } else {
-                viewModel.unfavoriteTopicAtIndexPath(indexPath)
-            }
+    public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        if viewModel.currentState.value == .history {
+            let deleteAction = UITableViewRowAction(style: .destructive, title: NSLocalizedString("TopicListViewController.TableView.CellAction.Delete", comment: ""), handler: { [weak self] (_, indexPath) in
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.deleteTopicAtIndexPath(indexPath)
+            })
+            deleteAction.backgroundColor = ColorManager.shared.colorForKey("topiclist.cell.action.delete")
+
+            return [deleteAction]
         }
+
+        if viewModel.currentState.value == .favorite {
+            let cancelFavoriteAction = UITableViewRowAction(style: .normal, title: NSLocalizedString("TopicListViewController.TableView.CellAction.CancelFavorite", comment: ""), handler: { [weak self] (_, indexPath) in
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.unfavoriteTopicAtIndexPath(indexPath)
+            })
+            cancelFavoriteAction.backgroundColor = ColorManager.shared.colorForKey("topiclist.cell.action.cancelfavorite")
+            return [cancelFavoriteAction]
+        }
+
+        assert(false, "this should never happen!")
+        return nil
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

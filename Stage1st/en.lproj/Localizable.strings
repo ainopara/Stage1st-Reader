@@ -37,6 +37,8 @@
 "TopicListViewController.ListHeader_Today" = " (Today)";
 "TopicListViewController.SearchBar_Hint" = "Search";
 "TopicListViewController.SearchBar_Detail_Hint" = "Search %@ Topics";
+"TopicListViewController.TableView.CellAction.CancelFavorite" = "Cancel Favorite";
+"TopicListViewController.TableView.CellAction.Delete" = "Delete";
 
 "SettingsViewController.NavigationBar_Title" = "Settings";
 "SettingsViewController.NavigationBar_Back" = "Back";

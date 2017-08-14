@@ -154,7 +154,7 @@
 "TopicListViewController.NavigationBar_Settings" = "设置";
 
 /* Search */
-"TopicListViewController.SearchBar_Detail_Hint" = "在 %@ 主题中搜索";
+"TopicListViewController.SearchBar_Detail_Hint" = "在 %@ 个主题中搜索";
 "TopicListViewController.SearchBar_Hint" = "搜索";
 
 /* Favorite */
@@ -162,6 +162,8 @@
 
 /* History */
 "TopicListViewController.SegmentControl_History" = "历史";
+"TopicListViewController.TableView.CellAction.CancelFavorite" = "取消收藏";
+"TopicListViewController.TableView.CellAction.Delete" = "删除";
 
 "SettingsViewController.CloudKit_Enable_Message" = "设置将于下次启动时生效";
 

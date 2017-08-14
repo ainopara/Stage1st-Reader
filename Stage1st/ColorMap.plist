@@ -76,6 +76,10 @@
 	<string>21</string>
 	<key>topiclist.cell.title.highlight</key>
 	<string>20</string>
+	<key>topiclist.cell.action.delete</key>
+	<string>25</string>
+	<key>topiclist.cell.action.cancelfavorite</key>
+	<string>26</string>
 	<key>topiclist.refreshcontrol.tint</key>
 	<string>6</string>
 	<key>topiclist.searchbar.bartint</key>

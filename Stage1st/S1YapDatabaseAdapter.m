@@ -85,10 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)removeTopicFromHistory:(NSNumber *)topicID {
     [self.database.bgDatabaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        S1Topic *topic = [transaction objectForKey:[topicID stringValue] inCollection:Collection_Topics];
-        if ([topic.favorite boolValue] != YES) {
-            [transaction removeObjectForKey:[topicID stringValue] inCollection:Collection_Topics];
-        }
+        [transaction removeObjectForKey:[topicID stringValue] inCollection:Collection_Topics];
     }];
 }
 
