@@ -24,16 +24,17 @@ public struct OffsetRange {
 
 // MARK: -
 public class PullToActionController: NSObject {
-    public weak var scrollView: UIScrollView?
+    public private(set) var scrollView: UIScrollView?
     public weak var delegate: PullToActionDelagete?
 
-    public var offset: CGPoint = .zero
-    public var size: CGSize = .zero
-    public var inset: UIEdgeInsets = .zero
+    public private(set) var offset: CGPoint = .zero
+    public private(set) var size: CGSize = .zero
+    public private(set) var inset: UIEdgeInsets = .zero
 
     public var filterDuplicatedSizeEvent = false
 
-    fileprivate var progressActions = [String: OffsetRange]()
+    private var progressActions = [String: OffsetRange]()
+    private var observations = [NSKeyValueObservation]()
 
     // MARK: -
     public init(scrollView: UIScrollView) {
@@ -42,9 +43,56 @@ public class PullToActionController: NSObject {
         super.init()
 
         scrollView.delegate = self
-        scrollView.addObserver(self, forKeyPath: "contentOffset", options: .new, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
-        scrollView.addObserver(self, forKeyPath: "contentInset", options: .new, context: nil)
+
+        let offsetObserver = scrollView.observe(\.contentOffset, options: [.new]) { [weak self] (scrollView, change) in
+            guard let strongSelf = self else { return }
+            guard let offset = change.newValue else { return }
+
+            strongSelf.offset = offset
+
+            var progress = [String: Double]()
+            for (name, actionOffset) in strongSelf.progressActions {
+                let progressValue = actionOffset.progress(for: strongSelf.currentOffset(relativeTo: actionOffset.baseLine))
+                progress.updateValue(progressValue, forKey: name)
+            }
+
+//            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
+            if let delegateFunction = strongSelf.delegate?.scrollViewContentOffsetProgress {
+                delegateFunction(progress)
+            }
+        }
+
+        observations.append(offsetObserver)
+
+        let sizeObserver = scrollView.observe(\.contentSize, options: [.new]) { [weak self] (scrollView, change) in
+            guard let strongSelf = self else { return }
+            guard let size = change.newValue else { return }
+
+            let oldSize = strongSelf.size
+            strongSelf.size = size
+
+            if strongSelf.filterDuplicatedSizeEvent && abs(size.height - oldSize.height) < 0.01 && abs(size.width - oldSize.width) < 0.01 {
+                return
+            }
+
+            DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
+            if let delegateFunction = strongSelf.delegate?.scrollViewContentSizeDidChange {
+                delegateFunction(size)
+            }
+        }
+
+        observations.append(sizeObserver)
+
+        let insetObserver = scrollView.observe(\.contentInset, options: [.new]) { [weak self] (scrollView, change) in
+            guard let strongSelf = self else { return }
+            guard let inset = change.newValue else { return }
+
+            strongSelf.inset = inset
+
+            DDLogVerbose("[PullToAction] inset: top: \(inset.top) bottom: \(inset.bottom)")
+        }
+
+        observations.append(insetObserver)
     }
 
     deinit {
@@ -64,59 +112,11 @@ public class PullToActionController: NSObject {
     }
 
     public func stop() {
-        scrollView?.removeObserver(self, forKeyPath: "contentOffset")
-        scrollView?.removeObserver(self, forKeyPath: "contentSize")
-        scrollView?.removeObserver(self, forKeyPath: "contentInset")
+        for observation in observations {
+            observation.invalidate()
+        }
+        observations.removeAll()
         scrollView?.delegate = nil
-    }
-
-    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "contentOffset" {
-            guard let changes = change,
-                  let newOffsetValue = changes[.newKey] as? NSValue else {
-                return
-            }
-
-            offset = newOffsetValue.cgPointValue
-
-            var progress = [String: Double]()
-            for (name, actionOffset) in progressActions {
-                let progressValue = actionOffset.progress(for: currentOffset(relativeTo: actionOffset.baseLine))
-                progress.updateValue(progressValue, forKey: name)
-            }
-
-            if let delegateFunction = delegate?.scrollViewContentOffsetProgress {
-                delegateFunction(progress)
-            }
-//            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
-        }
-
-        if keyPath == "contentSize" {
-            guard let changes = change,
-                  let newSizeValue = changes[.newKey] as? NSValue else {
-                return
-            }
-            let oldSize = size
-
-            size = newSizeValue.cgSizeValue
-
-            if filterDuplicatedSizeEvent && abs(size.height - oldSize.height) < 0.01 && abs(size.width - oldSize.width) < 0.01 {
-                return
-            }
-
-            DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
-            delegate?.scrollViewContentSizeDidChange?(size)
-        }
-
-        if keyPath == "contentInset" {
-            guard let changes = change,
-                  let newInsetValue = changes[.newKey] as? NSValue else {
-                return
-            }
-
-            inset = newInsetValue.uiEdgeInsetsValue
-            DDLogVerbose("[PullToAction] inset: top: \(inset.top) bottom: \(inset.bottom)")
-        }
     }
 
     private func currentOffset(relativeTo baseLine: OffsetRange.BaseLine) -> Double {
@@ -188,7 +188,6 @@ extension PullToActionController: UIScrollViewDelegate {
             return
         }
     }
-
 }
 
 // MARK: -
