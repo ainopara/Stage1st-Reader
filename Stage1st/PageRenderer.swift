@@ -143,7 +143,15 @@ extension PageRenderer {
                                 imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
                                 imageIndexInCurrentFloor += 1
                                 if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
-                                    imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
+                                    if #available(iOS 11.0, *) {
+                                        let schemeChangedImageSrcString = finalImageSrcString
+                                            .s1_replace(pattern: "^https", with: "images")
+                                            .s1_replace(pattern: "^http", with: "image")
+                                        imageElement.addAttribute(withName: "src", stringValue: schemeChangedImageSrcString)
+                                    } else {
+                                        imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
+                                    }
+
                                 } else {
                                     let placeholderURLString = templateBundle().path(forResource: "Placeholder", ofType: "png", inDirectory: "image")!
                                     imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
@@ -289,6 +297,30 @@ extension PageRenderer {
             }
         }
 
+        func processAttachments(attachmentImageURLs: [String]?) -> [[String: String]]? {
+            if #available(iOS 11.0, *) {
+                return attachmentImageURLs.flatMap { (list: [String]) in
+                    return list.map {
+                        return [
+                            "url": $0.s1_replace(pattern: "^https", with: "images").s1_replace(pattern: "^http", with: "image"),
+                            "trueURL": $0,
+                            "ID": UUID().uuidString
+                        ]
+                    }
+                }
+            } else {
+                return attachmentImageURLs.flatMap { (list: [String]) in
+                    return list.map {
+                        return [
+                            "url": $0,
+                            "trueURL": $0,
+                            "ID": UUID().uuidString
+                        ]
+                    }
+                }
+            }
+        }
+
         return [
             "index-mark": processIndexMark(indexMark: floor.indexMark),
             "author-ID": floor.author.ID,
@@ -297,7 +329,7 @@ extension PageRenderer {
             "ID": "\(floor.ID)",
             "poll": nil,
             "content": userIsBlocked(with: floor.author.ID) ? "<td class=\"t_f\"><div class=\"s1-alert\">该用户已被您屏蔽</i></td>" : processContent(content: floor.content),
-            "attachments": floor.imageAttachmentURLStringList.flatMap { (list: [String]) in list.map { ["url": $0, "ID": UUID().uuidString] } },
+            "attachments": processAttachments(attachmentImageURLs: floor.imageAttachmentURLStringList),
             "is-first": isFirstInPage,
         ]
     }

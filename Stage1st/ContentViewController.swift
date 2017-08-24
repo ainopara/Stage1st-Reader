@@ -29,10 +29,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
 
-    lazy var webViewScriptMessageHandler: GeneralScriptMessageHandler = {
-        GeneralScriptMessageHandler(delegate: self)
-    }()
-
     lazy var pullToActionController: PullToActionController = {
         PullToActionController(scrollView: self.webView.scrollView)
     }()
@@ -921,8 +917,12 @@ extension S1ContentViewController {
     func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
-        userContentController.add(webViewScriptMessageHandler, name: "stage1st")
+        userContentController.add(GeneralScriptMessageHandler(delegate: self), name: "stage1st")
         configuration.userContentController = userContentController
+        if #available(iOS 11.0, *) {
+            configuration.setURLSchemeHandler(self.viewModel, forURLScheme: "image")
+            configuration.setURLSchemeHandler(self.viewModel, forURLScheme: "images")
+        }
         return configuration
     }
 }

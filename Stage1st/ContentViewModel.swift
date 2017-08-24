@@ -11,6 +11,7 @@ import Alamofire
 import Mustache
 import ReactiveCocoa
 import ReactiveSwift
+import WebKit
 
 class ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
@@ -256,6 +257,68 @@ extension ContentViewModel: UserViewModelMaker {
         return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
     }
+}
+
+// MARK: - WKURLSchemeHandler
+@available(iOS 11.0, *)
+extension ContentViewModel: WKURLSchemeHandler {
+    func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
+        print("start \(urlSchemeTask.request)")
+        var request = urlSchemeTask.request
+        guard let urlString = request.url?.absoluteString else {
+            return
+        }
+        request.url = URL(string: urlString.s1_replace(pattern: "^image", with: "http"))
+
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: URLSessionManager.shared, delegateQueue: nil)
+        let dataTask = session.dataTask(with: request)
+        URLSessionManager.shared.start(dataTask: dataTask, schemeTask: urlSchemeTask)
+    }
+
+    func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
+        print("stop \(urlSchemeTask)")
+    }
+}
+
+@available(iOS 11.0, *)
+class URLSessionManager: NSObject, URLSessionDataDelegate {
+    static let shared = URLSessionManager()
+
+    var taskMap = [URLSessionDataTask: WKURLSchemeTask]()
+
+    override init() {
+        super.init()
+    }
+
+    func start(dataTask: URLSessionDataTask, schemeTask: WKURLSchemeTask) {
+        taskMap[dataTask] = schemeTask
+        dataTask.resume()
+    }
+
+    func stop(schemeTask: WKURLSchemeTask) {
+        // FIXME:
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        taskMap[dataTask]!.didReceive(response)
+        completionHandler(.allow)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        taskMap[dataTask]!.didReceive(data)
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            taskMap[task as! URLSessionDataTask]!.didFailWithError(error)
+        } else {
+            taskMap[task as! URLSessionDataTask]!.didFinish()
+        }
+    }
+}
+
+extension ContentViewModel: URLSessionDataDelegate {
+
 }
 
 // MARK: - Misc

@@ -9,6 +9,7 @@
 import Foundation
 import CocoaLumberjack
 import CloudKit
+import AlamofireImage
 
 // swiftlint:disable type_name
 struct Constants {
@@ -132,6 +133,12 @@ extension S1AppDelegate {
         ])
 
         updateStage1stDomainIfNecessary()
+
+        let totalCacheSize = URLCache.shared.currentDiskUsage + ImageDownloader.defaultURLCache().currentDiskUsage
+        let prettyPrintedCacheSize = Double(totalCacheSize / (102 * 1024)) / 10.0
+        DDLogInfo("Total Cache Size: \(prettyPrintedCacheSize) MiB")
+
+        URLCache.shared = ImageDownloader.defaultURLCache()
     }
 
     private func updateStage1stDomainIfNecessary() {
