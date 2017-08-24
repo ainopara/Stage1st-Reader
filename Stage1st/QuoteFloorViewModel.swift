@@ -7,8 +7,10 @@
 //
 
 import TextAttributes
+import WebKit
+import CocoaLumberjack
 
-final class QuoteFloorViewModel: PageRenderer {
+final class QuoteFloorViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let floors: [Floor]
 
@@ -47,5 +49,25 @@ extension QuoteFloorViewModel: UserViewModelMaker {
 extension QuoteFloorViewModel: ContentViewModelMaker {
     func contentViewModel(topic: S1Topic) -> ContentViewModel {
         return ContentViewModel(topic: topic, dataCenter: dataCenter)
+    }
+}
+
+// MARK: - WKURLSchemeHandler
+@available(iOS 11.0, *)
+extension QuoteFloorViewModel: WKURLSchemeHandler {
+    func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
+        DDLogDebug("start \(urlSchemeTask.request)")
+        var request = urlSchemeTask.request
+        guard let urlString = request.url?.absoluteString else {
+            return
+        }
+        request.url = URL(string: urlString.s1_replace(pattern: "^image", with: "http"))
+
+        AppEnvironment.current.urlSessionManager.start(schemeTask: urlSchemeTask, with: request)
+    }
+
+    func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
+        DDLogDebug("stop \(urlSchemeTask.request)")
+        AppEnvironment.current.urlSessionManager.stop(schemeTask: urlSchemeTask)
     }
 }
