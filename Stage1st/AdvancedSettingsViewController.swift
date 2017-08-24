@@ -38,7 +38,9 @@ final class AdvancedSettingsViewController: QuickTableViewController {
 
             Section(title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""), rows: [
                 TapActionRow(title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.title", comment: ""),
-                             action: resetDefaultSettings),
+                             action: { [weak self] row in
+                                self?.resetDefaultSettings(row)
+                }),
             ], footer: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.footer", comment: "")),
         ]
         tableView.reloadData()
