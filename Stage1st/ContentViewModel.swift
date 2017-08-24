@@ -263,62 +263,71 @@ extension ContentViewModel: UserViewModelMaker {
 @available(iOS 11.0, *)
 extension ContentViewModel: WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
-        print("start \(urlSchemeTask.request)")
+        DDLogDebug("start \(urlSchemeTask.request)")
         var request = urlSchemeTask.request
         guard let urlString = request.url?.absoluteString else {
             return
         }
         request.url = URL(string: urlString.s1_replace(pattern: "^image", with: "http"))
 
-        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: URLSessionManager.shared, delegateQueue: nil)
-        let dataTask = session.dataTask(with: request)
-        URLSessionManager.shared.start(dataTask: dataTask, schemeTask: urlSchemeTask)
+        AppEnvironment.current.urlSessionManager.start(schemeTask: urlSchemeTask, with: request)
     }
 
     func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
-        print("stop \(urlSchemeTask)")
+        DDLogDebug("stop \(urlSchemeTask.request)")
+        AppEnvironment.current.urlSessionManager.stop(schemeTask: urlSchemeTask)
     }
 }
 
-@available(iOS 11.0, *)
 class URLSessionManager: NSObject, URLSessionDataDelegate {
     static let shared = URLSessionManager()
+    lazy var session = {
+        URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+    }()
 
-    var taskMap = [URLSessionDataTask: WKURLSchemeTask]()
+    var taskMap = [URLSessionDataTask: Any]()
 
     override init() {
         super.init()
     }
 
-    func start(dataTask: URLSessionDataTask, schemeTask: WKURLSchemeTask) {
-        taskMap[dataTask] = schemeTask
+    @available(iOS 11.0, *)
+    func start(schemeTask: WKURLSchemeTask, with request: URLRequest) {
+        let dataTask = session.dataTask(with: request)
+        taskMap[dataTask] = schemeTask as Any
         dataTask.resume()
     }
 
+    @available(iOS 11.0, *)
     func stop(schemeTask: WKURLSchemeTask) {
-        // FIXME:
+        // TODO:
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        taskMap[dataTask]!.didReceive(response)
+        if #available(iOS 11.0, *) {
+            let schemeTask = taskMap[dataTask] as! WKURLSchemeTask
+            schemeTask.didReceive(response)
+        }
         completionHandler(.allow)
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        taskMap[dataTask]!.didReceive(data)
+        if #available(iOS 11.0, *) {
+            let schemeTask = taskMap[dataTask] as! WKURLSchemeTask
+            schemeTask.didReceive(data)
+        }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
-            taskMap[task as! URLSessionDataTask]!.didFailWithError(error)
-        } else {
-            taskMap[task as! URLSessionDataTask]!.didFinish()
+        if #available(iOS 11.0, *) {
+            let schemeTask = taskMap[task as! URLSessionDataTask] as! WKURLSchemeTask
+            if let error = error {
+                schemeTask.didFailWithError(error)
+            } else {
+                schemeTask.didFinish()
+            }
         }
     }
-}
-
-extension ContentViewModel: URLSessionDataDelegate {
-
 }
 
 // MARK: - Misc
