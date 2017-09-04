@@ -16,13 +16,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     let blurBackgroundView = UIVisualEffectView(effect:nil)
 
-    let titleLabel = UILabel(frame: CGRect.zero)
+    let titleLabel = UILabel(frame: .zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
-    let webView = WKWebView(frame: CGRect.zero, configuration: WKWebViewConfiguration())
+    let webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
     let progressView = UIProgressView(progressViewStyle: .bar)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
-    let statusBarSeparatorView = UIView(frame: CGRect.zero)
-    let toolBar = UIToolbar(frame: CGRect.zero)
+    let statusBarSeparatorView = UIView(frame: .zero)
+    let toolBar = UIToolbar(frame: .zero)
     var backButtonItem: UIBarButtonItem?
     var forwardButtonItem: UIBarButtonItem?
     var refreshButtonItem: UIBarButtonItem?
@@ -33,7 +33,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     // MARK: - Life Cycle
     init(URL: URL) {
         self.URLToOpen = URL
+
         super.init(nibName: nil, bundle: nil)
+
         modalPresentationStyle = .overFullScreen
 
         view.backgroundColor = nil
@@ -63,14 +65,18 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         updateBarItems()
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationWillEnterForeground),
-                                               name: .UIApplicationWillEnterForeground,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: .UIApplicationWillEnterForeground,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -157,16 +163,20 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
         if #available(iOS 11.0, *) {
             // Top part of the workaround is no more necessary since iOS 11.
-            webView.scrollView.contentInset = UIEdgeInsets(top: 0.0,
-                                                           left: 0.0,
-                                                           bottom: webView.frame.maxY - toolBar.frame.minY,
-                                                           right: 0.0)
+            webView.scrollView.contentInset = UIEdgeInsets(
+                top: 0.0,
+                left: 0.0,
+                bottom: webView.frame.maxY - toolBar.frame.minY,
+                right: 0.0
+            )
             webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
         } else {
-            webView.scrollView.contentInset = UIEdgeInsets(top: statusBarSeparatorView.frame.maxY - webView.frame.minY,
-                                                           left: 0.0,
-                                                           bottom: webView.frame.maxY - toolBar.frame.minY,
-                                                           right: 0.0)
+            webView.scrollView.contentInset = UIEdgeInsets(
+                top: statusBarSeparatorView.frame.maxY - webView.frame.minY,
+                left: 0.0,
+                bottom: webView.frame.maxY - toolBar.frame.minY,
+                right: 0.0
+            )
             webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
         }
     }
@@ -255,7 +265,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     }
 
     // MARK: - Helper
-    fileprivate func updateBarItems() {
+    private func updateBarItems() {
         guard
             let back = self.backButtonItem,
             let forward = self.forwardButtonItem,
@@ -270,7 +280,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         toolBar.setItems([close, flexSpace, back, flexSpace, refreshOrStopItem, flexSpace, forward, flexSpace, safari], animated: true)
     }
 
-    fileprivate func currentValidURL() -> URL {
+    private func currentValidURL() -> URL {
         if let URL = webView.url, URL.absoluteString != "" {
             return URL
         } else {
@@ -278,7 +288,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
     }
 
-    fileprivate func tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
+    private func tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
         guard let title = webView.title, title != "" else {
             webView.load(URLRequest(url: currentValidURL()))
             return
@@ -299,7 +309,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         } else {
             let lightBlurEffect = UIBlurEffect(style: .light)
             blurBackgroundView.effect = lightBlurEffect
-            vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .light))
+            vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: lightBlurEffect)
             statusBarOverlayView.effect = UIBlurEffect(style: .extraLight)
             toolBar.barStyle = .default
         }

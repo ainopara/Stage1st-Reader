@@ -11,10 +11,10 @@ import CocoaLumberjack
 
 @objcMembers
 public final class ColorManager: NSObject {
-    fileprivate var palette: NSDictionary = NSDictionary()
-    fileprivate var colorMap: NSDictionary = NSDictionary()
-    fileprivate let fallbackColor = UIColor.black
-    fileprivate let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
+    private var palette: NSDictionary = NSDictionary()
+    private var colorMap: NSDictionary = NSDictionary()
+    private let fallbackColor = UIColor.black
+    private let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
     public static let shared = ColorManager()
 

@@ -263,6 +263,7 @@ extension ContentViewModel: UserViewModelMaker {
 // MARK: - WKURLSchemeHandler
 @available(iOS 11.0, *)
 extension ContentViewModel: WKURLSchemeHandler {
+    @available(iOS 11.0, *)
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
         DDLogDebug("start \(urlSchemeTask.request)")
         var request = urlSchemeTask.request
@@ -274,6 +275,7 @@ extension ContentViewModel: WKURLSchemeHandler {
         AppEnvironment.current.urlSessionManager.start(schemeTask: urlSchemeTask, with: request)
     }
 
+    @available(iOS 11.0, *)
     func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
         DDLogDebug("stop \(urlSchemeTask.request)")
         AppEnvironment.current.urlSessionManager.stop(schemeTask: urlSchemeTask)
