@@ -26,7 +26,7 @@ class ContentViewModel: NSObject, PageRenderer {
     let replyCount: DynamicProperty<NSNumber>
     let favorite: DynamicProperty<NSNumber>
 
-    var cachedViewPosition: [UInt: CGFloat] = [:]
+    var cachedViewPosition = [UInt: CGFloat]()
 
     init(topic: S1Topic, dataCenter: DataCenter) {
         self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
@@ -82,6 +82,7 @@ class ContentViewModel: NSObject, PageRenderer {
     }
 }
 
+// MARK: - Network
 extension ContentViewModel {
     func currentContentPage(completion: @escaping (Result<String>) -> Void) {
         dataCenter.floors(for: topic, with: Int(currentPage.value)) { [weak self] result in

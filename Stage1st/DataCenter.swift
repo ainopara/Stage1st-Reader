@@ -30,8 +30,9 @@ class DataCenter: NSObject {
 
     var formHash: String?
 
-    fileprivate var topicListCache = [String: [S1Topic]]()
-    fileprivate var topicListCachePageNumber = [String: Int]()
+    private var topicListCache = [String: [S1Topic]]()
+    private var topicListCachePageNumber = [String: Int]()
+    private var workingRequests = [Request]()
 
     init(apiManager: DiscuzClient,
          networkManager: S1NetworkManager,
@@ -223,7 +224,8 @@ extension DataCenter {
         if let cachedFloors = cacheDatabaseManager.floors(in: topic.topicID.intValue, page: page), cachedFloors.count > 0 {
             completion(.success((cachedFloors, true)))
         } else {
-            requestFloorsFromServer(topic, page, completion)
+            let request = requestFloorsFromServer(topic, page, completion)
+            workingRequests.append(request)
         }
     }
 
@@ -409,6 +411,9 @@ extension DataCenter {
 extension DataCenter {
     func cancelRequest() {
         networkManager.cancelRequest()
+        while let request = workingRequests.popLast() {
+            request.cancel()
+        }
     }
 }
 
