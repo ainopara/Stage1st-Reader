@@ -30,6 +30,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var safariButtonItem: UIBarButtonItem?
     var closeButtonItem: UIBarButtonItem?
 
+    private var observations = [NSKeyValueObservation]()
+
     // MARK: - Life Cycle
     init(URL: URL) {
         self.URLToOpen = URL
@@ -46,7 +48,24 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         webView.isOpaque = false
         webView.navigationDelegate = self
         webView.uiDelegate = self
-        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
+        let progressObserver = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] (webView, change) in
+            guard let strongSelf = self else { return }
+            guard let newProgress = change.newValue else { return }
+            DDLogVerbose("[WebVC] Loading progress: \(newProgress)")
+
+            if newProgress == 1.0 {
+                UIView.animate(withDuration: 0.3, animations: {
+                    strongSelf.progressView.setProgress(Float(newProgress), animated: false)
+                    strongSelf.progressView.alpha = 0.0
+                }, completion: { _ in
+                    strongSelf.progressView.setProgress(0.0, animated: false)
+                })
+            } else {
+                strongSelf.progressView.setProgress(Float(newProgress), animated: true)
+                strongSelf.progressView.alpha = 1.0
+            }
+        }
+        observations.append(progressObserver)
 
         statusBarSeparatorView.backgroundColor = UIColor.black
 
@@ -140,7 +159,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-        webView.removeObserver(self, forKeyPath: "estimatedProgress", context: nil)
+        for observation in observations {
+            observation.invalidate()
+        }
         webView.stopLoading()
     }
 
@@ -244,24 +265,6 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             webView.load(navigationAction.request)
         }
         return nil
-    }
-
-    // MARK: KVO
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard let newProgress = change?[NSKeyValueChangeKey.newKey] as? Float else { return }
-        DDLogVerbose("[WebVC] Loading progress: \(newProgress)")
-
-        if newProgress == 1.0 {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.progressView.setProgress(newProgress, animated: false)
-                self.progressView.alpha = 0.0
-            }, completion: { _ in
-                self.progressView.setProgress(0.0, animated: false)
-            })
-        } else {
-            self.progressView.setProgress(newProgress, animated: true)
-            self.progressView.alpha = 1.0
-        }
     }
 
     // MARK: - Helper

@@ -677,9 +677,11 @@ extension S1ContentViewController {
         }
 
         DDLogDebug("[ContentVC] Action for \(floor)")
-        let floorActionController = UIAlertController(title: nil,
-                                                      message: nil,
-                                                      preferredStyle: .actionSheet)
+        let floorActionController = UIAlertController(
+            title: nil,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
 
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
