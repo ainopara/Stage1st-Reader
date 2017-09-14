@@ -39,10 +39,18 @@ extension S1TopicListViewController {
         })
 
         view.addSubview(scrollTabBar)
-        scrollTabBar.snp.makeConstraints { (make) in
-            make.top.equalTo(tableView.snp.bottom)
-            make.leading.trailing.equalTo(view)
-            make.bottom.equalTo(view.snp.bottom)
+        if #available(iOS 11.0, *) {
+            scrollTabBar.snp.makeConstraints { (make) in
+                make.top.equalTo(tableView.snp.bottom)
+                make.leading.trailing.equalTo(view)
+                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+            }
+        } else {
+            scrollTabBar.snp.makeConstraints { (make) in
+                make.top.equalTo(tableView.snp.bottom)
+                make.leading.trailing.equalTo(view)
+                make.bottom.equalTo(view.snp.bottom)
+            }
         }
 
         view.addSubview(refreshHUD)

@@ -145,9 +145,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             make.height.equalTo(1.0 / UIScreen.main.scale)
         }
 
-        toolBar.snp.makeConstraints { (make) in
-            make.bottom.equalTo(view.snp.bottom)
-            make.leading.trailing.equalTo(view)
+        if #available(iOS 11.0, *) {
+            toolBar.snp.makeConstraints { (make) in
+                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+                make.leading.trailing.equalTo(view)
+            }
+        } else {
+            toolBar.snp.makeConstraints { (make) in
+                make.bottom.equalTo(view.snp.bottom)
+                make.leading.trailing.equalTo(view)
+            }
         }
 
         progressView.snp.makeConstraints { (make) in
@@ -187,7 +194,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             webView.scrollView.contentInset = UIEdgeInsets(
                 top: 0.0,
                 left: 0.0,
-                bottom: webView.frame.maxY - toolBar.frame.minY,
+                bottom: toolBar.frame.height, // It seems in iOS 11.0, WKWebView will automatically add home indicator's height, so we should not include that parts in contentInset.
                 right: 0.0
             )
             webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
