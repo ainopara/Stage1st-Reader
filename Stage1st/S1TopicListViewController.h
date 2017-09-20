@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ODRefreshControl *refreshControl;
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UIView *tableHeaderView;
 @property (nonatomic, strong) S1TabBar *scrollTabBar;
 @property (nonatomic, strong) LoadingFooterView *footerView;
 

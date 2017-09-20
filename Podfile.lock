@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.4)
-  - AcknowList (1.2.1)
+  - AcknowList (1.4)
   - ActionSheetPicker-3.0 (2.2.0)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
@@ -48,7 +48,7 @@ PODS:
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
-  - Masonry (1.0.2)
+  - Masonry (1.1.0)
   - QuickTableViewController (0.5.3)
   - Reachability (3.2)
   - ReactiveCocoa (6.0.1):
@@ -56,8 +56,8 @@ PODS:
   - ReactiveSwift (2.0.1):
     - Result (~> 3.2)
   - Result (3.2.3)
-  - Reveal-SDK (10)
-  - SnapKit (3.2.0)
+  - Reveal-SDK (11)
+  - SnapKit (4.0.0)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
   - YapDatabase (3.0.1):
@@ -184,7 +184,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
-  AcknowList: 6089be555e4dcb5066de3071270ac7ad9df9ee55
+  AcknowList: 1fae3fa62f256ddd1001adf20ba5c52743515ac7
   ActionSheetPicker-3.0: d11a4c12c6aaf704b8a3f56d179198c99f3e41e6
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
@@ -199,14 +199,14 @@ SPEC CHECKSUMS:
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: bd770edd8ce49bc7308501e4871e58a02d137be3
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
-  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: fa0791b3f8d4a9b880041fce1252d71505b03f5d
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: cf6595131c832c468fe3f84a2d7f74ed68eb3058
   ReactiveSwift: 60a29ff35988a964fd2bb759755cb6594de523fc
   Result: 128640a6347e8d2ae48b142556739a2d13f90ce6
-  Reveal-SDK: 7869ddf1f902cabbb07a1f0dd06bd25861a126f7
-  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
+  Reveal-SDK: 7fa13d04bb55db61ff2342a990cf731d5159361d
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0

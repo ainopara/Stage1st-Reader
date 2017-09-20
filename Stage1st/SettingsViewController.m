@@ -194,9 +194,7 @@
         [self presentViewController:safariViewController animated:YES completion:NULL];
 #endif
     } else if (indexPath.section == 2 && indexPath.row == 3) {
-        NSString *acknowledgmentPlistFilePath = [[NSBundle mainBundle] pathForResource:@"Pods-Stage1st-acknowledgements" ofType:@"plist"];
-        AcknowListViewController *acknowledgementViewController = [[AcknowListViewController alloc] initWithAcknowledgementsPlistPath:acknowledgmentPlistFilePath];
-        [self.navigationController pushViewController:acknowledgementViewController animated:YES];
+        [self.navigationController pushViewController:[self acknowledgementListViewController] animated:YES];
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

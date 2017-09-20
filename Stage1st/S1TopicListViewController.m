@@ -578,7 +578,12 @@ static NSString * const cellIdentifier = @"TopicCell";
             _tableView.backgroundView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.background"];
         }
         _tableView.hidden = YES;
-        _tableView.tableHeaderView = self.searchBar;
+        if (@available(iOS 11.0, *)) {
+            _tableView.tableHeaderView = self.tableHeaderView;
+        } else {
+            _tableView.tableHeaderView = self.searchBar;
+        }
+
         if (SYSTEM_VERSION_LESS_THAN(@"10.0")) {
             [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
         }
@@ -593,9 +598,30 @@ static NSString * const cellIdentifier = @"TopicCell";
     return _tableView;
 }
 
+- (UIView *)tableHeaderView {
+    if (_tableHeaderView == nil) {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44.0)];
+        headerView.clipsToBounds = YES;
+        [headerView addSubview:self.searchBar];
+        self.searchBar.translatesAutoresizingMaskIntoConstraints = NO;
+        [headerView.leadingAnchor constraintEqualToAnchor:self.searchBar.leadingAnchor].active = YES;
+        [headerView.trailingAnchor constraintEqualToAnchor:self.searchBar.trailingAnchor].active = YES;
+        [headerView.topAnchor constraintEqualToAnchor:self.searchBar.topAnchor].active = YES;
+        [headerView.bottomAnchor constraintEqualToAnchor:self.searchBar.bottomAnchor constant:-6.0].active = YES;
+        _tableHeaderView = headerView;
+    }
+
+    return _tableHeaderView;
+}
+
 - (UISearchBar *)searchBar {
     if (!_searchBar) {
-        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _SEARCH_BAR_HEIGHT)];
+        CGFloat height = 40.0;
+        if (@available(iOS 11.0, *)) {
+            height = 50.0;
+        }
+
+        _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, height)];
         _searchBar.delegate = self;
         if ([[ColorManager shared] isDarkTheme]) {
             _searchBar.searchBarStyle = UISearchBarStyleMinimal;

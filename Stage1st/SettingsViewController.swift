@@ -6,6 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 import UIKit
+import AcknowList
 
 extension SettingsViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -21,5 +22,12 @@ extension SettingsViewController {
             return "?"
         }
         return "\(shortVersionString) (\(versionString))"
+    }
+}
+
+extension SettingsViewController {
+    @objc func acknowledgementListViewController() -> AcknowListViewController {
+        let acknowledgmentPlistFilePath = Bundle.main.path(forResource: "Pods-Stage1st-acknowledgements", ofType: "plist")
+        return AcknowListViewController(acknowledgementsPlistPath: acknowledgmentPlistFilePath)
     }
 }
