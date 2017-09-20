@@ -196,7 +196,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             strongSelf.viewModel.topics = topicList;
             [strongSelf.tableView reloadData];
             if (strongSelf.viewModel.topics.count > 0) {
-                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:NO];
             }
             [strongSelf.scrollTabBar deselectAll];
             strongSelf.scrollTabBar.enabled = YES;
@@ -270,11 +270,11 @@ static NSString * const cellIdentifier = @"TopicCell";
             if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
                 [strongSelf.tableView setContentOffset:[strongSelf.cachedContentOffset[key] CGPointValue] animated:NO];
             } else {
-                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:NO];
             }
             //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
             if (strongSelf.tableView.contentOffset.y < 0) {
-                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             [strongSelf.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
         } else {
