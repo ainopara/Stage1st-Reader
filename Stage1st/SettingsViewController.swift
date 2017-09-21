@@ -7,6 +7,8 @@
 //
 import UIKit
 import AcknowList
+import WebKit
+import CocoaLumberjack
 
 extension SettingsViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -29,5 +31,14 @@ extension SettingsViewController {
     @objc func acknowledgementListViewController() -> AcknowListViewController {
         let acknowledgmentPlistFilePath = Bundle.main.path(forResource: "Pods-Stage1st-acknowledgements", ofType: "plist")
         return AcknowListViewController(acknowledgementsPlistPath: acknowledgmentPlistFilePath)
+    }
+
+    @objc func clearWebKitCache() {
+        let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+
+        WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date.distantPast) {
+            DDLogInfo("WebKit disk cache cleaned.")
+            UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
+        }
     }
 }

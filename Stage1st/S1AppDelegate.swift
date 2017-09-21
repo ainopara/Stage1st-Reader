@@ -134,7 +134,9 @@ extension S1AppDelegate {
 
         updateStage1stDomainIfNecessary()
 
-        let totalCacheSize = URLCache.shared.currentDiskUsage + ImageDownloader.defaultURLCache().currentDiskUsage
+        URLCache.shared.removeAllCachedResponses()
+
+        let totalCacheSize = ImageDownloader.defaultURLCache().currentDiskUsage
         let prettyPrintedCacheSize = Double(totalCacheSize / (102 * 1024)) / 10.0
         DDLogInfo("Total Cache Size: \(prettyPrintedCacheSize) MiB")
 

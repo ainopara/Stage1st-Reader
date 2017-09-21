@@ -14,7 +14,7 @@
 #import <SafariServices/SafariServices.h>
 #import <AcknowList/AcknowList-Swift.h>
 
-@interface SettingsViewController ()
+@interface SettingsViewController ()<UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
 @property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
@@ -31,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *imageCacheCell;
 
 @property (assign, nonatomic) CGFloat offset;
 
@@ -46,7 +47,7 @@
     
     if (IS_IPAD) {
         //UIDropShadowView has a fixed corner radius.
-        self.navigationController.view.layer.cornerRadius  = 5.0;
+        self.navigationController.view.layer.cornerRadius = 5.0;
         self.navigationController.view.layer.masksToBounds = YES;
         self.navigationController.view.superview.backgroundColor = [UIColor clearColor];
     }
@@ -76,14 +77,30 @@
     self.keepHistoryCell.detailTextLabel.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
+
+    NSUInteger totalCacheSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+    double prettyPrintedCacheSize = (totalCacheSize / (102 * 1024)) / 10.0;
+    self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
+
+    // Pull to dismiss
     self.offset = 0;
     self.tableView.delegate = self;
     [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitStateChanged:) name:YapDatabaseCloudKitStateChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveLoginStatusChangeNotification:) name:@"DZLoginStatusDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceivePaletteChangeNotification:)
+                                                 name:@"APPaletteDidChangeNotification"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cloudKitStateChanged:)
+                                                 name:YapDatabaseCloudKitStateChangeNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveLoginStatusChangeNotification:)
+                                                 name:@"DZLoginStatusDidChangeNotification"
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -143,14 +160,13 @@
     return [super preferredInterfaceOrientationForPresentation];
 }
 
-#pragma mark - Navigation
+#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 7) {
-        if (IS_IPAD) {
-            return 0;
-        }
+    if (IS_IPAD && indexPath.section == 0 && indexPath.row == 7) {
+        return 0.0;
     }
+
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
@@ -172,7 +188,16 @@
         [self.navigationController pushViewController:controller animated:YES];
     } else if (indexPath.section == 0 && indexPath.row == 4) {
         NSString *selectedKey = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
-        NSArray *keys = @[NSLocalizedString(@"SettingsViewController.HistoryLimit.3days", @"3 days"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1week", @"1 week"), NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks", @"2 weeks"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1month", @"1 month"), NSLocalizedString(@"SettingsViewController.HistoryLimit.3months", @"3 months"), NSLocalizedString(@"SettingsViewController.HistoryLimit.6months", @"6 months"), NSLocalizedString(@"SettingsViewController.HistoryLimit.1year", @"1 year"), NSLocalizedString(@"SettingsViewController.HistoryLimit.Forever", @"Forever")];
+        NSArray *keys = @[
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.3days", @"3 days"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.1week", @"1 week"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks", @"2 weeks"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.1month", @"1 month"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.3months", @"3 months"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.6months", @"6 months"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.1year", @"1 year"),
+            NSLocalizedString(@"SettingsViewController.HistoryLimit.Forever", @"Forever")
+        ];
         
         GSSingleSelectionTableViewController *controller = [[GSSingleSelectionTableViewController alloc] initWithKeys:keys andSelectedKey:selectedKey];
         controller.title = NSLocalizedString(@"SettingsViewController.HistoryLimit", @"HistoryLimit");
@@ -184,6 +209,12 @@
         LoginViewController *viewController = [[LoginViewController alloc] initWithNibName:nil bundle:nil];
         [self presentViewController:viewController animated:YES completion:NULL];
     } else if (indexPath.section == 0 && indexPath.row == 9) {
+        [[NSURLCache sharedURLCache] removeAllCachedResponses];
+        [self clearWebKitCache];
+        NSUInteger totalCacheSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+        double prettyPrintedCacheSize = (totalCacheSize / (102 * 1024)) / 10.0;
+        self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
+    } else if (indexPath.section == 0 && indexPath.row == 10) {
         [self.navigationController pushViewController:[[AdvancedSettingsViewController alloc] initWithNibName:nil bundle:nil] animated:YES];
     } else if (indexPath.section == 2 && indexPath.row == 2) {
 #ifdef DEBUG
