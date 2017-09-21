@@ -102,7 +102,7 @@ extension PageRenderer {
                 let pattern0 = brPattern0 + "<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*?</a>"
                 let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next|s1next)[^>]*>[^<]*?</a>[^<]*"
                 let pattern2 = brPattern1 + "发自我的(iPhone|iPad) via <a href[^>]*saralin[^>]*>[^<]*?</a>"
-                let pattern3 = brPattern1 + "(\u{A0}| |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from) ?[^<>]*"
+                let pattern3 = brPattern1 + "(\u{A0}| |&nbsp;)*(—+|-+) ?(来自|发送自|发自) ?[^<>]*"
                 S1Global.regexReplace(mutableString, matchPattern: pattern0, withTemplate: "")
                 S1Global.regexReplace(mutableString, matchPattern: pattern1, withTemplate: "")
                 S1Global.regexReplace(mutableString, matchPattern: pattern2, withTemplate: "")
