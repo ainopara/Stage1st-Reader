@@ -18,7 +18,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     let titleLabel = UILabel(frame: .zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
-    let webView = WKWebView(frame: .zero, configuration: WebViewController.sharedWKWebViewConfiguration())
+    let webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
     let progressView = UIProgressView(progressViewStyle: .bar)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: .zero)
@@ -335,16 +335,5 @@ extension WebViewController {
             statusBarOverlayView.effect = UIBlurEffect(style: .extraLight)
             toolBar.barStyle = .default
         }
-    }
-}
-
-extension WebViewController {
-    static func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
-        let configuration = WKWebViewConfiguration()
-        if #available(iOS 11.0, *) {
-            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "image")
-            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "images")
-        }
-        return configuration
     }
 }
