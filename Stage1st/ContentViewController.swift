@@ -198,7 +198,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
-
         self.basicToolBarItems = [
             backwardItem,
             fixItem,
@@ -923,8 +922,8 @@ extension S1ContentViewController {
         userContentController.add(GeneralScriptMessageHandler(delegate: self), name: "stage1st")
         configuration.userContentController = userContentController
         if #available(iOS 11.0, *) {
-            configuration.setURLSchemeHandler(self.viewModel, forURLScheme: "image")
-            configuration.setURLSchemeHandler(self.viewModel, forURLScheme: "images")
+            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "image")
+            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "images")
         }
         return configuration
     }

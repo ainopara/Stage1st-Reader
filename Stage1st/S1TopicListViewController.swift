@@ -192,7 +192,7 @@ extension S1TopicListViewController: UITableViewDelegate {
                 guard let strongSelf = self else { return }
 
                 // TODO: Show ReloadingFooterView if failed.
-                DDLogInfo("\(result)")
+                DDLogInfo("[TopicListVC] load next page \(result)")
                 tableView.tableFooterView = nil
                 tableView.reloadData()
                 strongSelf.loadingMore = false

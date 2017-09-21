@@ -51,23 +51,3 @@ extension QuoteFloorViewModel: ContentViewModelMaker {
         return ContentViewModel(topic: topic, dataCenter: dataCenter)
     }
 }
-
-// MARK: - WKURLSchemeHandler
-@available(iOS 11.0, *)
-extension QuoteFloorViewModel: WKURLSchemeHandler {
-    func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
-        DDLogDebug("start \(urlSchemeTask.request)")
-        var request = urlSchemeTask.request
-        guard let urlString = request.url?.absoluteString else {
-            return
-        }
-        request.url = URL(string: urlString.s1_replace(pattern: "^image", with: "http"))
-
-        AppEnvironment.current.urlSessionManager.start(schemeTask: urlSchemeTask, with: request)
-    }
-
-    func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
-        DDLogDebug("stop \(urlSchemeTask.request)")
-        AppEnvironment.current.urlSessionManager.stop(schemeTask: urlSchemeTask)
-    }
-}

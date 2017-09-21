@@ -7,16 +7,17 @@
 //
 
 import WebKit
+import CocoaLumberjack
 
-class URLSessionManager: NSObject, URLSessionDataDelegate {
-    static let shared = URLSessionManager()
+class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
+    static let shared = WebKitImageDownloader()
     lazy var session = {
         URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
     }()
 
     var taskMap = [URLSessionDataTask: Any]()
 
-    override init() {
+    private override init() {
         super.init()
     }
 
@@ -29,7 +30,10 @@ class URLSessionManager: NSObject, URLSessionDataDelegate {
 
     @available(iOS 11.0, *)
     func stop(schemeTask: WKURLSchemeTask) {
-        // TODO:
+        for (theDataTask, theSchemeTask) in taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
+            theDataTask.cancel()
+            break
+        }
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
@@ -56,5 +60,32 @@ class URLSessionManager: NSObject, URLSessionDataDelegate {
                 schemeTask.didFinish()
             }
         }
+    }
+}
+
+enum WebKitImageDownloaderError: Error {
+    case invalidURL
+}
+
+// MARK: - WKURLSchemeHandler
+@available(iOS 11.0, *)
+extension WebKitImageDownloader: WKURLSchemeHandler {
+    @available(iOS 11.0, *)
+    func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
+        DDLogDebug("start \(urlSchemeTask.request)")
+        var request = urlSchemeTask.request
+        guard let urlString = request.url?.absoluteString else {
+            urlSchemeTask.didFailWithError(WebKitImageDownloaderError.invalidURL)
+            return
+        }
+        request.url = URL(string: urlString.s1_replace(pattern: "^image", with: "http"))
+
+        start(schemeTask: urlSchemeTask, with: request)
+    }
+
+    @available(iOS 11.0, *)
+    func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
+        DDLogDebug("stop \(urlSchemeTask.request)")
+        stop(schemeTask: urlSchemeTask)
     }
 }

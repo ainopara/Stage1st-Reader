@@ -58,7 +58,7 @@
 		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0C1F403788000AE19E /* TopicListCell.swift */; };
 		86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */; };
-		867A7BD21F4EE7F3001A7C00 /* URLSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867A7BD11F4EE7F3001A7C00 /* URLSessionManager.swift */; };
+		867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */; };
 		867C7F5C1899420D00DF55E8 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F511899420D00DF55E8 /* DEComposeTextView.m */; };
 		867C7F5F1899420D00DF55E8 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F571899420D00DF55E8 /* REComposeSheetView.m */; };
 		867C7F611899420D00DF55E8 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C7F5A1899420D00DF55E8 /* REComposeViewController.m */; };
@@ -203,7 +203,7 @@
 		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewModel.swift; path = Stage1st/UserViewModel.swift; sourceTree = "<group>"; };
 		86734B0C1F403788000AE19E /* TopicListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopicListCell.swift; path = Stage1st/TopicListCell.swift; sourceTree = "<group>"; };
 		86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopicListHeaderView.swift; path = Stage1st/TopicListHeaderView.swift; sourceTree = "<group>"; };
-		867A7BD11F4EE7F3001A7C00 /* URLSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLSessionManager.swift; path = Stage1st/URLSessionManager.swift; sourceTree = "<group>"; };
+		867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebKitImageDownloader.swift; path = Stage1st/WebKitImageDownloader.swift; sourceTree = "<group>"; };
 		867C7F501899420D00DF55E8 /* DEComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DEComposeTextView.h; sourceTree = "<group>"; };
 		867C7F511899420D00DF55E8 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		867C7F561899420D00DF55E8 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
@@ -490,7 +490,7 @@
 				860F11C61E4EC21E00875AB9 /* DataCenter.swift */,
 				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
-				867A7BD11F4EE7F3001A7C00 /* URLSessionManager.swift */,
+				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1069,7 +1069,7 @@
 				8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */,
 				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
 				C095879F16CB61FC007E0119 /* GSSection.m in Sources */,
-				867A7BD21F4EE7F3001A7C00 /* URLSessionManager.swift in Sources */,
+				867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */,
 				C09587A016CB61FC007E0119 /* GSSingleSelectionTableViewController.m in Sources */,
 				869CAF111A18831D00EB2BF4 /* NavigationControllerDelegate.m in Sources */,
 				86319B411CA69EEB004F7586 /* Floor.swift in Sources */,

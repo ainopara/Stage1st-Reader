@@ -15,7 +15,7 @@ class Environment: NSObject {
     let cookieStorage: HTTPCookieStorage
     let apiService: DiscuzClient
     let networkManager: S1NetworkManager
-    let urlSessionManager: URLSessionManager
+    let webKitImageDownloader: WebKitImageDownloader
     let databaseManager: DatabaseManager
     let cacheDatabaseManager: CacheDatabaseManager
 
@@ -38,7 +38,7 @@ class Environment: NSObject {
 
         apiService = DiscuzClient(baseURL: serverAddress.api)
         networkManager = S1NetworkManager(baseURL: serverAddress.page)
-        urlSessionManager = URLSessionManager()
+        webKitImageDownloader = WebKitImageDownloader.shared
 
         databaseManager = DatabaseManager.sharedInstance()
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)

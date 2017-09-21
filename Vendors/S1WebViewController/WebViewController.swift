@@ -18,7 +18,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
     let titleLabel = UILabel(frame: .zero)
     let vibrancyEffectView = UIVisualEffectView(effect:nil)
-    let webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+    let webView = WKWebView(frame: .zero, configuration: WebViewController.sharedWKWebViewConfiguration())
     let progressView = UIProgressView(progressViewStyle: .bar)
     let statusBarOverlayView = UIVisualEffectView(effect:nil)
     let statusBarSeparatorView = UIView(frame: .zero)
@@ -208,8 +208,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
         }
     }
+}
 
-    // MARK: - Actions
+// MARK: - Actions
+
+extension WebViewController {
     @objc func _dismiss() {
         self.dismiss(animated: true, completion: nil)
     }
@@ -239,8 +242,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             DDLogError("[WebVC] failed to open \(URLToOpenInSafari) in safari")
         }
     }
+}
 
-    // MARK: - WKWebViewNavigationDelegate
+// MARK: - WKWebViewNavigationDelegate
+
+extension WebViewController {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         DDLogDebug("[WebVC] didCommit")
         updateBarItems()
@@ -273,8 +279,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
         return nil
     }
+}
 
-    // MARK: - Helper
+// MARK: - Helper
+
+extension WebViewController {
     private func updateBarItems() {
         guard
             let back = self.backButtonItem,
@@ -304,8 +313,11 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             return
         }
     }
+}
 
-    // MARK: - Notification
+// MARK: - Notification
+
+extension WebViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         statusBarSeparatorView.backgroundColor = ColorManager.shared.colorForKey("default.text.tint")
         progressView.tintColor = ColorManager.shared.colorForKey("default.text.tint")
@@ -323,5 +335,16 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             statusBarOverlayView.effect = UIBlurEffect(style: .extraLight)
             toolBar.barStyle = .default
         }
+    }
+}
+
+extension WebViewController {
+    static func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
+        let configuration = WKWebViewConfiguration()
+        if #available(iOS 11.0, *) {
+            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "image")
+            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "images")
+        }
+        return configuration
     }
 }
