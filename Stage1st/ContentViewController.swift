@@ -44,6 +44,9 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
     }()
 
+    var basicToolBarItems = [UIBarButtonItem]()
+    var optionalToolBarItems = [UIBarButtonItem]()
+
     let titleLabel = UILabel(frame: .zero)
     let topDecorateLine = UIView(frame: .zero)
     let bottomDecorateLine = UIView(frame: .zero)
@@ -195,23 +198,21 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
-        if !shouldPresentingFavoriteButtonOnToolBar() {
-            favoriteItem.customView?.bounds = .zero
-            favoriteItem.customView?.isHidden = true
-            fixItem2.width = 0.0
-        }
 
-        toolBar.setItems([
+        self.basicToolBarItems = [
             backwardItem,
             fixItem,
             forwardItem,
             flexItem,
             labelItem,
-            flexItem,
+            flexItem
+        ]
+        self.optionalToolBarItems = [
             favoriteItem,
-            fixItem2,
-            actionBarButtonItem,
-        ], animated: false)
+            fixItem2
+        ]
+
+        toolBar.setItems(basicToolBarItems + [actionBarButtonItem], animated: false)
 
         // Binding
         viewModel.currentPage.producer
@@ -1146,18 +1147,10 @@ extension S1ContentViewController {
         view.frame = frame
 
         // Update Toolbar Layout
-        if let items = toolBar.items {
-            let favoriteItem = items[6]
-            let fixItem2 = items[7]
-            if shouldPresentingFavoriteButtonOnToolBar() {
-                favoriteItem.customView?.bounds = CGRect(x: 0.0, y: 0.0, width: 30.0, height: 40.0)
-                favoriteItem.customView?.isHidden = false
-                fixItem2.width = 48.0
-            } else {
-                favoriteItem.customView?.bounds = .zero
-                favoriteItem.customView?.isHidden = true
-                fixItem2.width = 0.0
-            }
+        if shouldPresentingFavoriteButtonOnToolBar() {
+            toolBar.setItems(basicToolBarItems + optionalToolBarItems + [actionBarButtonItem], animated: false)
+        } else {
+            toolBar.setItems(basicToolBarItems + [actionBarButtonItem], animated: false)
         }
     }
 
