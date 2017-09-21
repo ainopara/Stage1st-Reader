@@ -33,23 +33,27 @@ class ServerAddress: NSObject, NSCoding {
     let lastUpdateDate: Date
 
     static let `default` = ServerAddress(
-        main: "http://bbs.saraba1st.com/2b",
-        page: "http://bbs.saraba1st.com/2b",
-        api: "http://bbs.saraba1st.com/2b",
+        main: "https://bbs.saraba1st.com/2b",
+        page: "https://bbs.saraba1st.com/2b",
+        api: "https://bbs.saraba1st.com/2b",
         used: [
             "http://bbs.saraba1st.com",
             "http://www.stage1st.com",
             "http://bbs.stage1.cc",
-            "http://119.23.22.79"
+            "http://119.23.22.79",
+            "https://bbs.saraba1st.com",
         ],
-        lastUpdateDate: DateComponents(calendar: Calendar.current,
-                                       year: 2017,
-                                       month: 6,
-                                       day: 27,
-                                       hour: 8,
-                                       minute: 0,
-                                       second: 0,
-                                       nanosecond: 0).date ?? Date.distantPast)
+        lastUpdateDate: DateComponents(
+            calendar: Calendar.current,
+            year: 2017,
+            month: 9,
+            day: 21,
+            hour: 8,
+            minute: 0,
+            second: 0,
+            nanosecond: 0
+        ).date ?? Date.distantPast
+    )
 
     init(main: String, page: String, api: String, used: [String], lastUpdateDate: Date) {
         self.main = main
