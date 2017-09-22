@@ -20,7 +20,6 @@ private let topOffset: CGFloat = -80.0
 private let bottomOffset: CGFloat = 60.0
 private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"></head><body style=\" height: 1px; width: 1px\"></body></html>"
 
-// swiftlint:disable type_body_length
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: ContentViewModel
 
@@ -307,8 +306,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         DDLogInfo("[ContentVC] Dealloced")
     }
 }
-
-// swiftlint:enable type_body_length
 
 // MARK: - Life Cycle
 extension S1ContentViewController {
