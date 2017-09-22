@@ -9,6 +9,7 @@ import UIKit
 import AcknowList
 import WebKit
 import CocoaLumberjack
+import Files
 
 extension SettingsViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -40,5 +41,20 @@ extension SettingsViewController {
             DDLogInfo("WebKit disk cache cleaned.")
             UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
         }
+    }
+
+    @objc func totalCacheSize() -> UInt {
+        var totalCacheSize = UInt(URLCache.shared.currentDiskUsage)
+        if let libraryFolder = FileSystem().libraryFolder,
+           let webKitCacheFolder = try? libraryFolder.subfolder(named: "Caches").subfolder(named: "WebKit") {
+            for file in webKitCacheFolder.makeFileSequence(recursive: true, includeHidden: false) {
+                print(file.name)
+                if let fileAttributes = try? FileManager.default.attributesOfItem(atPath: file.path),
+                   let fileSize = fileAttributes[FileAttributeKey.size] as? UInt64 {
+                    totalCacheSize += UInt(fileSize)
+                }
+            }
+        }
+        return totalCacheSize
     }
 }

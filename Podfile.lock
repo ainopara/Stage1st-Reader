@@ -36,6 +36,7 @@ PODS:
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
+  - Files (1.9.0)
   - FMDB (2.7.2):
     - FMDB/standard (= 2.7.2)
   - FMDB/standard (2.7.2)
@@ -134,6 +135,7 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - FBSnapshotTestCase
+  - Files
   - FMDB
   - GRMustache.swift
   - GYHttpMock
@@ -193,6 +195,7 @@ SPEC CHECKSUMS:
   Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
   Fabric: 2fb5676bc811af011a04513451f463dac6803206
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  Files: e5c828e13b7728fa88a6c0e30f42f0ffb536e333
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
@@ -212,6 +215,6 @@ SPEC CHECKSUMS:
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: c0b75aeb545354c92c15a12b14a0ec39383da2db
+PODFILE CHECKSUM: 8341ec23ada5fad924a0d58d1cc4d4a54cd92ed8
 
 COCOAPODS: 1.3.1

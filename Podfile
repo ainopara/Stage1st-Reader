@@ -44,6 +44,7 @@ target "Stage1st" do
     pod '1PasswordExtension'
     pod 'AcknowList'
     pod 'QuickTableViewController', '~> 0.5.0'
+    pod 'Files'
 
     target "Stage1stTests" do
         inherit! :search_paths
@@ -57,9 +58,10 @@ post_install do |installer|
     installer.pods_project.targets.each do |target|
         require 'cocoapods-amimono/patcher'
         Amimono::Patcher.patch!(installer)
-
-        target.build_configurations.each do |config|
-            config.build_settings['SWIFT_VERSION'] = '3.0.1'
+        if target.name != 'SnapKit' && target.name != 'AcknowList' then
+            target.build_configurations.each do |config|
+                config.build_settings['SWIFT_VERSION'] = '3.0.1'
+            end
         end
     end
 end

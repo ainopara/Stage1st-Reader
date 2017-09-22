@@ -211,7 +211,7 @@
     } else if (indexPath.section == 0 && indexPath.row == 9) {
         [[NSURLCache sharedURLCache] removeAllCachedResponses];
         [self clearWebKitCache];
-        NSUInteger totalCacheSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+        NSUInteger totalCacheSize = [self totalCacheSize];
         double prettyPrintedCacheSize = (totalCacheSize / (102 * 1024)) / 10.0;
         self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
     } else if (indexPath.section == 0 && indexPath.row == 10) {
