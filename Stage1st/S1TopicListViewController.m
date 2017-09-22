@@ -264,6 +264,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
             strongSelf.currentKey = key;
+            strongSelf.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
             
             [strongSelf.tableView reloadData];
             if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
