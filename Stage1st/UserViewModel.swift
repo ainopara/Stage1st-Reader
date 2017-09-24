@@ -68,7 +68,7 @@ class UserViewModel {
     }
 
     var avatarURL: URL? {
-        return URL(string: "http://centeru.saraba1st.com/avatar.php?uid=\(user.value.ID)&size=middle")
+        return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(user.value.ID)&size=middle")
     }
 }
 
