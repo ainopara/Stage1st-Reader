@@ -205,6 +205,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             labelItem,
             flexItem
         ]
+
         self.optionalToolBarItems = [
             favoriteItem,
             fixItem2

@@ -30,6 +30,7 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.8.6):
     - Fabric (~> 1.6.3)
+  - DeviceKit (1.3.1)
   - Fabric (1.6.13)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
@@ -133,6 +134,7 @@ DEPENDENCIES:
   - CocoaLumberjack (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
   - CocoaLumberjack/Swift (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
   - Crashlytics
+  - DeviceKit
   - Fabric
   - FBSnapshotTestCase
   - Files
@@ -193,6 +195,7 @@ SPEC CHECKSUMS:
   AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
   CocoaLumberjack: 520616f8e72226ca2c729b43981b66bc483745ce
   Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
+  DeviceKit: 17ebbc8ab0c2c2070bbbfa13d256611ccf85fb75
   Fabric: 2fb5676bc811af011a04513451f463dac6803206
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Files: e5c828e13b7728fa88a6c0e30f42f0ffb536e333
@@ -215,6 +218,6 @@ SPEC CHECKSUMS:
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 8341ec23ada5fad924a0d58d1cc4d4a54cd92ed8
+PODFILE CHECKSUM: c815bf2869116e897fb03063829677c36b178130
 
 COCOAPODS: 1.3.1

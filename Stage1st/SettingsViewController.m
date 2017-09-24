@@ -78,9 +78,14 @@
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
+#ifdef DEBUG
     NSUInteger totalCacheSize = [[NSURLCache sharedURLCache] currentDiskUsage];
     double prettyPrintedCacheSize = (totalCacheSize / (102 * 1024)) / 10.0;
     self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
+#else
+    self.imageCacheCell.hidden = YES;
+#endif
+
 
     // Pull to dismiss
     self.offset = 0;
@@ -165,6 +170,12 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (IS_IPAD && indexPath.section == 0 && indexPath.row == 7) {
         return 0.0;
+    }
+
+    if (indexPath.section == 0 && indexPath.row == 9) {
+#ifndef DEBUG
+        return 0.0;
+#endif
     }
 
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
