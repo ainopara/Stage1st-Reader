@@ -31,6 +31,7 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
     @available(iOS 11.0, *)
     func stop(schemeTask: WKURLSchemeTask) {
         for (theDataTask, theSchemeTask) in taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
+            taskMap.removeValue(forKey: theDataTask)
             theDataTask.cancel()
             break
         }
@@ -38,27 +39,33 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if #available(iOS 11.0, *) {
-            let schemeTask = taskMap[dataTask] as! WKURLSchemeTask
-            schemeTask.didReceive(response)
+            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask {
+                schemeTask.didReceive(response)
+            }
+
         }
         completionHandler(.allow)
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if #available(iOS 11.0, *) {
-            let schemeTask = taskMap[dataTask] as! WKURLSchemeTask
-            schemeTask.didReceive(data)
+            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask {
+                schemeTask.didReceive(data)
+            }
         }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if #available(iOS 11.0, *) {
-            let schemeTask = taskMap[task as! URLSessionDataTask] as! WKURLSchemeTask
-            if let error = error {
-                schemeTask.didFailWithError(error)
-            } else {
-                schemeTask.didFinish()
+            if let schemeTask = taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
+                if let error = error {
+                    schemeTask.didFailWithError(error)
+                } else {
+                    schemeTask.didFinish()
+                }
             }
+
+            taskMap.removeValue(forKey: task as! URLSessionDataTask)
         }
     }
 }
