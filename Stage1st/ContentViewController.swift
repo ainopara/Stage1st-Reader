@@ -211,7 +211,11 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             fixItem2
         ]
 
-        toolBar.setItems(basicToolBarItems + [actionBarButtonItem], animated: false)
+        if shouldPresentingFavoriteButtonOnToolBar() {
+            toolBar.setItems(basicToolBarItems + optionalToolBarItems + [actionBarButtonItem], animated: false)
+        } else {
+            toolBar.setItems(basicToolBarItems + [actionBarButtonItem], animated: false)
+        }
 
         // Binding
         viewModel.currentPage.producer
