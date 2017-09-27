@@ -17,8 +17,6 @@
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
 		36D6D04F1E554F4A003098B8 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D04E1E554F4A003098B8 /* Stage1stLog.swift */; };
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
-		36D6D09D1E56B590003098B8 /* Fabric in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D6D09C1E56B590003098B8 /* Fabric */; };
-		36D6D09F1E56B59A003098B8 /* Crashlytics in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D6D09E1E56B59A003098B8 /* Crashlytics */; };
 		7B670747DD553D17A8D1236F /* Pods_Stage1stTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 806C850B09C10F1B9F1345A0 /* Pods_Stage1stTests.framework */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
@@ -327,8 +325,6 @@
 			files = (
 				86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */,
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
-				36D6D09D1E56B590003098B8 /* Fabric in Frameworks */,
-				36D6D09F1E56B59A003098B8 /* Crashlytics in Frameworks */,
 				B9F3162CDD829E5736F68499 /* Pods_Stage1st.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1341,11 +1337,6 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Pods/Fabric/iOS/Fabric.framework",
-					"$(PROJECT_DIR)/Pods/Crashlytics/iOS/Crashlytics.framework",
-				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"DEBUG\" -enable-bridging-pch";
 				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1378,11 +1369,6 @@
 				INFOPLIST_FILE = "Stage1st/Stage1st-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Pods/Fabric/iOS/Fabric.framework",
-					"$(PROJECT_DIR)/Pods/Crashlytics/iOS/Crashlytics.framework",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st/Stage1st-Bridging-Header.h";
