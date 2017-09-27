@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Crashlytics
 
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
@@ -95,7 +96,19 @@ public extension DiscuzClient {
             "answer": secureQuestionAnswer,
         ]
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseSwiftyJSON { response in
+        var debugHeader: String? = nil
+        var debugRequestMethod: String? = nil
+        var debugURLString: String? = nil
+        var debugMIMEType: String? = nil
+        var debugBodyString: String? = nil
+
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString(completionHandler: { (response) in
+            debugRequestMethod = response.request?.httpMethod
+            debugHeader = response.response?.description
+            debugURLString = response.response?.url?.absoluteString
+            debugMIMEType = response.response?.mimeType
+            debugBodyString = response.value
+        }).responseSwiftyJSON { response in
             debugPrint(response.request as Any)
             switch response.result {
             case let .success(json):
@@ -107,6 +120,17 @@ public extension DiscuzClient {
                     completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].stringValue, messageString: json["Message"]["messagestr"].stringValue)))
                 }
             case let .failure(error):
+                if case AFError.responseSerializationFailed = error {
+                    let userInfo = [
+                        "method": debugRequestMethod ?? "",
+                        "header": debugHeader ?? "",
+                        "url": debugURLString ?? "",
+                        "MIME": debugMIMEType ?? "",
+                        "body": debugBodyString ?? ""
+                    ]
+                    let recoredError = NSError(domain: "LoginSerializationFailed", code: 0, userInfo: userInfo)
+                    Crashlytics.sharedInstance().recordError(recoredError)
+                }
                 completion(.failure(error))
             }
         }
