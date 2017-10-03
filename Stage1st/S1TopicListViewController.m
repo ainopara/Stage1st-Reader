@@ -100,7 +100,7 @@ static NSString * const cellIdentifier = @"TopicCell";
     }
     
     if (self.scrollTabBar.enabled) {
-        [self fetchTopicsForKey:self.currentKey shouldRefresh:YES andScrollToTop:NO];
+        [self fetchTopicsForKey:self.currentKey skipCache:YES scrollToTop:NO];
     } else {
         [self.refreshControl endRefreshing];
     }
@@ -144,14 +144,14 @@ static NSString * const cellIdentifier = @"TopicCell";
     if (lastRefreshDateForKey && ([[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey] <= 20.0)) {
         if (![self.currentKey isEqualToString:key]) {
             DDLogDebug(@"load key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
-            [self fetchTopicsForKey:key shouldRefresh:NO andScrollToTop:NO];
+            [self fetchTopicsForKey:key skipCache:NO scrollToTop:NO];
         } else { //press the key that selected currently
             DDLogDebug(@"refresh key: %@ current key: %@ previous key: %@", key, self.currentKey, self.previousKey);
-            [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
+            [self fetchTopicsForKey:key skipCache:YES scrollToTop:YES];
         }
     } else {
         //Force refresh
-        [self fetchTopicsForKey:key shouldRefresh:YES andScrollToTop:YES];
+        [self fetchTopicsForKey:key skipCache:YES scrollToTop:YES];
     }
     
 }
@@ -240,24 +240,27 @@ static NSString * const cellIdentifier = @"TopicCell";
 
 #pragma mark Networking
 
-- (void)fetchTopicsForKey:(NSString *)key shouldRefresh:(BOOL)refresh andScrollToTop:(BOOL)scrollToTop {
+- (void)fetchTopicsForKey:(NSString *)key skipCache:(BOOL)shouldSkipCache scrollToTop:(BOOL)scrollToTop {
     NSString *forumID = self.forumKeyMap[key];
     if (forumID == nil) {
         return;
     }
-    _loadingFlag = YES;
+    self.loadingFlag = YES;
     self.scrollTabBar.enabled = NO;
-    if (refresh || ![self.dataCenter hasCacheFor:forumID]) {
+    BOOL hasNoCache = ![self.dataCenter hasCacheFor:forumID];
+    BOOL shouldShowRefreshHUD = shouldSkipCache || hasNoCache;
+    if (shouldShowRefreshHUD) {
         [self.refreshHUD showActivityIndicator];
     }
     
     __weak __typeof__(self) weakSelf = self;
-    [self.viewModel topicListForKey:forumID refresh:refresh success:^(NSArray *topicList) {
+    [self.viewModel topicListForKey:forumID refresh:shouldSkipCache success:^(NSArray *topicList) {
         //reload data
         __strong __typeof__(self) strongSelf = weakSelf;
 //        if (![strongSelf.currentKey isEqualToString:key]) {
 //          return;
 //        }
+
         if (topicList.count > 0) {
             if (strongSelf.currentKey && [strongSelf isPresentingForumList:strongSelf.currentKey]) {
                 strongSelf.cachedContentOffset[strongSelf.currentKey] = [NSValue valueWithCGPoint:strongSelf.tableView.contentOffset];
@@ -267,7 +270,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             strongSelf.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
             
             [strongSelf.tableView reloadData];
-            if (strongSelf.tableView.hidden) { strongSelf.tableView.hidden = NO; }
+
             if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
                 [strongSelf.tableView setContentOffset:[strongSelf.cachedContentOffset[key] CGPointValue] animated:NO];
             } else {
@@ -284,17 +287,23 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
             strongSelf.currentKey = key;
+            [strongSelf.tableView reloadData];
         }
-        //hud hide
-        if (refresh || ![strongSelf.dataCenter hasCacheFor:key]) {
+
+        if (strongSelf.tableView.hidden) {
+            strongSelf.tableView.hidden = NO;
+        }
+        // hide HUD
+        if (shouldShowRefreshHUD) {
             [strongSelf.refreshHUD hideWithDelay:0.3];
         }
-        //others
-        strongSelf.scrollTabBar.enabled = YES;
+
         if (strongSelf.refreshControl.refreshing) {
             [strongSelf.refreshControl endRefreshing];
         }
-        
+
+        // others
+        strongSelf.scrollTabBar.enabled = YES;
         strongSelf.searchBar.hidden = ![strongSelf.dataCenter canMakeSearchRequest];
         strongSelf.loadingFlag = NO;
 
@@ -312,12 +321,12 @@ static NSString * const cellIdentifier = @"TopicCell";
                 [strongSelf.tableView reloadData];
             }
 
-            // show message then hide hud
+            // show message then hide HUD
             DDLogWarn(@"[Network] error: %@", error.description);
             [strongSelf.refreshHUD showMessage:error.localizedDescription];
             [strongSelf.refreshHUD hideWithDelay:5.0];
         } else if (error.code == NSURLErrorCancelled) {
-            // hide hud
+            // hide HUD
             DDLogDebug(@"[Network] NSURLErrorCancelled");
             [strongSelf.refreshHUD hideWithDelay:0];
         } else {
@@ -333,7 +342,7 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
 
             // hide hud
-            if (refresh || ![strongSelf.dataCenter hasCacheFor:key]) {
+            if (shouldShowRefreshHUD) {
                 if (error.code == NSURLErrorCancelled) {
                     DDLogDebug(@"[Network] NSURLErrorCancelled");
                     [strongSelf.refreshHUD hideWithDelay:0];
@@ -345,11 +354,17 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
         }
 
+        if (strongSelf.tableView.hidden) {
+            strongSelf.tableView.hidden = NO;
+        }
+
         // clean up
-        strongSelf.scrollTabBar.enabled = YES;
         if (strongSelf.refreshControl.refreshing) {
             [strongSelf.refreshControl endRefreshing];
         }
+
+        strongSelf.searchBar.hidden = ![strongSelf.dataCenter canMakeSearchRequest];
+        strongSelf.scrollTabBar.enabled = YES;
         strongSelf.loadingFlag = NO;
     }];
 }
