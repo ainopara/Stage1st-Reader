@@ -17,6 +17,36 @@ private func generateURLString(_ baseURLString: String, parameters: Parameters) 
     return encodedURLRequest?.url?.absoluteString ?? "" // FIXME: this should not be nil.
 }
 
+public struct MultipartFormEncoding: ParameterEncoding {
+    public static var `default`: MultipartFormEncoding { return MultipartFormEncoding() }
+
+    public init() {}
+
+    public func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
+        var urlRequest = try urlRequest.asURLRequest()
+
+        guard let parameters = parameters else { return urlRequest }
+
+        let formData = MultipartFormData()
+
+        for (key, value) in parameters {
+            if let valueData = "\(value)".data(using: .utf8, allowLossyConversion: false) {
+                formData.append(valueData, withName: key)
+            } else {
+                assert(false)
+            }
+        }
+
+        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
+            urlRequest.setValue(formData.contentType, forHTTPHeaderField: "Content-Type")
+        }
+
+        urlRequest.httpBody = try formData.encode()
+
+        return urlRequest
+    }
+}
+
 // MARK: - Login
 public extension DiscuzClient {
     /**
@@ -102,7 +132,7 @@ public extension DiscuzClient {
         var debugMIMEType: String? = nil
         var debugBodyString: String? = nil
 
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString(completionHandler: { (response) in
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default).responseString(completionHandler: { (response) in
             debugRequestMethod = response.request?.httpMethod
             debugHeader = response.response?.description
             debugURLString = response.response?.url?.absoluteString
