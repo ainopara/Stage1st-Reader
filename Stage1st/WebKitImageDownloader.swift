@@ -49,7 +49,7 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask {
+            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask, dataTask.state == .running {
                 schemeTask.didReceive(data)
             }
         }
