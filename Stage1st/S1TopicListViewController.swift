@@ -85,7 +85,7 @@ extension S1TopicListViewController {
 @objc
 extension S1TopicListViewController {
     func isPresentingDatabaseList(_ key: String) -> Bool {
-        switch TopicListContentState(key: key) {
+        switch S1TopicListViewModel.ContentState(key: key) {
         case .favorite, .history:
             return true
         default:
@@ -94,7 +94,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingSearchList(_ key: String) -> Bool {
-        switch TopicListContentState(key: key) {
+        switch S1TopicListViewModel.ContentState(key: key) {
         case .search:
             return true
         default:
@@ -103,7 +103,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingForumList(_ key: String) -> Bool {
-        switch TopicListContentState(key: key) {
+        switch S1TopicListViewModel.ContentState(key: key) {
         case .forum:
             return true
         default:
@@ -112,7 +112,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingBlankList(_ key: String) -> Bool {
-        switch TopicListContentState(key: key) {
+        switch S1TopicListViewModel.ContentState(key: key) {
         case .blank:
             return true
         default:

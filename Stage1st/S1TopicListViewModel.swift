@@ -14,46 +14,6 @@ import YapDatabase.YapDatabaseFilteredView
 import Alamofire
 import ReactiveSwift
 
-public enum TopicListContentState: Equatable {
-    case history, favorite
-    case search
-    case forum(key: String)
-    case blank
-
-    init(key: String) {
-        switch key {
-        case "History":
-            self = .history
-        case "Favorite":
-            self = .favorite
-        case "Search":
-            self = .search
-        case "":
-            self = .blank
-        default:
-            self = .forum(key: key)
-        }
-    }
-}
-
-public func == (lhs: TopicListContentState, rhs: TopicListContentState) -> Bool {
-    switch (lhs, rhs) {
-    case (.blank, .blank):
-        return true
-    case (.history, .history):
-        return true
-    case (.favorite, .favorite):
-        return true
-    case (.search, .search):
-        return true
-
-    case let ( .forum(key1), .forum(key2)):
-        return key1 == key2
-    default:
-        return false
-    }
-}
-
 // MARK: -
 
 @objcMembers
@@ -63,12 +23,69 @@ final class S1TopicListViewModel: NSObject {
     let databaseConnection: YapDatabaseConnection = MyDatabaseManager.uiDatabaseConnection
     lazy var searchQueue = YapDatabaseSearchQueue()
 
-    var currentKey: String = "" {
-        didSet {
-            currentState.value = TopicListContentState(key: currentKey)
+    public enum ContentState: Equatable {
+        case history, favorite
+        case search
+        case forum(key: String)
+        case blank
+
+        init(key: String) {
+            switch key {
+            case "History":
+                self = .history
+            case "Favorite":
+                self = .favorite
+            case "Search":
+                self = .search
+            case "":
+                self = .blank
+            default:
+                self = .forum(key: key)
+            }
+        }
+
+        func stringRepresentation() -> String {
+            switch self {
+            case .history:
+                return "History"
+            case .favorite:
+                return "Favorite"
+            case .search:
+                return "Search"
+            case .blank:
+                return ""
+            case let .forum(key):
+                return key
+            }
+        }
+
+        public static func == (lhs: ContentState, rhs: ContentState) -> Bool {
+            switch (lhs, rhs) {
+            case (.blank, .blank):
+                return true
+            case (.history, .history):
+                return true
+            case (.favorite, .favorite):
+                return true
+            case (.search, .search):
+                return true
+
+            case let (.forum(key1), .forum(key2)):
+                return key1 == key2
+            default:
+                return false
+            }
         }
     }
-    let currentState = MutableProperty(TopicListContentState.blank)
+    let currentState = MutableProperty(ContentState.blank)
+    var currentKey: String {
+        get {
+            return currentState.value.stringRepresentation()
+        }
+        set {
+            currentState.value = ContentState(key: newValue)
+        }
+    }
     var topics = [S1Topic]()
 
     // Inputs
@@ -88,7 +105,7 @@ final class S1TopicListViewModel: NSObject {
 
         MutableProperty.combineLatest(searchingTerm, currentState)
             .producer.skipRepeats({ (current, previous) -> Bool in
-                func group(_ state: TopicListContentState) -> Int {
+                func group(_ state: ContentState) -> Int {
                     switch state {
                     case .history:
                         return 0
@@ -212,7 +229,7 @@ final class S1TopicListViewModel: NSObject {
 
     func reset() {
         self.topics = [S1Topic]()
-        self.currentKey = ""
+        self.currentState.value = .blank
     }
 
     @objc func cancelRequests() {
@@ -257,8 +274,8 @@ extension S1TopicListViewModel {
             isPinningTop = lastReplyDate.timeIntervalSinceNow > 0.0
 
             attributedTitle = NSAttributedString(string: topic.title ?? "", attributes: cellTitleAttributes.value)
-        default:
-            fatalError()
+        case .blank:
+            fatalError("blank state should not reach this method.")
         }
 
         return TopicListCellViewModel(topic: topic, isPinningTop: isPinningTop, attributedTitle: attributedTitle)
@@ -310,7 +327,7 @@ extension S1TopicListViewModel {
     }
 
     private func updateFilter(_ searchText: String) {
-        let favoriteMark = currentState.value == TopicListContentState.favorite ? "FY" : "F*"
+        let favoriteMark = currentState.value == ContentState.favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
         DDLogDebug("[TopicListVC] Update filter: \(query)")
         searchQueue.enqueueQuery(query)
