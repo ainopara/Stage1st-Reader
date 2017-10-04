@@ -39,33 +39,45 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask, dataTask.state == .running {
-                schemeTask.didReceive(response)
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                if let schemeTask = strongSelf.taskMap[dataTask] as? WKURLSchemeTask {
+                    DDLogInfo("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
+                    schemeTask.didReceive(response)
+                }
             }
-
         }
         completionHandler(.allow)
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask, dataTask.state == .running {
-                schemeTask.didReceive(data)
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                if let schemeTask = strongSelf.taskMap[dataTask] as? WKURLSchemeTask {
+                    DDLogInfo("Task Receive Data \(schemeTask.request) \(dataTask.state == .running)")
+                    schemeTask.didReceive(data)
+                }
             }
         }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
-                if let error = error {
-                    schemeTask.didFailWithError(error)
-                } else {
-                    schemeTask.didFinish()
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                if let schemeTask = strongSelf.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
+                    if let error = error {
+                        DDLogInfo("Task Fail \(schemeTask.request) \(error)")
+                        schemeTask.didFailWithError(error)
+                    } else {
+                        DDLogInfo("Task Finish \(schemeTask.request)")
+                        schemeTask.didFinish()
+                    }
+
+                    strongSelf.taskMap.removeValue(forKey: task as! URLSessionDataTask)
                 }
             }
-
-            taskMap.removeValue(forKey: task as! URLSessionDataTask)
         }
     }
 }
