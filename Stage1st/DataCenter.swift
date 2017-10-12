@@ -357,8 +357,6 @@ extension DataCenter {
 // MARK: - Cleaning
 extension DataCenter {
     func clearTopicListCache() {
-        topicListCache.removeAll()
-        topicListCachePageNumber.removeAll()
     }
 
     func cleaning() {
