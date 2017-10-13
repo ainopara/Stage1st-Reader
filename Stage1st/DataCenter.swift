@@ -103,11 +103,11 @@ extension DataCenter {
 
     private func eliminateDuplicatedTopics(_ topics: [S1Topic], key: String) -> [S1Topic] {
         if let cachedTopics = topicListCache[key] {
-            let filteredTopics = topics.filter { aTopic in
-                cachedTopics.first(where: { bTopic in bTopic.topicID == aTopic.topicID }) == nil
+            let filteredCachedTopics = cachedTopics.filter { oldTopic in
+                topics.first(where: { newTopic in newTopic.topicID == oldTopic.topicID }) == nil
             }
 
-            return cachedTopics + filteredTopics
+            return filteredCachedTopics + topics
         } else {
             return topics
         }
