@@ -278,7 +278,12 @@ static NSString * const cellIdentifier = @"TopicCell";
             }
             //Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
             if (strongSelf.tableView.contentOffset.y < 0) {
-                [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
+                DDLogDebug(@"tracking: %d", strongSelf.tableView.tracking);
+                if (!strongSelf.tableView.tracking) {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                } else {
+                    [strongSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] atScrollPosition:UITableViewScrollPositionNone animated:YES];
+                }
             }
             [strongSelf.cachedLastRefreshTime setValue:[NSDate date] forKey:key];
         } else {

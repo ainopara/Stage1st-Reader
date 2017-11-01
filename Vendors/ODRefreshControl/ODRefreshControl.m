@@ -9,6 +9,7 @@
 //
 
 #import "ODRefreshControl.h"
+#import <CocoaLumberjack/CocoaLumberjack.h>
 
 #define kTotalViewHeight    400
 #define kOpenedViewHeight   44
@@ -31,6 +32,7 @@
 @property (nonatomic, readwrite) BOOL refreshing;
 @property (nonatomic, assign) UIScrollView *scrollView;
 @property (nonatomic, assign) UIEdgeInsets originalContentInset;
+@property (nonatomic, strong) NSDate *lastActionTime;
 
 @end
 
@@ -337,6 +339,10 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         CGPathRelease(highlightPath);
         
     } else {
+        if (self.lastActionTime != nil && [self.lastActionTime timeIntervalSinceNow] > -0.5) {
+            DDLogDebug(@"Skip for previous action triggered in %f second before.", -[self.lastActionTime timeIntervalSinceNow]);
+            return;
+        }
         // Start the shape disappearance animation
         
         CGFloat radius = lerp(kMinBottomRadius, kMaxBottomRadius, 0.2);
@@ -385,6 +391,7 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         
         self.refreshing = YES;
         _canRefresh = NO;
+        self.lastActionTime = [NSDate date];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
     
