@@ -45,6 +45,7 @@
     self.tabBar = [[S1TabBar alloc] init];
     self.tabBar.minButtonWidth = @60.0;
     self.tabBar.expectPresentingButtonCount = @11;
+    self.tabBar.expectedButtonHeight = 35.0;
     self.tabBar.tabbarDelegate = self;
     self.tabBar.keys = self.categoryNames;
     [self.tabBar setSelectedIndex:[self.categoryIDs indexOfObject:self.currentCategory]];

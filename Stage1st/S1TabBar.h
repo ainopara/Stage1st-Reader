@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) NSNumber *expectPresentingButtonCount;
 @property (nonatomic, strong) NSNumber *minButtonWidth;
+@property (nonatomic, assign) CGFloat expectedButtonHeight;
 
 - (void)setSelectedIndex:(NSInteger)index;
 - (void)deselectAll;

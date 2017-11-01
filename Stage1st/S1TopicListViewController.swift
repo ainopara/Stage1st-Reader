@@ -10,6 +10,7 @@ import UIKit
 import CocoaLumberjack
 import ReactiveSwift
 import ReactiveCocoa
+import DeviceKit
 
 extension S1TopicListViewController {
     open override func viewDidLoad() {
@@ -38,13 +39,21 @@ extension S1TopicListViewController {
             make.top.equalTo(navigationBar.snp.bottom)
         })
 
+        if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
+            scrollTabBar.expectedButtonHeight = 49.0
+        }
         view.addSubview(scrollTabBar)
         if #available(iOS 11.0, *) {
             scrollTabBar.snp.makeConstraints { (make) in
                 make.top.equalTo(tableView.snp.bottom)
                 make.leading.trailing.equalTo(view)
                 make.bottom.equalTo(view.snp.bottom)
-                make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)
+                if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
+                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-49.0)
+                } else {
+                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)
+                }
+
             }
         } else {
             scrollTabBar.snp.makeConstraints { (make) in

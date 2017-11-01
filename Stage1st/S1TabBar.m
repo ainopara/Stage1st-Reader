@@ -25,6 +25,7 @@
         _needRecalculateButtonWidth = YES;
         _minButtonWidth = [NSNumber numberWithDouble:80.0];
         _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
+        _expectedButtonHeight = 44.0;
         self.backgroundColor = [[ColorManager shared] colorForKey:@"tabbar.background"];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
@@ -58,7 +59,7 @@
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.0, 80.0, 44.0); // The Width will be reset by layoutSubviews
+        CGRect rect = CGRectMake(width, 0.0, 80.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
@@ -140,8 +141,8 @@
     NSInteger maxIndex = 0;
     for(UIButton *button in _buttons) {
         NSInteger index = button.tag;
-        CGRect rect = CGRectMake(widthPerItem * index, 0.0, ceilf(widthPerItem) + 1, 44.0);
-        [button setFrame:rect];
+        [button setFrame:CGRectMake(widthPerItem * index, 0.0, ceilf(widthPerItem) + 1, self.bounds.size.height)];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, self.bounds.size.height - self.expectedButtonHeight, 0.0)];
         if (index > maxIndex) {
             maxIndex = index;
         }
