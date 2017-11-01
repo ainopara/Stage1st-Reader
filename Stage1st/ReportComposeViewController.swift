@@ -30,7 +30,7 @@ final class ReportComposeViewModel {
         self.floor = floor
 
         canSubmit <~ content.producer
-            .map { $0.characters.count > 0 }
+            .map { $0.count > 0 }
             .combineLatest(with: submiting.producer)
             .map { arg in arg.0 && !arg.1 }
     }
@@ -130,6 +130,19 @@ final class ReportComposeViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if #available(iOS 11.0, *) {
+            textView.textContainerInset = UIEdgeInsets(
+                top: textView.textContainerInset.top,
+                left: view.safeAreaInsets.left,
+                bottom: textView.textContainerInset.bottom,
+                right: view.safeAreaInsets.right
+            )
+        }
+
     }
 }
 
