@@ -107,6 +107,9 @@
 - (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height {
     DDLogDebug(@"layout:w%ld, h%ld",(long)width, (long)height);
     NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
+    if (@available(iOS 11.0, *)) {
+        offset += self.view.safeAreaInsets.left;
+    }
     NSInteger expectComposeViewHeight = 202;
     NSInteger minimumComposeViewWidth = 320;
     
@@ -124,8 +127,14 @@
 
     if (width - offset * 2.0 < minimumComposeViewWidth) {
         offset = (width - minimumComposeViewWidth) / 2.0;
-        if (offset < 4.0) {
-            offset = 4.0;
+        if (@available(iOS 11.0, *)) {
+            if (offset < 4.0 + self.view.safeAreaInsets.left) {
+                offset = 4.0 + self.view.safeAreaInsets.left;
+            }
+        } else {
+            if (offset < 4.0) {
+                offset = 4.0;
+            }
         }
     }
     frame.origin.x = offset;
