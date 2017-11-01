@@ -28,10 +28,10 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.2.1):
     - CocoaLumberjack/Default
-  - Crashlytics (3.9.0):
-    - Fabric (~> 1.7.0)
+  - Crashlytics (3.9.3):
+    - Fabric (~> 1.7.2)
   - DeviceKit (1.4.0)
-  - Fabric (1.7.0)
+  - Fabric (1.7.2)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
@@ -192,9 +192,9 @@ SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
   CocoaLumberjack: 520616f8e72226ca2c729b43981b66bc483745ce
-  Crashlytics: 64aad5dd97249dd3ff94b979fea140144590cdd3
+  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
   DeviceKit: fa74d97499660e88081718b16688e19217595dba
-  Fabric: e6be012366472553807dada21243c5ab8d904151
+  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Files: 18faae1ef7c10d71ad8f5cb6d9d98ba512fb65e8
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
