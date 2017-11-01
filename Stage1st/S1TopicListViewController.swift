@@ -43,7 +43,8 @@ extension S1TopicListViewController {
             scrollTabBar.snp.makeConstraints { (make) in
                 make.top.equalTo(tableView.snp.bottom)
                 make.leading.trailing.equalTo(view)
-                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+                make.bottom.equalTo(view.snp.bottom)
+                make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)
             }
         } else {
             scrollTabBar.snp.makeConstraints { (make) in

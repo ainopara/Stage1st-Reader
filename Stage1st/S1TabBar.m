@@ -58,7 +58,7 @@
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.0, 80.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
+        CGRect rect = CGRectMake(width, 0.0, 80.0, 44.0); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
@@ -131,9 +131,6 @@
 
 #pragma mark - Layout
 
-- (CGSize)intrinsicContentSize {
-    return CGSizeMake(UIViewNoIntrinsicMetric, 44.0);
-}
 
 - (void)layoutSubviews {
     if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {
@@ -143,7 +140,7 @@
     NSInteger maxIndex = 0;
     for(UIButton *button in _buttons) {
         NSInteger index = button.tag;
-        CGRect rect = CGRectMake(widthPerItem * index, 0.25, ceilf(widthPerItem) + 1, self.bounds.size.height-0.25);
+        CGRect rect = CGRectMake(widthPerItem * index, 0.0, ceilf(widthPerItem) + 1, 44.0);
         [button setFrame:rect];
         if (index > maxIndex) {
             maxIndex = index;
