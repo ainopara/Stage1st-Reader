@@ -49,6 +49,8 @@ final class TopicListCell: UITableViewCell {
         drawingSubview.pinningToTop = model.isPinningTop
         drawingSubview.setNeedsDisplay()
         titleLabel.attributedText = model.attributedTitle
+
+        updateBackgroundColor()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -56,6 +58,8 @@ final class TopicListCell: UITableViewCell {
 
         drawingSubview.highlighted = selected
         drawingSubview.setNeedsDisplay()
+
+        updateBackgroundColor()
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -63,6 +67,20 @@ final class TopicListCell: UITableViewCell {
 
         drawingSubview.highlighted = highlighted
         drawingSubview.setNeedsDisplay()
+
+        updateBackgroundColor()
+    }
+
+    func updateBackgroundColor() {
+        let cellBackgroundColor: UIColor
+
+        if drawingSubview.pinningToTop {
+            cellBackgroundColor = drawingSubview.highlighted ? ColorManager.shared.colorForKey("topiclist.cell.pinningTopBackground.highlight") : ColorManager.shared.colorForKey("topiclist.cell.pinningTopBackground.normal")
+        } else {
+            cellBackgroundColor = drawingSubview.highlighted ? ColorManager.shared.colorForKey("topiclist.cell.background.highlight") : ColorManager.shared.colorForKey("topiclist.cell.background.normal")
+        }
+
+        self.backgroundColor = cellBackgroundColor
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
