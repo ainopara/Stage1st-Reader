@@ -1316,7 +1316,7 @@ private extension S1ContentViewController {
             if abs(webView.scrollView.contentOffset.y - offset) > 0.01 {
                 let originalOption = webView.scrollView.s1_ignoringContentOffsetChangedToZero
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
-                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: offset), animated: false)
+                webView.scrollView.setContentOffset(CGPoint(x: webView.scrollView.contentOffset.x, y: offset), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = originalOption
                 webView.scrollView.flashScrollIndicators()
             }
@@ -1333,10 +1333,10 @@ private extension S1ContentViewController {
             }
 
             // Set position
-            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: -webView.bounds.height), animated: false)
+            webView.scrollView.setContentOffset(CGPoint(x: webView.scrollView.contentOffset.x, y: -webView.bounds.height), animated: false)
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
-                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: 0.0), animated: false)
+                webView.scrollView.setContentOffset(CGPoint(x: webView.scrollView.contentOffset.x, y: 0.0), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
             }, completion: { _ in
@@ -1350,10 +1350,10 @@ private extension S1ContentViewController {
             }
 
             // Set position
-            webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: webView.scrollView.contentSize.height), animated: false)
+            webView.scrollView.setContentOffset(CGPoint(x: webView.scrollView.contentOffset.x, y: webView.scrollView.contentSize.height), animated: false)
             // Animated scroll
             UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseOut, animations: {
-                webView.scrollView.setContentOffset(CGPoint(x: 0.0, y: maxOffset), animated: false)
+                webView.scrollView.setContentOffset(CGPoint(x: webView.scrollView.contentOffset.x, y: maxOffset), animated: false)
                 webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
                 webView.scrollView.alpha = 1.0
             }, completion: { _ in
