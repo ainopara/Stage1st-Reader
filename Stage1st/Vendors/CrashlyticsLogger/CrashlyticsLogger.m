@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     if (logMsg) {
-        CLSLog(@"%@",logMsg);
+        CLSLog(@"%@", logMsg);
     }
 }
 
