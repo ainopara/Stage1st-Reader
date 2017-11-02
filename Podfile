@@ -56,9 +56,9 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
-        if target.name != 'SnapKit' && target.name != 'AcknowList' && target.name != 'DeviceKit' then
+        if target.name == 'GRMustache.swift' || target.name == 'TextAttributes' || target.name == 'ReactiveCocoa' || target.name == 'ReactiveSwift' then
             target.build_configurations.each do |config|
-                config.build_settings['SWIFT_VERSION'] = '3.0.1'
+                config.build_settings['SWIFT_VERSION'] = '3.0'
             end
         end
     end
