@@ -571,6 +571,10 @@
 				860F11C61E4EC21E00875AB9 /* DataCenter.swift */,
 				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
+				C05286C116D3428E000B0DBD /* S1Parser.h */,
+				C05286C216D3428E000B0DBD /* S1Parser.m */,
+				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
+				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 			);
 			path = Manager;
@@ -670,21 +674,15 @@
 				C095877A16CA8DB0007E0119 /* Model */,
 				C095877B16CA8DBE007E0119 /* View */,
 				8681E6D41CEF6EC0004269D3 /* Manager */,
-				C05286C116D3428E000B0DBD /* S1Parser.h */,
-				C05286C216D3428E000B0DBD /* S1Parser.m */,
 				C095874616CA8A36007E0119 /* S1AppDelegate.h */,
 				C095874716CA8A36007E0119 /* S1AppDelegate.m */,
 				8661263B1CB289EF00180C6A /* S1AppDelegate.swift */,
-				860223501895051400A3E66E /* S1Global.h */,
-				860223511895051400A3E66E /* S1Global.m */,
+				86BA383C1C0A106E00D508AC /* S1Application.swift */,
+				C095874316CA8A36007E0119 /* main.m */,
 				862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */,
 				862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				865616821AC6C48C00CFD773 /* Stage1st.entitlements */,
-				C095874316CA8A36007E0119 /* main.m */,
-				86BA383C1C0A106E00D508AC /* S1Application.swift */,
-				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
-				3674BF401E763DE100629E25 /* Environment.swift */,
 			);
 			path = Stage1st;
 			sourceTree = "<group>";
@@ -705,6 +703,8 @@
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */,
 				86221B851CA65E3600015522 /* Utilities.swift */,
+				860223501895051400A3E66E /* S1Global.h */,
+				860223511895051400A3E66E /* S1Global.m */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
 				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
 				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
