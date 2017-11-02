@@ -384,12 +384,12 @@
 			path = REComposeViewController;
 			sourceTree = "<group>";
 		};
-		8634ADB61FAAF3C1004A9CB7 /* ProgressHUD */ = {
+		8634ADB61FAAF3C1004A9CB7 /* MessageHUD */ = {
 			isa = PBXGroup;
 			children = (
 				8634ADB71FAAF3C1004A9CB7 /* MessageHUD.swift */,
 			);
-			path = ProgressHUD;
+			path = MessageHUD;
 			sourceTree = "<group>";
 		};
 		8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */ = {
@@ -440,12 +440,12 @@
 			path = StaticTableViewBuilder;
 			sourceTree = "<group>";
 		};
-		8634ADD01FAAF3C2004A9CB7 /* PullToActionViewController */ = {
+		8634ADD01FAAF3C2004A9CB7 /* PullToActionController */ = {
 			isa = PBXGroup;
 			children = (
 				8634ADD11FAAF3C2004A9CB7 /* PullToActionController.swift */,
 			);
-			path = PullToActionViewController;
+			path = PullToActionController;
 			sourceTree = "<group>";
 		};
 		8634ADD21FAAF3C2004A9CB7 /* TFHpple */ = {
@@ -695,12 +695,11 @@
 				8634ADBD1FAAF3C1004A9CB7 /* Gagat */,
 				8634ADA91FAAF3C0004A9CB7 /* GoogleToolbox */,
 				8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */,
-				8634ADB61FAAF3C1004A9CB7 /* ProgressHUD */,
-				8634ADD01FAAF3C2004A9CB7 /* PullToActionViewController */,
+				8634ADB61FAAF3C1004A9CB7 /* MessageHUD */,
+				8634ADD01FAAF3C2004A9CB7 /* PullToActionController */,
 				8634ADAD1FAAF3C0004A9CB7 /* REComposeViewController */,
 				8634ADC21FAAF3C1004A9CB7 /* StaticTableViewBuilder */,
 				8634ADD21FAAF3C2004A9CB7 /* TFHpple */,
-				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */,
 				86221B851CA65E3600015522 /* Utilities.swift */,
 				860223501895051400A3E66E /* S1Global.h */,
@@ -751,6 +750,7 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
