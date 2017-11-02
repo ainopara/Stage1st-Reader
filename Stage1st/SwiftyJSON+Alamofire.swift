@@ -15,9 +15,15 @@ extension Alamofire.DataRequest {
     }
 
     @discardableResult
-    public func responseSwiftyJSON(queue: DispatchQueue? = nil,
-                                   options: JSONSerialization.ReadingOptions = .allowFragments,
-                                   completionHandler: @escaping (DataResponse<SwiftyJSON.JSON>) -> Void) -> Self {
-        return response(queue: queue, responseSerializer: DataRequest.swiftyJSONResponseSerializer(options: options), completionHandler: completionHandler)
+    public func responseSwiftyJSON(
+        queue: DispatchQueue? = nil,
+        options: JSONSerialization.ReadingOptions = .allowFragments,
+        completionHandler: @escaping (DataResponse<SwiftyJSON.JSON>) -> Void
+    ) -> Self {
+        return response(
+            queue: queue,
+            responseSerializer: DataRequest.swiftyJSONResponseSerializer(options: options),
+            completionHandler: completionHandler
+        )
     }
 }

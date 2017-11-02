@@ -261,7 +261,7 @@ extension PageRenderer {
                 let processedString = processedDocument.xmlString(withOptions: UInt(DDXMLNodePrettyPrint)) as NSString
                 let cuttedString = processedString.substring(with: NSRange(location: 183, length: processedString.length - 183 - 17))
 
-                if cuttedString.characters.count > 0 {
+                if cuttedString.count > 0 {
                     return cuttedString.replacingOccurrences(of: "<br></br>", with: "<br />")
                 }
 

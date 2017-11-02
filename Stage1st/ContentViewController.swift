@@ -23,11 +23,9 @@ private let blankPageHTMLString = "<!DOCTYPE html> <html><head><meta http-equiv=
 class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: ContentViewModel
 
-    let toolBar = UIToolbar(frame: .zero)
     lazy var webView: WKWebView = {
         WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
-
     lazy var pullToActionController: PullToActionController = {
         PullToActionController(scrollView: self.webView.scrollView)
     }()
@@ -35,6 +33,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     let refreshHUD = S1HUD(frame: .zero)
     let hintHUD = S1HUD(frame: .zero)
 
+    let toolBar = UIToolbar(frame: .zero)
     let backButton = UIButton(type: .system)
     let forwardButton = UIButton(type: .system)
     let pageButton = UIButton(frame: .zero)
@@ -54,61 +53,31 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     weak var replyTopicFloor: Floor?
 
     var scrollType: ScrollType = .restorePosition {
-        didSet {
-            DDLogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)")
-        }
+        didSet { DDLogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)") }
     }
 
     var backButtonState: BackButtonState = .back(rotateAngle: 0.0) {
-        didSet {
-            switch (backButtonState, oldValue) {
-            case let (.back(rotateAngle), .back(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-                backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-
-            case let (.back(rotateAngle), _):
-                    backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
-                    backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-            }
-        }
+        didSet { updateBackButtonAppearance(oldValue) }
     }
 
     var forwardButtonState: ForwardButtonState = .forward(rotateAngle: 0.0) {
-        didSet {
-            switch (forwardButtonState, oldValue) {
-            case let (.forward(rotateAngle), .forward(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-            case let (.forward(rotateAngle), _):
-                forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-            case let (.refresh(rotateAngle), .refresh(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-            case let (.refresh(rotateAngle), _):
-                forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
-                forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
-            }
-        }
+        didSet { updateForwardButtonAppearance(oldValue) }
     }
 
-    let finishFirstLoading = MutableProperty(false) // No automatic scrolling should happen before first loading.
-    let webPageReadyForAutomaticScrolling = MutableProperty(false) // No automatic scrolling should happen before content ready. ready signal will trigger first automatic scrolling.
-    let webPageCurrentContentHeight = MutableProperty(0.0 as CGFloat) // Every content height change will trying to trigger automatic scrolling.
+    /// No automatic scrolling should happen before first loading.
+    let finishFirstLoading = MutableProperty(false)
+    /// No automatic scrolling should happen before content ready. ready signal will trigger first automatic scrolling.
+    let webPageReadyForAutomaticScrolling = MutableProperty(false)
+    /// Every content height change will trying to trigger automatic scrolling.
+    let webPageCurrentContentHeight = MutableProperty(0.0 as CGFloat)
 
-    var webPageAutomaticScrollingEnabled = true // Note: User interaction will disable automatic scrolling.
-    var webPageDidFinishFirstAutomaticScrolling = false // Note: Only first automatic scrolling has animation.
+    /// Note: User interaction will disable automatic scrolling.
+    var webPageAutomaticScrollingEnabled = true
+    /// Note: Only first automatic scrolling has animation.
+    var webPageDidFinishFirstAutomaticScrolling = false
 
     var presentType: PresentType = .none {
-        didSet {
-            switch presentType {
-            case .none:
-                Crashlytics.sharedInstance().setObjectValue("ContentViewController", forKey: "lastViewController")
-            case .image:
-                Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
-            case .web:
-                Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
-            default:
-                break
-            }
-        }
+        didSet { logCurrentPresentingViewController() }
     }
 
     // MARK: -
@@ -276,26 +245,36 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         _setupActivity()
 
         // Notification
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationWillEnterForeground),
-                                               name: .UIApplicationWillEnterForeground,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationDidEnterBackground),
-                                               name: .UIApplicationDidEnterBackground,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceiveFloorCachedNotification(_:)),
-                                               name: .S1FloorsDidCachedNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
-                                               name: .UserBlockStatusDidChangedNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: .UIApplicationWillEnterForeground,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidEnterBackground),
+            name: .UIApplicationDidEnterBackground,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceiveFloorCachedNotification(_:)),
+            name: .S1FloorsDidCachedNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
+            name: .UserBlockStatusDidChangedNotification,
+            object: nil
+        )
     }
 
     required init?(coder _: NSCoder) {
@@ -1089,7 +1068,7 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
         case .cancelled:
             composeViewController.dismiss(animated: true, completion: nil)
         case .posted:
-            guard composeViewController.plainText.characters.count > 0 else {
+            guard composeViewController.plainText.count > 0 else {
                 return
             }
 
@@ -1188,7 +1167,6 @@ extension S1ContentViewController {
 
 // MARK: - Main Function
 extension S1ContentViewController {
-    // swiftlint:disable cyclomatic_complexity
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func _showHud() {
             refreshHUD.showActivityIndicator()
@@ -1267,8 +1245,6 @@ extension S1ContentViewController {
             }
         }
     }
-
-    // swiftlint:enable cyclomatic_complexity
 
     func _presentReplyView(toFloor floor: Floor?) {
         let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
@@ -1423,6 +1399,45 @@ private extension S1ContentViewController {
         _hook_preChangeCurrentPage()
         viewModel.currentPage.value = viewModel.currentPage.value
         fetchContentForCurrentPage(forceUpdate: forceUpdate)
+    }
+
+    func updateBackButtonAppearance(_ oldValue: BackButtonState) {
+        switch (backButtonState, oldValue) {
+        case let (.back(rotateAngle), .back(oldRotateAngle)) where rotateAngle != oldRotateAngle:
+            backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+
+        case let (.back(rotateAngle), _):
+            backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
+            backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+        }
+    }
+
+    func updateForwardButtonAppearance(_ oldValue: ForwardButtonState) {
+        switch (forwardButtonState, oldValue) {
+        case let (.forward(rotateAngle), .forward(oldRotateAngle)) where rotateAngle != oldRotateAngle:
+            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+        case let (.forward(rotateAngle), _):
+            forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
+            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+        case let (.refresh(rotateAngle), .refresh(oldRotateAngle)) where rotateAngle != oldRotateAngle:
+            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+        case let (.refresh(rotateAngle), _):
+            forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
+            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+        }
+    }
+
+    func logCurrentPresentingViewController() {
+        switch presentType {
+        case .none:
+            Crashlytics.sharedInstance().setObjectValue("ContentViewController", forKey: "lastViewController")
+        case .image:
+            Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
+        case .web:
+            Crashlytics.sharedInstance().setObjectValue("WebViewer", forKey: "lastViewController")
+        default:
+            break
+        }
     }
 }
 

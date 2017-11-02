@@ -43,10 +43,12 @@ class Environment: NSObject {
         databaseManager = DatabaseManager.sharedInstance()
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
 
-        dataCenter = DataCenter(apiManager: apiService,
-                                networkManager: networkManager,
-                                databaseManager: databaseManager,
-                                cacheDatabaseManager: cacheDatabaseManager)
+        dataCenter = DataCenter(
+            apiManager: apiService,
+            networkManager: networkManager,
+            databaseManager: databaseManager,
+            cacheDatabaseManager: cacheDatabaseManager
+        )
     }
 
     static func cacheDatabasePath() -> String {
