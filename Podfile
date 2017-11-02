@@ -26,8 +26,8 @@ target "Stage1st" do
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
 
     # Debug
-    pod 'CocoaLumberjack', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git'
-    pod 'CocoaLumberjack/Swift', :git => 'https://github.com/CocoaLumberjack/CocoaLumberjack.git'
+    pod 'CocoaLumberjack'
+    pod 'CocoaLumberjack/Swift'
     pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
 
@@ -42,7 +42,7 @@ target "Stage1st" do
     pod 'GRMustache.swift'
     pod '1PasswordExtension'
     pod 'AcknowList'
-    pod 'QuickTableViewController', '~> 0.5.0'
+    pod 'QuickTableViewController'
     pod 'Files'
     pod 'DeviceKit'
 
@@ -56,7 +56,14 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
-        if target.name == 'GRMustache.swift' || target.name == 'TextAttributes' || target.name == 'ReactiveCocoa' || target.name == 'ReactiveSwift' then
+        pods_with_swift3 = [
+            'GRMustache.swift',
+            'TextAttributes',
+            'ReactiveCocoa',
+            'ReactiveSwift',
+            'QuickTableViewController'
+        ]
+        if pods_with_swift3.include? target.name then
             target.build_configurations.each do |config|
                 config.build_settings['SWIFT_VERSION'] = '3.0'
             end

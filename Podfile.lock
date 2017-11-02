@@ -20,13 +20,13 @@ PODS:
   - Alamofire (4.5.1)
   - AlamofireImage (3.3.0):
     - Alamofire (~> 4.5)
-  - CocoaLumberjack (3.2.1):
-    - CocoaLumberjack/Default (= 3.2.1)
-    - CocoaLumberjack/Extensions (= 3.2.1)
-  - CocoaLumberjack/Default (3.2.1)
-  - CocoaLumberjack/Extensions (3.2.1):
+  - CocoaLumberjack (3.3.0):
+    - CocoaLumberjack/Default (= 3.3.0)
+    - CocoaLumberjack/Extensions (= 3.3.0)
+  - CocoaLumberjack/Default (3.3.0)
+  - CocoaLumberjack/Extensions (3.3.0):
     - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (3.2.1):
+  - CocoaLumberjack/Swift (3.3.0):
     - CocoaLumberjack/Default
   - Crashlytics (3.9.3):
     - Fabric (~> 1.7.2)
@@ -51,7 +51,7 @@ PODS:
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
   - Masonry (1.1.0)
-  - QuickTableViewController (0.5.3)
+  - QuickTableViewController (0.7.1)
   - Reachability (3.2)
   - ReactiveCocoa (6.0.2):
     - ReactiveSwift (~> 2.0)
@@ -131,8 +131,8 @@ DEPENDENCIES:
   - AFNetworking
   - Alamofire
   - AlamofireImage
-  - CocoaLumberjack (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
-  - CocoaLumberjack/Swift (from `https://github.com/CocoaLumberjack/CocoaLumberjack.git`)
+  - CocoaLumberjack
+  - CocoaLumberjack/Swift
   - Crashlytics
   - DeviceKit
   - Fabric
@@ -145,7 +145,7 @@ DEPENDENCIES:
   - KIF
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
-  - QuickTableViewController (~> 0.5.0)
+  - QuickTableViewController
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
@@ -157,8 +157,6 @@ DEPENDENCIES:
   - YYKeyboardManager
 
 EXTERNAL SOURCES:
-  CocoaLumberjack:
-    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -170,9 +168,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
-  CocoaLumberjack:
-    :commit: f4294a13470d43260569d62aac6e1009fbef491a
-    :git: https://github.com/CocoaLumberjack/CocoaLumberjack.git
   JTSImageViewController:
     :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -193,7 +188,7 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
   AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
-  CocoaLumberjack: 520616f8e72226ca2c729b43981b66bc483745ce
+  CocoaLumberjack: 3c8c74683302f9012bb168e1c4b7ae3c0b558431
   Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
   DeviceKit: fa74d97499660e88081718b16688e19217595dba
   Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
@@ -206,7 +201,7 @@ SPEC CHECKSUMS:
   KIF: bd770edd8ce49bc7308501e4871e58a02d137be3
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  QuickTableViewController: fa0791b3f8d4a9b880041fce1252d71505b03f5d
+  QuickTableViewController: 5b6223e33723977082e80796e9c5cf6713525124
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 9dcbd8275374f35a6e5fcce01a93b860a7b92c44
   ReactiveSwift: 60a29ff35988a964fd2bb759755cb6594de523fc
@@ -218,6 +213,6 @@ SPEC CHECKSUMS:
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 728397464c3ad483200284c949b2bf411bbaf847
+PODFILE CHECKSUM: e2bf97fde2b5ef22f74172f864e81a343e06c078
 
 COCOAPODS: 1.3.1
