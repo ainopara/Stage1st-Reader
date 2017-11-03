@@ -60,6 +60,7 @@ extension S1TopicListViewController {
                 make.top.equalTo(tableView.snp.bottom)
                 make.leading.trailing.equalTo(view)
                 make.bottom.equalTo(view.snp.bottom)
+                make.height.equalTo(44.0)
             }
         }
 
