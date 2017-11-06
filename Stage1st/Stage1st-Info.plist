@@ -73,6 +73,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Stage1st Reader 需要访问照片库以保存图片</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Stage1st Reader 需要访问照片库以保存图片</string>
 	<key>NSUserActivityTypes</key>
