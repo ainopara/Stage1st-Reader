@@ -302,3 +302,54 @@ extension S1TopicListViewController {
         scrollTabBar.deselectAll()
     }
 }
+
+// MARK: - Actions
+extension S1TopicListViewController {
+    @objc func settings(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Settings", bundle: nil)
+        let settingsViewController = storyboard.instantiateViewController(withIdentifier: "SettingsNavigation")
+        self.present(settingsViewController, animated: true, completion: nil)
+    }
+
+    @objc func archive(_ sender: Any) {
+        navigationItem.rightBarButtonItems = []
+        viewModel.cancelRequests()
+        navigationItem.titleView = segControl
+        if segControl.selectedSegmentIndex == 0 {
+            presentInternalList(for: S1TopicListHistory)
+        } else {
+            presentInternalList(for: S1TopicListFavorite)
+        }
+    }
+
+    @objc func refresh(_ sender: Any) {
+        guard !refreshControl.isHidden else {
+            refreshControl.endRefreshing()
+            return
+        }
+
+        guard scrollTabBar.enabled else {
+            refreshControl.endRefreshing()
+            return
+        }
+
+        // fetch topics for current key
+        self.fetchTopics(forKey: self.currentKey, skipCache: true, scrollToTop: false)
+    }
+
+    @objc func segSelected(_ seg: UISegmentedControl) {
+        switch seg.selectedSegmentIndex {
+        case 0:
+            self.presentInternalList(for: S1TopicListHistory)
+        case 1:
+            self.presentInternalList(for: S1TopicListFavorite)
+        default:
+            fatalError()
+        }
+    }
+
+    @objc func clearSearchBarText(_ gestureRecognizer: UISwipeGestureRecognizer) {
+        searchBar.text = ""
+        searchBar.delegate?.searchBar?(self.searchBar, textDidChange: "")
+    }
+}

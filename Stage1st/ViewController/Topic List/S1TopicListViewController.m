@@ -24,12 +24,6 @@
 #import "CloudKitManager.h"
 #import "NavigationControllerDelegate.h"
 
-static NSString * const cellIdentifier = @"TopicCell";
-
-#define _SEARCH_BAR_HEIGHT 40.0f
-
-#pragma mark -
-
 @implementation S1TopicListViewController
 
 #pragma mark Life Cycle
@@ -71,57 +65,6 @@ static NSString * const cellIdentifier = @"TopicCell";
 
     DDLogDebug(@"[TopicListVC] viewDidAppear");
     [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
-}
-
-#pragma mark - Actions
-
-- (void)settings:(id)sender {
-    NSString * storyboardName = @"Settings";
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
-    UIViewController * controllerToPresent = [storyboard instantiateViewControllerWithIdentifier:@"SettingsNavigation"];
-    [self presentViewController:controllerToPresent animated:YES completion:nil];
-}
-
-- (void)archive:(id)sender {
-    [self.navigationItem setRightBarButtonItems:@[]];
-    [self.viewModel cancelRequests];
-    self.navigationItem.titleView = self.segControl;
-    if (self.segControl.selectedSegmentIndex == 0) {
-        [self presentInternalListFor:S1TopicListHistory];
-    } else {
-        [self presentInternalListFor:S1TopicListFavorite];
-    }
-}
-
-- (void)refresh:(id)sender {
-    if (self.refreshControl.hidden) {
-        [self.refreshControl endRefreshing];
-        return;
-    }
-    
-    if (self.scrollTabBar.enabled) {
-        [self fetchTopicsForKey:self.currentKey skipCache:YES scrollToTop:NO];
-    } else {
-        [self.refreshControl endRefreshing];
-    }
-}
-
--(void)segSelected:(UISegmentedControl *)seg {
-    switch (seg.selectedSegmentIndex) {
-        case 0:
-            [self presentInternalListFor:S1TopicListHistory];
-            break;
-        case 1:
-            [self presentInternalListFor:S1TopicListFavorite];
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)clearSearchBarText:(UISwipeGestureRecognizer *)gestureRecognizer {
-    self.searchBar.text = @"";
-    [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
 }
 
 #pragma mark S1TabBarDelegate

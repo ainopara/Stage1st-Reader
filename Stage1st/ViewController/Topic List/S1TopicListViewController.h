@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)cloudKitStateChanged:(NSNotification *)notification;
 
 - (void)objc_searchBarSearchButtonClicked:(UISearchBar *)searchBar;
+- (void)fetchTopicsForKey:(NSString *)key skipCache:(BOOL)shouldSkipCache scrollToTop:(BOOL)scrollToTop;
 
 @end
 
