@@ -69,7 +69,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         totalPages <~ replyCount.producer
-            .map { (($0?.uintValue) ?? 0 as UInt) / 30 + 1 }
+            .map { $0.uintValue / 30 + 1 }
 
         previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
             let (previous, _) = arg

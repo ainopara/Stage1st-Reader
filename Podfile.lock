@@ -53,12 +53,12 @@ PODS:
   - Masonry (1.1.0)
   - QuickTableViewController (0.7.1)
   - Reachability (3.2)
-  - ReactiveCocoa (6.0.2):
-    - ReactiveSwift (~> 2.0)
-  - ReactiveSwift (2.0.1):
+  - ReactiveCocoa (7.0.1):
+    - ReactiveSwift (~> 3.0)
+  - ReactiveSwift (3.0.0):
     - Result (~> 3.2)
   - Result (3.2.4)
-  - Reveal-SDK (11)
+  - Reveal-SDK (10)
   - SnapKit (4.0.0)
   - SwiftyJSON (3.1.4)
   - TextAttributes (1.0)
@@ -149,7 +149,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
-  - Reveal-SDK
+  - Reveal-SDK (= 10)
   - SnapKit
   - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
@@ -203,16 +203,16 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 5b6223e33723977082e80796e9c5cf6713525124
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 9dcbd8275374f35a6e5fcce01a93b860a7b92c44
-  ReactiveSwift: 60a29ff35988a964fd2bb759755cb6594de523fc
+  ReactiveCocoa: a1b5d502d0d1534f9a72981a485b297b17127f83
+  ReactiveSwift: d9fe0db33c1aaabecb092e8de83cf52875c0de6f
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
-  Reveal-SDK: 7fa13d04bb55db61ff2342a990cf731d5159361d
+  Reveal-SDK: 7869ddf1f902cabbb07a1f0dd06bd25861a126f7
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 69ca88a2dfee305fde4412cf670c76f75aa7ccd0
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: e2bf97fde2b5ef22f74172f864e81a343e06c078
+PODFILE CHECKSUM: 60635b93f97a7e97e37ee50b308cde1f7cbb4ce9
 
 COCOAPODS: 1.3.1

@@ -34,7 +34,7 @@ target "Stage1st" do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Reachability'
-    pod 'Reveal-SDK', :configurations => ['Debug']
+    pod 'Reveal-SDK', '10', :configurations => ['Debug']
 #    pod 'FBMemoryProfiler'
 
     # Others
@@ -59,8 +59,6 @@ post_install do |installer|
         pods_with_swift3 = [
             'GRMustache.swift',
             'TextAttributes',
-            'ReactiveCocoa',
-            'ReactiveSwift',
             'QuickTableViewController'
         ]
         if pods_with_swift3.include? target.name then

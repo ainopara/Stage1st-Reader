@@ -222,7 +222,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
         viewModel.favorite.producer
             .take(during: reactive.lifetime)
-            .map { $0?.boolValue ?? false }
+            .map { $0.boolValue }
             .startWithValues { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.favoriteButton.setImage(strongSelf.viewModel.favoriteButtonImage(), for: .normal)
@@ -232,7 +232,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             .take(during: reactive.lifetime)
             .startWithValues { [weak self] title in
                 guard let strongSelf = self else { return }
-                if let title = title, title != "" {
+                if title != "" {
                     strongSelf.titleLabel.text = title as String
                     strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.normal")
                 } else {
