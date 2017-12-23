@@ -21,7 +21,7 @@ final class ReportComposeViewModel {
     let content = MutableProperty("")
 
     let canSubmit = MutableProperty(false)
-    let submiting = MutableProperty(false)
+    let isSubmitting = MutableProperty(false)
 
     init(dataCenter: DataCenter, topic: S1Topic, floor: Floor) {
         self.dataCenter = dataCenter
@@ -31,7 +31,7 @@ final class ReportComposeViewModel {
 
         canSubmit <~ content.producer
             .map { $0.count > 0 }
-            .combineLatest(with: submiting.producer)
+            .combineLatest(with: isSubmitting.producer)
             .map { arg in arg.0 && !arg.1 }
     }
 
@@ -44,10 +44,10 @@ final class ReportComposeViewModel {
         dataCenter.blockUser(with: floor.author.ID)
         NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
 
-        submiting.value = true
+        isSubmitting.value = true
         _ = apiManager.report(topicID: "\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] error in
             guard let strongSelf = self else { return }
-            strongSelf.submiting.value = false
+            strongSelf.isSubmitting.value = false
             completion(error)
         }
     }
@@ -99,7 +99,7 @@ final class ReportComposeViewController: UIViewController {
             strongSelf.navigationItem.rightBarButtonItem?.isEnabled = canSubmit
         }
 
-        viewModel.submiting.producer.startWithValues { [weak self] submiting in
+        viewModel.isSubmitting.producer.startWithValues { [weak self] submiting in
             guard let strongSelf = self else { return }
             if submiting {
                 strongSelf.loadingHUD.showActivityIndicator()
@@ -109,10 +109,12 @@ final class ReportComposeViewController: UIViewController {
         }
 
         keyboardManager.add(self)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ReportComposeViewController.didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
     }
 
     deinit {
