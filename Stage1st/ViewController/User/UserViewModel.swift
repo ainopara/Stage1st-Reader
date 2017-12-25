@@ -14,22 +14,12 @@ import ReactiveSwift
 class UserViewModel {
     let dataCenter: DataCenter
     let user: MutableProperty<User>
-    let blocked: MutableProperty<Bool>
+    let isBlocked: MutableProperty<Bool>
 
     init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
         self.user = MutableProperty(user)
-        blocked = MutableProperty(dataCenter.userIDIsBlocked(ID: user.ID))
-
-        blocked.signal.observeValues { isBlocked in
-            if isBlocked {
-                dataCenter.blockUser(with: user.ID)
-                NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
-            } else {
-                dataCenter.unblockUser(with: user.ID)
-                NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
-            }
-        }
+        isBlocked = MutableProperty(dataCenter.userIDIsBlocked(ID: user.ID))
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
@@ -46,29 +36,40 @@ class UserViewModel {
     }
 
     func infoLabelText() -> String {
-        let infoLabelString = NSMutableString()
+        var infoLabelString = ""
 
         if let lastVisitDateString = user.value.lastVisitDateString {
-            infoLabelString.append("最后访问：\n\(lastVisitDateString)\n")
+            infoLabelString += "最后访问：\n\(lastVisitDateString)\n"
         }
         if let registerDateString = user.value.registerDateString {
-            infoLabelString.append("注册日期：\n\(registerDateString)\n")
+            infoLabelString += "注册日期：\n\(registerDateString)\n"
         }
         if let threadCount = user.value.threadCount {
-            infoLabelString.append("发帖数：\n\(threadCount)\n")
+            infoLabelString += "发帖数：\n\(threadCount)\n"
         }
         if let postCount = user.value.postCount {
-            infoLabelString.append("回复数：\n\(postCount)\n")
+            infoLabelString += "回复数：\n\(postCount)\n"
         }
         if let sigHTML = user.value.sigHTML {
-            infoLabelString.append("签名：\n\(sigHTML.s1_htmlStripped(trimWhitespace: false) ?? sigHTML)\n")
+            infoLabelString += "签名：\n\(sigHTML.s1_htmlStripped(trimWhitespace: false) ?? sigHTML)\n"
         }
 
-        return infoLabelString as String
+        return infoLabelString
     }
 
     var avatarURL: URL? {
         return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(user.value.ID)&size=middle")
+    }
+
+    func toggleBlockStatus() {
+        isBlocked.value = !isBlocked.value
+        if isBlocked.value {
+            dataCenter.blockUser(with: user.value.ID)
+            NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
+        } else {
+            dataCenter.unblockUser(with: user.value.ID)
+            NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
+        }
     }
 }
 

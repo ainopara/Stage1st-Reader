@@ -32,9 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface S1YapDatabaseAdapter (User)
 
-- (void)blockUserWithID:(NSUInteger)userID;
-- (void)unblockUserWithID:(NSUInteger)userID;
-- (BOOL)userIDIsBlocked:(NSUInteger)userID;
+- (void)blockUserWithID:(NSInteger)userID;
+- (void)unblockUserWithID:(NSInteger)userID;
+- (BOOL)userIDIsBlocked:(NSInteger)userID;
 
 @end
 

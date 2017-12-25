@@ -43,7 +43,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             }
             delegate?.generalScriptMessageHandler(self, actionButtonTappedFor: floorID)
         case "user":
-            guard let userID = messageDictionary["id"] as? UInt else {
+            guard let userID = messageDictionary["id"] as? Int else {
                 DDLogError("unexpected message format: \(messageDictionary)")
                 return
             }
@@ -68,7 +68,7 @@ protocol WebViewEventDelegate: class {
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, loadWith messageDictionary: [String: Any])
     func generalScriptMessageHandlerTouchEvent(_ scriptMessageHandler: GeneralScriptMessageHandler)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, actionButtonTappedFor floorID: Int)
-    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: UInt)
+    func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showUserProfileWith userID: Int)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, showImageWith imageID: String, imageURLString: String)
     func generalScriptMessageHandler(_ scriptMessageHandler: GeneralScriptMessageHandler, handleUnkonwnEventWith messageDictionary: [String: Any])
 }
@@ -78,14 +78,14 @@ extension WebViewEventDelegate {
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, loadWith _: [String: Any]) {}
     func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {}
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, actionButtonTappedFor _: Int) {}
-    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith _: UInt) {}
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith _: Int) {}
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showImageWith _: String, imageURLString _: String) {}
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, handleUnkonwnEventWith _: [String: Any]) {}
 }
 
 // MARK: - User
 protocol UserViewModelMaker {
-    func userViewModel(userID: UInt) -> UserViewModel
+    func userViewModel(userID: Int) -> UserViewModel
 }
 
 protocol UserPresenter {
@@ -93,11 +93,11 @@ protocol UserPresenter {
     var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
 
-    func showUserViewController(userID: UInt)
+    func showUserViewController(userID: Int)
 }
 
 extension UserPresenter where Self: UIViewController {
-    func showUserViewController(userID: UInt) {
+    func showUserViewController(userID: Int) {
         var mutableSelf = self // FIXME: Make swift complier happy, remove this when the issue fixed.
         mutableSelf.presentType = .user
 
@@ -108,7 +108,7 @@ extension UserPresenter where Self: UIViewController {
 }
 
 extension WebViewEventDelegate where Self: UserPresenter {
-    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith userID: UInt) {
+    func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
         Answers.logCustomEvent(withName: "Click User", customAttributes: [
             "source": "UserPresenter",
         ])

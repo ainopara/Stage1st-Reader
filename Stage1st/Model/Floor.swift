@@ -40,7 +40,7 @@ public final class Floor: NSObject, NSCoding {
         guard let IDString = json["pid"].string,
             let ID = Int(IDString),
             let authorIDString = json["authorid"].string,
-            let authorID = UInt(authorIDString),
+            let authorID = Int(authorIDString),
             let authorName = json["author"].string else {
             return nil
         }
@@ -54,7 +54,7 @@ public final class Floor: NSObject, NSCoding {
 
     public required init?(coder aDecoder: NSCoder) {
         let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
-        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? UInt ?? UInt(aDecoder.decodeInteger(forKey: kAuthorID))
+        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int ?? aDecoder.decodeInteger(forKey: kAuthorID)
         guard ID != 0,
             authorID != 0,
             let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String else {

@@ -13,17 +13,21 @@ private let kUserID = "userID"
 private let kUserName = "userName"
 private let kCustomStatus = "customStatus"
 
-public final class User: NSObject, NSCoding {
-    let ID: UInt
+public final class User: NSObject {
+    let ID: Int
     var name: String
     var customStatus: String?
-    var sigHTML: String?
+
+    var threadCount: Int?
+    var postCount: Int?
+    var fightingCapacity: Int?
+
     var lastVisitDateString: String?
     var registerDateString: String?
-    var threadCount: UInt?
-    var postCount: UInt?
 
-    @objc public init(ID: UInt, name: String) {
+    var sigHTML: String?
+
+    @objc public init(ID: Int, name: String) {
         self.ID = ID
         self.name = name
         super.init()
@@ -32,7 +36,7 @@ public final class User: NSObject, NSCoding {
     public init?(json: JSON) {
         let space = json["Variables"]["space"]
         guard let IDString = space["uid"].string,
-            let ID = UInt(IDString),
+            let ID = Int(IDString),
             let name = space["username"].string else {
             return nil
         }
@@ -48,33 +52,12 @@ public final class User: NSObject, NSCoding {
         registerDateString = space["regdate"].string
 
         if let threadCountString = space["threads"].string,
-            let threadCount = UInt(threadCountString) {
+            let threadCount = Int(threadCountString) {
             self.threadCount = threadCount
         }
         if let postCountString = space["posts"].string,
-            let postCount = UInt(postCountString) {
+            let postCount = Int(postCountString) {
             self.postCount = postCount
         }
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        let ID = aDecoder.decodeObject(forKey: kUserID) as? UInt ?? UInt(aDecoder.decodeInteger(forKey: kUserID))
-        guard ID != 0,
-            let name = aDecoder.decodeObject(forKey: kUserName) as? String else {
-            return nil
-        }
-
-        self.ID = ID
-        self.name = name
-        customStatus = aDecoder.decodeObject(forKey: kCustomStatus) as? String
-        super.init()
-        // FIXME: Finish it.
-    }
-
-    open func encode(with aCoder: NSCoder) {
-        aCoder.encode(Int(ID), forKey: kUserID)
-        aCoder.encode(name, forKey: kUserName)
-        aCoder.encode(customStatus, forKey: kCustomStatus)
-        // FIXME: Finish it.
     }
 }

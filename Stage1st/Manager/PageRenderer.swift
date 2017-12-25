@@ -16,7 +16,7 @@ protocol PageRenderer {
     var topic: S1Topic { get }
 
     func templateBundle() -> Bundle
-    func userIsBlocked(with userID: UInt) -> Bool
+    func userIsBlocked(with userID: Int) -> Bool
     func generatePage(with floors: [Floor]) -> String
 }
 
@@ -26,7 +26,7 @@ extension PageRenderer {
         return Bundle(url: templateBundleURL)!
     }
 
-    func userIsBlocked(with _: UInt) -> Bool {
+    func userIsBlocked(with _: Int) -> Bool {
         return false
     }
 

@@ -275,6 +275,7 @@ extension S1TopicListViewModel {
 
             attributedTitle = NSAttributedString(string: topic.title ?? "", attributes: cellTitleAttributes.value)
         case .blank:
+            DDLogError("blank state should not reach this method.")
             fatalError("blank state should not reach this method.")
         }
 

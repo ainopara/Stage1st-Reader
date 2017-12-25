@@ -48,20 +48,22 @@ final class UserViewController: UIViewController {
             }
         }
 
-        viewModel.blocked.producer.startWithValues { [weak self] isBlocked in
+        viewModel.isBlocked.producer.startWithValues { [weak self] isBlocked in
             guard let strongSelf = self else { return }
             strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
         }
 
         blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
             guard let strongSelf = self else { return }
-            strongSelf.viewModel.blocked.value = !strongSelf.viewModel.blocked.value
+            strongSelf.viewModel.toggleBlockStatus()
         }
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
     }
 
     required init?(coder _: NSCoder) {

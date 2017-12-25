@@ -34,13 +34,13 @@ final class QuoteFloorViewModel: NSObject, PageRenderer {
         self.baseURL = baseURL
     }
 
-    func userIsBlocked(with userID: UInt) -> Bool {
+    func userIsBlocked(with userID: Int) -> Bool {
         return dataCenter.userIDIsBlocked(ID: userID)
     }
 }
 
 extension QuoteFloorViewModel: UserViewModelMaker {
-    func userViewModel(userID: UInt) -> UserViewModel {
+    func userViewModel(userID: Int) -> UserViewModel {
         return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
     }

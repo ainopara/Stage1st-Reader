@@ -341,15 +341,15 @@ extension DataCenter {
 
 // MARK: - User Blocking
 extension DataCenter {
-    func blockUser(with ID: UInt) {
+    func blockUser(with ID: Int) {
         tracer.blockUser(withID: ID)
     }
 
-    func unblockUser(with ID: UInt) {
+    func unblockUser(with ID: Int) {
         tracer.unblockUser(withID: ID)
     }
 
-    func userIDIsBlocked(ID: UInt) -> Bool {
+    func userIDIsBlocked(ID: Int) -> Bool {
         return tracer.userIDIsBlocked(ID)
     }
 }

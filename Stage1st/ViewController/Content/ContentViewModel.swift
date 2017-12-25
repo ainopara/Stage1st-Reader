@@ -22,9 +22,9 @@ class ContentViewModel: NSObject, PageRenderer {
     let previousPage: MutableProperty<UInt>
     let totalPages: MutableProperty<UInt>
 
-    let title: DynamicProperty<NSString>
-    let replyCount: DynamicProperty<NSNumber>
-    let favorite: DynamicProperty<NSNumber>
+    let title: DynamicProperty<NSString?>
+    let replyCount: DynamicProperty<NSNumber?>
+    let favorite: DynamicProperty<NSNumber?>
 
     var cachedViewPosition = [UInt: CGFloat]()
 
@@ -69,7 +69,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         totalPages <~ replyCount.producer
-            .map { $0.uintValue / 30 + 1 }
+            .map { ($0?.uintValue ?? 0) / 30 + 1 }
 
         previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
             let (previous, _) = arg
@@ -77,7 +77,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
     }
 
-    func userIsBlocked(with userID: UInt) -> Bool {
+    func userIsBlocked(with userID: Int) -> Bool {
         return dataCenter.userIDIsBlocked(ID: userID)
     }
 }
@@ -254,7 +254,7 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
 }
 
 extension ContentViewModel: UserViewModelMaker {
-    func userViewModel(userID: UInt) -> UserViewModel {
+    func userViewModel(userID: Int) -> UserViewModel {
         return UserViewModel(dataCenter: dataCenter,
                              user: User(ID: userID, name: ""))
     }

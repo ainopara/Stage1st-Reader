@@ -145,7 +145,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation S1YapDatabaseAdapter (User)
 
-- (void)blockUserWithID:(NSUInteger)userID {
+- (void)blockUserWithID:(NSInteger)userID {
     NSString *userIDKey = [NSString stringWithFormat:@"%lu", (unsigned long)userID];
     [self.database.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * _Nonnull transaction) {
         NSDictionary<NSString *, id> *info = @{ @"Date" : [NSDate date] };
@@ -153,14 +153,14 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
-- (void)unblockUserWithID:(NSUInteger)userID {
+- (void)unblockUserWithID:(NSInteger)userID {
     NSString *userIDKey = [NSString stringWithFormat:@"%lu", (unsigned long)userID];
     [self.database.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * _Nonnull transaction) {
         [transaction removeObjectForKey:userIDKey inCollection:Collection_UserBlackList];
     }];
 }
 
-- (BOOL)userIDIsBlocked:(NSUInteger)userID {
+- (BOOL)userIDIsBlocked:(NSInteger)userID {
     NSString *userIDKey = [NSString stringWithFormat:@"%lu", (unsigned long)userID];
     __block BOOL userIsBlocked = NO;
     [self.database.bgDatabaseConnection readWithBlock:^(YapDatabaseReadTransaction * _Nonnull transaction) {

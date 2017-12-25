@@ -296,7 +296,7 @@ public extension DiscuzClient {
 // MARK: - Profile
 public extension DiscuzClient {
     @discardableResult
-    public func profile(userID: UInt, completion: @escaping (Result<User>) -> Void) -> Request {
+    public func profile(userID: Int, completion: @escaping (Result<User>) -> Void) -> Request {
         let parameters: Parameters = [
             "module": "profile",
             "version": 1,
