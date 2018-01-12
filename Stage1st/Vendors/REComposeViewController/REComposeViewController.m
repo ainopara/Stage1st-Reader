@@ -143,6 +143,11 @@
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if (self.presentedViewController != nil) {
+        [super dismissViewControllerAnimated:flag completion:completion];
+        return;
+    }
+
     [self.sheetView.textView endEditing:YES];
 
     [UIView animateWithDuration:0.4 animations:^{
