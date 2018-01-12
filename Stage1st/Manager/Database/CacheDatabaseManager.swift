@@ -25,7 +25,7 @@ class CacheDatabaseManager: NSObject {
     static var shared = CacheDatabaseManager(path: Environment.cacheDatabasePath())
 
     init(path: String) {
-        cacheDatabase = YapDatabase(path: path)
+        cacheDatabase = YapDatabase(path: path)!
         readConnection = cacheDatabase.newConnection()
         backgroundWriteConnection = cacheDatabase.newConnection()
 

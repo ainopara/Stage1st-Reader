@@ -59,7 +59,6 @@ post_install do |installer|
         pods_with_swift3 = [
             'GRMustache.swift',
             'TextAttributes',
-            'QuickTableViewController'
         ]
         if pods_with_swift3.include? target.name then
             target.build_configurations.each do |config|
