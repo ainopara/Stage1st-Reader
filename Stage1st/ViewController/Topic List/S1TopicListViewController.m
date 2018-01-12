@@ -322,13 +322,13 @@
 - (void)updateTabbar:(NSNotification *)notification {
     [self.scrollTabBar setKeys:[self keys]];
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        self.cachedContentOffset = nil;
+        _cachedContentOffset = nil;
     } else {
         self.tableView.hidden = YES;
         [self.viewModel reset];
         self.previousKey = @"";
         self.currentKey = @"";
-        self.cachedContentOffset = nil;
+        _cachedContentOffset = nil;
         [self.tableView reloadData];
     }
     

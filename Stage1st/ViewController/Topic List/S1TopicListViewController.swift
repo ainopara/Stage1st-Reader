@@ -286,7 +286,7 @@ extension S1TopicListViewController {
     @objc func presentInternalList(for type: S1InternalTopicListType) {
         if isPresentingForumList(currentKey) {
             viewModel.cancelRequests()
-            cachedContentOffset![currentKey] = NSValue(cgPoint: tableView.contentOffset)
+            cachedContentOffset[currentKey] = NSValue(cgPoint: tableView.contentOffset)
         }
 
         previousKey = currentKey

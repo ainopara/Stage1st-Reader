@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *previousKey;
 @property (nonatomic, strong) NSString *searchKeyword;
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *_Nullable cachedContentOffset;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
 @property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
 
