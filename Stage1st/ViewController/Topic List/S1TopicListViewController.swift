@@ -239,7 +239,7 @@ extension S1TopicListViewController: UITableViewDataSource {
         if isPresentingDatabaseList(currentKey) {
             let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TopicListHeaderView") as! TopicListHeaderView
 
-            headerView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.header.background")
+            headerView.backgroundView?.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.header.background")
             headerView.label.textColor = ColorManager.shared.colorForKey("topiclist.tableview.header.text")
             headerView.label.text = viewModel.viewMappings?.group(forSection: UInt(section)) ?? "Unknown"
 
