@@ -25,7 +25,7 @@ extension S1Topic {
         }
 
         if let replyCount = json["replies"].string.flatMap({ Int($0) }) {
-            self.replyCount = replyCount as NSNumber
+            self.replyCount = max(0, replyCount) as NSNumber
         }
 
         if let fieldID = fieldID {
