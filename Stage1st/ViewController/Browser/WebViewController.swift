@@ -30,6 +30,8 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var safariButtonItem: UIBarButtonItem?
     var closeButtonItem: UIBarButtonItem?
 
+    var isDismissalOrdered = false
+
     private var observations = [NSKeyValueObservation]()
 
     // MARK: - Life Cycle
@@ -185,6 +187,18 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        if self.presentedViewController == nil {
+            if isDismissalOrdered {
+                super.dismiss(animated: flag, completion: completion)
+            } else {
+                // if isDismissalOrdered not set to true, this may triggered by dismissal of those action sheets come from wkwebview long press. In this case, presentedViewController is nil when this method is called. As a result, this view controller will also be dismissed which is not we want. So do nothing here to fix the dismissal issue.
+            }
+        } else {
+            super.dismiss(animated: flag, completion: completion)
+        }
+    }
+
     // MARK: Layout
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -214,6 +228,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
 
 extension WebViewController {
     @objc func _dismiss() {
+        isDismissalOrdered = true
         self.dismiss(animated: true, completion: nil)
     }
 
