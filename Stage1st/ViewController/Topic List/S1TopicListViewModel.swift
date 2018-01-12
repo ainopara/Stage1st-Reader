@@ -248,7 +248,7 @@ extension S1TopicListViewModel {
 
             isPinningTop = false
 
-            let title = topic.title ?? ""
+            let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
             let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
             let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
             mutableAttributedTitle.addAttributes([
@@ -260,7 +260,7 @@ extension S1TopicListViewModel {
 
             isPinningTop = false
 
-            let title = topic.title ?? ""
+            let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
             let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
             let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
             mutableAttributedTitle.addAttributes([
@@ -270,10 +270,11 @@ extension S1TopicListViewModel {
         case .forum:
             topic = topics[indexPath.row]
 
+            let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
             let lastReplyDate = topic.lastReplyDate ?? Date.distantPast
             isPinningTop = lastReplyDate.timeIntervalSinceNow > 0.0
 
-            attributedTitle = NSAttributedString(string: topic.title ?? "", attributes: cellTitleAttributes.value)
+            attributedTitle = NSAttributedString(string: title, attributes: cellTitleAttributes.value)
         case .blank:
             DDLogError("blank state should not reach this method.")
             fatalError("blank state should not reach this method.")
