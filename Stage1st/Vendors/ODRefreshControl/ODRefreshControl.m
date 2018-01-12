@@ -340,7 +340,7 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         
     } else {
         if (self.lastActionTime != nil && [self.lastActionTime timeIntervalSinceNow] > -0.5) {
-            DDLogDebug(@"Skip for previous action triggered in %f second before.", -[self.lastActionTime timeIntervalSinceNow]);
+            DDLogDebug(@"[ODRefreshControl] Skip for previous action triggered in %f second before.", -[self.lastActionTime timeIntervalSinceNow]);
             return;
         }
         // Start the shape disappearance animation
