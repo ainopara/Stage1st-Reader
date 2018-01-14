@@ -10,7 +10,8 @@ import UIKit
 
 extension S1MahjongFaceView {
 
-    private func categories() -> [MahjongFaceCategory] {
+    // Note: This should be private, but changed to internal to make tests have access to it.
+    internal func categories() -> [MahjongFaceCategory] {
         let categoryIndexFileURL = Bundle.main.bundleURL
             .appendingPathComponent("Mahjong", isDirectory: true)
             .appendingPathComponent("index").appendingPathExtension("json")
