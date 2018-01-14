@@ -16,15 +16,13 @@
     NSMutableString *plainString = [NSMutableString stringWithString:self.string];
     __block NSUInteger base = 0;
     
-    [self enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, self.length)
-                     options:0
-                  usingBlock:^(id value, NSRange range, BOOL *stop) {
-                      if (value && [value isKindOfClass:[S1MahjongFaceTextAttachment class]]) {
-                          [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length)
-                                                     withString:((S1MahjongFaceTextAttachment *) value).mahjongFaceTag];
-                          base += ((S1MahjongFaceTextAttachment *) value).mahjongFaceTag.length - 1;
-                      }
-                  }];
+    [self enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, self.length) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if (value && [value isKindOfClass:[S1MahjongFaceTextAttachment class]]) {
+            [plainString replaceCharactersInRange:NSMakeRange(range.location + base, range.length)
+                                       withString:((S1MahjongFaceTextAttachment *) value).mahjongFaceTag];
+            base += ((S1MahjongFaceTextAttachment *) value).mahjongFaceTag.length - 1;
+        }
+    }];
     
     return plainString;
 }
