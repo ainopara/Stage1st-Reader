@@ -74,13 +74,11 @@
     self.searchBar.text = @"";
     [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
     
-//    self.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
     _loadingMore = NO;
     [self.viewModel cancelRequests];
     [self.navigationItem setRightBarButtonItem:self.historyItem];
     [self.archiveButton recover];
     
-    if (self.refreshControl.hidden) { self.refreshControl.hidden = NO; }
     NSDate *lastRefreshDateForKey = [self.cachedLastRefreshTime valueForKey:key];
     //DDLogDebug(@"cache: %@, date: %@",self.cachedLastRefreshTime, lastRefreshDateForKey);
     //DDLogDebug(@"diff: %f", [[NSDate date] timeIntervalSinceDate:lastRefreshDateForKey]);
@@ -127,7 +125,6 @@
         self.previousKey = self.currentKey;
         self.currentKey = @"Search";
         self.searchKeyword = self.searchBar.text;
-        self.refreshControl.hidden = YES;
 
         __weak __typeof__(self) weakSelf = self;
         [self.dataCenter searchTopicsFor:searchBar.text successBlock:^(NSArray *topicList) {
@@ -210,7 +207,6 @@
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
             strongSelf.currentKey = key;
-//            strongSelf.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
 
             [strongSelf.tableView reloadData];
 
@@ -238,9 +234,6 @@
             [strongSelf.tableView reloadData];
         }
 
-        if (strongSelf.tableView.hidden) {
-            strongSelf.tableView.hidden = NO;
-        }
         // hide HUD
         if (shouldShowRefreshHUD) {
             [strongSelf.refreshHUD hideWithDelay:0.3];
@@ -302,10 +295,6 @@
             }
         }
 
-        if (strongSelf.tableView.hidden) {
-            strongSelf.tableView.hidden = NO;
-        }
-
         // clean up
         if (strongSelf.refreshControl.refreshing) {
             [strongSelf.refreshControl endRefreshing];
@@ -324,7 +313,6 @@
     if ([self isPresentingDatabaseList:self.currentKey]) {
         _cachedContentOffset = nil;
     } else {
-        self.tableView.hidden = YES;
         [self.viewModel reset];
         self.previousKey = @"";
         self.currentKey = @"";
@@ -513,7 +501,6 @@
         if (_tableView.backgroundView) {
             _tableView.backgroundView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.background"];
         }
-        _tableView.hidden = YES;
         if (@available(iOS 11.0, *)) {
             _tableView.tableHeaderView = self.tableHeaderView;
         } else {
@@ -565,7 +552,6 @@
         _searchBar.tintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.bartint"];
         _searchBar.backgroundImage = [[UIImage alloc] init];
-//        _searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
 
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;

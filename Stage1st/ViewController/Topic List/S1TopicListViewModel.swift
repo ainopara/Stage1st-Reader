@@ -70,6 +70,15 @@ final class S1TopicListViewModel: NSObject {
             }
         }
 
+        func isForum() -> Bool {
+            switch self {
+            case .forum:
+                return true
+            default:
+                return false
+            }
+        }
+
         public static func == (lhs: State, rhs: State) -> Bool {
             switch (lhs, rhs) {
             case (.blank, .blank):
@@ -114,6 +123,8 @@ final class S1TopicListViewModel: NSObject {
     private let tableViewReloadingObserver: Signal<(), NoError>.Observer
 
     let searchBarPlaceholderText = MutableProperty("")
+    let isTableViewHidden = MutableProperty(true)
+    let isRefreshControlHidden = MutableProperty(true)
 
     // MARK: -
 
@@ -122,6 +133,14 @@ final class S1TopicListViewModel: NSObject {
         (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
 
         super.init()
+
+        isTableViewHidden <~ currentState.producer.map { (state) -> Bool in
+            return state == .blank
+        }
+
+        isRefreshControlHidden <~ currentState.producer.map { (state) -> Bool in
+            return !state.isForum()
+        }
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)

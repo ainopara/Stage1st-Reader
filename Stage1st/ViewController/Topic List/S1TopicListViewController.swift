@@ -123,6 +123,13 @@ extension S1TopicListViewController {
             guard let strongSelf = self else { return }
             strongSelf.searchBar.placeholder = placeholderText
         }
+
+        tableView.reactive.isHidden <~ viewModel.isTableViewHidden
+
+        viewModel.isRefreshControlHidden.producer.startWithValues { [weak self] (hidden) in
+            guard let strongSelf = self else { return }
+            strongSelf.refreshControl.isHidden = hidden
+        }
     }
 }
 
@@ -346,11 +353,7 @@ extension S1TopicListViewController {
 
         previousKey = currentKey
         currentKey = type == S1TopicListHistory ? "History" : "Favorite"
-        if tableView.isHidden {
-            tableView.isHidden = false
-        }
 
-        self.refreshControl.isHidden = true
         tableView.reloadData()
         viewModel.searchingTerm.value = searchBar.text ?? ""
         tableView.setContentOffset(.zero, animated: false)
