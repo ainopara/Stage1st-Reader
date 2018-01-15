@@ -116,7 +116,7 @@ final class S1TopicListViewModel: NSObject {
     // Internal
     let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
     let paletteNotification = MutableProperty(())
-    let databaseChangedNotification = MutableProperty(())
+    let databaseChangedNotification = MutableProperty([Notification]())
 
     // Output
     let tableViewReloading: Signal<(), NoError>
@@ -144,25 +144,12 @@ final class S1TopicListViewModel: NSObject {
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)
-            .map { _ in return () }
+            .map { (notification) in return notification.userInfo![kNotificationsKey] as! [Notification] }
 
-        databaseChangedNotification.signal.observeValues { [weak self] (notification) in
+        databaseChangedNotification.signal.observeValues { [weak self] (notifications) in
             DDLogVerbose("[TopicListVC] database connection did update.")
-
             guard let strongSelf = self else { return }
-
-            guard strongSelf.viewMappings != nil else {
-                strongSelf.initializeMappings()
-                return
-            }
-
-            strongSelf.updateMappings()
-
-            guard strongSelf.currentState.value.isArchiveTypes() else {
-                return
-            }
-
-            strongSelf.tableViewReloadingObserver.send(value: ())
+            strongSelf.handleDatabaseChanged(with: notifications)
         }
 
         searchBarPlaceholderText <~ MutableProperty
@@ -459,8 +446,30 @@ extension S1TopicListViewModel {
         }
     }
 
-    func searchBarPlaceholderStringForCurrentKey(_ key: String) -> String {
-        let count = key == "Favorite" ? dataCenter.numberOfFavorite() : dataCenter.numberOfTopics()
-        return String(format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"), NSNumber(value: count))
+    private func handleDatabaseChanged(with notifications: [Notification]) {
+        guard viewMappings != nil else {
+            initializeMappings()
+            return
+        }
+
+        updateMappings()
+
+        if currentState.value.isArchiveTypes() {
+            tableViewReloadingObserver.send(value: ())
+        } else if currentState.value.isForumOrSearch() {
+            var hasChange = false
+            for (index, topic) in topics.enumerated() {
+                let key = "\(topic.topicID)"
+                if MyDatabaseManager.uiDatabaseConnection.hasChange(forKey: key, inCollection: Collection_Topics, in: notifications) {
+                    hasChange = true
+                    let updatedTopic = topicWithTracedDataForTopic(topics[index])
+                    topics.remove(at: index)
+                    topics.insert(updatedTopic, at: index)
+                }
+            }
+            if hasChange {
+                tableViewReloadingObserver.send(value: ())
+            }
+        }
     }
 }

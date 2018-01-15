@@ -79,12 +79,6 @@ extension S1TopicListViewController {
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(S1TopicListViewController.reloadTableData),
-            name: .init(rawValue: "S1TopicUpdateNotification"),
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(S1TopicListViewController.didReceivePaletteChangeNotification),
             name: .APPaletteDidChange,
             object: nil
@@ -322,21 +316,7 @@ extension S1TopicListViewController: UINavigationBarDelegate {
     }
 }
 
-// MARK: - Notifications
-
-extension S1TopicListViewController {
-
-    @objc func reloadTableData(_ notification: Notification) {
-        // S1Topic in viewModel.topics will be shared with content view controller, and may be changed when it is saved.
-        // There are exceptions when S1Topic in viewModel.topics is immutable then content view controller will make a copy to it.
-        // That will invalid our assumption that changes in content view controller will automatically apply to model, and we only need to reload data.
-        // This method also do not take change from cloudkit syncing into account.
-        // More works need to be done to make this feature really works.
-        guard viewModel.currentState.value.isForumOrSearch() else { return }
-
-        tableView.reloadData()
-    }
-}
+// MARK: -
 
 extension S1TopicListViewController {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

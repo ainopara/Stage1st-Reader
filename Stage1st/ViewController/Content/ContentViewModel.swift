@@ -28,8 +28,10 @@ class ContentViewModel: NSObject, PageRenderer {
 
     var cachedViewPosition = [UInt: CGFloat]()
 
+    // MARK: Initialize
+
     init(topic: S1Topic, dataCenter: DataCenter) {
-        self.topic = topic.isImmutable ? (topic.copy() as! S1Topic) : topic
+        self.topic = topic.copy() as! S1Topic
 
         if let currentPage = topic.lastViewedPage?.uintValue {
             self.currentPage = MutableProperty(max(currentPage, 1))
