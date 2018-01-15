@@ -149,7 +149,7 @@ final class S1TopicListViewModel: NSObject {
         databaseChangedNotification.signal.observeValues { [weak self] (notifications) in
             DDLogVerbose("[TopicListVC] database connection did update.")
             guard let strongSelf = self else { return }
-            strongSelf.handleDatabaseChanged(with: notifications)
+            strongSelf._handleDatabaseChanged(with: notifications)
         }
 
         searchBarPlaceholderText <~ MutableProperty
@@ -198,7 +198,7 @@ final class S1TopicListViewModel: NSObject {
 
                 switch state {
                 case .history, .favorite:
-                    strongSelf.updateFilter(term)
+                    strongSelf._updateFilter(term)
                 default:
                     break
                     // Nothing to do.
@@ -434,7 +434,7 @@ extension S1TopicListViewModel {
         return topic
     }
 
-    private func updateFilter(_ searchText: String) {
+    private func _updateFilter(_ searchText: String) {
         let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
         DDLogDebug("[TopicListVM] Update filter: \(query)")
@@ -446,7 +446,7 @@ extension S1TopicListViewModel {
         }
     }
 
-    private func handleDatabaseChanged(with notifications: [Notification]) {
+    private func _handleDatabaseChanged(with notifications: [Notification]) {
         guard viewMappings != nil else {
             initializeMappings()
             return
@@ -457,19 +457,27 @@ extension S1TopicListViewModel {
         if currentState.value.isArchiveTypes() {
             tableViewReloadingObserver.send(value: ())
         } else if currentState.value.isForumOrSearch() {
-            var hasChange = false
-            for (index, topic) in topics.enumerated() {
-                let key = "\(topic.topicID)"
-                if MyDatabaseManager.uiDatabaseConnection.hasChange(forKey: key, inCollection: Collection_Topics, in: notifications) {
-                    hasChange = true
-                    let updatedTopic = topicWithTracedDataForTopic(topics[index])
-                    topics.remove(at: index)
-                    topics.insert(updatedTopic, at: index)
-                }
+            // Dispatch heavy task to improve animations when dismissing content view controller.
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf._updateForumOrSearchList(with: notifications)
             }
-            if hasChange {
-                tableViewReloadingObserver.send(value: ())
+        }
+    }
+
+    private func _updateForumOrSearchList(with notifications: [Notification]) {
+        var hasChange = false
+        for (index, topic) in topics.enumerated() {
+            let key = "\(topic.topicID)"
+            if databaseConnection.hasChange(forKey: key, inCollection: Collection_Topics, in: notifications) {
+                hasChange = true
+                let updatedTopic = topicWithTracedDataForTopic(topics[index])
+                topics.remove(at: index)
+                topics.insert(updatedTopic, at: index)
             }
+        }
+        if hasChange {
+            tableViewReloadingObserver.send(value: ())
         }
     }
 }
