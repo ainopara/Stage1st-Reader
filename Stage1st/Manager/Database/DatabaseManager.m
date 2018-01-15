@@ -298,20 +298,30 @@ DatabaseManager *MyDatabaseManager;
     // TODO: compress the generated search string,They are not build-in function, so I must implement them and make them accessed by sqlite.
     // (use sqlite3_create_function to add custom function to sqlite)
     // NSDictionary *options = @{@"compress": @"zip", @"uncompress": @"unzip"};
-    YapDatabaseFullTextSearch *fts = [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch options:nil handler:handler versionTag:@"1"];
+    YapDatabaseFullTextSearch *fts =
+        [[YapDatabaseFullTextSearch alloc] initWithColumnNames:propertiesToIndexForMySearch
+                                                       options:nil
+                                                       handler:handler
+                                                    versionTag:@"1"];
+
     [database asyncRegisterExtension:fts withName:Ext_FullTextSearch_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
-            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogError(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
 
 - (void)setupSearchResultViewExtension {
     YapDatabaseSearchResultsViewOptions *options = [[YapDatabaseSearchResultsViewOptions alloc] init];
-    YapDatabaseSearchResultsView *searchResultView = [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive parentViewName:Ext_View_Archive versionTag:@"1" options:options];
+    YapDatabaseSearchResultsView *searchResultView =
+        [[YapDatabaseSearchResultsView alloc] initWithFullTextSearchName:Ext_FullTextSearch_Archive
+                                                          parentViewName:Ext_View_Archive
+                                                              versionTag:@"1"
+                                                                 options:options];
+
     [database asyncRegisterExtension:searchResultView withName:Ext_searchResultView_Archive completionBlock:^(BOOL ready) {
         if (!ready) {
-            DDLogDebug(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
+            DDLogError(@"Error registering %@ !!!", Ext_FullTextSearch_Archive);
         }
     }];
 }
@@ -521,7 +531,7 @@ DatabaseManager *MyDatabaseManager;
 	
 	[database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
 		if (!ready) {
-			DDLogDebug(@"Error registering %@ !!!", Ext_CloudKit);
+			DDLogError(@"Error registering %@ !!!", Ext_CloudKit);
         } else {
             DDLogDebug(@"Registering %@ finished.", Ext_CloudKit);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
@@ -555,10 +565,13 @@ DatabaseManager *MyDatabaseManager;
 	                                                    object:self
 	                                                  userInfo:userInfo];
 }
+
 #pragma mark Helper
+
 - (void)unregisterCloudKitExtension {
     [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
-        DDLogDebug(@"Exrension %@ unregistered.",Ext_CloudKit);
+        DDLogDebug(@"Exrension %@ unregistered.", Ext_CloudKit);
     }];
 }
+
 @end

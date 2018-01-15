@@ -381,7 +381,6 @@
     DDLogVerbose(@"[TopicListVC] database connection did update.");
     if (self.viewModel.viewMappings == nil) {
         [self.viewModel initializeMappings];
-        
         return;
     }
 

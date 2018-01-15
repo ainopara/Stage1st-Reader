@@ -8,22 +8,19 @@
 
 import Foundation
 import CocoaLumberjack
-import YapDatabase.YapDatabaseFullTextSearch
 import YapDatabase.YapDatabaseSearchResultsView
-import YapDatabase.YapDatabaseFilteredView
 import Alamofire
 import ReactiveSwift
-
-// MARK: -
 
 @objcMembers
 final class S1TopicListViewModel: NSObject {
     let dataCenter: DataCenter
-    var viewMappings: YapDatabaseViewMappings?
-    let databaseConnection: YapDatabaseConnection = MyDatabaseManager.uiDatabaseConnection
-    lazy var searchQueue = YapDatabaseSearchQueue()
 
-    public enum ContentState: Equatable {
+    let databaseConnection: YapDatabaseConnection = MyDatabaseManager.uiDatabaseConnection
+    var viewMappings: YapDatabaseViewMappings?
+    let searchQueue = YapDatabaseSearchQueue()
+
+    public enum State: Equatable {
         case history, favorite
         case search
         case forum(key: String)
@@ -59,7 +56,7 @@ final class S1TopicListViewModel: NSObject {
             }
         }
 
-        public static func == (lhs: ContentState, rhs: ContentState) -> Bool {
+        public static func == (lhs: State, rhs: State) -> Bool {
             switch (lhs, rhs) {
             case (.blank, .blank):
                 return true
@@ -77,13 +74,13 @@ final class S1TopicListViewModel: NSObject {
             }
         }
     }
-    let currentState = MutableProperty(ContentState.blank)
+    let currentState = MutableProperty(State.blank)
     var currentKey: String {
         get {
             return currentState.value.stringRepresentation()
         }
         set {
-            currentState.value = ContentState(key: newValue)
+            currentState.value = State(key: newValue)
         }
     }
     var topics = [S1Topic]()
@@ -96,6 +93,8 @@ final class S1TopicListViewModel: NSObject {
     let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
     let paletteNotification = MutableProperty(())
 
+    // MARK: -
+
     init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
         super.init()
@@ -105,7 +104,7 @@ final class S1TopicListViewModel: NSObject {
 
         MutableProperty.combineLatest(searchingTerm, currentState)
             .producer.skipRepeats({ (current, previous) -> Bool in
-                func group(_ state: ContentState) -> Int {
+                func group(_ state: State) -> Int {
                     switch state {
                     case .history:
                         return 0
@@ -160,6 +159,8 @@ final class S1TopicListViewModel: NSObject {
         initializeMappings()
     }
 
+    // MARK: Input
+
     func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
         dataCenter.topics(for: key, shouldRefresh: refresh, successBlock: { [weak self] topicList in
             guard let strongSelf = self else { return }
@@ -190,6 +191,29 @@ final class S1TopicListViewModel: NSObject {
         })
     }
 
+    func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
+        if let topic = topicAtIndexPath(indexPath) {
+            dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
+        }
+    }
+
+    func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
+        if let topic = topicAtIndexPath(indexPath) {
+            dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
+        }
+    }
+
+    func reset() {
+        self.topics = [S1Topic]()
+        self.currentState.value = .blank
+    }
+
+    @objc func cancelRequests() {
+        dataCenter.cancelRequest()
+    }
+
+    // MARK: Output
+
     func numberOfSections() -> Int {
         if let result = viewMappings?.numberOfSections() {
             return Int(result)
@@ -205,20 +229,12 @@ final class S1TopicListViewModel: NSObject {
             return 0
         }
     }
+}
 
-    func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
-        if let topic = topicAtIndexPath(indexPath) {
-            dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
-        }
-    }
+// MARK: Private
 
-    func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
-        if let topic = topicAtIndexPath(indexPath) {
-            dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
-        }
-    }
-
-    func topicWithTracedDataForTopic(_ topic: S1Topic) -> S1Topic {
+extension S1TopicListViewModel {
+    private func topicWithTracedDataForTopic(_ topic: S1Topic) -> S1Topic {
         if let tracedTopic = dataCenter.traced(topicID: topic.topicID.intValue)?.copy() as? S1Topic {
             tracedTopic.update(topic)
             return tracedTopic
@@ -226,16 +242,9 @@ final class S1TopicListViewModel: NSObject {
             return topic
         }
     }
-
-    func reset() {
-        self.topics = [S1Topic]()
-        self.currentState.value = .blank
-    }
-
-    @objc func cancelRequests() {
-        dataCenter.cancelRequest()
-    }
 }
+
+// MARK: View Model
 
 extension S1TopicListViewModel {
     func cellViewModel(at indexPath: IndexPath) -> TopicListCellViewModel {
@@ -304,17 +313,32 @@ extension S1TopicListViewModel {
 extension S1TopicListViewModel {
     func initializeMappings() {
         databaseConnection.read { transaction in
-            if transaction.ext(Ext_FullTextSearch_Archive) != nil {
-                self.viewMappings = YapDatabaseViewMappings(groupFilterBlock: { (_, _) -> Bool in
-                    true
-                }, sortBlock: { (group1, group2, _) -> ComparisonResult in
-                    S1Formatter.sharedInstance().compareDateString(group1, withDateString: group2)
-                }, view: Ext_searchResultView_Archive)
-                self.viewMappings?.update(with: transaction)
-            } else {
+            guard transaction.ext(Ext_FullTextSearch_Archive) != nil else {
                 // The view isn't ready yet.
                 // We'll try again when we get a databaseConnectionDidUpdate notification.
+                return
             }
+
+            let groupFilterBlock: YapDatabaseViewMappingGroupFilter = { (_, _) in
+                return true
+            }
+            let sortBlock: YapDatabaseViewMappingGroupSort = { (group1, group2, _) -> ComparisonResult in
+                return S1Formatter.sharedInstance().compareDateString(group1, withDateString: group2)
+            }
+
+            self.viewMappings = YapDatabaseViewMappings(
+                groupFilterBlock: groupFilterBlock,
+                sortBlock: sortBlock,
+                view: Ext_searchResultView_Archive
+            )
+
+            self.viewMappings?.update(with: transaction)
+        }
+    }
+
+    func updateMappings() {
+        databaseConnection.read { transaction in
+            self.viewMappings?.update(with: transaction)
         }
     }
 
@@ -329,20 +353,14 @@ extension S1TopicListViewModel {
     }
 
     private func updateFilter(_ searchText: String) {
-        let favoriteMark = currentState.value == ContentState.favorite ? "FY" : "F*"
+        let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
-        DDLogDebug("[TopicListVC] Update filter: \(query)")
+        DDLogDebug("[TopicListVM] Update filter: \(query)")
         searchQueue.enqueueQuery(query)
         MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {
                 ext.performSearch(with: self.searchQueue)
             }
-        }
-    }
-
-    func updateMappings() {
-        databaseConnection.read { transaction in
-            self.viewMappings?.update(with: transaction)
         }
     }
 

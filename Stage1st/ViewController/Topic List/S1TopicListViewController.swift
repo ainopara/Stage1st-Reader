@@ -71,12 +71,42 @@ extension S1TopicListViewController {
             make.height.lessThanOrEqualTo(view)
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.updateTabbar), name: .init(rawValue: "S1UserMayReorderedNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.reloadTableData), name: .init(rawValue: "S1TopicUpdateNotification"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.didReceivePaletteChangeNotification), name: .APPaletteDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.databaseConnectionDidUpdate), name: .UIDatabaseConnectionDidUpdate, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.cloudKitStateChanged), name: .YapDatabaseCloudKitStateChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(S1TopicListViewController.cloudKitStateChanged), name: .UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.updateTabbar),
+            name: .init(rawValue: "S1UserMayReorderedNotification"),
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.reloadTableData),
+            name: .init(rawValue: "S1TopicUpdateNotification"),
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.didReceivePaletteChangeNotification),
+            name: .APPaletteDidChange,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.databaseConnectionDidUpdate),
+            name: .UIDatabaseConnectionDidUpdate,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.cloudKitStateChanged),
+            name: .YapDatabaseCloudKitStateChange,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(S1TopicListViewController.cloudKitStateChanged),
+            name: .UIApplicationWillEnterForeground,
+            object: nil
+        )
 
         tableView.register(TopicListCell.self, forCellReuseIdentifier: "TopicListCell")
         tableView.register(TopicListHeaderView.self, forHeaderFooterViewReuseIdentifier: "TopicListHeaderView")
@@ -96,7 +126,7 @@ extension S1TopicListViewController {
 @objc
 extension S1TopicListViewController {
     func isPresentingDatabaseList(_ key: String) -> Bool {
-        switch S1TopicListViewModel.ContentState(key: key) {
+        switch S1TopicListViewModel.State(key: key) {
         case .favorite, .history:
             return true
         default:
@@ -105,7 +135,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingSearchList(_ key: String) -> Bool {
-        switch S1TopicListViewModel.ContentState(key: key) {
+        switch S1TopicListViewModel.State(key: key) {
         case .search:
             return true
         default:
@@ -114,7 +144,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingForumList(_ key: String) -> Bool {
-        switch S1TopicListViewModel.ContentState(key: key) {
+        switch S1TopicListViewModel.State(key: key) {
         case .forum:
             return true
         default:
@@ -123,7 +153,7 @@ extension S1TopicListViewController {
     }
 
     func isPresentingBlankList(_ key: String) -> Bool {
-        switch S1TopicListViewModel.ContentState(key: key) {
+        switch S1TopicListViewModel.State(key: key) {
         case .blank:
             return true
         default:
@@ -222,11 +252,19 @@ extension S1TopicListViewController: UITableViewDelegate {
 
 extension S1TopicListViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return isPresentingDatabaseList(currentKey) ? viewModel.numberOfSections() : 1
+        if viewModel.currentState.value == .favorite || viewModel.currentState.value == .history {
+            return viewModel.numberOfSections()
+        } else {
+            return 1
+        }
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isPresentingDatabaseList(currentKey) ? viewModel.numberOfItemsInSection(section) : viewModel.topics.count
+        if viewModel.currentState.value == .favorite || viewModel.currentState.value == .history {
+            return viewModel.numberOfItemsInSection(section)
+        } else {
+            return viewModel.topics.count
+        }
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -274,7 +312,32 @@ extension S1TopicListViewController: UINavigationBarDelegate {
     }
 }
 
-// MARK: -
+// MARK: - Notifications
+
+extension S1TopicListViewController {
+    @objc func databaseConnectionDidUpdate(_ notification: Notification) {
+        DDLogVerbose("[TopicListVC] database connection did update.")
+
+        guard viewModel.viewMappings != nil else {
+            viewModel.initializeMappings()
+            return
+        }
+
+        viewModel.updateMappings()
+
+        guard isViewLoaded && view.window != nil else {
+            // If the view isn't visible, we might decide to skip the UI animation stuff.
+            return
+        }
+
+        guard viewModel.currentState.value == .history || viewModel.currentState.value == .favorite else {
+            return
+        }
+
+        tableView.reloadData()
+        searchBar.placeholder = viewModel.searchBarPlaceholderStringForCurrentKey(viewModel.currentKey)
+    }
+}
 
 extension S1TopicListViewController {
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
