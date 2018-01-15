@@ -59,7 +59,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (void)updateTabbar:(NSNotification *)notification;
-- (void)reloadTableData:(NSNotification *)notification;
 - (void)cloudKitStateChanged:(NSNotification *)notification;
 
 - (void)objc_searchBarSearchButtonClicked:(UISearchBar *)searchBar;

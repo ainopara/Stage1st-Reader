@@ -74,7 +74,7 @@
     self.searchBar.text = @"";
     [self.searchBar.delegate searchBar:self.searchBar textDidChange:@""];
     
-    self.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
+//    self.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
     _loadingMore = NO;
     [self.viewModel cancelRequests];
     [self.navigationItem setRightBarButtonItem:self.historyItem];
@@ -210,8 +210,8 @@
             }
             strongSelf.previousKey = strongSelf.currentKey == nil ? @"" : strongSelf.currentKey;
             strongSelf.currentKey = key;
-            strongSelf.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
-            
+//            strongSelf.searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
+
             [strongSelf.tableView reloadData];
 
             if (strongSelf.cachedContentOffset[key] && !scrollToTop) {
@@ -334,12 +334,6 @@
     
 }
 
-- (void)reloadTableData:(NSNotification *)notification {
-    if (![self isPresentingDatabaseList:self.currentKey]) {
-        [self.tableView reloadData];
-    }
-}
-
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
     self.view.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.background"];
     self.tableView.separatorColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.separator"];
@@ -362,7 +356,6 @@
         [self.searchBar reloadInputViews];
     }
 
-    [self.tableView reloadData];
     self.footerView.backgroundColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.background"];
     self.footerView.label.textColor = [[ColorManager shared] colorForKey:@"topiclist.tableview.footer.text"];
     [self.scrollTabBar updateColor];
@@ -375,26 +368,6 @@
     }];
     self.archiveButton.tintColor = [[ColorManager shared] colorForKey:@"topiclist.navigationbar.titlelabel"];
     [self setNeedsStatusBarAppearanceUpdate];
-}
-
-- (void)databaseConnectionDidUpdate:(NSNotification *)notification {
-    DDLogVerbose(@"[TopicListVC] database connection did update.");
-    if (self.viewModel.viewMappings == nil) {
-        [self.viewModel initializeMappings];
-        return;
-    }
-
-    [self.viewModel updateMappings];
-
-    // If the view isn't visible, we might decide to skip the UI animation stuff.
-    if (!(self.isViewLoaded && self.view.window)) {
-        return;
-    }
-
-    if ([self isPresentingDatabaseList:self.currentKey]) {
-        [self.tableView reloadData];
-        self.searchBar.placeholder = [self.viewModel searchBarPlaceholderStringForCurrentKey:self.currentKey];
-    }
 }
 
 - (void)cloudKitStateChanged:(NSNotification *)notification {
@@ -592,7 +565,7 @@
         _searchBar.tintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.tint"];
         _searchBar.barTintColor = [[ColorManager shared] colorForKey:@"topiclist.searchbar.bartint"];
         _searchBar.backgroundImage = [[UIImage alloc] init];
-        _searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
+//        _searchBar.placeholder = NSLocalizedString(@"TopicListViewController.SearchBar_Hint", @"Search");
 
         UISwipeGestureRecognizer *gestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(clearSearchBarText:)];
         gestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;

@@ -11,6 +11,7 @@ import CocoaLumberjack
 import YapDatabase.YapDatabaseSearchResultsView
 import Alamofire
 import ReactiveSwift
+import Result
 
 @objcMembers
 final class S1TopicListViewModel: NSObject {
@@ -56,6 +57,19 @@ final class S1TopicListViewModel: NSObject {
             }
         }
 
+        func isArchiveTypes() -> Bool {
+            return self == .history || self == .favorite
+        }
+
+        func isForumOrSearch() -> Bool {
+            switch self {
+            case .forum, .search:
+                return true
+            default:
+                return false
+            }
+        }
+
         public static func == (lhs: State, rhs: State) -> Bool {
             switch (lhs, rhs) {
             case (.blank, .blank):
@@ -83,6 +97,7 @@ final class S1TopicListViewModel: NSObject {
             currentState.value = State(key: newValue)
         }
     }
+
     var topics = [S1Topic]()
 
     // Inputs
@@ -92,15 +107,67 @@ final class S1TopicListViewModel: NSObject {
     // Internal
     let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
     let paletteNotification = MutableProperty(())
+    let databaseChangedNotification = MutableProperty(())
+
+    // Output
+    let tableViewReloading: Signal<(), NoError>
+    private let tableViewReloadingObserver: Signal<(), NoError>.Observer
+
+    let searchBarPlaceholderText = MutableProperty("")
 
     // MARK: -
 
     init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
+        (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
+
         super.init()
 
-        paletteNotification <~ NotificationCenter.default.reactive.notifications(forName: .APPaletteDidChange)
+        databaseChangedNotification <~ NotificationCenter.default.reactive
+            .notifications(forName: .UIDatabaseConnectionDidUpdate)
             .map { _ in return () }
+
+        databaseChangedNotification.signal.observeValues { [weak self] (notification) in
+            DDLogVerbose("[TopicListVC] database connection did update.")
+
+            guard let strongSelf = self else { return }
+
+            guard strongSelf.viewMappings != nil else {
+                strongSelf.initializeMappings()
+                return
+            }
+
+            strongSelf.updateMappings()
+
+            guard strongSelf.currentState.value.isArchiveTypes() else {
+                return
+            }
+
+            strongSelf.tableViewReloadingObserver.send(value: ())
+        }
+
+        searchBarPlaceholderText <~ MutableProperty
+            .combineLatest(currentState, databaseChangedNotification)
+            .producer.map { (state, _) -> String in
+                switch state {
+                case .favorite:
+                    let count = dataCenter.numberOfFavorite()
+                    return String(
+                        format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"),
+                        NSNumber(value: count)
+                    )
+                case .history:
+                    let count = dataCenter.numberOfTopics()
+                    return String(
+                        format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"),
+                        NSNumber(value: count)
+                    )
+                case .search, .forum:
+                    return NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search")
+                case .blank:
+                    return NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search")
+                }
+            }.skipRepeats()
 
         MutableProperty.combineLatest(searchingTerm, currentState)
             .producer.skipRepeats({ (current, previous) -> Bool in
@@ -132,6 +199,10 @@ final class S1TopicListViewModel: NSObject {
             }
         }
 
+        paletteNotification <~ NotificationCenter.default.reactive
+            .notifications(forName: .APPaletteDidChange)
+            .map { _ in return () }
+
         cellTitleAttributes <~ MutableProperty.combineLatest(traitCollection, paletteNotification).map { (trait, _) in
             let paragraphStype = NSMutableParagraphStyle()
             paragraphStype.lineBreakMode = .byWordWrapping
@@ -150,6 +221,11 @@ final class S1TopicListViewModel: NSObject {
                 .foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.text"),
                 .paragraphStyle: paragraphStype
             ]
+        }
+
+        cellTitleAttributes.signal.observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.tableViewReloadingObserver.send(value: ())
         }
 
 //            .producer.startWithValues { (state, term, trait) in

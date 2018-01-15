@@ -91,12 +91,6 @@ extension S1TopicListViewController {
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(S1TopicListViewController.databaseConnectionDidUpdate),
-            name: .UIDatabaseConnectionDidUpdate,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(S1TopicListViewController.cloudKitStateChanged),
             name: .YapDatabaseCloudKitStateChange,
             object: nil
@@ -111,15 +105,24 @@ extension S1TopicListViewController {
         tableView.register(TopicListCell.self, forCellReuseIdentifier: "TopicListCell")
         tableView.register(TopicListHeaderView.self, forHeaderFooterViewReuseIdentifier: "TopicListHeaderView")
 
-        viewModel.cellTitleAttributes.producer.startWithValues { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            strongSelf.tableView.reloadData()
-        }
+        bindViewModel()
     }
 
     open override func didReceiveMemoryWarning() {
         dataCenter.clearTopicListCache()
         S1Formatter.sharedInstance().clearCache()
+    }
+
+    func bindViewModel() {
+        viewModel.tableViewReloading.observeValues { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.tableView.reloadData()
+        }
+
+        viewModel.searchBarPlaceholderText.producer.startWithValues { [weak self] (placeholderText) in
+            guard let strongSelf = self else { return }
+            strongSelf.searchBar.placeholder = placeholderText
+        }
     }
 }
 
@@ -315,27 +318,16 @@ extension S1TopicListViewController: UINavigationBarDelegate {
 // MARK: - Notifications
 
 extension S1TopicListViewController {
-    @objc func databaseConnectionDidUpdate(_ notification: Notification) {
-        DDLogVerbose("[TopicListVC] database connection did update.")
 
-        guard viewModel.viewMappings != nil else {
-            viewModel.initializeMappings()
-            return
-        }
-
-        viewModel.updateMappings()
-
-        guard isViewLoaded && view.window != nil else {
-            // If the view isn't visible, we might decide to skip the UI animation stuff.
-            return
-        }
-
-        guard viewModel.currentState.value == .history || viewModel.currentState.value == .favorite else {
-            return
-        }
+    @objc func reloadTableData(_ notification: Notification) {
+        // S1Topic in viewModel.topics will be shared with content view controller, and may be changed when it is saved.
+        // There are exceptions when S1Topic in viewModel.topics is immutable then content view controller will make a copy to it.
+        // That will invalid our assumption that changes in content view controller will automatically apply to model, and we only need to reload data.
+        // This method also do not take change from cloudkit syncing into account.
+        // More works need to be done to make this feature really works.
+        guard viewModel.currentState.value.isForumOrSearch() else { return }
 
         tableView.reloadData()
-        searchBar.placeholder = viewModel.searchBarPlaceholderStringForCurrentKey(viewModel.currentKey)
     }
 }
 
