@@ -13,6 +13,7 @@
 #import <YapDatabase/YapDatabaseCloudKit.h>
 #import <SafariServices/SafariServices.h>
 #import <AcknowList/AcknowList-Swift.h>
+@import CrashlyticsLogger;
 
 @interface SettingsViewController ()<UITableViewDelegate>
 
@@ -229,8 +230,7 @@
         [self.navigationController pushViewController:[[AdvancedSettingsViewController alloc] initWithNibName:nil bundle:nil] animated:YES];
     } else if (indexPath.section == 2 && indexPath.row == 2) {
 #ifdef DEBUG
-        InMemoryLogViewController *logViewController = [[InMemoryLogViewController alloc] initInMemoryLogger:[InMemoryLogger shared]];
-        [self.navigationController pushViewController:logViewController animated:YES];
+        [self pushLogViewer];
 #else
         SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:@"https://ainopara.github.io/stage1st-reader-EULA.html"]];
         [self presentViewController:safariViewController animated:YES completion:NULL];

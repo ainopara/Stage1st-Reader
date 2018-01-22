@@ -57,11 +57,7 @@
 		8634ADF51FAAF3C2004A9CB7 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD41FAAF3C2004A9CB7 /* TFHpple.m */; };
 		8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD71FAAF3C2004A9CB7 /* TFHppleElement.m */; };
 		8634ADF71FAAF3C2004A9CB7 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD81FAAF3C2004A9CB7 /* XPathQuery.m */; };
-		8634ADF81FAAF3C2004A9CB7 /* InMemoryLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDA1FAAF3C2004A9CB7 /* InMemoryLogViewController.swift */; };
 		8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */; };
-		8634ADFB1FAAF3C2004A9CB7 /* CrashlyticsLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDF1FAAF3C2004A9CB7 /* CrashlyticsLogger.m */; };
-		8634ADFC1FAAF3C2004A9CB7 /* InMemoryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADE01FAAF3C2004A9CB7 /* InMemoryLogger.swift */; };
-		8634ADFD1FAAF3C2004A9CB7 /* DDErrorLevelFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADE11FAAF3C2004A9CB7 /* DDErrorLevelFormatter.m */; };
 		8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */; };
 		8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */; };
 		8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E2101EA3253200E426B2 /* MahjongFaceView.swift */; };
@@ -211,13 +207,7 @@
 		8634ADD61FAAF3C2004A9CB7 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
 		8634ADD71FAAF3C2004A9CB7 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
 		8634ADD81FAAF3C2004A9CB7 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
-		8634ADDA1FAAF3C2004A9CB7 /* InMemoryLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryLogViewController.swift; sourceTree = "<group>"; };
-		8634ADDB1FAAF3C2004A9CB7 /* DDErrorLevelFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDErrorLevelFormatter.h; sourceTree = "<group>"; };
-		8634ADDC1FAAF3C2004A9CB7 /* CrashlyticsLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashlyticsLogger.h; sourceTree = "<group>"; };
 		8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stage1stLog.swift; sourceTree = "<group>"; };
-		8634ADDF1FAAF3C2004A9CB7 /* CrashlyticsLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashlyticsLogger.m; sourceTree = "<group>"; };
-		8634ADE01FAAF3C2004A9CB7 /* InMemoryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryLogger.swift; sourceTree = "<group>"; };
-		8634ADE11FAAF3C2004A9CB7 /* DDErrorLevelFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDErrorLevelFormatter.m; sourceTree = "<group>"; };
 		8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceCategory.swift; sourceTree = "<group>"; };
 		8635E2101EA3253200E426B2 /* MahjongFaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceView.swift; sourceTree = "<group>"; };
@@ -459,20 +449,6 @@
 			path = TFHpple;
 			sourceTree = "<group>";
 		};
-		8634ADD91FAAF3C2004A9CB7 /* CrashlyticsLogger */ = {
-			isa = PBXGroup;
-			children = (
-				8634ADDA1FAAF3C2004A9CB7 /* InMemoryLogViewController.swift */,
-				8634ADDB1FAAF3C2004A9CB7 /* DDErrorLevelFormatter.h */,
-				8634ADDC1FAAF3C2004A9CB7 /* CrashlyticsLogger.h */,
-				8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */,
-				8634ADDF1FAAF3C2004A9CB7 /* CrashlyticsLogger.m */,
-				8634ADE01FAAF3C2004A9CB7 /* InMemoryLogger.swift */,
-				8634ADE11FAAF3C2004A9CB7 /* DDErrorLevelFormatter.m */,
-			);
-			path = CrashlyticsLogger;
-			sourceTree = "<group>";
-		};
 		863580111A945DED007B21AD /* Topic List */ = {
 			isa = PBXGroup;
 			children = (
@@ -688,7 +664,6 @@
 			isa = PBXGroup;
 			children = (
 				8634ADBB1FAAF3C1004A9CB7 /* ColorManager */,
-				8634ADD91FAAF3C2004A9CB7 /* CrashlyticsLogger */,
 				8634ADBD1FAAF3C1004A9CB7 /* Gagat */,
 				8634ADA91FAAF3C0004A9CB7 /* GoogleToolbox */,
 				8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */,
@@ -699,6 +674,7 @@
 				8634ADD21FAAF3C2004A9CB7 /* TFHpple */,
 				868799201CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift */,
 				86221B851CA65E3600015522 /* Utilities.swift */,
+				8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */,
 				860223501895051400A3E66E /* S1Global.h */,
 				860223511895051400A3E66E /* S1Global.m */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
@@ -1132,7 +1108,6 @@
 				8634ADF11FAAF3C2004A9CB7 /* GSReorderableTableViewController.m in Sources */,
 				8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */,
 				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
-				8634ADFD1FAAF3C2004A9CB7 /* DDErrorLevelFormatter.m in Sources */,
 				867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */,
 				86319B411CA69EEB004F7586 /* Floor.swift in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,
@@ -1162,7 +1137,6 @@
 				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
 				8634ADE61FAAF3C2004A9CB7 /* WebViewController.swift in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
-				8634ADFC1FAAF3C2004A9CB7 /* InMemoryLogger.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
 				36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */,
@@ -1186,7 +1160,6 @@
 				8634ADED1FAAF3C2004A9CB7 /* Gagat.swift in Sources */,
 				86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */,
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
-				8634ADF81FAAF3C2004A9CB7 /* InMemoryLogViewController.swift in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */,
@@ -1194,7 +1167,6 @@
 				8634ADF51FAAF3C2004A9CB7 /* TFHpple.m in Sources */,
 				8634ADF71FAAF3C2004A9CB7 /* XPathQuery.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
-				8634ADFB1FAAF3C2004A9CB7 /* CrashlyticsLogger.m in Sources */,
 				86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */,
 				862DB79A1C8891070068F75F /* UserViewController.swift in Sources */,
 			);

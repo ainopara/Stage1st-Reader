@@ -14,8 +14,6 @@
 #import "S1Parser.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "CrashlyticsLogger.h"
-#import "DDErrorLevelFormatter.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Reachability/Reachability.h>
@@ -30,42 +28,7 @@ S1AppDelegate *MyAppDelegate;
         // Store global reference
         MyAppDelegate = self;
 
-        // Configure logging
-        DDMultiFormatter *formatter = [[DDMultiFormatter alloc] init];
-#ifdef DEBUG
-        id <DDLogger> logger = [DDTTYLogger sharedInstance];
-        [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
-        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(194, 99, 107) backgroundColor:nil forFlag:DDLogFlagError];
-        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(211, 142, 118) backgroundColor:nil forFlag:DDLogFlagWarning];
-        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(118, 164, 211) backgroundColor:nil forFlag:DDLogFlagInfo];
-        [[DDTTYLogger sharedInstance] setForegroundColor:DDMakeColor(167, 173, 187) backgroundColor:nil forFlag:DDLogFlagVerbose];
-        [formatter addFormatter:[[DDSimpleDispatchQueueLogFormatter alloc] init]];
-        [formatter addFormatter:[[DDErrorLevelFormatter alloc] init]];
-        [formatter addFormatter:[[DDSimpleDateLogFormatter alloc] init]];
-        [logger setLogFormatter:formatter];
-        [self setLogLevelForSwift];
-        [DDLog addLogger:logger];
-
-        // In-Memory Logger
-        InMemoryLogger *inMemoryLogger = [InMemoryLogger shared];
-        [inMemoryLogger setLogFormatter:formatter];
-        [DDLog addLogger:inMemoryLogger];
-
-        // OS Logger
-        if (@available(iOS 10.0, *)) {
-            DDOSLogger *osLogger = [[DDOSLogger alloc] init];
-            [osLogger setLogFormatter:formatter];
-            [DDLog addLogger:osLogger];
-        }
-
-#else
-        id <DDLogger> logger = [CrashlyticsLogger sharedInstance];
-        [formatter addFormatter:[[DDSimpleDispatchQueueLogFormatter alloc] init]];
-        [formatter addFormatter:[[DDErrorLevelFormatter alloc] init]];
-        [logger setLogFormatter:formatter];
-        [self setLogLevelForSwift];
-        [DDLog addLogger:logger];
-#endif
+        [self setupLogging];
         
     }
     return self;

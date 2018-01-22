@@ -9,6 +9,7 @@ import UIKit
 import AcknowList
 import WebKit
 import CocoaLumberjack
+import CrashlyticsLogger
 import Files
 
 extension SettingsViewController {
@@ -29,6 +30,12 @@ extension SettingsViewController {
 }
 
 extension SettingsViewController {
+
+    @objc func pushLogViewer() {
+        let logViewController = InMemoryLogViewController()
+        navigationController?.pushViewController(logViewController, animated: true)
+    }
+
     @objc func acknowledgementListViewController() -> AcknowListViewController {
         let acknowledgmentPlistFilePath = Bundle.main.path(forResource: "Pods-Stage1st-acknowledgements", ofType: "plist")
         return AcknowListViewController(acknowledgementsPlistPath: acknowledgmentPlistFilePath)

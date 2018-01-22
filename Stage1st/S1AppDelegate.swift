@@ -8,6 +8,7 @@
 
 import Foundation
 import CocoaLumberjack
+import CrashlyticsLogger
 import CloudKit
 import AlamofireImage
 
@@ -35,11 +36,40 @@ struct Constants {
 // MARK: Logging
 extension S1AppDelegate {
 
-    @objc func setLogLevelForSwift() {
+    @objc func setupLogging() {
+
         #if DEBUG
             defaultDebugLevel = .verbose
+
+            let formatter = DDMultiFormatter()
+            formatter.add(DispatchQueueLogFormatter())
+            formatter.add(ErrorLevelLogFormatter())
+            formatter.add(DateLogFormatter())
+
+            let inMemoryLogger = InMemoryLogger.shared
+            inMemoryLogger.logFormatter = formatter
+            DDLog.add(inMemoryLogger)
+
+            if #available(iOS 10, *) {
+                let osLogger = DDOSLogger()
+                osLogger.logFormatter = formatter
+                DDLog.add(osLogger)
+            } else {
+                let ttyLogger = DDTTYLogger.sharedInstance!
+                ttyLogger.logFormatter = formatter
+                DDLog.add(ttyLogger)
+            }
         #else
             defaultDebugLevel = .info
+
+            let formatter = DDMultiFormatter()
+            formatter.add(DispatchQueueLogFormatter())
+            formatter.add(ErrorLevelLogFormatter())
+
+            let logger = CrashlyticsLogger.shared
+            logger.logFormatter = formatter
+            DDLog.add(logger)
+
         #endif
     }
 }
