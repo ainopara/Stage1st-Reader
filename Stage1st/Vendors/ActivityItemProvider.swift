@@ -9,28 +9,36 @@
 import UIKit
 
 extension UIActivityType {
+    static let weibo = UIActivityType("com.sina.weibo.ShareExtension")
     static let moke2 = UIActivityType("com.moke.moke-2.Share")
+    static let jidian = UIActivityType("me.imtx.NewLime.NewLimeShare")
+
+    static let tweetBot4 = UIActivityType("com.tapbots.Tweetbot4.shareextension")
 }
 
 class ContentTextActivityItemProvider: UIActivityItemProvider {
     let title: String
+    let urlString: String
 
     override var item: Any {
         guard let activityType = self.activityType else {
-            return title
+            return "\(title) \(urlString)"
         }
         switch activityType {
-        case UIActivityType.postToWeibo, UIActivityType.moke2:
-            return "\(self.title) #Stage1st Reader# "
-        case UIActivityType.postToTwitter:
-            return "\(self.title) #Stage1stReader "
+        case .weibo:
+            return UIImage() // Weibo official iOS client only support share image.
+        case .postToWeibo, .moke2, .jidian:
+            return "\(self.title) #Stage1st Reader# \(urlString)"
+        case .postToTwitter, .tweetBot4:
+            return "\(self.title) #Stage1st \(urlString)"
         default:
-            return title
+            return "\(title) \(urlString)"
         }
     }
 
-    init(title: String) {
+    init(title: String, urlString: String) {
         self.title = title
+        self.urlString = urlString
         super.init(placeholderItem: "")
     }
 }

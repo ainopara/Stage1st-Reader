@@ -569,12 +569,16 @@ extension S1ContentViewController {
                 value.size.height -= 20.0
             }
 
-            let items: [Any] = ([
-                ContentTextActivityItemProvider(title: strongSelf.viewModel.topic.title ?? ""),
-                strongSelf.viewModel.correspondingWebPageURL(),
-                ContentImageActivityItemProvider(view: strongSelf.view, cropTo: rect),
-                ] as [Any?])
-                .flatMap { $0 }
+            let items: [Any] = [
+                ContentTextActivityItemProvider(
+                    title: strongSelf.viewModel.topic.title ?? "",
+                    urlString: strongSelf.viewModel.correspondingWebPageURL()?.absoluteString ?? ""
+                ),
+                ContentImageActivityItemProvider(
+                    view: strongSelf.view,
+                    cropTo: rect
+                )
+            ]
 
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
