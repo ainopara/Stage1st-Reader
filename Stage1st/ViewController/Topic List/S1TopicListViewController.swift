@@ -256,17 +256,23 @@ extension S1TopicListViewController: UITableViewDelegate {
 
 extension S1TopicListViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
-        if viewModel.currentState.value == .favorite || viewModel.currentState.value == .history {
+        switch viewModel.currentState.value {
+        case .favorite, .history:
             return viewModel.numberOfSections()
-        } else {
+        case .blank:
+            return 0
+        case .forum(key: _), .search:
             return 1
         }
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if viewModel.currentState.value == .favorite || viewModel.currentState.value == .history {
+        switch viewModel.currentState.value {
+        case .favorite, .history:
             return viewModel.numberOfItemsInSection(section)
-        } else {
+        case .blank:
+            return 0
+        case .forum(key: _), .search:
             return viewModel.topics.count
         }
     }
