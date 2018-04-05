@@ -30,7 +30,7 @@ target "Stage1st" do
     pod 'CocoaLumberjack/Swift'
     pod 'CrashlyticsLogger', :git => 'https://github.com/ainopara/CrashlyticsLogger.git', :tag => '0.1.0'
     pod 'ReactiveCocoa'
-    pod 'ReactiveSwift'
+    pod 'ReactiveSwift', :git => 'https://github.com/ReactiveCocoa/ReactiveSwift.git', :branch => 'swift-4.1'
 
     pod 'Fabric'
     pod 'Crashlytics'
