@@ -15,11 +15,11 @@ class AnimationView: UIView {
     var images: [UIImage] = []
     fileprivate var cgImages: [AnyObject] {
         if tintColor == nil {
-            return images.flatMap({ image in
+            return images.compactMap({ image in
                 image.cgImage
             })
         }
-        return images.flatMap({ templateImage in
+        return images.compactMap({ templateImage in
             templateImage.s1_tintWithColor(self.tintColor).cgImage
         })
     }

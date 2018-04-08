@@ -206,7 +206,7 @@ extension PageRenderer {
 
                     let spoilers = spoilerXpathList
                         .map { (try? xmlDocument.nodes(forXPath: $0)) as? [DDXMLElement] }
-                        .flatMap { $0 } /// [[T]?] -> [[T]]
+                        .compactMap { $0 } /// [[T]?] -> [[T]]
                         .flatMap { $0 } /// [[T]] -> [T]
 
                     for spoilerElement in spoilers {

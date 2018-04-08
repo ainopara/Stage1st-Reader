@@ -140,7 +140,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         if ([transaction hasObjectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit]) {
             databaseCloudKitManagerVersion = [[transaction objectForKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit] unsignedIntegerValue];
         }
-        if (databaseCloudKitManagerVersion >= currentVersion) {
+        if (databaseCloudKitManagerVersion >= self->currentVersion) {
             self.needsUpgrade = NO;
             [MyDatabaseManager.cloudKitExtension resume];
         }
@@ -270,7 +270,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
         // Suspend the queue.
         // We will resume it upon completion of the operation.
         // This ensures that there is only one outstanding operation at a time.
-        dispatch_suspend(setupQueue);
+        dispatch_suspend(self->setupQueue);
 
         [self _upgradeManager];
     }});
@@ -308,7 +308,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
     // Update database version
     [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        [transaction setObject:@(currentVersion) forKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit];
+        [transaction setObject:@(self->currentVersion) forKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit];
     }];
 
     // Continue setup
@@ -325,7 +325,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding operation at a time.
-		dispatch_suspend(setupQueue);
+        dispatch_suspend(self->setupQueue);
 		
 		[self _createZone];
 	}});
@@ -389,7 +389,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			[MyDatabaseManager.cloudKitExtension resume];
 			
 			// Put flag in database so we know we can skip this operation next time
-			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            [self->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				[transaction setObject:@(YES) forKey:Key_HasZone inCollection:Collection_CloudKit];
 			}];
@@ -398,7 +398,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			[self continueCloudKitFlow];
 		}
 		
-		dispatch_resume(setupQueue);
+        dispatch_resume(self->setupQueue);
 	};
 		
 	[[[CKContainer defaultContainer] privateCloudDatabase] addOperation:modifyRecordZonesOperation];
@@ -411,7 +411,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding operation at a time.
-		dispatch_suspend(setupQueue);
+        dispatch_suspend(self->setupQueue);
 		
 		[self _createZoneSubscription];
 	}});
@@ -457,7 +457,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			[MyDatabaseManager.cloudKitExtension resume];
 			
 			// Put flag in database so we know we can skip this operation next time
-			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            [self->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				[transaction setObject:@(YES) forKey:Key_HasZoneSubscription inCollection:Collection_CloudKit];
                 [transaction setObject:@(1) forKey:Key_CloudKitManagerVersion inCollection:Collection_CloudKit];
@@ -467,7 +467,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 			[self continueCloudKitFlow];
 		}
 		
-		dispatch_resume(setupQueue);
+        dispatch_resume(self->setupQueue);
 	};
 	
 	[[[CKContainer defaultContainer] privateCloudDatabase] addOperation:modifySubscriptionsOperation];
@@ -519,7 +519,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		// Suspend the queue.
 		// We will resume it upon completion of the operation.
 		// This ensures that there is only one outstanding fetchRecordsOperation at a time.
-		dispatch_suspend(fetchQueue);
+        dispatch_suspend(self->fetchQueue);
 		
         [strongSelf _fetchRecordChangesWithCompletionHandler:^(UIBackgroundFetchResult result, BOOL moreComing){
             if (strongSelf.state == CKManagerStateFetching && result != UIBackgroundFetchResultFailed && moreComing == NO) {
@@ -602,7 +602,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
             {
                 // CKErrorChangeTokenExpired:
                 //   The previousServerChangeToken value is too old and the client must re-sync from scratch.
-                [databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+                [self->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
                     [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
                 } completionBlock:^{
                     if (completionHandler) {
@@ -779,7 +779,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 					[strongSelf _fetchRecordChangesWithCompletionHandler:completionHandler];
 				}
 				else {
-					dispatch_resume(fetchQueue);
+                    dispatch_resume(self->fetchQueue);
 				}
 			}];
 		
@@ -829,7 +829,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		{
 			DDLogDebug(@"CKFetchRecordsOperation: recordsByRecordID: %@", recordsByRecordID);
 			
-			[databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
+            [self->databaseConnection asyncReadWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
 				
 				for (CKRecord *record in [recordsByRecordID objectEnumerator])
 				{

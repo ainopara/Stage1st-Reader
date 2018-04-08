@@ -56,7 +56,7 @@ class Poll: NSObject {
 
     init?(json: JSON) {
         guard let optionsDictionary = json["polloptions"].dictionary else { return nil }
-        options = optionsDictionary.values.flatMap { (json) -> PollOption? in
+        options = optionsDictionary.values.compactMap { (json) -> PollOption? in
             return PollOption(json: json)
         }
 

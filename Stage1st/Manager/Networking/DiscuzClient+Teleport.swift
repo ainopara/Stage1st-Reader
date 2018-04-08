@@ -238,7 +238,7 @@ public extension DiscuzClient {
 
                 let topics = topicList
                     .map { S1Topic(json: $0, fieldID: field.ID) }
-                    .flatMap { $0 }
+                    .compactMap { $0 }
 
                 let username = json["Variables"]["member_username"].string
                 let formhash = json["Variables"]["formhash"].string

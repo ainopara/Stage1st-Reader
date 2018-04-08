@@ -79,12 +79,12 @@
 
     [_backView addSubview:self.sheetView];
     [self.sheetView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(_backView);
+        make.edges.equalTo(self->_backView);
     }];
 
     [_containerView addSubview:_backView];
     [_backView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(_containerView);
+        make.edges.equalTo(self->_containerView);
     }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateKeyboardFrame:) name:UIKeyboardDidShowNotification object:nil];
@@ -99,8 +99,8 @@
 
     [self.sheetView.textView becomeFirstResponder];
     [UIView animateWithDuration:0.3 animations:^{
-        _containerView.alpha = 1;
-        _backgroundView.alpha = 1;
+        self->_containerView.alpha = 1;
+        self->_backgroundView.alpha = 1;
     }];
 }
 
@@ -151,11 +151,11 @@
     [self.sheetView.textView endEditing:YES];
 
     [UIView animateWithDuration:0.4 animations:^{
-        _containerView.alpha = 0;
+        self->_containerView.alpha = 0;
     }];
     
     [UIView animateWithDuration:0.4 delay:0.1 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        _backgroundView.alpha = 0;
+        self->_backgroundView.alpha = 0;
     } completion:^(BOOL finished) {
         if (completion) {
             completion();

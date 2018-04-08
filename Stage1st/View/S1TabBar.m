@@ -75,10 +75,9 @@
         }
         [btn setTag:idx];
         [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
-        [_buttons addObject:btn];
+        [self->_buttons addObject:btn];
         width += 80.0; // The Width will be reset by layoutSubviews
         [self addSubview:btn];
-        
     }];
     //update content size when user change keys in settings.
     self.contentSize = CGSizeMake(width, self.bounds.size.height);

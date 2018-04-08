@@ -178,8 +178,8 @@ DatabaseManager *MyDatabaseManager;
 	// Do NOT copy this blindly into your app unless you know exactly what you're doing.
 	// https://github.com/yapstudios/YapDatabase/wiki/Object-Policy
 	//
-	database.defaultObjectPolicy = YapDatabasePolicyShare;
-	database.defaultMetadataPolicy = YapDatabasePolicyShare;
+    database.connectionDefaults.objectPolicy = YapDatabasePolicyShare;
+    database.connectionDefaults.metadataPolicy = YapDatabasePolicyShare;
 	//
 	// ^^^ FOR ADVANCED USERS ONLY ^^^
 	

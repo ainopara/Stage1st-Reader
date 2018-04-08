@@ -20,7 +20,7 @@ extension S1MahjongFaceView {
         let categoryData = Array<[String: Any]>.s1_array(fromJSONFileURL: categoryIndexFileURL) ?? []
         // swiftlint:enable syntactic_sugar
 
-        return categoryData.flatMap { MahjongFaceCategory(dictionary: $0) }
+        return categoryData.compactMap { MahjongFaceCategory(dictionary: $0) }
     }
 
     @objc func categoriesWithHistory() -> [MahjongFaceCategory] {

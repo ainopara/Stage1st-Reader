@@ -32,7 +32,7 @@ class MahjongFaceCategory: NSObject {
 
         self.id = id
         self.name = name
-        self.content = content.flatMap { MahjongFaceItem(dictionary: $0, category: id) }
+        self.content = content.compactMap { MahjongFaceItem(dictionary: $0, category: id) }
 
         super.init()
     }

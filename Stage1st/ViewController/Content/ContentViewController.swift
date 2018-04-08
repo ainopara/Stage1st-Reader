@@ -413,7 +413,7 @@ extension S1ContentViewController {
         case (true, true):
             refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
         case (false, _):
-            if sender as? WKWebView != nil {
+            if sender is WKWebView {
                 scrollType = .pullUpForNext
             } else {
                 scrollType = .restorePosition
@@ -421,8 +421,6 @@ extension S1ContentViewController {
             _hook_preChangeCurrentPage()
             viewModel.currentPage.value += 1
             fetchContentForCurrentPage(forceUpdate: false)
-        default:
-            DDLogError("This should never happen, just make swift compiler happy.")
         }
     }
 

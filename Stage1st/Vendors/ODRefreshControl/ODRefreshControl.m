@@ -385,8 +385,8 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         _activity.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
         [CATransaction commit];
         [UIView animateWithDuration:0.2 delay:0.15 options:UIViewAnimationOptionCurveLinear animations:^{
-            _activity.alpha = 1;
-            _activity.layer.transform = CATransform3DMakeScale(1, 1, 1);
+            self->_activity.alpha = 1;
+            self->_activity.layer.transform = CATransform3DMakeScale(1, 1, 1);
         } completion:nil];
         
         self.refreshing = YES;
@@ -434,25 +434,25 @@ static inline CGFloat lerp(CGFloat a, CGFloat b, CGFloat p)
         // in the case the scrollView is released while the animation is running
         __block UIScrollView *blockScrollView = self.scrollView;
         [UIView animateWithDuration:0.4 animations:^{
-            _ignoreInset = YES;
+            self->_ignoreInset = YES;
             [blockScrollView setContentInset:self.originalContentInset];
-            _ignoreInset = NO;
-            _activity.alpha = 0;
-            _activity.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
+            self->_ignoreInset = NO;
+            self->_activity.alpha = 0;
+            self->_activity.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1);
         } completion:^(BOOL finished) {
-            [_shapeLayer removeAllAnimations];
-            _shapeLayer.path = nil;
-            _shapeLayer.shadowPath = nil;
-            _shapeLayer.position = CGPointZero;
-            [_arrowLayer removeAllAnimations];
-            _arrowLayer.path = nil;
-            [_highlightLayer removeAllAnimations];
-            _highlightLayer.path = nil;
+            [self->_shapeLayer removeAllAnimations];
+            self->_shapeLayer.path = nil;
+            self->_shapeLayer.shadowPath = nil;
+            self->_shapeLayer.position = CGPointZero;
+            [self->_arrowLayer removeAllAnimations];
+            self->_arrowLayer.path = nil;
+            [self->_highlightLayer removeAllAnimations];
+            self->_highlightLayer.path = nil;
             // We need to use the scrollView somehow in the end block,
             // or it'll get released in the animation block.
-            _ignoreInset = YES;
+            self->_ignoreInset = YES;
             [blockScrollView setContentInset:self.originalContentInset];
-            _ignoreInset = NO;
+            self->_ignoreInset = NO;
         }];
     }
 }

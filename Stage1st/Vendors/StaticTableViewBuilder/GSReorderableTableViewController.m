@@ -24,7 +24,7 @@
     _keys = [NSMutableArray arrayWithCapacity:[keys count]];
     [keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSAssert([obj isKindOfClass:[NSArray class]], @"Expected array item");
-        [_keys addObject:[NSMutableArray arrayWithArray:(NSArray *)obj]];
+        [self->_keys addObject:[NSMutableArray arrayWithArray:(NSArray *)obj]];
     }];
     return self;
 }
