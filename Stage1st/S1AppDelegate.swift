@@ -42,6 +42,7 @@ extension S1AppDelegate {
             defaultDebugLevel = .verbose
 
             let formatter = DDMultiFormatter()
+            formatter.add(FileLogFormatter())
             formatter.add(DispatchQueueLogFormatter())
             formatter.add(ErrorLevelLogFormatter())
             formatter.add(DateLogFormatter())
@@ -63,6 +64,7 @@ extension S1AppDelegate {
             defaultDebugLevel = .info
 
             let formatter = DDMultiFormatter()
+            formatter.add(FileLogFormatter())
             formatter.add(DispatchQueueLogFormatter())
             formatter.add(ErrorLevelLogFormatter())
 
