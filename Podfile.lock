@@ -30,16 +30,16 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
-  - CrashlyticsLogger (0.1.0):
-    - CrashlyticsLogger/Formatters (= 0.1.0)
-    - CrashlyticsLogger/Loggers (= 0.1.0)
-    - CrashlyticsLogger/LogViewers (= 0.1.0)
-  - CrashlyticsLogger/Formatters (0.1.0):
+  - CrashlyticsLogger (0.2.0):
+    - CrashlyticsLogger/Formatters (= 0.2.0)
+    - CrashlyticsLogger/Loggers (= 0.2.0)
+    - CrashlyticsLogger/LogViewers (= 0.2.0)
+  - CrashlyticsLogger/Formatters (0.2.0):
     - CocoaLumberjack
-  - CrashlyticsLogger/Loggers (0.1.0):
+  - CrashlyticsLogger/Loggers (0.2.0):
     - CocoaLumberjack
     - Crashlytics
-  - CrashlyticsLogger/LogViewers (0.1.0):
+  - CrashlyticsLogger/LogViewers (0.2.0):
     - CrashlyticsLogger/Loggers
     - SnapKit
   - DeviceKit (1.6.0)
@@ -87,6 +87,7 @@ PODS:
     - YapDatabase/Standard/Extensions/AutoView (= 3.0.2)
     - YapDatabase/Standard/Extensions/CloudCore (= 3.0.2)
     - YapDatabase/Standard/Extensions/CloudKit (= 3.0.2)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.0.2)
     - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.0.2)
     - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.0.2)
     - YapDatabase/Standard/Extensions/FilteredView (= 3.0.2)
@@ -107,6 +108,8 @@ PODS:
   - YapDatabase/Standard/Extensions/CloudCore (3.0.2):
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/CloudKit (3.0.2):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.0.2):
     - YapDatabase/Standard/Core
   - YapDatabase/Standard/Extensions/ConnectionProxy (3.0.2):
     - YapDatabase/Standard/Core
@@ -146,7 +149,7 @@ DEPENDENCIES:
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
-  - CrashlyticsLogger (from `https://github.com/ainopara/CrashlyticsLogger.git`, tag `0.1.0`)
+  - CrashlyticsLogger (from `https://github.com/ainopara/CrashlyticsLogger.git`, tag `0.2.0`)
   - DeviceKit
   - Fabric
   - FBSnapshotTestCase
@@ -200,7 +203,7 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   CrashlyticsLogger:
     :git: https://github.com/ainopara/CrashlyticsLogger.git
-    :tag: 0.1.0
+    :tag: 0.2.0
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -217,7 +220,7 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   CrashlyticsLogger:
     :git: https://github.com/ainopara/CrashlyticsLogger.git
-    :tag: 0.1.0
+    :tag: 0.2.0
   JTSImageViewController:
     :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -231,7 +234,7 @@ CHECKOUT OPTIONS:
     :commit: 27393ffd0fdd86ee3e41f1f2daa775fd597c31bf
     :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
-    :commit: 75fbf3b878b5b756bb68512282aa27c8fe20d1f2
+    :commit: 552f34a9dd2ac96983703bf32cfa69bc127200d9
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -243,7 +246,7 @@ SPEC CHECKSUMS:
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
   CocoaLumberjack: 2e258a064cacc8eb9a2aca318e24d02a0a7fd56d
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  CrashlyticsLogger: 8821b47886e9269b650992503488509965af2e97
+  CrashlyticsLogger: 848158f095d4781c03737f15a423fd7a5e3e3dc9
   DeviceKit: 3de509f9db7ae93bf676da5e97b945517bc957cd
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -264,9 +267,9 @@ SPEC CHECKSUMS:
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
-  YapDatabase: 299a32de9d350d37a9ac5b0532609d87d5d2a5de
+  YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: a8cc911452fdfbf10221f78078f881ab388a6730
+PODFILE CHECKSUM: dbc454ff4fe89c355bb38df12b7cf306467be82d
 
 COCOAPODS: 1.5.0

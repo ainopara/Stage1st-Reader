@@ -115,8 +115,8 @@ S1AppDelegate *MyAppDelegate;
 
 #pragma mark - URL Scheme
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    DDLogDebug(@"[URL Scheme] %@ from %@", url, sourceApplication);
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    DDLogDebug(@"[URL Scheme] %@ from %@", url, options[UIApplicationOpenURLOptionsSourceApplicationKey]);
     
     //Open Specific Topic Case
     NSDictionary *queryDict = [S1Parser extractQuerysFromURLString:[url absoluteString]];

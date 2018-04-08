@@ -273,7 +273,7 @@ DatabaseManager *MyDatabaseManager;
 
 - (void)setupFullTextSearchExtension {
     NSArray *propertiesToIndexForMySearch = @[ @"title", @"favorite" ];
-    YapDatabaseFullTextSearchHandler *handler = [YapDatabaseFullTextSearchHandler withObjectBlock:^(NSMutableDictionary *dict, NSString *collection, NSString *key, id object) {
+    YapDatabaseFullTextSearchHandler *handler = [YapDatabaseFullTextSearchHandler withObjectBlock:^(YapDatabaseReadTransaction *transaction, NSMutableDictionary *dict, NSString *collection, NSString *key, id object) {
         
         if ([object isKindOfClass:[S1Topic class]])
         {
