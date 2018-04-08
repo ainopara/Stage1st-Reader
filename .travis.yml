@@ -5,11 +5,7 @@ env:
   - LC_CTYPE=en_US.UTF-8
   - LANG=en_US.UTF-8
   - WORKSPACE=Stage1st.xcworkspace
-  - IOS_SCHEME="Stage1st"
-  - IOS_SDK=iphonesimulator
-  matrix:
-    - DESTINATION="OS=10.3.1,name=iPhone 7 Plus"     SCHEME="$IOS_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="NO"
-    - DESTINATION="OS=11.3,name=iPhone 7"            SCHEME="$IOS_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="NO"
+  - SCHEME=Stage1st
 before_install:
   - gem install cocoapods
   - pod env 
@@ -19,20 +15,8 @@ script:
   - set -o pipefail
   - xcodebuild -version
   - xcodebuild -showsdks
+  - xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -configuration Debug build;
 
-  # Build Application in Debug and Run Tests if specified
-  - if [ $RUN_TESTS == "YES" ]; then
-      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test;
-    else
-      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Debug ONLY_ACTIVE_ARCH=NO build;
-    fi
-
-  # Build Application in Release and Run Tests if specified
-#  - if [ $RUN_TESTS == "YES" ]; then
-#      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO ENABLE_TESTABILITY=YES test | xcpretty;
-#    else
-#      xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty;
-#    fi
 notifications:
   email: false
   slack: ainocrop:HkpADe4Z7ArRMAkoD75IBfv2
