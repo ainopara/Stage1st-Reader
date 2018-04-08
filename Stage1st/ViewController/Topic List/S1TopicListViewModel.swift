@@ -122,6 +122,9 @@ final class S1TopicListViewModel: NSObject {
     let tableViewReloading: Signal<(), NoError>
     private let tableViewReloadingObserver: Signal<(), NoError>.Observer
 
+    let tableViewCellUpdate: Signal<[IndexPath], NoError>
+    private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
+
     let searchBarPlaceholderText = MutableProperty("")
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
@@ -130,7 +133,9 @@ final class S1TopicListViewModel: NSObject {
 
     init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
+
         (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
+        (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
 
         super.init()
 
@@ -466,18 +471,19 @@ extension S1TopicListViewModel {
     }
 
     private func _updateForumOrSearchList(with notifications: [Notification]) {
-        var hasChange = false
+        var updatedModelIndexPaths = [IndexPath]()
         for (index, topic) in topics.enumerated() {
             let key = "\(topic.topicID)"
             if databaseConnection.hasChange(forKey: key, inCollection: Collection_Topics, in: notifications) {
-                hasChange = true
                 let updatedTopic = topicWithTracedDataForTopic(topics[index])
                 topics.remove(at: index)
                 topics.insert(updatedTopic, at: index)
+                updatedModelIndexPaths.append(IndexPath(row: index, section: 0))
             }
         }
-        if hasChange {
-            tableViewReloadingObserver.send(value: ())
+
+        if updatedModelIndexPaths.count > 0 {
+            tableViewCellUpdateObserver.send(value: updatedModelIndexPaths)
         }
     }
 }

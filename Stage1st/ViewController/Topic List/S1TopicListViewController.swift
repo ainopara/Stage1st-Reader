@@ -110,7 +110,16 @@ extension S1TopicListViewController {
     func bindViewModel() {
         viewModel.tableViewReloading.observeValues { [weak self] in
             guard let strongSelf = self else { return }
+
             strongSelf.tableView.reloadData()
+        }
+
+        viewModel.tableViewCellUpdate.observeValues { [weak self] (updatedModelIndexPaths) in
+            guard let strongSelf = self else { return }
+
+            strongSelf.tableView.beginUpdates()
+            strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableViewRowAnimation.automatic)
+            strongSelf.tableView.endUpdates()
         }
 
         viewModel.searchBarPlaceholderText.producer.startWithValues { [weak self] (placeholderText) in
