@@ -6,12 +6,9 @@ fastlane_version "1.89.0"
 default_platform :ios
 
 platform :ios do
-  before_all do
-    cocoapods
-  end
-
   desc "Runs all the tests"
   lane :test do
+    cocoapods
     scan(scheme:"Stage1st", devices: ["iPhone 7 Plus"])
   end
 
@@ -22,6 +19,7 @@ platform :ios do
       raise "No version specified!".red
     end
 
+    cocoapods
     ensure_git_branch(branch: 'master')
     ensure_git_status_clean
 
@@ -33,6 +31,20 @@ platform :ios do
     gym(scheme: 'Stage1st', export_method: "app-store", output_directory: "Archive/#{options[:version]}") # Build your app - more options available
     pilot
     commit_version_bump(message: "Version bump to #{options[:version]}(#{build_number}).")
+  end
+
+  lane :refresh_dsyms do |options|
+    if !options[:version]
+      raise "No version specified!".red
+    end
+
+    if !options[:build]
+      raise "No build specified!".red
+    end
+
+    download_dsyms(version: options[:version], build_number: options[:build]) # Download dSYM files from iTC
+    upload_symbols_to_crashlytics     # Upload them to Crashlytics
+    clean_build_artifacts             # Delete the local dSYM files
   end
 
   after_all do |lane|
