@@ -455,7 +455,7 @@ extension S1ContentViewController {
             var pageList = [String]()
 
             for page in 1 ... max(viewModel.currentPage.value, viewModel.totalPages.value) {
-                if viewModel.dataCenter.hasPrecachedFloors(for: Int(truncating: viewModel.topic.topicID), page: UInt(page)) {
+                if viewModel.dataCenter.hasPrecachedFloors(for: Int(truncating: viewModel.topic.topicID), page: page) {
                     pageList.append("✓第 \(page) 页✓")
                 } else {
                     pageList.append("第 \(page) 页")
@@ -475,7 +475,7 @@ extension S1ContentViewController {
             } else {
                 strongSelf.scrollType = .restorePosition
                 strongSelf._hook_preChangeCurrentPage()
-                strongSelf.viewModel.currentPage.value = UInt(selectedIndex + 1)
+                strongSelf.viewModel.currentPage.value = selectedIndex + 1
                 strongSelf.fetchContentForCurrentPage(forceUpdate: false)
             }
         }, cancel: nil, origin: pageButton)

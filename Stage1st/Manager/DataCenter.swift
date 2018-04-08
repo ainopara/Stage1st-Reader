@@ -230,7 +230,7 @@ extension DataCenter {
     }
 
     func precacheFloors(for topic: S1Topic, with page: Int, shouldUpdate: Bool) {
-        guard shouldUpdate || !hasPrecachedFloors(for: topic.topicID.intValue, page: UInt(page)) else {
+        guard shouldUpdate || !hasPrecachedFloors(for: topic.topicID.intValue, page: page) else {
             DDLogVerbose("[Database] Precache \(topic.topicID)-\(page) hit")
             return
         }
@@ -416,12 +416,12 @@ extension DataCenter {
 }
 
 extension DataCenter {
-    func hasPrecachedFloors(for topicID: Int, page: UInt) -> Bool {
-        return cacheDatabaseManager.hasFloors(in: topicID, page: Int(page))
+    func hasPrecachedFloors(for topicID: Int, page: Int) -> Bool {
+        return cacheDatabaseManager.hasFloors(in: topicID, page: page)
     }
 
-    func hasFullPrecachedFloors(for topicID: Int, page: UInt) -> Bool {
-        guard let floors = cacheDatabaseManager.floors(in: topicID, page: Int(page)), floors.count >= 30 else {
+    func hasFullPrecachedFloors(for topicID: Int, page: Int) -> Bool {
+        guard let floors = cacheDatabaseManager.floors(in: topicID, page: page), floors.count >= 30 else {
             return false
         }
 

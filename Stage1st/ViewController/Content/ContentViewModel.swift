@@ -18,22 +18,22 @@ class ContentViewModel: NSObject, PageRenderer {
     let dataCenter: DataCenter
     let apiManager: DiscuzClient
 
-    let currentPage: MutableProperty<UInt>
-    let previousPage: MutableProperty<UInt>
-    let totalPages: MutableProperty<UInt>
+    let currentPage: MutableProperty<Int>
+    let previousPage: MutableProperty<Int>
+    let totalPages: MutableProperty<Int>
 
     let title: DynamicProperty<NSString?>
     let replyCount: DynamicProperty<NSNumber?>
     let favorite: DynamicProperty<NSNumber?>
 
-    var cachedViewPosition = [UInt: CGFloat]()
+    var cachedViewPosition = [Int: CGFloat]()
 
     // MARK: Initialize
 
     init(topic: S1Topic, dataCenter: DataCenter) {
         self.topic = topic.copy() as! S1Topic
 
-        if let currentPage = topic.lastViewedPage?.uintValue {
+        if let currentPage = topic.lastViewedPage?.intValue {
             self.currentPage = MutableProperty(max(currentPage, 1))
         } else {
             currentPage = MutableProperty(1)
@@ -41,7 +41,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
         previousPage = MutableProperty(currentPage.value)
 
-        if let replyCount = topic.replyCount?.uintValue {
+        if let replyCount = topic.replyCount?.intValue {
             totalPages = MutableProperty(replyCount / 30 + 1)
         } else {
             totalPages = MutableProperty(currentPage.value)
@@ -62,7 +62,7 @@ class ContentViewModel: NSObject, PageRenderer {
             topic.favorite = NSNumber(value: false)
         }
 
-        if let lastViewedPosition = topic.lastViewedPosition?.doubleValue, let lastViewedPage = topic.lastViewedPage?.uintValue {
+        if let lastViewedPosition = topic.lastViewedPosition?.doubleValue, let lastViewedPage = topic.lastViewedPage?.intValue {
             cachedViewPosition[lastViewedPage] = CGFloat(lastViewedPosition)
         }
 
@@ -71,7 +71,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         totalPages <~ replyCount.producer
-            .map { ($0?.uintValue ?? 0) / 30 + 1 }
+            .map { ($0?.intValue ?? 0) / 30 + 1 }
 
         previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
             let (previous, _) = arg
