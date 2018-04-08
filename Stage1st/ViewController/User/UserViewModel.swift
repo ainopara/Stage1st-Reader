@@ -16,10 +16,21 @@ class UserViewModel {
     let user: MutableProperty<User>
     let isBlocked: MutableProperty<Bool>
 
+    let avatarURL: MutableProperty<URL?> = MutableProperty(nil)
+    let username: MutableProperty<String> = MutableProperty("")
+
     init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
         self.user = MutableProperty(user)
         isBlocked = MutableProperty(dataCenter.userIDIsBlocked(ID: user.ID))
+
+        avatarURL <~ self.user.map { (user) in
+            return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(user.ID)&size=middle")
+        }.skipRepeats()
+
+        username <~ self.user.map({ (user) in
+            return user.name
+        }).skipRepeats()
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
@@ -55,10 +66,6 @@ class UserViewModel {
         }
 
         return infoLabelString
-    }
-
-    var avatarURL: URL? {
-        return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(user.value.ID)&size=middle")
     }
 
     func toggleBlockStatus() {

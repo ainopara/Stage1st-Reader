@@ -10,6 +10,7 @@ import ReactiveCocoa
 import ReactiveSwift
 import SnapKit
 import AlamofireImage
+import CocoaLumberjack
 
 final class UserViewController: UIViewController {
     private let viewModel: UserViewModel
@@ -33,29 +34,18 @@ final class UserViewController: UIViewController {
         customStatusLabel.numberOfLines = 0
         infoLabel.numberOfLines = 0
 
+        bindViewModel()
+
         viewModel.updateCurrentUserProfile { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case let .success(user):
-                strongSelf.usernameLabel.text = user.name
-                if let avatarURL = strongSelf.viewModel.avatarURL {
-                    strongSelf.avatarView.af_setImage(withURL: avatarURL)
-                }
                 strongSelf.customStatusLabel.text = user.customStatus
                 strongSelf.infoLabel.text = strongSelf.viewModel.infoLabelText()
             case let .failure(error):
-                strongSelf.s1_presentAlertView("Error", message: "\(error)")
+                DDLogDebug("Failed to update user profile. error: \(error)")
+//                strongSelf.s1_presentAlertView("Error", message: "\(error)")
             }
-        }
-
-        viewModel.isBlocked.producer.startWithValues { [weak self] isBlocked in
-            guard let strongSelf = self else { return }
-            strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
-        }
-
-        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
-            guard let strongSelf = self else { return }
-            strongSelf.viewModel.toggleBlockStatus()
         }
 
         NotificationCenter.default.addObserver(
@@ -72,6 +62,28 @@ final class UserViewController: UIViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+
+    func bindViewModel() {
+        viewModel.avatarURL.producer.startWithValues { [weak self] (url) in
+            guard let strongSelf = self else { return }
+
+            if let avatarURL = url {
+                strongSelf.avatarView.af_setImage(withURL: avatarURL)
+            }
+        }
+
+        usernameLabel.reactive.text <~ viewModel.username
+
+        viewModel.isBlocked.producer.startWithValues { [weak self] isBlocked in
+            guard let strongSelf = self else { return }
+            strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
+        }
+
+        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.viewModel.toggleBlockStatus()
+        }
     }
 
     override func viewDidLoad() {
@@ -107,6 +119,7 @@ final class UserViewController: UIViewController {
         #else
         blockButton.setContentHuggingPriority(UILayoutPriorityDefaultLow + 1, for: .horizontal)
         #endif
+
         containerView.addSubview(blockButton)
         blockButton.snp.makeConstraints { make in
             make.leading.equalTo(usernameLabel.snp.trailing).offset(10.0)
