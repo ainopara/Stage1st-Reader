@@ -404,6 +404,7 @@ extension LoginViewController {
 
             strongSelf.userInfoInputView.usernameField.text = loginDict[AppExtensionUsernameKey] as? String ?? ""
             strongSelf.userInfoInputView.passwordField.text = loginDict[AppExtensionPasswordKey] as? String ?? ""
+            strongSelf.logIn(button)
         }
     }
 
