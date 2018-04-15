@@ -45,14 +45,9 @@ extension S1AppDelegate {
             formatter.add(FileLogFormatter())
             formatter.add(DispatchQueueLogFormatter())
             formatter.add(ErrorLevelLogFormatter())
-            formatter.add(DateLogFormatter())
-
-            let inMemoryLogger = InMemoryLogger.shared
-            inMemoryLogger.logFormatter = formatter
-            DDLog.add(inMemoryLogger)
 
             if #available(iOS 10, *) {
-                let osLogger = DDOSLogger()
+                let osLogger = OSLogger.shared
                 osLogger.logFormatter = formatter
                 DDLog.add(osLogger)
             } else {
@@ -61,7 +56,7 @@ extension S1AppDelegate {
                 DDLog.add(ttyLogger)
             }
         #else
-            defaultDebugLevel = .info
+            defaultDebugLevel = .debug
 
             let formatter = DDMultiFormatter()
             formatter.add(FileLogFormatter())

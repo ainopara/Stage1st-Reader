@@ -243,6 +243,11 @@ final class S1TopicListViewModel: NSObject {
 
 //        }
 
+        // Debug
+        currentState.producer.startWithValues { (state) in
+            DDLogDebug("state -> \(state.stringRepresentation())")
+        }
+
         initializeMappings()
     }
 
