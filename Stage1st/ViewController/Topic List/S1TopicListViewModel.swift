@@ -340,7 +340,12 @@ extension S1TopicListViewModel {
         let attributedTitle: NSAttributedString
         switch currentState.value {
         case .favorite, .history:
-            topic = topicAtIndexPath(indexPath)!
+            guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
+                DDLogError("Expecting topic at \(indexPath) exist but get nil.")
+                fatalError("Expecting topic at \(indexPath) exist but get nil.")
+            }
+
+            topic = unwrappedTopic
 
             isPinningTop = false
 
@@ -383,13 +388,19 @@ extension S1TopicListViewModel {
         let topic: S1Topic
         switch currentState.value {
         case .favorite, .history:
-            topic = topicAtIndexPath(indexPath)!
+            guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
+                DDLogError("Expecting topic at \(indexPath) exist but get nil.")
+                fatalError("Expecting topic at \(indexPath) exist but get nil.")
+            }
+
+            topic = unwrappedTopic
         case .forum, .search:
             topic = topicWithTracedDataForTopic(topics[indexPath.row])
             topics.remove(at: indexPath.row)
             topics.insert(topic, at: indexPath.row)
         default:
-            fatalError()
+            DDLogError("blank state should not reach this method.")
+            fatalError("blank state should not reach this method.")
         }
 
         return ContentViewModel(topic: topic, dataCenter: dataCenter)
@@ -434,6 +445,10 @@ extension S1TopicListViewModel {
         databaseConnection.read { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction, let viewMappings = self.viewMappings {
                 topic = ext.object(at: indexPath, with: viewMappings) as? S1Topic
+            } else {
+                let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction
+                let viewMappings = self.viewMappings
+                DDLogError("Topic is nil because \(String(describing: ext)) or \(String(describing: viewMappings)) is nil or extension cound not find S1Topic object.")
             }
         }
         return topic
