@@ -45,7 +45,7 @@
 }
 
 - (void)dealloc {
-    DDLogDebug(@"[TopicListVC] Dealloced");
+    DDLogDebug(@"Dealloced");
     [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
     [self.tableView removeObserver:self forKeyPath:@"contentInset"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -54,7 +54,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    DDLogInfo(@"[TopicListVC] viewWillAppear");
+    DDLogInfo(@"viewWillAppear");
 
     [self updateArchiveIcon];
     [self didReceivePaletteChangeNotification:nil];
@@ -63,7 +63,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    DDLogDebug(@"[TopicListVC] viewDidAppear");
+    DDLogDebug(@"viewDidAppear");
     [CrashlyticsKit setObjectValue:@"TopicListViewController" forKey:@"lastViewController"];
 }
 
@@ -171,7 +171,7 @@
         return;
     }
 
-    DDLogDebug(@"[TopicListVC] View Will Change To Size: h%f, w%f",size.height, size.width);
+    DDLogDebug(@"View Will Change To Size: h%f, w%f",size.height, size.width);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"S1ViewWillTransitionToSizeNotification" object:[NSValue valueWithCGSize:size]];
     CGRect frame = self.view.frame;
     frame.size = size;

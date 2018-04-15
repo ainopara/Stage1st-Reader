@@ -152,7 +152,7 @@ final class S1TopicListViewModel: NSObject {
             .map { (notification) in return notification.userInfo![kNotificationsKey] as! [Notification] }
 
         databaseChangedNotification.signal.observeValues { [weak self] (notifications) in
-            DDLogVerbose("[TopicListVC] database connection did update.")
+            DDLogVerbose("database connection did update.")
             guard let strongSelf = self else { return }
             strongSelf._handleDatabaseChanged(with: notifications)
         }
@@ -462,7 +462,7 @@ extension S1TopicListViewModel {
     private func _updateFilter(_ searchText: String) {
         let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
-        DDLogDebug("[TopicListVM] Update filter: \(query)")
+        DDLogDebug("Update filter: \(query)")
         searchQueue.enqueueQuery(query)
         MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {

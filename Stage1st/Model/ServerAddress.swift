@@ -77,11 +77,13 @@ class ServerAddress: NSObject, NSCoding {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        guard let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
+        guard
+            let mainURL = aDecoder.decodeObject(forKey: Constants.mainURLKey) as? String,
             let pageURL = aDecoder.decodeObject(forKey: Constants.pageURLKey) as? String,
             let apiURL = aDecoder.decodeObject(forKey: Constants.apiURLKey) as? String,
             let usedURLs = aDecoder.decodeObject(forKey: Constants.usedURLsKey) as? [String],
-            let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date else {
+            let lastUpdateDate = aDecoder.decodeObject(forKey: Constants.lastUpdateDateKey) as? Date
+        else {
             return nil
         }
 
@@ -98,6 +100,17 @@ class ServerAddress: NSObject, NSCoding {
         aCoder.encode(api, forKey: Constants.apiURLKey)
         aCoder.encode(used, forKey: Constants.usedURLsKey)
         aCoder.encode(lastUpdateDate, forKey: Constants.lastUpdateDateKey)
+    }
+
+    override var description: String {
+        return super.description + """
+
+        main: \(main)
+        page: \(page)
+        api: \(api)
+        used: \(used)
+        lastUpdateDate: \(lastUpdateDate)
+        """
     }
 }
 

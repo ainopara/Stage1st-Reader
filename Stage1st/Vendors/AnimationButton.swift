@@ -37,18 +37,18 @@ class AnimationView: UIView {
 // MARK: - Public
 extension AnimationView {
     func removeAllAnimations() {
-        DDLogDebug("[AnimationButton] stop animation")
+        DDLogDebug("stop animation")
         layer.removeAllAnimations()
         isPlayingAnimation = false
     }
 
     func reloadAnimation() {
         guard let animation = self.layer.animation(forKey: "ABAnimation") as? CAKeyframeAnimation else {
-            DDLogDebug("[AnimationButton] start animation")
+            DDLogDebug("start animation")
             startAnimation(self.animation())
             return
         }
-        DDLogDebug("[AnimationButton] reload animation")
+        DDLogDebug("reload animation")
         pauseAnimation(animation)
         resumeAnimation(self.animation())
     }

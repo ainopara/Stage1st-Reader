@@ -178,11 +178,11 @@ extension S1AppDelegate {
             }
 
             guard let serverAddress = ServerAddress(record: stage1stDomainRecord) else {
-                DDLogError("Failed to parse server address from record: \(String(describing: recordsDictionary))")
+                DDLogError("[ServerAddressUpdate] Failed to parse server address from record: \(String(describing: recordsDictionary))")
                 return
             }
 
-            DDLogInfo("Updated \(serverAddress) modificationDate: \(serverAddress.lastUpdateDate)")
+            DDLogInfo("[ServerAddressUpdate] Updated \(serverAddress)")
 
             if serverAddress.isPrefered(to: AppEnvironment.current.serverAddress) {
                 AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
@@ -192,7 +192,7 @@ extension S1AppDelegate {
                     MessageHUD.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
                 }
             } else {
-                DDLogInfo("Server address do not need to update.")
+                DDLogInfo("[ServerAddressUpdate] Server address do not need to update.")
             }
         }
 
