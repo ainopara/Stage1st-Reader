@@ -1269,8 +1269,9 @@ extension S1ContentViewController {
             replyViewController.textView.attributedText = replyDraft
         }
 
-        let frame = CGRect(x: 0.0, y: 0.0, width: replyViewController.view.bounds.width, height: 35.0)
-        replyViewController.accessoryView = ReplyAccessoryView(frame: frame, withComposeViewController: replyViewController)
+        let accessoryView = ReplyAccessoryView(composeViewController: replyViewController)
+        accessoryView.backgroundColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
+        replyViewController.accessoryView = accessoryView
         replyViewController.textView.s1_resetToReplyStyle()
 
         present(replyViewController, animated: true, completion: nil)

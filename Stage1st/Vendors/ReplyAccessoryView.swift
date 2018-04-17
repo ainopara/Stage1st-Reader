@@ -18,12 +18,12 @@ class ReplyAccessoryView: UIView {
     var mahjongFaceView: S1MahjongFaceView?
 
     // MARK: - Life Cycle
-    init(frame: CGRect, withComposeViewController composeViewController: REComposeViewController) {
-        toolBar = UIToolbar(frame: frame)
+    init(composeViewController: REComposeViewController) {
+        toolBar = UIToolbar(frame: .zero)
         faceButton = UIButton(type: .system)
         spoilerButton = UIButton(type: .system)
         self.composeViewController = composeViewController
-        super.init(frame: frame)
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 35))
 
         // Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
@@ -43,9 +43,6 @@ class ReplyAccessoryView: UIView {
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
         addSubview(toolBar)
-        toolBar.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(self)
-        }
     }
 
     required init?(coder _: NSCoder) {
@@ -56,6 +53,33 @@ class ReplyAccessoryView: UIView {
         if let historyArray = self.mahjongFaceView?.historyArray {
             DispatchQueue.global().async {
                 AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
+            }
+        }
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        if let window = self.window {
+            if #available(iOS 11.0, *) {
+                self.snp.remakeConstraints { (make) in
+                    let height = 35.0 + window.safeAreaInsets.bottom
+                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                }
+                toolBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.top.equalTo(self)
+                    make.height.equalTo(35.0)
+                }
+            } else {
+                // Fallback on earlier versions
+                self.snp.remakeConstraints { (make) in
+                    let height = 35.0
+                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                }
+                toolBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.top.equalTo(self)
+                    make.height.equalTo(35.0)
+                }
             }
         }
     }

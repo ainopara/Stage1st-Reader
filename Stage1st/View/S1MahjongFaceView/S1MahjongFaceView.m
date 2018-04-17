@@ -17,7 +17,6 @@
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray<S1MahjongFacePageView *> *pageViews;
 @property (nonatomic, strong) UIPageControl *pageControl;
-@property (nonatomic, strong) S1TabBar *tabBar;
 
 @property (nonatomic, assign) BOOL shouldIngnoreScrollEvent;
 
@@ -50,12 +49,6 @@
     self.tabBar.keys = self.categoryNames;
     [self.tabBar setSelectedIndex:[self.categoryIDs indexOfObject:self.currentCategory]];
     [self addSubview:self.tabBar];
-    [self.tabBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.mas_centerX);
-        make.bottom.equalTo(self.mas_bottom);
-        make.left.equalTo(self.mas_left);
-        make.height.equalTo(@35.0);
-    }];
 
     // init page control
     self.pageControl = [[UIPageControl alloc] init];
@@ -79,8 +72,8 @@
     self.scrollView.delegate = self;
     [self addSubview:self.scrollView];
     [self.scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.mas_centerX);
-        make.left.equalTo(self.mas_left);
+        make.leading.equalTo(self.mas_leading);
+        make.trailing.equalTo(self.mas_trailing);
         make.top.equalTo(self.mas_top);
         make.bottom.equalTo(self.pageControl.mas_top);
     }];

@@ -41,9 +41,9 @@ struct Constants {
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var rootNavigationController: S1NavigationViewController?
+    private(set) var rootNavigationController: S1NavigationViewController?
     // swiftlint:disable weak_delegate
-    var navigationControllerDelegate: NavigationControllerDelegate?
+    private(set) var navigationControllerDelegate: NavigationControllerDelegate?
     // swiftlint:enable weak_delegate
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
@@ -86,7 +86,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
             Constants.defaults.reverseActionKey: false,
             Constants.defaults.hideStickTopicsKey: true,
-            ])
+        ])
 
         updateStage1stDomainIfNecessary()
 

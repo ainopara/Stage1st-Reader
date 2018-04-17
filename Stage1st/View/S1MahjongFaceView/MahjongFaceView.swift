@@ -44,6 +44,36 @@ extension S1MahjongFaceView {
     }
 }
 
+extension S1MahjongFaceView {
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        if let window = self.window {
+            if #available(iOS 11.0, *) {
+                self.snp.remakeConstraints { (make) in
+                    let height = 275.0 + window.safeAreaInsets.bottom
+                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                    make.bottom.equalTo(window.snp.bottom)
+                }
+                tabBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.bottom.equalTo(self)
+                    make.height.equalTo(35.0 + window.safeAreaInsets.bottom)
+                }
+            } else {
+                // Fallback on earlier versions
+                self.snp.remakeConstraints { (make) in
+                    let height = 275.0
+                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                }
+                tabBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.bottom.equalTo(self)
+                    make.height.equalTo(35.0)
+                }
+            }
+        }
+    }
+}
+
 class S1MahjongFaceButton: UIButton {
     @objc var mahjongFaceItem: MahjongFaceItem?
 

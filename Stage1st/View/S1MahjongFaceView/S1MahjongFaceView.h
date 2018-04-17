@@ -12,6 +12,7 @@
 @class S1MahjongFaceTextAttachment;
 @class MahjongFaceCategory;
 @class MahjongFaceItem;
+@class S1TabBar;
 @protocol S1MahjongFaceViewDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -23,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSUInteger historyCountLimit;
 @property (nonatomic, strong) NSArray<MahjongFaceItem *> *historyArray;
 @property (weak, nonatomic, nullable) id<S1MahjongFaceViewDelegate> delegate;
+
+@property (nonatomic, strong) S1TabBar *tabBar;
 
 - (void)mahjongFacePressed:(S1MahjongFaceButton *)button;
 - (void)backspacePressed:(UIButton *)button;
