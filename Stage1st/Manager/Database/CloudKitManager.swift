@@ -61,7 +61,7 @@ class CloudKitManager1 {
         }
 
         state.producer.startWithValues { (state) in
-            S1LogWarn("State -> \(state)")
+            S1LogDebug("State -> \(state)")
         }
 
         state.producer.startWithValues { [weak self] (state) in
