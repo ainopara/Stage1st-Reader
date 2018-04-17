@@ -69,23 +69,9 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
                 toViewController.view.transform = .identity
             }
         }) { finished in
-            if MyAppDelegate.crashIssueTrackingModeEnabled {
-                DDLogTracking("finshed: \(finished)")
-                DDLogTracking("transitionWasCancelled: \(transitionContext.transitionWasCancelled)")
-                DDLogTracking("containerView: \(transitionContext.containerView)")
-                DDLogTracking("containerView.subviews: \(transitionContext.containerView.subviews)")
-                DDLogTracking("fromViewController: \(String(describing: transitionContext.viewController(forKey: .from)))")
-                DDLogTracking("toViewController: \(String(describing: transitionContext.viewController(forKey: .to)))")
-            }
             fromViewController.view.transform = .identity
             toViewController.view.transform = .identity
-            if MyAppDelegate.crashIssueTrackingModeEnabled {
-                DDLogTracking("G")
-            }
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            if MyAppDelegate.crashIssueTrackingModeEnabled {
-                DDLogTracking("H")
-            }
         }
     }
 }

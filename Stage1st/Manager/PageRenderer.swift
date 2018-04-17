@@ -142,7 +142,7 @@ extension PageRenderer {
                                 let imageElement = DDXMLElement(name: "img")
                                 imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
                                 imageIndexInCurrentFloor += 1
-                                if UserDefaults.standard.bool(forKey: "Display") || MyAppDelegate.reachability.isReachableViaWiFi() {
+                                if UserDefaults.standard.bool(forKey: "Display") || AppEnvironment.current.reachability.isReachableViaWiFi() {
                                     if #available(iOS 11.0, *) {
                                         let schemeChangedImageSrcString = finalImageSrcString
                                             .s1_replace(pattern: "^https", with: "images")

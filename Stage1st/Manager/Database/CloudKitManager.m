@@ -1,6 +1,5 @@
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "S1AppDelegate.h"
 #import "S1Topic.h"
 #import <YapDatabase/YapDatabase.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
@@ -227,7 +226,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
                                                             style:UIAlertActionStyleDefault
                                                           handler:NULL]];
 
-        [[[MyAppDelegate window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
+        [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
 	};
 	
     if ([NSThread isMainThread]) {
@@ -252,7 +251,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
                                                             style:UIAlertActionStyleDefault
                                                           handler:NULL]];
 
-        [[[MyAppDelegate window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
+        [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentViewController:alertController animated:YES completion:NULL];
 	};
 	
     if ([NSThread isMainThread]) {
@@ -872,7 +871,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 	// It is our job to properly handle the error, and resume the extension when ready.
 	self.needsResume = YES;
 	
-	if (MyAppDelegate.reachability.isReachable)
+	if (AppEnvironment.current.reachability.isReachable)
 	{
 		self.needsResume = NO;
 		[MyDatabaseManager.cloudKitExtension resume];
@@ -1048,7 +1047,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		
 		if (error)
 		{
-			if (MyAppDelegate.reachability.isReachable)
+			if (AppEnvironment.current.reachability.isReachable)
 			{
 				[self _refetchMissedRecordIDs]; // try again
 			}
@@ -1075,7 +1074,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 		
 		if (result == UIBackgroundFetchResultFailed)
 		{
-			if (MyAppDelegate.reachability.isReachable)
+			if (AppEnvironment.current.reachability.isReachable)
 			{
 				[self _fetchRecordChanges]; // try again
 			}

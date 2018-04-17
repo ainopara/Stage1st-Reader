@@ -12,7 +12,6 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 #import "GTMNSString+HTML.h"
-#import "S1AppDelegate.h"
 
 @implementation S1Parser
 

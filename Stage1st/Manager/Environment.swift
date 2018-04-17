@@ -46,6 +46,7 @@ class Environment: NSObject {
         self.cookieStorage = cookieStorage
         self.settings = settings
         self.reachability = reachability
+        reachability.startNotifier()
         self.apiService = apiService
         self.networkManager = networkManager
         self.webKitImageDownloader = webKitImageDownloader
@@ -60,11 +61,13 @@ class Environment: NSObject {
         forumName: String = "Stage1st",
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Settings = Settings(defaults: UserDefaults.standard),
-        reachability: Reachability = Reachability()
+        reachability: Reachability = Reachability.forInternetConnection()
     ) {
         self.forumName = forumName
         self.cookieStorage = cookieStorage
         self.settings = settings
+        self.reachability = reachability
+        reachability.startNotifier()
 
         cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
 

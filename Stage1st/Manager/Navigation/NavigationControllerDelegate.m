@@ -70,7 +70,7 @@
         DDLogVerbose(@"[NavPan] Begin.");
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        CGFloat windowWidth = MyAppDelegate.window.bounds.size.width;
+        CGFloat windowWidth = UIApplication.sharedApplication.delegate.window.bounds.size.width;
         [self.interactionController updateInteractiveTransition:translation.x > 0 ? translation.x / windowWidth : 0];
         DDLogVerbose(@"[NavPan] Update: %f.", translation.x > 0 ? translation.x / windowWidth : 0);
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
@@ -93,14 +93,9 @@
         self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
     } else {
         DDLogError(@"[NavPan] Other Interaction Event:%ld", (long)recognizer.state);
-        MyAppDelegate.crashIssueTrackingModeEnabled = YES;
-        DDLogError(@"[Tracking] 0");
         [self.interactionController cancelInteractiveTransition];
-        DDLogError(@"[Tracking] 1");
         self.interactionController = nil;
-        DDLogError(@"[Tracking] 2");
         self.popAnimator.curve = UIViewAnimationOptionCurveEaseInOut;
-        DDLogError(@"[Tracking] 3");
     }
 }
 

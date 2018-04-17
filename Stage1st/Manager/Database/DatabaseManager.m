@@ -1,6 +1,5 @@
 #import "DatabaseManager.h"
 #import "CloudKitManager.h"
-#import "S1AppDelegate.h"
 #import "MyDatabaseObject.h"
 #import "S1Topic.h"
 #import <YapDatabase/YapDatabase.h>

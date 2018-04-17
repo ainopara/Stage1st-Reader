@@ -14,7 +14,6 @@
 #import <YapDatabase/YapDatabaseCloudKit.h>
 
 #import "S1TopicListViewController.h"
-#import "S1AppDelegate.h"
 #import "SettingsViewController.h"
 #import "S1HUD.h"
 #import "S1Topic.h"

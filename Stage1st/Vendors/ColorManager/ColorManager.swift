@@ -83,7 +83,7 @@ public final class ColorManager: NSObject {
         UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
         UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default
         UIApplication.shared.statusBarStyle = isDarkTheme() ? .lightContent : .default
-        MyAppDelegate.window.backgroundColor = colorForKey("window.background")
+        (UIApplication.shared.delegate as! S1AppDelegate).window?.backgroundColor = colorForKey("window.background")
     }
 
     public func colorForKey(_ key: String) -> UIColor {
