@@ -31,13 +31,6 @@
         self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
 
-        // For iOS 10.0 and later, Gagat is used to provide a interactive transition experience.
-        if (SYSTEM_VERSION_LESS_THAN(@"10.0")) {
-            self.colorPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(colorPan:)];
-            self.colorPanRecognizer.delegate = self;
-            [self.navigationController.view addGestureRecognizer:self.colorPanRecognizer];
-        }
-
         self.popAnimator = [[S1Animator alloc] initWithDirection:TransitionDirectionPop];
         self.pushAnimator = [[S1Animator alloc] initWithDirection:TransitionDirectionPush];
     }

@@ -96,7 +96,7 @@ extension Floor {
             return nil
         }
 
-        DDLogDebug("First Quote Floor ID: \(floorID)")
+        S1LogDebug("First Quote Floor ID: \(floorID)")
         return floorID
     }
 }

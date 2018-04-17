@@ -53,7 +53,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     weak var replyTopicFloor: Floor?
 
     var scrollType: ScrollType = .restorePosition {
-        didSet { DDLogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)") }
+        didSet { S1LogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)") }
     }
 
     var backButtonState: BackButtonState = .back(rotateAngle: 0.0) {
@@ -192,7 +192,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             .startWithValues { [weak self] arg in
                 let (currentPage, totalPage) = arg
 
-                DDLogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
+                S1LogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
                 guard let strongSelf = self else { return }
                 strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
             }
@@ -204,7 +204,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 
                 guard let strongSelf = self else { return }
                 let finishFirstLoading = strongSelf.finishFirstLoading.value
-                DDLogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
+                S1LogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
 
                 if webPageReady && finishFirstLoading && strongSelf.webPageAutomaticScrollingEnabled {
                     strongSelf.pullToActionController.filterDuplicatedSizeEvent = true
@@ -282,12 +282,12 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     }
 
     deinit {
-        DDLogInfo("[ContentVC] Dealloc Begin")
+        S1LogInfo("[ContentVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         pullToActionController.stop()
         webView.stopLoading()
-        DDLogInfo("[ContentVC] Dealloced")
+        S1LogInfo("[ContentVC] Dealloced")
     }
 }
 
@@ -374,18 +374,18 @@ extension S1ContentViewController {
 
         viewModel.cancelRequest()
         saveTopicViewedState(sender: nil)
-        DDLogDebug("[ContentVC] View did disappear end")
+        S1LogDebug("[ContentVC] View did disappear end")
     }
 
     @objc func applicationWillEnterForeground() {
-        DDLogDebug("[ContentVC] \(self) will enter foreground begin")
+        S1LogDebug("[ContentVC] \(self) will enter foreground begin")
         _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     @objc func applicationDidEnterBackground() {
-        DDLogDebug("[ContentVC] \(self) did enter background begin")
+        S1LogDebug("[ContentVC] \(self) did enter background begin")
         saveTopicViewedState(sender: nil)
-        DDLogDebug("[ContentVC] \(self) did enter background end")
+        S1LogDebug("[ContentVC] \(self) did enter background end")
     }
 }
 
@@ -507,7 +507,7 @@ extension S1ContentViewController {
             return
         }
 
-        DDLogDebug("[ContentVC] Force refresh pressed")
+        S1LogDebug("[ContentVC] Force refresh pressed")
         refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
     }
 
@@ -596,7 +596,7 @@ extension S1ContentViewController {
                 strongSelf.hintHUD.showMessage(NSLocalizedString("ContentViewController.ActionSheet.CopyLink", comment: "Copy Link"))
                 strongSelf.hintHUD.hide(withDelay: 0.3)
             } else {
-                DDLogWarn("[ContentVC] can not generate corresponding web page url.")
+                S1LogWarn("[ContentVC] can not generate corresponding web page url.")
             }
         }))
 
@@ -607,7 +607,7 @@ extension S1ContentViewController {
                 let webViewController = WebViewController(URL: urlToOpen)
                 strongSelf.present(webViewController, animated: true, completion: nil)
             } else {
-                DDLogWarn("[ContentVC] can not generate corresponding web page url.")
+                S1LogWarn("[ContentVC] can not generate corresponding web page url.")
             }
         }))
 
@@ -659,7 +659,7 @@ extension S1ContentViewController {
             return
         }
 
-        DDLogDebug("[ContentVC] Action for \(floor)")
+        S1LogDebug("[ContentVC] Action for \(floor)")
         let floorActionController = UIAlertController(
             title: nil,
             message: nil,
@@ -782,15 +782,15 @@ extension S1ContentViewController {
 // MARK: WKNavigationDelegate
 extension S1ContentViewController: WKNavigationDelegate {
     func webView(_: WKWebView, didFinish _: WKNavigation!) {
-        DDLogInfo("[ContentVC] webViewDidFinishLoad")
+        S1LogInfo("[ContentVC] webViewDidFinishLoad")
     }
 
     func webView(_: WKWebView, didFail _: WKNavigation!, withError error: Error) {
-        DDLogWarn("[ContentVC] webview failed to load with error: \(error)")
+        S1LogWarn("[ContentVC] webview failed to load with error: \(error)")
     }
 
     func webViewWebContentProcessDidTerminate(_: WKWebView) {
-        DDLogError("[ContentVC] webViewWebContentProcessDidTerminate")
+        S1LogError("[ContentVC] webViewWebContentProcessDidTerminate")
     }
 
     func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -862,16 +862,18 @@ extension S1ContentViewController: WKNavigationDelegate {
         let alertViewController = UIAlertController(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""), message: url.absoluteString, preferredStyle: .alert)
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Cancel", comment: ""), style: .cancel, handler: nil))
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""), style: .default, handler: { _ in
-            DDLogInfo("[ContentVC] Open in Safari: \(url)")
+            S1LogInfo("[ContentVC] Open in Safari: \(url)")
 
-            if !UIApplication.shared.openURL(url) {
-                DDLogWarn("Failed to open url: \(url)")
-            }
+            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+                if !success {
+                    S1LogWarn("Failed to open url: \(url)")
+                }
+            })
         }))
 
         present(alertViewController, animated: true, completion: nil)
 
-        DDLogWarn("No case match for url: \(url), fallback to asking for open link.")
+        S1LogWarn("No case match for url: \(url), fallback to asking for open link.")
         decisionHandler(.cancel)
         return
     }
@@ -887,7 +889,7 @@ extension S1ContentViewController: WebViewEventDelegate {
         let currentColorPanGestureState = MyAppDelegate.navigationDelegate.navigationController?.gagat?.panGestureRecognizer.state ?? .possible
         let shouldIgnoreTouchEvent = currentColorPanGestureState == .began || currentColorPanGestureState == .changed
         if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled && !shouldIgnoreTouchEvent {
-            DDLogInfo("[ContentVC] User Touch detected. Stop tracking scroll type: \(scrollType)")
+            S1LogInfo("[ContentVC] User Touch detected. Stop tracking scroll type: \(scrollType)")
             webPageAutomaticScrollingEnabled = false
             webView.scrollView.s1_ignoringContentOffsetChangedToZero = false
         }
@@ -921,13 +923,13 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
-                        DDLogError("No auth to access photo library")
+                        S1LogError("No auth to access photo library")
                         return
                     }
 
                     let imageData = imageViewer.imageData
                     guard imageData != nil else {
-                        DDLogError("Image data is nil")
+                        S1LogError("Image data is nil")
                         return
                     }
 
@@ -935,7 +937,7 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
                         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
                     }, completionHandler: { _, error in
                         if let error = error {
-                            DDLogError("\(error)")
+                            S1LogError("\(error)")
                         }
                     })
                 }
@@ -1085,10 +1087,10 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
 
             let failureBlock = { (error: Error) in
                 if let urlError = error as? URLError, urlError.code == .cancelled {
-                    DDLogDebug("[Network] NSURLErrorCancelled")
+                    S1LogDebug("[Network] NSURLErrorCancelled")
                     MessageHUD.shared.post(message: "回复请求取消", duration: .second(1.0))
                 } else {
-                    DDLogDebug("[Network] reply error: \(error)")
+                    S1LogDebug("[Network] reply error: \(error)")
                     MessageHUD.shared.post(message: "回复失败", duration: .second(2.5))
                 }
             }
@@ -1122,7 +1124,7 @@ extension S1ContentViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-        DDLogDebug("viewWillTransitionToSize: \(size)")
+        S1LogDebug("viewWillTransitionToSize: \(size)")
 
         var frame = view.frame
         frame.size = size
@@ -1161,7 +1163,7 @@ extension S1ContentViewController {
     }
 
     open override func updateUserActivityState(_ activity: NSUserActivity) {
-        DDLogDebug("[ContentVC] Hand Off Activity Updated")
+        S1LogDebug("[ContentVC] Hand Off Activity Updated")
         activity.userInfo = viewModel.activityUserInfo()
         activity.webpageURL = viewModel.correspondingWebPageURL() as URL?
     }
@@ -1193,10 +1195,10 @@ extension S1ContentViewController {
         // Set up HUD
         if !viewModel.hasValidPrecachedCurrentPage() {
             // only show hud when no cached floors
-            DDLogVerbose("[ContentVC] check precache: not hit. shows HUD")
+            S1LogVerbose("[ContentVC] check precache: not hit. shows HUD")
             _showHud()
         } else {
-            DDLogVerbose("[ContentVC] check precache: hit.")
+            S1LogVerbose("[ContentVC] check precache: hit.")
         }
 
         viewModel.currentContentPage { [weak self] result in
@@ -1204,7 +1206,7 @@ extension S1ContentViewController {
 
             switch result {
             case let .success(contents):
-                DDLogInfo("[ContentVC] page finish fetching.")
+                S1LogInfo("[ContentVC] page finish fetching.")
                 strongSelf.updateToolBar() /// TODO: Is it still necessary?
 
                 if strongSelf.finishFirstLoading.value {
@@ -1226,7 +1228,7 @@ extension S1ContentViewController {
 
             case let .failure(error):
                 if let urlError = error as? URLError, urlError.code == .cancelled {
-                    DDLogDebug("[ContentVC] request cancelled.")
+                    S1LogDebug("[ContentVC] request cancelled.")
                     // TODO:
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
@@ -1234,13 +1236,13 @@ extension S1ContentViewController {
                 } else {
                     let nsError = error as NSError
                     if nsError.domain == "Stage1stErrorDomain" && nsError.code == 101 {
-                        DDLogInfo("[ContentVC] Permission denied with message: \(error)")
+                        S1LogInfo("[ContentVC] Permission denied with message: \(error)")
                         if let message = nsError.userInfo["message"] as? String, message != "" {
                             strongSelf.refreshHUD.showMessage(message)
                             strongSelf.refreshHUD.hide(withDelay: 3.0)
                         }
                     } else {
-                        DDLogWarn("[ContentVC] fetch failed with error: \(error)")
+                        S1LogWarn("[ContentVC] fetch failed with error: \(error)")
                         strongSelf.refreshHUD.showRefreshButton()
                     }
                 }
@@ -1279,7 +1281,7 @@ extension S1ContentViewController {
 private extension S1ContentViewController {
 
     func _hook_preChangeCurrentPage() {
-        DDLogDebug("[webView] pre change current page")
+        S1LogDebug("[webView] pre change current page")
 
         viewModel.cancelRequest()
 
@@ -1300,7 +1302,7 @@ private extension S1ContentViewController {
             }
         }
 
-        DDLogDebug("[webView] basic page loaded with scrollType \(scrollType) firstAnimationSkipped: \(webPageDidFinishFirstAutomaticScrolling)")
+        S1LogDebug("[webView] basic page loaded with scrollType \(scrollType) firstAnimationSkipped: \(webPageDidFinishFirstAutomaticScrolling)")
         let maxOffset = max(0.0, webView.scrollView.contentSize.height - webView.scrollView.bounds.height)
 
         switch scrollType {
@@ -1349,7 +1351,7 @@ private extension S1ContentViewController {
             // Restore last view position from cached position in this view controller.
             webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
             if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.s1_clamped(to: 0.0...maxOffset) {
-                DDLogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
+                S1LogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
 
                 changeOffsetIfNeeded(to: positionForPage)
             } else {

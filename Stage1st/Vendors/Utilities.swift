@@ -156,13 +156,13 @@ extension WKWebView {
         let script = "function f(){ var r = document.getElementById('\(ID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
         evaluateJavaScript(script) { result, error in
             guard error == nil else {
-                DDLogWarn("failed to get position of element: \(ID) with error: \(String(describing: error))")
+                S1LogWarn("failed to get position of element: \(ID) with error: \(String(describing: error))")
                 completion(nil)
                 return
             }
 
             guard let resultString = result as? String else {
-                DDLogWarn("failed to get position of element: \(ID) with result: \(String(describing: result))")
+                S1LogWarn("failed to get position of element: \(ID) with result: \(String(describing: result))")
                 completion(nil)
                 return
             }
@@ -325,7 +325,7 @@ extension NSMutableString {
             let regex = try NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators])
             return regex.replaceMatches(in: self, options: [.reportProgress], range: NSRange(location: 0, length: self.length), withTemplate: template)
         } catch let error {
-            DDLogError("Regex Replace error: \(error) when initialize with pattern: \(pattern)")
+            S1LogError("Regex Replace error: \(error) when initialize with pattern: \(pattern)")
             return 0
         }
     }

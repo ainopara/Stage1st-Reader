@@ -40,7 +40,7 @@ extension PageRenderer {
             let result = try template.render(data)
             return result
         } catch let error {
-            DDLogWarn("[PageRenderer] error: \(error)")
+            S1LogWarn("[PageRenderer] error: \(error)")
             return ""
         }
     }
@@ -247,7 +247,7 @@ extension PageRenderer {
                 guard
                     let data = HTMLString.data(using: .utf8),
                     let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
-                    DDLogWarn("[PageRenderer] failed to parse floor \(floorID)")
+                    S1LogWarn("[PageRenderer] failed to parse floor \(floorID)")
                     return HTMLString
                 }
 
@@ -265,12 +265,12 @@ extension PageRenderer {
                     return cuttedString.replacingOccurrences(of: "<br></br>", with: "<br />")
                 }
 
-                DDLogError("[ContentViewModel] Fail to modify image: \(HTMLString)")
+                S1LogError("[ContentViewModel] Fail to modify image: \(HTMLString)")
                 return HTMLString
             }
 
             guard let content = content else {
-                DDLogWarn("[PageRenderer] nil content in floor \(floor.ID)")
+                S1LogWarn("[PageRenderer] nil content in floor \(floor.ID)")
                 return ""
             }
             let firstProcessedContent = process(HTMLString: content, with: floor.ID)

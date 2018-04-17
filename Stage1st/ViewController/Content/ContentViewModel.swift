@@ -47,7 +47,7 @@ class ContentViewModel: NSObject, PageRenderer {
             totalPages = MutableProperty(currentPage.value)
         }
 
-        DDLogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
+        S1LogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
 
         self.dataCenter = dataCenter
         apiManager = dataCenter.apiManager
@@ -67,7 +67,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         currentPage.producer.startWithValues { page in
-            DDLogInfo("[ContentVM] Current page changed to: \(page)")
+            S1LogInfo("[ContentVM] Current page changed to: \(page)")
         }
 
         totalPages <~ replyCount.producer
@@ -266,7 +266,7 @@ extension ContentViewModel: UserViewModelMaker {
 extension ContentViewModel {
     func saveTopicViewedState(lastViewedPosition: Double?) {
 
-        DDLogInfo("[ContentVM] Save Topic View State Begin")
+        S1LogInfo("[ContentVM] Save Topic View State Begin")
 
         if let lastViewedPosition = lastViewedPosition {
             topic.lastViewedPosition = NSNumber(value: lastViewedPosition)
@@ -279,7 +279,7 @@ extension ContentViewModel {
         topic.lastReplyCount = topic.replyCount
         dataCenter.hasViewed(topic: topic)
 
-        DDLogInfo("[ContentVM] Save Topic View State Finish")
+        S1LogInfo("[ContentVM] Save Topic View State Finish")
     }
 
     func cancelRequest() {

@@ -65,7 +65,7 @@ class ServerAddress: NSObject, NSCoding {
 
     init?(record: CKRecord) {
         guard let mainURL = record["mainURL"] as? String else {
-            DDLogError("No mainURL in \(record)")
+            S1LogError("No mainURL in \(record)")
             return nil
         }
 

@@ -45,21 +45,6 @@ DatabaseManager *MyDatabaseManager;
 	return MyDatabaseManager;
 }
 
-+ (NSString *)databasePath
-{
-	NSString *databaseName = @"Stage1stYap.sqlite";
-	
-	NSURL *baseURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory
-	                                                        inDomain:NSUserDomainMask
-	                                               appropriateForURL:nil
-	                                                          create:YES
-	                                                           error:NULL];
-	
-	NSURL *databaseURL = [baseURL URLByAppendingPathComponent:databaseName isDirectory:NO];
-	
-	return databaseURL.filePathURL.path;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Instance
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +140,8 @@ DatabaseManager *MyDatabaseManager;
 
 - (void)setupDatabase
 {
-	NSString *databasePath = [[self class] databasePath];
+	NSString *databasePath = [Environment databasePath];
+
 	DDLogVerbose(@"[DatabaseManager] databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
@@ -350,7 +336,7 @@ DatabaseManager *MyDatabaseManager;
 		if (record == nil)
 		{
 			CKRecordZoneID *zoneID =
-			  [[CKRecordZoneID alloc] initWithZoneName:CloudKitZoneName ownerName:CKOwnerDefaultName];
+            [[CKRecordZoneID alloc] initWithZoneName:CloudKitZoneName ownerName:CKCurrentUserDefaultName];
 			
 			CKRecordID *recordID = [[CKRecordID alloc] initWithRecordName:[topic.topicID stringValue] zoneID:zoneID];
 			

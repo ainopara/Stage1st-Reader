@@ -26,7 +26,7 @@ class S1Application: UIApplication {
 
         for gestureRecognizer in gestureRecognizers {
             if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
-                DDLogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")
+                S1LogVerbose("\(panGestureRecognizer) - \(panGestureRecognizer.minimumNumberOfTouches) - \(panGestureRecognizer.maximumNumberOfTouches)")
             }
         }
     }

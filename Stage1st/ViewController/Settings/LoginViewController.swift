@@ -398,7 +398,7 @@ extension LoginViewController {
                 return
             }
             if let error = error as NSError?, error.code != Int(AppExtensionErrorCodeCancelledByUser) {
-                DDLogInfo("Error invoking 1Password App Extension for find login: \(error)")
+                S1LogInfo("Error invoking 1Password App Extension for find login: \(error)")
                 return
             }
 
@@ -409,7 +409,7 @@ extension LoginViewController {
     }
 
     @objc func selectSecureQuestion(_ button: UIButton) {
-        DDLogDebug("debug secure question")
+        S1LogDebug("debug secure question")
         view.endEditing(true)
         // TODO: Make action sheet picker a view controller to avoid keyboard overlay.
         let picker = ActionSheetStringPicker(title: "安全提问", rows: secureQuestionChoices, initialSelection: currentSecureQuestionNumber(), doneBlock: { _, selectedIndex, selectedValue in
@@ -437,7 +437,7 @@ extension LoginViewController {
         guard let userInfo = (notification as NSNotification).userInfo, let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else { return }
 
         let keyboardHeightInView = view.bounds.maxY - endFrame.minY
-        DDLogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
+        S1LogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
         visibleLayoutGuide.snp.updateConstraints { make in
             make.bottom.equalTo(self.view).offset(-keyboardHeightInView)
         }
@@ -549,30 +549,30 @@ extension LoginViewController {
 
         switch gesture.state {
         case .began:
-            DDLogInfo("before: \(containerView.center)")
+            S1LogInfo("before: \(containerView.center)")
             let centerOfCurrentContainerView = containerView.center
             dynamicAnimator.removeAllBehaviors() // containerView.center will changed immdediately when doing this since iOS 10
             containerView.center = centerOfCurrentContainerView
-            DDLogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
+            S1LogDebug("[LoginVC] pan location begin \(gesture.location(in: self.view))")
             attachmentBehavior = UIAttachmentBehavior(item: containerView,
                                                       offsetFromCenter: offsetFromCenter(gesture.location(in: view), viewCenter: centerOfCurrentContainerView),
                                                       attachedToAnchor: gesture.location(in: view))
-            DDLogInfo("after: \(containerView.center)")
+            S1LogInfo("after: \(containerView.center)")
             dynamicAnimator.addBehavior(attachmentBehavior!)
             dynamicItemBehavior = UIDynamicItemBehavior(items: [containerView])
             dynamicAnimator.addBehavior(dynamicItemBehavior!)
 
         case .changed:
-            DDLogDebug("[LoginVC] pan location \(gesture.location(in: self.view))")
+            S1LogDebug("[LoginVC] pan location \(gesture.location(in: self.view))")
             attachmentBehavior?.anchorPoint = gesture.location(in: view)
         default:
             let velocity = gesture.velocity(in: view)
-            DDLogVerbose("[LoginVC] pan velocity: \(velocity)")
+            S1LogVerbose("[LoginVC] pan velocity: \(velocity)")
             if velocity.x * velocity.x + velocity.y * velocity.y > 1_000_000 {
                 if let attachmentBehavior = attachmentBehavior {
                     dynamicAnimator.removeBehavior(attachmentBehavior)
                 }
-                DDLogVerbose("[LoginVC] dismiss triggered with original velocity: \(String(describing: dynamicItemBehavior?.linearVelocity(for: containerView)))")
+                S1LogVerbose("[LoginVC] dismiss triggered with original velocity: \(String(describing: dynamicItemBehavior?.linearVelocity(for: containerView)))")
                 dynamicItemBehavior?.addLinearVelocity(velocity, for: containerView)
                 dynamicItemBehavior?.action = { [weak self] in
                     guard let strongSelf = self else { return }

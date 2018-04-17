@@ -63,12 +63,12 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
     }
 
     deinit {
-        DDLogInfo("[QuoteFloorVC] Dealloc Begin")
+        S1LogInfo("[QuoteFloorVC] Dealloc Begin")
         NotificationCenter.default.removeObserver(self)
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "stage1st")
         webView.scrollView.delegate = nil
         webView.stopLoading()
-        DDLogInfo("[QuoteFloorVC] Dealloced")
+        S1LogInfo("[QuoteFloorVC] Dealloced")
     }
 
     // MARK: - Life Cycle
@@ -100,9 +100,9 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
     }
 
     @objc func applicationWillEnterForeground() {
-        DDLogDebug("[QuoteFloorVC] \(self) will enter foreground begin")
+        S1LogDebug("[QuoteFloorVC] \(self) will enter foreground begin")
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
-        DDLogDebug("[QuoteFloorVC] \(self) will enter foreground end")
+        S1LogDebug("[QuoteFloorVC] \(self) will enter foreground end")
     }
 }
 
@@ -155,13 +155,13 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
             DispatchQueue.global(qos: .background).async {
                 PHPhotoLibrary.requestAuthorization { status in
                     guard case .authorized = status else {
-                        DDLogError("No auth to access photo library")
+                        S1LogError("No auth to access photo library")
                         return
                     }
 
                     let imageData = imageViewer.imageData
                     guard imageData != nil else {
-                        DDLogError("Image data is nil")
+                        S1LogError("Image data is nil")
                         return
                     }
 
@@ -169,7 +169,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
                         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
                     }, completionHandler: { _, error in
                         if let error = error {
-                            DDLogError("\(error)")
+                            S1LogError("\(error)")
                         }
                     })
                 }
@@ -243,6 +243,18 @@ extension QuoteFloorViewController: WKNavigationDelegate {
             }
         }
 
+        let openActionHandler: (UIAlertAction) -> Void = { [weak self] _ in
+            guard let strongSelf = self else { return }
+            strongSelf.presentType = .background
+            S1LogDebug("[ContentVC] Open in Safari: \(url)")
+
+            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+                if !success {
+                    S1LogWarn("Failed to open url: \(url)")
+                }
+            })
+        }
+
         // Fallback Open link
         let alertViewController = UIAlertController(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""),
                                                     message: url.absoluteString,
@@ -254,25 +266,17 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""),
                                                     style: .default,
-                                                    handler: { [weak self] _ in
-                                                        guard let strongSelf = self else { return }
-                                                        strongSelf.presentType = .background
-                                                        DDLogDebug("[ContentVC] Open in Safari: \(url)")
-
-                                                        if !UIApplication.shared.openURL(url) {
-                                                            DDLogWarn("Failed to open url: \(url)")
-                                                        }
-        }))
+                                                    handler: openActionHandler))
 
         present(alertViewController, animated: true, completion: nil)
 
-        DDLogWarn("no case match for url: \(url), fallback cancel")
+        S1LogWarn("no case match for url: \(url), fallback cancel")
         decisionHandler(.cancel)
         return
     }
 
     func webViewWebContentProcessDidTerminate(_: WKWebView) {
-        DDLogError("[QuoteFloor] \(#function)")
+        S1LogError("[QuoteFloor] \(#function)")
     }
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
@@ -303,7 +307,7 @@ extension QuoteFloorViewController {
             if let rect = $0 {
                 completion(rect.minY)
             } else {
-                DDLogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
+                S1LogError("[QuoteFloorVC] Touch element ID: \(elementID) not found.")
                 completion(0.0)
             }
         }

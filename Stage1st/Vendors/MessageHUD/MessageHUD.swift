@@ -93,7 +93,7 @@ class MessageHUD: UIWindow {
                 hide(after: duration, animated: animated)
             }
         default:
-            DDLogError("missed \(state)")
+            S1LogError("missed \(state)")
         }
     }
 
@@ -111,7 +111,7 @@ class MessageHUD: UIWindow {
 
     func hide(animated: Bool = true) {
         guard state == .presenting || state == .appearing else {
-            DDLogWarn("Ignoring message hud hide operation with state: \(state)")
+            S1LogWarn("Ignoring message hud hide operation with state: \(state)")
             return
         }
 

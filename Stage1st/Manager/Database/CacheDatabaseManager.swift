@@ -22,8 +22,6 @@ class CacheDatabaseManager: NSObject {
     let readConnection: YapDatabaseConnection
     let backgroundWriteConnection: YapDatabaseConnection
 
-    static var shared = CacheDatabaseManager(path: Environment.cacheDatabasePath())
-
     init(path: String) {
         cacheDatabase = YapDatabase(path: path)!
         readConnection = cacheDatabase.newConnection()
@@ -44,7 +42,7 @@ class CacheDatabaseManager: NSObject {
             transaction.setObject(floors, forKey: key, inCollection: collectionPageFloors, withMetadata: [metadataLastUsed: Date()])
 
         }, completionBlock: {
-            DDLogVerbose("[CacheDatabase] finish cache for key: \(key)")
+            S1LogVerbose("[CacheDatabase] finish cache for key: \(key)")
             completion?()
         })
     }
@@ -93,14 +91,14 @@ extension CacheDatabaseManager {
             guard
                 let key = transaction.object(forKey: "\(ID)", inCollection: collectionFloorIDs) as? String,
                 let floors = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] else {
-                DDLogWarn("Failed to find floor(ID: \(ID)) in cache database due to index or cache not exist.")
+                S1LogWarn("Failed to find floor(ID: \(ID)) in cache database due to index or cache not exist.")
                 return
             }
             floor = floors.first(where: { (aFloor) -> Bool in
                 aFloor.ID == ID
             })
             if floor == nil {
-                DDLogWarn("Failed to find floor(ID: \(ID)) in cache database due to floor not in indexed batch.")
+                S1LogWarn("Failed to find floor(ID: \(ID)) in cache database due to floor not in indexed batch.")
             }
         }
         return floor
@@ -124,7 +122,7 @@ extension CacheDatabaseManager {
                 guard
                     let metadata = metadata as? [String: Any],
                     let lastUsedDate = metadata[metadataLastUsed] as? Date else {
-                    DDLogWarn("key\(key) do not have valid metadata. skipped.")
+                    S1LogWarn("key\(key) do not have valid metadata. skipped.")
                     return
                 }
 
@@ -133,7 +131,7 @@ extension CacheDatabaseManager {
                 }
             })
 
-            DDLogInfo("Keys to remove from floor cache: \(keysToRemove)")
+            S1LogInfo("Keys to remove from floor cache: \(keysToRemove)")
             for key in keysToRemove {
                 transaction.removeObject(forKey: key, inCollection: collectionPageFloors)
             }
@@ -145,7 +143,7 @@ extension CacheDatabaseManager {
             var floorIDsToRemove = [String]()
             transaction.enumerateKeysAndObjects(inCollection: collectionFloorIDs, using: { floorID, key, _ in
                 guard let keyString = key as? String else {
-                    DDLogWarn("floorID \(floorID) index to \(key) which is not a string key as expected.")
+                    S1LogWarn("floorID \(floorID) index to \(key) which is not a string key as expected.")
                     return
                 }
                 if transaction.object(forKey: keyString, inCollection: collectionPageFloors) as? [Floor] == nil {

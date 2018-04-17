@@ -53,7 +53,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         let progressObserver = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] (webView, change) in
             guard let strongSelf = self else { return }
             guard let newProgress = change.newValue else { return }
-            DDLogVerbose("[WebVC] Loading progress: \(newProgress)")
+            S1LogVerbose("[WebVC] Loading progress: \(newProgress)")
 
             if newProgress == 1.0 {
                 UIView.animate(withDuration: 0.3, animations: {
@@ -177,13 +177,13 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.didReceivePaletteChangeNotification(nil)
-        DDLogInfo("[WebVC] view will appear")
+        S1LogInfo("[WebVC] view will appear")
 
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     @objc func applicationWillEnterForeground() {
-        DDLogDebug("[WebVC] \(self) will enter foreground begin")
+        S1LogDebug("[WebVC] \(self) will enter foreground begin")
         tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
@@ -252,9 +252,11 @@ extension WebViewController {
 
     @objc func openInSafari() {
         let URLToOpenInSafari = currentValidURL()
-        DDLogDebug("[WebVC] open in safari:\(URLToOpenInSafari)")
-        if UIApplication.shared.openURL(URLToOpenInSafari) != true {
-            DDLogError("[WebVC] failed to open \(URLToOpenInSafari) in safari")
+        S1LogDebug("[WebVC] open in safari:\(URLToOpenInSafari)")
+        UIApplication.shared.open(URLToOpenInSafari, options: [:]) { (success) in
+            if !success {
+                S1LogError("[WebVC] failed to open \(URLToOpenInSafari) in safari")
+            }
         }
     }
 }
@@ -263,7 +265,7 @@ extension WebViewController {
 
 extension WebViewController {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        DDLogDebug("[WebVC] didCommit")
+        S1LogDebug("[WebVC] didCommit")
         updateBarItems()
         backButtonItem?.isEnabled = webView.canGoBack
         forwardButtonItem?.isEnabled = webView.canGoForward
@@ -271,7 +273,7 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        DDLogDebug("[WebVC] didFinish")
+        S1LogDebug("[WebVC] didFinish")
         updateBarItems()
         backButtonItem?.isEnabled = webView.canGoBack
         forwardButtonItem?.isEnabled = webView.canGoForward
@@ -279,12 +281,12 @@ extension WebViewController {
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        DDLogDebug("[WebVC] didFail with error:\(error)")
+        S1LogDebug("[WebVC] didFail with error:\(error)")
         updateBarItems()
     }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        DDLogError("[WebVC] \(#function)")
+        S1LogError("[WebVC] \(#function)")
     }
 
     // MARK: WKWebViewUIDelegate

@@ -43,7 +43,7 @@ final class UserViewController: UIViewController {
                 strongSelf.customStatusLabel.text = user.customStatus
                 strongSelf.infoLabel.text = strongSelf.viewModel.infoLabelText()
             case let .failure(error):
-                DDLogDebug("Failed to update user profile. error: \(error)")
+                S1LogDebug("Failed to update user profile. error: \(error)")
 //                strongSelf.s1_presentAlertView("Error", message: "\(error)")
             }
         }

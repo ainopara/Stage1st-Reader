@@ -17,6 +17,7 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Reachability/Reachability.h>
+@import UserNotifications;
 
 S1AppDelegate *MyAppDelegate;
 
@@ -75,9 +76,7 @@ S1AppDelegate *MyAppDelegate;
     [self migrate];
     
     if ([userDefaults boolForKey:@"EnableSync"]) {
-        // Register for push notifications
-        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge + UIUserNotificationTypeSound + UIUserNotificationTypeAlert categories:nil];
-        [application registerUserNotificationSettings:notificationSettings];
+        [application registerForRemoteNotifications];
     }
 
     // Reachability
@@ -85,6 +84,7 @@ S1AppDelegate *MyAppDelegate;
     [_reachability startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
 
+    // Setup Window
     S1NavigationViewController *navigationController = [[S1NavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     self.navigationDelegate = [[NavigationControllerDelegate alloc] initWithNavigationController:navigationController];
     navigationController.delegate = self.navigationDelegate;
@@ -98,12 +98,11 @@ S1AppDelegate *MyAppDelegate;
     // Appearence
     [[ColorManager shared] updateGlobalAppearance];
 
-    if (!SYSTEM_VERSION_LESS_THAN(@"10.0")) {
-        [self.navigationDelegate setUpGagat];
-    }
+    [self.navigationDelegate setUpGagat];
+
 
 #ifdef DEBUG
-    DDLogVerbose(@"%@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
+    DDLogVerbose(@"Dump user defaults: %@", [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]);
 #endif
 
     return YES;
@@ -133,72 +132,8 @@ S1AppDelegate *MyAppDelegate;
             return YES;
         }
     }
-    
-    if ([[url host] isEqualToString:@"settings"]) {
-        for (NSString *key in queryDict) {
-            if ([key isEqualToString:@"ForcePortraitForPhone"]) {
-                NSString *value = [queryDict valueForKey:key];
-                if ([value isEqualToString:@"YES"]) {
-                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ForcePortraitForPhone"];
-                }
-                if ([value isEqualToString:@"NO"]) {
-                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ForcePortraitForPhone"];
-                }
-            }
-            if ([key isEqualToString:@"EnableSync"]) {
-                NSString *value = [queryDict valueForKey:key];
-                if ([value isEqualToString:@"YES"]) {
-                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"EnableSync"];
-                }
-                if ([value isEqualToString:@"NO"]) {
-                    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"EnableSync"];
-                }
-            }
-            
-        }
-    }
-    
+
     return YES;
-}
-
-#pragma mark - Push Notification For Sync
-
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    DDLogDebug(@"[APS] application:didRegisterUserNotificationSettings: %@", notificationSettings);
-    [application registerForRemoteNotifications];
-}
-
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    DDLogDebug(@"[APS] Registered for Push notifications with token: %@", deviceToken);
-}
-
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    DDLogWarn(@"[APS] Push subscription failed: %@", error);
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    DDLogDebug(@"[APS] Push received: %@", userInfo);
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        DDLogDebug(@"[APS] push notification received when user do not enable sync feature.");
-        completionHandler(UIBackgroundFetchResultNoData);
-        return;
-    }
-
-    __block UIBackgroundFetchResult combinedFetchResult = UIBackgroundFetchResultNoData;
-    
-    [[CloudKitManager sharedInstance] fetchRecordChangesWithCompletionHandler:
-        ^(UIBackgroundFetchResult fetchResult, BOOL moreComing) {
-        if (fetchResult == UIBackgroundFetchResultNewData) {
-            combinedFetchResult = UIBackgroundFetchResultNewData;
-        }
-        else if (fetchResult == UIBackgroundFetchResultFailed && combinedFetchResult == UIBackgroundFetchResultNoData) {
-            combinedFetchResult = UIBackgroundFetchResultFailed;
-        }
-        
-        if (!moreComing) {
-            completionHandler(combinedFetchResult);
-        }
-    }];
 }
 
 #pragma mark - Background Sync
@@ -212,6 +147,7 @@ S1AppDelegate *MyAppDelegate;
 #pragma mark - Hand Off
 
 - (BOOL)application:(UIApplication *)application willContinueUserActivityWithType:(NSString *)userActivityType {
+    // TODO: Show an alert to tell user we are restoring state from hand off here.
     return YES;
 }
 

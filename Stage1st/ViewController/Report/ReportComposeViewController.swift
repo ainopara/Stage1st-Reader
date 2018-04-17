@@ -36,7 +36,7 @@ final class ReportComposeViewModel {
     }
 
     func submit(_ completion: @escaping (Error?) -> Void) {
-        DDLogDebug("submit")
+        S1LogDebug("submit")
         guard let forumID = topic.fID, let formhash = topic.formhash else {
             return
         }
@@ -170,7 +170,7 @@ extension ReportComposeViewController {
             guard let strongSelf = self else { return }
             if let error = error {
                 // FIXME: Alert Error
-                DDLogError("Report Submit Error: \(error)")
+                S1LogError("Report Submit Error: \(error)")
                 MessageHUD.shared.post(message: "举报发送失败", duration: .second(2.5))
             } else {
                 MessageHUD.shared.post(message: "举报发送成功", duration: .second(2.5))

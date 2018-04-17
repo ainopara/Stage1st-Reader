@@ -42,7 +42,7 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 if let schemeTask = strongSelf.taskMap[dataTask] as? WKURLSchemeTask {
-                    DDLogInfo("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
+                    S1LogInfo("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
                     schemeTask.didReceive(response)
                 }
             }
@@ -55,7 +55,7 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 if let schemeTask = strongSelf.taskMap[dataTask] as? WKURLSchemeTask {
-                    DDLogInfo("Task Receive Data \(schemeTask.request) \(dataTask.state == .running)")
+                    S1LogInfo("Task Receive Data \(schemeTask.request) \(dataTask.state == .running)")
                     schemeTask.didReceive(data)
                 }
             }
@@ -68,10 +68,10 @@ class WebKitImageDownloader: NSObject, URLSessionDataDelegate {
                 guard let strongSelf = self else { return }
                 if let schemeTask = strongSelf.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
                     if let error = error {
-                        DDLogInfo("Task Fail \(schemeTask.request) \(error)")
+                        S1LogInfo("Task Fail \(schemeTask.request) \(error)")
                         schemeTask.didFailWithError(error)
                     } else {
-                        DDLogInfo("Task Finish \(schemeTask.request)")
+                        S1LogInfo("Task Finish \(schemeTask.request)")
                         schemeTask.didFinish()
                     }
 
@@ -91,7 +91,7 @@ enum WebKitImageDownloaderError: Error {
 extension WebKitImageDownloader: WKURLSchemeHandler {
     @available(iOS 11.0, *)
     func webView(_ webView: WKWebView, start urlSchemeTask: WKURLSchemeTask) {
-        DDLogDebug("start \(urlSchemeTask.request)")
+        S1LogDebug("start \(urlSchemeTask.request)")
         var request = urlSchemeTask.request
         guard let urlString = request.url?.absoluteString else {
             urlSchemeTask.didFailWithError(WebKitImageDownloaderError.invalidURL)
@@ -104,7 +104,7 @@ extension WebKitImageDownloader: WKURLSchemeHandler {
 
     @available(iOS 11.0, *)
     func webView(_ webView: WKWebView, stop urlSchemeTask: WKURLSchemeTask) {
-        DDLogDebug("stop \(urlSchemeTask.request)")
+        S1LogDebug("stop \(urlSchemeTask.request)")
         stop(schemeTask: urlSchemeTask)
     }
 }

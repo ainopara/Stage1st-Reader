@@ -240,13 +240,13 @@ extension S1TopicListViewController: UITableViewDelegate {
         if indexPath.row == viewModel.topics.count - 15 {
             loadingMore = true
             tableView.tableFooterView = footerView
-            DDLogDebug("Reach (almost) last topic, load more.")
+            S1LogDebug("Reach (almost) last topic, load more.")
 
             viewModel.loadNextPageForKey(forumKeyMap[currentKey]!) { [weak self] (result) in
                 guard let strongSelf = self else { return }
 
                 // TODO: Show ReloadingFooterView if failed.
-                DDLogInfo("load next page \(result)")
+                S1LogInfo("load next page \(result)")
                 tableView.tableFooterView = nil
                 tableView.reloadData()
                 strongSelf.loadingMore = false

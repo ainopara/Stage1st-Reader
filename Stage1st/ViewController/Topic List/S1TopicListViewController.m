@@ -507,10 +507,6 @@
             _tableView.tableHeaderView = self.searchBar;
         }
 
-        if (SYSTEM_VERSION_LESS_THAN(@"10.0")) {
-            [_tableView.panGestureRecognizer requireGestureRecognizerToFail:MyAppDelegate.navigationDelegate.colorPanRecognizer];
-        }
-
         self.refreshControl = [[ODRefreshControl alloc] initInScrollView:_tableView];
         self.refreshControl.tintColor = [[ColorManager shared] colorForKey:@"topiclist.refreshcontrol.tint"];
         [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];

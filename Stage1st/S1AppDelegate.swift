@@ -46,15 +46,17 @@ extension S1AppDelegate {
             formatter.add(DispatchQueueLogFormatter())
             formatter.add(ErrorLevelLogFormatter())
 
-            if #available(iOS 10, *) {
-                let osLogger = OSLogger.shared
-                osLogger.logFormatter = formatter
-                DDLog.add(osLogger)
-            } else {
-                let ttyLogger = DDTTYLogger.sharedInstance!
-                ttyLogger.logFormatter = formatter
-                DDLog.add(ttyLogger)
-            }
+            let osLogger = OSLogger.shared
+            osLogger.register(tags: [
+                S1LoggerTag(subsystem: .default, category: .network),
+                S1LoggerTag(subsystem: .default, category: .interaction),
+                S1LoggerTag(subsystem: .default, category: .environment),
+                S1LoggerTag(subsystem: .default, category: .extension),
+                S1LoggerTag(subsystem: .default, category: .ui),
+                S1LoggerTag(subsystem: .default, category: .cloudkit)
+            ])
+            osLogger.logFormatter = formatter
+            DDLog.add(osLogger)
         #else
             defaultDebugLevel = .debug
 
@@ -75,16 +77,31 @@ extension S1AppDelegate {
 extension S1AppDelegate {
 
     @objc func migrate() {
+        migrateTo3400()
+        migrateTo3600()
+        migrateTo3700()
         migrateTo3800()
         migrateTo3900()
         migrateTo3940()
     }
 
-    func migrateTo3800() {
+    private func migrateTo3400() {
+        let orderArray = UserDefaults.standard.value(forKey: "Order")
+    }
+
+    private func migrateTo3600() {
+
+    }
+
+    private func migrateTo3700() {
+
+    }
+
+    private func migrateTo3800() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
         }
         let displayForumArray = orderForumArray[0]
@@ -94,11 +111,11 @@ extension S1AppDelegate {
         }
     }
 
-    func migrateTo3900() {
+    private func migrateTo3900() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
         }
         let displayForumArray = orderForumArray[0]
@@ -108,11 +125,11 @@ extension S1AppDelegate {
         }
     }
 
-    func migrateTo3940() {
+    private func migrateTo3940() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
-            DDLogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
         }
         let displayForumArray = orderForumArray[0]
@@ -173,16 +190,16 @@ extension S1AppDelegate {
 
         fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
             guard let stage1stDomainRecord = recordsDictionary?[stage1stDomainRecordID] else {
-                DDLogError("fetchedRecords: \(String(describing: recordsDictionary)) error: \(String(describing: error))")
+                S1LogError("fetchedRecords: \(String(describing: recordsDictionary)) error: \(String(describing: error))")
                 return
             }
 
             guard let serverAddress = ServerAddress(record: stage1stDomainRecord) else {
-                DDLogError("[ServerAddressUpdate] Failed to parse server address from record: \(String(describing: recordsDictionary))")
+                S1LogError("[ServerAddressUpdate] Failed to parse server address from record: \(String(describing: recordsDictionary))")
                 return
             }
 
-            DDLogInfo("[ServerAddressUpdate] Updated \(serverAddress)")
+            S1LogInfo("[ServerAddressUpdate] Updated \(serverAddress)")
 
             if serverAddress.isPrefered(to: AppEnvironment.current.serverAddress) {
                 AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
@@ -192,7 +209,7 @@ extension S1AppDelegate {
                     MessageHUD.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
                 }
             } else {
-                DDLogInfo("[ServerAddressUpdate] Server address do not need to update.")
+                S1LogInfo("[ServerAddressUpdate] Server address do not need to update.")
             }
         }
 
@@ -211,5 +228,28 @@ fileprivate extension UserDefaults {
         if value(forKey: key) == nil {
             `set`(object, forKey: key)
         }
+    }
+}
+
+// MRRK: - Push Notification For Sync
+
+extension S1AppDelegate {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        S1LogDebug("[APNS] Registered for Push notifications with token: \(deviceToken)", category: .cloudkit)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        S1LogWarn("[APNS] Push subscription failed: \(error)", category: .cloudkit)
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        S1LogDebug("[APNS] Push received: \(userInfo)", category: .cloudkit)
+        if !UserDefaults.standard.bool(forKey: "EnableSync") {
+            DDLogWarn("[APNS] push notification received when user do not enable sync feature.")
+            completionHandler(.noData)
+            return
+        }
+
+        AppEnvironment.current.cloudkitManager.fetchRecordChange(completion: completionHandler)
     }
 }

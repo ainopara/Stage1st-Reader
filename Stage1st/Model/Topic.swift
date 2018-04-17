@@ -52,13 +52,13 @@ extension S1Topic {
      */
     func update(_ topic: S1Topic) {
         guard !isImmutable else {
-            DDLogError("[S1Topic] Trying to update a immutable topic")
+            S1LogError("[S1Topic] Trying to update a immutable topic")
             assert(false)
             return
         }
 
         guard topicID.intValue == topic.topicID.intValue else {
-            DDLogError("[S1Topic] Trying to update from a topic with different ID")
+            S1LogError("[S1Topic] Trying to update from a topic with different ID")
             assert(false)
             return
         }

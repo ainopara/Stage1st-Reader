@@ -71,11 +71,6 @@ extern DatabaseManager *MyDatabaseManager;
 + (instancetype)sharedInstance; // Or MyDatabaseManager global ivar
 
 /**
- * The path of the raw database file.
-**/
-+ (NSString *)databasePath;
-
-/**
  * The root database class, and extension(s)
 **/
 @property (nonatomic, strong, readonly) YapDatabase *database;

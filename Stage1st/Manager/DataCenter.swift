@@ -231,20 +231,20 @@ extension DataCenter {
 
     func precacheFloors(for topic: S1Topic, with page: Int, shouldUpdate: Bool) {
         guard shouldUpdate || !hasPrecachedFloors(for: topic.topicID.intValue, page: page) else {
-            DDLogVerbose("[Database] Precache \(topic.topicID)-\(page) hit")
+            S1LogVerbose("[Database] Precache \(topic.topicID)-\(page) hit")
             return
         }
 
         floors(for: topic, with: page) { result in
             switch result {
             case .success:
-                DDLogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
+                S1LogDebug("[Network] Precache \(topic.topicID)-\(page) finish")
                 NotificationCenter.default.post(name: .S1FloorsDidCachedNotification, object: nil, userInfo: [
                     "topicID": topic.topicID,
                     "page": page
                 ])
             case let .failure(error):
-                DDLogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
+                S1LogWarn("[Network] Precache \(topic.topicID)-\(page) failed. \(error)")
             }
         }
     }
@@ -400,7 +400,7 @@ extension DataCenter {
         let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
 
         WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date.distantPast) {
-            DDLogInfo("WebKit disk cache cleaned.")
+            S1LogInfo("WebKit disk cache cleaned.")
             UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
         }
     }

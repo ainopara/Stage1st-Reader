@@ -45,7 +45,7 @@ extension SettingsViewController {
         let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
 
         WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date.distantPast) {
-            DDLogInfo("WebKit disk cache cleaned.")
+            S1LogInfo("WebKit disk cache cleaned.")
             UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
         }
     }

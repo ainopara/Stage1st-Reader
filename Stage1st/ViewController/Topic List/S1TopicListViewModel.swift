@@ -152,7 +152,7 @@ final class S1TopicListViewModel: NSObject {
             .map { (notification) in return notification.userInfo![kNotificationsKey] as! [Notification] }
 
         databaseChangedNotification.signal.observeValues { [weak self] (notifications) in
-            DDLogVerbose("database connection did update.")
+            S1LogVerbose("database connection did update.")
             guard let strongSelf = self else { return }
             strongSelf._handleDatabaseChanged(with: notifications)
         }
@@ -245,7 +245,7 @@ final class S1TopicListViewModel: NSObject {
 
         // Debug
         currentState.producer.startWithValues { (state) in
-            DDLogDebug("state -> \(state.stringRepresentation())")
+            S1LogDebug("state -> \(state.stringRepresentation())")
         }
 
         initializeMappings()
@@ -346,7 +346,7 @@ extension S1TopicListViewModel {
         switch currentState.value {
         case .favorite, .history:
             guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
-                DDLogError("Expecting topic at \(indexPath) exist but get nil.")
+                S1LogError("Expecting topic at \(indexPath) exist but get nil.")
                 fatalError("Expecting topic at \(indexPath) exist but get nil.")
             }
 
@@ -382,7 +382,7 @@ extension S1TopicListViewModel {
 
             attributedTitle = NSAttributedString(string: title, attributes: cellTitleAttributes.value)
         case .blank:
-            DDLogError("blank state should not reach this method.")
+            S1LogError("blank state should not reach this method.")
             fatalError("blank state should not reach this method.")
         }
 
@@ -394,7 +394,7 @@ extension S1TopicListViewModel {
         switch currentState.value {
         case .favorite, .history:
             guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
-                DDLogError("Expecting topic at \(indexPath) exist but get nil.")
+                S1LogError("Expecting topic at \(indexPath) exist but get nil.")
                 fatalError("Expecting topic at \(indexPath) exist but get nil.")
             }
 
@@ -404,7 +404,7 @@ extension S1TopicListViewModel {
             topics.remove(at: indexPath.row)
             topics.insert(topic, at: indexPath.row)
         default:
-            DDLogError("blank state should not reach this method.")
+            S1LogError("blank state should not reach this method.")
             fatalError("blank state should not reach this method.")
         }
 
@@ -453,7 +453,7 @@ extension S1TopicListViewModel {
             } else {
                 let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction
                 let viewMappings = self.viewMappings
-                DDLogError("Topic is nil because \(String(describing: ext)) or \(String(describing: viewMappings)) is nil or extension cound not find S1Topic object.")
+                S1LogError("Topic is nil because \(String(describing: ext)) or \(String(describing: viewMappings)) is nil or extension cound not find S1Topic object.")
             }
         }
         return topic
@@ -462,7 +462,7 @@ extension S1TopicListViewModel {
     private func _updateFilter(_ searchText: String) {
         let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
-        DDLogDebug("Update filter: \(query)")
+        S1LogDebug("Update filter: \(query)")
         searchQueue.enqueueQuery(query)
         MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {

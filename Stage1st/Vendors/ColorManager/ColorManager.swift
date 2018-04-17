@@ -90,7 +90,7 @@ public final class ColorManager: NSObject {
         if let paletteID = (self.colorMap.value(forKey: key) as? String) {
             return colorInPaletteWithID(paletteID)
         } else {
-            DDLogWarn("[Color Manager] can't found color \(key), default color used")
+            S1LogWarn("[Color Manager] can't found color \(key), default color used")
             return colorInPaletteWithID("default")
         }
     }

@@ -56,7 +56,7 @@ public class PullToActionController: NSObject {
                 progress.updateValue(progressValue, forKey: name)
             }
 
-//            DDLogVerbose("[PullToAction] contentOffset: \(self.offset)")
+//            S1LogVerbose("[PullToAction] contentOffset: \(self.offset)")
             if let delegateFunction = strongSelf.delegate?.scrollViewContentOffsetProgress {
                 delegateFunction(progress)
             }
@@ -75,7 +75,7 @@ public class PullToActionController: NSObject {
                 return
             }
 
-            DDLogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
+            S1LogVerbose("[PullToAction] contentSize:w: \(size.width) h:\(size.height)")
             if let delegateFunction = strongSelf.delegate?.scrollViewContentSizeDidChange {
                 delegateFunction(size)
             }
@@ -89,14 +89,14 @@ public class PullToActionController: NSObject {
 
             strongSelf.inset = inset
 
-            DDLogVerbose("[PullToAction] inset: top: \(inset.top) bottom: \(inset.bottom)")
+            S1LogVerbose("[PullToAction] inset: top: \(inset.top) bottom: \(inset.bottom)")
         }
 
         observations.append(insetObserver)
     }
 
     deinit {
-        DDLogDebug("[PullToAction] deinit")
+        S1LogDebug("[PullToAction] deinit")
     }
 
     public func addObservation(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
@@ -176,14 +176,14 @@ extension PullToActionController: UIScrollViewDelegate {
         //TODO: consider content inset
         let topOffset = offset.y
         if topOffset < 0.0 {
-            DDLogDebug("[PullToAction] End dragging <- \(topOffset)")
+            S1LogDebug("[PullToAction] End dragging <- \(topOffset)")
             delegate?.scrollViewDidEndDraggingOutsideTopBound?(with: topOffset)
             return
         }
 
         let bottomOffset = offset.y + scrollView.bounds.height - size.height
         if bottomOffset > 0.0 {
-            DDLogDebug("[PullToAction] End dragging -> \(bottomOffset)")
+            S1LogDebug("[PullToAction] End dragging -> \(bottomOffset)")
             delegate?.scrollViewDidEndDraggingOutsideBottomBound?(with: bottomOffset)
             return
         }
