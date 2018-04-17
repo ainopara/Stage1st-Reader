@@ -72,6 +72,10 @@ extension S1MahjongFaceView {
             }
         }
     }
+
+    func removeExtraConstraints() {
+        self.snp.removeConstraints()
+    }
 }
 
 class S1MahjongFaceButton: UIButton {

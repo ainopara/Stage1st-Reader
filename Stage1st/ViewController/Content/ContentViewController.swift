@@ -1070,6 +1070,14 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
         attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
         switch result {
         case .cancelled:
+            if let accessoryView = composeViewController.accessoryView as? ReplyAccessoryView {
+                accessoryView.removeExtraConstraints()
+            }
+
+            if let inputView = composeViewController.inputView as? S1MahjongFaceView {
+                inputView.removeExtraConstraints()
+            }
+
             composeViewController.dismiss(animated: true, completion: nil)
         case .posted:
             guard composeViewController.plainText.count > 0 else {
@@ -1100,6 +1108,14 @@ extension S1ContentViewController: REComposeViewControllerDelegate {
                 viewModel.dataCenter.reply(floor: replyTopicFloor, in: viewModel.topic, at: Int(viewModel.currentPage.value), text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
             } else {
                 viewModel.dataCenter.reply(topic: viewModel.topic, text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
+            }
+
+            if let accessoryView = composeViewController.accessoryView as? ReplyAccessoryView {
+                accessoryView.removeExtraConstraints()
+            }
+
+            if let inputView = composeViewController.inputView as? S1MahjongFaceView {
+                inputView.removeExtraConstraints()
             }
 
             composeViewController.dismiss(animated: true, completion: nil)

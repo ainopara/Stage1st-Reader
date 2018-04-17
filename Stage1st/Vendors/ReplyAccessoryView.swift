@@ -15,7 +15,13 @@ class ReplyAccessoryView: UIView {
     private var spoilerButton: UIButton
 
     weak var composeViewController: REComposeViewController?
-    var mahjongFaceView: S1MahjongFaceView?
+    lazy var mahjongFaceView: S1MahjongFaceView = {
+        let newMahjongfaceView = S1MahjongFaceView()
+        newMahjongfaceView.delegate = self
+        newMahjongfaceView.historyCountLimit = 99
+        newMahjongfaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
+        return newMahjongfaceView
+    }()
 
     // MARK: - Life Cycle
     init(composeViewController: REComposeViewController) {
@@ -50,10 +56,9 @@ class ReplyAccessoryView: UIView {
     }
 
     deinit {
-        if let historyArray = self.mahjongFaceView?.historyArray {
-            DispatchQueue.global().async {
-                AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
-            }
+        let historyArray = self.mahjongFaceView.historyArray
+        DispatchQueue.global().async {
+            AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
         }
     }
 
@@ -83,6 +88,10 @@ class ReplyAccessoryView: UIView {
             }
         }
     }
+
+    func removeExtraConstraints() {
+        self.snp.removeConstraints()
+    }
 }
 
 // MARK: - Actions
@@ -91,22 +100,15 @@ extension ReplyAccessoryView {
         guard let composeViewController = composeViewController else {
             return
         }
-        if composeViewController.inputView == nil {
-            if mahjongFaceView == nil {
-                let newMahjongfaceView = S1MahjongFaceView()
-                newMahjongfaceView.delegate = self
-                newMahjongfaceView.historyCountLimit = 99
-                newMahjongfaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
-                mahjongFaceView = newMahjongfaceView
-            }
-            button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
-            if let mahjongFaceView = mahjongFaceView {
-                composeViewController.inputView = mahjongFaceView
-                composeViewController.reloadInputViews()
-            }
-        } else {
+
+        if composeViewController.inputView != nil {
             button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
+            mahjongFaceView.removeExtraConstraints()
             composeViewController.inputView = nil
+            composeViewController.reloadInputViews()
+        } else {
+            button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
+            composeViewController.inputView = mahjongFaceView
             composeViewController.reloadInputViews()
         }
     }
