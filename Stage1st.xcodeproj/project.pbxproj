@@ -338,10 +338,10 @@
 		8634ADA11FAAEF0C004A9CB7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				8634ADA21FAAF309004A9CB7 /* S1NavigationViewController.swift */,
 				8634ADA31FAAF309004A9CB7 /* NavigationControllerDelegate.h */,
 				8634ADA41FAAF309004A9CB7 /* NavigationControllerDelegate.m */,
 				8634ADA51FAAF309004A9CB7 /* S1Animator.swift */,
-				8634ADA21FAAF309004A9CB7 /* S1NavigationViewController.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -662,7 +662,6 @@
 				8634ADBD1FAAF3C1004A9CB7 /* Gagat */,
 				8634ADA91FAAF3C0004A9CB7 /* GoogleToolbox */,
 				8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */,
-				8634ADB61FAAF3C1004A9CB7 /* MessageHUD */,
 				8634ADD01FAAF3C2004A9CB7 /* PullToActionController */,
 				8634ADAD1FAAF3C0004A9CB7 /* REComposeViewController */,
 				8634ADC21FAAF3C1004A9CB7 /* StaticTableViewBuilder */,
@@ -672,8 +671,6 @@
 				8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */,
 				860223501895051400A3E66E /* S1Global.h */,
 				860223511895051400A3E66E /* S1Global.m */,
-				868A98041CA7F22500498C38 /* AnimationButton.swift */,
-				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
 				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
 				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
 				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
@@ -718,12 +715,15 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8634ADB61FAAF3C1004A9CB7 /* MessageHUD */,
 				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
+				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
+				868A98041CA7F22500498C38 /* AnimationButton.swift */,
+				86DF79F71F3B058600324880 /* LoadingFooterView.swift */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
-				86DF79F71F3B058600324880 /* LoadingFooterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
