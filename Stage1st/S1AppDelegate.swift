@@ -19,7 +19,6 @@ import Reachability
 struct Constants {
     struct defaults {
         static let displayImageKey = "Display"
-        static let showsReplyIncrementKey = "ReplyIncrement"
         static let removeTailsKey = "RemoveTails"
         static let precacheNextPageKey = "PrecacheNextPage"
         static let forcePortraitForPhoneKey = "ForcePortraitForPhone"
@@ -59,7 +58,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         NSKeyedUnarchiver.setClass(Floor.self, forClassName: "S1Floor")
 
         // UserDefaults
-        let userDefaults = UserDefaults.standard
+        let userDefaults = AppEnvironment.current.settings.defaults
 
         if userDefaults.value(forKey: "Order") == nil {
             let path = Bundle.main.path(forResource: "InitialOrder", ofType: "plist")!
@@ -75,9 +74,8 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
         // TODO: Use register domain.
         userDefaults.s1_setObjectIfNotExist(object: NSNumber(value: -1), key: "HistoryLimit")
-        UserDefaults.standard.register(defaults: [
+        userDefaults.register(defaults: [
             Constants.defaults.displayImageKey: true,
-            Constants.defaults.showsReplyIncrementKey: true,
             Constants.defaults.removeTailsKey: true,
             Constants.defaults.precacheNextPageKey: true,
             Constants.defaults.forcePortraitForPhoneKey: true,
@@ -121,9 +119,24 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         ColorManager.shared.updateGlobalAppearance()
         navigationControllerDelegate!.setUpGagat()
 
-        #if DEBUG
-        S1LogVerbose("Dump user defaults: \(AppEnvironment.current.settings.defaults.dictionaryRepresentation())")
-        #endif
+        if #available(iOS 11.0, *) {
+            #if DEBUG
+            let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()
+//            let defaultsJSONData = try! JSONSerialization.data(withJSONObject: defaultsDictionary, options: [.prettyPrinted, .sortedKeys])
+//            let defaultsJSONString = String(data: defaultsJSONData, encoding: .utf8)!
+            dump(defaultsDictionary)
+//            S1LogVerbose("Dump user defaults: \(defaultsJSONString)")
+            #endif
+        } else {
+            // Fallback on earlier versions
+            #if DEBUG
+            let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()
+//            let defaultsJSONData = try! JSONSerialization.data(withJSONObject: defaultsDictionary, options: [.prettyPrinted])
+//            let defaultsJSONString = String(data: defaultsJSONData, encoding: .utf8)!
+            dump(defaultsDictionary)
+//            S1LogVerbose("Dump user defaults: \(defaultsJSONString)")
+            #endif
+        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -154,7 +167,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension S1AppDelegate {
     private func updateStage1stDomainIfNecessary() {
-        let publicDatabase = CKContainer.default().publicCloudDatabase
+        let publicDatabase = AppEnvironment.current.cloudkitManager.cloudkitContainer.publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
         let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
         let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])

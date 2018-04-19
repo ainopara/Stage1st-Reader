@@ -19,7 +19,7 @@ public final class ColorManager: NSObject {
     public static let shared = ColorManager()
 
     override init() {
-        let paletteName = UserDefaults.standard.bool(forKey: "NightMode") == true ? "DarkPalette": "DefaultPalette"
+        let paletteName = AppEnvironment.current.settings.nightMode.value == true ? "DarkPalette": "DefaultPalette"
 
         let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
         if let palettePath = palettePath,

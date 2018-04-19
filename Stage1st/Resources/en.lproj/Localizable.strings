@@ -50,7 +50,6 @@
 "SettingsViewController.Display_Image" = "Display Image";
 "SettingsViewController.Append_Suffix" = "Reply Suffix";
 "SettingsViewController.HistoryLimit" = "Keep History";
-"SettingsViewController.ReplyIncrement" = "Show Reply Increment";
 "SettingsViewController.CloudKit.Status.Off" = "Off";
 "SettingsViewController.CloudKit.Status.Suspended" = "Suspended(%lu)(%lu-%lu)";
 "SettingsViewController.CloudKit.Status.Resumed" = "Resumed(%lu-%lu)";

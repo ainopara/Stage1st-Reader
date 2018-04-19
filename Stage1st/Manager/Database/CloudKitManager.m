@@ -625,6 +625,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
             } else {
                 [strongSelf reportError:recordZoneError];
             }
+
             if (completionHandler) {
                 completionHandler(UIBackgroundFetchResultFailed, NO);
             }

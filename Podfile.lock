@@ -73,7 +73,6 @@ PODS:
   - Reveal-SDK (10)
   - SnapKit (4.0.0)
   - SwiftyJSON (3.1.4)
-  - SwiftyUserDefaults (3.0.1)
   - TextAttributes (1.0)
   - YapDatabase (3.0.2):
     - YapDatabase/Standard (= 3.0.2)
@@ -169,7 +168,6 @@ DEPENDENCIES:
   - Reveal-SDK (= 10)
   - SnapKit
   - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
-  - SwiftyUserDefaults
   - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
   - YYKeyboardManager
@@ -200,7 +198,6 @@ SPEC REPOS:
     - Result
     - Reveal-SDK
     - SnapKit
-    - SwiftyUserDefaults
     - TextAttributes
     - YYKeyboardManager
 
@@ -264,11 +261,10 @@ SPEC CHECKSUMS:
   Reveal-SDK: 7869ddf1f902cabbb07a1f0dd06bd25861a126f7
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: 05cf0e98a950e2ba343735264f5a96b81e755d00
-  SwiftyUserDefaults: 3d273b1739b68ada3145dc754a70ec775bc5c8be
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 5c3414aadc99bf9512e0337df770b474fb6a4824
+PODFILE CHECKSUM: fafa98b88cfa574929122263c5eb2f06b685b1d8
 
 COCOAPODS: 1.5.0
