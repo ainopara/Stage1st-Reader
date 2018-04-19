@@ -60,10 +60,6 @@ class CloudKitManager1 {
             }
         }
 
-        state.producer.startWithValues { (state) in
-            S1LogDebug("State -> \(state)")
-        }
-
         state.producer.startWithValues { [weak self] (state) in
             guard let strongSelf = self else { return }
 
@@ -87,6 +83,15 @@ class CloudKitManager1 {
             default:
                 break
             }
+        }
+
+        // Debug
+        state.producer.combinePrevious().startWithValues { (previous, current) in
+            S1LogDebug("State: \(previous) -> \(current)")
+        }
+
+        accountStatus.producer.combinePrevious().startWithValues { (previous, current) in
+            S1LogDebug("AccountStatus: \(previous) -> \(current)")
         }
     }
 
@@ -231,7 +236,7 @@ class CloudKitManager1 {
 
         fetchOperation.recordZoneChangeTokensUpdatedBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData) in
             S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken update: \(String(describing: serverChangeToken))")
-            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords)")
+            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
             guard let strongSelf = self else { return }
 
             let hasChange = deletedRecordIDs.count > 0 || changedRecords.count > 0
@@ -254,7 +259,7 @@ class CloudKitManager1 {
 
         fetchOperation.recordZoneFetchCompletionBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData, moreComing, recordZoneError) in
             S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken final: \(String(describing: serverChangeToken))")
-            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords)")
+            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
 
             guard let strongSelf = self else { return }
 
@@ -343,8 +348,20 @@ private extension YapDatabaseReadWriteTransaction {
                 // Add it to our database.
                 let topic = S1Topic(record: record)
                 let key = topic.topicID.stringValue
-                cloudkitTransaction.attach(record, databaseIdentifier: nil, forKey: key, inCollection: Collection_Topics, shouldUploadRecord: false)
-                self.setObject(topic, forKey: key, inCollection: Collection_Topics)
+
+                cloudkitTransaction.attach(
+                    record,
+                    databaseIdentifier: nil,
+                    forKey: key,
+                    inCollection: Collection_Topics,
+                    shouldUploadRecord: false
+                )
+
+                self.setObject(
+                    topic,
+                    forKey: key,
+                    inCollection: Collection_Topics
+                )
             case (.none, false, true):
                 // We're going to delete this record, so do not add it.
                 // Nothing to do.
