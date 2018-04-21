@@ -228,6 +228,8 @@
         self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
     } else if (indexPath.section == 0 && indexPath.row == 10) {
         [self.navigationController pushViewController:[[AdvancedSettingsViewController alloc] initWithNibName:nil bundle:nil] animated:YES];
+    } else if (indexPath.section == 1 && indexPath.row == 0) {
+        [self.navigationController pushViewController:[[CloudKitViewController alloc] initWithNibName:nil bundle:nil] animated:YES];
     } else if (indexPath.section == 2 && indexPath.row == 2) {
 #ifdef DEBUG
         [self pushLogViewer];
@@ -304,34 +306,35 @@
         NSUInteger inFlightCount = 0;
         NSUInteger queuedCount = 0;
         [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
-        
-        switch ([MyCloudKitManager state]) {
-            case CKManagerStateInit:
-                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Init", @"Init");
-                break;
-            case CKManagerStateSetup:
-                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Setup", @"Setup");
-                break;
-            case CKManagerStateFetching:
-                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Fetch", @"Fetch");
-                break;
-            case CKManagerStateUploading:
-                titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
-                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Upload", @"Upload") stringByAppendingString:titleString];
-                break;
-            case CKManagerStateReady:
-                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Ready", @"Ready");
-                break;
-            case CKManagerStateRecovering:
-                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Recover", @"Recover");
-                break;
-            case CKManagerStateHalt:
-                titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
-                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Halt", @"Halt") stringByAppendingString:titleString];
-                break;
-            default:
-                break;
-        }
+
+        titleString = @"";
+//        switch ([MyCloudKitManager state]) {
+//            case CKManagerStateInit:
+//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Init", @"Init");
+//                break;
+//            case CKManagerStateSetup:
+//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Setup", @"Setup");
+//                break;
+//            case CKManagerStateFetching:
+//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Fetch", @"Fetch");
+//                break;
+//            case CKManagerStateUploading:
+//                titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
+//                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Upload", @"Upload") stringByAppendingString:titleString];
+//                break;
+//            case CKManagerStateReady:
+//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Ready", @"Ready");
+//                break;
+//            case CKManagerStateRecovering:
+//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Recover", @"Recover");
+//                break;
+//            case CKManagerStateHalt:
+//                titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
+//                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Halt", @"Halt") stringByAppendingString:titleString];
+//                break;
+//            default:
+//                break;
+//        }
     }
     
     self.iCloudSyncCell.detailTextLabel.text = titleString;

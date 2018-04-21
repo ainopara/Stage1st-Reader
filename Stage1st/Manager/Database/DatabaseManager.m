@@ -141,7 +141,7 @@ DatabaseManager *MyDatabaseManager;
 {
 	NSString *databasePath = [Environment databasePath];
 
-	DDLogVerbose(@"[DatabaseManager] databasePath: %@", databasePath);
+	DDLogDebug(@"databasePath: %@", databasePath);
 	
 	// Configure custom class mappings for NSCoding.
 	// In a previous version of the app, the "S1Topic" class was named "S1TopicItem".
@@ -194,9 +194,8 @@ DatabaseManager *MyDatabaseManager;
     [self setupArchiveViewExtension];
     [self setupFullTextSearchExtension];
     [self setupSearchResultViewExtension];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-         [self setupCloudKitExtension];
-    }
+    [self setupCloudKitExtension];
+
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
 	                                         selector:@selector(yapDatabaseModified:)
@@ -464,36 +463,7 @@ DatabaseManager *MyDatabaseManager;
 	YapDatabaseCloudKitOperationErrorBlock opErrorBlock =
 	  ^(NSString *databaseIdentifier, NSError *operationError)
 	{
-        if ([operationError.domain isEqualToString:CKErrorDomain]) {
-            NSInteger ckErrorCode = operationError.code;
-            [MyCloudKitManager reportError:operationError];
-
-            if (ckErrorCode == CKErrorNetworkUnavailable ||
-                ckErrorCode == CKErrorNetworkFailure      ) {
-                [MyCloudKitManager handleNetworkError];
-            }
-            else if (ckErrorCode == CKErrorPartialFailure) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [MyCloudKitManager handlePartialFailure];
-                });
-            }
-            else if (ckErrorCode == CKErrorNotAuthenticated) {
-                [MyCloudKitManager handleNotAuthenticated];
-            }
-            else if (ckErrorCode == CKErrorRequestRateLimited ||
-                     ckErrorCode == CKErrorServiceUnavailable  ) {
-                [MyCloudKitManager handleRequestRateLimitedAndServiceUnavailableWithError:operationError];
-            }
-            else if (ckErrorCode == CKErrorUserDeletedZone) {
-                [MyCloudKitManager handleUserDeletedZone];
-            }
-            else if (ckErrorCode == CKErrorChangeTokenExpired) {
-                [MyCloudKitManager handleChangeTokenExpired];
-            }
-            else {
-                [MyCloudKitManager handleOtherErrors];
-            }
-        }
+        [AppEnvironment.current.cloudkitManager setStateToUploadError:operationError];
 	};
 	
 	NSSet *topics = [NSSet setWithObject:Collection_Topics];
@@ -509,19 +479,18 @@ DatabaseManager *MyDatabaseManager;
 	                                                           versionInfo:nil
 	                                                               options:options];
 
-	[cloudKitExtension suspend]; // Upgrade
-	[cloudKitExtension suspend]; // Create zone(s)
-	[cloudKitExtension suspend]; // Create zone subscription(s)
 	[cloudKitExtension suspend]; // Initial fetchRecordChanges operation
-	
-	[database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
-		if (!ready) {
-			DDLogError(@"Error registering %@ !!!", Ext_CloudKit);
-        } else {
-            DDLogDebug(@"Registering %@ finished.", Ext_CloudKit);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
-        }
-	}];
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
+        [database asyncRegisterExtension:cloudKitExtension withName:Ext_CloudKit completionBlock:^(BOOL ready) {
+            if (!ready) {
+                DDLogError(@"Error registering %@ !!!", Ext_CloudKit);
+            } else {
+                DDLogDebug(@"Registering %@ finished.", Ext_CloudKit);
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"S1YapDatabaseCloudKitRegisterFinish" object:nil];
+            }
+        }];
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

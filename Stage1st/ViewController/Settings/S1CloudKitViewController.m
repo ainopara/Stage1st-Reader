@@ -28,23 +28,23 @@
     [super viewDidLoad];
     
     self.iCloudSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"];
-    NSError *error = [MyCloudKitManager lastCloudkitError];
-    if (error) {
-        [self updateErrorMessageWithError:error];
-    } else {
-        self.lastErrorMessageLabel.text = @"-";
-    }
-    
+//    NSError *error = [MyCloudKitManager lastCloudkitError];
+//    if (error) {
+//        [self updateErrorMessageWithError:error];
+//    } else {
+//        self.lastErrorMessageLabel.text = @"-";
+//    }
+//    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivePaletteChangeNotification:) name:@"APPaletteDidChangeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitSuspendCountChanged:) name:YapDatabaseCloudKitSuspendCountChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitInFlightChangeSetChanged:) name:YapDatabaseCloudKitInFlightChangeSetChangedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitUnhandledErrorOccurred:) name:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:nil];
-    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cloudKitUnhandledErrorOccurred:) name:YapDatabaseCloudKitUnhandledErrorOccurredNotification object:nil];
+//    
     [self cloudKitSuspendCountChanged:nil];
     [self cloudKitInFlightChangeSetChanged:nil];
-    if (MyCloudKitManager.lastCloudkitError != nil) {
-        self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)MyCloudKitManager.lastCloudkitError.code];
-    }
+//    if (MyCloudKitManager.lastCloudkitError != nil) {
+//        self.lastErrorMessageLabel.text = [NSString stringWithFormat:@"%ld", (long)MyCloudKitManager.lastCloudkitError.code];
+//    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -66,7 +66,7 @@
     [self presentViewController:alertController animated:YES completion:NULL];
     
     if (self.iCloudSwitch.on == NO) {
-        [MyCloudKitManager prepareForUnregister];
+        [AppEnvironment.current.cloudkitManager prepareForUnregister];
         [MyDatabaseManager unregisterCloudKitExtension];
     }
 }
@@ -76,18 +76,19 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 1 && indexPath.row == 2) {
-        if (MyCloudKitManager.lastCloudkitError == nil) {
-            return;
-        }
-        NSString *title = @"Error Detail";
-        NSString *message = [MyCloudKitManager.lastCloudkitError localizedDescription];
-        if (message == nil) {
-            message = @"No description information.";
-        }
-
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"") style:UIAlertActionStyleDefault handler:NULL]];
-        [self presentViewController:alertController animated:YES completion:NULL];
+        return;
+//        if (MyCloudKitManager.lastCloudkitError == nil) {
+//            return;
+//        }
+//        NSString *title = @"Error Detail";
+//        NSString *message = [MyCloudKitManager.lastCloudkitError localizedDescription];
+//        if (message == nil) {
+//            message = @"No description information.";
+//        }
+//
+//        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+//        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Message_OK", @"") style:UIAlertActionStyleDefault handler:NULL]];
+//        [self presentViewController:alertController animated:YES completion:NULL];
     }
 }
 

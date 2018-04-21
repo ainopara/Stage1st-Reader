@@ -84,7 +84,8 @@ class Environment: NSObject {
         databaseManager = DatabaseManager.sharedInstance()
         cloudkitManager = CloudKitManager1(
             cloudkitContainer: CKContainer.default(),
-            databaseConnection: databaseManager.bgDatabaseConnection
+            databaseConnection: databaseManager.bgDatabaseConnection,
+            cloudKitExtension: databaseManager.cloudKitExtension
         )
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
 

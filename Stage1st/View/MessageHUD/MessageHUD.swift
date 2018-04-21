@@ -133,9 +133,13 @@ class MessageHUD: UIWindow {
         }
     }
 
-    enum Duration {
+    enum Duration: ExpressibleByFloatLiteral {
         case second(TimeInterval)
         case forever
+
+        public init(floatLiteral value: Double) {
+            self = .second(value)
+        }
     }
 
     @objc func didReceivePaletteChangeNotification(_ notification: Notification?) {

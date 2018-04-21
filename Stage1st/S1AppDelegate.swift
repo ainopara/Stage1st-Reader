@@ -94,7 +94,8 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         // Start database & cloudKit (in order)
         DatabaseManager.initialize()
         if AppEnvironment.current.settings.enableCloudKitSync.value {
-            CloudKitManager.initialize()
+            AppEnvironment.current.cloudkitManager.setup()
+//            CloudKitManager.initialize()
         }
 
         migrate()
@@ -167,7 +168,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension S1AppDelegate {
     private func updateStage1stDomainIfNecessary() {
-        let publicDatabase = AppEnvironment.current.cloudkitManager.cloudkitContainer.publicCloudDatabase
+        let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
         let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
         let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])
@@ -427,7 +428,9 @@ extension S1AppDelegate {
             return
         }
 
-        AppEnvironment.current.cloudkitManager.fetchRecordChange(completion: completionHandler)
+        AppEnvironment.current.cloudkitManager.fetchRecordChange { (fetchResult) in
+            completionHandler(fetchResult.toUIBackgroundFetchResult())
+        }
     }
 }
 

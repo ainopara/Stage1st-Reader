@@ -90,4 +90,5 @@ extern DatabaseManager *MyDatabaseManager;
 @property (nonatomic, strong, readonly) YapDatabaseConnection *bgDatabaseConnection;
 
 - (void)unregisterCloudKitExtension;
+
 @end

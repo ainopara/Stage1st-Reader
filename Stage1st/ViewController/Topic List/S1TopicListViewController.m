@@ -370,40 +370,40 @@
     NSUInteger queuedCount = 0;
     [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
     NSString *titleString = @"";
-    switch ([MyCloudKitManager state]) {
-        case CKManagerStateInit:
-            [self.archiveButton stopAnimation];
-            titleString = [@"Init/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateSetup:
-            [self.archiveButton stopAnimation];
-            titleString = [@"Setup/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateFetching:
-            [self.archiveButton startAnimation];
-            titleString = [@"Fetching/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateUploading:
-            [self.archiveButton startAnimation];
-            titleString = [@"Uploading/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateReady:
-            [self.archiveButton stopAnimation];
-            titleString = [@"Ready/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateRecovering:
-            [self.archiveButton stopAnimation];
-            titleString = [@"Recovering/" stringByAppendingString:titleString];
-            break;
-        case CKManagerStateHalt:
-            [self.archiveButton stopAnimation];
-            titleString = [@"Halt/" stringByAppendingString:titleString];
-            break;
-            
-        default:
-            break;
-    }
-    
+//    switch ([MyCloudKitManager state]) {
+//        case CKManagerStateInit:
+//            [self.archiveButton stopAnimation];
+//            titleString = [@"Init/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateSetup:
+//            [self.archiveButton stopAnimation];
+//            titleString = [@"Setup/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateFetching:
+//            [self.archiveButton startAnimation];
+//            titleString = [@"Fetching/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateUploading:
+//            [self.archiveButton startAnimation];
+//            titleString = [@"Uploading/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateReady:
+//            [self.archiveButton stopAnimation];
+//            titleString = [@"Ready/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateRecovering:
+//            [self.archiveButton stopAnimation];
+//            titleString = [@"Recovering/" stringByAppendingString:titleString];
+//            break;
+//        case CKManagerStateHalt:
+//            [self.archiveButton stopAnimation];
+//            titleString = [@"Halt/" stringByAppendingString:titleString];
+//            break;
+//
+//        default:
+//            break;
+//    }
+
     if (suspendCount > 0){
         titleString = [titleString stringByAppendingString:[NSString stringWithFormat:@"Suspended (suspendCount = %lu) - InFlight(%lu), Queued(%lu)", (unsigned long)suspendCount, (unsigned long)inFlightCount, (unsigned long)queuedCount]];
     } else {

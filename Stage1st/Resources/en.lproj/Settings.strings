@@ -30,10 +30,10 @@
 "AMT-Bb-S6D.text" = "Use API";
 
 /* Class = "UITableViewSection"; footerTitle = "启用iCloud同步意味着您的浏览历史、收藏等信息将与您当前登录的iCloud帐号进行同步。"; ObjectID = "Apk-Sc-qdJ"; */
-"Apk-Sc-qdJ.footerTitle" = "Enable iCloud Sync means your topic history and favorite data will sync with your current iCloud account.";
+"Apk-Sc-qdJ.footerTitle" = "";
 
 /* Class = "UITableViewSection"; headerTitle = "iCloud Sync"; ObjectID = "Apk-Sc-qdJ"; */
-"Apk-Sc-qdJ.headerTitle" = "iCloud Sync";
+"Apk-Sc-qdJ.headerTitle" = "";
 
 /* Class = "UIBarButtonItem"; title = "Back"; ObjectID = "CV4-G8-ASX"; */
 "CV4-G8-ASX.title" = "Back";
