@@ -78,12 +78,10 @@ class ReplyAccessoryView: UIView {
             } else {
                 // Fallback on earlier versions
                 self.snp.remakeConstraints { (make) in
-                    let height = 35.0
-                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                    make.height.equalTo(35.0)
                 }
                 toolBar.snp.remakeConstraints { (make) in
-                    make.leading.trailing.top.equalTo(self)
-                    make.height.equalTo(35.0)
+                    make.edges.equalTo(self)
                 }
             }
         }

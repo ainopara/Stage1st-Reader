@@ -61,10 +61,6 @@ extension S1MahjongFaceView {
                 }
             } else {
                 // Fallback on earlier versions
-                self.snp.remakeConstraints { (make) in
-                    let height = 275.0
-                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
-                }
                 tabBar.snp.remakeConstraints { (make) in
                     make.leading.trailing.bottom.equalTo(self)
                     make.height.equalTo(35.0)
