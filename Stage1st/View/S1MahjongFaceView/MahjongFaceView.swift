@@ -70,7 +70,9 @@ extension S1MahjongFaceView {
     }
 
     func removeExtraConstraints() {
-        self.snp.removeConstraints()
+        if #available(iOS 11.0, *) {
+            self.snp.removeConstraints()
+        }
     }
 }
 

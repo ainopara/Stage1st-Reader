@@ -10,26 +10,22 @@ import UIKit
 import SnapKit
 
 class ReplyAccessoryView: UIView {
-    private var toolBar: UIToolbar
-    private var faceButton: UIButton
-    private var spoilerButton: UIButton
+    private let toolBar = UIToolbar(frame: .zero)
+    private let faceButton = UIButton(type: .system)
+    private let spoilerButton = UIButton(type: .system)
 
     weak var composeViewController: REComposeViewController?
-    lazy var mahjongFaceView: S1MahjongFaceView = {
-        let newMahjongfaceView = S1MahjongFaceView()
-        newMahjongfaceView.delegate = self
-        newMahjongfaceView.historyCountLimit = 99
-        newMahjongfaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
-        return newMahjongfaceView
-    }()
+    let mahjongFaceInputView = S1MahjongFaceView()
 
     // MARK: - Life Cycle
     init(composeViewController: REComposeViewController) {
-        toolBar = UIToolbar(frame: .zero)
-        faceButton = UIButton(type: .system)
-        spoilerButton = UIButton(type: .system)
         self.composeViewController = composeViewController
+
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 35))
+
+        mahjongFaceInputView.delegate = self
+        mahjongFaceInputView.historyCountLimit = 99
+        mahjongFaceInputView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
 
         // Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
@@ -56,7 +52,7 @@ class ReplyAccessoryView: UIView {
     }
 
     deinit {
-        let historyArray = self.mahjongFaceView.historyArray
+        let historyArray = self.mahjongFaceInputView.historyArray
         DispatchQueue.global().async {
             AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
         }
@@ -88,7 +84,9 @@ class ReplyAccessoryView: UIView {
     }
 
     func removeExtraConstraints() {
-        self.snp.removeConstraints()
+        if #available(iOS 11.0, *) {
+            self.snp.removeConstraints()
+        }
     }
 }
 
@@ -101,12 +99,12 @@ extension ReplyAccessoryView {
 
         if composeViewController.inputView != nil {
             button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
-            mahjongFaceView.removeExtraConstraints()
+            mahjongFaceInputView.removeExtraConstraints()
             composeViewController.inputView = nil
             composeViewController.reloadInputViews()
         } else {
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
-            composeViewController.inputView = mahjongFaceView
+            composeViewController.inputView = mahjongFaceInputView
             composeViewController.reloadInputViews()
         }
     }
