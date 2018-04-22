@@ -433,7 +433,7 @@
                         <outlet property="forcePortraitCell" destination="zp5-MC-d72" id="2pP-LK-7Ug"/>
                         <outlet property="forcePortraitSwitch" destination="u2d-Y9-NiZ" id="0XA-A6-gvg"/>
                         <outlet property="forumOrderCell" destination="qM9-kQ-VM0" id="3nx-e2-U3J"/>
-                        <outlet property="iCloudSyncCell" destination="dLz-1f-fon" id="SHY-u1-79V"/>
+                        <outlet property="iCloudSyncCell" destination="dLz-1f-fon" id="W6d-dK-s6w"/>
                         <outlet property="imageCacheCell" destination="b5L-8t-zQ1" id="eZL-fP-iZ0"/>
                         <outlet property="keepHistoryCell" destination="hNg-YP-0G0" id="URo-UP-97R"/>
                         <outlet property="keepHistoryDetail" destination="E8b-PX-rjK" id="dgq-U1-D27"/>

@@ -22,8 +22,9 @@ class MessageHUD: UIWindow {
     let backgroundView = UIVisualEffectView(effect: nil)
     let textLabel = UILabel(frame: .zero)
     let decorationLine = UIView(frame: .zero)
-    var state: State = .hidden { didSet {
-        print(state)
+    var state: State = .hidden {
+        didSet {
+            S1LogDebug("\(state)")
         }
     }
     var currentHidingToken = ""

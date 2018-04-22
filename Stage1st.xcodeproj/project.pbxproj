@@ -685,7 +685,6 @@
 			children = (
 				36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */,
 				864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */,
-				865673171A7A7B190025D22E /* Settings.storyboard */,
 				86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */,
 				86EF8AEC1CDE397800243D52 /* Colors */,
 				C083351516E34DCF0035C1AA /* ForumKeyMap.plist */,
@@ -735,6 +734,7 @@
 			children = (
 				C09587A416CB623E007E0119 /* SettingsViewController.h */,
 				C09587A516CB623E007E0119 /* SettingsViewController.m */,
+				865673171A7A7B190025D22E /* Settings.storyboard */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
 				868799221CE629D700F5C75C /* LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,

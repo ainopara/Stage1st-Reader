@@ -30,7 +30,7 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
+
 @property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *imageCacheCell;
 
@@ -99,11 +99,6 @@
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cloudKitStateChanged:)
-                                                 name:YapDatabaseCloudKitStateChangeNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didReceiveLoginStatusChangeNotification:)
                                                  name:@"DZLoginStatusDidChangeNotification"
                                                object:nil];
@@ -117,7 +112,7 @@
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
 
-    [self _updateiCloudStatus];
+    [self updateCloudKitStatus];
     [self didReceivePaletteChangeNotification:nil];
 }
 
@@ -281,13 +276,11 @@
     [self.nightModeSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
     [self.navigationController.navigationBar setBarTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.bartint"]];
     [self.navigationController.navigationBar setTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.tint"]];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
-                                                 NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{
+        NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
+        NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],
+    }];
     [self.navigationController.navigationBar setBarStyle: [[ColorManager shared] isDarkTheme] ? UIBarStyleBlack : UIBarStyleDefault];
-}
-
-- (void)cloudKitStateChanged:(NSNotification *)notification {
-    [self _updateiCloudStatus];
 }
 
 - (void)didReceiveLoginStatusChangeNotification:(NSNotification *)notification {
@@ -295,50 +288,6 @@
 }
 
 #pragma mark - Helper
-
-- (void)_updateiCloudStatus {
-    NSString *titleString;
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSync"]) {
-        titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Off", @"Off");
-    } else {
-        NSUInteger suspendCount = [MyDatabaseManager.cloudKitExtension suspendCount];
-        
-        NSUInteger inFlightCount = 0;
-        NSUInteger queuedCount = 0;
-        [MyDatabaseManager.cloudKitExtension getNumberOfInFlightChangeSets:&inFlightCount queuedChangeSets:&queuedCount];
-
-        titleString = @"";
-//        switch ([MyCloudKitManager state]) {
-//            case CKManagerStateInit:
-//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Init", @"Init");
-//                break;
-//            case CKManagerStateSetup:
-//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Setup", @"Setup");
-//                break;
-//            case CKManagerStateFetching:
-//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Fetch", @"Fetch");
-//                break;
-//            case CKManagerStateUploading:
-//                titleString = [NSString stringWithFormat:@"(%lu-%lu)", (unsigned long)inFlightCount, (unsigned long)queuedCount];
-//                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Upload", @"Upload") stringByAppendingString:titleString];
-//                break;
-//            case CKManagerStateReady:
-//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Ready", @"Ready");
-//                break;
-//            case CKManagerStateRecovering:
-//                titleString = NSLocalizedString(@"SettingsViewController.CloudKit.Status.Recover", @"Recover");
-//                break;
-//            case CKManagerStateHalt:
-//                titleString = [NSString stringWithFormat:@"(%lu)", (unsigned long)suspendCount];
-//                titleString = [NSLocalizedString(@"SettingsViewController.CloudKit.Status.Halt", @"Halt") stringByAppendingString:titleString];
-//                break;
-//            default:
-//                break;
-//        }
-    }
-    
-    self.iCloudSyncCell.detailTextLabel.text = titleString;
-}
 
 - (void)_resetLoginStatus {
     NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];

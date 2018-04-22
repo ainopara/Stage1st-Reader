@@ -49,6 +49,6 @@ class Stage1stMahjongFaceTests: XCTestCase {
             XCTAssert(allItemsPathSet.contains(mahjongFaceFile.path), "\(mahjongFaceFile.path) should be referenced by index.json")
             counter += 1
         }
-        print("\(counter) items checked.")
+        S1LogDebug("\(counter) items checked.")
     }
 }

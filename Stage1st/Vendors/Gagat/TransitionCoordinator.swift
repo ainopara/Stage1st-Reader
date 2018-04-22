@@ -59,7 +59,7 @@ public class TransitionCoordinator: NSObject {
         switch panRecognizer.state {
         case .began:
             direction = direction(for: panRecognizer)
-            print(direction)
+            S1LogDebug("\(direction)")
             beginInteractiveStyleTransition(withPanRecognizer: panRecognizer)
         case .changed:
             adjustMaskLayer(basedOn: panRecognizer)

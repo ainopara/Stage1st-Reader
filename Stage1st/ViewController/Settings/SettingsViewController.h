@@ -9,4 +9,6 @@
 
 @interface SettingsViewController : UITableViewController
 
+@property (weak, nonatomic) IBOutlet UITableViewCell *iCloudSyncCell;
+
 @end
