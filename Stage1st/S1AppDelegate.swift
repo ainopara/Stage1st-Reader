@@ -120,24 +120,12 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         ColorManager.shared.updateGlobalAppearance()
         navigationControllerDelegate!.setUpGagat()
 
-        if #available(iOS 11.0, *) {
-            #if DEBUG
-            let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()
-//            let defaultsJSONData = try! JSONSerialization.data(withJSONObject: defaultsDictionary, options: [.prettyPrinted, .sortedKeys])
-//            let defaultsJSONString = String(data: defaultsJSONData, encoding: .utf8)!
-            dump(defaultsDictionary)
-//            S1LogVerbose("Dump user defaults: \(defaultsJSONString)")
-            #endif
-        } else {
-            // Fallback on earlier versions
-            #if DEBUG
-            let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()
-//            let defaultsJSONData = try! JSONSerialization.data(withJSONObject: defaultsDictionary, options: [.prettyPrinted])
-//            let defaultsJSONString = String(data: defaultsJSONData, encoding: .utf8)!
-            dump(defaultsDictionary)
-//            S1LogVerbose("Dump user defaults: \(defaultsJSONString)")
-            #endif
-        }
+        #if DEBUG
+        let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()
+        let defaultsPlistData = try! PropertyListSerialization.data(fromPropertyList: defaultsDictionary, format: .xml, options: 0)
+        let defaultsPlistString = String(data: defaultsPlistData, encoding: .utf8)!
+        S1LogVerbose("Dump user defaults: \(defaultsPlistString)")
+        #endif
 
         NotificationCenter.default.addObserver(
             self,

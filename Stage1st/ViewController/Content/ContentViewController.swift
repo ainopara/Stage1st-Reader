@@ -486,19 +486,11 @@ extension S1ContentViewController {
 
         let labelParagraphStyle = NSMutableParagraphStyle()
         labelParagraphStyle.alignment = .center
-        #if swift(>=4.0)
         picker?.pickerTextAttributes = [
             NSAttributedStringKey.paragraphStyle: labelParagraphStyle,
             NSAttributedStringKey.font: UIFont.systemFont(ofSize: 19.0),
             NSAttributedStringKey.foregroundColor: ColorManager.shared.colorForKey("content.picker.text"),
         ]
-        #else
-        picker?.pickerTextAttributes = [
-            NSParagraphStyleAttributeName: labelParagraphStyle,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 19.0),
-            NSForegroundColorAttributeName: ColorManager.shared.colorForKey("content.picker.text"),
-        ]
-        #endif
         picker?.show()
     }
 

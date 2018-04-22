@@ -519,6 +519,7 @@ extension CloudKitManager1 {
 
         var shouldResume: Bool = false
         var shouldRefetchRecords: Bool = false
+        var recordsToUpdate = [CKRecord]()
 
         EnumerateErrors: for (_, value) in errors {
             guard let error = value as? CKError else {
@@ -537,10 +538,7 @@ extension CloudKitManager1 {
                     continue EnumerateErrors
                 }
 
-                databaseConnection.readWrite { (transaction) in
-                    transaction.updateDatabaseWithRecords([serverRecord])
-                }
-
+                recordsToUpdate.append(serverRecord)
                 shouldResume = true
             case .quotaExceeded:
                 alertQuotaExceedIssue()
@@ -553,10 +551,35 @@ extension CloudKitManager1 {
             }
         }
 
+        databaseConnection.readWrite { (transaction) in
+            transaction.updateDatabaseWithRecords(recordsToUpdate)
+        }
+
         if shouldRefetchRecords {
-            state.value = .fetchRecordChanges
+            fetchRecordChange { [weak self] (fetchResult) in
+                S1LogDebug("fetch finished with result: \(fetchResult.debugDescription)")
+                guard let strongSelf = self else { return }
+                switch fetchResult {
+                case .newData:
+                    // We got new data during this fetch, hope this will fix the unknownItem issue.
+                    strongSelf.cloudKitExtension.resume()
+                    strongSelf.state.value = .readyForUpload
+                case .noData:
+                    // We got no data during this fetch, that means unknownItem issue will not get fixed.
+                    // We should either
+                    // 1. remove local data
+                    // or 2. upload our CKRecord with tag changed to nil
+                    // Which one to choose should be depended on when the data get removed.
+                    // Currently we just stop here to avoid infinity loop.
+                    break
+                case let .failed(error):
+                    // We failed this fetch request, go to standard error handling route to recover and drop current state.
+                    strongSelf.state.value = .fetchRecordChangesError(error)
+                }
+            }
         } else if shouldResume {
             cloudKitExtension.resume()
+            state.value = .readyForUpload
         }
     }
 
@@ -602,7 +625,8 @@ extension CloudKitManager1 {
 private extension YapDatabaseReadWriteTransaction {
     func deleteKeysAssociatedWithRecordIDs(_ recordIDs: [CKRecordID]) {
         guard let cloudkitTransaction = self.ext(Ext_CloudKit) as? YapDatabaseCloudKitTransaction else {
-            fatalError()
+            // CloudKit Extension is unregistered.
+            return
         }
 
         for deletedRecordID in recordIDs {
@@ -625,7 +649,8 @@ private extension YapDatabaseReadWriteTransaction {
 
     func updateDatabaseWithRecords(_ records: [CKRecord]) {
         guard let cloudkitTransaction = self.ext(Ext_CloudKit) as? YapDatabaseCloudKitTransaction else {
-            fatalError()
+            // CloudKit Extension is unregistered.
+            return
         }
 
         // Ignore unknown record types.

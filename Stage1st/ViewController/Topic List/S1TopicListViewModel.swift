@@ -472,17 +472,17 @@ extension S1TopicListViewModel {
     }
 
     private func _handleDatabaseChanged(with notifications: [Notification]) {
-        guard viewMappings != nil else {
-            initializeMappings()
-            return
-        }
-
-        updateMappings()
-
         if currentState.value.isArchiveTypes() {
+            guard viewMappings != nil else {
+                initializeMappings()
+                return
+            }
+
+            updateMappings()
             tableViewReloadingObserver.send(value: ())
+
         } else if currentState.value.isForumOrSearch() {
-            // Dispatch heavy task to improve animations when dismissing content view controller.
+            // Dispatch heavy task to improve animation when dismissing content view controller.
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 strongSelf._updateForumOrSearchList(with: notifications)

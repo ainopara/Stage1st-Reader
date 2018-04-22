@@ -180,17 +180,10 @@ extension ReplyAccessoryView {
 extension UITextView {
     func s1_resetToReplyStyle() {
         let allTextRange = NSRange(location: 0, length: textStorage.length)
-        #if swift(>=4.0)
-        textStorage.removeAttribute(NSAttributedStringKey.font, range: allTextRange)
-        textStorage.addAttribute(NSAttributedStringKey.font, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
-        textStorage.removeAttribute(NSAttributedStringKey.foregroundColor, range: allTextRange)
-        textStorage.addAttribute(NSAttributedStringKey.foregroundColor, value: ColorManager.shared.colorForKey("reply.text"), range: allTextRange)
-        #else
-        textStorage.removeAttribute(NSFontAttributeName, range: allTextRange)
-        textStorage.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
-        textStorage.removeAttribute(NSForegroundColorAttributeName, range: allTextRange)
-        textStorage.addAttribute(NSForegroundColorAttributeName, value: ColorManager.shared.colorForKey("reply.text"), range: allTextRange)
-        #endif
+        textStorage.removeAttribute(.font, range: allTextRange)
+        textStorage.addAttribute(.font, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
+        textStorage.removeAttribute(.foregroundColor, range: allTextRange)
+        textStorage.addAttribute(.foregroundColor, value: ColorManager.shared.colorForKey("reply.text"), range: allTextRange)
         font = UIFont.systemFont(ofSize: 17.0)
         textColor = ColorManager.shared.colorForKey("reply.text")
     }

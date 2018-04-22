@@ -12,8 +12,39 @@ import YapDatabase
 
 class CloudKitViewController: QuickTableViewController {
 
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(dataSourceDidChanged),
+            name: .YapDatabaseCloudKitSuspendCountChanged,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(dataSourceDidChanged),
+            name: .YapDatabaseCloudKitInFlightChangeSetChanged,
+            object: nil
+        )
+
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateTable()
+    }
+
+    @objc func dataSourceDidChanged() {
         updateTable()
     }
 
@@ -45,6 +76,11 @@ class CloudKitViewController: QuickTableViewController {
             title: NSLocalizedString("CloudKitViewController.DetailSection.header", comment: ""),
             rows: []
         )
+
+        detailSection.rows.append(NavigationRow(
+            title: "Container ID",
+            subtitle: Subtitle.rightAligned(AppEnvironment.current.cloudkitManager.cloudKitContainer.containerIdentifier ?? "")
+        ))
 
         detailSection.rows.append(NavigationRow(
             title: NSLocalizedString("CloudKitViewController.StateRow.title", comment: ""),
@@ -102,10 +138,21 @@ class CloudKitUploadQueueViewController: UIViewController {
         tableView.estimatedRowHeight = 100.0
         tableView.delegate = self
         tableView.dataSource = self
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(dataSourceDidChanged),
+            name: .YapDatabaseCloudKitInFlightChangeSetChanged,
+            object: nil
+        )
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -116,29 +163,27 @@ class CloudKitUploadQueueViewController: UIViewController {
             make.edges.equalTo(self.view)
         }
     }
+
+    @objc func dataSourceDidChanged() {
+        changeSets = AppEnvironment.current.cloudkitManager.cloudKitExtension.pendingChangeSets()
+        tableView.reloadData()
+    }
 }
 
 extension CloudKitUploadQueueViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return changeSets.count
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(changeSets[section].recordIDsToDeleteCount + changeSets[section].recordsToSaveCount)
+        return changeSets.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") ?? UITableViewCell(style: .default, reuseIdentifier: "cell")
         cell.textLabel?.numberOfLines = 0
-        let changeSet = changeSets[indexPath.section]
-        if indexPath.row < changeSet.recordIDsToDeleteCount {
-            let recordIDToDelete = changeSet.recordIDsToDelete[indexPath.row]
-            cell.textLabel?.text = "Delete: \(recordIDToDelete.recordName)"
-            return cell
-        } else {
-            let record = changeSet.recordsToSave[indexPath.row - Int(changeSet.recordIDsToDeleteCount)]
-            cell.textLabel?.text = "Change: \(record)"
-        }
+        let changeSet = changeSets[indexPath.item]
+        cell.textLabel?.text = "Deleted: \(changeSet.recordIDsToDeleteCount) Changed: \(changeSet.recordsToSaveCount)"
         return cell
     }
 }
@@ -225,9 +270,9 @@ extension CloudKitErrorListViewController: UITableViewDataSource {
         }
 
         if let ckError = underlyingError as? CKError {
-            cell.textLabel?.text = "\(prefix)\(ckError.code) \(ckError.localizedDescription)"
+            cell.textLabel?.text = "\(prefix)\(ckError.errorCode) \(ckError.localizedDescription)"
         } else {
-            cell.textLabel?.text = "\(prefix)\(underlyingError.localizedDescription)"
+            cell.textLabel?.text = "\(prefix)\(underlyingError)"
         }
     }
 }

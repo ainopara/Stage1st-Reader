@@ -55,31 +55,15 @@ public final class ColorManager: NSObject {
         UIToolbar.appearance().tintColor = colorForKey("appearance.toolbar.tint")
         UINavigationBar.appearance().barTintColor = colorForKey("appearance.navigationbar.bartint")
         UINavigationBar.appearance().tintColor = colorForKey("appearance.navigationbar.tint")
-        #if swift(>=4.0)
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor: colorForKey("appearance.navigationbar.title"),
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
-        #else
-        UINavigationBar.appearance().titleTextAttributes = [
-            NSForegroundColorAttributeName: colorForKey("appearance.navigationbar.title"),
-            NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17.0)
-        ]
-        #endif
-
         UISwitch.appearance().onTintColor = colorForKey("appearance.switch.tint")
-        #if swift(>=4.0)
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [
             NSAttributedStringKey.foregroundColor.rawValue: self.colorForKey("appearance.searchbar.text"),
             NSAttributedStringKey.font.rawValue: UIFont.systemFont(ofSize: 14.0)
         ]
-        #else
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [
-            NSForegroundColorAttributeName: self.colorForKey("appearance.searchbar.text"),
-            NSFontAttributeName: UIFont.systemFont(ofSize: 14.0)
-        ]
-        #endif
-
         UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
         UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default
         UIApplication.shared.statusBarStyle = isDarkTheme() ? .lightContent : .default
@@ -97,6 +81,7 @@ public final class ColorManager: NSObject {
 }
 
 // MARK: - Private
+
 private extension ColorManager {
     func loadPaletteByURL(_ paletteURL: URL?, shouldPushNotification shouldPush: Bool) {
         guard let paletteURL = paletteURL, let palette = NSDictionary(contentsOf: paletteURL) else {
@@ -120,6 +105,7 @@ private extension ColorManager {
 }
 
 // MARK: - Miscs
+
 public extension UIViewController {
     @objc public func didReceivePaletteChangeNotification(_ notification: Notification?) {
     }

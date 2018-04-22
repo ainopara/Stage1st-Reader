@@ -114,12 +114,7 @@ final class UserViewController: UIViewController {
             make.leading.equalTo(avatarView.snp.trailing).offset(10.0)
         }
 
-        #if swift(>=4.0)
         blockButton.setContentHuggingPriority(UILayoutPriority(UILayoutPriority.defaultLow.rawValue + 1.0), for: .horizontal)
-        #else
-        blockButton.setContentHuggingPriority(UILayoutPriorityDefaultLow + 1, for: .horizontal)
-        #endif
-
         containerView.addSubview(blockButton)
         blockButton.snp.makeConstraints { make in
             make.leading.equalTo(usernameLabel.snp.trailing).offset(10.0)
