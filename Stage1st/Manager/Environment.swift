@@ -82,11 +82,7 @@ class Environment: NSObject {
         webKitImageDownloader = WebKitImageDownloader()
 
         databaseManager = DatabaseManager.sharedInstance()
-        cloudkitManager = CloudKitManager1(
-            cloudkitContainer: CKContainer.default(),
-            databaseConnection: databaseManager.bgDatabaseConnection,
-            cloudKitExtension: databaseManager.cloudKitExtension
-        )
+        cloudkitManager = CloudKitManager1(cloudkitContainer: CKContainer.default(), databaseManager: databaseManager)
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
 
         dataCenter = DataCenter(

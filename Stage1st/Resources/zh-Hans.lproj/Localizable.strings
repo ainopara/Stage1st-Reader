@@ -162,8 +162,6 @@
 "TopicListViewController.TableView.CellAction.CancelFavorite" = "取消收藏";
 "TopicListViewController.TableView.CellAction.Delete" = "删除";
 
-"SettingsViewController.CloudKit_Enable_Message" = "设置将于下次启动时生效";
-
 "SettingsViewController.CloudKit.Status.Off" = "关闭";
 "SettingsViewController.CloudKit.Status.Suspended" = "暂停 (%lu)(%lu-%lu)";
 "SettingsViewController.CloudKit.Status.Resumed" = "恢复 (%lu-%lu)";
@@ -189,6 +187,8 @@
 "CloudKitViewController.iCloudSection.header" = "iCloud 同步";
 "CloudKitViewController.AccountStatusRow.title" = "iCloud 账户状态";
 "CloudKitViewController.iCloudSwitchRow.title" = "开启 iCloud 同步";
+"CloudKitViewController.iCloudSwitchRow.EnableMessage" = "处理中...";
+"CloudKitViewController.iCloudSwitchRow.DisableMessage" = "设置将于下次启动时生效";
 "CloudKitViewController.iCloudSection.footer" = "启用 iCloud 同步意味着您的浏览历史、收藏等信息将与您当前登录的 iCloud 帐号进行同步。";
 "CloudKitViewController.DetailSection.header" = "CloudKit 状态";
 "CloudKitViewController.StateRow.title" = "状态";

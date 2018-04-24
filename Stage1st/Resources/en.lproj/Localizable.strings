@@ -71,8 +71,6 @@
 "SettingsViewController.HistoryLimit.1year" = "1 year";
 "SettingsViewController.HistoryLimit.Forever" = "Forever";
 
-"SettingsViewController.CloudKit_Enable_Message" = "Settings will take effect on next start";
-
 "SettingsViewController.Version" = "Version";
 "SettingsViewController.Developer" = "Developer";
 
@@ -89,6 +87,8 @@
 "CloudKitViewController.iCloudSection.header" = "iCloud Sync";
 "CloudKitViewController.AccountStatusRow.title" = "Account Status";
 "CloudKitViewController.iCloudSwitchRow.title" = "Enable iCloud Sync";
+"CloudKitViewController.iCloudSwitchRow.EnableMessage" = "Processing...";
+"CloudKitViewController.iCloudSwitchRow.DisableMessage" = "Settings will take effect on next launch";
 "CloudKitViewController.iCloudSection.footer" = "Enable iCloud Sync means your topic history and favorite data will sync with your current iCloud account.";
 "CloudKitViewController.DetailSection.header" = "CloudKit Status";
 "CloudKitViewController.StateRow.title" = "State";

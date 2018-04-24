@@ -16,6 +16,7 @@ private let cloudkitZoneName = "zone1"
 private let Collection_cloudKit = "cloudKit"
 
 private let Key_cloudKitManagerVersion = "CloudKitManagerVersion"
+private let Key_userIdentity = "userIdentity"
 private let Key_hasZone = "hasZone"
 private let Key_hasZoneSubscription = "hasZoneSubscription"
 private let Key_serverChangeToken = "serverChangeToken"
@@ -24,6 +25,7 @@ private let cloudKitManagerVersion = 1
 
 class CloudKitManager1: NSObject {
     let cloudKitContainer: CKContainer
+    let databaseManager: DatabaseManager
     let databaseConnection: YapDatabaseConnection
     let cloudKitExtension: YapDatabaseCloudKit
 
@@ -37,6 +39,7 @@ class CloudKitManager1: NSObject {
     enum State {
         case waitingSetupTriggered
         case migrating
+        case identifyUser
         case createZone
         case createZoneError(Error)
         case createZoneSubscription
@@ -61,12 +64,12 @@ class CloudKitManager1: NSObject {
 
     init(
         cloudkitContainer: CKContainer,
-        databaseConnection: YapDatabaseConnection,
-        cloudKitExtension: YapDatabaseCloudKit
+        databaseManager: DatabaseManager
     ) {
         self.cloudKitContainer = cloudkitContainer
-        self.databaseConnection = databaseConnection
-        self.cloudKitExtension = cloudKitExtension
+        self.databaseManager = databaseManager
+        self.databaseConnection = databaseManager.bgDatabaseConnection
+        self.cloudKitExtension = databaseManager.cloudKitExtension
 
         super.init()
 
@@ -85,33 +88,55 @@ class CloudKitManager1: NSObject {
                 switch state {
                 case .waitingSetupTriggered:
                     break
+
                 case .migrating:
                     strongSelf.migrateIfNecessary()
+
+                case .identifyUser:
+                    strongSelf.identifyUser()
+
                 case .createZone:
                     strongSelf.createZoneIfNecessary()
+
                 case let .createZoneError(error):
                     strongSelf.handleCreateZoneError(error)
+
                 case .createZoneSubscription:
                     strongSelf.createZoneSubscriptionIfNecessary()
+
                 case let .createZoneSubscriptionError(error):
                     strongSelf.handleCreateZoneSubscriptionError(error)
+
                 case .fetchRecordChanges:
+                    if !strongSelf.cloudKitExtension.isSuspended {
+                        strongSelf.cloudKitExtension.suspend()
+                    }
+
                     strongSelf.fetchRecordChange { (fetchResult) in
-                        S1LogDebug("fetch finished with result: \(fetchResult.debugDescription)")
+                        S1LogDebug("Fetch finished with result: \(fetchResult.debugDescription)")
                         switch fetchResult {
                         case .newData, .noData:
-                            strongSelf.cloudKitExtension.resume()
-                            strongSelf.state.value = .readyForUpload
+                            strongSelf.state.value.transit(to: .readyForUpload)
                         case let .failed(error):
-                            strongSelf.state.value = .fetchRecordChangesError(error)
+                            strongSelf.state.value.transit(to: .fetchRecordChangesError(error))
                         }
                     }
+
                 case let .fetchRecordChangesError(error):
                     strongSelf.handleFetchRecordChangesError(error)
+
+                case .readyForUpload:
+                    while strongSelf.cloudKitExtension.isSuspended {
+                        strongSelf.cloudKitExtension.resume()
+                    }
+
                 case let .uploadError(error):
                     strongSelf.handleUploadError(error)
-                default:
-                    break
+
+                case .halt:
+                    if !strongSelf.cloudKitExtension.isSuspended {
+                        strongSelf.cloudKitExtension.suspend()
+                    }
                 }
             }
         }
@@ -129,19 +154,24 @@ class CloudKitManager1: NSObject {
     func setup() {
         queue.async { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.state.value = .migrating
+            strongSelf.state.value.transit(to: .migrating)
         }
     }
 
-    @objc func prepareForUnregister() {
+    @objc func unregister(completion: @escaping () -> Void) {
         queue.async { [weak self] in
             guard let strongSelf = self else { return }
 
             strongSelf.databaseConnection.readWrite { (transaction) in
+                transaction.removeObject(forKey: Key_userIdentity, inCollection: Collection_cloudKit)
                 transaction.removeObject(forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
                 transaction.removeObject(forKey: Key_hasZone, inCollection: Collection_cloudKit)
                 transaction.removeObject(forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit)
             }
+
+            strongSelf.databaseManager.database.unregisterExtension(withName: Ext_CloudKit)
+            S1LogDebug("Exrension CloudKit unregistered.")
+            completion()
         }
     }
 }
@@ -154,7 +184,7 @@ extension CloudKitManager1 {
             return
         }
 
-        defer { state.value = .createZone }
+        defer { state.value.transit(to: .identifyUser) }
 
         var oldVersion: Int = 0
         databaseConnection.read { (transaction) in
@@ -175,8 +205,37 @@ extension CloudKitManager1 {
         }
     }
 
+    func identifyUser() {
+        guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            return
+        }
+
+        cloudKitContainer.fetchUserRecordID { (userRecordID, error) in
+            self.queue.async { [weak self] in
+                if let userRecordID = userRecordID {
+                    S1LogDebug("UserRecordID: \(userRecordID)")
+                }
+
+                if let error = error {
+                    S1LogDebug("Error: \(error)")
+                }
+
+                guard let strongSelf = self else { return }
+
+                guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                    return
+                }
+
+                // Save userRecordID
+
+                strongSelf.state.value.transit(to: .createZone)
+            }
+        }
+    }
+
     func createZoneIfNecessary() {
         guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            state.value.transit(to: .waitingSetupTriggered)
             return
         }
 
@@ -188,7 +247,8 @@ extension CloudKitManager1 {
         }
 
         guard needsCreateZone else {
-            state.value = .createZoneSubscription
+            S1LogDebug("Skip creating zone.")
+            state.value.transit(to: .createZoneSubscription)
             return
         }
 
@@ -196,24 +256,26 @@ extension CloudKitManager1 {
         /// We create a custom zone to get the capability of fetch record changes.
         let recordZone = CKRecordZone(zoneName: cloudkitZoneName)
         let modifyRecordZonesOperation = CKModifyRecordZonesOperation(recordZonesToSave: [recordZone], recordZoneIDsToDelete: nil)
-        modifyRecordZonesOperation.modifyRecordZonesCompletionBlock = { [weak self] (savedRecordZones, deletedRecordZoneIDs, operationError) in
-            guard let strongSelf = self else { return }
-            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
-                return
+        modifyRecordZonesOperation.modifyRecordZonesCompletionBlock = { (savedRecordZones, deletedRecordZoneIDs, operationError) in
+            self.queue.async { [weak self] in
+                guard let strongSelf = self else { return }
+                guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                    return
+                }
+
+                if let operationError = operationError {
+                    strongSelf.state.value.transit(to: .createZoneError(operationError))
+                    return
+                }
+
+                S1LogDebug("Successfully created zones: \(String(describing: savedRecordZones))")
+
+                strongSelf.databaseConnection.readWrite({ (transaction) in
+                    transaction.setObject(true, forKey: Key_hasZone, inCollection: Collection_cloudKit)
+                })
+
+                strongSelf.state.value.transit(to: .createZoneSubscription)
             }
-
-            if let operationError = operationError {
-                strongSelf.state.value = .createZoneError(operationError)
-                return
-            }
-
-            S1LogDebug("Successfully created zones: \(String(describing: savedRecordZones))")
-
-            strongSelf.databaseConnection.readWrite({ (transaction) in
-                transaction.setObject(true, forKey: Key_hasZone, inCollection: Collection_cloudKit)
-            })
-
-            strongSelf.state.value = .createZoneSubscription
         }
 
         cloudKitContainer.privateCloudDatabase.add(modifyRecordZonesOperation)
@@ -232,7 +294,8 @@ extension CloudKitManager1 {
         }
 
         guard needsCreateZoneSubscription else {
-            state.value = .fetchRecordChanges
+            S1LogDebug("Skip creating zone subscription.")
+            state.value.transit(to: .fetchRecordChanges)
             return
         }
 
@@ -243,24 +306,26 @@ extension CloudKitManager1 {
         subscription.notificationInfo = notificationInfo
 
         let modifySubscriptionsOperation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
-        modifySubscriptionsOperation.modifySubscriptionsCompletionBlock = { [weak self] (savedSubscriptions, deletedSubscriptionIDs, operationError) in
-            guard let strongSelf = self else { return }
-            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
-                return
+        modifySubscriptionsOperation.modifySubscriptionsCompletionBlock = { (savedSubscriptions, deletedSubscriptionIDs, operationError) in
+            self.queue.async { [weak self] in
+                guard let strongSelf = self else { return }
+                guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                    return
+                }
+
+                if let operationError = operationError {
+                    strongSelf.state.value.transit(to: .createZoneSubscriptionError(operationError))
+                    return
+                }
+
+                S1LogDebug("Successfully created subscription: \(String(describing: savedSubscriptions))")
+
+                strongSelf.databaseConnection.readWrite({ (transaction) in
+                    transaction.setObject(true, forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit)
+                })
+
+                strongSelf.state.value.transit(to: .fetchRecordChanges)
             }
-
-            if let operationError = operationError {
-                strongSelf.state.value = .createZoneSubscriptionError(operationError)
-                return
-            }
-
-            S1LogDebug("Successfully created subscription: \(String(describing: savedSubscriptions))")
-
-            strongSelf.databaseConnection.readWrite({ (transaction) in
-                transaction.setObject(true, forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit)
-            })
-
-            strongSelf.state.value = .fetchRecordChanges
         }
 
         cloudKitContainer.privateCloudDatabase.add(modifySubscriptionsOperation)
@@ -290,75 +355,83 @@ extension CloudKitManager1 {
         var changedRecords = [CKRecord]()
 
         fetchOperation.recordWithIDWasDeletedBlock = { (recordID, recordType) in
-            deletedRecordIDs.append(recordID)
+            self.queue.async {
+                deletedRecordIDs.append(recordID)
+            }
         }
 
         fetchOperation.recordChangedBlock = { record in
-            changedRecords.append(record)
-        }
-
-        fetchOperation.recordZoneChangeTokensUpdatedBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData) in
-            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
-                if !fetchOperation.isCancelled { fetchOperation.cancel() }
-                return
-            }
-
-            S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken update: \(String(describing: serverChangeToken))")
-            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
-            guard let strongSelf = self else { return }
-
-            let hasChange = deletedRecordIDs.count > 0 || changedRecords.count > 0
-
-            if !hasChange {
-                // We do not have any change in cloud. Just save the new server change token
-                strongSelf.databaseConnection.readWrite({ (transaction) in
-                    transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
-                })
-            } else {
-                strongSelf.databaseConnection.readWrite({ (transaction) in
-                    transaction.deleteKeysAssociatedWithRecordIDs(deletedRecordIDs)
-                    transaction.updateDatabaseWithRecords(changedRecords)
-                    transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
-                })
-                deletedRecordIDs.removeAll()
-                changedRecords.removeAll()
+            self.queue.async {
+                changedRecords.append(record)
             }
         }
 
-        fetchOperation.recordZoneFetchCompletionBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData, moreComing, recordZoneError) in
-            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
-                if !fetchOperation.isCancelled { fetchOperation.cancel() }
-                return
+        fetchOperation.recordZoneChangeTokensUpdatedBlock = { (recordZoneID, serverChangeToken, clientChangeTokenData) in
+            self.queue.async { [weak self] in
+                guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                    if !fetchOperation.isCancelled { fetchOperation.cancel() }
+                    return
+                }
+
+                S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken update: \(String(describing: serverChangeToken))")
+                S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
+                guard let strongSelf = self else { return }
+
+                let hasChange = deletedRecordIDs.count > 0 || changedRecords.count > 0
+
+                if !hasChange {
+                    // We do not have any change in cloud. Just save the new server change token
+                    strongSelf.databaseConnection.readWrite({ (transaction) in
+                        transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
+                    })
+                } else {
+                    strongSelf.databaseConnection.readWrite({ (transaction) in
+                        transaction.deleteKeysAssociatedWithRecordIDs(deletedRecordIDs)
+                        transaction.updateDatabaseWithRecords(changedRecords)
+                        transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
+                    })
+                    deletedRecordIDs.removeAll()
+                    changedRecords.removeAll()
+                }
             }
+        }
 
-            S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken final: \(String(describing: serverChangeToken))")
-            S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
+        fetchOperation.recordZoneFetchCompletionBlock = { (recordZoneID, serverChangeToken, clientChangeTokenData, moreComing, recordZoneError) in
+            self.queue.async { [weak self] in
+                guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                    if !fetchOperation.isCancelled { fetchOperation.cancel() }
+                    return
+                }
 
-            guard let strongSelf = self else { return }
+                S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken final: \(String(describing: serverChangeToken))")
+                S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
 
-            if let recordZoneError = recordZoneError {
-                S1LogError("recordZoneError: \(recordZoneError)")
-                completion(.failed(recordZoneError))
-                return
-            }
+                guard let strongSelf = self else { return }
 
-            let hasChange = deletedRecordIDs.count > 0 || changedRecords.count > 0
+                if let recordZoneError = recordZoneError {
+                    S1LogError("recordZoneError: \(recordZoneError)")
+                    completion(.failed(recordZoneError))
+                    return
+                }
 
-            if !hasChange {
-                // We do not have any change in cloud. Just save the new server change token
-                strongSelf.databaseConnection.readWrite({ (transaction) in
-                    transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
-                })
+                let hasChange = deletedRecordIDs.count > 0 || changedRecords.count > 0
 
-                completion(.noData)
-            } else {
-                strongSelf.databaseConnection.readWrite({ (transaction) in
-                    transaction.deleteKeysAssociatedWithRecordIDs(deletedRecordIDs)
-                    transaction.updateDatabaseWithRecords(changedRecords)
-                    transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
-                })
+                if !hasChange {
+                    // We do not have any change in cloud. Just save the new server change token
+                    strongSelf.databaseConnection.readWrite({ (transaction) in
+                        transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
+                    })
 
-                completion(.newData)
+                    completion(.noData)
+                } else {
+                    strongSelf.databaseConnection.readWrite({ (transaction) in
+                        transaction.deleteKeysAssociatedWithRecordIDs(deletedRecordIDs)
+                        transaction.updateDatabaseWithRecords(changedRecords)
+                        transaction.setObject(serverChangeToken, forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
+                    })
+
+                    completion(.newData)
+                }
             }
         }
 
@@ -427,6 +500,7 @@ extension CloudKitManager1 {
             switch ckError.code {
             case .notAuthenticated:
                 alertAccountAuthIssue()
+
             case .quotaExceeded:
                 #if DEBUG
                 alertAssertFailure()
@@ -437,18 +511,21 @@ extension CloudKitManager1 {
             case .internalError:
                 // Halt silently
                 break
+
             case .networkUnavailable, .networkFailure:
                 let delay = ckError.retryAfterSeconds ?? 30.0
                 queue.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.state.value = .fetchRecordChanges
+                    strongSelf.state.value.transit(to: .fetchRecordChanges)
                 }
+
             case .requestRateLimited, .serviceUnavailable:
                 let delay = ckError.retryAfterSeconds ?? 60.0
                 queue.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.state.value = .fetchRecordChanges
+                    strongSelf.state.value.transit(to: .fetchRecordChanges)
                 }
+
             case .partialFailure:
                 #if DEBUG
                 alertAssertFailure()
@@ -458,12 +535,13 @@ extension CloudKitManager1 {
 
             case .userDeletedZone:
                 break
+
             case .changeTokenExpired:
                 databaseConnection.readWrite { (transaction) in
                     transaction.removeObject(forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
                 }
 
-                state.value = .fetchRecordChanges
+                state.value.transit(to: .fetchRecordChanges)
             default:
                 break
             }
@@ -492,15 +570,13 @@ extension CloudKitManager1 {
                 let delay = ckError.retryAfterSeconds ?? 30.0
                 queue.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.cloudKitExtension.resume()
-                    strongSelf.state.value = .readyForUpload
+                    strongSelf.state.value.transit(to: .readyForUpload)
                 }
             case .requestRateLimited, .serviceUnavailable:
                 let delay = ckError.retryAfterSeconds ?? 60.0
                 queue.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.cloudKitExtension.resume()
-                    strongSelf.state.value = .readyForUpload
+                    strongSelf.state.value.transit(to: .readyForUpload)
                 }
             case .partialFailure:
                 handlePartialFailure(ckError: ckError)
@@ -593,13 +669,12 @@ extension CloudKitManager1 {
 
         if shouldRefetchRecords {
             fetchRecordChange { [weak self] (fetchResult) in
-                S1LogDebug("fetch finished with result: \(fetchResult.debugDescription)")
+                S1LogDebug("Fetch finished with result: \(fetchResult.debugDescription)")
                 guard let strongSelf = self else { return }
                 switch fetchResult {
                 case .newData:
                     // We got new data during this fetch, hope this will fix the unknownItem issue.
-                    strongSelf.cloudKitExtension.resume()
-                    strongSelf.state.value = .readyForUpload
+                    strongSelf.state.value.transit(to: .readyForUpload)
                 case .noData:
                     // We got no data during this fetch, that means unknownItem issue will not get fixed.
                     // We should either
@@ -610,12 +685,11 @@ extension CloudKitManager1 {
                     break
                 case let .failed(error):
                     // We failed this fetch request, go to standard error handling route to recover and drop current state.
-                    strongSelf.state.value = .fetchRecordChangesError(error)
+                    strongSelf.state.value.transit(to: .fetchRecordChangesError(error))
                 }
             }
         } else if shouldResume {
-            cloudKitExtension.resume()
-            state.value = .readyForUpload
+            state.value.transit(to: .readyForUpload)
         }
     }
 
@@ -652,7 +726,7 @@ extension CloudKitManager1 {
 
 extension CloudKitManager1 {
     @objc func setStateToUploadError(_ error: Error) {
-        state.value = .uploadError(error)
+        state.value.transit(to: .uploadError(error))
     }
 }
 
@@ -835,6 +909,8 @@ extension CloudKitManager1.State: CustomDebugStringConvertible {
             return "waitingSetupTriggered"
         case .migrating:
             return "migrating"
+        case .identifyUser:
+            return "identifyUser"
         case .createZone:
             return "createZone"
         case .createZoneError:
@@ -853,6 +929,38 @@ extension CloudKitManager1.State: CustomDebugStringConvertible {
             return "uploadError"
         case .halt:
             return "halt"
+        }
+    }
+}
+
+extension CloudKitManager1.State {
+    mutating func transit(to newState: CloudKitManager1.State) {
+        switch (self, newState) {
+        // Normal Routine
+        case (.waitingSetupTriggered, .migrating),
+             (.migrating, .identifyUser),
+             (.identifyUser, .createZone),
+             (.createZone, .createZoneSubscription),
+             (.createZoneSubscription, .fetchRecordChanges),
+             (.fetchRecordChanges, .readyForUpload):
+            self = newState
+        // Exceptions
+        case (.createZone, .createZoneError),
+             (.createZoneSubscription, .createZoneSubscriptionError),
+             (.fetchRecordChanges, .fetchRecordChangesError),
+             (.readyForUpload, .uploadError):
+            self = newState
+        // Recover
+        case (.createZoneError, .createZone),
+             (.createZoneSubscriptionError, .createZoneSubscription),
+             (.fetchRecordChangesError, .fetchRecordChanges),
+             (.uploadError, .readyForUpload):
+            self = newState
+        // Unregister
+        case (_, .waitingSetupTriggered):
+            self = newState
+        default:
+            S1LogError("Transition `\(self.debugDescription) -> \(newState.debugDescription)` will be ignored.")
         }
     }
 }

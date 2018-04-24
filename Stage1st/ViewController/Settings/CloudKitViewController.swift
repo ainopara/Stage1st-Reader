@@ -29,6 +29,13 @@ class CloudKitViewController: QuickTableViewController {
             object: nil
         )
 
+        AppEnvironment.current.cloudkitManager.state.signal.observeValues { [weak self] (_) in
+            self?.dataSourceDidChanged()
+        }
+
+        AppEnvironment.current.cloudkitManager.accountStatus.signal.observeValues { [weak self] (_) in
+            self?.dataSourceDidChanged()
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -63,11 +70,23 @@ class CloudKitViewController: QuickTableViewController {
         iCloudSection.rows.append(SwitchRow(
             title: NSLocalizedString("CloudKitViewController.iCloudSwitchRow.title", comment: ""),
             switchValue: AppEnvironment.current.settings.enableCloudKitSync.value,
-            action: { row in
+            action: { [weak self] row in
                 AppEnvironment.current.settings.enableCloudKitSync.value.toggle()
                 if AppEnvironment.current.settings.enableCloudKitSync.value == false {
-                    AppEnvironment.current.cloudkitManager.prepareForUnregister()
-                    AppEnvironment.current.databaseManager.unregisterCloudKitExtension()
+                    let title = NSLocalizedString("CloudKitViewController.iCloudSwitchRow.EnableMessage", comment: "")
+                    let alertController = UIAlertController(title: title, message: "", preferredStyle: .alert)
+                    self?.present(alertController, animated: true, completion: nil)
+                    AppEnvironment.current.cloudkitManager.unregister {
+                        DispatchQueue.main.async {
+                            alertController.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                } else {
+                    let title = NSLocalizedString("CloudKitViewController.iCloudSwitchRow.DisableMessage", comment: "")
+                    let message = ""
+                    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .default, handler: nil))
+                    self?.present(alertController, animated: true, completion: nil)
                 }
             }
         ))

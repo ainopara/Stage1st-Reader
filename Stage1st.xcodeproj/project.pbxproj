@@ -17,7 +17,6 @@
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
-		8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605636D1B88222100E1D63E /* S1CloudKitViewController.m */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
 		860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */; };
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
@@ -143,8 +142,6 @@
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
 		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1NetworkManager.h; sourceTree = "<group>"; };
 		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1NetworkManager.m; sourceTree = "<group>"; };
-		8605636C1B88222100E1D63E /* S1CloudKitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1CloudKitViewController.h; sourceTree = "<group>"; };
-		8605636D1B88222100E1D63E /* S1CloudKitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1CloudKitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8605734E1B7623A300C70781 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1YapDatabaseAdapter.h; sourceTree = "<group>"; };
 		860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1YapDatabaseAdapter.m; sourceTree = "<group>"; };
@@ -739,8 +736,6 @@
 				868799221CE629D700F5C75C /* LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,
-				8605636C1B88222100E1D63E /* S1CloudKitViewController.h */,
-				8605636D1B88222100E1D63E /* S1CloudKitViewController.m */,
 				8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */,
 				36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */,
 			);
@@ -1062,7 +1057,6 @@
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
-				8605636E1B88222100E1D63E /* S1CloudKitViewController.m in Sources */,
 				866E2DDF2085A0B300ADBD5F /* Settings.swift in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,

@@ -522,12 +522,4 @@ DatabaseManager *MyDatabaseManager;
 	                                                  userInfo:userInfo];
 }
 
-#pragma mark Helper
-
-- (void)unregisterCloudKitExtension {
-    [database asyncUnregisterExtensionWithName:Ext_CloudKit completionBlock:^{
-        DDLogDebug(@"Exrension %@ unregistered.", Ext_CloudKit);
-    }];
-}
-
 @end

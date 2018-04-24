@@ -69,49 +69,69 @@ extension SettingsViewController {
     }
 
     @objc func setupObservation() {
-        SignalProducer.combineLatest(
-            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitSuspendCountChanged).producer,
-            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitInFlightChangeSetChanged).producer,
-            AppEnvironment.current.cloudkitManager.state.producer
+        NotificationCenter.default.reactive
+            .notifications(forName: .YapDatabaseCloudKitSuspendCountChanged)
+            .signal.observeValues { [weak self] (_) in
+                self?.updateCloudKitStatus(
+                    state: AppEnvironment.current.cloudkitManager.state.value,
+                    enableSync: AppEnvironment.current.settings.enableCloudKitSync.value
+                )
+            }
+
+        NotificationCenter.default.reactive
+            .notifications(forName: .YapDatabaseCloudKitInFlightChangeSetChanged)
+            .signal.observeValues { [weak self] (_) in
+                self?.updateCloudKitStatus(
+                    state: AppEnvironment.current.cloudkitManager.state.value,
+                    enableSync: AppEnvironment.current.settings.enableCloudKitSync.value
+                )
+            }
+
+        MutableProperty.combineLatest(
+            AppEnvironment.current.cloudkitManager.state,
+            AppEnvironment.current.settings.enableCloudKitSync
         )
-            .start(on: UIScheduler())
+            .producer
             .startWithValues { [weak self] (args) in
-                let (_, _, state) = args
-                guard let strongSelf = self else { return }
-                S1LogDebug("Observed CloudKit manager state changed.")
-                strongSelf.updateCloudKitStatus(state: state)
-        }
+                let (state, enableSync) = args
+                self?.updateCloudKitStatus(state: state, enableSync: enableSync)
+            }
     }
 
-    func updateCloudKitStatus(state: CloudKitManager1.State) {
-        if AppEnvironment.current.settings.enableCloudKitSync.value {
+    func updateCloudKitStatus(state: CloudKitManager1.State, enableSync: Bool) {
+        S1LogDebug("Observed CloudKit manager state changed.")
+        DispatchQueue.main.async {
+            guard enableSync else {
+                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Off", comment: "Off")
+                return
+            }
+
             switch state {
             case .waitingSetupTriggered:
-                iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Init", comment: "Init")
-            case .migrating, .createZone, .createZoneSubscription:
-                iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Setup", comment: "Setup")
+                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Off", comment: "Off")
+//                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Init", comment: "Init")
+            case .migrating, .identifyUser, .createZone, .createZoneSubscription:
+                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Setup", comment: "Setup")
             case .fetchRecordChanges:
-                iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Fetch", comment: "Fetch")
+                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Fetch", comment: "Fetch")
             case .readyForUpload:
                 let suspendCount = AppEnvironment.current.databaseManager.cloudKitExtension.suspendCount
                 let inFlightCount = AppEnvironment.current.databaseManager.cloudKitExtension.numberOfInFlightChangeSets
                 let queuedCount = AppEnvironment.current.databaseManager.cloudKitExtension.numberOfQueuedChangeSets
                 if suspendCount == 0 && inFlightCount == 0 && queuedCount == 0 {
-                    iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Ready", comment: "Ready")
+                    self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Ready", comment: "Ready")
                 } else {
-                    iCloudSyncCell.detailTextLabel?.text =
+                    self.iCloudSyncCell.detailTextLabel?.text =
                         NSLocalizedString("SettingsViewController.CloudKit.Status.Fetch", comment: "Fetch") + "(\(inFlightCount) - \(queuedCount))"
                 }
 
             case .createZoneError, .createZoneSubscriptionError, .fetchRecordChangesError, .uploadError:
                 let suspendCount = AppEnvironment.current.databaseManager.cloudKitExtension.suspendCount
-                iCloudSyncCell.detailTextLabel?.text =
+                self.iCloudSyncCell.detailTextLabel?.text =
                     NSLocalizedString("SettingsViewController.CloudKit.Status.Recover", comment: "Recover") + "(\(suspendCount))"
             case .halt:
-                iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Halt", comment: "Halt")
+                self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Halt", comment: "Halt")
             }
-        } else {
-            iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Off", comment: "Off")
         }
     }
 }
