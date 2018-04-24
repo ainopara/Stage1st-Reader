@@ -386,6 +386,7 @@ DatabaseManager *MyDatabaseManager;
 	^(YapDatabaseReadWriteTransaction *transaction, NSString *collection, NSString *key,
 	  CKRecord *remoteRecord, YDBCKMergeInfo *mergeInfo)
 	{
+        DDLogDebug(@"Merge Remote Record: %@ %@", remoteRecord.recordID.recordName, remoteRecord.recordChangeTag);
 		if ([remoteRecord.recordType isEqualToString:@"topic"])
 		{
 			S1Topic *topic = [transaction objectForKey:key inCollection:collection];

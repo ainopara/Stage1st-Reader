@@ -244,7 +244,6 @@ class Settings: NSObject {
                 fatalError()
             }
 
-            S1LogVerbose("observeValue called for new bool value!")
             self[keyPath: boolPropertyKeyPath].setValueIfDifferent(newBoolValue)
 
         case let intPropertyKeyPath as KeyPath<Settings, MutableProperty<Int>>:

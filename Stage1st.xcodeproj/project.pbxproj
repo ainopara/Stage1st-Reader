@@ -451,10 +451,10 @@
 		863580111A945DED007B21AD /* Topic List */ = {
 			isa = PBXGroup;
 			children = (
+				8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */,
 				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
 				86FFD3251CB90C1E00EF742A /* S1TopicListViewController.swift */,
-				8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */,
 				86734B0C1F403788000AE19E /* TopicListCell.swift */,
 				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
 				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
@@ -466,8 +466,8 @@
 		863580121A945DFF007B21AD /* Content */ = {
 			isa = PBXGroup;
 			children = (
-				86FFD3271CB95F1500EF742A /* ContentViewController.swift */,
 				86221B831CA6594D00015522 /* ContentViewModel.swift */,
+				86FFD3271CB95F1500EF742A /* ContentViewController.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -507,8 +507,8 @@
 		866CDB951B526C4800FBB133 /* Quote Floor */ = {
 			isa = PBXGroup;
 			children = (
-				866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */,
 				86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */,
+				866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */,
 				86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */,
 			);
 			path = "Quote Floor";
@@ -517,8 +517,8 @@
 		8671E56F1CFDEB1800F4A854 /* User */ = {
 			isa = PBXGroup;
 			children = (
-				862DB7991C8891070068F75F /* UserViewController.swift */,
 				8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */,
+				862DB7991C8891070068F75F /* UserViewController.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -734,8 +734,8 @@
 			children = (
 				C09587A416CB623E007E0119 /* SettingsViewController.h */,
 				C09587A516CB623E007E0119 /* SettingsViewController.m */,
-				865673171A7A7B190025D22E /* Settings.storyboard */,
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
+				865673171A7A7B190025D22E /* Settings.storyboard */,
 				868799221CE629D700F5C75C /* LoginViewController.swift */,
 				86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */,
 				86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */,

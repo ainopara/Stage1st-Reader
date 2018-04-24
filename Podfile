@@ -23,7 +23,7 @@ target "Stage1st" do
 
     # Database
     pod 'FMDB'
-    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'limit-cloudkit-upload'
+    pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'stage'
 
     # Debug
     pod 'CocoaLumberjack'

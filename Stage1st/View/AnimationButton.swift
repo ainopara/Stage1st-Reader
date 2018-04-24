@@ -11,17 +11,22 @@ import CocoaLumberjack
 
 class AnimationView: UIView {
     var beginTime: CFTimeInterval = 0.0
+    var images: [UIImage] = [] {
+        didSet { if isPlayingAnimation { startOrReloadAnimation() } }
+    }
+
     var isPlayingAnimation: Bool = false
-    var images: [UIImage] = []
-    fileprivate var cgImages: [AnyObject] {
+
+    private var cgImages: [CGImage] {
         if tintColor == nil {
             return images.compactMap({ image in
                 image.cgImage
             })
+        } else {
+            return images.compactMap({ templateImage in
+                templateImage.s1_tintWithColor(self.tintColor).cgImage
+            })
         }
-        return images.compactMap({ templateImage in
-            templateImage.s1_tintWithColor(self.tintColor).cgImage
-        })
     }
 
     override init(frame: CGRect) {
@@ -31,32 +36,33 @@ class AnimationView: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        isUserInteractionEnabled = false
     }
 }
 
-// MARK: - Public
+// MARK: Public
 extension AnimationView {
-    func removeAllAnimations() {
+    func stopAnimation() {
         S1LogDebug("stop animation")
         layer.removeAllAnimations()
         isPlayingAnimation = false
     }
 
-    func reloadAnimation() {
-        guard let animation = self.layer.animation(forKey: "ABAnimation") as? CAKeyframeAnimation else {
+    func startOrReloadAnimation() {
+        if let animation = self.layer.animation(forKey: "ABAnimation") as? CAKeyframeAnimation {
+            S1LogDebug("reload animation")
+            pauseAnimation(animation)
+            resumeAnimation(self.animation())
+        } else {
             S1LogDebug("start animation")
             startAnimation(self.animation())
-            return
         }
-        S1LogDebug("reload animation")
-        pauseAnimation(animation)
-        resumeAnimation(self.animation())
     }
 }
 
-// MARK: - Private
-extension AnimationView {
-    fileprivate func animation() -> CAKeyframeAnimation {
+// MARK: Private
+private extension AnimationView {
+    func animation() -> CAKeyframeAnimation {
         let animation = CAKeyframeAnimation(keyPath: "contents")
         animation.duration = 3.0
         animation.values = cgImages
@@ -66,25 +72,26 @@ extension AnimationView {
     }
 }
 
-extension AnimationView {
-    fileprivate func startAnimation(_ animation: CAKeyframeAnimation) {
+private extension AnimationView {
+    func startAnimation(_ animation: CAKeyframeAnimation) {
         layer.add(animation, forKey: "ABAnimation")
         isPlayingAnimation = true
     }
 
-    fileprivate func pauseAnimation(_ animation: CAKeyframeAnimation) {
+    func pauseAnimation(_ animation: CAKeyframeAnimation) {
         beginTime = animation.beginTime
         layer.removeAnimation(forKey: "ABAnimation")
         isPlayingAnimation = false
     }
 
-    fileprivate func resumeAnimation(_ animation: CAKeyframeAnimation) {
+    func resumeAnimation(_ animation: CAKeyframeAnimation) {
         animation.beginTime = beginTime
-        startAnimation(animation)
+        layer.add(animation, forKey: "ABAnimation")
+        isPlayingAnimation = true
     }
 }
 
-// MARK: - override
+// MARK: Override
 
 extension AnimationView {
     override var intrinsicContentSize: CGSize {
@@ -95,16 +102,25 @@ extension AnimationView {
     }
 }
 
+// MARK: -
+
 @objcMembers
 class AnimationButton: UIButton {
     var hightlightAlpha: CGFloat = 0.4
-    fileprivate let image: UIImage
-    fileprivate let animationView: AnimationView = AnimationView(frame: CGRect.zero)
+    private let image: UIImage
+    var animatedImages: [UIImage] {
+        get { return animationView.images }
+        set { animationView.images = newValue }
+    }
+
+    private let animationView = AnimationView(frame: CGRect.zero)
+
     var isPlayingAnimation: Bool {
         return animationView.isPlayingAnimation
     }
 
-    fileprivate var previousHighlighted: Bool = false
+    private var previousHighlighted: Bool = false
+
     override var isHighlighted: Bool {
         didSet {
             if isHighlighted != previousHighlighted {
@@ -114,7 +130,7 @@ class AnimationButton: UIButton {
                     animationView.tintColor = tintColor
                 }
                 if animationView.isPlayingAnimation {
-                    animationView.reloadAnimation()
+                    animationView.startOrReloadAnimation()
                 }
                 previousHighlighted = isHighlighted
             }
@@ -128,15 +144,15 @@ class AnimationButton: UIButton {
             } else {
                 animationView.tintColor = tintColor
             }
-            recover()
+            recoverAnimation()
         }
     }
 
-    init(frame: CGRect, image: UIImage, images: [UIImage]) {
+    init(frame: CGRect, image: UIImage) {
         self.image = image
         super.init(frame: frame)
 
-        animationView.images = images
+        animatedImages = [image]
         setStaticImage(self.image)
 
         addSubview(animationView)
@@ -150,12 +166,12 @@ class AnimationButton: UIButton {
     }
 
     func startAnimation() {
-        animationView.reloadAnimation()
+        animationView.startOrReloadAnimation()
         setStaticImage(nil)
     }
 
     func stopAnimation() {
-        animationView.removeAllAnimations()
+        animationView.stopAnimation()
         setStaticImage(image)
     }
 
@@ -163,7 +179,7 @@ class AnimationButton: UIButton {
      When button is animating and removed from a navigation bar, animation will be stopped.
      Call this method when you decided to show the button again.
      */
-    func recover() {
+    func recoverAnimation() {
         if isPlayingAnimation {
             startAnimation()
         } else {

@@ -69,20 +69,23 @@ extension SettingsViewController {
     }
 
     @objc func setupObservation() {
-        Signal.combineLatest(
-            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitSuspendCountChanged),
-            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitInFlightChangeSetChanged),
-            AppEnvironment.current.cloudkitManager.state.signal
-        ).observeValues { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            strongSelf.updateCloudKitStatus()
+        SignalProducer.combineLatest(
+            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitSuspendCountChanged).producer,
+            NotificationCenter.default.reactive.notifications(forName: Notification.Name.YapDatabaseCloudKitInFlightChangeSetChanged).producer,
+            AppEnvironment.current.cloudkitManager.state.producer
+        )
+            .start(on: UIScheduler())
+            .startWithValues { [weak self] (args) in
+                let (_, _, state) = args
+                guard let strongSelf = self else { return }
+                S1LogDebug("Observed CloudKit manager state changed.")
+                strongSelf.updateCloudKitStatus(state: state)
         }
-
     }
 
-    @objc func updateCloudKitStatus() {
+    func updateCloudKitStatus(state: CloudKitManager1.State) {
         if AppEnvironment.current.settings.enableCloudKitSync.value {
-            switch AppEnvironment.current.cloudkitManager.state.value {
+            switch state {
             case .waitingSetupTriggered:
                 iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Init", comment: "Init")
             case .migrating, .createZone, .createZoneSubscription:

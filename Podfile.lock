@@ -56,9 +56,9 @@ PODS:
   - GRMustache.swift (2.0.0)
   - GYHttpMock (1.0.1)
   - JTSImageViewController (1.5)
-  - KIF (3.7.2):
-    - KIF/Core (= 3.7.2)
-  - KIF/Core (3.7.2)
+  - KIF (3.7.3):
+    - KIF/Core (= 3.7.3)
+  - KIF/Core (3.7.3)
   - KissXML (5.1.2):
     - KissXML/Core (= 5.1.2)
   - KissXML/Core (5.1.2)
@@ -169,7 +169,7 @@ DEPENDENCIES:
   - SnapKit
   - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
-  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `limit-cloudkit-upload`)
+  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
   - YYKeyboardManager
 
 SPEC REPOS:
@@ -212,7 +212,7 @@ EXTERNAL SOURCES:
   SwiftyJSON:
     :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
-    :branch: limit-cloudkit-upload
+    :branch: stage
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
@@ -229,7 +229,7 @@ CHECKOUT OPTIONS:
     :commit: f652507be7d2159fb98adcebf65c6f9b5fa0f5f2
     :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
-    :commit: 552f34a9dd2ac96983703bf32cfa69bc127200d9
+    :commit: be1f0d8c4eaa01aee2b1f86c9b5a1e483b4886e1
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -250,7 +250,7 @@ SPEC CHECKSUMS:
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  KIF: a01333c63303557730ec74dabbc7a661185ced9f
+  KIF: 4c23b5d24dba24d3cb6dbb9c7d325b31e526ba4a
   KissXML: 246c842586bb77110e04fb88e19376d96245c856
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 5cbe91041c00b3ef4cfc405e3fad92b1fb63d6d2
@@ -265,6 +265,6 @@ SPEC CHECKSUMS:
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: fafa98b88cfa574929122263c5eb2f06b685b1d8
+PODFILE CHECKSUM: e81c30b19ea9e507012dc02e1bdf7e7534f96924
 
 COCOAPODS: 1.5.0

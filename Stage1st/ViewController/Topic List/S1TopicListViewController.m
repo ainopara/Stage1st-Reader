@@ -76,7 +76,7 @@
     _loadingMore = NO;
     [self.viewModel cancelRequests];
     [self.navigationItem setRightBarButtonItem:self.historyItem];
-    [self.archiveButton recover];
+    [self.archiveButton recoverAnimation];
     
     NSDate *lastRefreshDateForKey = [self.cachedLastRefreshTime valueForKey:key];
     //DDLogDebug(@"cache: %@, date: %@",self.cachedLastRefreshTime, lastRefreshDateForKey);
@@ -464,9 +464,14 @@
 
 - (AnimationButton *)archiveButton {
     if (!_archiveButton) {
-        _archiveButton = [[AnimationButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44) image:[UIImage imageNamed:@"Archive"] images:[self archiveSyncImages]];
+        _archiveButton = [[AnimationButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)
+                                                          image:[UIImage imageNamed:@"Archive"]];
+
         _archiveButton.tintColor = [[ColorManager shared] colorForKey:@"topiclist.navigationbar.titlelabel"];
-        [_archiveButton addTarget:self action:@selector(archive:) forControlEvents:UIControlEventTouchUpInside];
+
+        [_archiveButton addTarget:self
+                           action:@selector(archive:)
+                 forControlEvents:UIControlEventTouchUpInside];
     }
     return _archiveButton;
 }
@@ -482,7 +487,10 @@
 
 - (UIBarButtonItem *)settingsItem {
     if (!_settingsItem) {
-        _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"] style:UIBarButtonItemStylePlain target:self action:@selector(settings:)];
+        _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Settings"]
+                                                         style:UIBarButtonItemStylePlain
+                                                        target:self
+                                                        action:@selector(settings:)];
     }
     return _settingsItem;
 }

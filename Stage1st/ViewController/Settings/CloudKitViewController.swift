@@ -72,6 +72,11 @@ class CloudKitViewController: QuickTableViewController {
             }
         ))
 
+        tableContents = [
+            iCloudSection
+        ]
+
+        #if DEBUG
         let detailSection = Section(
             title: NSLocalizedString("CloudKitViewController.DetailSection.header", comment: ""),
             rows: []
@@ -112,11 +117,6 @@ class CloudKitViewController: QuickTableViewController {
             }
         ))
 
-        tableContents = [
-            iCloudSection
-        ]
-
-        #if DEBUG
         tableContents.append(detailSection)
         #endif
 

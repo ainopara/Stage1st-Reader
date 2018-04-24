@@ -102,6 +102,8 @@
                                              selector:@selector(didReceiveLoginStatusChangeNotification:)
                                                  name:@"DZLoginStatusDidChangeNotification"
                                                object:nil];
+
+    [self setupObservation];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -112,7 +114,6 @@
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
 
-    [self updateCloudKitStatus];
     [self didReceivePaletteChangeNotification:nil];
 }
 

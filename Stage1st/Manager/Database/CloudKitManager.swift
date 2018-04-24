@@ -134,10 +134,14 @@ class CloudKitManager1: NSObject {
     }
 
     @objc func prepareForUnregister() {
-        databaseConnection.readWrite { (transaction) in
-            transaction.removeObject(forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
-            transaction.removeObject(forKey: Key_hasZone, inCollection: Collection_cloudKit)
-            transaction.removeObject(forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit)
+        queue.async { [weak self] in
+            guard let strongSelf = self else { return }
+
+            strongSelf.databaseConnection.readWrite { (transaction) in
+                transaction.removeObject(forKey: Key_serverChangeToken, inCollection: Collection_cloudKit)
+                transaction.removeObject(forKey: Key_hasZone, inCollection: Collection_cloudKit)
+                transaction.removeObject(forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit)
+            }
         }
     }
 }
@@ -146,6 +150,10 @@ class CloudKitManager1: NSObject {
 
 extension CloudKitManager1 {
     func migrateIfNecessary() {
+        guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            return
+        }
+
         defer { state.value = .createZone }
 
         var oldVersion: Int = 0
@@ -168,6 +176,10 @@ extension CloudKitManager1 {
     }
 
     func createZoneIfNecessary() {
+        guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            return
+        }
+
         var needsCreateZone: Bool = true
         databaseConnection.read { (transaction) in
             if transaction.hasObject(forKey: Key_hasZone, inCollection: Collection_cloudKit) {
@@ -186,6 +198,9 @@ extension CloudKitManager1 {
         let modifyRecordZonesOperation = CKModifyRecordZonesOperation(recordZonesToSave: [recordZone], recordZoneIDsToDelete: nil)
         modifyRecordZonesOperation.modifyRecordZonesCompletionBlock = { [weak self] (savedRecordZones, deletedRecordZoneIDs, operationError) in
             guard let strongSelf = self else { return }
+            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                return
+            }
 
             if let operationError = operationError {
                 strongSelf.state.value = .createZoneError(operationError)
@@ -205,6 +220,10 @@ extension CloudKitManager1 {
     }
 
     func createZoneSubscriptionIfNecessary() {
+        guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            return
+        }
+
         var needsCreateZoneSubscription: Bool = true
         databaseConnection.read { (transaction) in
             if transaction.hasObject(forKey: Key_hasZoneSubscription, inCollection: Collection_cloudKit) {
@@ -226,6 +245,9 @@ extension CloudKitManager1 {
         let modifySubscriptionsOperation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
         modifySubscriptionsOperation.modifySubscriptionsCompletionBlock = { [weak self] (savedSubscriptions, deletedSubscriptionIDs, operationError) in
             guard let strongSelf = self else { return }
+            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                return
+            }
 
             if let operationError = operationError {
                 strongSelf.state.value = .createZoneSubscriptionError(operationError)
@@ -245,6 +267,10 @@ extension CloudKitManager1 {
     }
 
     func fetchRecordChange(completion: @escaping (S1CloudKitFetchResult) -> Void) {
+        guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+            return
+        }
+
         var previousChangeToken: CKServerChangeToken? = nil
 
         databaseConnection.read { (transaction) in
@@ -272,6 +298,11 @@ extension CloudKitManager1 {
         }
 
         fetchOperation.recordZoneChangeTokensUpdatedBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData) in
+            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                if !fetchOperation.isCancelled { fetchOperation.cancel() }
+                return
+            }
+
             S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken update: \(String(describing: serverChangeToken))")
             S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
             guard let strongSelf = self else { return }
@@ -295,6 +326,11 @@ extension CloudKitManager1 {
         }
 
         fetchOperation.recordZoneFetchCompletionBlock = { [weak self] (recordZoneID, serverChangeToken, clientChangeTokenData, moreComing, recordZoneError) in
+            guard AppEnvironment.current.settings.enableCloudKitSync.value else {
+                if !fetchOperation.isCancelled { fetchOperation.cancel() }
+                return
+            }
+
             S1LogDebug("CKFetchRecordChangesOperation: serverChangeToken final: \(String(describing: serverChangeToken))")
             S1LogDebug("deleted: \(deletedRecordIDs.count) changed: \(changedRecords.count)")
 
@@ -657,9 +693,27 @@ private extension YapDatabaseReadWriteTransaction {
         // These are probably from a future version that this version doesn't support.
         for record in records where record.recordType == "topic" {
             let (recordChangeTag, hasPendingModifications, hasPendingDelete) = cloudkitTransaction.getRecordChangeTag(for: record.recordID, databaseIdentifier: nil)
+            let containsRecord = cloudkitTransaction.contains(record.recordID, databaseIdentifier: nil)
 
-            switch (recordChangeTag, hasPendingModifications, hasPendingDelete) {
-            case (.some(let recordChangeTag), _, _):
+            enum RecordStatus {
+                case noRecord
+                case newRecord
+                case managed(tag: String)
+            }
+
+            func isManaged(containsRecord: Bool, changeTag: String?) -> RecordStatus {
+                switch (containsRecord, recordChangeTag) {
+                case (true, .none):
+                    return .newRecord
+                case (true, .some(let tag)):
+                    return .managed(tag: tag)
+                case (false, _):
+                    return .noRecord
+                }
+            }
+
+            switch (isManaged(containsRecord: containsRecord, changeTag: recordChangeTag), hasPendingModifications, hasPendingDelete) {
+            case (.managed(let recordChangeTag), _, _):
                 // We have a record change tag in database
                 // So the record is currently managed by database
                 if recordChangeTag == record.recordChangeTag {
@@ -669,12 +723,18 @@ private extension YapDatabaseReadWriteTransaction {
                     // Other device changed this record, or the record is changed by this device but not the latest change.
                     cloudkitTransaction.merge(record, databaseIdentifier: nil)
                 }
-            case (.none, true, _):
+            case (.newRecord, _, _):
+                // We have managed record in database,
+                // but it is generated by extension registaration (i.e. `populated from database object`) and do not have a change tag.
+
+                cloudkitTransaction.merge(record, databaseIdentifier: nil)
+            case (.noRecord, true, _):
                 // We're not actively managing this record anymore (we deleted/detached it).
                 // But there are still previous modifications that are pending upload to server.
                 // So this merge is required in order to keep everything running properly (no infinite loops).
+
                 cloudkitTransaction.merge(record, databaseIdentifier: nil)
-            case (.none, false, false):
+            case (.noRecord, false, false):
                 // This is a new record for us.
                 // Add it to our database.
                 let topic = S1Topic(record: record)
@@ -693,7 +753,7 @@ private extension YapDatabaseReadWriteTransaction {
                     forKey: key,
                     inCollection: Collection_Topics
                 )
-            case (.none, false, true):
+            case (.noRecord, false, true):
                 // We're going to delete this record, so do not add it.
                 // Nothing to do.
                 break

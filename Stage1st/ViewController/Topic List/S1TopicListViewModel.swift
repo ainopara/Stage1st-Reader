@@ -310,7 +310,7 @@ final class S1TopicListViewModel: NSObject {
         if let result = viewMappings?.numberOfSections() {
             return Int(result)
         } else {
-            return 1
+            return 0
         }
     }
 
@@ -473,12 +473,12 @@ extension S1TopicListViewModel {
 
     private func _handleDatabaseChanged(with notifications: [Notification]) {
         if currentState.value.isArchiveTypes() {
-            guard viewMappings != nil else {
+            if viewMappings == nil {
                 initializeMappings()
-                return
+            } else {
+                updateMappings()
             }
 
-            updateMappings()
             tableViewReloadingObserver.send(value: ())
 
         } else if currentState.value.isForumOrSearch() {
