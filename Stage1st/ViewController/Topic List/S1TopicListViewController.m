@@ -310,15 +310,14 @@
 - (void)updateTabbar:(NSNotification *)notification {
     [self.scrollTabBar setKeys:[self keys]];
     if ([self isPresentingDatabaseList:self.currentKey]) {
-        _cachedContentOffset = nil;
+        [self.cachedContentOffset removeAllObjects];
     } else {
         [self.viewModel reset];
         self.previousKey = @"";
         self.currentKey = @"";
-        _cachedContentOffset = nil;
+        [self.cachedContentOffset removeAllObjects];
         [self.tableView reloadData];
     }
-    
 }
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
