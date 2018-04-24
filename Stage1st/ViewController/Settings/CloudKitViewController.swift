@@ -52,7 +52,9 @@ class CloudKitViewController: QuickTableViewController {
     }
 
     @objc func dataSourceDidChanged() {
-        updateTable()
+        DispatchQueue.main.async {
+            self.updateTable()
+        }
     }
 
     func updateTable() {
