@@ -8,29 +8,18 @@
 #import <Reachability/Reachability.h>
 #import <Crashlytics/Answers.h>
 
-CloudKitManager *MyCloudKitManager;
-
 static NSString *const Key_HasZone             = @"hasZone";
 static NSString *const Key_HasZoneSubscription = @"hasZoneSubscription";
 static NSString *const Key_ServerChangeToken   = @"serverChangeToken";
 static NSString *const Key_CloudKitManagerVersion = @"CloudKitManagerVersion";
 
 NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification = @"S1YDBCK_UnhandledErrorOccurred";
-NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChange";
 
-@interface CloudKitManager : NSObject
+@interface LegacyCloudKitManager : NSObject
 
-@property (nonatomic, assign, readonly) CKManagerState state;
+@property (nonatomic, assign) CKManagerState state;
 
 @property (strong, atomic) NSError *lastCloudkitError;
-
-/**
- * Standard singleton pattern.
- * As a shortcut, you can use the global MyCloudKitManager ivar instead.
- **/
-+ (instancetype)sharedInstance; // Or MyCloudKitManager global ivar
-
-- (void)prepareForUnregister;
 
 /**
  * Invoke me if you get one of the following errors via YapDatabaseCloudKitOperationErrorBlock:
@@ -95,7 +84,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 @end
 
 
-@interface CloudKitManager ()
+@interface LegacyCloudKitManager ()
 
 // Initial setup
 @property (atomic, readwrite) BOOL needsUpgrade;
@@ -113,7 +102,7 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 @end
 
 
-@implementation CloudKitManager
+@implementation LegacyCloudKitManager
 {
 	YapDatabaseConnection *databaseConnection;
 	
@@ -124,18 +113,6 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     NSUInteger currentVersion;
 }
 
-+ (void)initialize
-{
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		MyCloudKitManager = [[CloudKitManager alloc] init];
-	});
-}
-
-+ (instancetype)sharedInstance
-{
-	return MyCloudKitManager;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Instance
@@ -143,8 +120,6 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 
 - (id)init
 {
-	NSAssert(MyCloudKitManager == nil, @"Must use sharedInstance singleton (global MyCloudKitManager)");
-	
 	if ((self = [super init]))
 	{
 		// We could create our own dedicated databaseConnection.
@@ -336,14 +311,6 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
     } else {
         dispatch_async(dispatch_get_main_queue(), block);
     }
-}
-
-- (void)prepareForUnregister {
-    [databaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
-        [transaction removeObjectForKey:Key_ServerChangeToken inCollection:Collection_CloudKit];
-        [transaction removeObjectForKey:Key_HasZone inCollection:Collection_CloudKit];
-        [transaction removeObjectForKey:Key_HasZoneSubscription inCollection:Collection_CloudKit];
-    }];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1033,8 +1000,8 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 }
 
 - (void)handleZoneNotFound {
-    [self prepareForUnregister];
-    
+//    [self prepareForUnregister];
+
     self.needsCreateZone = YES;
     [MyDatabaseManager.cloudKitExtension suspend];
     
@@ -1244,17 +1211,6 @@ NSString *const YapDatabaseCloudKitStateChangeNotification = @"S1YDBCK_StateChan
 - (void)cloudKitRegisterFinish {
     dispatch_resume(fetchQueue);
     dispatch_resume(setupQueue);
-}
-
-#pragma mark State Change
-
-- (void)setState:(CKManagerState)state {
-    if (_state != state) {
-        _state = state;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:YapDatabaseCloudKitStateChangeNotification object:nil];
-        });
-    }
 }
 
 @end

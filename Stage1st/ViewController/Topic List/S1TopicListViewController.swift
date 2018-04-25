@@ -86,12 +86,6 @@ extension S1TopicListViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(S1TopicListViewController.cloudKitStateChanged),
-            name: .YapDatabaseCloudKitStateChange,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(S1TopicListViewController.cloudKitStateChanged),
             name: .UIApplicationWillEnterForeground,
             object: nil
         )

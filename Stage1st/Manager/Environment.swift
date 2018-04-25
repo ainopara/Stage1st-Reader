@@ -20,7 +20,7 @@ class Environment: NSObject {
     let networkManager: S1NetworkManager
     let webKitImageDownloader: WebKitImageDownloader
     let databaseManager: DatabaseManager
-    let cloudkitManager: CloudKitManager1
+    let cloudkitManager: CloudKitManager
     let cacheDatabaseManager: CacheDatabaseManager
 
     let databaseAdapter: S1YapDatabaseAdapter
@@ -36,7 +36,7 @@ class Environment: NSObject {
         networkManager: S1NetworkManager,
         webKitImageDownloader: WebKitImageDownloader,
         databaseManager: DatabaseManager,
-        cloudkitManager: CloudKitManager1,
+        cloudkitManager: CloudKitManager,
         cacheDatabaseManager: CacheDatabaseManager,
         databaseAdapter: S1YapDatabaseAdapter,
         dataCenter: DataCenter
@@ -82,7 +82,7 @@ class Environment: NSObject {
         webKitImageDownloader = WebKitImageDownloader()
 
         databaseManager = DatabaseManager.sharedInstance()
-        cloudkitManager = CloudKitManager1(cloudkitContainer: CKContainer.default(), databaseManager: databaseManager)
+        cloudkitManager = CloudKitManager(cloudkitContainer: CKContainer.default(), databaseManager: databaseManager)
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
 
         dataCenter = DataCenter(

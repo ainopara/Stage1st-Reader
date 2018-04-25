@@ -98,7 +98,7 @@ extension SettingsViewController {
             }
     }
 
-    func updateCloudKitStatus(state: CloudKitManager1.State, enableSync: Bool) {
+    func updateCloudKitStatus(state: CloudKitManager.State, enableSync: Bool) {
         S1LogDebug("Observed CloudKit manager state changed.")
         DispatchQueue.main.async {
             guard enableSync else {
@@ -122,10 +122,10 @@ extension SettingsViewController {
                     self.iCloudSyncCell.detailTextLabel?.text = NSLocalizedString("SettingsViewController.CloudKit.Status.Ready", comment: "Ready")
                 } else {
                     self.iCloudSyncCell.detailTextLabel?.text =
-                        NSLocalizedString("SettingsViewController.CloudKit.Status.Fetch", comment: "Fetch") + "(\(inFlightCount) - \(queuedCount))"
+                        NSLocalizedString("SettingsViewController.CloudKit.Status.Upload", comment: "Upload") + "(\(inFlightCount) - \(queuedCount))"
                 }
 
-            case .createZoneError, .createZoneSubscriptionError, .fetchRecordChangesError, .uploadError:
+            case .createZoneError, .createZoneSubscriptionError, .fetchRecordChangesError, .uploadError, .networkError:
                 let suspendCount = AppEnvironment.current.databaseManager.cloudKitExtension.suspendCount
                 self.iCloudSyncCell.detailTextLabel?.text =
                     NSLocalizedString("SettingsViewController.CloudKit.Status.Recover", comment: "Recover") + "(\(suspendCount))"

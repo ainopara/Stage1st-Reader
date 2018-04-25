@@ -423,7 +423,7 @@ extension S1AppDelegate {
             return
         }
 
-        AppEnvironment.current.cloudkitManager.fetchRecordChange { (fetchResult) in
+        AppEnvironment.current.cloudkitManager.setNeedsFetchChanges { (fetchResult) in
             completionHandler(fetchResult.toUIBackgroundFetchResult())
         }
     }

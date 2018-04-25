@@ -1,16 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class CloudKitManager;
-
-/**
- * You can use this as an alternative to the sharedInstance:
- * [[CloudKitManager sharedInstance] foobar] -> MyCloudKitManager.foobar
-**/
-extern CloudKitManager *MyCloudKitManager;
-
 extern NSString *const YapDatabaseCloudKitUnhandledErrorOccurredNotification;
-extern NSString *const YapDatabaseCloudKitStateChangeNotification;
 
 typedef enum : NSUInteger {
     CKManagerStateInit, // extension registering
