@@ -35,28 +35,40 @@ public final class User: NSObject {
 
     public init?(json: JSON) {
         let space = json["Variables"]["space"]
-        guard let IDString = space["uid"].string,
+
+        guard
+            let IDString = space["uid"].string,
             let ID = Int(IDString),
-            let name = space["username"].string else {
+            let name = space["username"].string
+        else {
             return nil
         }
 
         self.ID = ID
         self.name = name
         customStatus = space["customstatus"].string
-        if let sigHTML = space["sightml"].string, sigHTML != "" {
+
+        if
+            let sigHTML = space["sightml"].string,
+            sigHTML != ""
+        {
             self.sigHTML = sigHTML
         }
 
         lastVisitDateString = space["lastvisit"].string
         registerDateString = space["regdate"].string
 
-        if let threadCountString = space["threads"].string,
-            let threadCount = Int(threadCountString) {
+        if
+            let threadCountString = space["threads"].string,
+            let threadCount = Int(threadCountString)
+        {
             self.threadCount = threadCount
         }
-        if let postCountString = space["posts"].string,
-            let postCount = Int(postCountString) {
+
+        if
+            let postCountString = space["posts"].string,
+            let postCount = Int(postCountString)
+        {
             self.postCount = postCount
         }
     }

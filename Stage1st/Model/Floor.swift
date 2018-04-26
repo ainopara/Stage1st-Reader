@@ -37,11 +37,13 @@ public final class Floor: NSObject, NSCoding {
     }
 
     init?(json: JSON) {
-        guard let IDString = json["pid"].string,
+        guard
+            let IDString = json["pid"].string,
             let ID = Int(IDString),
             let authorIDString = json["authorid"].string,
             let authorID = Int(authorIDString),
-            let authorName = json["author"].string else {
+            let authorName = json["author"].string
+        else {
             return nil
         }
 
@@ -55,9 +57,12 @@ public final class Floor: NSObject, NSCoding {
     public required init?(coder aDecoder: NSCoder) {
         let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
         let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int ?? aDecoder.decodeInteger(forKey: kAuthorID)
-        guard ID != 0,
+
+        guard
+            ID != 0,
             authorID != 0,
-            let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String else {
+            let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String
+        else {
             return nil
         }
 
@@ -88,11 +93,13 @@ public final class Floor: NSObject, NSCoding {
 
 extension Floor {
     var firstQuoteReplyFloorID: Int? {
-        guard let content = self.content,
+        guard
+            let content = self.content,
             let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
             let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),
             let floorIDString = resultDict["pid"],
-            let floorID = Int(floorIDString) else {
+            let floorID = Int(floorIDString)
+        else {
             return nil
         }
 
