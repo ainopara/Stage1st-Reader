@@ -15,16 +15,13 @@ import AlamofireImage
 
 /// Extend this class and add your user defaults keys as static constants
 /// so you can use the shortcut dot notation (e.g. `Defaults[.yourKey]`)
-
 public class DefaultsKeys {
     fileprivate init() {}
 }
 
 /// Base class for static user defaults keys. Specialize with value type
 /// and pass key name to the initializer to create a key.
-
-public class DefaultsKey<ValueType>: DefaultsKeys {
-    // TODO: Can we use protocols to ensure ValueType is a compatible type?
+public class DefaultsKey<ValueType: DefaultsCompatible>: DefaultsKeys {
     public let keyString: String
 
     public init(_ key: String) {
@@ -33,8 +30,58 @@ public class DefaultsKey<ValueType>: DefaultsKeys {
     }
 }
 
+public protocol DefaultsCompatible {}
+extension String: DefaultsCompatible {}
+extension Int: DefaultsCompatible {}
+extension Double: DefaultsCompatible {}
+extension Bool: DefaultsCompatible {}
+extension Array: DefaultsCompatible where Element: DefaultsCompatible {}
+extension Dictionary: DefaultsCompatible where Key == String, Value: DefaultsCompatible {}
+extension Data: DefaultsCompatible {}
+extension Date: DefaultsCompatible {}
+extension URL: DefaultsCompatible {}
+
+extension UserDefaults {
+    public subscript<T: DefaultsCompatible>(key: DefaultsKey<T>) -> T? {
+        get { return self[key.keyString].flatMap({ $0 as? T }) }
+        set { self[key.keyString] = newValue }
+    }
+
+    private subscript(key: String) -> Any? {
+        get { return object(forKey: key) }
+        set {
+            guard let newValue = newValue else {
+                removeObject(forKey: key)
+                return
+            }
+
+            switch newValue {
+            // This should always be on top of Int because a cast
+            // from Double to Int will always succeed.
+            case let value as Double:
+                self.set(value, forKey: key)
+            case let value as Int:
+                self.set(value, forKey: key)
+            case let value as Bool:
+                self.set(value, forKey: key)
+            case let value as URL:
+                self.set(value, forKey: key)
+            default:
+                self.set(newValue, forKey: key)
+            }
+        }
+    }
+}
+
+extension MutableProperty where Value: Equatable {
+    func setValueIfDifferent(_ newValue: Value) {
+        if self.value != newValue { self.value = newValue }
+    }
+}
+
+// MARK: -
+
 extension DefaultsKeys {
-    static let cachedUsername = DefaultsKey<String>("UserIDCached")
     static let currentUsername = DefaultsKey<String>("InLoginStateID")
 
     static let forumOrder = DefaultsKey<[[String]]>("Order")
@@ -54,11 +101,12 @@ extension DefaultsKeys {
 
 class Settings: NSObject {
     let defaults: UserDefaults
+    private var observingKeyPaths: [String: ((Any) -> Void)] = [:]
+    private var disposables: [Disposable?] = []
 
     // Note: Initial value of MutablePropery will be overwrited by value in UserDefaults while binding.
 
     // Login
-    let cachedUsername: MutableProperty<String?> = MutableProperty(nil)
     let currentUsername: MutableProperty<String?> = MutableProperty(nil)
 
     // Settings
@@ -78,9 +126,6 @@ class Settings: NSObject {
     // Cleaning
     let previousWebKitCacheCleaningDate: MutableProperty<Date?> = MutableProperty(nil)
 
-    private var observingKeyPaths: [String: (Any, Any)] = [:]
-    private var disposables: [Disposable?] = []
-
     // MARK: -
 
     init(defaults: UserDefaults = UserDefaults.standard) {
@@ -88,7 +133,6 @@ class Settings: NSObject {
         super.init()
 
         // Login
-        bind(propertyKeyPath: \.cachedUsername, to: .cachedUsername)
         bind(propertyKeyPath: \.currentUsername, to: .currentUsername)
 
         // Settings
@@ -109,9 +153,6 @@ class Settings: NSObject {
         bind(propertyKeyPath: \.previousWebKitCacheCleaningDate, to: .previousWebKitCacheCleaningDate)
 
         // Debug
-        cachedUsername.producer.startWithValues { (value) in
-            S1LogDebug("Settings: cachedUsername -> \(String(describing: value))")
-        }
         currentUsername.producer.startWithValues { (value) in
             S1LogDebug("Settings: currentUsername -> \(String(describing: value))")
         }
@@ -176,9 +217,7 @@ class Settings: NSObject {
         // Binding changes in property -> UserDefaults
         let disposable = property.skipRepeats().signal.observeValues { [weak self] (value) in
             guard let strongSelf = self else { return }
-            S1LogVerbose("property changed to \(value) while defaults value is \(String(describing: strongSelf.defaults[key]))")
             guard strongSelf.defaults[key] != value else { return }
-            S1LogVerbose("defaults value will be changed.")
             strongSelf.defaults[key] = value
         }
         disposables.append(disposable)
@@ -187,7 +226,16 @@ class Settings: NSObject {
         let keyPath = "\(key.keyString)"
         S1LogDebug("Register KVO keypath: \(keyPath)")
         defaults.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
-        observingKeyPaths[keyPath] = (propertyKeyPath, defaultValue)
+        observingKeyPaths[keyPath] = { (newValue) in
+            if newValue is NSNull {
+                property.setValueIfDifferent(defaultValue)
+            } else if let newValue = newValue as? T {
+                property.setValueIfDifferent(newValue)
+            } else {
+                S1LogError("Expect newValue \(newValue) has Type \(T.self) or NSNull but got \(type(of: newValue))")
+                property.setValueIfDifferent(defaultValue)
+            }
+        }
     }
 
     func bind<T>(
@@ -214,132 +262,32 @@ class Settings: NSObject {
         let keyPath = "\(key.keyString)"
         S1LogDebug("Register KVO keypath: \(keyPath)")
         defaults.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
-        observingKeyPaths[keyPath] = (propertyKeyPath, NSNull())
+        observingKeyPaths[keyPath] = { (newValue) in
+            if newValue is NSNull {
+                property.setValueIfDifferent(.none)
+            } else if let newValue = newValue as? T {
+                property.setValueIfDifferent(.some(newValue))
+            } else {
+                S1LogError("Expect newValue \(newValue) has Type \(T.self) or NSNull but got \(type(of: newValue))")
+                property.setValueIfDifferent(.none)
+            }
+        }
     }
 
-    // swiftlint:disable block_based_kvo cyclomatic_complexity
+    // swiftlint:disable block_based_kvo
     @objc override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath = keyPath else {
-            fatalError()
+            fatalError("keyPath should not be nil.")
         }
 
         guard let newValue = change?[.newKey] else {
-            fatalError()
+            fatalError("changes[.newKey] should not be nil.")
         }
 
-        guard let (propertyKeyPath, defaultValue) = observingKeyPaths[keyPath] else {
-            fatalError()
+        guard let callback = observingKeyPaths[keyPath] else {
+            fatalError("observingKeyPaths should have information about \(keyPath)")
         }
 
-        switch propertyKeyPath {
-        case let boolPropertyKeyPath as KeyPath<Settings, MutableProperty<Bool>>:
-            if newValue is NSNull {
-                self[keyPath: boolPropertyKeyPath].setValueIfDifferent(defaultValue as! Bool)
-                return
-            }
-
-            guard let newBoolValue = newValue as? Bool else {
-                fatalError()
-            }
-
-            self[keyPath: boolPropertyKeyPath].setValueIfDifferent(newBoolValue)
-
-        case let intPropertyKeyPath as KeyPath<Settings, MutableProperty<Int>>:
-            if newValue is NSNull {
-                self[keyPath: intPropertyKeyPath].setValueIfDifferent(defaultValue as! Int)
-                return
-            }
-
-            guard let newIntValue = newValue as? Int else {
-                fatalError()
-            }
-
-            self[keyPath: intPropertyKeyPath].setValueIfDifferent(newIntValue)
-
-        case let arrayPropertyKeyPath as KeyPath<Settings, MutableProperty<[[String]]>>:
-            if newValue is NSNull {
-                self[keyPath: arrayPropertyKeyPath].setValueIfDifferent(defaultValue as! [[String]])
-                return
-            }
-
-            guard let newArrayValue = newValue as? [[String]] else {
-                fatalError()
-            }
-
-            self[keyPath: arrayPropertyKeyPath].setValueIfDifferent(newArrayValue)
-
-        case let optionalStringPropertyKeyPath as KeyPath<Settings, MutableProperty<String?>>:
-            if newValue is NSNull {
-                self[keyPath: optionalStringPropertyKeyPath].setValueIfDifferent(nil)
-                return
-            }
-
-            guard let newStringValue = newValue as? String else {
-                fatalError()
-            }
-
-            self[keyPath: optionalStringPropertyKeyPath].setValueIfDifferent(newStringValue)
-
-        case let optionalDatePropertyKeyPath as KeyPath<Settings, MutableProperty<Date?>>:
-            if newValue is NSNull {
-                self[keyPath: optionalDatePropertyKeyPath].setValueIfDifferent(nil)
-                return
-            }
-
-            guard let newDateValue = newValue as? Date else {
-                fatalError()
-            }
-
-            self[keyPath: optionalDatePropertyKeyPath].setValueIfDifferent(newDateValue)
-
-        default:
-            fatalError()
-        }
-    }
-}
-
-protocol DefaultsCompatible {}
-extension String: DefaultsCompatible {}
-extension Int: DefaultsCompatible {}
-extension Double: DefaultsCompatible {}
-extension Bool: DefaultsCompatible {}
-extension Array: DefaultsCompatible where Element: DefaultsCompatible {}
-extension Dictionary: DefaultsCompatible where Key == String, Value: DefaultsCompatible {}
-extension Data: DefaultsCompatible {}
-extension Date: DefaultsCompatible {}
-extension URL: DefaultsCompatible {}
-
-extension UserDefaults {
-    public subscript(key: String) -> Any? {
-        get { return object(forKey: key) }
-        set {
-            guard let newValue = newValue else {
-                removeObject(forKey: key)
-                return
-            }
-
-            switch newValue {
-                // @warning This should always be on top of Int because a cast
-            // from Double to Int will always succeed.
-            case let v as Double: self.set(v, forKey: key)
-            case let v as Int: self.set(v, forKey: key)
-            case let v as Bool: self.set(v, forKey: key)
-            case let v as URL: self.set(v, forKey: key)
-            default: self.set(newValue, forKey: key)
-            }
-        }
-    }
-
-    public subscript<T: DefaultsCompatible>(key: DefaultsKey<T>) -> T? {
-        get { return self[key.keyString].flatMap({ $0 as? T }) }
-        set { self[key.keyString] = newValue }
-    }
-}
-
-extension MutableProperty where Value: Equatable {
-    func setValueIfDifferent(_ newValue: Value) {
-        if self.value != newValue {
-            self.value = newValue
-        }
+        callback(newValue)
     }
 }
