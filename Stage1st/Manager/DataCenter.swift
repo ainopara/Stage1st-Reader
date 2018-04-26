@@ -74,7 +74,7 @@ extension DataCenter {
         if let loginUsername = username, loginUsername != "" {
             AppEnvironment.current.settings.currentUsername.value = loginUsername
         } else {
-            UserDefaults.standard.removeObject(forKey: "InLoginStateID")
+            AppEnvironment.current.settings.currentUsername.value = nil
         }
     }
 
@@ -150,7 +150,7 @@ extension DataCenter {
 
         var processedTopics = topics
 
-        if UserDefaults.standard.bool(forKey: Constants.defaults.hideStickTopicsKey) == true {
+        if AppEnvironment.current.settings.hideStickTopics.value == true {
             processedTopics = removeStickTopics(processedTopics)
         }
 
@@ -379,8 +379,9 @@ extension DataCenter {
     }
 
     private func cleanWebKitCache() {
-        guard let previousCleaningDate = UserDefaults.standard.object(forKey: Constants.defaults.previousWebKitCacheCleaningDateKey) as? Date else {
-            UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
+        let settings = AppEnvironment.current.settings
+        guard let previousCleaningDate = settings.previousWebKitCacheCleaningDate.value else {
+            settings.previousWebKitCacheCleaningDate.value = Date()
             return
         }
 
@@ -394,7 +395,7 @@ extension DataCenter {
 
         WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date.distantPast) {
             S1LogInfo("WebKit disk cache cleaned.")
-            UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
+            settings.previousWebKitCacheCleaningDate.value = Date()
         }
     }
 }

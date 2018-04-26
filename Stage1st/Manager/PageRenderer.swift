@@ -246,7 +246,8 @@ extension PageRenderer {
 
                 guard
                     let data = HTMLString.data(using: .utf8),
-                    let xmlDocument = try? DDXMLDocument(data: data, options: 0) else {
+                    let xmlDocument = try? DDXMLDocument(data: data, options: 0)
+                else {
                     S1LogWarn("[PageRenderer] failed to parse floor \(floorID)")
                     return HTMLString
                 }
@@ -257,9 +258,12 @@ extension PageRenderer {
                     processIndents
                 ]
 
-                let processedDocument = processes.reduce(xmlDocument) { $1($0) }
+                let processedDocument = processes.reduce(xmlDocument) { (data, process) in process(data) }
                 let processedString = processedDocument.xmlString(withOptions: UInt(DDXMLNodePrettyPrint)) as NSString
-                let cuttedString = processedString.substring(with: NSRange(location: 183, length: processedString.length - 183 - 17))
+                let cuttedString = processedString.substring(with: NSRange(
+                    location: 183,
+                    length: processedString.length - 183 - 17
+                ))
 
                 if cuttedString.count > 0 {
                     return cuttedString.replacingOccurrences(of: "<br></br>", with: "<br />")
@@ -273,9 +277,14 @@ extension PageRenderer {
                 S1LogWarn("[PageRenderer] nil content in floor \(floor.ID)")
                 return ""
             }
-            let firstProcessedContent = process(HTMLString: content, with: floor.ID)
-            let secondProcessedContent = UserDefaults.standard.bool(forKey: "RemoveTails") ? stripTails(content: firstProcessedContent) : firstProcessedContent
-            return secondProcessedContent
+
+            var processedContent = process(HTMLString: content, with: floor.ID)
+
+            if AppEnvironment.current.settings.removeTails.value {
+                processedContent = stripTails(content: processedContent)
+            }
+
+            return processedContent
         }
 
         func processAuthor(floor: Floor) -> String {

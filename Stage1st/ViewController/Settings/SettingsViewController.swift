@@ -49,7 +49,7 @@ extension SettingsViewController {
 
         WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes, modifiedSince: Date.distantPast) {
             S1LogInfo("WebKit disk cache cleaned.")
-            UserDefaults.standard.set(Date(), forKey: Constants.defaults.previousWebKitCacheCleaningDateKey)
+            AppEnvironment.current.settings.previousWebKitCacheCleaningDate.value = Date()
         }
     }
 

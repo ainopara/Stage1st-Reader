@@ -201,6 +201,10 @@ class Settings: NSObject {
         }
     }
 
+    func removeValue<T>(for key: DefaultsKey<T>) {
+        defaults.removeObject(forKey: key.keyString)
+    }
+
     func bind<T>(
         propertyKeyPath: KeyPath<Settings, MutableProperty<T>>,
         to key: DefaultsKey<T>,

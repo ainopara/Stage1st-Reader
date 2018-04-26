@@ -187,7 +187,7 @@ public extension DiscuzClient {
             }
         }
 
-        UserDefaults.standard.removeObject(forKey: "InLoginStateID") // TODO: move this to finish block.
+        AppEnvironment.current.settings.removeValue(for: .currentUsername) // TODO: move this to finish block.
         NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
         completionHandler()
     }

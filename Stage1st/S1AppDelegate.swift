@@ -15,28 +15,6 @@ import Fabric
 import Crashlytics
 import Reachability
 
-// swiftlint:disable type_name
-struct Constants {
-    struct defaults {
-        static let displayImageKey = "Display"
-        static let removeTailsKey = "RemoveTails"
-        static let precacheNextPageKey = "PrecacheNextPage"
-        static let forcePortraitForPhoneKey = "ForcePortraitForPhone"
-        static let nightModeKey = "NightMode"
-        static let enableCloudKitSyncKey = "EnableSync"
-
-        static let reverseActionKey = "Stage1st_Content_ReverseFloorAction"
-        static let hideStickTopicsKey = "Stage1st_TopicList_HideStickTopics"
-
-        static let historyLimitKey = "HistoryLimit"
-        static let previousWebKitCacheCleaningDateKey = "PreviousWebKitCacheCleaningDate"
-    }
-}
-
-// swiftlint:enable type_name
-
-// MARK: -
-
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
@@ -57,7 +35,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         // NSCoding Mapping
         NSKeyedUnarchiver.setClass(Floor.self, forClassName: "S1Floor")
 
-        // UserDefaults
+        // UserDefaults Initialize
         let userDefaults = AppEnvironment.current.settings.defaults
 
         if userDefaults.value(forKey: "Order") == nil {
@@ -66,7 +44,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults.set(orderArray, forKey: "Order")
         }
 
-        if UI_USER_INTERFACE_IDIOM() == .pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             userDefaults.s1_setObjectIfNotExist(object: "18px", key: "FontSize")
         } else {
             userDefaults.s1_setObjectIfNotExist(object: "17px", key: "FontSize")
@@ -78,14 +56,11 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Start database & cloudKit (in order)
         DatabaseManager.initialize()
-        if AppEnvironment.current.settings.enableCloudKitSync.value {
-            AppEnvironment.current.cloudkitManager.setup()
-//            CloudKitManager.initialize()
-        }
 
         migrate()
 
         if AppEnvironment.current.settings.enableCloudKitSync.value {
+            AppEnvironment.current.cloudkitManager.setup()
             application.registerForRemoteNotifications()
         }
 
@@ -402,7 +377,7 @@ extension S1AppDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         S1LogDebug("[APNS] Push received: \(userInfo)", category: .cloudkit)
-        if !UserDefaults.standard.bool(forKey: "EnableSync") {
+        if !AppEnvironment.current.settings.enableCloudKitSync.value {
             DDLogWarn("[APNS] push notification received when user do not enable sync feature.")
             completionHandler(.noData)
             return

@@ -41,7 +41,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
 
         reverseFloorSection.rows.append(SwitchRow(
             title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
-            switchValue: UserDefaults.standard.bool(forKey: Constants.defaults.reverseActionKey),
+            switchValue: settings.reverseAction.value,
             action: { row in settings.reverseAction.value = (row as! SwitchRow).switchValue }
         ))
 
@@ -64,8 +64,9 @@ final class AdvancedSettingsViewController: QuickTableViewController {
     }
 
     private func resetDefaultSettings(_: Row) {
-        UserDefaults.standard.removeObject(forKey: Constants.defaults.reverseActionKey)
-        UserDefaults.standard.removeObject(forKey: Constants.defaults.hideStickTopicsKey)
+        let settings = AppEnvironment.current.settings
+        settings.removeValue(for: .reverseAction)
+        settings.removeValue(for: .hideStickTopics)
         updateTable()
     }
 }

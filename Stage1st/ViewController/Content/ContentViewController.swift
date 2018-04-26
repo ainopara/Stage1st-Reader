@@ -617,6 +617,8 @@ extension S1ContentViewController {
             return
         }
 
+        let settings = AppEnvironment.current.settings
+
         let replyFloorBlock = { [weak self] in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
@@ -629,7 +631,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard AppEnvironment.current.settings.currentUsername.value != nil else {
+            guard settings.currentUsername.value != nil else {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
@@ -648,7 +650,7 @@ extension S1ContentViewController {
             strongSelf._presentReplyView(toFloor: floor)
         }
 
-        if UserDefaults.standard.bool(forKey: Constants.defaults.reverseActionKey) {
+        if settings.reverseAction.value {
             replyFloorBlock()
             return
         }
@@ -1226,7 +1228,7 @@ extension S1ContentViewController {
                 strongSelf.webView.loadHTMLString(contents, baseURL: strongSelf.viewModel.pageBaseURL())
 
                 // Prepare next page
-                if (!strongSelf.viewModel.isInLastPage()) && UserDefaults.standard.bool(forKey: "PrecacheNextPage") {
+                if (!strongSelf.viewModel.isInLastPage()) && AppEnvironment.current.settings.precacheNextPage.value {
                     strongSelf.viewModel.dataCenter.precacheFloors(for: strongSelf.viewModel.topic, with: Int(strongSelf.viewModel.currentPage.value) + 1, shouldUpdate: false)
                 }
 
