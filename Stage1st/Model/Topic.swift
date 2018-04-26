@@ -12,15 +12,17 @@ import SwiftyJSON
 
 extension S1Topic {
 
-    convenience init?(json: JSON, fieldID: UInt?) {
+    convenience init?(json: JSON, fieldID: Int?) {
         guard let topicID = json["tid"].string.flatMap({ Int($0) }) else {
             return nil
         }
 
         self.init(topicID: topicID as NSNumber)
 
-        if let title = json["subject"].string.flatMap({ $0 as NSString }),
-            let unescapedTitle = title.gtm_stringByUnescapingFromHTML() {
+        if
+            let title = json["subject"].string.flatMap({ $0 as NSString }),
+            let unescapedTitle = title.gtm_stringByUnescapingFromHTML()
+        {
             self.title = unescapedTitle
         }
 
@@ -29,11 +31,11 @@ extension S1Topic {
         }
 
         if let fieldID = fieldID {
-            fID = fieldID as NSNumber
+            fID = NSNumber(value: fieldID)
         }
 
         if let authorUserID = json["authorid"].string.flatMap({ Int($0) }) {
-            self.authorUserID = authorUserID as NSNumber
+            self.authorUserID = NSNumber(value: authorUserID)
         }
 
         if let authorUserName = json["author"].string {

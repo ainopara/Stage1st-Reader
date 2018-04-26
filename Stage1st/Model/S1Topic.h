@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithTopicID:(NSNumber *)topicID;
 - (instancetype)initWithRecord:(CKRecord *)record;
 
-// Update
+// Used to resolve merge conflict
 - (void)absorbTopic:(S1Topic *)topic;
 
 @end

@@ -10,24 +10,26 @@ import Foundation
 import SwiftyJSON
 
 public struct Field {
-    let ID: UInt
+    let ID: Int
     let name: String
-    let threadCounts: UInt
-    let postCounts: UInt
+    let threadCount: Int
+    let postCount: Int
     let rules: String?
 
     init?(json: JSON) {
-        guard let ID = json["forum"]["fid"].string.flatMap({ UInt($0) }),
+        guard
+            let ID = json["forum"]["fid"].string.flatMap({ Int($0) }),
             let name = json["forum"]["name"].string,
-            let threadCounts = json["forum"]["threads"].string.flatMap({ UInt($0) }),
-            let postCounts = json["forum"]["posts"].string.flatMap({ UInt($0) }) else {
+            let threadCount = json["forum"]["threads"].string.flatMap({ Int($0) }),
+            let postCount = json["forum"]["posts"].string.flatMap({ Int($0) })
+        else {
             return nil
         }
 
         self.ID = ID
         self.name = name
-        self.threadCounts = threadCounts
-        self.postCounts = postCounts
+        self.threadCount = threadCount
+        self.postCount = postCount
         self.rules = json["forum"]["rules"].string
     }
 }
