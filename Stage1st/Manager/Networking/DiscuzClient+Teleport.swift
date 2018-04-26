@@ -143,7 +143,7 @@ public extension DiscuzClient {
             switch response.result {
             case let .success(json):
                 if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
-                    UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                    AppEnvironment.current.settings.currentUsername.value = username
                     NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
                     completion(.success(json["Message"]["messagestr"].string))
                 } else {
@@ -180,26 +180,20 @@ public extension DiscuzClient {
     }
 
     func logOut(_ completionHandler: () -> Void = {}) {
-        func clearCookies() {
-            let cookieStorage = HTTPCookieStorage.shared
-            if let cookies = cookieStorage.cookies {
-                for cookie in cookies {
-                    cookieStorage.deleteCookie(cookie)
-                }
+        let cookieStorage = AppEnvironment.current.cookieStorage
+        if let cookies = cookieStorage.cookies {
+            for cookie in cookies {
+                cookieStorage.deleteCookie(cookie)
             }
         }
-        clearCookies() // TODO: only delete cookies about this account.
+
         UserDefaults.standard.removeObject(forKey: "InLoginStateID") // TODO: move this to finish block.
         NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
         completionHandler()
     }
 
     func isInLogin() -> Bool { // TODO: check cookies rather than a global state.
-        if UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil {
-            return true
-        } else {
-            return false
-        }
+        return AppEnvironment.current.settings.currentUsername.value != nil
     }
 }
 

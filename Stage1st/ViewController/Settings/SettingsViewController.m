@@ -15,29 +15,6 @@
 #import <AcknowList/AcknowList-Swift.h>
 @import CrashlyticsLogger;
 
-@interface SettingsViewController ()<UITableViewDelegate>
-
-@property (weak, nonatomic) IBOutlet UILabel *usernameDetail;
-@property (weak, nonatomic) IBOutlet UILabel *fontSizeDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *displayImageSwitch;
-@property (weak, nonatomic) IBOutlet UILabel *keepHistoryDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *removeTailsSwitch;
-@property (weak, nonatomic) IBOutlet UILabel *versionDetail;
-@property (weak, nonatomic) IBOutlet UISwitch *precacheSwitch;
-@property (weak, nonatomic) IBOutlet UISwitch *nightModeSwitch;
-@property (weak, nonatomic) IBOutlet UISwitch *forcePortraitSwitch;
-
-@property (weak, nonatomic) IBOutlet UITableViewCell *forumOrderCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *fontSizeCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *keepHistoryCell;
-
-@property (weak, nonatomic) IBOutlet UITableViewCell *forcePortraitCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *imageCacheCell;
-
-@property (assign, nonatomic) CGFloat offset;
-
-@end
-
 @implementation SettingsViewController
 
 #pragma mark - Life Cycle
@@ -55,16 +32,12 @@
 
     self.forumOrderCell.textLabel.text = NSLocalizedString(@"SettingsViewController.Forum_Order_Custom", @"Forum Order");
 
-    self.displayImageSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"Display"];
-    self.forcePortraitSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForcePortraitForPhone"];
+    [self setupInitialValue];
+
     if (IS_IPAD) {
         self.forcePortraitCell.hidden = YES;
     }
-    
-    self.removeTailsSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveTails"];
-    self.precacheSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"PrecacheNextPage"];
-    self.nightModeSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"NightMode"];
-    
+        
     self.versionDetail.text = [self applicationVersion];
 
     self.navigationItem.title = NSLocalizedString(@"SettingsViewController.NavigationBar_Title", @"Settings");

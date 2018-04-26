@@ -76,10 +76,10 @@
 
 "AdvancedSettingsViewController.HideStickTopicsRow.header" = "Topic List";
 "AdvancedSettingsViewController.HideStickTopicsRow.title" = "Hide Stick Topics";
-"AdvancedSettingsViewController.HideStickTopicsRow.footer" = "Hide topics that is pinned to top in forum.";
+"AdvancedSettingsViewController.HideStickTopicsRow.footer" = "Hide topics which is pinning to the top of forum.";
 "AdvancedSettingsViewController.ReverseFloorActionRow.header" = "Topic Content";
 "AdvancedSettingsViewController.ReverseFloorActionRow.title" = "Floor Action to Reply";
-"AdvancedSettingsViewController.ReverseFloorActionRow.footer" = "Click the three dot button to reply the floor. This option will stop you get access to other actions to a floor.";
+"AdvancedSettingsViewController.ReverseFloorActionRow.footer" = "Click the three dot button to directly reply the floor. This option will prevent you from getting access to other actions to a floor.";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "Reset";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "Reset to Default Settings";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "Reset settings in advanced settings to default.";

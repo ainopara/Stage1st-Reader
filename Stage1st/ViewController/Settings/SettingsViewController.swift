@@ -98,6 +98,15 @@ extension SettingsViewController {
             }
     }
 
+    @objc func setupInitialValue() {
+        let settings = AppEnvironment.current.settings
+        self.displayImageSwitch.isOn = settings.displayImage.value
+        self.forcePortraitSwitch.isOn = settings.forcePortraitForPhone.value
+        self.removeTailsSwitch.isOn = settings.removeTails.value
+        self.precacheSwitch.isOn = settings.precacheNextPage.value
+        self.nightModeSwitch.isOn = settings.nightMode.value
+    }
+
     func updateCloudKitStatus(state: CloudKitManager.State, enableSync: Bool) {
         S1LogDebug("Observed CloudKit manager state changed.")
         DispatchQueue.main.async {

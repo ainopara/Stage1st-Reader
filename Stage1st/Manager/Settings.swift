@@ -46,8 +46,8 @@ extension DefaultsKeys {
     static let enableCloudKitSync = DefaultsKey<Bool>("EnableSync")
     static let historyLimit = DefaultsKey<Int>("HistoryLimit")
 
-    static let reverseAction = DefaultsKey<Bool>("Stage1st.Content.ReverseFloorAction")
-    static let hideStickTopics = DefaultsKey<Bool>("Stage1st.TopicList.HideStickTopics")
+    static let reverseAction = DefaultsKey<Bool>("Stage1st_Content_ReverseFloorAction")
+    static let hideStickTopics = DefaultsKey<Bool>("Stage1st_TopicList_HideStickTopics")
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
 }

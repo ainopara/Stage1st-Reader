@@ -519,12 +519,13 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+            guard AppEnvironment.current.settings.currentUsername.value != nil else {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                     "type": "ReplyTopic",
                     "source": "Content",
                     "result": "Failed",
-                    ])
+                ])
+
                 let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
                 return
@@ -534,7 +535,8 @@ extension S1ContentViewController {
                 "type": "ReplyTopic",
                 "source": "Content",
                 "result": "Succeeded",
-                ])
+            ])
+
             strongSelf._presentReplyView(toFloor: nil)
         }))
 
@@ -627,7 +629,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+            guard AppEnvironment.current.settings.currentUsername.value != nil else {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
@@ -669,7 +671,7 @@ extension S1ContentViewController {
                 return
             }
 
-            guard UserDefaults.standard.object(forKey: "InLoginStateID") as? String != nil else {
+            guard AppEnvironment.current.settings.currentUsername.value != nil else {
                 Answers.logCustomEvent(withName: "Click Report", customAttributes: [
                     "source": "Content",
                     "result": "Failed",

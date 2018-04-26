@@ -274,7 +274,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 
         userInfoInputView.usernameField.delegate = self
         userInfoInputView.usernameField.placeholder = NSLocalizedString("LoginViewController.usernameField.placeholder", comment: "")
-        userInfoInputView.usernameField.text = cachedUserID() ?? ""
+        userInfoInputView.usernameField.text = ""
         userInfoInputView.passwordField.delegate = self
         userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
@@ -477,11 +477,12 @@ extension LoginViewController {
     fileprivate func loginAction() {
         let username = currentUsername()
         let password = currentPassword()
+
         guard username != "" && password != "" else {
             alert(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: "用户名和密码不能为空")
             return
         }
-        UserDefaults.standard.set(username, forKey: "UserIDCached")
+
         let secureQuestionNumber = currentSecureQuestionNumber()
         let secureQuestionAnswer = currentSecureQuestionAnswer()
 
@@ -493,7 +494,7 @@ extension LoginViewController {
                 switch result {
                 case let .success(message):
                     strongSelf.userInfoInputView.loginButton.isEnabled = true
-                    UserDefaults.standard.set(username, forKey: "InLoginStateID")
+                    AppEnvironment.current.settings.currentUsername.value = username
                     strongSelf.state = .login
                     let alertController = UIAlertController(title: NSLocalizedString("SettingsViewController.LogIn", comment: ""), message: message ?? "登录成功", preferredStyle: .alert)
                     alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: { _ in
@@ -532,7 +533,10 @@ extension LoginViewController {
     fileprivate func logoutAction() {
         networkManager.logOut()
         state = .notLogin
-        alert(title: NSLocalizedString("SettingsViewController.LogOut", comment: ""), message: NSLocalizedString("LoginViewController.Logout_Message", comment: ""))
+        alert(
+            title: NSLocalizedString("SettingsViewController.LogOut", comment: ""),
+            message: NSLocalizedString("LoginViewController.Logout_Message", comment: "")
+        )
     }
 }
 
@@ -648,11 +652,7 @@ extension LoginViewController {
     }
 
     fileprivate func inLoginStateID() -> String? {
-        return UserDefaults.standard.object(forKey: "InLoginStateID") as? String
-    }
-
-    fileprivate func cachedUserID() -> String? {
-        return UserDefaults.standard.object(forKey: "InLoginStateID") as? String
+        return AppEnvironment.current.settings.currentUsername.value
     }
 
     fileprivate func inLoginState() -> Bool {

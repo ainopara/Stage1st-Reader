@@ -28,8 +28,7 @@ extension NavigationControllerDelegate {
 
 extension NavigationControllerDelegate: GagatStyleable {
     public func shouldStartTransition(with direction: TransitionCoordinator.Direction) -> Bool {
-        let currentInNightMode = UserDefaults.standard.bool(forKey: Constants.defaults.nightModeKey)
-        if currentInNightMode {
+        if AppEnvironment.current.settings.nightMode.value == true {
             return direction == .up
         } else {
             return direction == .down
@@ -37,11 +36,11 @@ extension NavigationControllerDelegate: GagatStyleable {
     }
 
     public func toggleActiveStyle() {
-        if UserDefaults.standard.bool(forKey: Constants.defaults.nightModeKey) {
-            UserDefaults.standard.set(false, forKey: Constants.defaults.nightModeKey)
+        if AppEnvironment.current.settings.nightMode.value == true {
+            AppEnvironment.current.settings.nightMode.value = false
             ColorManager.shared.switchPalette(.day)
         } else {
-            UserDefaults.standard.set(true, forKey: Constants.defaults.nightModeKey)
+            AppEnvironment.current.settings.nightMode.value = true
             ColorManager.shared.switchPalette(.night)
         }
     }

@@ -72,7 +72,7 @@ extension DataCenter {
 
     fileprivate func updateLoginState(_ username: String?) {
         if let loginUsername = username, loginUsername != "" {
-            UserDefaults.standard.setValue(loginUsername, forKey: "InLoginStateID")
+            AppEnvironment.current.settings.currentUsername.value = loginUsername
         } else {
             UserDefaults.standard.removeObject(forKey: "InLoginStateID")
         }
@@ -366,17 +366,10 @@ extension DataCenter {
     }
 
     private func cleanHistoryTopics() {
-        guard let durationNumber = UserDefaults.standard.value(forKey: Constants.defaults.historyLimitKey) as? NSNumber else {
-            return
-        }
+        let duration = AppEnvironment.current.settings.historyLimit.value
+        guard duration > 0 else { return }
 
-        guard durationNumber.doubleValue > 0.0 else {
-            return
-        }
-
-        let duration = durationNumber.doubleValue
-
-        tracer.removeTopic(before: Date(timeIntervalSinceNow: -duration))
+        tracer.removeTopic(before: Date(timeIntervalSinceNow: -Double(duration)))
     }
 
     private func cleanCacheDatabase() {

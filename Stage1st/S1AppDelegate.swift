@@ -25,8 +25,8 @@ struct Constants {
         static let nightModeKey = "NightMode"
         static let enableCloudKitSyncKey = "EnableSync"
 
-        static let reverseActionKey = "Stage1st.Content.ReverseFloorAction"
-        static let hideStickTopicsKey = "Stage1st.TopicList.HideStickTopics"
+        static let reverseActionKey = "Stage1st_Content_ReverseFloorAction"
+        static let hideStickTopicsKey = "Stage1st_TopicList_HideStickTopics"
 
         static let historyLimitKey = "HistoryLimit"
         static let previousWebKitCacheCleaningDateKey = "PreviousWebKitCacheCleaningDate"
@@ -72,23 +72,8 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults.s1_setObjectIfNotExist(object: "17px", key: "FontSize")
         }
 
-        // TODO: Use register domain.
-        userDefaults.s1_setObjectIfNotExist(object: NSNumber(value: -1), key: "HistoryLimit")
-        userDefaults.register(defaults: [
-            Constants.defaults.displayImageKey: true,
-            Constants.defaults.removeTailsKey: true,
-            Constants.defaults.precacheNextPageKey: true,
-            Constants.defaults.forcePortraitForPhoneKey: true,
-            Constants.defaults.nightModeKey: false,
-            Constants.defaults.enableCloudKitSyncKey: false,
-
-            Constants.defaults.reverseActionKey: false,
-            Constants.defaults.hideStickTopicsKey: true,
-        ])
-
         updateStage1stDomainIfNecessary()
 
-        URLCache.shared.removeAllCachedResponses()
         URLCache.shared = ImageDownloader.defaultURLCache()
 
         // Start database & cloudKit (in order)
@@ -130,7 +115,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(reachabilityChanged),
-            name: NSNotification.Name.init("kReachabilityChangedNotification"),
+            name: .reachabilityChanged,
             object: nil
         )
 
