@@ -14,7 +14,7 @@ class Environment: NSObject {
     let forumName: String
     let serverAddress: ServerAddress
     let cookieStorage: HTTPCookieStorage
-    let settings: Settings
+    let settings: Stage1stSettings
     let reachability: Reachability
     let apiService: DiscuzClient
     let networkManager: S1NetworkManager
@@ -30,7 +30,7 @@ class Environment: NSObject {
         forumName: String,
         serverAddress: ServerAddress,
         cookieStorage: HTTPCookieStorage,
-        settings: Settings,
+        settings: Stage1stSettings,
         reachability: Reachability,
         apiService: DiscuzClient,
         networkManager: S1NetworkManager,
@@ -60,7 +60,7 @@ class Environment: NSObject {
     init(
         forumName: String = "Stage1st",
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
-        settings: Settings = Settings(defaults: UserDefaults.standard),
+        settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
         reachability: Reachability = Reachability.forInternetConnection()
     ) {
         self.forumName = forumName

@@ -25,6 +25,7 @@
 		8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */; };
 		860DAD4D18900A1D0098EA3F /* Resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* Resources.xcassets */; };
 		860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860F11C61E4EC21E00875AB9 /* DataCenter.swift */; };
+		8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* Utilities.swift */; };
 		862DB79A1C8891070068F75F /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* UserViewController.swift */; };
@@ -154,6 +155,7 @@
 		8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheDatabaseManager.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* Resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Resources.xcassets; sourceTree = "<group>"; };
 		860F11C61E4EC21E00875AB9 /* DataCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCenter.swift; sourceTree = "<group>"; };
+		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
@@ -546,6 +548,7 @@
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 				866E2DDE2085A0B300ADBD5F /* Settings.swift */,
+				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1065,6 +1068,7 @@
 				8681E6B71CEF4683004269D3 /* Topic.swift in Sources */,
 				86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */,
 				8634ADF11FAAF3C2004A9CB7 /* GSReorderableTableViewController.m in Sources */,
+				8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */,
 				8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */,
 				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
 				867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */,
