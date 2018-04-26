@@ -743,7 +743,7 @@ extension CloudKitManager {
                     strongSelf.transitState(to: .readyForUpload)
                 }
 
-            case .requestRateLimited, .serviceUnavailable:
+            case .requestRateLimited, .serviceUnavailable, .zoneBusy:
                 let delay = ckError.retryAfterSeconds ?? 60.0
                 queue.asyncAfter(deadline: .now() + delay) { [weak self] in
                     guard let strongSelf = self else { return }
