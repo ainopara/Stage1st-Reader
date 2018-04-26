@@ -16,9 +16,7 @@ extension S1MahjongFaceView {
             .appendingPathComponent("Mahjong", isDirectory: true)
             .appendingPathComponent("index").appendingPathExtension("json")
 
-        // swiftlint:disable syntactic_sugar
-        let categoryData = Array<[String: Any]>.s1_array(fromJSONFileURL: categoryIndexFileURL) ?? []
-        // swiftlint:enable syntactic_sugar
+        let categoryData: [[String: Any]] = Array.s1_array(fromJSONFileURL: categoryIndexFileURL) ?? []
 
         return categoryData.compactMap { MahjongFaceCategory(dictionary: $0) }
     }

@@ -160,8 +160,6 @@ class Settings: NSObject {
         }
     }
 
-    // swiftlint:disable opening_brace
-
     func bind<T>(
         propertyKeyPath: KeyPath<Settings, MutableProperty<T>>,
         to key: DefaultsKey<T>,
