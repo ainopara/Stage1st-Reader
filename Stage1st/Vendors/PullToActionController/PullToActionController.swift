@@ -50,15 +50,15 @@ public class PullToActionController: NSObject {
 
             strongSelf.offset = offset
 
-            var progress = [String: Double]()
+            var reports = [String: Double]()
             for (name, actionOffset) in strongSelf.progressActions {
                 let progressValue = actionOffset.progress(for: strongSelf.currentOffset(relativeTo: actionOffset.baseLine))
-                progress.updateValue(progressValue, forKey: name)
+                reports[name] = progressValue
             }
 
 //            S1LogVerbose("[PullToAction] contentOffset: \(self.offset)")
             if let delegateFunction = strongSelf.delegate?.scrollViewContentOffsetProgress {
-                delegateFunction(progress)
+                delegateFunction(reports)
             }
         }
 
@@ -100,7 +100,7 @@ public class PullToActionController: NSObject {
     }
 
     public func addObservation(withName name: String, baseLine: OffsetRange.BaseLine, beginPosition: Double, endPosition: Double) {
-        progressActions.updateValue(OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine), forKey: name)
+        progressActions[name] = OffsetRange(beginPosition: beginPosition, endPosition: endPosition, baseLine: baseLine)
     }
 
     public func removeObservation(withName name: String) {
