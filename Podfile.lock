@@ -70,7 +70,7 @@ PODS:
   - ReactiveSwift (3.1.0):
     - Result (~> 3.2)
   - Result (3.2.4)
-  - Reveal-SDK (10)
+  - Reveal-SDK (14)
   - SnapKit (4.0.0)
   - SwiftyJSON (4.1.0)
   - TextAttributes (1.0)
@@ -165,7 +165,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
-  - Reveal-SDK (= 10)
+  - Reveal-SDK
   - SnapKit
   - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
@@ -258,13 +258,13 @@ SPEC CHECKSUMS:
   ReactiveCocoa: 476dae7ca790f40d30d186a1bd7ebae4290395d5
   ReactiveSwift: 5b26d2e988fe0eed2daf48c4054d1de74db50184
   Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
-  Reveal-SDK: 7869ddf1f902cabbb07a1f0dd06bd25861a126f7
+  Reveal-SDK: 55b5c5545233b680c2f8da734f202acc15d422b7
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: e81c30b19ea9e507012dc02e1bdf7e7534f96924
+PODFILE CHECKSUM: 33438fa16d4cfc9a911cb016a41ff2ec480e1e95
 
 COCOAPODS: 1.5.0
