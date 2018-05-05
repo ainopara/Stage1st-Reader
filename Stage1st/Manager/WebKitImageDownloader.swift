@@ -15,6 +15,8 @@ class WebKitImageDownloader: NSObject {
     }()
 
     let delegateQueue: OperationQueue
+
+    /// Value type of Dictionary is `Any` because `WKURLSchemeTask` is only available in iOS 11.
     var taskMap = [URLSessionDataTask: Any]()
 
     override init() {
@@ -28,17 +30,21 @@ class WebKitImageDownloader: NSObject {
 
     @available(iOS 11.0, *)
     func start(schemeTask: WKURLSchemeTask, with request: URLRequest) {
-        let dataTask = session.dataTask(with: request)
-        taskMap[dataTask] = schemeTask as Any
-        dataTask.resume()
+        delegateQueue.addOperation {
+            let dataTask = self.session.dataTask(with: request)
+            self.taskMap[dataTask] = schemeTask as Any
+            dataTask.resume()
+        }
     }
 
     @available(iOS 11.0, *)
     func stop(schemeTask: WKURLSchemeTask) {
-        for (theDataTask, theSchemeTask) in taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
-            taskMap.removeValue(forKey: theDataTask)
-            theDataTask.cancel()
-            break
+        delegateQueue.addOperation {
+            for (theDataTask, theSchemeTask) in self.taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
+                self.taskMap.removeValue(forKey: theDataTask)
+                theDataTask.cancel()
+                break
+            }
         }
     }
 }
