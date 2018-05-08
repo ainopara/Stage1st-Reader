@@ -30,21 +30,30 @@ class WebKitImageDownloader: NSObject {
 
     @available(iOS 11.0, *)
     func start(schemeTask: WKURLSchemeTask, with request: URLRequest) {
-        delegateQueue.addOperation {
-            let dataTask = self.session.dataTask(with: request)
-            self.taskMap[dataTask] = schemeTask as Any
-            dataTask.resume()
-        }
+        let dataTask = self.session.dataTask(with: request)
+        self.taskMap[dataTask] = schemeTask as Any
+        dataTask.resume()
     }
 
     @available(iOS 11.0, *)
     func stop(schemeTask: WKURLSchemeTask) {
-        delegateQueue.addOperation {
-            for (theDataTask, theSchemeTask) in self.taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
-                self.taskMap.removeValue(forKey: theDataTask)
-                theDataTask.cancel()
-                break
+        /// We may peoforming data receive operation in delegate queue when this method called in main thread.
+        /// We suspend delegate queue to ensure all of our stop(schemeTask:) are called and handled before calling didReceive() method in background queue.
+        /// Even though delegateQueue.isSuspended is setted to ture, the task which already started when stop(schemeTask:) called will not be stopped.
+        /// So we catch exception throwed from WKWebView.
+        if !delegateQueue.isSuspended {
+            delegateQueue.isSuspended = true
+            DDLogDebug("Suspending delegate queue.")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.delegateQueue.isSuspended = false
             }
+        }
+
+        for (theDataTask, theSchemeTask) in self.taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
+            DDLogDebug("Cancel data task \(theDataTask.taskIdentifier).")
+            self.taskMap.removeValue(forKey: theDataTask)
+            theDataTask.cancel()
+            break
         }
     }
 }
@@ -54,9 +63,15 @@ class WebKitImageDownloader: NSObject {
 extension WebKitImageDownloader: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask {
+            if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
                 S1LogDebug("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
-                schemeTask.didReceive(response)
+                do {
+                    try ExceptionCatcher.catchException {
+                        schemeTask.didReceive(response)
+                    }
+                } catch {
+                    S1LogWarn("\(error)")
+                }
             }
         }
         completionHandler(.allow)
@@ -64,25 +79,43 @@ extension WebKitImageDownloader: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[dataTask] as? WKURLSchemeTask {
+            if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
                 S1LogVerbose("Task Receive Data \(schemeTask.request) Running: \(dataTask.state == .running)")
-                schemeTask.didReceive(data)
+                do {
+                    try ExceptionCatcher.catchException {
+                        schemeTask.didReceive(data)
+                    }
+                } catch {
+                    S1LogWarn("\(error)")
+                }
             }
         }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if #available(iOS 11.0, *) {
-            if let schemeTask = taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
+            if let schemeTask = self.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
                 if let error = error {
                     S1LogWarn("Task Fail \(schemeTask.request) \(error)")
-                    schemeTask.didFailWithError(error)
+                    do {
+                        try ExceptionCatcher.catchException {
+                            schemeTask.didFailWithError(error)
+                        }
+                    } catch {
+                        S1LogWarn("\(error)")
+                    }
                 } else {
                     S1LogDebug("Task Finish \(schemeTask.request)")
-                    schemeTask.didFinish()
+                    do {
+                        try ExceptionCatcher.catchException {
+                            schemeTask.didFinish()
+                        }
+                    } catch {
+                        S1LogWarn("\(error)")
+                    }
                 }
 
-                taskMap.removeValue(forKey: task as! URLSessionDataTask)
+                self.taskMap.removeValue(forKey: task as! URLSessionDataTask)
             }
         }
     }

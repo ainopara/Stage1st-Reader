@@ -28,6 +28,7 @@
 		8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* Utilities.swift */; };
+		862501B420A13D8400B7617D /* ExceptionCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 862501B320A13D8400B7617D /* ExceptionCatcher.m */; };
 		862DB79A1C8891070068F75F /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7991C8891070068F75F /* UserViewController.swift */; };
 		862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */; };
 		862DB7AA1C8AB1870068F75F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A91C8AB1870068F75F /* User.swift */; };
@@ -158,6 +159,8 @@
 		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		862501B220A13D8400B7617D /* ExceptionCatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExceptionCatcher.h; sourceTree = "<group>"; };
+		862501B320A13D8400B7617D /* ExceptionCatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExceptionCatcher.m; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyAccessoryView.swift; sourceTree = "<group>"; };
 		862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -676,6 +679,8 @@
 				869E02391DA67293006A45FE /* ActivityItemProvider.swift */,
 				86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */,
 				86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */,
+				862501B220A13D8400B7617D /* ExceptionCatcher.h */,
+				862501B320A13D8400B7617D /* ExceptionCatcher.m */,
 			);
 			path = Vendors;
 			sourceTree = "<group>";
@@ -1062,6 +1067,7 @@
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
 				866E2DDF2085A0B300ADBD5F /* Settings.swift in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
+				862501B420A13D8400B7617D /* ExceptionCatcher.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
 				86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */,
 				860223521895051400A3E66E /* S1Global.m in Sources */,
