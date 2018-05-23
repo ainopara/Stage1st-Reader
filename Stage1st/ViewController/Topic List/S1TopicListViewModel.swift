@@ -17,10 +17,6 @@ import Result
 final class S1TopicListViewModel: NSObject {
     let dataCenter: DataCenter
 
-    let databaseConnection: YapDatabaseConnection = MyDatabaseManager.uiDatabaseConnection
-    var viewMappings: YapDatabaseViewMappings?
-    let searchQueue = YapDatabaseSearchQueue()
-
     public enum State: Equatable {
         case history, favorite
         case search
@@ -57,28 +53,6 @@ final class S1TopicListViewModel: NSObject {
             }
         }
 
-        func isArchiveTypes() -> Bool {
-            return self == .history || self == .favorite
-        }
-
-        func isForumOrSearch() -> Bool {
-            switch self {
-            case .forum, .search:
-                return true
-            default:
-                return false
-            }
-        }
-
-        func isForum() -> Bool {
-            switch self {
-            case .forum:
-                return true
-            default:
-                return false
-            }
-        }
-
         public static func == (lhs: State, rhs: State) -> Bool {
             switch (lhs, rhs) {
             case (.blank, .blank):
@@ -107,11 +81,18 @@ final class S1TopicListViewModel: NSObject {
         }
     }
 
+    // Used by .forum .search state
     var topics = [S1Topic]()
+
+    // Used by .history .favorite state
+    let databaseConnection: YapDatabaseConnection = AppEnvironment.current.databaseManager.uiDatabaseConnection
+    var viewMappings: YapDatabaseViewMappings?
+    let searchQueue = YapDatabaseSearchQueue()
 
     // Inputs
     let searchingTerm = MutableProperty("")
     let traitCollection = MutableProperty(UITraitCollection())
+    let segmentControlIndex = MutableProperty(0)
 
     // Internal
     let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
@@ -128,6 +109,8 @@ final class S1TopicListViewModel: NSObject {
     let searchBarPlaceholderText = MutableProperty("")
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
+    let isShowingArchiveButton = MutableProperty(true)
+    let isShowingSegmentControl = MutableProperty(false)
 
     // MARK: -
 
@@ -139,13 +122,11 @@ final class S1TopicListViewModel: NSObject {
 
         super.init()
 
-        isTableViewHidden <~ currentState.producer.map { (state) -> Bool in
-            return state == .blank
-        }
+        isTableViewHidden <~ currentState.map { $0 == .blank }
+        isRefreshControlHidden <~ currentState.map { !$0.isForum }
 
-        isRefreshControlHidden <~ currentState.producer.map { (state) -> Bool in
-            return !state.isForum()
-        }
+        isShowingArchiveButton <~ currentState.map { !$0.isArchive }
+        isShowingSegmentControl <~ currentState.map { $0.isArchive }
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)
@@ -181,7 +162,11 @@ final class S1TopicListViewModel: NSObject {
             }.skipRepeats()
 
         MutableProperty.combineLatest(searchingTerm, currentState)
-            .producer.skipRepeats({ (current, previous) -> Bool in
+            .producer
+            .filter { (term, currentState) -> Bool in
+                return currentState.isArchive
+            }
+            .skipRepeats({ (current, previous) -> Bool in
                 func group(_ state: State) -> Int {
                     switch state {
                     case .history:
@@ -201,14 +186,8 @@ final class S1TopicListViewModel: NSObject {
             .startWithValues { [weak self] (term, state) in
                 guard let strongSelf = self else { return }
 
-                switch state {
-                case .history, .favorite:
-                    strongSelf._updateFilter(term)
-                default:
-                    break
-                    // Nothing to do.
+                strongSelf._updateFilter(term)
             }
-        }
 
         paletteNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .APPaletteDidChange)
@@ -253,6 +232,41 @@ final class S1TopicListViewModel: NSObject {
 
     // MARK: Input
 
+    func archiveButtonTapped() {
+        switch segmentControlIndex.value {
+        case 0:
+            transitState(to: .history)
+        case 1:
+            transitState(to: .favorite)
+        default:
+            fatalError("Unknown segment index \(segmentControlIndex.value)")
+        }
+    }
+
+    func segmentControlIndexChanged(newValue: Int) {
+        segmentControlIndex.value = newValue
+
+        switch newValue {
+        case 0:
+            transitState(to: .history)
+        case 1:
+            transitState(to: .favorite)
+        default:
+            fatalError("Unknown segment index \(newValue)")
+        }
+    }
+
+    func transitState(to newState: State) {
+        self.currentState.value = newState
+    }
+
+    func tabbarTapped(key: String) {
+    }
+
+    func pullToRefreshTriggered() {
+
+    }
+
     func topicListForKey(_ key: String, refresh: Bool, success: @escaping (_ topicList: [S1Topic]) -> Void, failure: @escaping (_ error: Error) -> Void) {
         dataCenter.topics(for: key, shouldRefresh: refresh, successBlock: { [weak self] topicList in
             guard let strongSelf = self else { return }
@@ -284,13 +298,17 @@ final class S1TopicListViewModel: NSObject {
     }
 
     func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
-        if let topic = topicAtIndexPath(indexPath) {
+        assert(currentState.value == .favorite, "unfavoriteTopicAtIndexPath should only be called when showing favorite list.")
+
+        if let topic = archivedTopic(at: indexPath) {
             dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
         }
     }
 
     func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
-        if let topic = topicAtIndexPath(indexPath) {
+        assert(currentState.value == .history, "deleteTopicAtIndexPath should only be called when showing history list.")
+
+        if let topic = archivedTopic(at: indexPath) {
             dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
         }
     }
@@ -345,7 +363,7 @@ extension S1TopicListViewModel {
         let attributedTitle: NSAttributedString
         switch currentState.value {
         case .favorite, .history:
-            guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
+            guard let unwrappedTopic = archivedTopic(at: indexPath) else {
                 S1LogError("Expecting topic at \(indexPath) exist but get nil.")
                 fatalError("Expecting topic at \(indexPath) exist but get nil.")
             }
@@ -393,7 +411,7 @@ extension S1TopicListViewModel {
         let topic: S1Topic
         switch currentState.value {
         case .favorite, .history:
-            guard let unwrappedTopic = topicAtIndexPath(indexPath) else {
+            guard let unwrappedTopic = archivedTopic(at: indexPath) else {
                 S1LogError("Expecting topic at \(indexPath) exist but get nil.")
                 fatalError("Expecting topic at \(indexPath) exist but get nil.")
             }
@@ -445,7 +463,9 @@ extension S1TopicListViewModel {
         }
     }
 
-    func topicAtIndexPath(_ indexPath: IndexPath) -> S1Topic? {
+    func archivedTopic(at indexPath: IndexPath) -> S1Topic? {
+        assert(currentState.value.isArchive, "topicAtIndexPath should only be called when showing archive list.")
+
         var topic: S1Topic? = nil
         databaseConnection.read { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction, let viewMappings = self.viewMappings {
@@ -472,7 +492,8 @@ extension S1TopicListViewModel {
     }
 
     private func _handleDatabaseChanged(with notifications: [Notification]) {
-        if currentState.value.isArchiveTypes() {
+        switch currentState.value {
+        case .history, .favorite:
             if viewMappings == nil {
                 initializeMappings()
             } else {
@@ -481,12 +502,14 @@ extension S1TopicListViewModel {
 
             tableViewReloadingObserver.send(value: ())
 
-        } else if currentState.value.isForumOrSearch() {
+        case .forum, .search:
             // Dispatch heavy task to improve animation when dismissing content view controller.
             DispatchQueue.main.async { [weak self] in
                 guard let strongSelf = self else { return }
                 strongSelf._updateForumOrSearchList(with: notifications)
             }
+        case .blank:
+            break
         }
     }
 
@@ -504,6 +527,35 @@ extension S1TopicListViewModel {
 
         if updatedModelIndexPaths.count > 0 {
             tableViewCellUpdateObserver.send(value: updatedModelIndexPaths)
+        }
+    }
+}
+
+extension S1TopicListViewModel.State {
+    var isArchive: Bool {
+        switch self {
+        case .history, .favorite:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isForumOrSearch: Bool {
+        switch self {
+        case .forum, .search:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isForum: Bool {
+        switch self {
+        case .forum:
+            return true
+        default:
+            return false
         }
     }
 }

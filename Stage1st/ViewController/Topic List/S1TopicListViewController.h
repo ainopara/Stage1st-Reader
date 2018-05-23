@@ -16,7 +16,6 @@
 @class S1TopicListViewModel;
 @class LoadingFooterView;
 
-
 typedef enum {
     S1TopicListHistory,
     S1TopicListFavorite
@@ -24,48 +23,48 @@ typedef enum {
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface S1TopicListViewController : UIViewController<S1TabBarDelegate>
-// UI
+//@interface S1TopicListViewController ()
+//// UI
+//
+//@property (nonatomic, strong) UINavigationItem *navigationItem;
+//@property (nonatomic, strong) UILabel *titleLabel;
+//@property (nonatomic, strong) UIBarButtonItem *historyItem;
+//@property (nonatomic, strong) UINavigationBar *navigationBar;
+//@property (nonatomic, strong) AnimationButton *archiveButton;
+//@property (nonatomic, strong) UIBarButtonItem *settingsItem;
+//@property (nonatomic, strong) UISegmentedControl *segControl;
+//@property (nonatomic, strong) UITableView *tableView;
+//@property (nonatomic, strong) ODRefreshControl *refreshControl;
+//@property (nonatomic, strong) UISearchBar *searchBar;
+//@property (nonatomic, strong) UIView *tableHeaderView;
+//@property (nonatomic, strong) S1TabBar *scrollTabBar;
+//@property (nonatomic, strong) LoadingFooterView *footerView;
+//
+//@property (nonatomic, strong) S1HUD *refreshHUD;
+//// Model
+//@property (nonatomic, strong) DataCenter *dataCenter;
+//@property (nonatomic, strong) S1TopicListViewModel *viewModel;
+//
+//@property (nonatomic, strong) NSString *currentKey;
+//@property (nonatomic, strong) NSString *previousKey;
+//@property (nonatomic, strong) NSString *searchKeyword;
+//
+//@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
+//@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
+//@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
+//
+//@property (nonatomic, assign) BOOL loadingFlag;
+//@property (nonatomic, assign) BOOL loadingMore;
 
-@property (nonatomic, strong) UINavigationItem *navigationItem;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIBarButtonItem *historyItem;
-@property (nonatomic, strong) UINavigationBar *navigationBar;
-@property (nonatomic, strong) AnimationButton *archiveButton;
-@property (nonatomic, strong) UIBarButtonItem *settingsItem;
-@property (nonatomic, strong) UISegmentedControl *segControl;
-@property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) ODRefreshControl *refreshControl;
-@property (nonatomic, strong) UISearchBar *searchBar;
-@property (nonatomic, strong) UIView *tableHeaderView;
-@property (nonatomic, strong) S1TabBar *scrollTabBar;
-@property (nonatomic, strong) LoadingFooterView *footerView;
 
-@property (nonatomic, strong) S1HUD *refreshHUD;
-// Model
-@property (nonatomic, strong) DataCenter *dataCenter;
-@property (nonatomic, strong) S1TopicListViewModel *viewModel;
-
-@property (nonatomic, strong) NSString *currentKey;
-@property (nonatomic, strong) NSString *previousKey;
-@property (nonatomic, strong) NSString *searchKeyword;
-
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSValue *> *cachedContentOffset;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *cachedLastRefreshTime;
-@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *forumKeyMap;
-
-@property (nonatomic, assign) BOOL loadingFlag;
-@property (nonatomic, assign) BOOL loadingMore;
-
-
-- (void)updateTabbar:(NSNotification *)notification;
-- (void)cloudKitStateChanged:(NSNotification *)notification;
-
-- (void)objc_searchBarSearchButtonClicked:(UISearchBar *)searchBar;
-- (void)fetchTopicsForKey:(NSString *)key skipCache:(BOOL)shouldSkipCache scrollToTop:(BOOL)scrollToTop;
-
-- (void)updateArchiveIcon;
-
-@end
+//- (void)updateTabbar:(NSNotification *)notification;
+//- (void)cloudKitStateChanged:(NSNotification *)notification;
+//
+//- (void)objc_searchBarSearchButtonClicked:(UISearchBar *)searchBar;
+//- (void)fetchTopicsForKey:(NSString *)key skipCache:(BOOL)shouldSkipCache scrollToTop:(BOOL)scrollToTop;
+//
+//- (void)updateArchiveIcon;
+//
+//@end
 
 NS_ASSUME_NONNULL_END

@@ -128,6 +128,12 @@
 //        }
     }
 
+//    if (gestureRecognizer == self.panRecognizer) {
+//        if ([self.navigationController.viewControllers.lastObject isKindOfClass:[S1ArchiveListViewController class]]) {
+//            return YES;
+//        }
+//    }
+
     return NO;
 }
 

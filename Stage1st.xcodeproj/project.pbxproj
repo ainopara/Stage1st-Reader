@@ -71,6 +71,8 @@
 		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0C1F403788000AE19E /* TopicListCell.swift */; };
 		86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */; };
+		8679AFAF20B59821007A73B2 /* S1ArchiveListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8679AFAE20B59821007A73B2 /* S1ArchiveListViewController.swift */; };
+		8679AFB220B59A55007A73B2 /* S1ArchiveListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8679AFB120B59A55007A73B2 /* S1ArchiveListViewModel.swift */; };
 		867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */; };
 		8681E6B71CEF4683004269D3 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6B61CEF4683004269D3 /* Topic.swift */; };
 		8681E6BF1CEF61ED004269D3 /* Stage1stTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */; };
@@ -224,6 +226,8 @@
 		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		86734B0C1F403788000AE19E /* TopicListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListCell.swift; sourceTree = "<group>"; };
 		86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListHeaderView.swift; sourceTree = "<group>"; };
+		8679AFAE20B59821007A73B2 /* S1ArchiveListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1ArchiveListViewController.swift; sourceTree = "<group>"; };
+		8679AFB120B59A55007A73B2 /* S1ArchiveListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1ArchiveListViewModel.swift; sourceTree = "<group>"; };
 		867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebKitImageDownloader.swift; sourceTree = "<group>"; };
 		8681E6B61CEF4683004269D3 /* Topic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
 		8681E6BC1CEF61ED004269D3 /* Stage1stTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Stage1stTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -496,6 +500,7 @@
 			isa = PBXGroup;
 			children = (
 				863580111A945DED007B21AD /* Topic List */,
+				8679AFB020B5982B007A73B2 /* Archive List */,
 				863580121A945DFF007B21AD /* Content */,
 				866CDB951B526C4800FBB133 /* Quote Floor */,
 				86A22D231D677B16004D2307 /* Report */,
@@ -523,6 +528,15 @@
 				862DB7991C8891070068F75F /* UserViewController.swift */,
 			);
 			path = User;
+			sourceTree = "<group>";
+		};
+		8679AFB020B5982B007A73B2 /* Archive List */ = {
+			isa = PBXGroup;
+			children = (
+				8679AFB120B59A55007A73B2 /* S1ArchiveListViewModel.swift */,
+				8679AFAE20B59821007A73B2 /* S1ArchiveListViewController.swift */,
+			);
+			path = "Archive List";
 			sourceTree = "<group>";
 		};
 		8681E6BD1CEF61ED004269D3 /* Stage1stTests */ = {
@@ -1094,6 +1108,7 @@
 				86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */,
 				86221B861CA65E3600015522 /* Utilities.swift in Sources */,
 				366714091E4C4CD400813310 /* Field.swift in Sources */,
+				8679AFB220B59A55007A73B2 /* S1ArchiveListViewModel.swift in Sources */,
 				8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */,
 				8634ADEB1FAAF3C2004A9CB7 /* AnimationUtilities.swift in Sources */,
 				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
@@ -1127,6 +1142,7 @@
 				3674BF411E763DE100629E25 /* Environment.swift in Sources */,
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				8634ADED1FAAF3C2004A9CB7 /* Gagat.swift in Sources */,
+				8679AFAF20B59821007A73B2 /* S1ArchiveListViewController.swift in Sources */,
 				86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */,
 				8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */,
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
