@@ -8,6 +8,7 @@
 
 import SnapKit
 import DeviceKit
+import Crashlytics
 
 class S1ArchiveListViewController: UIViewController {
 
@@ -137,6 +138,7 @@ class S1ArchiveListViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        Crashlytics.sharedInstance().setObjectValue("ArchiveListViewController", forKey: "lastViewController")
         blockingEarlyNoise = false
     }
 

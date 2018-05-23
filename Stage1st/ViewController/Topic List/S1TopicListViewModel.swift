@@ -18,17 +18,12 @@ final class S1TopicListViewModel: NSObject {
     let dataCenter: DataCenter
 
     public enum State: Equatable {
-        case history, favorite
-        case search
         case forum(key: String)
+        case search
         case blank
 
         init(key: String) {
             switch key {
-            case "History":
-                self = .history
-            case "Favorite":
-                self = .favorite
             case "Search":
                 self = .search
             case "":
@@ -40,10 +35,6 @@ final class S1TopicListViewModel: NSObject {
 
         func stringRepresentation() -> String {
             switch self {
-            case .history:
-                return "History"
-            case .favorite:
-                return "Favorite"
             case .search:
                 return "Search"
             case .blank:
@@ -57,13 +48,8 @@ final class S1TopicListViewModel: NSObject {
             switch (lhs, rhs) {
             case (.blank, .blank):
                 return true
-            case (.history, .history):
-                return true
-            case (.favorite, .favorite):
-                return true
             case (.search, .search):
                 return true
-
             case let (.forum(key1), .forum(key2)):
                 return key1 == key2
             default:
@@ -84,10 +70,7 @@ final class S1TopicListViewModel: NSObject {
     // Used by .forum .search state
     var topics = [S1Topic]()
 
-    // Used by .history .favorite state
     let databaseConnection: YapDatabaseConnection = AppEnvironment.current.databaseManager.uiDatabaseConnection
-    var viewMappings: YapDatabaseViewMappings?
-    let searchQueue = YapDatabaseSearchQueue()
 
     // Inputs
     let searchingTerm = MutableProperty("")
@@ -109,8 +92,9 @@ final class S1TopicListViewModel: NSObject {
     let searchBarPlaceholderText = MutableProperty("")
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
-    let isShowingArchiveButton = MutableProperty(true)
-    let isShowingSegmentControl = MutableProperty(false)
+
+    var cachedContentOffset = [String: CGPoint]()
+    var cachedLastRefreshTime = [String: Date]()
 
     // MARK: -
 
@@ -124,9 +108,6 @@ final class S1TopicListViewModel: NSObject {
 
         isTableViewHidden <~ currentState.map { $0 == .blank }
         isRefreshControlHidden <~ currentState.map { !$0.isForum }
-
-        isShowingArchiveButton <~ currentState.map { !$0.isArchive }
-        isShowingSegmentControl <~ currentState.map { $0.isArchive }
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)
@@ -142,52 +123,10 @@ final class S1TopicListViewModel: NSObject {
             .combineLatest(currentState, databaseChangedNotification)
             .producer.map { (state, _) -> String in
                 switch state {
-                case .favorite:
-                    let count = dataCenter.numberOfFavorite()
-                    return String(
-                        format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"),
-                        NSNumber(value: count)
-                    )
-                case .history:
-                    let count = dataCenter.numberOfTopics()
-                    return String(
-                        format: NSLocalizedString("TopicListViewController.SearchBar_Detail_Hint", comment: "Search"),
-                        NSNumber(value: count)
-                    )
-                case .search, .forum:
-                    return NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search")
-                case .blank:
+                case .search, .forum, .blank:
                     return NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search")
                 }
             }.skipRepeats()
-
-        MutableProperty.combineLatest(searchingTerm, currentState)
-            .producer
-            .filter { (term, currentState) -> Bool in
-                return currentState.isArchive
-            }
-            .skipRepeats({ (current, previous) -> Bool in
-                func group(_ state: State) -> Int {
-                    switch state {
-                    case .history:
-                        return 0
-                    case .favorite:
-                        return 1
-                    default:
-                        return 2
-                    }
-                }
-                if group(current.1) == 2 && group(previous.1) == 2 {
-                    return true
-                } else {
-                    return current.0 == previous.0 && group(current.1) == group(previous.1)
-                }
-            })
-            .startWithValues { [weak self] (term, state) in
-                guard let strongSelf = self else { return }
-
-                strongSelf._updateFilter(term)
-            }
 
         paletteNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .APPaletteDidChange)
@@ -226,36 +165,9 @@ final class S1TopicListViewModel: NSObject {
         currentState.producer.startWithValues { (state) in
             S1LogDebug("state -> \(state.stringRepresentation())")
         }
-
-        initializeMappings()
     }
 
     // MARK: Input
-
-    func archiveButtonTapped() {
-        switch segmentControlIndex.value {
-        case 0:
-            transitState(to: .history)
-        case 1:
-            transitState(to: .favorite)
-        default:
-            fatalError("Unknown segment index \(segmentControlIndex.value)")
-        }
-    }
-
-    func segmentControlIndexChanged(newValue: Int) {
-        segmentControlIndex.value = newValue
-
-        switch newValue {
-        case 0:
-            transitState(to: .history)
-        case 1:
-            transitState(to: .favorite)
-        default:
-            fatalError("Unknown segment index \(newValue)")
-        }
-    }
-
     func transitState(to newState: State) {
         self.currentState.value = newState
     }
@@ -297,22 +209,6 @@ final class S1TopicListViewModel: NSObject {
         })
     }
 
-    func unfavoriteTopicAtIndexPath(_ indexPath: IndexPath) {
-        assert(currentState.value == .favorite, "unfavoriteTopicAtIndexPath should only be called when showing favorite list.")
-
-        if let topic = archivedTopic(at: indexPath) {
-            dataCenter.removeTopicFromFavorite(topicID: topic.topicID.intValue)
-        }
-    }
-
-    func deleteTopicAtIndexPath(_ indexPath: IndexPath) {
-        assert(currentState.value == .history, "deleteTopicAtIndexPath should only be called when showing history list.")
-
-        if let topic = archivedTopic(at: indexPath) {
-            dataCenter.removeTopicFromHistory(topicID: topic.topicID.intValue)
-        }
-    }
-
     func reset() {
         self.topics = [S1Topic]()
         self.currentState.value = .blank
@@ -320,24 +216,6 @@ final class S1TopicListViewModel: NSObject {
 
     @objc func cancelRequests() {
         dataCenter.cancelRequest()
-    }
-
-    // MARK: Output
-
-    func numberOfSections() -> Int {
-        if let result = viewMappings?.numberOfSections() {
-            return Int(result)
-        } else {
-            return 0
-        }
-    }
-
-    func numberOfItemsInSection(_ section: Int) -> Int {
-        if let result = viewMappings?.numberOfItems(inSection: UInt(section)) {
-            return Int(result)
-        } else {
-            return 0
-        }
     }
 }
 
@@ -362,23 +240,6 @@ extension S1TopicListViewModel {
         let isPinningTop: Bool
         let attributedTitle: NSAttributedString
         switch currentState.value {
-        case .favorite, .history:
-            guard let unwrappedTopic = archivedTopic(at: indexPath) else {
-                S1LogError("Expecting topic at \(indexPath) exist but get nil.")
-                fatalError("Expecting topic at \(indexPath) exist but get nil.")
-            }
-
-            topic = unwrappedTopic
-
-            isPinningTop = false
-
-            let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
-            let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
-            let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
-            mutableAttributedTitle.addAttributes([
-                .foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.highlight")
-            ], range: termRange)
-            attributedTitle = mutableAttributedTitle
         case .search:
             topic = topics[indexPath.row]
 
@@ -387,9 +248,7 @@ extension S1TopicListViewModel {
             let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
             let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
             let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
-            mutableAttributedTitle.addAttributes([
-                .foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.highlight")
-            ], range: termRange)
+            mutableAttributedTitle.addAttributes([.foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.highlight")], range: termRange)
             attributedTitle = mutableAttributedTitle
         case .forum:
             topic = topics[indexPath.row]
@@ -410,18 +269,11 @@ extension S1TopicListViewModel {
     func contentViewModel(at indexPath: IndexPath) -> ContentViewModel {
         let topic: S1Topic
         switch currentState.value {
-        case .favorite, .history:
-            guard let unwrappedTopic = archivedTopic(at: indexPath) else {
-                S1LogError("Expecting topic at \(indexPath) exist but get nil.")
-                fatalError("Expecting topic at \(indexPath) exist but get nil.")
-            }
-
-            topic = unwrappedTopic
         case .forum, .search:
             topic = topicWithTracedDataForTopic(topics[indexPath.row])
             topics.remove(at: indexPath.row)
             topics.insert(topic, at: indexPath.row)
-        default:
+        case .blank:
             S1LogError("blank state should not reach this method.")
             fatalError("blank state should not reach this method.")
         }
@@ -432,76 +284,8 @@ extension S1TopicListViewModel {
 
 // MARK: YapDatabase
 extension S1TopicListViewModel {
-    func initializeMappings() {
-        databaseConnection.read { transaction in
-            guard transaction.ext(Ext_FullTextSearch_Archive) != nil else {
-                // The view isn't ready yet.
-                // We'll try again when we get a databaseConnectionDidUpdate notification.
-                return
-            }
-
-            let groupFilterBlock: YapDatabaseViewMappingGroupFilter = { (_, _) in
-                return true
-            }
-            let sortBlock: YapDatabaseViewMappingGroupSort = { (group1, group2, _) -> ComparisonResult in
-                return S1Formatter.sharedInstance().compareDateString(group1, withDateString: group2)
-            }
-
-            self.viewMappings = YapDatabaseViewMappings(
-                groupFilterBlock: groupFilterBlock,
-                sortBlock: sortBlock,
-                view: Ext_searchResultView_Archive
-            )
-
-            self.viewMappings?.update(with: transaction)
-        }
-    }
-
-    func updateMappings() {
-        databaseConnection.read { transaction in
-            self.viewMappings?.update(with: transaction)
-        }
-    }
-
-    func archivedTopic(at indexPath: IndexPath) -> S1Topic? {
-        assert(currentState.value.isArchive, "topicAtIndexPath should only be called when showing archive list.")
-
-        var topic: S1Topic? = nil
-        databaseConnection.read { transaction in
-            if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction, let viewMappings = self.viewMappings {
-                topic = ext.object(at: indexPath, with: viewMappings) as? S1Topic
-            } else {
-                let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction
-                let viewMappings = self.viewMappings
-                S1LogError("Topic is nil because \(String(describing: ext)) or \(String(describing: viewMappings)) is nil or extension cound not find S1Topic object.")
-            }
-        }
-        return topic
-    }
-
-    private func _updateFilter(_ searchText: String) {
-        let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
-        let query = "favorite:\(favoriteMark) title:\(searchText)*"
-        S1LogDebug("Update filter: \(query)")
-        searchQueue.enqueueQuery(query)
-        MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
-            if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {
-                ext.performSearch(with: self.searchQueue)
-            }
-        }
-    }
-
     private func _handleDatabaseChanged(with notifications: [Notification]) {
         switch currentState.value {
-        case .history, .favorite:
-            if viewMappings == nil {
-                initializeMappings()
-            } else {
-                updateMappings()
-            }
-
-            tableViewReloadingObserver.send(value: ())
-
         case .forum, .search:
             // Dispatch heavy task to improve animation when dismissing content view controller.
             DispatchQueue.main.async { [weak self] in
@@ -532,15 +316,6 @@ extension S1TopicListViewModel {
 }
 
 extension S1TopicListViewModel.State {
-    var isArchive: Bool {
-        switch self {
-        case .history, .favorite:
-            return true
-        default:
-            return false
-        }
-    }
-
     var isForumOrSearch: Bool {
         switch self {
         case .forum, .search:
