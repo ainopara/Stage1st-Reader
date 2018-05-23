@@ -29,8 +29,10 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toViewController = transitionContext.viewController(forKey: .to),
-            let fromViewController = transitionContext.viewController(forKey: .from) else {
+        guard
+            let toViewController = transitionContext.viewController(forKey: .to),
+            let fromViewController = transitionContext.viewController(forKey: .from)
+        else {
             assert(false)
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             return
