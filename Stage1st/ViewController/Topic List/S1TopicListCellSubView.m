@@ -8,7 +8,6 @@
 
 #import "S1TopicListCellSubView.h"
 #import "S1Topic.h"
-#import <Masonry/Masonry.h>
 
 @implementation S1TopicListCellSubView
 
