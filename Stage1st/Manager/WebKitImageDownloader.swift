@@ -43,14 +43,14 @@ class WebKitImageDownloader: NSObject {
         /// So we catch exception throwed from WKWebView.
         if !delegateQueue.isSuspended {
             delegateQueue.isSuspended = true
-            DDLogDebug("Suspending delegate queue.")
+            S1LogDebug("Suspending delegate queue.")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.delegateQueue.isSuspended = false
             }
         }
 
         for (theDataTask, theSchemeTask) in self.taskMap where (theSchemeTask as! WKURLSchemeTask) === schemeTask {
-            DDLogDebug("Cancel data task \(theDataTask.taskIdentifier).")
+            S1LogDebug("Cancel data task \(theDataTask.taskIdentifier).")
             self.taskMap.removeValue(forKey: theDataTask)
             theDataTask.cancel()
             break

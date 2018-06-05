@@ -100,14 +100,14 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func reachabilityChanged(_ notification: Notification) {
         guard let reachability = notification.object as? Reachability else {
             assert(false, "this should never happen!")
-            DDLogError("this should never happen!")
+            S1LogError("this should never happen!")
             return
         }
 
         if reachability.isReachableViaWiFi() {
-            DDLogDebug("[Reachability] WIFI: display picture")
+            S1LogDebug("[Reachability] WIFI: display picture")
         } else {
-            DDLogDebug("[Reachability] WWAN: display placeholder")
+            S1LogDebug("[Reachability] WWAN: display placeholder")
         }
     }
 }
@@ -378,7 +378,7 @@ extension S1AppDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         S1LogDebug("[APNS] Push received: \(userInfo)", category: .cloudkit)
         if !AppEnvironment.current.settings.enableCloudKitSync.value {
-            DDLogWarn("[APNS] push notification received when user do not enable sync feature.")
+            S1LogWarn("[APNS] push notification received when user do not enable sync feature.")
             completionHandler(.noData)
             return
         }
