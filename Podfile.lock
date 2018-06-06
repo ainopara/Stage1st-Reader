@@ -19,6 +19,9 @@ PODS:
     - AFNetworking/NSURLSession
   - Ainoaibo (0.1.0):
     - Ainoaibo/DefaultsBasedSettings (= 0.1.0)
+    - Ainoaibo/InMemoryLogger (= 0.1.0)
+    - Ainoaibo/InMemoryLogViewer (= 0.1.0)
+    - Ainoaibo/LogFormatters (= 0.1.0)
     - Ainoaibo/Logging (= 0.1.0)
     - Ainoaibo/LoggingProtocol (= 0.1.0)
     - Ainoaibo/OSLogger (= 0.1.0)
@@ -26,6 +29,15 @@ PODS:
   - Ainoaibo/DefaultsBasedSettings (0.1.0):
     - Ainoaibo/Logging
     - ReactiveSwift
+  - Ainoaibo/InMemoryLogger (0.1.0):
+    - Ainoaibo/LoggingProtocol
+    - CocoaLumberjack
+    - CocoaLumberjack/Swift
+  - Ainoaibo/InMemoryLogViewer (0.1.0):
+    - Ainoaibo/InMemoryLogger
+    - SnapKit
+  - Ainoaibo/LogFormatters (0.1.0):
+    - CocoaLumberjack
   - Ainoaibo/Logging (0.1.0):
     - Ainoaibo/LoggingProtocol
     - CocoaLumberjack
@@ -50,20 +62,9 @@ PODS:
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
   - CrashlyticsLogger (0.3.0):
-    - CrashlyticsLogger/Core (= 0.3.0)
-    - CrashlyticsLogger/Formatters (= 0.3.0)
-    - CrashlyticsLogger/Loggers (= 0.3.0)
-    - CrashlyticsLogger/LogViewers (= 0.3.0)
-  - CrashlyticsLogger/Core (0.3.0)
-  - CrashlyticsLogger/Formatters (0.3.0):
     - CocoaLumberjack
-  - CrashlyticsLogger/Loggers (0.3.0):
-    - CocoaLumberjack
+    - CocoaLumberjack/Swift
     - Crashlytics
-    - CrashlyticsLogger/Core
-  - CrashlyticsLogger/LogViewers (0.3.0):
-    - CrashlyticsLogger/Loggers
-    - SnapKit
   - DeviceKit (1.7.0)
   - Fabric (1.7.7)
   - FBSnapshotTestCase (2.1.4):
@@ -262,12 +263,12 @@ SPEC CHECKSUMS:
   AcknowList: 2b27ccc75110be58be37424c4b08b07bdec628b4
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  Ainoaibo: 49df5e49f86b51d9ead7eb6a99e7c85553c1c8ae
+  Ainoaibo: 88b9b2753197fdf5082ad727547d28e9166f9d26
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
-  CrashlyticsLogger: 20cbc282b447ff8b631ba5c239f0cc2415e51c32
+  CrashlyticsLogger: 1c42a21cbe559d5e7fa2f783c3697011aa605562
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a

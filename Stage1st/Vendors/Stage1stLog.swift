@@ -7,12 +7,12 @@
 //
 
 import CocoaLumberjack
-import CrashlyticsLogger
+import Ainoaibo
 import os
 
 var asynchronousLogging: Bool = false
 
-enum LogCategory: CustomStringConvertible, OSLoggerIndexable {
+enum LogCategory: String, OSLoggerIndexable {
     case `default`
 
     /// Record network request sended by default network manager.
@@ -36,24 +36,7 @@ enum LogCategory: CustomStringConvertible, OSLoggerIndexable {
     case cloudkit
 
     var description: String {
-        switch self {
-        case .default:
-            return "default"
-        case .network:
-            return "network"
-        case .interaction:
-            return "interaction"
-        case .environment:
-            return "environment"
-        case .extension:
-            return "extension"
-        case .ui:
-            return "ui"
-        case .auth:
-            return "auth"
-        case .cloudkit:
-            return "cloudkit"
-        }
+        return self.rawValue
     }
 
     var loggerIndex: String {
@@ -61,7 +44,7 @@ enum LogCategory: CustomStringConvertible, OSLoggerIndexable {
     }
 }
 
-enum LogSubsystem: CustomStringConvertible, OSLoggerIndexable {
+enum LogSubsystem: String, OSLoggerIndexable {
     case `default`
     var description: String {
         switch self {
@@ -79,8 +62,8 @@ class S1LoggerTag: OSLoggerTag {
     let subsystem: LogSubsystem
     let category: LogCategory
 
-    var rawSubsystem: OSLoggerIndexable & CustomStringConvertible { return subsystem }
-    var rawCategory: OSLoggerIndexable & CustomStringConvertible { return category }
+    var rawSubsystem: OSLoggerIndexable { return subsystem }
+    var rawCategory: OSLoggerIndexable { return category }
 
     init(subsystem: LogSubsystem, category: LogCategory) {
         self.subsystem = subsystem

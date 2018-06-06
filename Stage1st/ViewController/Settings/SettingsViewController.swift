@@ -9,7 +9,7 @@ import UIKit
 import AcknowList
 import WebKit
 import CocoaLumberjack
-import CrashlyticsLogger
+import Ainoaibo
 import ReactiveSwift
 import ReactiveCocoa
 import Files

@@ -6,7 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Foundation
+import Ainoaibo
 import CocoaLumberjack
 import CrashlyticsLogger
 import CloudKit

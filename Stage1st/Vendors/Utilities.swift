@@ -206,8 +206,6 @@ extension UIImage {
     }
 }
 
-
-
 // From https://github.com/kickstarter/ios-oss/blob/master/Library/String%2BSimpleHTML.swift
 extension String {
     public func s1_htmlStripped(trimWhitespace: Bool = true) -> String? {
