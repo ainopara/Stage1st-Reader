@@ -1,5 +1,5 @@
 //
-//  Settings.swift
+//  DefaultsBasedSettings.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 2018/4/17.
@@ -68,20 +68,20 @@ extension UserDefaults {
     }
 }
 
-extension MutableProperty where Value: Equatable {
-    func setValueIfDifferent(_ newValue: Value) {
+private extension MutableProperty where Value: Equatable {
+    func dbs_setValueIfDifferent(_ newValue: Value) {
         if self.value != newValue { self.value = newValue }
     }
 }
 
 // MARK: -
 
-class Settings: NSObject {
+open class DefaultsBasedSettings: NSObject {
     let defaults: UserDefaults
     private var observingKeyPathChangeCallbacks: [String: ((Any) -> Void)] = [:]
     private var disposables: [Disposable?] = []
 
-    init(defaults: UserDefaults) {
+    public init(defaults: UserDefaults) {
         self.defaults = defaults
         super.init()
     }
@@ -96,11 +96,11 @@ class Settings: NSObject {
         }
     }
 
-    func removeValue<T>(for key: DefaultsKey<T>) {
+    public func removeValue<T>(for key: DefaultsKey<T>) {
         defaults.removeObject(forKey: key.keyString)
     }
 
-    func bind<T>(
+    public func bind<T>(
         property: MutableProperty<T>,
         to key: DefaultsKey<T>,
         defaultValue: T
@@ -125,17 +125,17 @@ class Settings: NSObject {
         defaults.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
         observingKeyPathChangeCallbacks[keyPath] = { (newValue) in
             if newValue is NSNull {
-                property.setValueIfDifferent(defaultValue)
+                property.dbs_setValueIfDifferent(defaultValue)
             } else if let newValue = newValue as? T {
-                property.setValueIfDifferent(newValue)
+                property.dbs_setValueIfDifferent(newValue)
             } else {
                 S1LogError("Expect newValue \(newValue) has Type \(T.self) or NSNull but got \(type(of: newValue))")
-                property.setValueIfDifferent(defaultValue)
+                property.dbs_setValueIfDifferent(defaultValue)
             }
         }
     }
 
-    func bind<T>(
+    public func bind<T>(
         property: MutableProperty<T?>,
         to key: DefaultsKey<T>
     ) where
@@ -159,18 +159,24 @@ class Settings: NSObject {
         defaults.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
         observingKeyPathChangeCallbacks[keyPath] = { (newValue) in
             if newValue is NSNull {
-                property.setValueIfDifferent(.none)
+                property.dbs_setValueIfDifferent(.none)
             } else if let newValue = newValue as? T {
-                property.setValueIfDifferent(.some(newValue))
+                property.dbs_setValueIfDifferent(.some(newValue))
             } else {
                 S1LogError("Expect newValue \(newValue) has Type \(T.self) or NSNull but got \(type(of: newValue))")
-                property.setValueIfDifferent(.none)
+                property.dbs_setValueIfDifferent(.none)
             }
         }
     }
 
     // swiftlint:disable block_based_kvo
-    @objc override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+    @objc
+    open override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey: Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
         guard let keyPath = keyPath else {
             fatalError("keyPath should not be nil.")
         }

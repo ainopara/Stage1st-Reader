@@ -31,7 +31,6 @@
 
     self.shouldIngnoreScrollEvent = NO;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.backgroundColor = [[ColorManager shared] colorForKey:@"mahjongface.background"];
 
     self.pageViews = [[NSMutableArray alloc] init];
     
@@ -53,8 +52,7 @@
     // init page control
     self.pageControl = [[UIPageControl alloc] init];
     self.pageControl.currentPage = 0;
-    self.pageControl.pageIndicatorTintColor = [[ColorManager shared] colorForKey:@"mahjongface.pagecontrol.indicatortint"];
-    self.pageControl.currentPageIndicatorTintColor = [[ColorManager shared] colorForKey:@"mahjongface.pagecontrol.currentpage"];
+
     [self.pageControl addTarget:self action:@selector(pageChanged:) forControlEvents:UIControlEventValueChanged];
     [self addSubview:self.pageControl];
     [self.pageControl mas_makeConstraints:^(MASConstraintMaker *make) {

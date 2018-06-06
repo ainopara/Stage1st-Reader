@@ -67,7 +67,7 @@
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */; };
-		866E2DDF2085A0B300ADBD5F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866E2DDE2085A0B300ADBD5F /* Settings.swift */; };
+		866E2DDF2085A0B300ADBD5F /* DefaultsBasedSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */; };
 		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0C1F403788000AE19E /* TopicListCell.swift */; };
 		86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */; };
@@ -102,6 +102,7 @@
 		86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
+		86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD238E20C66B8A00106A90 /* ReplyViewController.swift */; };
 		86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD82771CF9A75600C9700E /* S1FoundationTests.swift */; };
 		86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */; };
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
@@ -222,7 +223,7 @@
 		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewController.swift; sourceTree = "<group>"; };
-		866E2DDE2085A0B300ADBD5F /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsBasedSettings.swift; sourceTree = "<group>"; };
 		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		86734B0C1F403788000AE19E /* TopicListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListCell.swift; sourceTree = "<group>"; };
 		86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListHeaderView.swift; sourceTree = "<group>"; };
@@ -268,6 +269,7 @@
 		86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewModel.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorCell.swift; sourceTree = "<group>"; };
+		86FD238E20C66B8A00106A90 /* ReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		86FD82771CF9A75600C9700E /* S1FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1FoundationTests.swift; sourceTree = "<group>"; };
 		86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscuzClient.swift; sourceTree = "<group>"; };
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -454,7 +456,7 @@
 			path = TFHpple;
 			sourceTree = "<group>";
 		};
-		863580111A945DED007B21AD /* Topic List */ = {
+		863580111A945DED007B21AD /* TopicList */ = {
 			isa = PBXGroup;
 			children = (
 				8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */,
@@ -466,7 +468,7 @@
 				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
 				86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */,
 			);
-			path = "Topic List";
+			path = TopicList;
 			sourceTree = "<group>";
 		};
 		863580121A945DFF007B21AD /* Content */ = {
@@ -499,10 +501,11 @@
 		865C251B1C99110C0075B303 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				863580111A945DED007B21AD /* Topic List */,
-				8679AFB020B5982B007A73B2 /* Archive List */,
+				863580111A945DED007B21AD /* TopicList */,
+				8679AFB020B5982B007A73B2 /* ArchiveList */,
 				863580121A945DFF007B21AD /* Content */,
-				866CDB951B526C4800FBB133 /* Quote Floor */,
+				866CDB951B526C4800FBB133 /* QuoteFloor */,
+				86FD238D20C66B7000106A90 /* Reply */,
 				86A22D231D677B16004D2307 /* Report */,
 				8671E56F1CFDEB1800F4A854 /* User */,
 				86A22D241D677B21004D2307 /* Browser */,
@@ -511,14 +514,14 @@
 			path = ViewController;
 			sourceTree = "<group>";
 		};
-		866CDB951B526C4800FBB133 /* Quote Floor */ = {
+		866CDB951B526C4800FBB133 /* QuoteFloor */ = {
 			isa = PBXGroup;
 			children = (
 				86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */,
 				866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */,
 				86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */,
 			);
-			path = "Quote Floor";
+			path = QuoteFloor;
 			sourceTree = "<group>";
 		};
 		8671E56F1CFDEB1800F4A854 /* User */ = {
@@ -530,13 +533,13 @@
 			path = User;
 			sourceTree = "<group>";
 		};
-		8679AFB020B5982B007A73B2 /* Archive List */ = {
+		8679AFB020B5982B007A73B2 /* ArchiveList */ = {
 			isa = PBXGroup;
 			children = (
 				8679AFB120B59A55007A73B2 /* S1ArchiveListViewModel.swift */,
 				8679AFAE20B59821007A73B2 /* S1ArchiveListViewController.swift */,
 			);
-			path = "Archive List";
+			path = ArchiveList;
 			sourceTree = "<group>";
 		};
 		8681E6BD1CEF61ED004269D3 /* Stage1stTests */ = {
@@ -564,7 +567,7 @@
 				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
-				866E2DDE2085A0B300ADBD5F /* Settings.swift */,
+				866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */,
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
 			);
 			path = Manager;
@@ -610,6 +613,14 @@
 				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 			);
 			path = Colors;
+			sourceTree = "<group>";
+		};
+		86FD238D20C66B7000106A90 /* Reply */ = {
+			isa = PBXGroup;
+			children = (
+				86FD238E20C66B8A00106A90 /* ReplyViewController.swift */,
+			);
+			path = Reply;
 			sourceTree = "<group>";
 		};
 		C08A440D16DA775F003BF44C /* Networking */ = {
@@ -1079,7 +1090,7 @@
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
-				866E2DDF2085A0B300ADBD5F /* Settings.swift in Sources */,
+				866E2DDF2085A0B300ADBD5F /* DefaultsBasedSettings.swift in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				862501B420A13D8400B7617D /* ExceptionCatcher.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
@@ -1112,6 +1123,7 @@
 				8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */,
 				8634ADEB1FAAF3C2004A9CB7 /* AnimationUtilities.swift in Sources */,
 				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
+				86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */,
 				8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */,
 				8634ADEA1FAAF3C2004A9CB7 /* TransitionCoordinator.swift in Sources */,
 				86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */,

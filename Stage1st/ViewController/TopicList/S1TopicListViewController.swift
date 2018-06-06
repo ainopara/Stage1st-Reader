@@ -311,7 +311,7 @@ extension S1TopicListViewController {
 
 extension S1TopicListViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 
@@ -498,40 +498,40 @@ extension S1TopicListViewController {
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = ColorManager.shared.colorForKey("topiclist.background")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.background")
 
-        tableView.separatorColor = ColorManager.shared.colorForKey("topiclist.tableview.separator")
-        tableView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.background")
-        tableView.indicatorStyle = ColorManager.shared.isDarkTheme() ? .white : .default
+        tableView.separatorColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.separator")
+        tableView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
+        tableView.indicatorStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .white : .default
         if let backgoundView = tableView.backgroundView {
-            backgoundView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.background")
+            backgoundView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
         }
 
-        refreshControl.tintColor = ColorManager.shared.colorForKey("topiclist.refreshcontrol.tint")
+        refreshControl.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.refreshcontrol.tint")
 
-        titleLabel.textColor = ColorManager.shared.colorForKey("topiclist.navigationbar.titlelabel")
+        titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
 
-        searchBar.searchBarStyle = ColorManager.shared.isDarkTheme() ? .minimal : .default
-        searchBar.tintColor = ColorManager.shared.colorForKey("topiclist.searchbar.tint")
-        searchBar.barTintColor = ColorManager.shared.colorForKey("topiclist.searchbar.bartint")
-        searchBar.keyboardAppearance = ColorManager.shared.isDarkTheme() ? .dark : .default
+        searchBar.searchBarStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .minimal : .default
+        searchBar.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.tint")
+        searchBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.bartint")
+        searchBar.keyboardAppearance = AppEnvironment.current.colorManager.isDarkTheme() ? .dark : .default
         if searchBar.isFirstResponder {
             searchBar.reloadInputViews()
         }
 
-        footerView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.footer.background")
-        footerView.label.textColor = ColorManager.shared.colorForKey("topiclist.tableview.footer.text")
+        footerView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.background")
+        footerView.label.textColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.text")
 
         scrollTabBar.updateColor()
 
-        navigationBar.barTintColor = ColorManager.shared.colorForKey("appearance.navigationbar.bartint")
-        navigationBar.tintColor = ColorManager.shared.colorForKey("appearance.navigationbar.tint")
+        navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
+        navigationBar.tintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.tint")
         navigationBar.titleTextAttributes = [
-            .foregroundColor: ColorManager.shared.colorForKey("appearance.navigationbar.title"),
+            .foregroundColor: AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.title"),
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
 
-        archiveButton.tintColor = ColorManager.shared.colorForKey("topiclist.navigationbar.titlelabel")
+        archiveButton.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
 
         setNeedsStatusBarAppearanceUpdate()
     }

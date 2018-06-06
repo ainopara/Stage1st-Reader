@@ -26,7 +26,7 @@
         _minButtonWidth = [NSNumber numberWithDouble:80.0];
         _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
         _expectedButtonHeight = 44.0;
-        self.backgroundColor = [[ColorManager shared] colorForKey:@"tabbar.background"];
+        self.backgroundColor = [AppEnvironment.current.colorManager colorForKey:@"tabbar.background"];
         self.canCancelContentTouches = YES;
         self.bounces = NO;
         self.showsHorizontalScrollIndicator = NO;
@@ -63,12 +63,12 @@
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
-        [btn setTitleColor:[[ColorManager shared] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
+        [btn setTitleColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:14.0];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             btn.titleLabel.font = [UIFont systemFontOfSize:15.0];
@@ -208,12 +208,12 @@
 }
 
 - (void)updateColor {
-    self.backgroundColor = [[ColorManager shared] colorForKey:@"tabbar.background"];
+    self.backgroundColor = [AppEnvironment.current.colorManager colorForKey:@"tabbar.background"];
     for (UIButton *btn in _buttons) {
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared] colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[[ColorManager shared]  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
-        [btn setTitleColor:[[ColorManager shared] colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setTitleColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];
     }
 }
 

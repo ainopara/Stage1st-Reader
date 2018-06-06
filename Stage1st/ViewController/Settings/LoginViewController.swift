@@ -59,7 +59,7 @@ private class UserInfoInputView: UIView {
         }
 
         onepasswordButton.setImage(UIImage(named: "OnePasswordButton"), for: .normal)
-        onepasswordButton.tintColor = ColorManager.shared.colorForKey("default.text.tint")
+        onepasswordButton.tintColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
 
         let buttonContainer = UIView(frame: CGRect.zero)
         buttonContainer.snp.makeConstraints { make in
@@ -266,7 +266,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
             make.edges.equalTo(self.view)
         }
 
-        containerView.backgroundColor = ColorManager.shared.colorForKey("login.background")
+        containerView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("login.background")
         containerView.layer.cornerRadius = 4.0
         containerView.clipsToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -279,12 +279,12 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
         userInfoInputView.questionSelectButton.setTitle("安全提问（未设置请忽略）", for: .normal)
-        userInfoInputView.questionSelectButton.tintColor = ColorManager.shared.colorForKey("login.text")
+        userInfoInputView.questionSelectButton.tintColor = AppEnvironment.current.colorManager.colorForKey("login.text")
         userInfoInputView.questionSelectButton.addTarget(self, action: #selector(LoginViewController.selectSecureQuestion(_:)), for: .touchUpInside)
         userInfoInputView.answerField.delegate = self
         userInfoInputView.loginButton.addTarget(self, action: #selector(LoginViewController.logIn(_:)), for: .touchUpInside)
-        userInfoInputView.loginButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
-        userInfoInputView.loginButton.tintColor = ColorManager.shared.colorForKey("login.text")
+        userInfoInputView.loginButton.backgroundColor = AppEnvironment.current.colorManager.colorForKey("login.button")
+        userInfoInputView.loginButton.tintColor = AppEnvironment.current.colorManager.colorForKey("login.text")
 
         containerView.addSubview(userInfoInputView)
         userInfoInputView.snp.makeConstraints { make in
@@ -298,7 +298,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         }
 
         seccodeInputView.isHidden = true
-        seccodeInputView.backgroundColor = ColorManager.shared.colorForKey("login.background")
+        seccodeInputView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("login.background")
 
         containerView.addSubview(seccodeInputView)
         seccodeInputView.snp.makeConstraints { make in
@@ -308,7 +308,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         seccodeInputView.seccodeField.delegate = self
         seccodeInputView.seccodeField.backgroundColor = UIColor.white
         seccodeInputView.seccodeSubmitButton.setTitle("提交", for: .normal)
-        seccodeInputView.seccodeSubmitButton.backgroundColor = ColorManager.shared.colorForKey("login.button")
+        seccodeInputView.seccodeSubmitButton.backgroundColor = AppEnvironment.current.colorManager.colorForKey("login.button")
         seccodeInputView.seccodeSubmitButton.addTarget(self, action: #selector(LoginViewController.logInWithSeccode(_:)), for: .touchUpInside)
 
         state = inLoginState() ? .login : .notLogin
@@ -420,8 +420,8 @@ extension LoginViewController {
                 self.state = .notLoginWithAnswerField
             }
         }, cancel: nil, origin: button)!
-        picker.toolbarBackgroundColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
-        picker.toolbarButtonsColor = ColorManager.shared.colorForKey("appearance.toolbar.tint")
+        picker.toolbarBackgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        picker.toolbarButtonsColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
         picker.show()
     }
 

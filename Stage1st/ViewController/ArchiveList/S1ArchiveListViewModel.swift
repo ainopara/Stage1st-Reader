@@ -42,6 +42,7 @@ final class S1ArchiveListViewModel {
     private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
 
     let searchBarPlaceholderText = MutableProperty("")
+
     // MARK: -
 
     init() {
@@ -82,14 +83,13 @@ final class S1ArchiveListViewModel {
         MutableProperty
             .combineLatest(searchingTerm, currentState)
             .producer
-            .skipRepeats({ (current, previous) -> Bool in
+            .skipRepeats { (current, previous) -> Bool in
                 return current.0 == previous.0 && current.1 == previous.1
-            })
+            }
             .startWithValues { [weak self] (term, state) in
                 guard let strongSelf = self else { return }
-
-                strongSelf._updateFilter(term)
-        }
+                strongSelf._updateFilter(searchText: term, state: state)
+            }
 
         paletteNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .APPaletteDidChange)
@@ -113,7 +113,7 @@ final class S1ArchiveListViewModel {
 
                 return [
                     .font: font,
-                    .foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.text"),
+                    .foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.cell.title.text"),
                     .paragraphStyle: paragraphStype
                 ]
             }
@@ -207,7 +207,7 @@ extension S1ArchiveListViewModel {
         let title = (unwrappedTopic.title ?? "").replacingOccurrences(of: "\n", with: "")
         let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
         let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
-        mutableAttributedTitle.addAttributes([.foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.highlight")], range: termRange)
+        mutableAttributedTitle.addAttributes([.foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.cell.title.highlight")], range: termRange)
         attributedTitle = mutableAttributedTitle
 
         return TopicListCellViewModel(
@@ -228,6 +228,7 @@ extension S1ArchiveListViewModel {
 }
 
 // MARK: YapDatabase
+
 extension S1ArchiveListViewModel {
     func initializeMappings() {
         databaseConnection.read { transaction in
@@ -274,15 +275,19 @@ extension S1ArchiveListViewModel {
         return topic
     }
 
-    private func _updateFilter(_ searchText: String) {
-        let favoriteMark = currentState.value == .favorite ? "FY" : "F*"
+    private func _updateFilter(searchText: String, state: State) {
+        let favoriteMark = state == .favorite ? "FY" : "F*"
         let query = "favorite:\(favoriteMark) title:\(searchText)*"
         S1LogDebug("Update filter: \(query)")
+
         searchQueue.enqueueQuery(query)
+
         MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
-            if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction {
-                ext.performSearch(with: self.searchQueue)
+            guard let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction else {
+                return
             }
+
+            ext.performSearch(with: self.searchQueue)
         }
     }
 

@@ -147,7 +147,7 @@ final class S1TopicListViewModel: NSObject {
 
             return [
                 .font: font,
-                .foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.text"),
+                .foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.cell.title.text"),
                 .paragraphStyle: paragraphStype
             ]
         }
@@ -248,7 +248,7 @@ extension S1TopicListViewModel {
             let title = (topic.title ?? "").replacingOccurrences(of: "\n", with: "")
             let mutableAttributedTitle = NSMutableAttributedString(string: title, attributes: cellTitleAttributes.value)
             let termRange = (title as NSString).range(of: searchingTerm.value, options: [.caseInsensitive, .widthInsensitive])
-            mutableAttributedTitle.addAttributes([.foregroundColor: ColorManager.shared.colorForKey("topiclist.cell.title.highlight")], range: termRange)
+            mutableAttributedTitle.addAttributes([.foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.cell.title.highlight")], range: termRange)
             attributedTitle = mutableAttributedTitle
         case .forum:
             topic = topics[indexPath.row]

@@ -26,7 +26,7 @@ extension DefaultsKeys {
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
 }
 
-class Stage1stSettings: Settings {
+class Stage1stSettings: DefaultsBasedSettings {
     // Note: Initial value of MutablePropery will be overwrited by value in UserDefaults while binding.
 
     // Login

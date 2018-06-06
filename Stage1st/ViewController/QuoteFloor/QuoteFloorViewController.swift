@@ -109,8 +109,8 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
 // MARK: - Actions
 extension QuoteFloorViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = ColorManager.shared.colorForKey("content.background")
-        webView.backgroundColor = ColorManager.shared.colorForKey("content.webview.background")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
+        webView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.webview.background")
 
         setNeedsStatusBarAppearanceUpdate()
 
@@ -324,6 +324,6 @@ extension QuoteFloorViewController {
 // MARK: - Style
 extension QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }

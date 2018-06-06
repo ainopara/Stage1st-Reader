@@ -11,29 +11,31 @@ import CocoaLumberjack
 
 @objcMembers
 public final class ColorManager: NSObject {
-    private var palette: NSDictionary = NSDictionary()
-    private var colorMap: NSDictionary = NSDictionary()
+    private var palette = [String: Any]()
+    private var colorMap = [String: String]()
     private let fallbackColor = UIColor.black
     private let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
-    public static let shared = ColorManager()
-
     override init() {
+        super.init()
+
         let paletteName = AppEnvironment.current.settings.nightMode.value == true ? "DarkPalette": "DefaultPalette"
 
         let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
-        if let palettePath = palettePath,
-           let palette = NSDictionary(contentsOfFile: palettePath) {
+        if
+            let palettePath = palettePath,
+            let palette = NSDictionary(contentsOfFile: palettePath) as? [String: Any]
+        {
             self.palette = palette
         }
 
         let colorMapPath = Bundle.main.path(forResource: "ColorMap", ofType: "plist")
-        if let colorMapPath = colorMapPath,
-           let colorMap = NSDictionary(contentsOfFile: colorMapPath) {
+        if
+            let colorMapPath = colorMapPath,
+            let colorMap = NSDictionary(contentsOfFile: colorMapPath) as? [String: String]
+        {
             self.colorMap = colorMap
         }
-
-        super.init()
     }
 
     public func switchPalette(_ type: PaletteType) {
@@ -43,11 +45,11 @@ public final class ColorManager: NSObject {
     }
 
     public func htmlColorStringWithID(_ paletteID: String) -> String {
-        return (self.palette.value(forKey: paletteID) as? String) ?? "#000000"
+        return palette[paletteID] as? String ?? "#000000"
     }
 
     public func isDarkTheme() -> Bool {
-        return self.palette.value(forKey: "Dark") as? Bool ?? false
+        return palette["Dark"] as? Bool ?? false
     }
 
     public func updateGlobalAppearance() {
@@ -66,12 +68,11 @@ public final class ColorManager: NSObject {
         ]
         UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
         UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default
-        UIApplication.shared.statusBarStyle = isDarkTheme() ? .lightContent : .default
         (UIApplication.shared.delegate as! S1AppDelegate).window?.backgroundColor = colorForKey("window.background")
     }
 
     public func colorForKey(_ key: String) -> UIColor {
-        if let paletteID = (self.colorMap.value(forKey: key) as? String) {
+        if let paletteID = colorMap[key] {
             return colorInPaletteWithID(paletteID)
         } else {
             S1LogWarn("[Color Manager] can't found color \(key), default color used")
@@ -84,10 +85,15 @@ public final class ColorManager: NSObject {
 
 private extension ColorManager {
     func loadPaletteByURL(_ paletteURL: URL?, shouldPushNotification shouldPush: Bool) {
-        guard let paletteURL = paletteURL, let palette = NSDictionary(contentsOf: paletteURL) else {
+        guard
+            let paletteURL = paletteURL,
+            let palette = NSDictionary(contentsOf: paletteURL) as? [String: Any]
+        else {
             return
         }
+
         self.palette = palette
+
         updateGlobalAppearance()
         if shouldPush {
             NotificationCenter.default.post(name: .APPaletteDidChange, object: nil)
@@ -95,11 +101,13 @@ private extension ColorManager {
     }
 
     func colorInPaletteWithID(_ paletteID: String) -> UIColor {
-        let colorString = self.palette.value(forKey: paletteID) as? String
-        if let colorString = colorString, let color = S1Global.color(fromHexString: colorString) {
+        if
+            let colorString = palette[paletteID] as? String,
+            let color = S1Global.color(fromHexString: colorString)
+        {
             return color
         } else {
-            return self.fallbackColor
+            return fallbackColor
         }
     }
 }

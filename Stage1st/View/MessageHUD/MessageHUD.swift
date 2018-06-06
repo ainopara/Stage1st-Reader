@@ -144,9 +144,9 @@ class MessageHUD: UIWindow {
     }
 
     @objc func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        backgroundView.effect = ColorManager.shared.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
-        textLabel.textColor = ColorManager.shared.colorForKey("reply.text")
-        decorationLine.backgroundColor = ColorManager.shared.colorForKey("reply.text")
+        backgroundView.effect = AppEnvironment.current.colorManager.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
+        textLabel.textColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
+        decorationLine.backgroundColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
     }
 
     @objc func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {

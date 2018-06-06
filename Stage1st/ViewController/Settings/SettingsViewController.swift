@@ -16,7 +16,7 @@ import Files
 
 extension SettingsViewController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 

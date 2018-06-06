@@ -38,10 +38,10 @@ extension NavigationControllerDelegate: GagatStyleable {
     public func toggleActiveStyle() {
         if AppEnvironment.current.settings.nightMode.value == true {
             AppEnvironment.current.settings.nightMode.value = false
-            ColorManager.shared.switchPalette(.day)
+            AppEnvironment.current.colorManager.switchPalette(.day)
         } else {
             AppEnvironment.current.settings.nightMode.value = true
-            ColorManager.shared.switchPalette(.night)
+            AppEnvironment.current.colorManager.switchPalette(.night)
         }
     }
 }

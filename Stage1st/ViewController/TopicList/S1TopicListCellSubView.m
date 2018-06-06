@@ -27,23 +27,23 @@
     
     // Color Declarations
     UIColor *cellBackgroundColor = _highlighted ?
-    [[ColorManager shared] colorForKey:@"topiclist.cell.background.highlight"] :
-    [[ColorManager shared] colorForKey:@"topiclist.cell.background.normal"];
+    [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.background.highlight"] :
+    [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.background.normal"];
 
     if (_pinningToTop) {
         cellBackgroundColor = _highlighted ?
-        [[ColorManager shared] colorForKey:@"topiclist.cell.pinningTopBackground.highlight"] :
-        [[ColorManager shared] colorForKey:@"topiclist.cell.pinningTopBackground.normal"];
+        [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.pinningTopBackground.highlight"] :
+        [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.pinningTopBackground.normal"];
     }
 
-    UIColor *replyCountRectFillColor = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.fill"];
-    UIColor *replyCountRectStrokeColor = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.border.normal"];
-    UIColor *replyCountRectStrokeColorOfHistoryThread = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.border.history"];
-    UIColor *replyCountRectStrokeColorOfFavoriteThread = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.border.favorite"];
+    UIColor *replyCountRectFillColor = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.fill"];
+    UIColor *replyCountRectStrokeColor = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.border.normal"];
+    UIColor *replyCountRectStrokeColorOfHistoryThread = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.border.history"];
+    UIColor *replyCountRectStrokeColorOfFavoriteThread = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.border.favorite"];
     
-    UIColor *replyCountTextColor = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.text.normal"];
-    UIColor *replyCountTextColorOfHistoryThread = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.text.history"];
-    UIColor *replyCountTextColorOfFavoriteThread = [[ColorManager shared] colorForKey:@"topiclist.cell.replycount.text.favorite"];
+    UIColor *replyCountTextColor = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.text.normal"];
+    UIColor *replyCountTextColorOfHistoryThread = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.text.history"];
+    UIColor *replyCountTextColorOfFavoriteThread = [AppEnvironment.current.colorManager colorForKey:@"topiclist.cell.replycount.text.favorite"];
 
     // Abstracted Attributes
     NSString* textContent = [self.topic.replyCount stringValue];

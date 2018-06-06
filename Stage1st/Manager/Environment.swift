@@ -22,6 +22,7 @@ class Environment: NSObject {
     let databaseManager: DatabaseManager
     let cloudkitManager: CloudKitManager
     let cacheDatabaseManager: CacheDatabaseManager
+    let colorManager: ColorManager
 
     let databaseAdapter: S1YapDatabaseAdapter
     let dataCenter: DataCenter
@@ -38,6 +39,7 @@ class Environment: NSObject {
         databaseManager: DatabaseManager,
         cloudkitManager: CloudKitManager,
         cacheDatabaseManager: CacheDatabaseManager,
+        colorManager: ColorManager,
         databaseAdapter: S1YapDatabaseAdapter,
         dataCenter: DataCenter
     ) {
@@ -53,6 +55,7 @@ class Environment: NSObject {
         self.databaseManager = databaseManager
         self.cloudkitManager = cloudkitManager
         self.cacheDatabaseManager = cacheDatabaseManager
+        self.colorManager = colorManager
         self.databaseAdapter = databaseAdapter
         self.dataCenter = dataCenter
     }
@@ -61,13 +64,15 @@ class Environment: NSObject {
         forumName: String = "Stage1st",
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
-        reachability: Reachability = Reachability.forInternetConnection()
+        reachability: Reachability = Reachability.forInternetConnection(),
+        colorManager: ColorManager = ColorManager()
     ) {
         self.forumName = forumName
         self.cookieStorage = cookieStorage
         self.settings = settings
         self.reachability = reachability
         reachability.startNotifier()
+        self.colorManager = colorManager
 
         cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
 

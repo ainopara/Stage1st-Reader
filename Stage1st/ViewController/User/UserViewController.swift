@@ -150,14 +150,14 @@ final class UserViewController: UIViewController {
 // MARK: - Style
 extension UserViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 
     override func didReceivePaletteChangeNotification(_: Notification?) {
-        view.backgroundColor = ColorManager.shared.colorForKey("content.background")
-        usernameLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
-        customStatusLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
-        infoLabel.textColor = ColorManager.shared.colorForKey("default.text.tint")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
+        usernameLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
+        customStatusLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
+        infoLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
         setNeedsStatusBarAppearanceUpdate()
     }
 }

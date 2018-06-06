@@ -77,7 +77,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.makeKeyAndVisible()
 
         // Appearence
-        ColorManager.shared.updateGlobalAppearance()
+        AppEnvironment.current.colorManager.updateGlobalAppearance()
         navigationControllerDelegate!.setUpGagat()
 
         #if DEBUG

@@ -336,10 +336,10 @@ extension WebViewController {
 
 extension WebViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        statusBarSeparatorView.backgroundColor = ColorManager.shared.colorForKey("default.text.tint")
-        progressView.tintColor = ColorManager.shared.colorForKey("default.text.tint")
+        statusBarSeparatorView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
+        progressView.tintColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
 
-        if ColorManager.shared.isDarkTheme() {
+        if AppEnvironment.current.colorManager.isDarkTheme() {
             let darkBlurEffect = UIBlurEffect(style: .dark)
             blurBackgroundView.effect = darkBlurEffect
             vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: darkBlurEffect)

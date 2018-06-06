@@ -191,6 +191,10 @@ class S1ArchiveListViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         viewModel.traitCollection.value = self.traitCollection
     }
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -213,8 +217,8 @@ extension S1ArchiveListViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TopicListHeaderView") as! TopicListHeaderView
 
-        headerView.backgroundView?.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.header.background")
-        headerView.label.textColor = ColorManager.shared.colorForKey("topiclist.tableview.header.text")
+        headerView.backgroundView?.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.header.background")
+        headerView.label.textColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.header.text")
         headerView.label.text = viewModel.viewMappings?.group(forSection: UInt(section)) ?? "Unknown"
 
         return headerView
@@ -244,7 +248,7 @@ extension S1ArchiveListViewController: UITableViewDelegate {
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.deleteTopicAtIndexPath(indexPath)
             })
-            deleteAction.backgroundColor = ColorManager.shared.colorForKey("topiclist.cell.action.delete")
+            deleteAction.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.cell.action.delete")
 
             return [deleteAction]
         }
@@ -254,7 +258,7 @@ extension S1ArchiveListViewController: UITableViewDelegate {
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.unfavoriteTopicAtIndexPath(indexPath)
             })
-            cancelFavoriteAction.backgroundColor = ColorManager.shared.colorForKey("topiclist.cell.action.cancelfavorite")
+            cancelFavoriteAction.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.cell.action.cancelfavorite")
             return [cancelFavoriteAction]
         }
 
@@ -314,27 +318,27 @@ extension S1ArchiveListViewController {
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = ColorManager.shared.colorForKey("topiclist.background")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.background")
 
-        tableView.separatorColor = ColorManager.shared.colorForKey("topiclist.tableview.separator")
-        tableView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.background")
-        tableView.indicatorStyle = ColorManager.shared.isDarkTheme() ? .white : .default
+        tableView.separatorColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.separator")
+        tableView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
+        tableView.indicatorStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .white : .default
         if let backgoundView = tableView.backgroundView {
-            backgoundView.backgroundColor = ColorManager.shared.colorForKey("topiclist.tableview.background")
+            backgoundView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
         }
 
-        searchBar.searchBarStyle = ColorManager.shared.isDarkTheme() ? .minimal : .default
-        searchBar.tintColor = ColorManager.shared.colorForKey("topiclist.searchbar.tint")
-        searchBar.barTintColor = ColorManager.shared.colorForKey("topiclist.searchbar.bartint")
-        searchBar.keyboardAppearance = ColorManager.shared.isDarkTheme() ? .dark : .default
+        searchBar.searchBarStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .minimal : .default
+        searchBar.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.tint")
+        searchBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.bartint")
+        searchBar.keyboardAppearance = AppEnvironment.current.colorManager.isDarkTheme() ? .dark : .default
         if searchBar.isFirstResponder {
             searchBar.reloadInputViews()
         }
 
-        navigationBar.barTintColor = ColorManager.shared.colorForKey("appearance.navigationbar.bartint")
-        navigationBar.tintColor = ColorManager.shared.colorForKey("appearance.navigationbar.tint")
+        navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
+        navigationBar.tintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.tint")
         navigationBar.titleTextAttributes = [
-            .foregroundColor: ColorManager.shared.colorForKey("appearance.navigationbar.title"),
+            .foregroundColor: AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.title"),
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
 

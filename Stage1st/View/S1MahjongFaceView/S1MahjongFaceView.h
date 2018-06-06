@@ -13,6 +13,7 @@
 @class MahjongFaceCategory;
 @class MahjongFaceItem;
 @class S1TabBar;
+@class S1MahjongFacePageView;
 @protocol S1MahjongFaceViewDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -23,6 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *currentCategory;
 @property (nonatomic, assign) NSUInteger historyCountLimit;
 @property (nonatomic, strong) NSArray<MahjongFaceItem *> *historyArray;
+
+@property (nonatomic, strong, readonly) UIScrollView *scrollView;
+@property (nonatomic, strong, readonly) NSMutableArray<S1MahjongFacePageView *> *pageViews;
+@property (nonatomic, strong, readonly) UIPageControl *pageControl;
+
 @property (weak, nonatomic, nullable) id<S1MahjongFaceViewDelegate> delegate;
 
 @property (nonatomic, strong) S1TabBar *tabBar;

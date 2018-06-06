@@ -233,7 +233,7 @@
 
 - (IBAction)switchNightMode:(UISwitch *)sender {
     [[NSUserDefaults standardUserDefaults] setBool:sender.on forKey:@"NightMode"];
-    [[ColorManager shared] switchPalette:sender.on == YES ? PaletteTypeNight : PaletteTypeDay];
+    [AppEnvironment.current.colorManager switchPalette:sender.on == YES ? PaletteTypeNight : PaletteTypeDay];
 }
 
 - (IBAction)switchForcePortrait:(UISwitch *)sender {
@@ -243,18 +243,18 @@
 #pragma mark - Notification
 
 - (void)didReceivePaletteChangeNotification:(NSNotification *)notification {
-    [self.displayImageSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
-    [self.removeTailsSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
-    [self.precacheSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
-    [self.forcePortraitSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
-    [self.nightModeSwitch setOnTintColor:[[ColorManager shared] colorForKey:@"appearance.switch.tint"]];
-    [self.navigationController.navigationBar setBarTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.bartint"]];
-    [self.navigationController.navigationBar setTintColor:[[ColorManager shared]  colorForKey:@"appearance.navigationbar.tint"]];
+    [self.displayImageSwitch setOnTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.switch.tint"]];
+    [self.removeTailsSwitch setOnTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.switch.tint"]];
+    [self.precacheSwitch setOnTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.switch.tint"]];
+    [self.forcePortraitSwitch setOnTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.switch.tint"]];
+    [self.nightModeSwitch setOnTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.switch.tint"]];
+    [self.navigationController.navigationBar setBarTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.navigationbar.bartint"]];
+    [self.navigationController.navigationBar setTintColor:[AppEnvironment.current.colorManager colorForKey:@"appearance.navigationbar.tint"]];
     [self.navigationController.navigationBar setTitleTextAttributes:@{
-        NSForegroundColorAttributeName: [[ColorManager shared] colorForKey:@"appearance.navigationbar.title"],
+        NSForegroundColorAttributeName: [AppEnvironment.current.colorManager colorForKey:@"appearance.navigationbar.title"],
         NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],
     }];
-    [self.navigationController.navigationBar setBarStyle: [[ColorManager shared] isDarkTheme] ? UIBarStyleBlack : UIBarStyleDefault];
+    [self.navigationController.navigationBar setBarStyle: [AppEnvironment.current.colorManager isDarkTheme] ? UIBarStyleBlack : UIBarStyleDefault];
 }
 
 - (void)didReceiveLoginStatusChangeNotification:(NSNotification *)notification {

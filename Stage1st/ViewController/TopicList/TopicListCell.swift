@@ -76,12 +76,12 @@ final class TopicListCell: UITableViewCell {
 
         if drawingSubview.pinningToTop {
             cellBackgroundColor = drawingSubview.highlighted ?
-                ColorManager.shared.colorForKey("topiclist.cell.pinningTopBackground.highlight") :
-                ColorManager.shared.colorForKey("topiclist.cell.pinningTopBackground.normal")
+                AppEnvironment.current.colorManager.colorForKey("topiclist.cell.pinningTopBackground.highlight") :
+                AppEnvironment.current.colorManager.colorForKey("topiclist.cell.pinningTopBackground.normal")
         } else {
             cellBackgroundColor = drawingSubview.highlighted ?
-                ColorManager.shared.colorForKey("topiclist.cell.background.highlight") :
-                ColorManager.shared.colorForKey("topiclist.cell.background.normal")
+                AppEnvironment.current.colorManager.colorForKey("topiclist.cell.background.highlight") :
+                AppEnvironment.current.colorManager.colorForKey("topiclist.cell.background.normal")
         }
 
         self.backgroundColor = cellBackgroundColor

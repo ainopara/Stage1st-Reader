@@ -234,10 +234,10 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
                 guard let strongSelf = self else { return }
                 if let title = title, title != "" {
                     strongSelf.titleLabel.text = title as String
-                    strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.normal")
+                    strongSelf.titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.normal")
                 } else {
                     strongSelf.titleLabel.text = "\(strongSelf.viewModel.topic.topicID) 载入中..."
-                    strongSelf.titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.disable")
+                    strongSelf.titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.disable")
                 }
             }
 
@@ -480,16 +480,16 @@ extension S1ContentViewController {
             }
         }, cancel: nil, origin: pageButton)
 
-        picker?.pickerBackgroundColor = ColorManager.shared.colorForKey("content.picker.background")
-        picker?.toolbarBackgroundColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
-        picker?.toolbarButtonsColor = ColorManager.shared.colorForKey("appearance.toolbar.tint")
+        picker?.pickerBackgroundColor = AppEnvironment.current.colorManager.colorForKey("content.picker.background")
+        picker?.toolbarBackgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        picker?.toolbarButtonsColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
 
         let labelParagraphStyle = NSMutableParagraphStyle()
         labelParagraphStyle.alignment = .center
         picker?.pickerTextAttributes = [
             NSAttributedStringKey.paragraphStyle: labelParagraphStyle,
             NSAttributedStringKey.font: UIFont.systemFont(ofSize: 19.0),
-            NSAttributedStringKey.foregroundColor: ColorManager.shared.colorForKey("content.picker.text"),
+            NSAttributedStringKey.foregroundColor: AppEnvironment.current.colorManager.colorForKey("content.picker.text"),
         ]
         picker?.show()
     }
@@ -735,19 +735,19 @@ extension S1ContentViewController {
 
     open override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         // Color
-        view.backgroundColor = ColorManager.shared.colorForKey("content.background")
-        webView.backgroundColor = ColorManager.shared.colorForKey("content.webview.background")
-        webView.scrollView.indicatorStyle = ColorManager.shared.isDarkTheme() ? .white : .default
-        topDecorateLine.backgroundColor = ColorManager.shared.colorForKey("content.decoration.line")
-        bottomDecorateLine.backgroundColor = ColorManager.shared.colorForKey("content.decoration.line")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
+        webView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.webview.background")
+        webView.scrollView.indicatorStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .white : .default
+        topDecorateLine.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.decoration.line")
+        bottomDecorateLine.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.decoration.line")
         if let title = self.viewModel.topic.title, title != "" {
-            titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.normal")
+            titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.normal")
         } else {
-            titleLabel.textColor = ColorManager.shared.colorForKey("content.titlelabel.text.disable")
+            titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.disable")
         }
-        pageButton.setTitleColor(ColorManager.shared.colorForKey("content.pagebutton.text"), for: .normal)
-        toolBar.barTintColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
-        toolBar.tintColor = ColorManager.shared.colorForKey("appearance.toolbar.tint")
+        pageButton.setTitleColor(AppEnvironment.current.colorManager.colorForKey("content.pagebutton.text"), for: .normal)
+        toolBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        toolBar.tintColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
 
         setNeedsStatusBarAppearanceUpdate()
 
@@ -1151,7 +1151,7 @@ extension S1ContentViewController {
     }
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ColorManager.shared.isDarkTheme() ? .lightContent : .default
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 
@@ -1263,12 +1263,8 @@ extension S1ContentViewController {
     }
 
     func _presentReplyView(toFloor floor: Floor?) {
-        let replyViewController = REComposeViewController(nibName: nil, bundle: nil)
+        let replyViewController = ReplyViewController(nibName: nil, bundle: nil)
         replyViewController.delegate = self
-        replyViewController.textView.keyboardAppearance = ColorManager.shared.isDarkTheme() ? .dark : .default
-        replyViewController.textView.tintColor = ColorManager.shared.colorForKey("reply.tint")
-        replyViewController.textView.textColor = ColorManager.shared.colorForKey("reply.text")
-        replyViewController.sheetBackgroundColor = ColorManager.shared.colorForKey("reply.background")
 
         replyTopicFloor = floor
         if let floor = floor { // Reply Floor
@@ -1280,11 +1276,6 @@ extension S1ContentViewController {
         if let replyDraft = attributedReplyDraft {
             replyViewController.textView.attributedText = replyDraft
         }
-
-        let accessoryView = ReplyAccessoryView(composeViewController: replyViewController)
-        accessoryView.backgroundColor = ColorManager.shared.colorForKey("appearance.toolbar.bartint")
-        replyViewController.accessoryView = accessoryView
-        replyViewController.textView.s1_resetToReplyStyle()
 
         present(replyViewController, animated: true, completion: nil)
     }
