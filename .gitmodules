@@ -1,0 +1,6 @@
+[submodule "Frameworks/Ainoaibo"]
+	path = Frameworks/Ainoaibo
+	url = https://github.com/ainopara/Ainoaibo.git
+[submodule "Frameworks/CrashlyticsLogger"]
+	path = Frameworks/CrashlyticsLogger
+	url = https://github.com/ainopara/CrashlyticsLogger.git
