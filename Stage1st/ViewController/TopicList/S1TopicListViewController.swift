@@ -6,8 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import UIKit
-import CocoaLumberjack
+import Ainoaibo
 import ReactiveSwift
 import ReactiveCocoa
 import DeviceKit

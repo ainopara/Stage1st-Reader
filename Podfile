@@ -28,7 +28,6 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'CrashlyticsLogger', :git => 'https://github.com/ainopara/CrashlyticsLogger.git', :tag => '0.2.0'
     pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
 
@@ -40,12 +39,14 @@ target "Stage1st" do
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
-    pod 'GRMustache.swift'
+    pod 'GRMustache.swift', :git => 'https://github.com/iina/GRMustache.swift.git'
     pod '1PasswordExtension'
     pod 'AcknowList'
     pod 'QuickTableViewController'
     pod 'Files'
     pod 'DeviceKit'
+    pod 'CrashlyticsLogger', :path => '../CrashlyticsLogger'
+    pod 'Ainoaibo', :path => '../Ainoaibo'
 
     target "Stage1stTests" do
         inherit! :search_paths
@@ -58,7 +59,6 @@ end
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         pods_with_swift3 = [
-            'GRMustache.swift',
             'TextAttributes',
         ]
         if pods_with_swift3.include? target.name then

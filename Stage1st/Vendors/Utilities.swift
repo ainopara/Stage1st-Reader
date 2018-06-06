@@ -19,13 +19,6 @@ func ensureMainThread(_ block: @escaping () -> Void) {
     }
 }
 
-// https://www.youtube.com/watch?v=jzdOkQFekbg `Let's Talk About Let` by `objc.io`
-func mutate<T>(_ value: T, change: (inout T) -> Void) -> T {
-    var copy = value
-    change(&copy)
-    return copy
-}
-
 func valuesAreEqual(_ value1: AnyObject?, _ value2: AnyObject?) -> Bool {
     if let value1 = value1, let value2 = value2 {
         return value1.isEqual(value2)
@@ -213,18 +206,7 @@ extension UIImage {
     }
 }
 
-// From: https://github.com/apple/swift-evolution/blob/master/proposals/0177-add-clamped-to-method.md
-extension Comparable {
-    func s1_clamped(to range: ClosedRange<Self>) -> Self {
-        if self > range.upperBound {
-            return range.upperBound
-        } else if self < range.lowerBound {
-            return range.lowerBound
-        } else {
-            return self
-        }
-    }
-}
+
 
 // From https://github.com/kickstarter/ios-oss/blob/master/Library/String%2BSimpleHTML.swift
 extension String {

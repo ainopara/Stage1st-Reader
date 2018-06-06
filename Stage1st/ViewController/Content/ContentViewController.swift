@@ -8,7 +8,7 @@
 
 import WebKit
 import SnapKit
-import CocoaLumberjack
+import Ainoaibo
 import ActionSheetPicker_3_0
 import JTSImageViewController
 import Crashlytics
@@ -1045,7 +1045,7 @@ extension S1ContentViewController: PullToActionDelagete {
                     forwardButtonState = .forward(rotateAngle: 1.0)
                 }
             } else {
-                forwardButtonState = .forward(rotateAngle: bottomProgress.s1_clamped(to: 0.0...1.0))
+                forwardButtonState = .forward(rotateAngle: bottomProgress.aibo_clamped(to: 0.0...1.0))
             }
         }
 
@@ -1054,7 +1054,7 @@ extension S1ContentViewController: PullToActionDelagete {
             if viewModel.isInFirstPage() {
                 backButtonState = .back(rotateAngle: 0.0)
             } else {
-                backButtonState = .back(rotateAngle: topProgress.s1_clamped(to: 0.0...1.0))
+                backButtonState = .back(rotateAngle: topProgress.aibo_clamped(to: 0.0...1.0))
             }
         }
     }
@@ -1354,7 +1354,7 @@ private extension S1ContentViewController {
         case .restorePosition:
             // Restore last view position from cached position in this view controller.
             webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
-            if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.s1_clamped(to: 0.0...maxOffset) {
+            if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.aibo_clamped(to: 0.0...maxOffset) {
                 S1LogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
 
                 changeOffsetIfNeeded(to: positionForPage)

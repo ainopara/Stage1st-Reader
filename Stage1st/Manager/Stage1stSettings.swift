@@ -7,6 +7,7 @@
 //
 
 import ReactiveSwift
+import Ainoaibo
 
 extension DefaultsKeys {
     static let currentUsername = DefaultsKey<String>("InLoginStateID")

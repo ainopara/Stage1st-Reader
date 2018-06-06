@@ -32,10 +32,12 @@ extension PageRenderer {
 
     func generatePage(with floors: [Floor]) -> String {
         do {
-            let template = try Template(named: "html/thread",
-                                        bundle: templateBundle(),
-                                        templateExtension: "mustache",
-                                        encoding: .utf8)
+            let template = try Template(
+                named: "html/thread",
+                bundle: templateBundle(),
+                templateExtension: "mustache",
+                encoding: .utf8
+            )
             let data = Box(pageData(with: floors, topic: topic))
             let result = try template.render(data)
             return result

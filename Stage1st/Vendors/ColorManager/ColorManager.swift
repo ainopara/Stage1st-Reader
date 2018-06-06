@@ -16,10 +16,10 @@ public final class ColorManager: NSObject {
     private let fallbackColor = UIColor.black
     private let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
-    override init() {
+    init(nightMode: Bool) {
         super.init()
 
-        let paletteName = AppEnvironment.current.settings.nightMode.value == true ? "DarkPalette": "DefaultPalette"
+        let paletteName = nightMode ? "DarkPalette": "DefaultPalette"
 
         let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
         if

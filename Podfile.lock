@@ -17,6 +17,25 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
+  - Ainoaibo (0.1.0):
+    - Ainoaibo/DefaultsBasedSettings (= 0.1.0)
+    - Ainoaibo/Logging (= 0.1.0)
+    - Ainoaibo/LoggingProtocol (= 0.1.0)
+    - Ainoaibo/OSLogger (= 0.1.0)
+    - Ainoaibo/SwiftExtension (= 0.1.0)
+  - Ainoaibo/DefaultsBasedSettings (0.1.0):
+    - Ainoaibo/Logging
+    - ReactiveSwift
+  - Ainoaibo/Logging (0.1.0):
+    - Ainoaibo/LoggingProtocol
+    - CocoaLumberjack
+    - CocoaLumberjack/Swift
+  - Ainoaibo/LoggingProtocol (0.1.0)
+  - Ainoaibo/OSLogger (0.1.0):
+    - Ainoaibo/LoggingProtocol
+    - CocoaLumberjack
+    - CocoaLumberjack/Swift
+  - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (4.7.2)
   - AlamofireImage (3.3.1):
     - Alamofire (~> 4.5)
@@ -30,16 +49,19 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
-  - CrashlyticsLogger (0.2.0):
-    - CrashlyticsLogger/Formatters (= 0.2.0)
-    - CrashlyticsLogger/Loggers (= 0.2.0)
-    - CrashlyticsLogger/LogViewers (= 0.2.0)
-  - CrashlyticsLogger/Formatters (0.2.0):
+  - CrashlyticsLogger (0.3.0):
+    - CrashlyticsLogger/Core (= 0.3.0)
+    - CrashlyticsLogger/Formatters (= 0.3.0)
+    - CrashlyticsLogger/Loggers (= 0.3.0)
+    - CrashlyticsLogger/LogViewers (= 0.3.0)
+  - CrashlyticsLogger/Core (0.3.0)
+  - CrashlyticsLogger/Formatters (0.3.0):
     - CocoaLumberjack
-  - CrashlyticsLogger/Loggers (0.2.0):
+  - CrashlyticsLogger/Loggers (0.3.0):
     - CocoaLumberjack
     - Crashlytics
-  - CrashlyticsLogger/LogViewers (0.2.0):
+    - CrashlyticsLogger/Core
+  - CrashlyticsLogger/LogViewers (0.3.0):
     - CrashlyticsLogger/Loggers
     - SnapKit
   - DeviceKit (1.7.0)
@@ -144,18 +166,19 @@ DEPENDENCIES:
   - AcknowList
   - ActionSheetPicker-3.0
   - AFNetworking
+  - Ainoaibo (from `../Ainoaibo`)
   - Alamofire
   - AlamofireImage
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
-  - CrashlyticsLogger (from `https://github.com/ainopara/CrashlyticsLogger.git`, tag `0.2.0`)
+  - CrashlyticsLogger (from `../CrashlyticsLogger`)
   - DeviceKit
   - Fabric
   - FBSnapshotTestCase
   - Files
   - FMDB
-  - GRMustache.swift
+  - GRMustache.swift (from `https://github.com/iina/GRMustache.swift.git`)
   - GYHttpMock
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KIF
@@ -187,7 +210,6 @@ SPEC REPOS:
     - FBSnapshotTestCase
     - Files
     - FMDB
-    - GRMustache.swift
     - GYHttpMock
     - KIF
     - Masonry
@@ -202,9 +224,12 @@ SPEC REPOS:
     - YYKeyboardManager
 
 EXTERNAL SOURCES:
+  Ainoaibo:
+    :path: "../Ainoaibo"
   CrashlyticsLogger:
-    :git: https://github.com/ainopara/CrashlyticsLogger.git
-    :tag: 0.2.0
+    :path: "../CrashlyticsLogger"
+  GRMustache.swift:
+    :git: https://github.com/iina/GRMustache.swift.git
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
@@ -216,9 +241,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
-  CrashlyticsLogger:
-    :git: https://github.com/ainopara/CrashlyticsLogger.git
-    :tag: 0.2.0
+  GRMustache.swift:
+    :commit: 3e6778e4b8a134e3f96d04d6c15c7213bd7d9935
+    :git: https://github.com/iina/GRMustache.swift.git
   JTSImageViewController:
     :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
@@ -237,17 +262,18 @@ SPEC CHECKSUMS:
   AcknowList: 2b27ccc75110be58be37424c4b08b07bdec628b4
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  Ainoaibo: 49df5e49f86b51d9ead7eb6a99e7c85553c1c8ae
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
-  CrashlyticsLogger: 848158f095d4781c03737f15a423fd7a5e3e3dc9
+  CrashlyticsLogger: 20cbc282b447ff8b631ba5c239f0cc2415e51c32
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
-  GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
+  GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 4c23b5d24dba24d3cb6dbb9c7d325b31e526ba4a
@@ -265,6 +291,6 @@ SPEC CHECKSUMS:
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 33438fa16d4cfc9a911cb016a41ff2ec480e1e95
+PODFILE CHECKSUM: 075340f815765b3d2d6ceb453098c8637f297d66
 
 COCOAPODS: 1.5.3

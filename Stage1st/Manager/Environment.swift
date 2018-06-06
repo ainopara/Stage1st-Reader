@@ -64,16 +64,15 @@ class Environment: NSObject {
         forumName: String = "Stage1st",
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
-        reachability: Reachability = Reachability.forInternetConnection(),
-        colorManager: ColorManager = ColorManager()
+        reachability: Reachability = Reachability.forInternetConnection()
     ) {
         self.forumName = forumName
         self.cookieStorage = cookieStorage
         self.settings = settings
         self.reachability = reachability
         reachability.startNotifier()
-        self.colorManager = colorManager
 
+        colorManager = ColorManager(nightMode: settings.nightMode.value)
         cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
 
         if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {

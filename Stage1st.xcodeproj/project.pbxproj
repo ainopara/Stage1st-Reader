@@ -67,7 +67,6 @@
 		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */; };
-		866E2DDF2085A0B300ADBD5F /* DefaultsBasedSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */; };
 		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0C1F403788000AE19E /* TopicListCell.swift */; };
 		86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */; };
@@ -223,7 +222,6 @@
 		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewController.swift; sourceTree = "<group>"; };
-		866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsBasedSettings.swift; sourceTree = "<group>"; };
 		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		86734B0C1F403788000AE19E /* TopicListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListCell.swift; sourceTree = "<group>"; };
 		86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListHeaderView.swift; sourceTree = "<group>"; };
@@ -567,7 +565,6 @@
 				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
-				866E2DDE2085A0B300ADBD5F /* DefaultsBasedSettings.swift */,
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
 			);
 			path = Manager;
@@ -942,6 +939,7 @@
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AcknowList/AcknowList.framework",
 				"${BUILT_PRODUCTS_DIR}/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework",
+				"${BUILT_PRODUCTS_DIR}/Ainoaibo/Ainoaibo.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
@@ -970,6 +968,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AcknowList.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ActionSheetPicker_3_0.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Ainoaibo.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
@@ -1090,7 +1089,6 @@
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
-				866E2DDF2085A0B300ADBD5F /* DefaultsBasedSettings.swift in Sources */,
 				C095878E16CA9959007E0119 /* S1TopicListViewController.m in Sources */,
 				862501B420A13D8400B7617D /* ExceptionCatcher.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
