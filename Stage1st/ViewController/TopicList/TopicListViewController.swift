@@ -12,32 +12,11 @@ import ReactiveCocoa
 import DeviceKit
 import Crashlytics
 
-class S1TopicListViewController: UIViewController {
-    let viewModel: S1TopicListViewModel
+class TopicListViewController: UIViewController {
+    let viewModel: TopicListViewModel
 
     let naviItem = UINavigationItem()
     let navigationBar = UINavigationBar(frame: .zero)
-    let titleLabel = UILabel(frame: .zero)
-
-    lazy var settingsItem: UIBarButtonItem = {
-        return UIBarButtonItem(
-            image: UIImage.init(named: "Settings"),
-            style: .plain,
-            target: self,
-            action: #selector(settings)
-        )
-    }()
-
-    let archiveButton = AnimationButton(
-        frame: CGRect(x: 0.0, y: 0.0, width: 44.0, height: 44.0),
-        image: UIImage(named: "Archive")!
-    )
-
-    lazy var historyItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(customView: archiveButton)
-        item.accessibilityLabel = "Archive Button"
-        return item
-    }()
 
     let tableView = UITableView(frame: .zero, style: .plain)
 
@@ -51,36 +30,33 @@ class S1TopicListViewController: UIViewController {
     let footerView = LoadingFooterView()
     let refreshHUD = S1HUD(frame: .zero)
 
-    var dataCenter: DataCenter {
-        return viewModel.dataCenter
-    }
-
     // Model
     var cachedContentOffset = [String: CGPoint]()
     var cachedLastRefreshTime = [String: Date]()
-    lazy var forumKeyMap: [String: String] = {
-        let path = Bundle.main.path(forResource: "ForumKeyMap", ofType: "plist")!
-        let map = NSDictionary(contentsOfFile: path)!
-        return map as! [String: String]
-    }()
 
     var loadingFlag = false
     var loadingMore = false
 //    @property (nonatomic, strong) NSString *searchKeyword;
 
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        viewModel = S1TopicListViewModel(dataCenter: AppEnvironment.current.dataCenter)
+        viewModel = TopicListViewModel(dataCenter: AppEnvironment.current.dataCenter)
 
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
         // Navigation Bar
-        titleLabel.text = "Stage1st"
-        titleLabel.font = UIFont.systemFont(ofSize: 17.0)
-        titleLabel.sizeToFit()
-
-        naviItem.titleView = titleLabel
-        naviItem.leftBarButtonItem = settingsItem
-        naviItem.rightBarButtonItem = historyItem
+        naviItem.title = "Stage1st"
+        naviItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "Settings"),
+            style: .plain,
+            target: self,
+            action: #selector(settings)
+        )
+        naviItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "Archive"),
+            style: .plain,
+            target: self,
+            action: #selector(archive)
+        )
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -135,12 +111,6 @@ class S1TopicListViewController: UIViewController {
         scrollTabBar.keys = self.keys()
         scrollTabBar.tabbarDelegate = self
 
-        archiveButton.addTarget(
-            self,
-            action: #selector(archive),
-            for: .touchUpInside
-        )
-
         refreshControl.addTarget(
             self,
             action: #selector(refresh),
@@ -183,7 +153,7 @@ class S1TopicListViewController: UIViewController {
 
 // MARK: -
 
-extension S1TopicListViewController {
+extension TopicListViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -252,13 +222,13 @@ extension S1TopicListViewController {
         view.addSubview(refreshHUD)
         refreshHUD.snp.makeConstraints { (make) in
             make.center.equalTo(view)
-            make.width.lessThanOrEqualTo(view)
-            make.height.lessThanOrEqualTo(view)
+            make.width.lessThanOrEqualTo(view.snp.width).offset(-10.0)
+            make.height.lessThanOrEqualTo(view.snp.height).offset(-10.0)
         }
     }
 
     open override func didReceiveMemoryWarning() {
-        dataCenter.clearTopicListCache()
+        viewModel.dataCenter.clearTopicListCache()
         S1Formatter.sharedInstance().clearCache()
     }
 
@@ -274,9 +244,17 @@ extension S1TopicListViewController {
             value.size = size
         })
     }
+
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        viewModel.traitCollection.value = traitCollection
+    }
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
+    }
 }
 
-extension S1TopicListViewController {
+extension TopicListViewController {
     func bindViewModel() {
         viewModel.tableViewReloading.observeValues { [weak self] in
             guard let strongSelf = self else { return }
@@ -290,6 +268,19 @@ extension S1TopicListViewController {
             strongSelf.tableView.beginUpdates()
             strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableViewRowAnimation.automatic)
             strongSelf.tableView.endUpdates()
+        }
+
+        viewModel.hudAction.signal.observeValues { [weak self] (action) in
+            guard let strongSelf = self else { return }
+
+            switch action {
+            case .loading:
+                strongSelf.refreshHUD.showActivityIndicator()
+            case let .text(text):
+                strongSelf.refreshHUD.showMessage(text)
+            case .hide:
+                strongSelf.refreshHUD.hide(withDelay: 0.0)
+            }
         }
 
         viewModel.searchBarPlaceholderText.producer.startWithValues { [weak self] (placeholderText) in
@@ -306,27 +297,21 @@ extension S1TopicListViewController {
     }
 }
 
-// MARK: Style
-
-extension S1TopicListViewController {
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
-    }
-}
-
 // MARK: - UITableViewDelegate
 
-extension S1TopicListViewController: UITableViewDelegate {
+extension TopicListViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         let contentViewController = S1ContentViewController(viewModel: viewModel.contentViewModel(at: indexPath))
-        self.navigationController?.pushViewController(contentViewController, animated: true)
+        navigationController?.pushViewController(contentViewController, animated: true)
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let notInLoading = !(loadingFlag || loadingMore)
 
-        guard viewModel.currentState.value.isForum && notInLoading else {
+        let target = viewModel.currentState.value.currentTarget
+
+        guard target.isForum && notInLoading else {
             return
         }
 
@@ -335,20 +320,22 @@ extension S1TopicListViewController: UITableViewDelegate {
             tableView.tableFooterView = footerView
             S1LogDebug("Reach (almost) last topic, load more.")
 
-            viewModel.loadNextPageForKey(forumKeyMap[viewModel.currentKey]!) { [weak self] (result) in
-                guard let strongSelf = self else { return }
+            viewModel.fetchingMoreTriggered()
 
-                // TODO: Show ReloadingFooterView if failed.
-                S1LogInfo("load next page \(result)")
-                tableView.tableFooterView = nil
-                tableView.reloadData()
-                strongSelf.loadingMore = false
-            }
+//            viewModel.loadNextPage { [weak self] (result) in
+//                guard let strongSelf = self else { return }
+//
+//                // TODO: Show ReloadingFooterView if failed.
+//                S1LogInfo("load next page \(result)")
+//                tableView.tableFooterView = nil
+//                tableView.reloadData()
+//                strongSelf.loadingMore = false
+//            }
         }
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > 0.0 {
+        if scrollView.contentOffset.y > 0.0 && searchBar.isFirstResponder {
             searchBar.resignFirstResponder()
         }
     }
@@ -356,23 +343,13 @@ extension S1TopicListViewController: UITableViewDelegate {
 
 // MARK: UITableViewDataSource
 
-extension S1TopicListViewController: UITableViewDataSource {
+extension TopicListViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
-        switch viewModel.currentState.value {
-        case .blank:
-            return 0
-        case .forum(key: _), .search:
-            return 1
-        }
+        return viewModel.numberOfSections()
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch viewModel.currentState.value {
-        case .blank:
-            return 0
-        case .forum(key: _), .search:
-            return viewModel.topics.count
-        }
+        return viewModel.numberOfItems(in: section)
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -384,9 +361,9 @@ extension S1TopicListViewController: UITableViewDataSource {
 
 // MARK: UISearchBarDelegate
 
-extension S1TopicListViewController: UISearchBarDelegate {
+extension TopicListViewController: UISearchBarDelegate {
     public func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            viewModel.searchingTerm.value = searchText
+        viewModel.searchingTerm.value = searchText
     }
 
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -397,25 +374,17 @@ extension S1TopicListViewController: UISearchBarDelegate {
 
 // MARK: S1TabBarDelegate
 
-extension S1TopicListViewController: S1TabBarDelegate {
+extension TopicListViewController: S1TabBarDelegate {
     func tabbar(_ tabbar: S1TabBar!, didSelectedKey key: String!) {
-        viewModel.tabbarTapped(key: key)
+        viewModel.tabBarTapped(key: key)
     }
 }
 
 // MARK: UINavigationBarDelegate
 
-extension S1TopicListViewController: UINavigationBarDelegate {
+extension TopicListViewController: UINavigationBarDelegate {
     public func position(for bar: UIBarPositioning) -> UIBarPosition {
         return .topAttached
-    }
-}
-
-// MARK: -
-
-extension S1TopicListViewController {
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        viewModel.traitCollection.value = traitCollection
     }
 }
 
@@ -436,7 +405,7 @@ extension S1TopicListViewController {
 //}
 
 // MARK: - Actions
-extension S1TopicListViewController {
+extension TopicListViewController {
     @objc func settings(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Settings", bundle: nil)
         let settingsViewController = storyboard.instantiateViewController(withIdentifier: "SettingsNavigation")
@@ -459,9 +428,7 @@ extension S1TopicListViewController {
             return
         }
 
-        // fetch topics for current key
-        fatalError()
-//        self.fetchTopics(forKey: self.currentKey, skipCache: true, scrollToTop: false)
+        viewModel.pullToRefreshTriggered()
     }
 
     @objc func clearSearchBarText(_ gestureRecognizer: UISwipeGestureRecognizer) {
@@ -470,26 +437,12 @@ extension S1TopicListViewController {
     }
 }
 
-extension S1TopicListViewController {
-    func updateArchiveIcon() {
+// MARK: Notifications
 
-    }
-
-    func keys() -> [String] {
-        guard
-            let arrays = UserDefaults.standard.array(forKey: "Order") as? [[String]],
-            let keys = arrays.first
-        else {
-            return []
-        }
-
-        return keys
-    }
-}
-
-extension S1TopicListViewController {
+extension TopicListViewController {
     @objc func updateTabbar() {
-        fatalError()
+        viewModel.transitState(to: .loaded(.blank))
+        scrollTabBar.keys = self.keys()
     }
 
     @objc func cloudKitStateChanged() {
@@ -508,7 +461,10 @@ extension S1TopicListViewController {
 
         refreshControl.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.refreshcontrol.tint")
 
-        titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
+        navigationBar.titleTextAttributes = [
+            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 17.0),
+            NSAttributedStringKey.foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
+        ]
 
         searchBar.searchBarStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .minimal : .default
         searchBar.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.tint")
@@ -530,8 +486,18 @@ extension S1TopicListViewController {
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
 
-        archiveButton.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
-
         setNeedsStatusBarAppearanceUpdate()
+    }
+}
+
+// MARK: - Helpers
+
+extension TopicListViewController {
+    func updateArchiveIcon() {
+        // Archive animation as sync indicator is not implemented in this version.
+    }
+
+    func keys() -> [String] {
+        return AppEnvironment.current.settings.forumOrder.value.first ?? []
     }
 }

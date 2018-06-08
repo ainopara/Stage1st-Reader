@@ -54,19 +54,19 @@ extension DataCenter {
         return topicListCache[key] != nil
     }
 
-    func topics(for key: String, shouldRefresh: Bool, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
+    func topics(for key: String, shouldRefresh: Bool, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
         if let cachedTopics = topicListCache[key], !shouldRefresh {
-            successBlock(cachedTopics)
+            completion(.success(cachedTopics))
         } else {
-            topicsFromServer(for: key, page: 1, successBlock: successBlock, failureBlock: failureBlock)
+            topicsFromServer(for: key, page: 1, completion: completion)
         }
     }
 
-    func loadNextPage(for key: String, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
+    func loadNextPage(for key: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
         if let currentPageNumber = topicListCachePageNumber[key] {
-            topicsFromServer(for: key, page: currentPageNumber + 1, successBlock: successBlock, failureBlock: failureBlock)
+            topicsFromServer(for: key, page: currentPageNumber + 1, completion: completion)
         } else {
-            failureBlock("loadNextPage called when no currentPageNumber in cache.")
+            completion(.failure("loadNextPage called when no currentPageNumber in cache."))
         }
     }
 
@@ -78,7 +78,7 @@ extension DataCenter {
         }
     }
 
-    private func topicsFromServer(for key: String, page: Int, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
+    private func topicsFromServer(for key: String, page: Int, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
         apiManager.topics(in: UInt(key)!, page: UInt(page)) { [weak self] (result) in
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
@@ -92,10 +92,10 @@ extension DataCenter {
                         strongSelf.formHash = formhash
                     }
 
-                    strongSelf.processAndCacheTopics(topics, key: key, page: page)
-                    successBlock(strongSelf.topicListCache[key]!)
+                    let processedTopics = strongSelf.processAndCacheTopics(topics, key: key, page: page)
+                    completion(.success(processedTopics))
                 case let .failure(error):
-                    failureBlock(error)
+                    completion(.failure(error))
                 }
             }
         }
@@ -138,14 +138,14 @@ extension DataCenter {
         return processedTopics
     }
 
-    private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) {
+    private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) -> [S1Topic] {
         guard topics.count > 0 else {
             if topicListCache[key] == nil {
-                topicListCache[key] = [S1Topic]()
+                topicListCache[key] = []
                 topicListCachePageNumber[key] = 1
             }
 
-            return
+            return []
         }
 
         var processedTopics = topics
@@ -160,6 +160,8 @@ extension DataCenter {
 
         topicListCache[key] = processedTopics
         topicListCachePageNumber[key] = page
+
+        return processedTopics
     }
 }
 

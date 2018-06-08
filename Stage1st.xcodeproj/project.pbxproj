@@ -80,7 +80,7 @@
 		8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */; };
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
 		8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */; };
-		8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */; };
+		8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
 		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
 		869F8AB31DB374CF0055046B /* PageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869F8AB21DB374CF0055046B /* PageRenderer.swift */; };
@@ -105,7 +105,7 @@
 		86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD82771CF9A75600C9700E /* S1FoundationTests.swift */; };
 		86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */; };
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
-		86FFD3261CB90C1E00EF742A /* S1TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3251CB90C1E00EF742A /* S1TopicListViewController.swift */; };
+		86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */; };
 		86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3271CB95F1500EF742A /* ContentViewController.swift */; };
 		B9F3162CDD829E5736F68499 /* Pods_Stage1st.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991CB7A10E23884E049E3438 /* Pods_Stage1st.framework */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
@@ -237,7 +237,7 @@
 		8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceItem.swift; sourceTree = "<group>"; };
 		868A98041CA7F22500498C38 /* AnimationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
 		8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitViewController.swift; sourceTree = "<group>"; };
-		8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1TopicListViewModel.swift; sourceTree = "<group>"; };
+		8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicListViewModel.swift; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1TopicListCellSubView.h; sourceTree = "<group>"; };
 		86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1TopicListCellSubView.m; sourceTree = "<group>"; };
 		869E02391DA67293006A45FE /* ActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityItemProvider.swift; sourceTree = "<group>"; };
@@ -271,7 +271,7 @@
 		86FD82771CF9A75600C9700E /* S1FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1FoundationTests.swift; sourceTree = "<group>"; };
 		86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscuzClient.swift; sourceTree = "<group>"; };
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		86FFD3251CB90C1E00EF742A /* S1TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1TopicListViewController.swift; sourceTree = "<group>"; };
+		86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicListViewController.swift; sourceTree = "<group>"; };
 		86FFD3271CB95F1500EF742A /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		991CB7A10E23884E049E3438 /* Pods_Stage1st.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1st.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Parser.h; sourceTree = "<group>"; };
@@ -457,10 +457,10 @@
 		863580111A945DED007B21AD /* TopicList */ = {
 			isa = PBXGroup;
 			children = (
-				8694BCD71CED9AD400756C4A /* S1TopicListViewModel.swift */,
+				8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */,
 				C095878C16CA9959007E0119 /* S1TopicListViewController.h */,
 				C095878D16CA9959007E0119 /* S1TopicListViewController.m */,
-				86FFD3251CB90C1E00EF742A /* S1TopicListViewController.swift */,
+				86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */,
 				86734B0C1F403788000AE19E /* TopicListCell.swift */,
 				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
 				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
@@ -1080,7 +1080,7 @@
 				8634ADF41FAAF3C2004A9CB7 /* PullToActionController.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				868799211CE629BE00F5C75C /* SwiftyJSON+Alamofire.swift in Sources */,
-				86FFD3261CB90C1E00EF742A /* S1TopicListViewController.swift in Sources */,
+				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				8634ADA71FAAF309004A9CB7 /* NavigationControllerDelegate.m in Sources */,
 				8634ADF01FAAF3C2004A9CB7 /* GSSingleSelectionTableViewController.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
@@ -1108,7 +1108,7 @@
 				8634ADE51FAAF3C2004A9CB7 /* REComposeSheetView.m in Sources */,
 				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				8634ADE81FAAF3C2004A9CB7 /* ODRefreshControl.m in Sources */,
-				8694BCD81CED9AD400756C4A /* S1TopicListViewModel.swift in Sources */,
+				8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */,
 				C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */,
 				8634ADE71FAAF3C2004A9CB7 /* MessageHUD.swift in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,

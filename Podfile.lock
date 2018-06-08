@@ -167,13 +167,13 @@ DEPENDENCIES:
   - AcknowList
   - ActionSheetPicker-3.0
   - AFNetworking
-  - Ainoaibo (from `../Ainoaibo`)
+  - Ainoaibo (from `./Frameworks/Ainoaibo`)
   - Alamofire
   - AlamofireImage
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
-  - CrashlyticsLogger (from `../CrashlyticsLogger`)
+  - CrashlyticsLogger (from `./Frameworks/CrashlyticsLogger`)
   - DeviceKit
   - Fabric
   - FBSnapshotTestCase
@@ -226,9 +226,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Ainoaibo:
-    :path: "../Ainoaibo"
+    :path: "./Frameworks/Ainoaibo"
   CrashlyticsLogger:
-    :path: "../CrashlyticsLogger"
+    :path: "./Frameworks/CrashlyticsLogger"
   GRMustache.swift:
     :git: https://github.com/iina/GRMustache.swift.git
   JTSImageViewController:
@@ -292,6 +292,6 @@ SPEC CHECKSUMS:
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 075340f815765b3d2d6ceb453098c8637f297d66
+PODFILE CHECKSUM: b32ccc6198d0457c4a7901b66c4b207e0f9c46b7
 
 COCOAPODS: 1.5.3

@@ -68,7 +68,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         let rootNavigationController = S1NavigationViewController(navigationBarClass: nil, toolbarClass: nil)
         self.navigationControllerDelegate = NavigationControllerDelegate(navigationController: rootNavigationController)
         rootNavigationController.delegate = self.navigationControllerDelegate
-        rootNavigationController.viewControllers = [S1TopicListViewController(nibName: nil, bundle: nil)]
+        rootNavigationController.viewControllers = [TopicListViewController(nibName: nil, bundle: nil)]
         rootNavigationController.isNavigationBarHidden = true
         self.rootNavigationController = rootNavigationController
 

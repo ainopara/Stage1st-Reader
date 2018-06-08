@@ -45,8 +45,8 @@ target "Stage1st" do
     pod 'QuickTableViewController'
     pod 'Files'
     pod 'DeviceKit'
-    pod 'CrashlyticsLogger', :path => '../CrashlyticsLogger'
-    pod 'Ainoaibo', :path => '../Ainoaibo'
+    pod 'CrashlyticsLogger', :path => './Frameworks/CrashlyticsLogger'
+    pod 'Ainoaibo', :path => './Frameworks/Ainoaibo'
 
     target "Stage1stTests" do
         inherit! :search_paths
