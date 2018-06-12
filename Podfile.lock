@@ -25,6 +25,8 @@ PODS:
     - Ainoaibo/Logging (= 0.1.0)
     - Ainoaibo/LoggingProtocol (= 0.1.0)
     - Ainoaibo/OSLogger (= 0.1.0)
+    - Ainoaibo/Stash (= 0.1.0)
+    - Ainoaibo/StateTransition (= 0.1.0)
     - Ainoaibo/SwiftExtension (= 0.1.0)
   - Ainoaibo/DefaultsBasedSettings (0.1.0):
     - Ainoaibo/Logging
@@ -47,6 +49,8 @@ PODS:
     - Ainoaibo/LoggingProtocol
     - CocoaLumberjack
     - CocoaLumberjack/Swift
+  - Ainoaibo/Stash (0.1.0)
+  - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (4.7.2)
   - AlamofireImage (3.3.1):
@@ -263,7 +267,7 @@ SPEC CHECKSUMS:
   AcknowList: 2b27ccc75110be58be37424c4b08b07bdec628b4
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  Ainoaibo: 88b9b2753197fdf5082ad727547d28e9166f9d26
+  Ainoaibo: 931f24a64717055ec31c56b59d0da69446b64b00
   Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
