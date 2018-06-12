@@ -1245,18 +1245,13 @@ extension S1ContentViewController {
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
                     //            }
+                } else if case let DZError.serverError(message) = error {
+                    S1LogInfo("[ContentVC] Permission denied with message: \(error)")
+                    strongSelf.refreshHUD.showMessage(message)
+                    strongSelf.refreshHUD.hide(withDelay: 3.0)
                 } else {
-                    let nsError = error as NSError
-                    if nsError.domain == "Stage1stErrorDomain" && nsError.code == 101 {
-                        S1LogInfo("[ContentVC] Permission denied with message: \(error)")
-                        if let message = nsError.userInfo["message"] as? String, message != "" {
-                            strongSelf.refreshHUD.showMessage(message)
-                            strongSelf.refreshHUD.hide(withDelay: 3.0)
-                        }
-                    } else {
-                        S1LogWarn("[ContentVC] fetch failed with error: \(error)")
-                        strongSelf.refreshHUD.showRefreshButton()
-                    }
+                    S1LogWarn("[ContentVC] fetch failed with error: \(error)")
+                    strongSelf.refreshHUD.showRefreshButton()
                 }
             }
         }

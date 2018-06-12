@@ -115,9 +115,24 @@
         if (self.navigationController.viewControllers.count == 1) {
             return NO;
         }
+
+//        if ([[self.navigationController.viewControllers lastObject] isKindOfClass:NSClassFromString(@"Stage1st.S1ArchiveListViewController")] &&
+//            [self.panRecognizer translationInView:self.navigationController.view].x <= 0) {
+//            return NO;
+//        }
     }
     return YES;
 }
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    if (gestureRecognizer == self.panRecognizer) {
+//        DDLogDebug(@"%@", otherGestureRecognizer);
+//        return YES;
+//    } else {
+//        return NO;
+//    }
+//}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {

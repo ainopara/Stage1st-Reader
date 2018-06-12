@@ -54,12 +54,12 @@ extension DataCenter {
         return topicListCache[key] != nil
     }
 
-    func topics(for key: String, shouldRefresh: Bool, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
-        if let cachedTopics = topicListCache[key], !shouldRefresh {
-            completion(.success(cachedTopics))
-        } else {
-            topicsFromServer(for: key, page: 1, completion: completion)
-        }
+    func cachedTopics(for key: String) -> [S1Topic]? {
+        return topicListCache[key]
+    }
+
+    func topics(for key: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
+        topicsFromServer(for: key, page: 1, completion: completion)
     }
 
     func loadNextPage(for key: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {

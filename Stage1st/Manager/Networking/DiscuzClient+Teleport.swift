@@ -220,6 +220,11 @@ public extension DiscuzClient {
                     return
                 }
 
+                if let serverErrorMessage = json["Message"]["messagestr"].string, serverErrorMessage != "" {
+                    completion(.failure(DZError.serverError(message: serverErrorMessage)))
+                    return
+                }
+
                 guard let topicList = json["Variables"]["forum_threadlist"].array else {
                     completion(.failure(DZError.noThreadListReturned(jsonString: json.rawString() ?? "")))
                     return
@@ -265,6 +270,14 @@ public extension DiscuzClient {
 
                 guard let jsonDictionary = json as? [String: Any] else {
                     completion(.failure("Invalid response."))
+                    return
+                }
+
+                if
+                    let message = jsonDictionary["Message"] as? [String: Any],
+                    let messageString = message["messagestr"] as? String
+                {
+                    completion(.failure(DZError.serverError(message: messageString)))
                     return
                 }
 

@@ -22,4 +22,5 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
 identifier_name:
   min_length: 2 # only min_length to make ID valid
 cyclomatic_complexity:
-  warning: 15
+  warning: 25
+  error: 25

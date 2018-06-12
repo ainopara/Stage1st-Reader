@@ -34,6 +34,8 @@ class TopicListViewController: UIViewController {
     var cachedContentOffset = [String: CGPoint]()
     var cachedLastRefreshTime = [String: Date]()
 
+    private var observations = [NSKeyValueObservation]()
+
     var loadingFlag = false
     var loadingMore = false
 //    @property (nonatomic, strong) NSString *searchKeyword;
@@ -256,12 +258,51 @@ extension TopicListViewController {
 
 extension TopicListViewController {
     func bindViewModel() {
+
+        /// viewModel.tableViewOffset <~ tableView.contentOffset
+        let tableViewContentOffsetToken = tableView.observe(\.contentOffset, options: [.new]) { [weak self] (tableView, change) in
+            guard let strongSelf = self else { return }
+            guard let offset = change.newValue else { return }
+
+            if strongSelf.viewModel.tableViewOffset.value != offset {
+                strongSelf.viewModel.tableViewOffset.value = offset
+            }
+        }
+
+        observations.append(tableViewContentOffsetToken)
+
+        /// viewModel.tableViewOffsetAction ~> tableView.contentOffset
+        viewModel.tableViewOffsetAction.observeValues { [weak self] (action) in
+            guard let strongSelf = self else { return }
+
+            S1LogDebug("TableView Offset Action: \(action)")
+
+            switch action {
+            case .restore(let offset):
+                strongSelf.tableView.setContentOffset(offset, animated: false)
+            case .toTop:
+                strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
+            }
+
+            /// Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+            if strongSelf.tableView.contentOffset.y < 0.0 {
+                if strongSelf.tableView.isTracking {
+                    strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .none, animated: true)
+                } else {
+                    strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
+                }
+            }
+        }
+
+        /// viewModel.tableViewReloading ~> tableView.relaodData()
         viewModel.tableViewReloading.observeValues { [weak self] in
             guard let strongSelf = self else { return }
 
+            S1LogInfo("Reloading tableView")
             strongSelf.tableView.reloadData()
         }
 
+        /// viewModel.tableViewCellUpdate ~> tableView.update()
         viewModel.tableViewCellUpdate.observeValues { [weak self] (updatedModelIndexPaths) in
             guard let strongSelf = self else { return }
 
@@ -270,6 +311,7 @@ extension TopicListViewController {
             strongSelf.tableView.endUpdates()
         }
 
+        /// viewModel.hudAction ~> refresHUD.actions()
         viewModel.hudAction.signal.observeValues { [weak self] (action) in
             guard let strongSelf = self else { return }
 
@@ -278,11 +320,12 @@ extension TopicListViewController {
                 strongSelf.refreshHUD.showActivityIndicator()
             case let .text(text):
                 strongSelf.refreshHUD.showMessage(text)
-            case .hide:
-                strongSelf.refreshHUD.hide(withDelay: 0.0)
+            case let .hide(delay):
+                strongSelf.refreshHUD.hide(withDelay: delay)
             }
         }
 
+        /// viewModel.searchBarPlaceholderText ~> searchBar.placeholder
         viewModel.searchBarPlaceholderText.producer.startWithValues { [weak self] (placeholderText) in
             guard let strongSelf = self else { return }
             strongSelf.searchBar.placeholder = placeholderText
@@ -294,6 +337,33 @@ extension TopicListViewController {
             guard let strongSelf = self else { return }
             strongSelf.refreshControl.isHidden = hidden
         }
+
+        viewModel.refreshControlEndRefreshing.observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            if strongSelf.refreshControl.refreshing {
+                strongSelf.refreshControl.endRefreshing()
+            }
+        }
+
+        viewModel.isShowingFetchingMoreIndicator.signal.observeValues { [weak self] (showing) in
+            guard let strongSelf = self else { return }
+            if showing {
+                strongSelf.tableView.tableFooterView = strongSelf.footerView
+            } else {
+                strongSelf.tableView.tableFooterView = nil
+            }
+        }
+
+        let refreshControlRefreshingToken = refreshControl.observe(\.refreshing, options: [.new]) { [weak self] (refreshControl, change) in
+            guard let strongSelf = self else { return }
+            guard let isRefreshing = change.newValue else { return }
+
+            if strongSelf.viewModel.refreshControlIsRefreshing.value != isRefreshing {
+                strongSelf.viewModel.refreshControlIsRefreshing.value = isRefreshing
+            }
+        }
+
+        observations.append(refreshControlRefreshingToken)
     }
 }
 
@@ -307,17 +377,8 @@ extension TopicListViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let notInLoading = !(loadingFlag || loadingMore)
-
-        let target = viewModel.currentState.value.currentTarget
-
-        guard target.isForum && notInLoading else {
-            return
-        }
-
         if indexPath.row == viewModel.topics.count - 15 {
             loadingMore = true
-            tableView.tableFooterView = footerView
             S1LogDebug("Reach (almost) last topic, load more.")
 
             viewModel.fetchingMoreTriggered()

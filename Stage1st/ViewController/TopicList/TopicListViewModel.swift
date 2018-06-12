@@ -13,13 +13,23 @@ import Alamofire
 import ReactiveSwift
 import Result
 
+// swiftlint:disable nesting
+
 final class TopicListViewModel: NSObject {
     let dataCenter: DataCenter
 
     enum Target: Equatable {
         case blank
-        case forum(key: String)
-        case search(term: String)
+
+        struct Forum: Equatable {
+            let key: String
+        }
+        case forum(Forum)
+
+        struct Search: Equatable {
+            let term: String
+        }
+        case search(Search)
     }
 
     enum State {
@@ -31,40 +41,22 @@ final class TopicListViewModel: NSObject {
     }
 
     let currentState = MutableProperty(State.loaded(.blank))
-
     var topics = [S1Topic]()
+
+    var stateTransitionBehaviors: [StateTransitionBehavior<State>] = []
 
     let databaseConnection: YapDatabaseConnection = AppEnvironment.current.databaseManager.uiDatabaseConnection
 
     // Inputs
     let searchingTerm = MutableProperty("")
     let traitCollection = MutableProperty(UITraitCollection())
-    let segmentControlIndex = MutableProperty(0)
+    let tableViewOffset = MutableProperty<CGPoint>(.zero)
+    let refreshControlIsRefreshing = MutableProperty<Bool>(false)
 
     // Internal
     let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
     let paletteNotification = MutableProperty(())
     let databaseChangedNotification = MutableProperty([Notification]())
-
-    // Output
-    let tableViewReloading: Signal<(), NoError>
-    private let tableViewReloadingObserver: Signal<(), NoError>.Observer
-
-    let tableViewCellUpdate: Signal<[IndexPath], NoError>
-    private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
-
-    enum HudAction {
-        case loading
-        case text(String)
-        case hide
-    }
-
-    let hudAction: Signal<HudAction, NoError>
-    private let hudActionObserver: Signal<HudAction, NoError>.Observer
-
-    let searchBarPlaceholderText = MutableProperty(NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search"))
-    let isTableViewHidden = MutableProperty(true)
-    let isRefreshControlHidden = MutableProperty(true)
 
     var cachedContentOffset = [String: CGPoint]()
     var cachedLastRefreshTime = [String: Date]()
@@ -75,22 +67,64 @@ final class TopicListViewModel: NSObject {
         return map as! [String: String]
     }()
 
+    // Output
+
+    enum TableViewContentOffsetAction {
+        case toTop
+        case restore(CGPoint)
+    }
+
+    let tableViewOffsetAction: Signal<TableViewContentOffsetAction, NoError>
+    private let tableViewOffsetActionObserver: Signal<TableViewContentOffsetAction, NoError>.Observer
+
+    let tableViewReloading: Signal<(), NoError>
+    private let tableViewReloadingObserver: Signal<(), NoError>.Observer
+
+    let tableViewCellUpdate: Signal<[IndexPath], NoError>
+    private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
+
+    enum HudAction {
+        case loading
+        case text(String)
+        case hide(delay: Double)
+    }
+
+    let hudAction: Signal<HudAction, NoError>
+    private let hudActionObserver: Signal<HudAction, NoError>.Observer
+
+    let refreshControlEndRefreshing: Signal<(), NoError>
+    private let refreshControlEndRefreshingObserver: Signal<(), NoError>.Observer
+
+    let searchBarPlaceholderText = MutableProperty(NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search"))
+    let isTableViewHidden = MutableProperty(true)
+    let isRefreshControlHidden = MutableProperty(true)
+    let isShowingFetchingMoreIndicator = MutableProperty(false)
+
     // MARK: -
 
     init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
 
+        (self.tableViewOffsetAction, self.tableViewOffsetActionObserver) = Signal<TableViewContentOffsetAction, NoError>.pipe()
         (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
         (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
         (self.hudAction, self.hudActionObserver) = Signal<HudAction, NoError>.pipe()
+        (self.refreshControlEndRefreshing, self.refreshControlEndRefreshingObserver) = Signal<(), NoError>.pipe()
 
         super.init()
 
+        stateTransitionBehaviors = [
+            RestorePositionBehavior(viewModel: self),
+            CacheInvalidationBehavior(viewModel: self),
+            HudBehavior(viewModel: self)
+        ]
+
         isTableViewHidden <~ currentState.map { (state) in
-            switch state.currentTarget {
-            case .blank:
+            if state.currentTarget == .blank {
                 return true
-            default:
+            } else if case .error = state {
+                return true
+            } else {
                 return false
             }
         }
@@ -147,47 +181,43 @@ final class TopicListViewModel: NSObject {
 
 //        }
 
-        currentState.producer
-            .start(on: QueueScheduler.main)
-            .observe(on: QueueScheduler.main)
-            .startWithValues { [weak self] (state) in
+        isShowingFetchingMoreIndicator <~ currentState.map { (state) in
+            switch state {
+            case let .fetchingMore(target) where target.isForum:
+                return true
+            default:
+                return false
+            }
+        }
 
-                guard let strongSelf = self else { return }
+        currentState.producer.startWithValues { [weak self] (state) in
+            guard let strongSelf = self else { return }
 
-                switch state {
-                case let .loaded(target), let .allResultFetched(target):
-                    strongSelf.hudActionObserver.send(value: .hide)
-                    if target != .blank {
-                        strongSelf.tableViewReloadingObserver.send(value: ())
-                    }
-                case let .loading(fromTarget, toTarget):
-                    switch toTarget {
-                    case let .forum(key):
-                        strongSelf.hudActionObserver.send(value: .loading)
-                        func shouldRefresh() -> Bool {
-                            if fromTarget == toTarget {
-                                return true
-                            } else if let lastRefreshDate = strongSelf.cachedLastRefreshTime[key], Date().timeIntervalSince(lastRefreshDate) < 20.0 {
-                                return false
-                            } else {
-                                return true
-                            }
-                        }
-
-                        strongSelf.topicList(for: key, refresh: shouldRefresh())
-                    case let .search(term):
-                        strongSelf.hudActionObserver.send(value: .loading)
-                        break
-                    case .blank:
-                        break
-                    }
-                case .fetchingMore:
-                    strongSelf.loadNextPage()
-                case let .error(target, error):
-                    strongSelf.hudActionObserver.send(value: .text(error.localizedDescription))
-                default:
+            switch state {
+            case let .loaded(target), let .allResultFetched(target):
+                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
+                switch target {
+                case .forum, .search:
+                    strongSelf.tableViewReloadingObserver.send(value: ())
+                case .blank:
                     break
                 }
+            case let .loading(_, toTarget):
+                switch toTarget {
+                case let .forum(info):
+                    strongSelf.topicList(for: info)
+                case let .search(term):
+                    // TODO: Finish this.
+                    _ = term
+                case .blank:
+                    break
+                }
+            case .fetchingMore:
+                strongSelf.loadNextPage()
+            case .error:
+                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
+                strongSelf.tableViewReloadingObserver.send(value: ())
+            }
         }
 
         // Debug
@@ -195,16 +225,29 @@ final class TopicListViewModel: NSObject {
             S1LogDebug("state -> \(state.debugPrint())")
         }
     }
+}
 
-    // MARK: Input
+// MARK: - Input
+
+extension TopicListViewModel {
+
     func transitState(to newState: State, with topics: [S1Topic]? = nil) {
         dispatchPrecondition(condition: .onQueue(.main))
 
         func execute() {
+            let fromState = currentState.value
+            stateTransitionBehaviors.forEach { (behavior) in
+                behavior.preTransition(from: fromState, to: newState)
+            }
+
             if let topics = topics {
                 self.topics = topics
             }
-            self.currentState.value = newState
+            currentState.value = newState
+
+            stateTransitionBehaviors.forEach { (behavior) in
+                behavior.postTransition(from: fromState, to: newState)
+            }
         }
 
         func skip() {
@@ -212,29 +255,60 @@ final class TopicListViewModel: NSObject {
         }
 
         switch (self.currentState.value, newState) {
+        case (.loaded, .loaded):
+            execute()
         case let (.loaded(target), .loading(fromTarget, _)) where target == fromTarget:
             execute()
         case let (.loaded(fromTarget), .fetchingMore(toTarget)) where fromTarget == toTarget:
             execute()
-        case let (.loading(fromTarget, toTarget), .loaded(newTarget)) where fromTarget == newTarget || toTarget == newTarget:
+        case let (.loading(fromTarget, _), .loading(newFromTarget, _)) where fromTarget == newFromTarget:
             execute()
-        case let (.loading(fromTarget, toTarget), .error(newTarget, _)) where toTarget == newTarget:
+        case let (.loading(_, toTarget), .loaded(newTarget)) where toTarget == newTarget:
+            execute()
+        case let (.loading(_, toTarget), .error(newTarget, _)) where toTarget == newTarget:
             execute()
         case let (.loading(_, toTarget), .allResultFetched(newTarget)) where toTarget == newTarget:
             execute()
         case let (.fetchingMore(target), .loaded(newTarget)) where target == newTarget:
             execute()
-        case let (.error, .loaded):
+        case (.error, .loaded):
             execute()
-        case let (.error, .loading):
+        case (.error, .loading):
             execute()
         default:
             skip()
         }
     }
 
+    func hasRecentlyAccessedForum(key: String) -> Bool {
+        if let lastRefreshDate = cachedLastRefreshTime[key], Date().timeIntervalSince(lastRefreshDate) < 20.0 {
+            return true
+        } else {
+            return false
+        }
+    }
+
     func tabBarTapped(key: String) {
-        transitState(to: .loading(from: currentState.value.currentTarget, to: .forum(key: key)))
+        func isTappingOnSameForumInARow() -> Bool {
+            if case let .forum(forum) = currentState.value.currentTarget, forum.key == key {
+                return true
+            } else {
+                return false
+            }
+        }
+
+        if
+            hasRecentlyAccessedForum(key: key),
+            !isTappingOnSameForumInARow(),
+            let topics = self.dataCenter.cachedTopics(for: forumKeyMap[key]!)
+        {
+            let newState: State = .loaded(.forum(.init(key: key)))
+            let processedTopics = topics.map { topicWithTracedDataForTopic($0) }
+            transitState(to: newState, with: processedTopics)
+        } else {
+            let newState: State = .loading(from: currentState.value.currentTarget, to: .forum(.init(key: key)))
+            transitState(to: newState)
+        }
     }
 
     func pullToRefreshTriggered() {
@@ -245,23 +319,24 @@ final class TopicListViewModel: NSObject {
         transitState(to: .fetchingMore(currentState.value.currentTarget))
     }
 
-    func topicList(for key: String, refresh: Bool) {
-        guard let mappedKey = self.forumKeyMap[key] else {
-            S1LogDebug("topicListForKey triggered but we can not found mapped key for \(key).")
+    func topicList(for info: Target.Forum) {
+        guard let mappedKey = self.forumKeyMap[info.key] else {
+            S1LogDebug("topicListForKey triggered but we can not found mapped key for \(info.key).")
             return
         }
 
-        dataCenter.topics(for: mappedKey, shouldRefresh: refresh) { [weak self] result in
+        S1LogInfo("key: \(info.key)")
+        dataCenter.topics(for: mappedKey) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case let .success(topicList):
                 let processedList = topicList.map { strongSelf.topicWithTracedDataForTopic($0) }
                 ensureMainThread {
-                    strongSelf.transitState(to: .loaded(.forum(key: key)), with: processedList)
+                    strongSelf.transitState(to: .loaded(.forum(info)), with: processedList)
                 }
             case let .failure(error):
                 ensureMainThread {
-                    strongSelf.transitState(to: .error(.forum(key: key), error), with: [])
+                    strongSelf.transitState(to: .error(.forum(info), error), with: [])
                 }
             }
         }
@@ -273,13 +348,13 @@ final class TopicListViewModel: NSObject {
             return
         }
 
-        guard case let .forum(key) = target else {
+        guard case let .forum(info) = target else {
             S1LogDebug("loadNextPage triggered but we are only load next page for forum target.")
             return
         }
 
-        guard let mappedKey = self.forumKeyMap[key] else {
-            S1LogDebug("loadNextPage triggered but we can not found mapped key for \(key).")
+        guard let mappedKey = self.forumKeyMap[info.key] else {
+            S1LogDebug("loadNextPage triggered but we can not found mapped key for \(info.key).")
             return
         }
 
@@ -291,24 +366,123 @@ final class TopicListViewModel: NSObject {
                 let processedList = topicList.map { strongSelf.topicWithTracedDataForTopic($0) }
 
                 ensureMainThread({
-                    strongSelf.transitState(to: .loaded(.forum(key: key)), with: processedList)
+                    strongSelf.transitState(to: .loaded(.forum(info)), with: processedList)
                 })
             case .failure:
                 ensureMainThread({
-                    strongSelf.transitState(to: .loaded(.forum(key: key)))
+                    strongSelf.transitState(to: .loaded(.forum(info)))
                 })
             }
         }
     }
 
     func reset() {
-        self.topics = [S1Topic]()
-        self.currentState.value = .loaded(.blank)
+        transitState(to: .loaded(.blank), with: [])
     }
 
     @objc func cancelRequests() {
         dataCenter.cancelRequest()
     }
+}
+
+// MARK: Behavior
+func isEqual<T: Comparable>(_ a: T, _ b: T, _ c: T) -> Bool {
+    return a == b && b == c
+}
+
+extension TopicListViewModel {
+    final class RestorePositionBehavior: StateTransitionBehavior<State> {
+        weak var viewModel: TopicListViewModel?
+
+        init(viewModel: TopicListViewModel) {
+            self.viewModel = viewModel
+            super.init()
+        }
+
+        override func preTransition(from: State, to: State) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch (from, to) {
+            case let (.loading(.forum(forum), _), .loaded),
+                 let (.loading(.forum(forum), _), .error),
+                 let (.loaded(.forum(forum)), .loaded):
+                viewModel.cachedContentOffset[forum.key] = viewModel.tableViewOffset.value
+            default:
+                break
+            }
+        }
+
+        override func postTransition(from: State, to: State) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch (from, to) {
+            case let (.loaded, .loaded(.forum(forum))),
+                 let (.loading(from: .forum, to: _), .loaded(.forum(forum))),
+                 let (.loading(from: .forum(fromForum), to: .forum(toForum)), .loaded(.forum(forum))) where isEqual(fromForum.key, toForum.key, forum.key):
+                if let cachedOffset = viewModel.cachedContentOffset[forum.key], viewModel.hasRecentlyAccessedForum(key: forum.key) {
+                    viewModel.tableViewOffsetActionObserver.send(value: .restore(cachedOffset))
+                } else {
+                    viewModel.tableViewOffsetActionObserver.send(value: .toTop)
+                }
+            default:
+                break
+            }
+        }
+    }
+
+    final class CacheInvalidationBehavior: StateTransitionBehavior<State> {
+        weak var viewModel: TopicListViewModel?
+
+        init(viewModel: TopicListViewModel) {
+            self.viewModel = viewModel
+            super.init()
+        }
+
+        override func postTransition(from: State, to: State) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch (from, to) {
+            case let (.loading, .loaded(.forum(forum))):
+                viewModel.cachedLastRefreshTime[forum.key] = Date()
+            default:
+                break
+            }
+        }
+    }
+
+    final class HudBehavior: StateTransitionBehavior<State> {
+        weak var viewModel: TopicListViewModel?
+
+        init(viewModel: TopicListViewModel) {
+            self.viewModel = viewModel
+            super.init()
+        }
+
+        override func postTransition(from: State, to: State) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch to {
+            case .loaded, .allResultFetched:
+                viewModel.hudActionObserver.send(value: .hide(delay: 0.3))
+            case let .loading(_, toTarget):
+                switch toTarget {
+                case .forum:
+                    if !viewModel.refreshControlIsRefreshing.value {
+                        viewModel.hudActionObserver.send(value: .loading)
+                    }
+                case .search:
+                    viewModel.hudActionObserver.send(value: .loading)
+                case .blank:
+                    break
+                }
+            case .fetchingMore:
+                break
+            case let .error(_, error):
+                viewModel.hudActionObserver.send(value: .text(error.localizedDescription))
+            }
+        }
+    }
+
 }
 
 // MARK: Private
@@ -460,15 +634,15 @@ extension TopicListViewModel.State {
     func debugPrint() -> String {
         switch self {
         case let .loading(from: target, to: toTarget):
-            return "S1TopicListViewModel.State.loading(\(target.description) -> \(toTarget.description))"
+            return ".loading(\(target.description) -> \(toTarget.description))"
         case let .loaded(target):
-            return "S1TopicListViewModel.State.loaded(\(target.description))"
+            return ".loaded(\(target.description))"
         case let .fetchingMore(target):
-            return "S1TopicListViewModel.State.fetchingMore(\(target.description))"
+            return ".fetchingMore(\(target.description))"
         case let .allResultFetched(target):
-            return "S1TopicListViewModel.State.allResultFetched(\(target.description))"
+            return ".allResultFetched(\(target.description))"
         case let .error(target, error):
-            return "S1TopicListViewModel.State.error(\(target.description) | \(String(dumping: error)))"
+            return ".error(\(target.description) | \(String(dumping: error)))"
         }
     }
 }

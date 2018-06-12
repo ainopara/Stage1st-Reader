@@ -912,7 +912,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\n    # echo \"warning: SwiftLint is temporarily disabled\"\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		864E51F81BFAAF3B00CAF010 /* Setup Fabric */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -926,7 +926,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 9c2555274ce1394305fd28e35310ab35c425d0e3 67779c61b0098102e5eb69534c83c3bdf063b0554bc3e1c7a76c3765524a67f5";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 9c2555274ce1394305fd28e35310ab35c425d0e3 67779c61b0098102e5eb69534c83c3bdf063b0554bc3e1c7a76c3765524a67f5\n";
 		};
 		8B58809E253EC7A438C504C9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
