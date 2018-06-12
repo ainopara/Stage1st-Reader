@@ -496,7 +496,7 @@
 			path = S1MahjongFaceView;
 			sourceTree = "<group>";
 		};
-		865C251B1C99110C0075B303 /* ViewController */ = {
+		865C251B1C99110C0075B303 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
 				863580111A945DED007B21AD /* TopicList */,
@@ -509,7 +509,7 @@
 				86A22D241D677B21004D2307 /* Browser */,
 				C09587A316CB6218007E0119 /* Settings */,
 			);
-			path = ViewController;
+			path = Scene;
 			sourceTree = "<group>";
 		};
 		866CDB951B526C4800FBB133 /* QuoteFloor */ = {
@@ -669,7 +669,7 @@
 			children = (
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
-				865C251B1C99110C0075B303 /* ViewController */,
+				865C251B1C99110C0075B303 /* Scene */,
 				C095877A16CA8DB0007E0119 /* Model */,
 				C095877B16CA8DBE007E0119 /* View */,
 				8681E6D41CEF6EC0004269D3 /* Manager */,
