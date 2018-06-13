@@ -23,7 +23,8 @@ iOS Client for Stage1st. Get it on [App Store](https://itunes.apple.com/app/appl
 4. Build & run with Xcode 9.
 
 ## Credits
-This project is forked from: https://github.com/Gal3riel/Stage1st-Reader by @Gal3riel
+This project is forked from [Stage1st-Reader](https://github.com/Gal3riel/Stage1st-Reader) by [@Gal3riel](https://github.com/Gal3riel)
+And it is currently maintained by [@ainopara](https://github.com/ainopara)
 
 ## License
 BSD License. See [LICENSE](https://github.com/ainopara/Stage1st-Reader/blob/master/LICENSE.txt) for details.
