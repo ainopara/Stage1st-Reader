@@ -171,30 +171,33 @@ extension DataCenter {
         return formHash != nil
     }
 
-    func searchTopics(for keyword: String, successBlock: @escaping ([S1Topic]) -> Void, failureBlock: @escaping (Error) -> Void) {
+    func searchTopics(for keyword: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
         networkManager.postSearch(forKeyword: keyword, andFormhash: formHash!, success: { [weak self] _, responseObject in
             guard let strongSelf = self else { return }
 
             guard let responseData = responseObject as? Data else {
-                failureBlock("Unexpected response object type.")
+                completion(.failure("Unexpected response object type."))
                 return
             }
 
-            let topics = S1Parser.topics(fromSearchResultHTMLData: responseData) as! [S1Topic]
+            let topics = S1Parser.topics(fromSearchResultHTMLData: responseData)
             let processedTopics = topics.map { topic -> S1Topic in
                 guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
                     return topic
                 }
 
-                return mutate(tracedTopic, change: { (value: inout S1Topic) in
-                    value.update(topic)
-                })
+                tracedTopic.update(topic)
+                return tracedTopic
+
+//                return mutate(tracedTopic, change: { (value: inout S1Topic) in
+//                    value.update(topic)
+//                })
             }
 
-            successBlock(processedTopics)
-        }) { _, error in
-            failureBlock(error)
-        }
+            completion(.success(processedTopics))
+        }, failure: { _, error in
+            completion(.failure(error))
+        })
     }
 }
 

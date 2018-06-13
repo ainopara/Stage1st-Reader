@@ -65,7 +65,7 @@
         
         [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
         [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
-        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager  colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
+        [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
         
         [btn setTitle:[obj description] forState:UIControlStateNormal];
         [btn setTitleColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.tint"] forState:UIControlStateNormal];

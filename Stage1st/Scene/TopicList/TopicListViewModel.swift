@@ -57,11 +57,12 @@ final class TopicListViewModel: NSObject {
     enum Action {
         case pullToRefresh
         case tabTapped
+        case searchTapped
         case loadMore
         case requestFinish
         case loadMoreFinish
         case reset
-        case cloudKitUpdate
+        case cloudKitUpdate([IndexPath])
     }
 
     var activeRequestToken: Int = 0
@@ -120,6 +121,12 @@ final class TopicListViewModel: NSObject {
     let refreshControlEndRefreshing: Signal<(), NoError>
     private let refreshControlEndRefreshingObserver: Signal<(), NoError>.Observer
 
+    let tabBarDeselectAction: Signal<(), NoError>
+    private let tabBarDeselectActionObserver: Signal<(), NoError>.Observer
+
+    let searchTextClearAction: Signal<(), NoError>
+    private let searchTextClearActionObserver: Signal<(), NoError>.Observer
+
     let searchBarPlaceholderText = MutableProperty(NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search"))
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
@@ -135,6 +142,8 @@ final class TopicListViewModel: NSObject {
         (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
         (self.hudAction, self.hudActionObserver) = Signal<HudAction, NoError>.pipe()
         (self.refreshControlEndRefreshing, self.refreshControlEndRefreshingObserver) = Signal<(), NoError>.pipe()
+        (self.tabBarDeselectAction, self.tabBarDeselectActionObserver) = Signal<(), NoError>.pipe()
+        (self.searchTextClearAction, self.searchTextClearActionObserver) = Signal<(), NoError>.pipe()
 
         super.init()
 
@@ -142,7 +151,9 @@ final class TopicListViewModel: NSObject {
             TableViewUpdateBehavior(viewModel: self),
             RestorePositionBehavior(viewModel: self),
             DataFreshRecordingBehavior(viewModel: self),
-            HudBehavior(viewModel: self)
+            HudBehavior(viewModel: self),
+            TabBarDeselectBehavior(viewModel: self),
+            SearchTextClearBehavior(viewModel: self)
         ]
 
         isTableViewHidden <~ model.map { (model) in
@@ -204,7 +215,8 @@ final class TopicListViewModel: NSObject {
 
         isShowingFetchingMoreIndicator <~ model.map { (model) in
             switch (model.target, model.state) {
-            case (.forum, .fetchingMore):
+            case (.forum, .fetchingMore),
+                 (.search, .fetchingMore):
                 return true
             default:
                 return false
@@ -218,34 +230,25 @@ final class TopicListViewModel: NSObject {
             case (.forum, .loaded),
                  (.forum, .allResultFetched):
                 strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-                strongSelf.tableViewReloadingObserver.send(value: ())
-
-            case (.forum(let forum), .fetchingMore):
-                strongSelf.loadNextPage(key: forum.key)
-
-            case (_, .loading(let loading)):
-                switch loading.target {
-                case .forum(let key):
-                    strongSelf.topicList(for: key)
-                case .search(let term):
-                    fatalError("Search is not yet supported.")
-                }
 
             case (.search, .loaded),
                  (.search, .allResultFetched):
                 strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-                strongSelf.tableViewReloadingObserver.send(value: ())
-
-            case (.search(let search), .fetchingMore):
-                fatalError("Fetching more for search is not yet supported")
 
             case (.blank, .loaded):
                 strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-                strongSelf.tableViewReloadingObserver.send(value: ())
 
             case (.blank, .error):
                 strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-                strongSelf.tableViewReloadingObserver.send(value: ())
+
+            case (.forum, .fetchingMore):
+                break
+
+            case (_, .loading):
+                break
+
+            case (.search, .fetchingMore):
+                break
 
             case (_, .error):
                 fatalError("`.error` state must appear with `.blank` target.")
@@ -277,6 +280,7 @@ extension TopicListViewModel {
 
             model.value = newModel
 
+            // TODO: Should we reverse calling order to make Behaviors works as Middlewares?
             stateTransitionBehaviors.forEach { (behavior) in
                 behavior.postTransition(action: action, from: oldModel, to: newModel)
             }
@@ -286,21 +290,21 @@ extension TopicListViewModel {
             S1LogWarn("Skipping state transition from \(self.model.value.debugDescription) to \(newModel.debugDescription)")
         }
 
-        let result = stateTransitionBehaviors.reduce(.notApplicable) { (result, behavior) -> StateTransitionRuleResult in
+        let result = stateTransitionBehaviors.reduce(.notSpecified) { (result, behavior) -> StateTransitionRuleResult in
             switch result {
-            case .notApplicable:
+            case .notSpecified:
                 return behavior.checkTransition(action: action, from: self.model.value, to: newModel)
-            case .allow:
-                return .allow
+            case .accept:
+                return .accept
             case .reject:
                 return .reject
             }
         }
 
         switch result {
-        case .allow:
+        case .accept, .notSpecified:
             execute()
-        case .reject, .notApplicable:
+        case .reject:
             skip()
         }
 //        switch (self.model.value, new) {
@@ -356,63 +360,103 @@ extension TopicListViewModel {
                 state: .loading(.init(target: .forum(key: key), showingHUD: true))
             )
             transitModel(to: new, with: .tabTapped)
+            topicList(for: key)
         }
+    }
+
+    func searchButtonTapped(term: String) {
+        let new = Model(
+            target: model.value.target,
+            state: .loading(.init(target: .search(term: term), showingHUD: true))
+        )
+        transitModel(to: new, with: .searchTapped)
+        self.search(for: term)
     }
 
     func pullToRefreshTriggered() {
-        func toLoadingTarget(_ target: Model.Target) -> Model.State.Loading.Target {
-            switch target {
-            case .blank:
-                fatalError(".blank should never trigger pull to refresh!")
-            case .forum(let forum):
-                return .forum(key: forum.key)
-            case .search(let search):
-                return .search(term: search.term)
-            }
-        }
+        switch model.value.target {
+        case .forum(let forum):
+            let new = Model(
+                target: .forum(forum),
+                state: .loading(.init(target: .forum(key: forum.key), showingHUD: false))
+            )
+            transitModel(to: new, with: .pullToRefresh)
+            topicList(for: forum.key)
 
-        let new = Model(
-            target: model.value.target,
-            state: .loading(.init(target: toLoadingTarget(model.value.target), showingHUD: false))
-        )
-        transitModel(to: new, with: .pullToRefresh)
+        case .search(let search):
+            let new = Model(
+                target: .search(search),
+                state: .loading(.init(target: .search(term: search.term), showingHUD: false))
+            )
+            transitModel(to: new, with: .pullToRefresh)
+            self.search(for: search.term)
+
+        case .blank:
+            fatalError(".blank should never trigger pull to refresh!")
+        }
     }
 
-    func willDiplayCell(at indexPath: IndexPath) {
-        guard case let .forum(forum) = model.value.target else {
-            return
-        }
-
-        guard indexPath.row == forum.topics.count - 15 else {
-            return
-        }
-
+    func willDisplayCell(at indexPath: IndexPath) {
+        // Loading More should not be able to interrupt other operations.
         guard model.value.state == .loaded else {
             return
         }
 
-        S1LogDebug("Reach (almost) last topic, load more.")
+        switch model.value.target {
+        case .forum(let forum):
+            guard indexPath.row == forum.topics.count - 15 else {
+                return
+            }
 
-        let new = Model(
-            target: model.value.target,
-            state: .fetchingMore
-        )
-        transitModel(to: new, with: .loadMore)
+            S1LogDebug("Reach (almost) last topic, load more.")
+
+            let new = Model(
+                target: model.value.target,
+                state: .fetchingMore
+            )
+            transitModel(to: new, with: .loadMore)
+            loadNextPage(key: forum.key)
+
+        case .search(let search):
+            guard indexPath.row == search.topics.count - 5 else {
+                return
+            }
+
+            S1LogDebug("Reach (almost) last topic, load more.")
+
+            let new = Model(
+                target: model.value.target,
+                state: .fetchingMore
+            )
+            transitModel(to: new, with: .loadMore)
+            loadNextSearchPage(for: search.term)
+
+        case .blank:
+            fatalError(".blank should never trigger loading more action!")
+        }
     }
 
-    func topicList(for key: String) {
+    private func topicList(for key: String) {
+        dispatchPrecondition(condition: .onQueue(.main))
+
         guard let mappedKey = self.forumKeyMap[key] else {
             S1LogDebug("topicListForKey triggered but we can not found mapped key for \(key).")
             return
         }
 
-        S1LogInfo("key: \(key)")
+        let token = newToken()
+
         dataCenter.topics(for: mappedKey) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case let .success(topicList):
                 let processedList = topicList.map { strongSelf.topicWithTracedDataForTopic($0) }
                 ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping topicList(for: \(key)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
                     let new = Model(
                         target: .forum(.init(key: key, topics: processedList)),
                         state: .loaded
@@ -421,6 +465,11 @@ extension TopicListViewModel {
                 }
             case let .failure(error):
                 ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping topicList(for: \(key)) failure because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
                     let new = Model(
                         target: .blank,
                         state: .error(target: .forum(key: key), message: error.localizedDescription)
@@ -431,11 +480,13 @@ extension TopicListViewModel {
         }
     }
 
-    func loadNextPage(key: String) {
+    private func loadNextPage(key: String) {
         guard let mappedKey = self.forumKeyMap[key] else {
             S1LogDebug("loadNextPage triggered but we can not found mapped key for \(key).")
             return
         }
+
+        let token = newToken()
 
         dataCenter.loadNextPage(for: mappedKey) { [weak self] result in
             guard let strongSelf = self else { return }
@@ -445,6 +496,11 @@ extension TopicListViewModel {
                 let processedList = topicList.map { strongSelf.topicWithTracedDataForTopic($0) }
 
                 ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping loadNextPage(for: \(key)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
                     let new = Model(
                         target: .forum(.init(key: key, topics: processedList)),
                         state: .loaded
@@ -453,6 +509,11 @@ extension TopicListViewModel {
                 }
             case .failure:
                 ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping loadNextPage(for: \(key)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
                     let new = Model(
                         target: strongSelf.model.value.target,
                         state: .loaded
@@ -461,6 +522,47 @@ extension TopicListViewModel {
                 }
             }
         }
+    }
+
+    private func search(for term: String) {
+        let token = newToken()
+
+        dataCenter.searchTopics(for: term) { [weak self] result in
+            guard let strongSelf = self else { return }
+
+            switch result {
+            case .success(let topics):
+                ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping search(for: \(term)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    let new = Model(
+                        target: .search(.init(term: term, topics: topics)),
+                        state: .loaded
+                    )
+                    strongSelf.transitModel(to: new, with: .requestFinish)
+                }
+            case .failure(let error):
+                ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping search(for: \(term)) failure because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    let new = Model(
+                        target: .blank,
+                        state: .error(target: .search(term: term), message: error.localizedDescription)
+                    )
+                    strongSelf.transitModel(to: new, with: .requestFinish)
+                }
+            }
+        }
+    }
+
+    private func loadNextSearchPage(for term: String) {
+
     }
 
     func reset() {
@@ -635,9 +737,44 @@ extension TopicListViewModel {
         override func postTransition(action: Action, from: Model, to: Model) {
             guard let viewModel = self.viewModel else { return }
 
-            switch (from.state, to.target, action) {
-            case (.loading, .forum(let forum), .requestFinish):
-                viewModel.cachedLastRefreshTime[forum.key] = Date()
+            switch (to.state, action) {
+            case (.loaded, .tabTapped),
+                 (.loaded, .requestFinish),
+                 (.loaded, .loadMoreFinish),
+                 (.allResultFetched, .requestFinish),
+                 (.allResultFetched, .loadMoreFinish),
+                 (.error, .requestFinish),
+                 (.error, .loadMoreFinish),
+                 (_, .reset):
+                viewModel.tableViewReloadingObserver.send(value: ())
+            case (_, .cloudKitUpdate(let indexPaths)):
+                viewModel.tableViewCellUpdateObserver.send(value: indexPaths)
+            default:
+                break
+            }
+        }
+    }
+
+    final class TabBarDeselectBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
+        override func postTransition(action: Action, from: Model, to: Model) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch action {
+            case .searchTapped:
+                viewModel.tabBarDeselectActionObserver.send(value: ())
+            default:
+                break
+            }
+        }
+    }
+
+    final class SearchTextClearBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
+        override func postTransition(action: Action, from: Model, to: Model) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch action {
+            case .tabTapped:
+                viewModel.searchTextClearActionObserver.send(value: ())
             default:
                 break
             }
@@ -663,6 +800,14 @@ extension TopicListViewModel {
         } else {
             return topic
         }
+    }
+
+    private func newToken() -> Int {
+        dispatchPrecondition(condition: .onQueue(.main))
+
+        let token = self.activeRequestToken + 1
+        self.activeRequestToken = token
+        return token
     }
 }
 
@@ -704,23 +849,21 @@ extension TopicListViewModel {
         case .forum(let forum):
             let (updatedTopics, indexPaths) = update(topics: forum.topics)
             if indexPaths.count > 0 {
-                tableViewCellUpdateObserver.send(value: indexPaths)
                 let new = Model(
                     target: .forum(.init(key: forum.key, topics: updatedTopics)),
                     state: model.value.state
                 )
-                transitModel(to: new, with: .cloudKitUpdate)
+                transitModel(to: new, with: .cloudKitUpdate(indexPaths))
             }
 
         case .search(let search):
             let (updatedTopics, indexPaths) = update(topics: search.topics)
             if indexPaths.count > 0 {
-                tableViewCellUpdateObserver.send(value: indexPaths)
                 let new = Model(
                     target: .search(.init(term: search.term, topics: updatedTopics)),
                     state: model.value.state
                 )
-                transitModel(to: new, with: .cloudKitUpdate)
+                transitModel(to: new, with: .cloudKitUpdate(indexPaths))
             }
         case .blank:
             break

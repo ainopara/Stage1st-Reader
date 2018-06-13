@@ -353,6 +353,17 @@ extension TopicListViewController {
             }
         }
 
+        viewModel.tabBarDeselectAction.observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.scrollTabBar.deselectAll()
+        }
+
+        viewModel.searchTextClearAction.observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.searchBar.text = ""
+            strongSelf.searchBar.delegate?.searchBar?(strongSelf.searchBar, textDidChange: "")
+        }
+
         viewModel.isShowingFetchingMoreIndicator.signal.observeValues { [weak self] (showing) in
             guard let strongSelf = self else { return }
             if showing && strongSelf.tableView.tableFooterView == nil {
@@ -385,7 +396,7 @@ extension TopicListViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        viewModel.willDiplayCell(at: indexPath)
+        viewModel.willDisplayCell(at: indexPath)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -421,8 +432,15 @@ extension TopicListViewController: UISearchBarDelegate {
     }
 
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        fatalError()
-//        objc_searchBarSearchButtonClicked(searchBar)
+        if searchBar.isFirstResponder {
+            searchBar.resignFirstResponder()
+        }
+
+        guard let term = searchBar.text, term.count > 0 else {
+            return
+        }
+
+        viewModel.searchButtonTapped(term: term)
     }
 }
 
