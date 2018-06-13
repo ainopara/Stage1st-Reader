@@ -11,7 +11,6 @@ import YapDatabase
 import WebKit
 import Alamofire
 
-@objcMembers
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
     let networkManager: S1NetworkManager
@@ -19,13 +18,8 @@ class DataCenter: NSObject {
     let cacheDatabaseManager: CacheDatabaseManager
 
     var mahjongFaceHistorys: [MahjongFaceItem] {
-        get {
-            return cacheDatabaseManager.mahjongFaceHistory()
-        }
-
-        set {
-            cacheDatabaseManager.set(mahjongFaceHistory: newValue)
-        }
+        get { return cacheDatabaseManager.mahjongFaceHistory() }
+        set { cacheDatabaseManager.set(mahjongFaceHistory: newValue) }
     }
 
     var formHash: String?
@@ -34,11 +28,12 @@ class DataCenter: NSObject {
     private var topicListCachePageNumber = [String: Int]()
     private var workingRequests = [Request]()
 
-    init(apiManager: DiscuzClient,
-         networkManager: S1NetworkManager,
-         databaseManager: DatabaseManager,
-         cacheDatabaseManager: CacheDatabaseManager) {
-
+    init(
+        apiManager: DiscuzClient,
+        networkManager: S1NetworkManager,
+        databaseManager: DatabaseManager,
+        cacheDatabaseManager: CacheDatabaseManager
+    ) {
         self.apiManager = apiManager
         self.networkManager = networkManager
         tracer = S1YapDatabaseAdapter(database: databaseManager)
