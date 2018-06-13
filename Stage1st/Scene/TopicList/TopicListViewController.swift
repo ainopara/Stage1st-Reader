@@ -30,15 +30,7 @@ class TopicListViewController: UIViewController {
     let footerView = LoadingFooterView()
     let refreshHUD = S1HUD(frame: .zero)
 
-    // Model
-    var cachedContentOffset = [String: CGPoint]()
-    var cachedLastRefreshTime = [String: Date]()
-
     private var observations = [NSKeyValueObservation]()
-
-    var loadingFlag = false
-    var loadingMore = false
-//    @property (nonatomic, strong) NSString *searchKeyword;
 
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         viewModel = TopicListViewModel(dataCenter: AppEnvironment.current.dataCenter)
@@ -257,12 +249,15 @@ extension TopicListViewController {
 }
 
 extension TopicListViewController {
+    // swiftlint:disable cyclomatic_complexity
     func bindViewModel() {
 
         /// viewModel.tableViewOffset <~ tableView.contentOffset
         let tableViewContentOffsetToken = tableView.observe(\.contentOffset, options: [.new]) { [weak self] (tableView, change) in
             guard let strongSelf = self else { return }
             guard let offset = change.newValue else { return }
+
+            S1LogDebug("Offset: \(offset)")
 
             if strongSelf.viewModel.tableViewOffset.value != offset {
                 strongSelf.viewModel.tableViewOffset.value = offset
@@ -279,17 +274,28 @@ extension TopicListViewController {
 
             switch action {
             case .restore(let offset):
+                /// A dirty hack to make content offset restoration as precise as possible. Work for iOS 11.
+                strongSelf.tableView.layoutIfNeeded()
+                strongSelf.tableView.setContentOffset(offset, animated: true)
+                strongSelf.tableView.layoutIfNeeded()
                 strongSelf.tableView.setContentOffset(offset, animated: false)
-            case .toTop:
-                strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
-            }
 
-            /// Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
-            if strongSelf.tableView.contentOffset.y < 0.0 {
-                if strongSelf.tableView.isTracking {
-                    strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .none, animated: true)
-                } else {
-                    strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
+                DispatchQueue.main.async {
+                    strongSelf.tableView.setContentOffset(offset, animated: false)
+                }
+
+            case .toTop:
+                guard strongSelf.tableView.numberOfRows(inSection: 0) > 0 else { return }
+
+                strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: false)
+
+                /// Force scroll to first cell when finish loading. in case cocoa didn't do that for you.
+                if strongSelf.tableView.contentOffset.y < 0.0 {
+                    if strongSelf.tableView.isTracking {
+                        strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .none, animated: true)
+                    } else {
+                        strongSelf.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
+                    }
                 }
             }
         }
@@ -335,7 +341,9 @@ extension TopicListViewController {
 
         viewModel.isRefreshControlHidden.producer.startWithValues { [weak self] (hidden) in
             guard let strongSelf = self else { return }
-            strongSelf.refreshControl.isHidden = hidden
+            if strongSelf.refreshControl.isHidden != hidden {
+                strongSelf.refreshControl.isHidden = hidden
+            }
         }
 
         viewModel.refreshControlEndRefreshing.observeValues { [weak self] (_) in
@@ -347,9 +355,9 @@ extension TopicListViewController {
 
         viewModel.isShowingFetchingMoreIndicator.signal.observeValues { [weak self] (showing) in
             guard let strongSelf = self else { return }
-            if showing {
+            if showing && strongSelf.tableView.tableFooterView == nil {
                 strongSelf.tableView.tableFooterView = strongSelf.footerView
-            } else {
+            } else if !showing && strongSelf.tableView.tableFooterView === strongSelf.footerView {
                 strongSelf.tableView.tableFooterView = nil
             }
         }
@@ -377,22 +385,7 @@ extension TopicListViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == viewModel.topics.count - 15 {
-            loadingMore = true
-            S1LogDebug("Reach (almost) last topic, load more.")
-
-            viewModel.fetchingMoreTriggered()
-
-//            viewModel.loadNextPage { [weak self] (result) in
-//                guard let strongSelf = self else { return }
-//
-//                // TODO: Show ReloadingFooterView if failed.
-//                S1LogInfo("load next page \(result)")
-//                tableView.tableFooterView = nil
-//                tableView.reloadData()
-//                strongSelf.loadingMore = false
-//            }
-        }
+        viewModel.willDiplayCell(at: indexPath)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -502,7 +495,7 @@ extension TopicListViewController {
 
 extension TopicListViewController {
     @objc func updateTabbar() {
-        viewModel.transitState(to: .loaded(.blank))
+        viewModel.reset()
         scrollTabBar.keys = self.keys()
     }
 
