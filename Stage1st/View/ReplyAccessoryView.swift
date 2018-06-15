@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 
 class ReplyAccessoryView: UIView {
-    private let toolBar = UIToolbar(frame: .zero)
+    let toolBar = UIToolbar(frame: .zero)
     private let faceButton = UIButton(type: .system)
     private let spoilerButton = UIButton(type: .system)
 

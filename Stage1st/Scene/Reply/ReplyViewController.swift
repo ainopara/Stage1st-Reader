@@ -58,6 +58,13 @@ final class ReplyViewController: REComposeViewController {
         mahjongFaceView.delegate = self
         mahjongFaceView.historyCountLimit = 99
         mahjongFaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -86,10 +93,23 @@ final class ReplyViewController: REComposeViewController {
         sheetBackgroundColor = colorManager.colorForKey("reply.background")
 
         replyAccessoryView.backgroundColor = colorManager.colorForKey("appearance.toolbar.bartint")
+        replyAccessoryView.toolBar.barTintColor = colorManager.colorForKey("appearance.toolbar.bartint")
+        replyAccessoryView.toolBar.tintColor = colorManager.colorForKey("appearance.toolbar.tint")
 
         mahjongFaceView.backgroundColor = colorManager.colorForKey("mahjongface.background")
         mahjongFaceView.pageControl.pageIndicatorTintColor = colorManager.colorForKey("mahjongface.pagecontrol.indicatortint")
         mahjongFaceView.pageControl.currentPageIndicatorTintColor = colorManager.colorForKey("mahjongface.pagecontrol.currentpage")
+        mahjongFaceView.tabBar.updateColor()
+        textView.reloadInputViews()
+
+        navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
+        navigationBar.tintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.tint")
+        navigationBar.titleTextAttributes = [
+            .foregroundColor: AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.title"),
+            .font: UIFont.boldSystemFont(ofSize: 17.0)
+        ]
+
+        setNeedsStatusBarAppearanceUpdate()
     }
 }
 

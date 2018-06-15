@@ -533,11 +533,6 @@ extension TopicListViewController {
 
         refreshControl.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.refreshcontrol.tint")
 
-        navigationBar.titleTextAttributes = [
-            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 17.0),
-            NSAttributedStringKey.foregroundColor: AppEnvironment.current.colorManager.colorForKey("topiclist.navigationbar.titlelabel")
-        ]
-
         searchBar.searchBarStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .minimal : .default
         searchBar.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.tint")
         searchBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.bartint")
