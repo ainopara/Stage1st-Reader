@@ -6,18 +6,10 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import UIKit
 import SnapKit
 import ActionSheetPicker_3_0
 import OnePasswordExtension
-import CocoaLumberjack
 import Crashlytics
-
-private enum LoginViewControllerState {
-    case notLogin
-    case notLoginWithAnswerField
-    case login
-}
 
 private class UserInfoInputView: UIView {
     let usernameField = UITextField(frame: CGRect.zero)
@@ -157,24 +149,30 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
     let backgroundBlurView = UIVisualEffectView(effect: nil)
     let containerView = UIView(frame: CGRect.zero)
 
-    fileprivate let userInfoInputView = UserInfoInputView(frame: .zero)
-    fileprivate let seccodeInputView = SeccodeInputView(frame: .zero)
+    private let userInfoInputView = UserInfoInputView(frame: .zero)
+    private let seccodeInputView = SeccodeInputView(frame: .zero)
 
-    fileprivate let visibleLayoutGuide = UIView(frame: CGRect.zero)
+    private let visibleLayoutGuide = UIView(frame: CGRect.zero)
 
-    fileprivate var dynamicAnimator: UIDynamicAnimator?
-    fileprivate var snapBehavior: UISnapBehavior?
-    fileprivate var dynamicItemBehavior: UIDynamicItemBehavior?
-    fileprivate var attachmentBehavior: UIAttachmentBehavior?
-    fileprivate var dragGesture: UIPanGestureRecognizer?
-    fileprivate var tapGesture: UITapGestureRecognizer?
+    private var dynamicAnimator: UIDynamicAnimator?
+    private var snapBehavior: UISnapBehavior?
+    private var dynamicItemBehavior: UIDynamicItemBehavior?
+    private var attachmentBehavior: UIAttachmentBehavior?
+    private var dragGesture: UIPanGestureRecognizer?
+    private var tapGesture: UITapGestureRecognizer?
 
-    fileprivate var loginButtonTopConstraint: Constraint?
+    private var loginButtonTopConstraint: Constraint?
 
-    fileprivate let networkManager: DiscuzClient
-    fileprivate var sechash: String?
+    private let networkManager: DiscuzClient
+    private var sechash: String?
 
-    fileprivate var state: LoginViewControllerState = .notLogin {
+    enum State {
+        case notLogin
+        case notLoginWithAnswerField
+        case login
+    }
+
+    private var state: State = .notLogin {
         didSet {
             switch state {
             case .notLogin:
@@ -234,7 +232,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         }
     }
 
-    let secureQuestionChoices = [
+    private let secureQuestionChoices = [
         "安全提问（未设置请忽略）",
         "母亲的名字",
         "爷爷的名字",
@@ -246,6 +244,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
     ]
 
     // MARK: - Life Cycle
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         networkManager = AppEnvironment.current.apiService
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -274,7 +273,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
 
         userInfoInputView.usernameField.delegate = self
         userInfoInputView.usernameField.placeholder = NSLocalizedString("LoginViewController.usernameField.placeholder", comment: "")
-        userInfoInputView.usernameField.text = ""
+        userInfoInputView.usernameField.text = self.inLoginStateID() ?? ""
         userInfoInputView.passwordField.delegate = self
         userInfoInputView.passwordField.placeholder = NSLocalizedString("LoginViewController.passwordField.placeholder", comment: "")
         userInfoInputView.onepasswordButton.addTarget(self, action: #selector(LoginViewController.findLoginFromOnePassword(_:)), for: .touchUpInside)
@@ -324,7 +323,12 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         view.addGestureRecognizer(dragGesture)
         self.dragGesture = dragGesture
 
-        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardFrameWillChange(_:)), name: .UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(LoginViewController.keyboardFrameWillChange(_:)),
+            name: .UIKeyboardWillChangeFrame,
+            object: nil
+        )
     }
 
     deinit {
@@ -434,7 +438,12 @@ extension LoginViewController {
     }
 
     @objc func keyboardFrameWillChange(_ notification: Notification) {
-        guard let userInfo = (notification as NSNotification).userInfo, let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else { return }
+        guard
+            let userInfo = notification.userInfo,
+            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
+        else {
+            return
+        }
 
         let keyboardHeightInView = view.bounds.maxY - endFrame.minY
         S1LogDebug("[LoginVC] keytboard height: \(keyboardHeightInView)")
@@ -445,8 +454,8 @@ extension LoginViewController {
 }
 
 // MARK: - UITextFieldDelegate
-extension LoginViewController: UITextFieldDelegate {
 
+extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == userInfoInputView.usernameField {
             userInfoInputView.passwordField.becomeFirstResponder()
@@ -471,9 +480,21 @@ extension LoginViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: Login Logic
-extension LoginViewController {
+// MARK: UIViewControllerTransitioningDelegate
 
+extension LoginViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return S1ModalAnimator(presentType: .present)
+    }
+
+    func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return S1ModalAnimator(presentType: .dismissal)
+    }
+}
+
+// MARK: Login Logic
+
+extension LoginViewController {
     fileprivate func loginAction() {
         let username = currentUsername()
         let password = currentPassword()
@@ -541,10 +562,19 @@ extension LoginViewController {
 }
 
 // MARK: Helper
+
 extension LoginViewController {
     fileprivate func alert(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Message_OK", comment: ""), style: .cancel, handler: nil))
+        let alertController = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alertController.addAction(UIAlertAction(
+            title: NSLocalizedString("Message_OK", comment: ""),
+            style: .cancel,
+            handler: nil)
+        )
         present(alertController, animated: true, completion: nil)
     }
 
@@ -603,16 +633,6 @@ extension LoginViewController {
 
     fileprivate func offsetFromCenter(_ touchPointInView: CGPoint, viewCenter: CGPoint) -> UIOffset {
         return UIOffset(horizontal: touchPointInView.x - viewCenter.x, vertical: touchPointInView.y - viewCenter.y)
-    }
-}
-
-extension LoginViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return S1ModalAnimator(presentType: .present)
-    }
-
-    func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return S1ModalAnimator(presentType: .dismissal)
     }
 }
 

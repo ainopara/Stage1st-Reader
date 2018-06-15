@@ -8,46 +8,22 @@
 
 import SnapKit
 
-final class ReplyViewModel {
-    enum ReplyTarget {
-        case topic
-        case floor(Floor, page: Int)
-    }
-    let topic: S1Topic
-    let target: ReplyTarget
-    let draft: NSAttributedString?
-
-    init(topic: S1Topic, target: ReplyTarget, draft: NSAttributedString?) {
-        self.topic = topic
-        self.target = target
-        self.draft = draft
-    }
-}
-
-extension Notification.Name {
-    static let ReplyDidPosted = Notification.Name.init(rawValue: "ReplyDidPostedNotification")
-}
-
 final class ReplyViewController: REComposeViewController {
     let viewModel: ReplyViewModel
 
     let mahjongFaceView = S1MahjongFaceView()
-    lazy var replyAccessoryView = {
-        ReplyAccessoryView(composeViewController: self)
-    }()
+    let replyAccessoryView = ReplyAccessoryView()
 
     init(viewModel: ReplyViewModel) {
         self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
 
-        if case let .floor(floor, _) = viewModel.target { // Reply Floor
-            title = "@\(floor.author.name)"
-        } else { // Reply Topic
+        switch viewModel.target {
+        case .topic:
             title = NSLocalizedString("ContentViewController.Reply.Title", comment: "Reply")
-        }
-
-        if let replyDraft = viewModel.draft {
-            textView.attributedText = replyDraft
+        case .floor(let floor, page: _):
+            title = "@\(floor.author.name)"
         }
 
         self.delegate = self
@@ -55,9 +31,11 @@ final class ReplyViewController: REComposeViewController {
         self.accessoryView = replyAccessoryView
         textView.s1_resetToReplyStyle()
 
+        replyAccessoryView.delegate = self
+
         mahjongFaceView.delegate = self
         mahjongFaceView.historyCountLimit = 99
-        mahjongFaceView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
+        mahjongFaceView.historyArray = AppEnvironment.current.cacheDatabaseManager.mahjongFaceHistory()
 
         NotificationCenter.default.addObserver(
             self,
@@ -72,12 +50,16 @@ final class ReplyViewController: REComposeViewController {
     }
 
     deinit {
+        NotificationCenter.default.removeObserver(self)
+
         let historyArray = self.mahjongFaceView.historyArray
         DispatchQueue.global().async {
-            AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
+            AppEnvironment.current.cacheDatabaseManager.set(mahjongFaceHistory: historyArray)
         }
     }
+}
 
+extension ReplyViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -117,7 +99,6 @@ final class ReplyViewController: REComposeViewController {
 
 extension ReplyViewController: REComposeViewControllerDelegate {
     func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
-//        attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
         switch result {
         case .cancelled:
             self.replyAccessoryView.removeExtraConstraints()
@@ -196,5 +177,66 @@ extension ReplyViewController: S1MahjongFaceViewDelegate {
         textView.selectedRange = range
         textView.textStorage.deleteCharacters(in: textView.selectedRange)
         textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
+    }
+}
+
+extension ReplyViewController: ReplyAccessoryViewDelegate {
+    func accessoryView(_ accessoryView: ReplyAccessoryView, didTappedMahjongFaceButton button: UIButton) {
+        if self.inputView != nil {
+            button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
+            mahjongFaceView.removeExtraConstraints()
+            inputView = nil
+            reloadInputViews()
+        } else {
+            button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
+            inputView = mahjongFaceView
+            reloadInputViews()
+        }
+    }
+
+    func accessoryView(_ accessoryView: ReplyAccessoryView, didTappedMarkSpoilerButton button: UIButton) {
+        insertMarkWithAPart("[color=LemonChiffon]", andBPart: "[/color]")
+    }
+
+//    func insertQuoteMark(_: UIButton) {
+//        insertMarkWithAPart("[quote]", andBPart: "[/quote]")
+//    }
+//
+//    func insertBoldMark(_: UIButton) {
+//        insertMarkWithAPart("[b]", andBPart: "[/b]")
+//    }
+//
+//    func insertDeleteMark(_: UIButton) {
+//        insertMarkWithAPart("[s]", andBPart: "[/s]")
+//    }
+}
+
+// MARK: - Helper
+
+extension ReplyViewController {
+    private func insertMarkWithAPart(_ aPart: NSString, andBPart bPart: NSString) {
+        let selectedRange = textView.selectedRange
+        let aPartLenght = aPart.length
+        if selectedRange.length == 0 {
+            let wholeMark = aPart.appending(bPart as String)
+            textView.textStorage.insert(NSAttributedString(string: wholeMark), at: selectedRange.location)
+        } else {
+            textView.textStorage.insert(NSAttributedString(string: bPart as String), at: selectedRange.location + selectedRange.length)
+            textView.textStorage.insert(NSAttributedString(string: aPart as String), at: selectedRange.location)
+        }
+        textView.selectedRange = NSRange(location: selectedRange.location + aPartLenght, length: selectedRange.length)
+        textView.s1_resetToReplyStyle()
+    }
+}
+
+private extension UITextView {
+    func s1_resetToReplyStyle() {
+        let allTextRange = NSRange(location: 0, length: textStorage.length)
+        textStorage.removeAttribute(.font, range: allTextRange)
+        textStorage.addAttribute(.font, value: UIFont.systemFont(ofSize: 17.0), range: allTextRange)
+        textStorage.removeAttribute(.foregroundColor, range: allTextRange)
+        textStorage.addAttribute(.foregroundColor, value: AppEnvironment.current.colorManager.colorForKey("reply.text"), range: allTextRange)
+        font = UIFont.systemFont(ofSize: 17.0)
+        textColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
     }
 }

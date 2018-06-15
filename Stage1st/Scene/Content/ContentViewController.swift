@@ -49,9 +49,6 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     let topDecorateLine = UIView(frame: .zero)
     let bottomDecorateLine = UIView(frame: .zero)
 
-    var attributedReplyDraft: NSMutableAttributedString?
-    weak var replyTopicFloor: Floor?
-
     var scrollType: ScrollType = .restorePosition {
         didSet { S1LogInfo("[ContentVC] scroll type changed: \(oldValue.rawValue) -> \(scrollType.rawValue)") }
     }
@@ -787,8 +784,6 @@ extension S1ContentViewController {
             return
         }
 
-        attributedReplyDraft = nil
-
         if viewModel.isInLastPage() {
             refreshCurrentPage(forceUpdate: true, scrollType: .toBottom)
         }
@@ -1230,8 +1225,7 @@ extension S1ContentViewController {
 
         let replyViewModel = ReplyViewModel(
             topic: viewModel.topic,
-            target: target(for: floor),
-            draft: attributedReplyDraft
+            target: target(for: floor)
         )
 
         let replyViewController = ReplyViewController(viewModel: replyViewModel)

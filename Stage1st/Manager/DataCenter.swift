@@ -17,11 +17,6 @@ class DataCenter: NSObject {
     let tracer: S1YapDatabaseAdapter
     let cacheDatabaseManager: CacheDatabaseManager
 
-    var mahjongFaceHistorys: [MahjongFaceItem] {
-        get { return cacheDatabaseManager.mahjongFaceHistory() }
-        set { cacheDatabaseManager.set(mahjongFaceHistory: newValue) }
-    }
-
     var formHash: String?
 
     private var topicListCache = [String: [S1Topic]]()
