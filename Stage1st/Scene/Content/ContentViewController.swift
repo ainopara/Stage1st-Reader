@@ -275,6 +275,12 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
             name: .UserBlockStatusDidChangedNotification,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceiveReplyDidPostedNotification(_:)),
+            name: .ReplyDidPosted,
+            object: nil
+        )
     }
 
     required init?(coder _: NSCoder) {
@@ -772,6 +778,21 @@ extension S1ContentViewController {
     @objc open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
         refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
     }
+
+    @objc open func didReceiveReplyDidPostedNotification(_ notification: Notification) {
+        guard
+            let topicID = notification.userInfo?["topicID"] as? NSNumber,
+            viewModel.topic.topicID.isEqual(to: topicID)
+        else {
+            return
+        }
+
+        attributedReplyDraft = nil
+
+        if viewModel.isInLastPage() {
+            refreshCurrentPage(forceUpdate: true, scrollType: .toBottom)
+        }
+    }
 }
 
 // MARK: -
@@ -1060,65 +1081,6 @@ extension S1ContentViewController: PullToActionDelagete {
     }
 }
 
-// MARK: - REComposeViewControllerDelegate
-extension S1ContentViewController: REComposeViewControllerDelegate {
-    func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
-        attributedReplyDraft = composeViewController.textView.attributedText.mutableCopy() as? NSMutableAttributedString
-        switch result {
-        case .cancelled:
-            if let accessoryView = composeViewController.accessoryView as? ReplyAccessoryView {
-                accessoryView.removeExtraConstraints()
-            }
-
-            if let inputView = composeViewController.inputView as? S1MahjongFaceView {
-                inputView.removeExtraConstraints()
-            }
-
-            composeViewController.dismiss(animated: true, completion: nil)
-        case .posted:
-            guard composeViewController.plainText.count > 0 else {
-                return
-            }
-
-            let successBlock = { [weak self] in
-                MessageHUD.shared.post(message: "回复成功", duration: .second(2.5))
-                guard let strongSelf = self else { return }
-                strongSelf.attributedReplyDraft = nil
-                if strongSelf.viewModel.isInLastPage() {
-                    strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: .toBottom)
-                }
-            }
-
-            let failureBlock = { (error: Error) in
-                if let urlError = error as? URLError, urlError.code == .cancelled {
-                    S1LogDebug("[Network] NSURLErrorCancelled")
-                    MessageHUD.shared.post(message: "回复请求取消", duration: .second(1.0))
-                } else {
-                    S1LogDebug("[Network] reply error: \(error)")
-                    MessageHUD.shared.post(message: "回复失败", duration: .second(2.5))
-                }
-            }
-            MessageHUD.shared.post(message: "回复发送中", duration: .forever)
-
-            if let replyTopicFloor = replyTopicFloor {
-                viewModel.dataCenter.reply(floor: replyTopicFloor, in: viewModel.topic, at: Int(viewModel.currentPage.value), text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
-            } else {
-                viewModel.dataCenter.reply(topic: viewModel.topic, text: composeViewController.plainText, successblock: successBlock, failureBlock: failureBlock)
-            }
-
-            if let accessoryView = composeViewController.accessoryView as? ReplyAccessoryView {
-                accessoryView.removeExtraConstraints()
-            }
-
-            if let inputView = composeViewController.inputView as? S1MahjongFaceView {
-                inputView.removeExtraConstraints()
-            }
-
-            composeViewController.dismiss(animated: true, completion: nil)
-        }
-    }
-}
-
 // MARK: - UIPopoverPresentationControllerDelegate
 extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
     func popoverPresentationController(_: UIPopoverPresentationController, willRepositionPopoverTo _: UnsafeMutablePointer<CGRect>, in _: AutoreleasingUnsafeMutablePointer<UIView>) {
@@ -1258,19 +1220,21 @@ extension S1ContentViewController {
     }
 
     func _presentReplyView(toFloor floor: Floor?) {
-        let replyViewController = ReplyViewController(nibName: nil, bundle: nil)
-        replyViewController.delegate = self
-
-        replyTopicFloor = floor
-        if let floor = floor { // Reply Floor
-            replyViewController.title = "@\(floor.author.name)"
-        } else { // Reply Topic
-            replyViewController.title = NSLocalizedString("ContentViewController.Reply.Title", comment: "Reply")
+        func target(for floor: Floor?) -> ReplyViewModel.ReplyTarget {
+            if let floor = floor {
+                return .floor(floor, page: viewModel.currentPage.value)
+            } else {
+                return .topic
+            }
         }
 
-        if let replyDraft = attributedReplyDraft {
-            replyViewController.textView.attributedText = replyDraft
-        }
+        let replyViewModel = ReplyViewModel(
+            topic: viewModel.topic,
+            target: target(for: floor),
+            draft: attributedReplyDraft
+        )
+
+        let replyViewController = ReplyViewController(viewModel: replyViewModel)
 
         present(replyViewController, animated: true, completion: nil)
     }

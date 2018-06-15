@@ -14,18 +14,13 @@ class ReplyAccessoryView: UIView {
     private let faceButton = UIButton(type: .system)
     private let spoilerButton = UIButton(type: .system)
 
-    weak var composeViewController: REComposeViewController?
-    let mahjongFaceInputView = S1MahjongFaceView()
+    weak var composeViewController: ReplyViewController?
 
     // MARK: - Life Cycle
-    init(composeViewController: REComposeViewController) {
+    init(composeViewController: ReplyViewController) {
         self.composeViewController = composeViewController
 
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 35))
-
-        mahjongFaceInputView.delegate = self
-        mahjongFaceInputView.historyCountLimit = 99
-        mahjongFaceInputView.historyArray = AppEnvironment.current.dataCenter.mahjongFaceHistorys
 
         // Setup faceButton
         faceButton.frame = CGRect(x: 0, y: 0, width: 44, height: 35)
@@ -49,13 +44,6 @@ class ReplyAccessoryView: UIView {
 
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        let historyArray = self.mahjongFaceInputView.historyArray
-        DispatchQueue.global().async {
-            AppEnvironment.current.dataCenter.mahjongFaceHistorys = historyArray
-        }
     }
 
     override func didMoveToWindow() {
@@ -99,12 +87,12 @@ extension ReplyAccessoryView {
 
         if composeViewController.inputView != nil {
             button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
-            mahjongFaceInputView.removeExtraConstraints()
+            composeViewController.mahjongFaceView.removeExtraConstraints()
             composeViewController.inputView = nil
             composeViewController.reloadInputViews()
         } else {
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
-            composeViewController.inputView = mahjongFaceInputView
+            composeViewController.inputView = composeViewController.mahjongFaceView
             composeViewController.reloadInputViews()
         }
     }
@@ -123,36 +111,6 @@ extension ReplyAccessoryView {
 
     func insertDeleteMark(_: UIButton) {
         insertMarkWithAPart("[s]", andBPart: "[/s]")
-    }
-}
-
-// MARK: - S1MahjongFaceViewDelegate
-extension ReplyAccessoryView: S1MahjongFaceViewDelegate {
-
-    func mahjongFaceViewController(_: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
-        guard let textView = composeViewController?.textView else {
-            return
-        }
-        // Insert Mahjong Face Attachment
-        textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
-        // Move selection location
-        textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
-        // Reset Text Style
-        textView.s1_resetToReplyStyle()
-    }
-
-    func mahjongFaceViewControllerDidPressBackSpace(_: S1MahjongFaceView) {
-        guard let textView = composeViewController?.textView else {
-            return
-        }
-        var range = textView.selectedRange
-        if range.length == 0 && range.location > 0 {
-            range.location -= 1
-            range.length = 1
-        }
-        textView.selectedRange = range
-        textView.textStorage.deleteCharacters(in: textView.selectedRange)
-        textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
     }
 }
 
