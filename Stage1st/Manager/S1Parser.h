@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSMutableArray<S1Topic *> *)topicsFromAPI:(NSDictionary *)responseDict;
 + (NSArray<Floor *> *)contentsFromAPI:(NSDictionary *)responseDict;
 
-+ (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData;
-
 + (NSMutableDictionary *_Nullable)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 
 + (NSString *_Nullable)loginUserName:(NSString *)HTMLString;

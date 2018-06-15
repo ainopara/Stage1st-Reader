@@ -82,65 +82,6 @@
     return topics;
 }
 
-+ (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData {
-    NSData *cleanedData = rawData;
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:cleanedData];
-    NSArray<TFHppleElement *> *elements = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
-    NSMutableArray<S1Topic *> *topics = [NSMutableArray array];
-    
-    DDLogDebug(@"[Parser] Search result topic count: %lu",(unsigned long)[elements count]);
-    for (TFHppleElement *element in elements) {
-        TFHpple *xpathParserForRow = [[TFHpple alloc] initWithHTMLData:[element.raw dataUsingEncoding:NSUTF8StringEncoding]];
-        NSArray *links = [xpathParserForRow searchWithXPathQuery:@"//a[@target='_blank']"];
-        if ([links count] != 3) continue;
-        TFHppleElement *titlePart = [links firstObject];
-        NSString *titleString = [titlePart recursionText];
-        
-        NSString *URLString = [titlePart objectForKey:@"href"];
-        S1Topic *topicFromURL = [S1Parser extractTopicInfoFromLink:URLString];
-        NSNumber *topicID = topicFromURL.topicID;
-        
-        TFHppleElement *authorPart = [links objectAtIndex:1];
-        NSString *authorName = [authorPart text];
-        NSString *authorSpaceHref = [authorPart objectForKey:@"href"];
-        NSNumber *authorUserID = [NSNumber numberWithInteger:[[[authorSpaceHref componentsSeparatedByString:@"-"] objectAtIndex:2] integerValue]];
-        
-        TFHppleElement *fidPart = [links objectAtIndex:2];
-        NSString *fidHref = [fidPart objectForKey:@"href"];
-        NSNumber *fid = [NSNumber numberWithInteger:[[[fidHref componentsSeparatedByString:@"-"] objectAtIndex:1] integerValue]];
-        
-        TFHppleElement *replyCountPart = [[xpathParserForRow searchWithXPathQuery:@"//p[@class='xg1']"] firstObject];
-        NSString *replyCountString = [[[replyCountPart text] componentsSeparatedByString:@" "] firstObject];
-        NSNumber *replyCount = [NSNumber numberWithInteger:[replyCountString integerValue]];
-
-        if (topicID != nil) {
-            S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
-            [topic setTitle:titleString];
-            [topic setReplyCount:replyCount];
-            [topic setFID:fid];
-            [topic setAuthorUserID:authorUserID];
-            [topic setAuthorUserName:authorName];
-            [topics addObject:topic];
-        }
-    }
-
-    NSString *searchID = nil;
-    NSArray<TFHppleElement *> *nextPageLinks = [xpathParser searchWithXPathQuery:@"//div[@class='pg']/a[@class='nxt']/@href"];
-    id rawNextPageURL = nextPageLinks.firstObject.firstTextChild.content;
-    if (rawNextPageURL != nil && [rawNextPageURL isKindOfClass: [NSString class]]) {
-        NSString *nextPageURL = rawNextPageURL;
-        nextPageURL = [nextPageURL gtm_stringByUnescapingFromHTML];
-        NSArray<NSURLQueryItem *> *queryItems = [[[NSURLComponents alloc] initWithString:nextPageURL] queryItems];
-        for (NSURLQueryItem *item in queryItems) {
-            if ([item.name isEqualToString:@"searchid"]) {
-                searchID = item.value;
-            }
-        }
-    }
-
-    return topics;
-}
-
 + (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
     NSArray<DDXMLElement *> *topicNodes = [xmlDoc nodesForXPath:@"//div[@class='tl']//tr[not(@class)]" error:nil];

@@ -73,39 +73,6 @@
     [self.httpClient POST:url parameters:params progress:nil success:success failure:failure];
 }
 
-#pragma mark - Search
-
-- (void)postSearchForKeyword:(NSString *)keyword
-                 andFormhash:(NSString *)formhash
-                     success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                     failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    if (formhash == nil) { return; }
-    NSString *url = @"search.php?searchsubmit=yes";
-    NSDictionary *params = @{@"mod" : @"forum",
-                             @"formhash" : formhash,
-                             @"srchtype" : @"title",
-                             @"srhfid" : @"",
-                             @"srhlocality" : @"forum::index",
-                             @"srchtxt" : keyword,
-                             @"searchsubmit" : @"true"};
-    [self.httpClient POST:url parameters:params progress:nil success:success failure:failure];
-}
-
-//http://bbs.stage1.cc/search.php?mod=forum&searchid=706&orderby=lastpost&ascdesc=desc&searchsubmit=yes&page=2
-- (void)requestSearchResultPageForSearchID:(NSString *)searchID
-                                  withPage:(NSNumber *)page
-                                   success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-                                   failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    NSString *url = @"search.php";
-    NSDictionary *params = @{@"mod" : @"forum",
-                             @"searchid" : searchID,
-                             @"orderby" : @"lastpost",
-                             @"ascdesc" : @"desc",
-                             @"page" : page,
-                             @"searchsubmit" : @"yes"};
-    [self.httpClient GET:url parameters:params progress:nil success:success failure:failure];
-}
-
 #pragma mark - User Info
 
 - (void)requestThreadListForID:(NSNumber *)userID
