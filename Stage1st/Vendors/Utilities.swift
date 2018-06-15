@@ -7,7 +7,7 @@
 //
 
 import WebKit
-import CocoaLumberjack
+import KissXML
 
 func ensureMainThread(_ block: @escaping () -> Void) {
     if Thread.current.isMainThread {
@@ -304,5 +304,23 @@ extension NSMutableString {
             S1LogError("Regex Replace error: \(error) when initialize with pattern: \(pattern)")
             return 0
         }
+    }
+}
+
+extension DDXMLNode {
+    var recursiveText: String {
+        if self.kind == XMLTextKind {
+            return self.stringValue ?? ""
+        } else {
+            return (children ?? []).map({ $0.recursiveText }).joined()
+        }
+    }
+
+    var firstText: String? {
+        return children?.first(where: { $0.kind == XMLTextKind })?.stringValue
+    }
+
+    func elements(for xpath: String) throws -> [DDXMLElement] {
+        return try nodes(forXPath: xpath).compactMap({ $0 as? DDXMLElement })
     }
 }

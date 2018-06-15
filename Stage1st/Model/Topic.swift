@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import CocoaLumberjack
 import SwiftyJSON
+import KissXML
 
 extension S1Topic {
 
@@ -45,6 +45,62 @@ extension S1Topic {
         if let lastPostDate = json["dblastpost"].string.flatMap({ Date(timeIntervalSince1970: TimeInterval(Int($0) ?? 0)) }) {
             lastReplyDate = lastPostDate
         }
+    }
+
+    convenience init?(element: DDXMLElement) {
+        let links = (try? element.elements(for: ".//a[@target='_blank']")) ?? []
+
+        guard links.count == 3 else {
+            return nil
+        }
+
+        let titlePart = links[0]
+        let titleString = titlePart.recursiveText
+
+        let url = titlePart.attribute(forName: "href")?.stringValue ?? ""
+        guard let topicID = S1Parser.extractTopicInfo(fromLink: url)?.topicID else {
+            return nil
+        }
+
+        let authorPart = links[1]
+        let authorName = authorPart.firstText ?? ""
+
+        guard let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue else {
+            return nil
+        }
+
+        guard let authorUserID = Int(authorHomeURL.split(separator: "-")[2].split(separator: ".")[0]) else {
+            return nil
+        }
+
+        let fieldIDPart = links[2]
+        guard let fieldURL = fieldIDPart.attribute(forName: "href")?.stringValue else {
+            return nil
+        }
+
+        guard let fieldID = Int(fieldURL.split(separator: "-")[1]) else {
+            return nil
+        }
+
+        guard let replyCountPart = (try? element.elements(for: ".//p[@class='xg1']"))?.first else {
+            return nil
+        }
+
+        guard let replyCountString = replyCountPart.firstText?.split(separator: " ").first else {
+            return nil
+        }
+
+        guard let replyCount = Int(replyCountString) else {
+            return nil
+        }
+
+        self.init(topicID: topicID)
+
+        self.title = titleString
+        self.authorUserID = authorUserID as NSNumber
+        self.authorUserName = authorName
+        self.fID = fieldID as NSNumber
+        self.replyCount = replyCount as NSNumber
     }
 
     /**

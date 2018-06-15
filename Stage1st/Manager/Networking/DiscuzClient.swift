@@ -8,7 +8,7 @@
 
 import SwiftyJSON
 
-public extension Notification.Name {
+extension Notification.Name {
     public static let DZLoginStatusDidChangeNotification = Notification.Name.init(rawValue: "DZLoginStatusDidChangeNotification")
 }
 
@@ -50,11 +50,9 @@ extension DZError: LocalizedError {
 }
 
 public final class DiscuzClient: NSObject {
-    let baseURL: String
-    var formhash: String?
-//    var auth: String?
+    public let baseURL: String
 
-    init(baseURL: String) {
+    public init(baseURL: String) {
         self.baseURL = baseURL
         super.init()
     }
