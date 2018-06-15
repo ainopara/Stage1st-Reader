@@ -226,7 +226,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
             // Open as S1 topic
             if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
                 var topic = topic
-                if let tracedTopic = viewModel.dataCenter.traced(topicID: topic.topicID.intValue) {
+                if let tracedTopic = AppEnvironment.current.dataCenter.traced(topicID: topic.topicID.intValue) {
                     let lastViewedPage = topic.lastViewedPage
                     topic = tracedTopic.copy() as! S1Topic
                     if lastViewedPage != nil {
@@ -256,17 +256,23 @@ extension QuoteFloorViewController: WKNavigationDelegate {
         }
 
         // Fallback Open link
-        let alertViewController = UIAlertController(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""),
-                                                    message: url.absoluteString,
-                                                    preferredStyle: .alert)
+        let alertViewController = UIAlertController(
+            title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Title", comment: ""),
+            message: url.absoluteString,
+            preferredStyle: .alert
+        )
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Cancel", comment: ""),
-                                                    style: .cancel,
-                                                    handler: nil))
+        alertViewController.addAction(UIAlertAction(
+            title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Cancel", comment: ""),
+            style: .cancel,
+            handler: nil)
+        )
 
-        alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""),
-                                                    style: .default,
-                                                    handler: openActionHandler))
+        alertViewController.addAction(UIAlertAction(
+            title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""),
+            style: .default,
+            handler: openActionHandler)
+        )
 
         present(alertViewController, animated: true, completion: nil)
 
@@ -293,6 +299,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 }
 
 // MARK: UIScrollViewDelegate
+
 extension QuoteFloorViewController: UIScrollViewDelegate {
     // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -301,6 +308,7 @@ extension QuoteFloorViewController: UIScrollViewDelegate {
 }
 
 // MARK: - Helper
+
 extension QuoteFloorViewController {
     func topPositionOfMessageWithId(_ elementID: Int, completion: @escaping (CGFloat) -> Void) {
         webView.s1_positionOfElement(with: "postmessage_\(elementID)") {
@@ -322,6 +330,7 @@ extension QuoteFloorViewController {
 }
 
 // MARK: - Style
+
 extension QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default

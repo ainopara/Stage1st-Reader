@@ -15,6 +15,7 @@ import WebKit
 
 class ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
+    var currentFloors: [Floor] = []
     let dataCenter: DataCenter
     let apiManager: DiscuzClient
 
@@ -97,6 +98,8 @@ extension ContentViewModel {
                     strongSelf.currentContentPage(completion: completion)
                     return
                 }
+
+                strongSelf.currentFloors = floors
 
                 completion(.success(strongSelf.generatePage(with: floors)))
             case let .failure(error):
@@ -238,27 +241,31 @@ extension ContentViewModel: ContentViewModelMaker {
 
 extension ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
-        return ReportComposeViewModel(dataCenter: dataCenter,
-                                      topic: topic,
-                                      floor: floor)
+        return ReportComposeViewModel(
+            topic: topic,
+            floor: floor
+        )
     }
 }
 
 extension ContentViewModel: QuoteFloorViewModelMaker {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
-        return QuoteFloorViewModel(dataCenter: dataCenter,
-                                   manager: apiManager,
-                                   topic: topic,
-                                   floors: floors,
-                                   centerFloorID: centerFloorID,
-                                   baseURL: pageBaseURL())
+        return QuoteFloorViewModel(
+            topic: topic,
+            floors: floors,
+            centerFloorID: centerFloorID,
+            baseURL: pageBaseURL()
+        )
     }
 }
 
 extension ContentViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
-        return UserViewModel(dataCenter: dataCenter,
-                             user: User(ID: userID, name: ""))
+        let username = currentFloors.first(where: { $0.author.ID == userID })?.author.name
+        return UserViewModel(
+            dataCenter: dataCenter,
+            user: User(ID: userID, name: username ?? "")
+        )
     }
 }
 

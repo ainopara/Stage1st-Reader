@@ -14,20 +14,15 @@ final class QuoteFloorViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     let floors: [Floor]
 
-    let dataCenter: DataCenter
-    let discuzAPIManager: DiscuzClient
-
     let centerFloorID: Int
     let baseURL: URL
 
-    init(dataCenter: DataCenter,
-         manager: DiscuzClient,
-         topic: S1Topic,
-         floors: [Floor],
-         centerFloorID: Int,
-         baseURL: URL) {
-        self.dataCenter = dataCenter
-        discuzAPIManager = manager
+    init(
+        topic: S1Topic,
+        floors: [Floor],
+        centerFloorID: Int,
+        baseURL: URL
+    ) {
         self.topic = topic
         self.floors = floors
         self.centerFloorID = centerFloorID
@@ -35,19 +30,27 @@ final class QuoteFloorViewModel: NSObject, PageRenderer {
     }
 
     func userIsBlocked(with userID: Int) -> Bool {
-        return dataCenter.userIDIsBlocked(ID: userID)
+        return AppEnvironment.current.dataCenter.userIDIsBlocked(ID: userID)
     }
 }
 
+// MARK: - View Model
+
 extension QuoteFloorViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
-        return UserViewModel(dataCenter: dataCenter,
-                             user: User(ID: userID, name: ""))
+        let username = floors.first(where: { $0.author.ID == userID })?.author.name
+        return UserViewModel(
+            dataCenter: AppEnvironment.current.dataCenter,
+            user: User(ID: userID, name: username ?? "")
+        )
     }
 }
 
 extension QuoteFloorViewModel: ContentViewModelMaker {
     func contentViewModel(topic: S1Topic) -> ContentViewModel {
-        return ContentViewModel(topic: topic, dataCenter: dataCenter)
+        return ContentViewModel(
+            topic: topic,
+            dataCenter: AppEnvironment.current.dataCenter
+        )
     }
 }

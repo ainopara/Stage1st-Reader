@@ -72,10 +72,8 @@ class UserViewModel {
         isBlocked.value = !isBlocked.value
         if isBlocked.value {
             dataCenter.blockUser(with: user.value.ID)
-            NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
         } else {
             dataCenter.unblockUser(with: user.value.ID)
-            NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
         }
     }
 }

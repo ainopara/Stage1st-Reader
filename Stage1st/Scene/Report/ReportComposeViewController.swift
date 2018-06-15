@@ -13,46 +13,6 @@ import CocoaLumberjack
 import YYKeyboardManager
 import TextAttributes
 
-final class ReportComposeViewModel {
-    let dataCenter: DataCenter
-    let apiManager: DiscuzClient
-    let topic: S1Topic
-    let floor: Floor
-    let content = MutableProperty("")
-
-    let canSubmit = MutableProperty(false)
-    let isSubmitting = MutableProperty(false)
-
-    init(dataCenter: DataCenter, topic: S1Topic, floor: Floor) {
-        self.dataCenter = dataCenter
-        apiManager = dataCenter.apiManager
-        self.topic = topic
-        self.floor = floor
-
-        canSubmit <~ content.producer
-            .map { $0.count > 0 }
-            .combineLatest(with: isSubmitting.producer)
-            .map { arg in arg.0 && !arg.1 }
-    }
-
-    func submit(_ completion: @escaping (Error?) -> Void) {
-        S1LogDebug("submit")
-        guard let forumID = topic.fID, let formhash = topic.formhash else {
-            return
-        }
-
-        dataCenter.blockUser(with: floor.author.ID)
-        NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
-
-        isSubmitting.value = true
-        _ = apiManager.report(topicID: "\(topic.topicID)", floorID: "\(floor.ID)", forumID: "\(forumID)", reason: content.value, formhash: formhash) { [weak self] error in
-            guard let strongSelf = self else { return }
-            strongSelf.isSubmitting.value = false
-            completion(error)
-        }
-    }
-}
-
 final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)
     let loadingHUD = S1HUD(frame: .zero)
