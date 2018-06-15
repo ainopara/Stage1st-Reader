@@ -10,7 +10,6 @@
 #import "DatabaseManager.h"
 #import "S1MahjongFaceView.h"
 #import "S1MahjongFaceTextAttachment.h"
-#import "S1TopicListViewController.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
 #import "NavigationControllerDelegate.h"
