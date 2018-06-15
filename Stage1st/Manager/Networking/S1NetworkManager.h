@@ -45,6 +45,12 @@ NS_ASSUME_NONNULL_BEGIN
                      success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
                      failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
 
+- (void)requestSearchResultPageForSearchID:(NSString *)searchID
+                                  withPage:(NSNumber *)page
+                                   success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
+                                   failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
+
 #pragma mark - User Info
 
 - (void)requestThreadListForID:(NSNumber *)userID

@@ -166,33 +166,48 @@ extension DataCenter {
         return formHash != nil
     }
 
-    func searchTopics(for keyword: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
-        networkManager.postSearch(forKeyword: keyword, andFormhash: formHash!, success: { [weak self] _, responseObject in
+    func searchTopics(for keyword: String, completion: @escaping (Alamofire.Result<([S1Topic], String?)>) -> Void) {
+        apiManager.search(for: keyword, formhash: formHash!) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
-            guard let responseData = responseObject as? Data else {
-                completion(.failure("Unexpected response object type."))
-                return
-            }
+            switch result {
+            case .success(let topics, let searchID):
+                let processedTopics = topics.map { topic -> S1Topic in
+                    guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
+                        return topic
+                    }
 
-            let topics = S1Parser.topics(fromSearchResultHTMLData: responseData)
-            let processedTopics = topics.map { topic -> S1Topic in
-                guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
-                    return topic
+                    tracedTopic.update(topic)
+                    return tracedTopic
                 }
 
-                tracedTopic.update(topic)
-                return tracedTopic
-
-//                return mutate(tracedTopic, change: { (value: inout S1Topic) in
-//                    value.update(topic)
-//                })
+                completion(.success((processedTopics, searchID)))
+            case .failure(let error):
+                completion(.failure(error))
             }
+        }
+    }
 
-            completion(.success(processedTopics))
-        }, failure: { _, error in
-            completion(.failure(error))
-        })
+    func nextSearchPage(for searchID: String, page: Int, completion: @escaping (Alamofire.Result<([S1Topic], String?)>) -> Void) {
+        apiManager.search(with: searchID, page: page) { [weak self] (result) in
+            guard let strongSelf = self else { return }
+
+            switch result {
+            case .success(let topics, let newSearchID):
+                let processedTopics = topics.map { topic -> S1Topic in
+                    guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
+                        return topic
+                    }
+
+                    tracedTopic.update(topic)
+                    return tracedTopic
+                }
+
+                completion(.success((processedTopics, newSearchID)))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
 

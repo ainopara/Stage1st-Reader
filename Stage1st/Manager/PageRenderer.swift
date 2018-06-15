@@ -261,7 +261,7 @@ extension PageRenderer {
                 ]
 
                 let processedDocument = processes.reduce(xmlDocument) { (data, process) in process(data) }
-                let processedString = processedDocument.xmlString(withOptions: UInt(DDXMLNodePrettyPrint)) as NSString
+                let processedString = processedDocument.xmlString(withOptions: UInt(XMLNodePrettyPrint)) as NSString
                 let cuttedString = processedString.substring(with: NSRange(
                     location: 183,
                     length: processedString.length - 183 - 17

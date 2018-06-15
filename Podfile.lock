@@ -86,9 +86,7 @@ PODS:
   - KIF (3.7.3):
     - KIF/Core (= 3.7.3)
   - KIF/Core (3.7.3)
-  - KissXML (5.1.2):
-    - KissXML/Core (= 5.1.2)
-  - KissXML/Core (5.1.2)
+  - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (0.9.1)
   - Reachability (3.2)
@@ -253,7 +251,7 @@ CHECKOUT OPTIONS:
     :commit: d7899aa93768bb680fa85386bfdc9aead1a49bc7
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
-    :commit: 69d88824d428cf6b3407eb778f23c7562f87149b
+    :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   SwiftyJSON:
     :commit: f652507be7d2159fb98adcebf65c6f9b5fa0f5f2
@@ -282,7 +280,7 @@ SPEC CHECKSUMS:
   GYHttpMock: ad08e55ce8bde4e7f7b4d0cbc79ff23c1311658b
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KIF: 4c23b5d24dba24d3cb6dbb9c7d325b31e526ba4a
-  KissXML: 246c842586bb77110e04fb88e19376d96245c856
+  KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 5cbe91041c00b3ef4cfc405e3fad92b1fb63d6d2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96

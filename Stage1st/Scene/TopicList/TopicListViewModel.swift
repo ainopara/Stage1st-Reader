@@ -31,6 +31,8 @@ final class TopicListViewModel: NSObject {
             struct Search: Equatable {
                 let term: String
                 let topics: [S1Topic]
+                let searchID: String?
+                let page: Int
             }
             case search(Search)
         }
@@ -150,7 +152,7 @@ final class TopicListViewModel: NSObject {
         stateTransitionBehaviors = [
             TableViewUpdateBehavior(viewModel: self),
             RestorePositionBehavior(viewModel: self),
-            DataFreshRecordingBehavior(viewModel: self),
+            RefreshTimeCachingBehavior(viewModel: self),
             HudBehavior(viewModel: self),
             TabBarDeselectBehavior(viewModel: self),
             SearchTextClearBehavior(viewModel: self)
@@ -354,6 +356,7 @@ extension TopicListViewModel {
                 state: .loaded
             )
             transitModel(to: new, with: .tabTapped)
+            _ = newToken()
         } else {
             let new = Model(
                 target: model.value.target,
@@ -429,7 +432,7 @@ extension TopicListViewModel {
                 state: .fetchingMore
             )
             transitModel(to: new, with: .loadMore)
-            loadNextSearchPage(for: search.term)
+            loadNextSearchPage(for: search.searchID!, page: search.page + 1)
 
         case .blank:
             fatalError(".blank should never trigger loading more action!")
@@ -467,6 +470,16 @@ extension TopicListViewModel {
                 ensureMainThread {
                     guard strongSelf.activeRequestToken == token else {
                         S1LogWarn("Skipping topicList(for: \(key)) failure because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    if let urlError = error as? URLError, urlError.code == .cancelled {
+                        let new = Model(
+                            target: strongSelf.model.value.target,
+                            state: .loaded
+                        )
+                        strongSelf.transitModel(to: new, with: .requestFinish)
+
                         return
                     }
 
@@ -531,23 +544,41 @@ extension TopicListViewModel {
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let topics):
+            case .success(let topics, let searchID):
                 ensureMainThread {
                     guard strongSelf.activeRequestToken == token else {
                         S1LogWarn("Skipping search(for: \(term)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
                         return
                     }
 
-                    let new = Model(
-                        target: .search(.init(term: term, topics: topics)),
-                        state: .loaded
-                    )
-                    strongSelf.transitModel(to: new, with: .requestFinish)
+                    if let searchID = searchID {
+                        let new = Model(
+                            target: .search(.init(term: term, topics: topics, searchID: searchID, page: 1)),
+                            state: .loaded
+                        )
+                        strongSelf.transitModel(to: new, with: .requestFinish)
+                    } else {
+                        let new = Model(
+                            target: .search(.init(term: term, topics: topics, searchID: searchID, page: 1)),
+                            state: .allResultFetched
+                        )
+                        strongSelf.transitModel(to: new, with: .requestFinish)
+                    }
                 }
             case .failure(let error):
                 ensureMainThread {
                     guard strongSelf.activeRequestToken == token else {
                         S1LogWarn("Skipping search(for: \(term)) failure because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    if let urlError = error as? URLError, urlError.code == .cancelled {
+                        let new = Model(
+                            target: strongSelf.model.value.target,
+                            state: .loaded
+                        )
+                        strongSelf.transitModel(to: new, with: .requestFinish)
+
                         return
                     }
 
@@ -561,8 +592,60 @@ extension TopicListViewModel {
         }
     }
 
-    private func loadNextSearchPage(for term: String) {
+    private func loadNextSearchPage(for searchID: String, page: Int) {
+        let token = newToken()
 
+        dataCenter.nextSearchPage(for: searchID, page: page) { [weak self] (result) in
+            guard let strongSelf = self else { return }
+
+            switch result {
+            case .success(let topics, let newSearchID):
+                ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping loadNextSearchPage(for: \(searchID), page: \(page)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    guard case let .search(search) = strongSelf.model.value.target else {
+                        return
+                    }
+
+                    let newTarget = Model.Target.search(.init(
+                        term: search.term,
+                        topics: search.topics + topics,
+                        searchID: newSearchID,
+                        page: search.page + 1)
+                    )
+
+                    if newSearchID != nil {
+                        let new = Model(
+                            target: newTarget,
+                            state: .loaded
+                        )
+                        strongSelf.transitModel(to: new, with: .loadMoreFinish)
+                    } else {
+                        let new = Model(
+                            target: newTarget,
+                            state: .allResultFetched
+                        )
+                        strongSelf.transitModel(to: new, with: .loadMoreFinish)
+                    }
+                }
+            case .failure:
+                ensureMainThread {
+                    guard strongSelf.activeRequestToken == token else {
+                        S1LogWarn("Skipping loadNextSearchPage(for: \(searchID), page: \(page)) failure because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
+                        return
+                    }
+
+                    let new = Model(
+                        target: strongSelf.model.value.target,
+                        state: .loaded
+                    )
+                    strongSelf.transitModel(to: new, with: .loadMoreFinish)
+                }
+            }
+        }
     }
 
     func reset() {
@@ -652,20 +735,21 @@ extension TopicListViewModel {
         override func preTransition(action: Action, from: Model, to: Model) {
             guard let viewModel = self.viewModel else { return }
 
+            func saveOffset(forumKey: String) {
+                S1LogDebug("Saving offset \(viewModel.tableViewOffset.value) for \(forumKey)")
+                viewModel.cachedContentOffset[forumKey] = mutate(viewModel.tableViewOffset.value) { (value: inout CGPoint) in
+                    value.y = value.y < 0.0 ? 0.0 : value.y
+                }
+            }
+
             /// Whenever leaving a forum, save its tableView.contentOffset
             switch (from.target, to.target) {
             case (.forum(let forum), .forum(let newForum)) where forum.key != newForum.key:
-                S1LogDebug("Saving offset \(viewModel.tableViewOffset.value) for \(forum.key)")
-                viewModel.cachedContentOffset[forum.key] = mutate(viewModel.tableViewOffset.value) { (value: inout CGPoint) in
-                    value.y = value.y < 0.0 ? 0.0 : value.y
-                }
+                saveOffset(forumKey: forum.key)
 
             case (.forum(let forum), .blank),
                  (.forum(let forum), .search):
-                S1LogDebug("Saving offset \(viewModel.tableViewOffset.value) for \(forum.key)")
-                viewModel.cachedContentOffset[forum.key] = mutate(viewModel.tableViewOffset.value) { (value: inout CGPoint) in
-                    value.y = value.y < 0.0 ? 0.0 : value.y
-                }
+                saveOffset(forumKey: forum.key)
 
             default:
                 break
@@ -693,7 +777,7 @@ extension TopicListViewModel {
         }
     }
 
-    final class DataFreshRecordingBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
+    final class RefreshTimeCachingBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
         override func postTransition(action: Action, from: Model, to: Model) {
             guard let viewModel = self.viewModel else { return }
 
@@ -715,12 +799,12 @@ extension TopicListViewModel {
                 viewModel.hudActionObserver.send(value: .hide(delay: 0.3))
 
             case (_, .loading(let loading)):
-                switch loading.target {
-                case .forum:
-                    if !viewModel.refreshControlIsRefreshing.value {
-                        viewModel.hudActionObserver.send(value: .loading)
-                    }
-                case .search:
+                switch (loading.target, loading.showingHUD) {
+                case (.forum, true):
+                    viewModel.hudActionObserver.send(value: .loading)
+                case (.forum, false):
+                    viewModel.hudActionObserver.send(value: .hide(delay: 0.0))
+                case (.search, _):
                     viewModel.hudActionObserver.send(value: .loading)
                 }
 
@@ -860,7 +944,7 @@ extension TopicListViewModel {
             let (updatedTopics, indexPaths) = update(topics: search.topics)
             if indexPaths.count > 0 {
                 let new = Model(
-                    target: .search(.init(term: search.term, topics: updatedTopics)),
+                    target: .search(.init(term: search.term, topics: updatedTopics, searchID: search.searchID, page: search.page)),
                     state: model.value.state
                 )
                 transitModel(to: new, with: .cloudKitUpdate(indexPaths))

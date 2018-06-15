@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 import Crashlytics
+import KissXML
 
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
     let urlRequest = URLRequest(url: URL(string: baseURLString)!)
@@ -59,9 +60,11 @@ public extension DiscuzClient {
      - returns: Request object.
      */
     @discardableResult
-    public func checkLoginType(noSechashBlock: @escaping () -> Void,
-                               hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
-                               failureBlock: @escaping (_ error: Error) -> Void) -> Request {
+    public func checkLoginType(
+        noSechashBlock: @escaping () -> Void,
+        hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
+        failureBlock: @escaping (_ error: Error) -> Void
+    ) -> Request {
         logOut()
         let parameters: Parameters = [
             "module": "secure",
@@ -103,7 +106,14 @@ public extension DiscuzClient {
      - returns: Request object.
      */
     @discardableResult
-    public func logIn(username: String, password: String, secureQuestionNumber: Int, secureQuestionAnswer: String, authMode: AuthMode, completion: @escaping (Result<String?>) -> Void) -> Request {
+    public func logIn(
+        username: String,
+        password: String,
+        secureQuestionNumber: Int,
+        secureQuestionAnswer: String,
+        authMode: AuthMode,
+        completion: @escaping (Result<String?>) -> Void
+    ) -> Request {
         var URLParameters: Parameters = [
             "module": "login",
             "version": 1,
@@ -168,8 +178,13 @@ public extension DiscuzClient {
 
     @discardableResult
     func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
-        let parameters: Parameters = ["module": "seccode", "version": 1, "mobile": "no", "sechash": sechash]
-        return Alamofire.request(baseURL + "/api/mobile/index.php", method: .get, parameters: parameters, encoding: URLEncoding.queryString, headers: nil).responseImage { response in
+        let parameters: Parameters = [
+            "module": "seccode",
+            "version": 1,
+            "mobile": "no",
+            "sechash": sechash
+        ]
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseImage { response in
             switch response.result {
             case let .success(image):
                 completion(.success(image))
@@ -200,7 +215,11 @@ public extension DiscuzClient {
 // MARK: - Topic List
 public extension DiscuzClient {
     @discardableResult
-    public func topics(in fieldID: UInt, page: UInt, completion: @escaping (Result<(Field, [S1Topic], String?, String?)>) -> Void) -> Alamofire.Request {
+    public func topics(
+        in fieldID: UInt,
+        page: UInt,
+        completion: @escaping (Result<(Field, [S1Topic], String?, String?)>) -> Void
+    ) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
             "version": 1,
@@ -253,7 +272,11 @@ public extension DiscuzClient {
 // MARK: - Content
 public extension DiscuzClient {
     @discardableResult
-    public func floors(in topicID: UInt, page: UInt, completion: @escaping (Result<(S1Topic?, [Floor], String?)>) -> Void) -> Alamofire.Request {
+    public func floors(
+        in topicID: UInt,
+        page: UInt,
+        completion: @escaping (Result<(S1Topic?, [Floor], String?)>) -> Void
+    ) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "viewthread",
             "version": 1,
@@ -303,7 +326,10 @@ public extension DiscuzClient {
 // MARK: - Profile
 public extension DiscuzClient {
     @discardableResult
-    public func profile(userID: Int, completion: @escaping (Result<User>) -> Void) -> Request {
+    public func profile(
+        userID: Int,
+        completion: @escaping (Result<User>) -> Void
+    ) -> Request {
         let parameters: Parameters = [
             "module": "profile",
             "version": 1,
@@ -329,7 +355,14 @@ public extension DiscuzClient {
 // MARK: - Report
 public extension DiscuzClient {
     @discardableResult
-    func report(topicID: String, floorID: String, forumID: String, reason: String, formhash: String, completion: @escaping (Error?) -> Void) -> Request {
+    func report(
+        topicID: String,
+        floorID: String,
+        forumID: String,
+        reason: String,
+        formhash: String,
+        completion: @escaping (Error?) -> Void
+    ) -> Request {
         let URLParameters: Parameters = [
             "mod": "report",
             "inajax": 1,
@@ -354,5 +387,178 @@ public extension DiscuzClient {
         return Alamofire.request(URLString, method: .post, parameters: bodyParameters).responseString { response in
             completion(response.result.error)
         }
+    }
+}
+
+// MARK: - Search
+
+public extension DiscuzClient {
+    @discardableResult
+    func search(
+        for keyword: String,
+        formhash: String,
+        completion: @escaping (Result<([S1Topic], String?)>) -> Void
+    ) -> Request {
+        let params: Parameters = [
+            "mod": "forum",
+            "formhash": formhash,
+            "srchtype": "title",
+            "srhfid": "",
+            "srhlocality": "forum::index",
+            "srchtxt": keyword,
+            "searchsubmit": "true"
+        ]
+
+        return Alamofire.request(baseURL + "/search.php?searchsubmit=yes", method: .post, parameters: params).responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let document = try? DDXMLDocument(data: data, options: 0) else {
+                    completion(.failure(DZError.searchResultParseFailed))
+                    return
+                }
+
+                let elements = (try? document.elements(for: "//div[@id='threadlist']/ul/li[@class='pbw']")) ?? []
+                S1LogDebug("Search result topic count: \(elements.count)")
+                let topics = elements.compactMap { S1Topic(element: $0) }
+
+                var searchID: String? = nil
+                let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
+                if
+                    let rawNextPageURL = theNextPageLinks.first?.stringValue,
+                    let nextPageURL = rawNextPageURL.gtm_stringByUnescapingFromHTML(),
+                    let queryItems = URLComponents(string: nextPageURL)?.queryItems,
+                    let theSearchID = queryItems.first(where: { $0.name == "searchid" })?.value
+                {
+                    searchID = theSearchID
+                }
+
+                completion(.success((topics, searchID)))
+
+            case .failure(let error):
+                completion(.failure(DZError.serverError(message: error.localizedDescription)))
+            }
+        }
+    }
+
+    @discardableResult
+    func search(
+        with searchID: String,
+        page: Int,
+        completion: @escaping (Result<([S1Topic], String?)>) -> Void
+    ) -> Request {
+        let params: Parameters = [
+            "mod": "forum",
+            "searchid": searchID,
+            "orderby": "lastpost",
+            "ascdesc": "desc",
+            "page": page,
+            "searchsubmit": "yes"
+        ]
+
+        return Alamofire.request(baseURL + "/search.php", parameters: params).responseData { (response) in
+            switch response.result {
+            case .success(let data):
+                guard let document = try? DDXMLDocument(data: data, options: 0) else {
+                    completion(.failure(DZError.searchResultParseFailed))
+                    return
+                }
+
+                let elements = (try? document.elements(for: "//div[@id='threadlist']/ul/li[@class='pbw']")) ?? []
+                S1LogDebug("Search result page \(page) topic count: \(elements.count)")
+                let topics = elements.compactMap { S1Topic(element: $0) }
+
+                var searchID: String? = nil
+                let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
+                if
+                    let rawNextPageURL = theNextPageLinks.first?.firstText,
+                    let nextPageURL = rawNextPageURL.gtm_stringByUnescapingFromHTML(),
+                    let queryItems = URLComponents(string: nextPageURL)?.queryItems,
+                    let theSearchID = queryItems.first(where: { $0.name == "searchid" })?.value
+                {
+                    searchID = theSearchID
+                }
+
+                completion(.success((topics, searchID)))
+
+            case .failure(let error):
+                completion(.failure(DZError.serverError(message: error.localizedDescription)))
+            }
+        }
+    }
+}
+
+extension S1Topic {
+    convenience init?(element: DDXMLElement) {
+        let links = (try? element.elements(for: ".//a[@target='_blank']")) ?? []
+
+        guard links.count == 3 else {
+            return nil
+        }
+
+        let titlePart = links[0]
+        let titleString = titlePart.recursiveText
+
+        let url = titlePart.attribute(forName: "href")?.stringValue ?? ""
+        guard let topicID = S1Parser.extractTopicInfo(fromLink: url)?.topicID else {
+            return nil
+        }
+
+        let authorPart = links[1]
+        let authorName = authorPart.firstText ?? ""
+
+        guard let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue else {
+            return nil
+        }
+
+        guard let authorUserID = Int(authorHomeURL.split(separator: "-")[2].split(separator: ".")[0]) else {
+            return nil
+        }
+
+        let fieldIDPart = links[2]
+        guard let fieldURL = fieldIDPart.attribute(forName: "href")?.stringValue else {
+            return nil
+        }
+
+        guard let fieldID = Int(fieldURL.split(separator: "-")[1]) else {
+            return nil
+        }
+
+        guard let replyCountPart = (try? element.elements(for: ".//p[@class='xg1']"))?.first else {
+            return nil
+        }
+
+        guard let replyCountString = replyCountPart.firstText?.split(separator: " ").first else {
+            return nil
+        }
+
+        guard let replyCount = Int(replyCountString) else {
+            return nil
+        }
+
+        self.init(topicID: topicID)
+
+        self.title = titleString
+        self.authorUserID = authorUserID as NSNumber
+        self.authorUserName = authorName
+        self.fID = fieldID as NSNumber
+        self.replyCount = replyCount as NSNumber
+    }
+}
+
+extension DDXMLNode {
+    var recursiveText: String {
+        if self.kind == XMLTextKind {
+            return self.stringValue ?? ""
+        } else {
+            return (children ?? []).map({ $0.recursiveText }).joined()
+        }
+    }
+
+    var firstText: String? {
+        return children?.first(where: { $0.kind == XMLTextKind })?.stringValue
+    }
+
+    func elements(for xpath: String) throws -> [DDXMLElement] {
+        return try nodes(forXPath: xpath).compactMap({ $0 as? DDXMLElement })
     }
 }

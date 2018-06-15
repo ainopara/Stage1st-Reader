@@ -85,7 +85,7 @@
 + (NSArray<S1Topic *> *)topicsFromSearchResultHTMLData:(NSData *)rawData {
     NSData *cleanedData = rawData;
     TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:cleanedData];
-    NSArray *elements  = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
+    NSArray<TFHppleElement *> *elements = [xpathParser searchWithXPathQuery:@"//div[@id='threadlist']/ul/li[@class='pbw']"];
     NSMutableArray<S1Topic *> *topics = [NSMutableArray array];
     
     DDLogDebug(@"[Parser] Search result topic count: %lu",(unsigned long)[elements count]);
@@ -123,6 +123,21 @@
             [topics addObject:topic];
         }
     }
+
+    NSString *searchID = nil;
+    NSArray<TFHppleElement *> *nextPageLinks = [xpathParser searchWithXPathQuery:@"//div[@class='pg']/a[@class='nxt']/@href"];
+    id rawNextPageURL = nextPageLinks.firstObject.firstTextChild.content;
+    if (rawNextPageURL != nil && [rawNextPageURL isKindOfClass: [NSString class]]) {
+        NSString *nextPageURL = rawNextPageURL;
+        nextPageURL = [nextPageURL gtm_stringByUnescapingFromHTML];
+        NSArray<NSURLQueryItem *> *queryItems = [[[NSURLComponents alloc] initWithString:nextPageURL] queryItems];
+        for (NSURLQueryItem *item in queryItems) {
+            if ([item.name isEqualToString:@"searchid"]) {
+                searchID = item.value;
+            }
+        }
+    }
+
     return topics;
 }
 

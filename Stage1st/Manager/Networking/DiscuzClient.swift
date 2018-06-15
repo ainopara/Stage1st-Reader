@@ -18,6 +18,7 @@ public enum DZError: Error {
     case noFieldInfoReturned(jsonString: String)
     case noThreadListReturned(jsonString: String)
     case threadParseFailed(jsonString: String)
+    case searchResultParseFailed
     case serverError(message: String)
 }
 
@@ -34,6 +35,8 @@ extension DZError: CustomStringConvertible {
             return "No thread list in json `\(jsonString)`"
         case let .threadParseFailed(jsonString):
             return "Thread failed to parse for json `\(jsonString)`"
+        case .searchResultParseFailed:
+            return "Search result parse failed"
         case let .serverError(message):
             return message
         }
@@ -49,7 +52,7 @@ extension DZError: LocalizedError {
 public final class DiscuzClient: NSObject {
     let baseURL: String
     var formhash: String?
-    var auth: String?
+//    var auth: String?
 
     init(baseURL: String) {
         self.baseURL = baseURL
