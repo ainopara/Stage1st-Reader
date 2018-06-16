@@ -57,7 +57,7 @@ final class TopicListViewModel: NSObject {
         let state: State
     }
 
-    enum Action {
+    enum Action: Equatable {
         case pullToRefresh
         case tabTapped
         case searchTapped
@@ -759,7 +759,11 @@ extension TopicListViewModel {
 
             switch (to.target, to.state) {
             case (_, .loaded):
-                viewModel.hudActionObserver.send(value: .hide(delay: 0.3))
+                if case .tabTapped = action {
+                    viewModel.hudActionObserver.send(value: .hide(delay: 0.0))
+                } else {
+                    viewModel.hudActionObserver.send(value: .hide(delay: 0.3))
+                }
 
             case (_, .loading(let loading)):
                 switch (loading.target, loading.showingHUD) {
@@ -818,6 +822,17 @@ extension TopicListViewModel {
             guard let viewModel = self.viewModel else { return }
 
             switch (to.target, to.state) {
+            case (.blank, .error(let failedTarget, _)):
+                switch failedTarget {
+                case .forum(let key):
+                    if let index = viewModel.keys.value.index(of: key) {
+                        viewModel.tabBarSelection.value = .index(index)
+                    } else {
+                        viewModel.tabBarSelection.value = .none
+                    }
+                case .search:
+                    viewModel.tabBarSelection.value = .none
+                }
             case (_, .loading(let loading)):
                 switch loading.target {
                 case .forum(let key):
