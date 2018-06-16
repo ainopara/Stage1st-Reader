@@ -102,20 +102,12 @@ class TopicListViewController: UIViewController {
         )
 
         // Tab Bar
-        scrollTabBar.keys = viewModel.keys()
         scrollTabBar.tabbarDelegate = self
 
         refreshControl.addTarget(
             self,
             action: #selector(refresh),
             for: .valueChanged
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateTabbar),
-            name: .init(rawValue: "S1UserMayReorderedNotification"),
-            object: nil
         )
 
         NotificationCenter.default.addObserver(
@@ -251,6 +243,13 @@ extension TopicListViewController {
 extension TopicListViewController {
     // swiftlint:disable cyclomatic_complexity
     func bindViewModel() {
+
+        viewModel.keys.producer.startWithValues { [weak self] (keys) in
+            guard let strongSelf = self else { return }
+
+            strongSelf.scrollTabBar.keys = keys
+            strongSelf.viewModel.reset()
+        }
 
         /// viewModel.tableViewOffset <~ tableView.contentOffset
         let tableViewContentOffsetToken = tableView.observe(\.contentOffset, options: [.new]) { [weak self] (tableView, change) in
@@ -502,10 +501,6 @@ extension TopicListViewController {
 // MARK: Notifications
 
 extension TopicListViewController {
-    @objc func updateTabbar() {
-        viewModel.reset()
-        scrollTabBar.keys = viewModel.keys()
-    }
 
     @objc func cloudKitStateChanged() {
         updateArchiveIcon()

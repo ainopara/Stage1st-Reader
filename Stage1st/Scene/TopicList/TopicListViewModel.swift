@@ -97,6 +97,8 @@ final class TopicListViewModel: NSObject {
 
     // Output
 
+    let keys = MutableProperty([String]())
+
     enum TableViewContentOffsetAction {
         case toTop
         case restore(CGPoint)
@@ -227,6 +229,10 @@ final class TopicListViewModel: NSObject {
                 return false
             }
         }
+
+        keys <~ AppEnvironment.current.settings.forumOrder.map { (order) in
+            return order.first ?? []
+        }.skipRepeats()
 
         model.producer.startWithValues { [weak self] (model) in
             guard let strongSelf = self else { return }
@@ -864,7 +870,7 @@ extension TopicListViewModel {
             case (_, .loading(let loading)):
                 switch loading.target {
                 case .forum(let key):
-                    if let index = viewModel.keys().index(of: key) {
+                    if let index = viewModel.keys.value.index(of: key) {
                         viewModel.tabBarSelection.value = .index(index)
                     } else {
                         viewModel.tabBarSelection.value = .none
@@ -873,7 +879,7 @@ extension TopicListViewModel {
                     viewModel.tabBarSelection.value = .none
                 }
             case (.forum(let forum), _):
-                if let index = viewModel.keys().index(of: forum.key) {
+                if let index = viewModel.keys.value.index(of: forum.key) {
                      viewModel.tabBarSelection.value = .index(index)
                 } else {
                      viewModel.tabBarSelection.value = .none
@@ -882,10 +888,6 @@ extension TopicListViewModel {
                 viewModel.tabBarSelection.value = .none
             }
         }
-    }
-
-    func keys() -> [String] {
-        return AppEnvironment.current.settings.forumOrder.value.first ?? []
     }
 }
 
