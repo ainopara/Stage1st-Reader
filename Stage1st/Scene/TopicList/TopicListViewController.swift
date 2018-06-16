@@ -102,7 +102,7 @@ class TopicListViewController: UIViewController {
         )
 
         // Tab Bar
-        scrollTabBar.keys = self.keys()
+        scrollTabBar.keys = viewModel.keys()
         scrollTabBar.tabbarDelegate = self
 
         refreshControl.addTarget(
@@ -353,9 +353,14 @@ extension TopicListViewController {
             }
         }
 
-        viewModel.tabBarDeselectAction.observeValues { [weak self] (_) in
+        viewModel.tabBarSelection.producer.startWithValues { [weak self] (selection) in
             guard let strongSelf = self else { return }
-            strongSelf.scrollTabBar.deselectAll()
+            switch selection {
+            case .none:
+                strongSelf.scrollTabBar.deselectAll()
+            case .index(let index):
+                strongSelf.scrollTabBar.setSelectedIndex(index)
+            }
         }
 
         viewModel.searchTextClearAction.observeValues { [weak self] (_) in
@@ -460,23 +465,8 @@ extension TopicListViewController: UINavigationBarDelegate {
     }
 }
 
-//extension S1TopicListViewController {
-//    @objc func presentInternalList(for type: S1InternalTopicListType) {
-//        if isPresentingForumList(viewModel.currentKey) {
-//            viewModel.cancelRequests()
-//            cachedContentOffset[viewModel.currentKey] = tableView.contentOffset
-//        }
-//
-//        viewModel.currentState.value = type == S1TopicListHistory ? .history : .favorite
-//
-//        tableView.reloadData()
-//        viewModel.searchingTerm.value = searchBar.text ?? ""
-//        tableView.setContentOffset(.zero, animated: false)
-//        scrollTabBar.deselectAll()
-//    }
-//}
-
 // MARK: - Actions
+
 extension TopicListViewController {
     @objc func settings(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Settings", bundle: nil)
@@ -514,7 +504,7 @@ extension TopicListViewController {
 extension TopicListViewController {
     @objc func updateTabbar() {
         viewModel.reset()
-        scrollTabBar.keys = self.keys()
+        scrollTabBar.keys = viewModel.keys()
     }
 
     @objc func cloudKitStateChanged() {
@@ -562,9 +552,5 @@ extension TopicListViewController {
 extension TopicListViewController {
     func updateArchiveIcon() {
         // Archive animation as sync indicator is not implemented in this version.
-    }
-
-    func keys() -> [String] {
-        return AppEnvironment.current.settings.forumOrder.value.first ?? []
     }
 }

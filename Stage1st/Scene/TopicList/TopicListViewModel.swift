@@ -123,8 +123,12 @@ final class TopicListViewModel: NSObject {
     let refreshControlEndRefreshing: Signal<(), NoError>
     private let refreshControlEndRefreshingObserver: Signal<(), NoError>.Observer
 
-    let tabBarDeselectAction: Signal<(), NoError>
-    private let tabBarDeselectActionObserver: Signal<(), NoError>.Observer
+    enum TabBarSelection: Equatable {
+        case none
+        case index(Int)
+    }
+
+    let tabBarSelection: MutableProperty<TabBarSelection> = MutableProperty(.none)
 
     let searchTextClearAction: Signal<(), NoError>
     private let searchTextClearActionObserver: Signal<(), NoError>.Observer
@@ -144,7 +148,6 @@ final class TopicListViewModel: NSObject {
         (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
         (self.hudAction, self.hudActionObserver) = Signal<HudAction, NoError>.pipe()
         (self.refreshControlEndRefreshing, self.refreshControlEndRefreshingObserver) = Signal<(), NoError>.pipe()
-        (self.tabBarDeselectAction, self.tabBarDeselectActionObserver) = Signal<(), NoError>.pipe()
         (self.searchTextClearAction, self.searchTextClearActionObserver) = Signal<(), NoError>.pipe()
 
         super.init()
@@ -154,7 +157,7 @@ final class TopicListViewModel: NSObject {
             RestorePositionBehavior(viewModel: self),
             RefreshTimeCachingBehavior(viewModel: self),
             HudBehavior(viewModel: self),
-            TabBarDeselectBehavior(viewModel: self),
+            TabSelectionBehavior(viewModel: self),
             SearchTextClearBehavior(viewModel: self)
         ]
 
@@ -381,7 +384,7 @@ extension TopicListViewModel {
         case .forum(let forum):
             let new = Model(
                 target: .forum(forum),
-                state: .loading(.init(target: .forum(key: forum.key), showingHUD: false))
+                state: .loading(.init(target: .forum(key: forum.key), showingHUD: true))
             )
             transitModel(to: new, with: .pullToRefresh)
             topicList(for: forum.key)
@@ -389,7 +392,7 @@ extension TopicListViewModel {
         case .search(let search):
             let new = Model(
                 target: .search(search),
-                state: .loading(.init(target: .search(term: search.term), showingHUD: false))
+                state: .loading(.init(target: .search(term: search.term), showingHUD: true))
             )
             transitModel(to: new, with: .pullToRefresh)
             self.search(for: search.term)
@@ -839,19 +842,6 @@ extension TopicListViewModel {
         }
     }
 
-    final class TabBarDeselectBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
-        override func postTransition(action: Action, from: Model, to: Model) {
-            guard let viewModel = self.viewModel else { return }
-
-            switch action {
-            case .searchTapped:
-                viewModel.tabBarDeselectActionObserver.send(value: ())
-            default:
-                break
-            }
-        }
-    }
-
     final class SearchTextClearBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
         override func postTransition(action: Action, from: Model, to: Model) {
             guard let viewModel = self.viewModel else { return }
@@ -863,6 +853,38 @@ extension TopicListViewModel {
                 break
             }
         }
+    }
+
+    final class TabSelectionBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
+        override func postTransition(action: Action, from: Model, to: Model) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch (to.target, to.state) {
+            case (_, .loading(let loading)):
+                switch loading.target {
+                case .forum(let key):
+                    if let index = viewModel.keys().index(of: key) {
+                        viewModel.tabBarSelection.value = .index(index)
+                    } else {
+                        viewModel.tabBarSelection.value = .none
+                    }
+                case .search:
+                    viewModel.tabBarSelection.value = .none
+                }
+            case (.forum(let forum), _):
+                if let index = viewModel.keys().index(of: forum.key) {
+                     viewModel.tabBarSelection.value = .index(index)
+                } else {
+                     viewModel.tabBarSelection.value = .none
+                }
+            case (.search, _), (.blank, _):
+                viewModel.tabBarSelection.value = .none
+            }
+        }
+    }
+
+    func keys() -> [String] {
+        return AppEnvironment.current.settings.forumOrder.value.first ?? []
     }
 }
 

@@ -44,18 +44,24 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         webView.scrollView.delegate = self
         webView.isOpaque = false
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationWillEnterForeground),
-                                               name: .UIApplicationWillEnterForeground,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
-                                               name: .UserBlockStatusDidChangedNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: .UIApplicationWillEnterForeground,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceivePaletteChangeNotification(_:)),
+            name: .APPaletteDidChange,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
+            name: .UserBlockStatusDidChangedNotification,
+            object: nil
+        )
     }
 
     required init?(coder _: NSCoder) {
@@ -70,8 +76,11 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         webView.stopLoading()
         S1LogInfo("[QuoteFloorVC] Dealloced")
     }
+}
 
-    // MARK: - Life Cycle
+// MARK: - Life Cycle
+
+extension QuoteFloorViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -107,6 +116,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
 }
 
 // MARK: - Actions
+
 extension QuoteFloorViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
@@ -125,6 +135,7 @@ extension QuoteFloorViewController {
 }
 
 // MARK:
+
 extension QuoteFloorViewController {
     func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
@@ -140,6 +151,7 @@ extension QuoteFloorViewController {
 }
 
 // MARK: - WKScriptMessageHandler
+
 extension QuoteFloorViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, actionButtonTappedFor _: Int) {
         //        actionButtonTapped(for: floorID)
@@ -147,6 +159,7 @@ extension QuoteFloorViewController: WebViewEventDelegate {
 }
 
 // MARK: JTSImageViewControllerInteractionsDelegate
+
 extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -159,14 +172,13 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
                         return
                     }
 
-                    let imageData = imageViewer.imageData
-                    guard imageData != nil else {
+                    guard let imageData = imageViewer.imageData else {
                         S1LogError("Image data is nil")
                         return
                     }
 
                     PHPhotoLibrary.shared().performChanges({
-                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
+                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData, options: nil)
                     }, completionHandler: { _, error in
                         if let error = error {
                             S1LogError("\(error)")
@@ -189,6 +201,7 @@ extension QuoteFloorViewController: JTSImageViewControllerInteractionsDelegate {
 }
 
 // MARK: JTSImageViewControllerOptionsDelegate
+
 extension QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
     func alphaForBackgroundDimmingOverlay(inImageViewer _: JTSImageViewController!) -> CGFloat {
         return 0.3
@@ -196,6 +209,7 @@ extension QuoteFloorViewController: JTSImageViewControllerOptionsDelegate {
 }
 
 // MARK: WKNavigationDelegate
+
 extension QuoteFloorViewController: WKNavigationDelegate {
 
     func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
