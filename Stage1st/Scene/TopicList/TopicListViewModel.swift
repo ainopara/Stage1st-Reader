@@ -13,7 +13,7 @@ import Alamofire
 import ReactiveSwift
 import Result
 
-// swiftlint:disable nesting cyclomatic_complexity
+// swiftlint:disable nesting
 
 final class TopicListViewModel: NSObject {
     let dataCenter: DataCenter
@@ -25,6 +25,7 @@ final class TopicListViewModel: NSObject {
             struct Forum: Equatable {
                 let key: String
                 let topics: [S1Topic]
+                let allResultFetched: Bool
             }
             case forum(Forum)
 
@@ -33,6 +34,7 @@ final class TopicListViewModel: NSObject {
                 let topics: [S1Topic]
                 let searchID: String?
                 let page: Int
+                let allResultFetched: Bool
             }
             case search(Search)
         }
@@ -50,7 +52,6 @@ final class TopicListViewModel: NSObject {
             case loading(Loading)
             case loaded
             case fetchingMore
-            case allResultFetched
             case error(target: Loading.Target, message: String)
         }
         let state: State
@@ -217,8 +218,12 @@ final class TopicListViewModel: NSObject {
         }
 
         isShowingFooterView <~ model.map { (model) in
-            switch model.state {
-            case .fetchingMore, .allResultFetched:
+            switch (model.target, model.state) {
+            case (_, .fetchingMore):
+                return true
+            case (.forum(let forum), _) where forum.allResultFetched == true:
+                return true
+            case (.search(let search), _) where search.allResultFetched == true:
                 return true
             default:
                 return false
@@ -226,24 +231,19 @@ final class TopicListViewModel: NSObject {
         }.skipRepeats()
 
         footerViewMessage <~ model.map { (model) in
-            switch model.state {
-            case .fetchingMore:
+            switch (model.target, model.state) {
+            case (_, .fetchingMore):
                 return NSLocalizedString("TopicListViewController.MessageFooterView.loading", comment: "loading")
-            case .allResultFetched:
-                switch model.target {
-                case .forum(let forum):
-                    return String(
-                        format: NSLocalizedString("TopicListViewController.MessageFooterView.allTopics", comment: "allTopics"),
-                        NSNumber(value: forum.topics.count)
-                    )
-                case .search(let search):
-                    return String(
-                        format: NSLocalizedString("TopicListViewController.MessageFooterView.allSearchResults", comment: "allSearchResults"),
-                        NSNumber(value: search.topics.count)
-                    )
-                case .blank:
-                    return ""
-                }
+            case (.forum(let forum), _) where forum.allResultFetched == true:
+                return String(
+                    format: NSLocalizedString("TopicListViewController.MessageFooterView.allTopics", comment: "allTopics"),
+                    NSNumber(value: forum.topics.count)
+                )
+            case (.search(let search), _) where search.allResultFetched == true:
+                return String(
+                    format: NSLocalizedString("TopicListViewController.MessageFooterView.allSearchResults", comment: "allSearchResults"),
+                    NSNumber(value: search.topics.count)
+                )
             default:
                 return ""
             }
@@ -257,15 +257,7 @@ final class TopicListViewModel: NSObject {
             guard let strongSelf = self else { return }
 
             switch (model.target, model.state) {
-            case (.forum, .loaded),
-                 (.forum, .allResultFetched):
-                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-
-            case (.search, .loaded),
-                 (.search, .allResultFetched):
-                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
-
-            case (.blank, .loaded):
+            case (_, .loaded):
                 strongSelf.refreshControlEndRefreshingObserver.send(value: ())
 
             case (.blank, .error):
@@ -282,10 +274,9 @@ final class TopicListViewModel: NSObject {
 
             case (_, .error):
                 fatalError("`.error` state must appear with `.blank` target.")
+
             case (.blank, .fetchingMore):
                 fatalError("Invalide combination .blank with .fetchingMore")
-            case (.blank, .allResultFetched):
-                fatalError("Invalide combination .blank with .allResultFetched")
             }
         }
 
@@ -331,7 +322,7 @@ extension TopicListViewModel {
         {
             let processedTopics = topics.map { topicWithTracedDataForTopic($0) }
             let new = Model(
-                target: .forum(.init(key: key, topics: processedTopics)),
+                target: .forum(.init(key: key, topics: processedTopics, allResultFetched: false)),
                 state: .loaded
             )
             transitModel(to: new, with: .tabTapped)
@@ -390,6 +381,10 @@ extension TopicListViewModel {
                 return
             }
 
+            guard !forum.allResultFetched else {
+                return
+            }
+
             S1LogDebug("Reach (almost) last topic, load more.")
 
             let new = Model(
@@ -401,6 +396,10 @@ extension TopicListViewModel {
 
         case .search(let search):
             guard indexPath.row == search.topics.count - 5 else {
+                return
+            }
+
+            guard !search.allResultFetched else {
                 return
             }
 
@@ -444,8 +443,9 @@ extension TopicListViewModel {
                         return
                     }
 
+                    // TODO: Add all result fetched check.
                     let new = Model(
-                        target: .forum(.init(key: key, topics: processedList)),
+                        target: .forum(.init(key: key, topics: processedList, allResultFetched: false)),
                         state: .loaded
                     )
                     strongSelf.transitModel(to: new, with: .requestFinish)
@@ -498,8 +498,9 @@ extension TopicListViewModel {
                         return
                     }
 
+                    // TODO: Add all result fetched check.
                     let new = Model(
-                        target: .forum(.init(key: key, topics: processedList)),
+                        target: .forum(.init(key: key, topics: processedList, allResultFetched: false)),
                         state: .loaded
                     )
                     strongSelf.transitModel(to: new, with: .loadMoreFinish)
@@ -535,19 +536,11 @@ extension TopicListViewModel {
                         return
                     }
 
-                    if let searchID = searchID {
-                        let new = Model(
-                            target: .search(.init(term: term, topics: topics, searchID: searchID, page: 1)),
-                            state: .loaded
-                        )
-                        strongSelf.transitModel(to: new, with: .requestFinish)
-                    } else {
-                        let new = Model(
-                            target: .search(.init(term: term, topics: topics, searchID: searchID, page: 1)),
-                            state: .allResultFetched
-                        )
-                        strongSelf.transitModel(to: new, with: .requestFinish)
-                    }
+                    let new = Model(
+                        target: .search(.init(term: term, topics: topics, searchID: searchID, page: 1, allResultFetched: searchID == nil)),
+                        state: .loaded
+                    )
+                    strongSelf.transitModel(to: new, with: .requestFinish)
                 }
             case .failure(let error):
                 ensureMainThread {
@@ -598,22 +591,12 @@ extension TopicListViewModel {
                         term: search.term,
                         topics: search.topics + topics,
                         searchID: newSearchID,
-                        page: search.page + 1)
-                    )
+                        page: search.page + 1,
+                        allResultFetched: newSearchID == nil
+                    ))
 
-                    if newSearchID != nil {
-                        let new = Model(
-                            target: newTarget,
-                            state: .loaded
-                        )
-                        strongSelf.transitModel(to: new, with: .loadMoreFinish)
-                    } else {
-                        let new = Model(
-                            target: newTarget,
-                            state: .allResultFetched
-                        )
-                        strongSelf.transitModel(to: new, with: .loadMoreFinish)
-                    }
+                    let new = Model(target: newTarget, state: .loaded)
+                    strongSelf.transitModel(to: new, with: .loadMoreFinish)
                 }
             case .failure:
                 ensureMainThread {
@@ -775,7 +758,7 @@ extension TopicListViewModel {
             guard let viewModel = self.viewModel else { return }
 
             switch (to.target, to.state) {
-            case (_, .loaded), (_, .allResultFetched):
+            case (_, .loaded):
                 viewModel.hudActionObserver.send(value: .hide(delay: 0.3))
 
             case (_, .loading(let loading)):
@@ -805,8 +788,6 @@ extension TopicListViewModel {
             case (.loaded, .tabTapped),
                  (.loaded, .requestFinish),
                  (.loaded, .loadMoreFinish),
-                 (.allResultFetched, .requestFinish),
-                 (.allResultFetched, .loadMoreFinish),
                  (.error, .requestFinish),
                  (.error, .loadMoreFinish),
                  (_, .reset):
@@ -929,7 +910,7 @@ extension TopicListViewModel {
             let (updatedTopics, indexPaths) = update(topics: forum.topics)
             if indexPaths.count > 0 {
                 let new = Model(
-                    target: .forum(.init(key: forum.key, topics: updatedTopics)),
+                    target: .forum(.init(key: forum.key, topics: updatedTopics, allResultFetched: forum.allResultFetched)),
                     state: model.value.state
                 )
                 transitModel(to: new, with: .cloudKitUpdate(indexPaths))
@@ -939,7 +920,7 @@ extension TopicListViewModel {
             let (updatedTopics, indexPaths) = update(topics: search.topics)
             if indexPaths.count > 0 {
                 let new = Model(
-                    target: .search(.init(term: search.term, topics: updatedTopics, searchID: search.searchID, page: search.page)),
+                    target: .search(.init(term: search.term, topics: updatedTopics, searchID: search.searchID, page: search.page, allResultFetched: search.allResultFetched)),
                     state: model.value.state
                 )
                 transitModel(to: new, with: .cloudKitUpdate(indexPaths))
@@ -983,9 +964,9 @@ extension TopicListViewModel.Model.Target: CustomDebugStringConvertible {
         case .blank:
             return ".blank"
         case .forum(let forum):
-            return ".forum \(forum.key)(\(forum.topics.count))"
+            return ".forum \(forum.key)(\(forum.topics.count))" + (forum.allResultFetched ? " All" : "")
         case .search(let search):
-            return ".search \(search.term)(\(search.topics.count))"
+            return ".search \(search.term)(\(search.topics.count))" + (search.allResultFetched ? " All" : "")
         }
     }
 }
@@ -995,8 +976,6 @@ extension TopicListViewModel.Model.State: CustomDebugStringConvertible {
         switch self {
         case .loaded:
             return ".loaded"
-        case .allResultFetched:
-            return ".allResultFetched"
         case .fetchingMore:
             return ".fetchingMore"
         case .loading(let loading):
