@@ -125,12 +125,7 @@ final class TopicListViewModel: NSObject {
     let refreshControlEndRefreshing: Signal<(), NoError>
     private let refreshControlEndRefreshingObserver: Signal<(), NoError>.Observer
 
-    enum TabBarSelection: Equatable {
-        case none
-        case index(Int)
-    }
-
-    let tabBarSelection: MutableProperty<TabBarSelection> = MutableProperty(.none)
+    let tabBarSelection: MutableProperty<S1TabBar.Selection> = MutableProperty(.none)
 
     let searchTextClearAction: Signal<(), NoError>
     private let searchTextClearActionObserver: Signal<(), NoError>.Observer
@@ -138,7 +133,7 @@ final class TopicListViewModel: NSObject {
     let searchBarPlaceholderText = MutableProperty(NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search"))
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
-    let isShowingFetchingMoreIndicator = MutableProperty(false)
+    let isShowingFooterView = MutableProperty(false)
 
     // MARK: -
 
@@ -170,7 +165,7 @@ final class TopicListViewModel: NSObject {
             case .forum, .search:
                 return false
             }
-        }
+        }.skipRepeats()
 
         isRefreshControlHidden <~ model.map { (model) in
             switch model.target {
@@ -179,7 +174,7 @@ final class TopicListViewModel: NSObject {
             case .forum:
                 return false
             }
-        }
+        }.skipRepeats()
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)
@@ -220,15 +215,14 @@ final class TopicListViewModel: NSObject {
             strongSelf.tableViewReloadingObserver.send(value: ())
         }
 
-        isShowingFetchingMoreIndicator <~ model.map { (model) in
-            switch (model.target, model.state) {
-            case (.forum, .fetchingMore),
-                 (.search, .fetchingMore):
+        isShowingFooterView <~ model.map { (model) in
+            switch model.state {
+            case .fetchingMore, .allResultFetched:
                 return true
             default:
                 return false
             }
-        }
+        }.skipRepeats()
 
         keys <~ AppEnvironment.current.settings.forumOrder.map { (order) in
             return order.first ?? []
@@ -283,66 +277,16 @@ extension TopicListViewModel {
     private func transitModel(to newModel: Model, with action: Action) {
         dispatchPrecondition(condition: .onQueue(.main))
 
-        func execute() {
-            let oldModel = model.value
-            stateTransitionBehaviors.forEach { (behavior) in
-                behavior.preTransition(action: action, from: oldModel, to: newModel)
-            }
-
-            model.value = newModel
-
-            // TODO: Should we reverse calling order to make Behaviors works as Middlewares?
-            stateTransitionBehaviors.forEach { (behavior) in
-                behavior.postTransition(action: action, from: oldModel, to: newModel)
-            }
+        let oldModel = model.value
+        stateTransitionBehaviors.forEach { (behavior) in
+            behavior.preTransition(action: action, from: oldModel, to: newModel)
         }
 
-        func skip() {
-            S1LogWarn("Skipping state transition from \(self.model.value.debugDescription) to \(newModel.debugDescription)")
-        }
+        model.value = newModel
 
-        let result = stateTransitionBehaviors.reduce(.notSpecified) { (result, behavior) -> StateTransitionRuleResult in
-            switch result {
-            case .notSpecified:
-                return behavior.checkTransition(action: action, from: self.model.value, to: newModel)
-            case .accept:
-                return .accept
-            case .reject:
-                return .reject
-            }
+        stateTransitionBehaviors.reversed().forEach { (behavior) in
+            behavior.postTransition(action: action, from: oldModel, to: newModel)
         }
-
-        switch result {
-        case .accept, .notSpecified:
-            execute()
-        case .reject:
-            skip()
-        }
-//        switch (self.model.value, new) {
-//        case (.loaded, .loaded):
-//            execute()
-//        case let (.loaded(target), .loading(fromTarget, _)) where target == fromTarget:
-//            execute()
-//        case let (.loaded(fromTarget), .fetchingMore(toTarget)) where fromTarget == toTarget:
-//            execute()
-//        case let (.loading(fromTarget, _), .loading(newFromTarget, _)) where fromTarget == newFromTarget:
-//            execute()
-//        case let (.loading(_, toTarget), .loaded(newTarget)) where toTarget == newTarget:
-//            execute()
-//        case let (.loading(_, toTarget), .error(newTarget, _)) where toTarget == newTarget:
-//            execute()
-//        case let (.loading(_, toTarget), .allResultFetched(newTarget)) where toTarget == newTarget:
-//            execute()
-//        case let (.fetchingMore(target), .loaded(newTarget)) where target == newTarget:
-//            execute()
-//        case (.error, .loaded):
-//            execute()
-//        case (.error, .loading):
-//            execute()
-//        default:
-//            skip()
-//            execute()
-//        }
     }
 
     func tabBarTapped(key: String) {

@@ -68,6 +68,9 @@
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		8667FD0120D3D254000C5432 /* ReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0020D3D254000C5432 /* ReplyViewModel.swift */; };
 		8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */; };
+		8667FD0520D4D7B8000C5432 /* MessageFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0420D4D7B8000C5432 /* MessageFooterView.swift */; };
+		8667FD0720D4E1B1000C5432 /* S1TabBar+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */; };
+		8667FD0920D4E234000C5432 /* ODRefreshControl+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */; };
 		866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */; };
 		8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */; };
 		86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86734B0C1F403788000AE19E /* TopicListCell.swift */; };
@@ -96,7 +99,6 @@
 		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
-		86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DF79F71F3B058600324880 /* LoadingFooterView.swift */; };
 		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
@@ -224,6 +226,9 @@
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		8667FD0020D3D254000C5432 /* ReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewModel.swift; sourceTree = "<group>"; };
 		8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportComposeViewModel.swift; sourceTree = "<group>"; };
+		8667FD0420D4D7B8000C5432 /* MessageFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFooterView.swift; sourceTree = "<group>"; };
+		8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "S1TabBar+Reactive.swift"; sourceTree = "<group>"; };
+		8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ODRefreshControl+Reactive.swift"; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewController.swift; sourceTree = "<group>"; };
 		8671E5701CFDEB3E00F4A854 /* UserViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		86734B0C1F403788000AE19E /* TopicListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicListCell.swift; sourceTree = "<group>"; };
@@ -260,7 +265,6 @@
 		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1MahjongFacePageView.m; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
-		86DF79F71F3B058600324880 /* LoadingFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFooterView.swift; sourceTree = "<group>"; };
 		86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewEventDelegate.swift; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Settings.strings; sourceTree = "<group>"; };
 		86E4396F1BEC478700027FFA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
@@ -464,6 +468,7 @@
 				86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */,
 				86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */,
 				86734B0E1F414D56000AE19E /* TopicListHeaderView.swift */,
+				8667FD0420D4D7B8000C5432 /* MessageFooterView.swift */,
 			);
 			path = TopicList;
 			sourceTree = "<group>";
@@ -748,11 +753,12 @@
 			children = (
 				8634ADB61FAAF3C1004A9CB7 /* MessageHUD */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
-				86DF79F71F3B058600324880 /* LoadingFooterView.swift */,
 				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
 				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
+				8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */,
+				8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1072,6 +1078,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8667FD0720D4E1B1000C5432 /* S1TabBar+Reactive.swift in Sources */,
+				8667FD0920D4E234000C5432 /* ODRefreshControl+Reactive.swift in Sources */,
+				8667FD0520D4D7B8000C5432 /* MessageFooterView.swift in Sources */,
 				869F8AB31DB374CF0055046B /* PageRenderer.swift in Sources */,
 				8634ADE91FAAF3C2004A9CB7 /* ColorManager.swift in Sources */,
 				86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */,
@@ -1155,7 +1164,6 @@
 				8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */,
 				8634ADED1FAAF3C2004A9CB7 /* Gagat.swift in Sources */,
 				8679AFAF20B59821007A73B2 /* S1ArchiveListViewController.swift in Sources */,
-				86DF79F81F3B058600324880 /* LoadingFooterView.swift in Sources */,
 				8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */,
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
 				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,

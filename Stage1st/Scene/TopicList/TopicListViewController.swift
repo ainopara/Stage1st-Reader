@@ -27,7 +27,7 @@ class TopicListViewController: UIViewController {
     let searchBar = UISearchBar(frame: .zero)
     let searchBarWrapperView = UIView(frame: .zero)
     let scrollTabBar = S1TabBar(frame: .zero)
-    let footerView = LoadingFooterView()
+    let footerView = MessageFooterView()
     let refreshHUD = S1HUD(frame: .zero)
 
     private var observations = [NSKeyValueObservation]()
@@ -337,28 +337,13 @@ extension TopicListViewController {
         }
 
         tableView.reactive.isHidden <~ viewModel.isTableViewHidden
-
-        viewModel.isRefreshControlHidden.producer.startWithValues { [weak self] (hidden) in
-            guard let strongSelf = self else { return }
-            if strongSelf.refreshControl.isHidden != hidden {
-                strongSelf.refreshControl.isHidden = hidden
-            }
-        }
+        refreshControl.reactive.isHidden <~ viewModel.isRefreshControlHidden
+        scrollTabBar.reactive.selection <~ viewModel.tabBarSelection
 
         viewModel.refreshControlEndRefreshing.observeValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             if strongSelf.refreshControl.refreshing {
                 strongSelf.refreshControl.endRefreshing()
-            }
-        }
-
-        viewModel.tabBarSelection.producer.startWithValues { [weak self] (selection) in
-            guard let strongSelf = self else { return }
-            switch selection {
-            case .none:
-                strongSelf.scrollTabBar.deselectAll()
-            case .index(let index):
-                strongSelf.scrollTabBar.setSelectedIndex(index)
             }
         }
 
@@ -368,7 +353,7 @@ extension TopicListViewController {
             strongSelf.searchBar.delegate?.searchBar?(strongSelf.searchBar, textDidChange: "")
         }
 
-        viewModel.isShowingFetchingMoreIndicator.signal.observeValues { [weak self] (showing) in
+        viewModel.isShowingFooterView.signal.observeValues { [weak self] (showing) in
             guard let strongSelf = self else { return }
             if showing && strongSelf.tableView.tableFooterView == nil {
                 strongSelf.tableView.tableFooterView = strongSelf.footerView
@@ -527,7 +512,7 @@ extension TopicListViewController {
         }
 
         footerView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.background")
-        footerView.label.textColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.text")
+        footerView.textColor.value = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.text")
 
         scrollTabBar.updateColor()
 
