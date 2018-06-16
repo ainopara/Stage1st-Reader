@@ -201,3 +201,7 @@
 "ContentViewController.FloorActionSheet.Report" = "举报";
 "ContentViewController.FloorActionSheet.Reply" = "回复";
 "ContentViewController.FloorActionSheet.Cancel" = "取消";
+
+"TopicListViewController.MessageFooterView.loading" = "加载中";
+"TopicListViewController.MessageFooterView.allTopics" = "共 %@ 主题";
+"TopicListViewController.MessageFooterView.allFeatched" = "共 %@ 搜索结果";

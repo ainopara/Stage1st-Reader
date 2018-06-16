@@ -362,6 +362,8 @@ extension TopicListViewController {
             }
         }
 
+        footerView.message <~ viewModel.footerViewMessage
+
         let refreshControlRefreshingToken = refreshControl.observe(\.refreshing, options: [.new]) { [weak self] (refreshControl, change) in
             guard let strongSelf = self else { return }
             guard let isRefreshing = change.newValue else { return }

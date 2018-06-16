@@ -13,7 +13,7 @@ import Alamofire
 import ReactiveSwift
 import Result
 
-// swiftlint:disable nesting
+// swiftlint:disable nesting cyclomatic_complexity
 
 final class TopicListViewModel: NSObject {
     let dataCenter: DataCenter
@@ -134,6 +134,7 @@ final class TopicListViewModel: NSObject {
     let isTableViewHidden = MutableProperty(true)
     let isRefreshControlHidden = MutableProperty(true)
     let isShowingFooterView = MutableProperty(false)
+    let footerViewMessage = MutableProperty("")
 
     // MARK: -
 
@@ -224,6 +225,30 @@ final class TopicListViewModel: NSObject {
             }
         }.skipRepeats()
 
+        footerViewMessage <~ model.map { (model) in
+            switch model.state {
+            case .fetchingMore:
+                return NSLocalizedString("TopicListViewController.MessageFooterView.loading", comment: "loading")
+            case .allResultFetched:
+                switch model.target {
+                case .forum(let forum):
+                    return String(
+                        format: NSLocalizedString("TopicListViewController.MessageFooterView.allTopics", comment: "allTopics"),
+                        NSNumber(value: forum.topics.count)
+                    )
+                case .search(let search):
+                    return String(
+                        format: NSLocalizedString("TopicListViewController.MessageFooterView.allSearchResults", comment: "allSearchResults"),
+                        NSNumber(value: search.topics.count)
+                    )
+                case .blank:
+                    return ""
+                }
+            default:
+                return ""
+            }
+        }.skipRepeats()
+
         keys <~ AppEnvironment.current.settings.forumOrder.map { (order) in
             return order.first ?? []
         }.skipRepeats()
@@ -284,7 +309,8 @@ extension TopicListViewModel {
 
         model.value = newModel
 
-        stateTransitionBehaviors.reversed().forEach { (behavior) in
+        // Note: Order matters, we should execute behavior in front first.
+        stateTransitionBehaviors.forEach { (behavior) in
             behavior.postTransition(action: action, from: oldModel, to: newModel)
         }
     }

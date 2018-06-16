@@ -24,8 +24,9 @@ class MessageFooterView: UIView {
     let textFont = MutableProperty(UIFont.systemFont(ofSize: 16.0))
 
     init() {
-        super.init(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 40.0))
+        super.init(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 60.0))
 
+        label.textAlignment = .center
         addSubview(label)
         label.snp.makeConstraints { (make) in
             make.leading.equalTo(self.snp.leading).offset(10.0)
