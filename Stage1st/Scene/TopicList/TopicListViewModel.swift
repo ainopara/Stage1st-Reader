@@ -442,6 +442,11 @@ extension TopicListViewModel {
         }
     }
 
+    func reset() {
+        _ = newToken()
+        transitModel(to: Model(target: .blank, state: .loaded), with: .reset)
+    }
+
     private func topicList(for key: String) {
         dispatchPrecondition(condition: .onQueue(.main))
 
@@ -649,10 +654,6 @@ extension TopicListViewModel {
                 }
             }
         }
-    }
-
-    func reset() {
-        transitModel(to: Model(target: .blank, state: .loaded), with: .reset)
     }
 
     @objc func cancelRequests() {
