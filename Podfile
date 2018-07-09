@@ -39,7 +39,7 @@ target "Stage1st" do
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
-    pod 'GRMustache.swift', :git => 'https://github.com/iina/GRMustache.swift.git'
+    pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
     pod '1PasswordExtension'
     pod 'AcknowList'
     pod 'QuickTableViewController'
