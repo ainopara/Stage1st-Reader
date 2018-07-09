@@ -266,17 +266,17 @@ extension PageRenderer {
 
                 let processedDocument = processes.reduce(xmlDocument) { (data, process) in process(data) }
                 let processedString = processedDocument.xmlString(withOptions: UInt(XMLNodePrettyPrint)) as NSString
-                let cuttedString = processedString.substring(with: NSRange(
+                let clamppedString = processedString.substring(with: NSRange(
                     location: 183,
                     length: processedString.length - 183 - 17
                 ))
 
-                if cuttedString.count > 0 {
-                    return cuttedString.replacingOccurrences(of: "<br></br>", with: "<br />")
+                guard clamppedString.count > 0 else {
+                    S1LogError("[ContentViewModel] Fail to modify image: \(HTMLString)")
+                    return HTMLString
                 }
 
-                S1LogError("[ContentViewModel] Fail to modify image: \(HTMLString)")
-                return HTMLString
+                return clamppedString.replacingOccurrences(of: "<br></br>", with: "<br />")
             }
 
             guard let content = content else {
