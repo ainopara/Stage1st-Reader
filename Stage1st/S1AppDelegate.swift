@@ -245,14 +245,6 @@ extension S1AppDelegate {
         formatter.add(ErrorLevelLogFormatter())
 
         let osLogger = OSLogger.shared
-        osLogger.register(tags: [
-            S1LoggerTag(subsystem: .default, category: .network),
-            S1LoggerTag(subsystem: .default, category: .interaction),
-            S1LoggerTag(subsystem: .default, category: .environment),
-            S1LoggerTag(subsystem: .default, category: .extension),
-            S1LoggerTag(subsystem: .default, category: .ui),
-            S1LoggerTag(subsystem: .default, category: .cloudkit)
-        ])
         osLogger.logFormatter = formatter
         DDLog.add(osLogger)
 
