@@ -494,34 +494,35 @@ extension TopicListViewController {
     }
 
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.background")
+        let colorManager = AppEnvironment.current.colorManager
+        view.backgroundColor = colorManager.colorForKey("topiclist.background")
 
-        tableView.separatorColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.separator")
-        tableView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
-        tableView.indicatorStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .white : .default
+        tableView.separatorColor = colorManager.colorForKey("topiclist.tableview.separator")
+        tableView.backgroundColor = colorManager.colorForKey("topiclist.tableview.background")
+        tableView.indicatorStyle = colorManager.isDarkTheme() ? .white : .default
         if let backgoundView = tableView.backgroundView {
-            backgoundView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.background")
+            backgoundView.backgroundColor = colorManager.colorForKey("topiclist.tableview.background")
         }
 
-        refreshControl.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.refreshcontrol.tint")
+        refreshControl.tintColor = colorManager.colorForKey("topiclist.refreshcontrol.tint")
 
-        searchBar.searchBarStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .minimal : .default
-        searchBar.tintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.tint")
-        searchBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("topiclist.searchbar.bartint")
-        searchBar.keyboardAppearance = AppEnvironment.current.colorManager.isDarkTheme() ? .dark : .default
+        searchBar.searchBarStyle = colorManager.isDarkTheme() ? .minimal : .default
+        searchBar.tintColor = colorManager.colorForKey("topiclist.searchbar.tint")
+        searchBar.barTintColor = colorManager.colorForKey("topiclist.searchbar.bartint")
+        searchBar.keyboardAppearance = colorManager.isDarkTheme() ? .dark : .default
         if searchBar.isFirstResponder {
             searchBar.reloadInputViews()
         }
 
-        footerView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.background")
-        footerView.textColor.value = AppEnvironment.current.colorManager.colorForKey("topiclist.tableview.footer.text")
+        footerView.backgroundColor = colorManager.colorForKey("topiclist.tableview.footer.background")
+        footerView.textColor.value = colorManager.colorForKey("topiclist.tableview.footer.text")
 
         scrollTabBar.updateColor()
 
-        navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
-        navigationBar.tintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.tint")
+        navigationBar.barTintColor = colorManager.colorForKey("appearance.navigationbar.bartint")
+        navigationBar.tintColor = colorManager.colorForKey("appearance.navigationbar.tint")
         navigationBar.titleTextAttributes = [
-            .foregroundColor: AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.title"),
+            .foregroundColor: colorManager.colorForKey("appearance.navigationbar.title"),
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
 
