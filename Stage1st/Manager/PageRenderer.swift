@@ -93,25 +93,29 @@ extension PageRenderer {
         ]
     }
 
+    func stripTails(content: String) -> String {
+        let mutableString = (content as NSString).mutableCopy() as! NSMutableString
+
+        let brPattern0 = "(<br ?/>|<br>|<br></br>)*"
+        let brPattern1 = "(<br ?/>(&#13;)?\\n)*"
+        let pattern0 = brPattern0 + "<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*?</a>"
+        let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next|s1next)[^>]*>[^<]*?</a>[^<]*"
+        let saralinPattern = brPattern1 + "发自我的(iPhone|iPad) via <a href[^>]*saralin[^>]*>[^<]*?</a>"
+        let officialPattern = brPattern1 + "<a href=[^>]*><font[^>]*>( | )*(—+|-+) ?(来自|來自|from) ?[^<>]*?</font></a>"
+        let s1NextGoosePattern1 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*S1-Next[^>]*>[^<]*?</a>[^<]*"
+        let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*pan\\.baidu[^>]*>[^<]*?</a>[^<]*"
+        mutableString.s1_replace(pattern: pattern0, with: "")
+        mutableString.s1_replace(pattern: pattern1, with: "")
+        mutableString.s1_replace(pattern: saralinPattern, with: "")
+        mutableString.s1_replace(pattern: officialPattern, with: "")
+        mutableString.s1_replace(pattern: s1NextGoosePattern1, with: "")
+        mutableString.s1_replace(pattern: s1NextGoosePattern2, with: "")
+        return mutableString as String
+    }
+
     // swiftlint:disable nesting
     private func floorData(with floor: Floor, topicAuthorID: UInt?, isFirstInPage: Bool) -> [String: Any?] {
         func processContent(content: String?) -> String {
-            func stripTails(content: String) -> String {
-                let mutableString = (content as NSString).mutableCopy() as! NSMutableString
-
-                let brPattern0 = "(<br ?/>|<br>|<br></br>)*"
-                let brPattern1 = "(<br ?/>(&#13;)?\\n)*"
-                let pattern0 = brPattern0 + "<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*?</a>"
-                let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next|s1next)[^>]*>[^<]*?</a>[^<]*"
-                let pattern2 = brPattern1 + "发自我的(iPhone|iPad) via <a href[^>]*saralin[^>]*>[^<]*?</a>"
-                let pattern3 = brPattern1 + "(\u{A0}| |&nbsp;)*(—+|-+) ?(来自|发送自|发自) ?[^<>]*"
-                S1Global.regexReplace(mutableString, matchPattern: pattern0, withTemplate: "")
-                S1Global.regexReplace(mutableString, matchPattern: pattern1, withTemplate: "")
-                S1Global.regexReplace(mutableString, matchPattern: pattern2, withTemplate: "")
-                mutableString.s1_replace(pattern: pattern3, with: "")
-                return mutableString as String
-            }
-
             func process(HTMLString: String, with floorID: Int) -> String {
                 func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     func isMahjongFaceImage(imageSourceString: String?) -> Bool {

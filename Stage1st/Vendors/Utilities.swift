@@ -298,9 +298,18 @@ extension NSMutableString {
     @discardableResult
     func s1_replace(pattern: String, with template: String) -> Int {
         do {
-            let regex = try NSRegularExpression(pattern: pattern, options: [.dotMatchesLineSeparators])
-            return regex.replaceMatches(in: self, options: [.reportProgress], range: NSRange(location: 0, length: self.length), withTemplate: template)
+            let regex = try NSRegularExpression(
+                pattern: pattern,
+                options: [.dotMatchesLineSeparators]
+            )
+            return regex.replaceMatches(
+                in: self,
+                options: [.reportProgress],
+                range: NSRange(location: 0, length: self.length),
+                withTemplate: template
+            )
         } catch let error {
+            assert(false, "Regex Replace error: \(error) when initialize with pattern: \(pattern)")
             S1LogError("Regex Replace error: \(error) when initialize with pattern: \(pattern)")
             return 0
         }
