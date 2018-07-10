@@ -54,4 +54,16 @@ class StripTailTests: XCTestCase {
         """
         XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
     }
+
+    func testStripOfficialTail2() {
+        let input = """
+        Test<br />&#13;
+        <br />&#13;
+        ----发送自 <a href="http://saraba1st.com/2b/?1.0" target="_blank">STAGE1 Mobile</a></td>
+        """
+        let expectedOutput = """
+        Test</td>
+        """
+        XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
+    }
 }

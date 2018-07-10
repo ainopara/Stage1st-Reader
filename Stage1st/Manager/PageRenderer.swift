@@ -101,13 +101,16 @@ extension PageRenderer {
         let pattern0 = brPattern0 + "<a href=\"misc\\.php\\?mod\\=mobile\"[^<]*?</a>"
         let pattern1 = brPattern1 + "( |&nbsp;)*(—+|-+) ?(来自|发送自|发自|from)[^<>]*?<a href[^>]*(stage1st-reader|s1-pluto|stage1\\.5j4m\\.com|S1Nyan|saralin|S1-Next|s1next)[^>]*>[^<]*?</a>[^<]*"
         let saralinPattern = brPattern1 + "发自我的(iPhone|iPad) via <a href[^>]*saralin[^>]*>[^<]*?</a>"
-        let officialPattern = brPattern1 + "<a href=[^>]*><font[^>]*>( | )*(—+|-+) ?(来自|來自|from) ?[^<>]*?</font></a>"
+        let officialPattern1 = brPattern1 + "(—+|-+) ?发送自 <a href[^>]*>STAGE1 Mobile</a>"
+        let officialPattern2 = brPattern1 + "<a href=[^>]*><font[^>]*>( | )*(—+|-+) ?(来自|來自|from) ?[^<>]*?</font></a>"
         let s1NextGoosePattern1 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*S1-Next[^>]*>[^<]*?</a>[^<]*"
         let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*pan\\.baidu[^>]*>[^<]*?</a>[^<]*"
+
         mutableString.s1_replace(pattern: pattern0, with: "")
         mutableString.s1_replace(pattern: pattern1, with: "")
         mutableString.s1_replace(pattern: saralinPattern, with: "")
-        mutableString.s1_replace(pattern: officialPattern, with: "")
+        mutableString.s1_replace(pattern: officialPattern1, with: "")
+        mutableString.s1_replace(pattern: officialPattern2, with: "")
         mutableString.s1_replace(pattern: s1NextGoosePattern1, with: "")
         mutableString.s1_replace(pattern: s1NextGoosePattern2, with: "")
         return mutableString as String
