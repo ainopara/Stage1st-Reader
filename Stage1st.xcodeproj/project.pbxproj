@@ -552,8 +552,8 @@
 				8681E6BE1CEF61ED004269D3 /* Stage1stTests.swift */,
 				86FD82771CF9A75600C9700E /* S1FoundationTests.swift */,
 				86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */,
-				8681E6C01CEF61ED004269D3 /* Info.plist */,
 				8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */,
+				8681E6C01CEF61ED004269D3 /* Info.plist */,
 			);
 			path = Stage1stTests;
 			sourceTree = "<group>";
@@ -1050,14 +1050,10 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Stage1stTests/Pods-Stage1stTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/FBSnapshotTestCase/FBSnapshotTestCase.framework",
-				"${BUILT_PRODUCTS_DIR}/GYHttpMock/GYHttpMock.framework",
-				"${BUILT_PRODUCTS_DIR}/KIF/KIF.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GYHttpMock.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KIF.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import KIF
 import FBSnapshotTestCase
 @testable import Stage1st
 
@@ -56,7 +55,7 @@ class S1TopicTests: XCTestCase {
         XCTAssertEqual(tracedTopic.fID, 2, "should be updated")
 
         XCTAssertTrue(tracedTopic.hasChangedProperties, "should be changed after update")
-        XCTAssertEqual(tracedTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(tracedTopic.changedProperties)")
+        XCTAssertEqual(tracedTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(String(describing: tracedTopic.changedProperties))")
         XCTAssertEqual(tracedTopic.changedCloudProperties.count, 4, "should be changed after update")
     }
     
@@ -71,7 +70,7 @@ class S1TopicTests: XCTestCase {
         XCTAssertEqual(voidTopic.fID, 2, "should be updated")
 
         XCTAssertTrue(voidTopic.hasChangedProperties, "should be changed after update")
-        XCTAssertEqual(voidTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(voidTopic.changedProperties)")
+        XCTAssertEqual(voidTopic.changedProperties.count, 5, "should be 5 changed properties after update, but got \(String(describing: voidTopic.changedProperties))")
         XCTAssertEqual(voidTopic.changedCloudProperties.count, 4, "should be changed after update")
     }
 
@@ -80,38 +79,8 @@ class S1TopicTests: XCTestCase {
         tracedTopic.update(voidTopic)
 
         XCTAssertEqual(tracedTopic.title, "traced", "should not be updated")
-        XCTAssertEqual(tracedTopic.changedProperties.count, 1, "should not change any property but lastReplyCount, but got \(tracedTopic.changedProperties)")
+        XCTAssertEqual(tracedTopic.changedProperties.count, 1, "should not change any property but lastReplyCount, but got \(String(describing: tracedTopic.changedProperties))")
         XCTAssertTrue(tracedTopic.changedProperties.contains("lastReplyCount"), "should not change any property but lastReplyCount")
-    }
-}
-
-extension XCTestCase {
-    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
-        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
-    }
-
-    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
-        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
-    }
-}
-
-extension KIFTestActor {
-    func tester(_ file : String = #file, _ line : Int = #line) -> KIFUITestActor {
-        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
-    }
-
-    func system(_ file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
-        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
-    }
-}
-
-class S1UITests: KIFTestCase {
-    func testArchive() {
-        tester().tapView(withAccessibilityLabel: "Archive", traits: UIAccessibilityTraitButton)
-        tester().tapView(withAccessibilityLabel: "Favorite", traits: UIAccessibilityTraitButton)
-//        tester().tapViewWithAccessibilityLabel("Search Bar", traits: UIAccessibilityTraitSearchField)
-//        tester().waitForKeyInputReady()
-        // TODO: Finish this with `FBSnapshotTestCase` and `GYHttpMock`
     }
 }
 

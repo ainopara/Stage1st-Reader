@@ -50,9 +50,7 @@ target "Stage1st" do
 
     target "Stage1stTests" do
         inherit! :search_paths
-        pod 'GYHttpMock'
         pod 'FBSnapshotTestCase'
-        pod 'KIF', :configurations => ['Debug']
     end
 end
 
