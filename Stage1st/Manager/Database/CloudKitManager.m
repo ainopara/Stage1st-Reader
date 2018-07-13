@@ -8,6 +8,8 @@
 #import <Reachability/Reachability.h>
 #import <Crashlytics/Answers.h>
 
+#import "Stage1st-Swift.h"
+
 static NSString *const Key_HasZone             = @"hasZone";
 static NSString *const Key_HasZoneSubscription = @"hasZoneSubscription";
 static NSString *const Key_ServerChangeToken   = @"serverChangeToken";

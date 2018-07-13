@@ -7,6 +7,7 @@
 //
 
 #import "S1TabBar.h"
+#import "Stage1st-Swift.h"
 
 @implementation S1TabBar {
     NSMutableArray *_buttons;

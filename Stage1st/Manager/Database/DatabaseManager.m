@@ -8,6 +8,7 @@
 #import <YapDatabase/YapDatabaseFullTextSearch.h>
 #import <YapDatabase/YapDatabaseSearchResultsView.h>
 #import <Reachability/Reachability.h>
+#import "Stage1st-Swift.h"
 
 
 NSString *const UIDatabaseConnectionWillUpdateNotification = @"UIDatabaseConnectionWillUpdateNotification";

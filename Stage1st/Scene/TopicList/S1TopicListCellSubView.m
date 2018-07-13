@@ -8,6 +8,7 @@
 
 #import "S1TopicListCellSubView.h"
 #import "S1Topic.h"
+#import "Stage1st-Swift.h"
 
 @implementation S1TopicListCellSubView
 

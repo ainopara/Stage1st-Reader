@@ -12,6 +12,8 @@
 #import "DDXML.h"
 #import "DDXMLElementAdditions.h"
 #import "GTMNSString+HTML.h"
+#import "S1Global.h"
+#import "Stage1st-Swift.h"
 
 @implementation S1Parser
 

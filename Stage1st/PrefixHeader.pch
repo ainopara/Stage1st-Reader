@@ -15,8 +15,6 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 @import CocoaLumberjack;
-#import "S1Global.h"
-#import "Stage1st-Swift.h"
 
 #ifdef DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;

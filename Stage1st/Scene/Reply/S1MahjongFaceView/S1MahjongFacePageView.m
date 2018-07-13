@@ -10,6 +10,7 @@
 #import "UIButton+AFNetworking.h"
 #import "S1MahjongFaceView.h"
 #import <JTSImageViewController/JTSAnimatedGIFUtility.h>
+#import "Stage1st-Swift.h"
 
 @implementation S1MahjongFacePageView
 

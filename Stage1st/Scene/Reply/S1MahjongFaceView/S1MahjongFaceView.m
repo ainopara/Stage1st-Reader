@@ -11,6 +11,7 @@
 #import "S1TabBar.h"
 #import "UIButton+AFNetworking.h"
 #import "Masonry.h"
+#import "Stage1st-Swift.h"
 
 @interface S1MahjongFaceView () <UIScrollViewDelegate, S1TabBarDelegate>
 

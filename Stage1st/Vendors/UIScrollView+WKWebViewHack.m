@@ -8,6 +8,7 @@
 
 #import <CocoaLumberjack/CocoaLumberjack.h>
 #import "UIScrollView+WKWebViewHack.h"
+#import <objc/runtime.h>
 
 @implementation UIScrollView (S1Inspect)
 

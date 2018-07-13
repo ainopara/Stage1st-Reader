@@ -7,6 +7,7 @@
 //
 
 #import "NavigationControllerDelegate.h"
+#import "Stage1st-Swift.h"
 
 #define _TRIGGER_THRESHOLD 60.0f
 #define _TRIGGER_VELOCITY_THRESHOLD 500.0f

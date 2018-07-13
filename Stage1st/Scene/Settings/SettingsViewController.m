@@ -14,6 +14,7 @@
 #import <SafariServices/SafariServices.h>
 #import <AcknowList/AcknowList-Swift.h>
 @import CrashlyticsLogger;
+#import "Stage1st-Swift.h"
 
 @implementation SettingsViewController
 

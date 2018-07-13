@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class DatabaseManager;
+@class S1Topic;
 
 NS_ASSUME_NONNULL_BEGIN
 
