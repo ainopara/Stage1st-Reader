@@ -9,6 +9,7 @@
 import SnapKit
 import DeviceKit
 import Crashlytics
+import Ainoaibo
 
 class S1ArchiveListViewController: UIViewController {
 
@@ -81,7 +82,6 @@ class S1ArchiveListViewController: UIViewController {
             searchBarWrapperView.addSubview(searchBar)
             searchBar.snp.makeConstraints { (make) in
                 make.leading.trailing.top.equalTo(searchBarWrapperView)
-                make.bottom.equalTo(searchBarWrapperView.snp.bottom).offset(6.0)
             }
             tableView.tableHeaderView = searchBarWrapperView
         } else {
@@ -165,6 +165,27 @@ class S1ArchiveListViewController: UIViewController {
             make.top.equalTo(navigationBar.snp.bottom)
             make.bottom.equalTo(view.snp.bottom)
         })
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if #available(iOS 11.0, *) {
+            if
+                searchBar.subviews.count > 0,
+                searchBar.subviews[0].subviews.count > 1,
+                searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
+            {
+                let textFieldFrame = searchBar.subviews[0].subviews[1].frame
+                let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
+                if self.searchBarWrapperView.frame.height != wrapperHeight {
+                    self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
+                        value.size.height = wrapperHeight
+                    }
+                    self.tableView.tableHeaderView = self.searchBarWrapperView
+                }
+            }
+        }
     }
 
     func bindViewModel() {

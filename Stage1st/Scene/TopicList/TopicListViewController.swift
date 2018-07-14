@@ -220,6 +220,27 @@ extension TopicListViewController {
         S1Formatter.sharedInstance().clearCache()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if #available(iOS 11.0, *) {
+            if
+                searchBar.subviews.count > 0,
+                searchBar.subviews[0].subviews.count > 1,
+                searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
+            {
+                let textFieldFrame = searchBar.subviews[0].subviews[1].frame
+                let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
+                if self.searchBarWrapperView.frame.height != wrapperHeight {
+                    self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
+                        value.size.height = wrapperHeight
+                    }
+                    self.tableView.tableHeaderView = self.searchBarWrapperView
+                }
+            }
+        }
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
