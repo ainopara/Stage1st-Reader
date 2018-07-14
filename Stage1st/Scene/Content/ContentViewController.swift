@@ -330,8 +330,13 @@ extension S1ContentViewController {
 
         webView.scrollView.insertSubview(titleLabel, at: 0)
         titleLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(self.webView.scrollView.subviews[1].snp.top)
-            make.centerX.equalTo(self.webView.scrollView.snp.centerX)
+            let contentView = self.webView.scrollView.subviews[1]
+            assert(
+                contentView.isKind(of: NSClassFromString("WKContentView")!),
+                "titleLabel can not layout correctly if WKContentView missing."
+            )
+            make.bottom.equalTo(contentView.snp.top)
+            make.centerX.equalTo(contentView.snp.centerX)
             make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
         }
 
