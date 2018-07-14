@@ -462,8 +462,7 @@ extension TopicListViewController: UISearchBarDelegate {
 
 extension TopicListViewController: S1TabBarDelegate {
     func tabbar(_ tabbar: S1TabBar!, didSelectedKey key: String!) {
-        let tapticEngineFeedback = UISelectionFeedbackGenerator()
-        tapticEngineFeedback.selectionChanged()
+        UISelectionFeedbackGenerator().selectionChanged()
         viewModel.tabBarTapped(key: key)
     }
 }
@@ -501,6 +500,7 @@ extension TopicListViewController {
             return
         }
 
+        UISelectionFeedbackGenerator().selectionChanged()
         viewModel.pullToRefreshTriggered()
     }
 
