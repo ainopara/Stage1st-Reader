@@ -79,12 +79,14 @@ class TopicListViewController: UIViewController {
         tableView.dataSource = self
 
         if #available(iOS 11.0, *) {
+            /// How wrapper view works: UISearchBar wrapped in a parent view with frame.y == 4.0 frame.height == 36
+            /// The height of the parent view is 50 or 55 (in iPhone X)
+            /// Adding the parent view to wrapper view with height == 44.0 makes searchBar looks vertical center.
             searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
             searchBarWrapperView.clipsToBounds = true
             searchBarWrapperView.addSubview(searchBar)
             searchBar.snp.makeConstraints { (make) in
                 make.leading.trailing.top.equalTo(searchBarWrapperView)
-                make.bottom.equalTo(searchBarWrapperView.snp.bottom).offset(6.0)
             }
             tableView.tableHeaderView = searchBarWrapperView
         } else {
