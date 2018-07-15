@@ -477,6 +477,7 @@ extension TopicListViewController {
         if case let .forum(forum) = self.viewModel.model.value.target, forum.key == key {
             /// We already presenting this key, nothing to do.
         } else {
+            viewModel.reset()
             viewModel.tabBarTapped(key: key)
         }
     }
