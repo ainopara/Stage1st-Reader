@@ -12,8 +12,15 @@ import ReactiveCocoa
 import DeviceKit
 import Crashlytics
 
-class TopicListViewController: UIViewController {
+final class TopicListViewController: UIViewController {
     let viewModel: TopicListViewModel
+
+    /// Sometimes we can not get what we need by delegation.
+    var containerViewController: ContainerViewController! = nil {
+        didSet {
+            containerViewController.topicListSelection <~ viewModel.tabBarSelection
+        }
+    }
 
     let naviItem = UINavigationItem()
     let navigationBar = UINavigationBar(frame: .zero)
@@ -26,7 +33,6 @@ class TopicListViewController: UIViewController {
 
     let searchBar = UISearchBar(frame: .zero)
     let searchBarWrapperView = UIView(frame: .zero)
-    let scrollTabBar = S1TabBar(frame: .zero)
     let footerView = MessageFooterView()
     let refreshHUD = S1HUD(frame: .zero)
 
@@ -103,9 +109,6 @@ class TopicListViewController: UIViewController {
             forHeaderFooterViewReuseIdentifier: "TopicListHeaderView"
         )
 
-        // Tab Bar
-        scrollTabBar.tabbarDelegate = self
-
         refreshControl.addTarget(
             self,
             action: #selector(refresh),
@@ -179,33 +182,8 @@ extension TopicListViewController {
         tableView.snp.makeConstraints({ (make) in
             make.leading.trailing.equalTo(view)
             make.top.equalTo(navigationBar.snp.bottom)
+            make.bottom.equalTo(view.snp.bottom)
         })
-
-        if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
-            scrollTabBar.expectedButtonHeight = 49.0
-        }
-
-        view.addSubview(scrollTabBar)
-        if #available(iOS 11.0, *) {
-            scrollTabBar.snp.makeConstraints { (make) in
-                make.top.equalTo(tableView.snp.bottom)
-                make.leading.trailing.equalTo(view)
-                make.bottom.equalTo(view.snp.bottom)
-                if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
-                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-49.0)
-                } else {
-                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)
-                }
-
-            }
-        } else {
-            scrollTabBar.snp.makeConstraints { (make) in
-                make.top.equalTo(tableView.snp.bottom)
-                make.leading.trailing.equalTo(view)
-                make.bottom.equalTo(view.snp.bottom)
-                make.height.equalTo(44.0)
-            }
-        }
 
         view.addSubview(refreshHUD)
         refreshHUD.snp.makeConstraints { (make) in
@@ -215,7 +193,7 @@ extension TopicListViewController {
         }
     }
 
-    open override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() {
         viewModel.dataCenter.clearTopicListCache()
         S1Formatter.sharedInstance().clearCache()
     }
@@ -254,25 +232,17 @@ extension TopicListViewController {
         })
     }
 
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         viewModel.traitCollection.value = traitCollection
     }
 
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 
 extension TopicListViewController {
-    // swiftlint:disable cyclomatic_complexity
     func bindViewModel() {
-
-        viewModel.keys.producer.startWithValues { [weak self] (keys) in
-            guard let strongSelf = self else { return }
-
-            strongSelf.scrollTabBar.keys = keys
-            strongSelf.viewModel.reset()
-        }
 
         /// viewModel.tableViewOffset <~ tableView.contentOffset
         let tableViewContentOffsetToken = tableView.observe(\.contentOffset, options: [.new]) { [weak self] (tableView, change) in
@@ -361,7 +331,6 @@ extension TopicListViewController {
 
         tableView.reactive.isHidden <~ viewModel.isTableViewHidden
         refreshControl.reactive.isHidden <~ viewModel.isRefreshControlHidden
-        scrollTabBar.reactive.selection <~ viewModel.tabBarSelection
 
         viewModel.refreshControlEndRefreshing.observeValues { [weak self] (_) in
             guard let strongSelf = self else { return }
@@ -458,15 +427,6 @@ extension TopicListViewController: UISearchBarDelegate {
     }
 }
 
-// MARK: S1TabBarDelegate
-
-extension TopicListViewController: S1TabBarDelegate {
-    func tabbar(_ tabbar: S1TabBar!, didSelectedKey key: String!) {
-        UISelectionFeedbackGenerator().selectionChanged()
-        viewModel.tabBarTapped(key: key)
-    }
-}
-
 // MARK: UINavigationBarDelegate
 
 extension TopicListViewController: UINavigationBarDelegate {
@@ -485,17 +445,11 @@ extension TopicListViewController {
     }
 
     @objc func archive(_ sender: Any) {
-        let viewController = S1ArchiveListViewController(nibName: nil, bundle: nil)
-        navigationController?.pushViewController(viewController, animated: true)
+        self.containerViewController.switchToArchiveList()
     }
 
     @objc func refresh(_ sender: Any) {
         guard !refreshControl.isHidden else {
-            refreshControl.endRefreshing()
-            return
-        }
-
-        guard scrollTabBar.enabled else {
             refreshControl.endRefreshing()
             return
         }
@@ -507,6 +461,24 @@ extension TopicListViewController {
     @objc func clearSearchBarText(_ gestureRecognizer: UISwipeGestureRecognizer) {
         searchBar.text = ""
         searchBar.delegate?.searchBar?(self.searchBar, textDidChange: "")
+    }
+
+    func reset() {
+        viewModel.reset()
+    }
+
+    func switchToPresenting(key: String) {
+        UISelectionFeedbackGenerator().selectionChanged()
+        viewModel.tabBarTapped(key: key)
+    }
+
+    func switchToPresentingKeyIfChanged(key: String) {
+        UISelectionFeedbackGenerator().selectionChanged()
+        if case let .forum(forum) = self.viewModel.model.value.target, forum.key == key {
+            /// We already presenting this key, nothing to do.
+        } else {
+            viewModel.tabBarTapped(key: key)
+        }
     }
 }
 
@@ -541,8 +513,6 @@ extension TopicListViewController {
 
         footerView.backgroundColor = colorManager.colorForKey("topiclist.tableview.footer.background")
         footerView.textColor.value = colorManager.colorForKey("topiclist.tableview.footer.text")
-
-        scrollTabBar.updateColor()
 
         navigationBar.barTintColor = colorManager.colorForKey("appearance.navigationbar.bartint")
         navigationBar.tintColor = colorManager.colorForKey("appearance.navigationbar.tint")

@@ -11,7 +11,7 @@ import ReactiveSwift
 extension S1TabBar {
     enum Selection: Equatable {
         case none
-        case index(Int)
+        case key(String)
     }
 }
 
@@ -21,8 +21,12 @@ extension Reactive where Base: S1TabBar {
             switch selection {
             case .none:
                 tabBar.deselectAll()
-            case .index(let index):
-                tabBar.setSelectedIndex(index)
+            case .key(let name):
+                if let index = tabBar.keys.index(of: name) {
+                    tabBar.setSelectedIndex(index)
+                } else {
+                    fatalError("Could not found key \(name) in \(tabBar.keys)")
+                }
             }
         }
     }

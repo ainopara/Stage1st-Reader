@@ -98,8 +98,6 @@ final class TopicListViewModel: NSObject {
 
     // Output
 
-    let keys = MutableProperty([String]())
-
     enum TableViewContentOffsetAction {
         case toTop
         case restore(CGPoint)
@@ -247,10 +245,6 @@ final class TopicListViewModel: NSObject {
             default:
                 return ""
             }
-        }.skipRepeats()
-
-        keys <~ AppEnvironment.current.settings.forumOrder.map { (order) in
-            return order.first ?? []
         }.skipRepeats()
 
         model.producer.startWithValues { [weak self] (model) in
@@ -825,31 +819,19 @@ extension TopicListViewModel {
             case (.blank, .error(let failedTarget, _)):
                 switch failedTarget {
                 case .forum(let key):
-                    if let index = viewModel.keys.value.index(of: key) {
-                        viewModel.tabBarSelection.value = .index(index)
-                    } else {
-                        viewModel.tabBarSelection.value = .none
-                    }
+                    viewModel.tabBarSelection.value = .key(key)
                 case .search:
                     viewModel.tabBarSelection.value = .none
                 }
             case (_, .loading(let loading)):
                 switch loading.target {
                 case .forum(let key):
-                    if let index = viewModel.keys.value.index(of: key) {
-                        viewModel.tabBarSelection.value = .index(index)
-                    } else {
-                        viewModel.tabBarSelection.value = .none
-                    }
+                    viewModel.tabBarSelection.value = .key(key)
                 case .search:
                     viewModel.tabBarSelection.value = .none
                 }
             case (.forum(let forum), _):
-                if let index = viewModel.keys.value.index(of: forum.key) {
-                     viewModel.tabBarSelection.value = .index(index)
-                } else {
-                     viewModel.tabBarSelection.value = .none
-                }
+                viewModel.tabBarSelection.value = .key(forum.key)
             case (.search, _), (.blank, _):
                 viewModel.tabBarSelection.value = .none
             }

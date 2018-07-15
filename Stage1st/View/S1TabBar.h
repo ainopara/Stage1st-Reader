@@ -10,11 +10,13 @@
 
 @protocol S1TabBarDelegate;
 
+NS_ASSUME_NONNULL_BEGIN
+
 // TODO: Rewrite this in swift.
 @interface S1TabBar : UIScrollView <UIScrollViewDelegate>
 
 @property (nonatomic, weak) id<S1TabBarDelegate> tabbarDelegate;
-@property (nonatomic, strong) NSArray *keys;
+@property (nonatomic, strong) NSArray<NSString *> *keys;
 @property (nonatomic, assign) BOOL enabled;
 @property (nonatomic, strong) NSNumber *expectPresentingButtonCount;
 @property (nonatomic, strong) NSNumber *minButtonWidth;
@@ -33,3 +35,5 @@
 - (void)tabbar:(S1TabBar *)tabbar didSelectedKey:(NSString *)key;
 
 @end
+
+NS_ASSUME_NONNULL_END

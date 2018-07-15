@@ -104,6 +104,7 @@
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
 		86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */; };
+		86F1A90D20FB942F00646736 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F1A90C20FB942F00646736 /* ContainerViewController.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
 		86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD238E20C66B8A00106A90 /* ReplyViewController.swift */; };
@@ -275,6 +276,7 @@
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1ReorderForumViewController.m; sourceTree = "<group>"; };
 		86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WebTemplate.bundle; sourceTree = "<group>"; };
 		86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewModel.swift; sourceTree = "<group>"; };
+		86F1A90C20FB942F00646736 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorCell.swift; sourceTree = "<group>"; };
 		86FD238E20C66B8A00106A90 /* ReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
@@ -505,6 +507,7 @@
 		865C251B1C99110C0075B303 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
+				86F1A90B20FB941C00646736 /* Container */,
 				863580111A945DED007B21AD /* TopicList */,
 				8679AFB020B5982B007A73B2 /* ArchiveList */,
 				863580121A945DFF007B21AD /* Content */,
@@ -618,6 +621,14 @@
 				86038F431B5B3DA400F84F1A /* ColorMap.plist */,
 			);
 			path = Colors;
+			sourceTree = "<group>";
+		};
+		86F1A90B20FB941C00646736 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				86F1A90C20FB942F00646736 /* ContainerViewController.swift */,
+			);
+			path = Container;
 			sourceTree = "<group>";
 		};
 		86FD238D20C66B7000106A90 /* Reply */ = {
@@ -1108,6 +1119,7 @@
 				86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */,
 				8634ADF11FAAF3C2004A9CB7 /* GSReorderableTableViewController.m in Sources */,
 				8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */,
+				86F1A90D20FB942F00646736 /* ContainerViewController.swift in Sources */,
 				8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */,
 				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
 				867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */,
