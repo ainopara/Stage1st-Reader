@@ -178,7 +178,7 @@ class S1ArchiveListViewController: UIViewController {
             {
                 let textFieldFrame = searchBar.subviews[0].subviews[1].frame
                 let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
-                if self.searchBarWrapperView.frame.height != wrapperHeight {
+                if self.searchBarWrapperView.frame.height != wrapperHeight && wrapperHeight != 0 {
                     self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
                         value.size.height = wrapperHeight
                     }
