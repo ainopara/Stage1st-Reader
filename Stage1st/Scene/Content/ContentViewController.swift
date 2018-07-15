@@ -87,6 +87,8 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
         didSet { logCurrentPresentingViewController() }
     }
 
+    var replyDraft: NSAttributedString?
+
     // MARK: -
     @objc convenience init(topic: S1Topic, dataCenter: DataCenter) {
         self.init(viewModel: ContentViewModel(topic: topic, dataCenter: dataCenter))
@@ -806,6 +808,8 @@ extension S1ContentViewController {
             return
         }
 
+        self.replyDraft = nil
+
         if viewModel.isInLastPage() {
             refreshCurrentPage(forceUpdate: true, scrollType: .toBottom)
         }
@@ -1110,6 +1114,17 @@ extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
     }
 }
 
+// MARK: - ReplyViewControllerDraftDelegate
+extension S1ContentViewController: ReplyViewControllerDraftDelegate {
+    func replyViewController(_ replyViewController: ReplyViewController, didCancelledWith draft: NSAttributedString) {
+        self.replyDraft = draft
+    }
+
+    func replyViewControllerDidFailed(with draft: NSAttributedString) {
+        self.replyDraft = draft
+    }
+}
+
 // MARK: - Layout & Style
 extension S1ContentViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -1251,6 +1266,8 @@ extension S1ContentViewController {
         )
 
         let replyViewController = ReplyViewController(viewModel: replyViewModel)
+        replyViewController.draftDelegate = self
+        replyViewController.textView.attributedText = self.replyDraft ?? NSAttributedString()
 
         present(replyViewController, animated: true, completion: nil)
     }

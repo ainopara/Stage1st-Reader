@@ -8,8 +8,15 @@
 
 import SnapKit
 
+protocol ReplyViewControllerDraftDelegate: class {
+    func replyViewController(_ replyViewController: ReplyViewController, didCancelledWith draft: NSAttributedString)
+    func replyViewControllerDidFailed(with draft: NSAttributedString)
+}
+
 final class ReplyViewController: REComposeViewController {
     let viewModel: ReplyViewModel
+
+    weak var draftDelegate: ReplyViewControllerDraftDelegate?
 
     let mahjongFaceView = S1MahjongFaceView()
     let replyAccessoryView = ReplyAccessoryView()
@@ -99,8 +106,11 @@ extension ReplyViewController {
 
 extension ReplyViewController: REComposeViewControllerDelegate {
     func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
+        let attributedDraft = composeViewController.textView.attributedText ?? NSAttributedString()
         switch result {
         case .cancelled:
+            draftDelegate?.replyViewController(self, didCancelledWith: attributedDraft)
+
             self.replyAccessoryView.removeExtraConstraints()
             self.mahjongFaceView.removeExtraConstraints()
 
@@ -121,7 +131,10 @@ extension ReplyViewController: REComposeViewControllerDelegate {
                 ])
             }
 
+            weak var theDraftDelegate = self.draftDelegate
+
             let failureBlock = { (error: Error) in
+                theDraftDelegate?.replyViewControllerDidFailed(with: attributedDraft)
                 if let urlError = error as? URLError, urlError.code == .cancelled {
                     S1LogDebug("[Network] NSURLErrorCancelled")
                     MessageHUD.shared.post(message: "回复请求取消", duration: .second(1.0))
@@ -181,6 +194,8 @@ extension ReplyViewController: S1MahjongFaceViewDelegate {
         textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
     }
 }
+
+// MARK: - ReplyAccessoryViewDelegate
 
 extension ReplyViewController: ReplyAccessoryViewDelegate {
     func accessoryView(_ accessoryView: ReplyAccessoryView, didTappedMahjongFaceButton button: UIButton) {
