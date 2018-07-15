@@ -725,12 +725,18 @@ extension S1ContentViewController {
     }
 
     func _alertRefresh() {
-        let refreshAlertController = UIAlertController(title: "缺少必要的信息",
-                                                       message: "请长按页码刷新当前页面",
-                                                       preferredStyle: .alert)
-        refreshAlertController.addAction(UIAlertAction(title: "好",
-                                                       style: .cancel,
-                                                       handler: nil))
+        let refreshAlertController = UIAlertController(
+            title: "缺少必要的信息",
+            message: "请长按页码刷新当前页面",
+            preferredStyle: .alert
+        )
+
+        refreshAlertController.addAction(UIAlertAction(
+            title: "好",
+            style: .cancel,
+            handler: nil
+        ))
+
         present(refreshAlertController, animated: true, completion: nil)
     }
 
