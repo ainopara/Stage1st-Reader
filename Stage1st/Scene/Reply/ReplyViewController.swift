@@ -110,12 +110,14 @@ extension ReplyViewController: REComposeViewControllerDelegate {
                 return
             }
 
-            let successBlock = { [weak self] in
+            let topicID = viewModel.topic.topicID
+
+            /// Note: self is supposed to be dealloced when completion block called.
+            let successBlock = {
                 MessageHUD.shared.post(message: "回复成功", duration: .second(2.5))
-                guard let strongSelf = self else { return }
 
                 NotificationCenter.default.post(name: .ReplyDidPosted, object: nil, userInfo: [
-                    "topicID": strongSelf.viewModel.topic.topicID
+                    "topicID": topicID
                 ])
             }
 
