@@ -31,6 +31,7 @@
         self.canCancelContentTouches = YES;
         self.bounces = NO;
         self.showsHorizontalScrollIndicator = NO;
+        self.showsVerticalScrollIndicator = NO;
         self.scrollsToTop = NO;
         self.delegate = self;
         //self.decelerationRate = UIScrollViewDecelerationRateFast;
