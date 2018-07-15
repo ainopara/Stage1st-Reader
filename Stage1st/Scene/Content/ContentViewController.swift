@@ -517,15 +517,6 @@ extension S1ContentViewController {
         // Reply Action
         moreActionSheet.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.ActionSheet.Reply", comment: "Reply"), style: .default, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
-            guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
-                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
-                    "type": "ReplyTopic",
-                    "source": "Content",
-                    "result": "Failed",
-                    ])
-                strongSelf._alertRefresh()
-                return
-            }
 
             guard AppEnvironment.current.settings.currentUsername.value != nil else {
                 Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
@@ -536,6 +527,16 @@ extension S1ContentViewController {
 
                 let loginViewController = LoginViewController(nibName: nil, bundle: nil)
                 strongSelf.present(loginViewController, animated: true, completion: nil)
+                return
+            }
+
+            guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
+                Answers.logCustomEvent(withName: "Click Reply", customAttributes: [
+                    "type": "ReplyTopic",
+                    "source": "Content",
+                    "result": "Failed",
+                ])
+                strongSelf._alertRefresh()
                 return
             }
 
