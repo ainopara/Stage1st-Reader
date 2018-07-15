@@ -59,6 +59,13 @@ class ContainerViewController: UIViewController {
                 }
             })
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didReceivePaletteChangeNotification),
+            name: .APPaletteDidChange,
+            object: nil
+        )
+
         // Initialize Child View Controller
 
         applyChildViewControllerSwitch()
