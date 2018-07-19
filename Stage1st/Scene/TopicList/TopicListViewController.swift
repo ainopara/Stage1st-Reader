@@ -249,7 +249,7 @@ extension TopicListViewController {
             guard let strongSelf = self else { return }
             guard let offset = change.newValue else { return }
 
-            S1LogDebug("Offset: \(offset)")
+            S1LogVerbose("Offset: \(offset)")
 
             if strongSelf.viewModel.tableViewOffset.value != offset {
                 strongSelf.viewModel.tableViewOffset.value = offset
