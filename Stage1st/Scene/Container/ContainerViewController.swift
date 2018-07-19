@@ -155,7 +155,7 @@ extension ContainerViewController: S1TabBarDelegate {
             self.switchToTopicList()
             self.topicListViewController.switchToPresentingKeyIfChanged(key: key)
         } else {
-            fatalError("Unknown selectedViewController \(self.selectedViewController.value)")
+            S1FatalError("Unknown selectedViewController \(self.selectedViewController.value)")
         }
     }
 }

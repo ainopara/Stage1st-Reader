@@ -238,3 +238,32 @@ public func DDLogTracking(
         ddlog: ddlog
     )
 }
+
+func S1FatalError(
+    _ message: @autoclosure () -> String,
+    level: DDLogLevel = defaultDebugLevel,
+    context: Int = 0,
+    dso: UnsafeRawPointer = #dsohandle,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    category: LogCategory = .default,
+    subsystem: LogSubsystem = .default,
+    asynchronous async: Bool = false,
+    ddlog: DDLog = DDLog.sharedInstance
+) -> Never {
+    _DDLogMessage(
+        message,
+        level: level,
+        flag: .error,
+        context: context,
+        file: file,
+        function: function,
+        line: line,
+        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        asynchronous: async,
+        ddlog: ddlog
+    )
+
+    fatalError(message, file: file, line: line)
+}

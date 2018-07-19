@@ -25,7 +25,7 @@ extension Reactive where Base: S1TabBar {
                 if let index = tabBar.keys.index(of: name) {
                     tabBar.setSelectedIndex(index)
                 } else {
-                    fatalError("Could not found key \(name) in \(tabBar.keys)")
+                    S1FatalError("Could not found key \(name) in \(tabBar.keys)")
                 }
             }
         }

@@ -137,7 +137,7 @@ final class S1ArchiveListViewModel {
         case 1:
             transitState(to: .favorite)
         default:
-            fatalError("Unknown segment index \(newValue)")
+            S1FatalError("Unknown segment index \(newValue)")
         }
     }
 
@@ -198,8 +198,7 @@ extension S1ArchiveListViewModel {
 extension S1ArchiveListViewModel {
     func cellViewModel(at indexPath: IndexPath) -> TopicListCellViewModel {
         guard let unwrappedTopic = archivedTopic(at: indexPath) else {
-            S1LogError("Expecting topic at \(indexPath) exist but get nil.")
-            fatalError("Expecting topic at \(indexPath) exist but get nil.")
+            S1FatalError("Expecting topic at \(indexPath) exist but get nil.")
         }
 
         let attributedTitle: NSAttributedString
@@ -219,8 +218,7 @@ extension S1ArchiveListViewModel {
 
     func contentViewModel(at indexPath: IndexPath) -> ContentViewModel {
         guard let unwrappedTopic = archivedTopic(at: indexPath) else {
-            S1LogError("Expecting topic at \(indexPath) exist but get nil.")
-            fatalError("Expecting topic at \(indexPath) exist but get nil.")
+            S1FatalError("Expecting topic at \(indexPath) exist but get nil.")
         }
 
         return ContentViewModel(topic: unwrappedTopic, dataCenter: dataCenter)

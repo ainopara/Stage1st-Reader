@@ -267,10 +267,10 @@ final class TopicListViewModel: NSObject {
                 break
 
             case (_, .error):
-                fatalError("`.error` state must appear with `.blank` target.")
+                S1FatalError("`.error` state must appear with `.blank` target.")
 
             case (.blank, .fetchingMore):
-                fatalError("Invalide combination .blank with .fetchingMore")
+                S1FatalError("Invalide combination .blank with .fetchingMore")
             }
         }
 
@@ -359,7 +359,7 @@ extension TopicListViewModel {
             self.search(for: search.term)
 
         case .blank:
-            fatalError(".blank should never trigger pull to refresh!")
+            S1FatalError(".blank should never trigger pull to refresh!")
         }
     }
 
@@ -407,7 +407,7 @@ extension TopicListViewModel {
             loadNextSearchPage(for: search.searchID!, page: search.page + 1)
 
         case .blank:
-            fatalError(".blank should never trigger loading more action!")
+            S1FatalError(".blank should never trigger loading more action!")
         }
     }
 
@@ -661,8 +661,7 @@ extension TopicListViewModel {
 
             attributedTitle = NSAttributedString(string: title, attributes: cellTitleAttributes.value)
         case .blank:
-            S1LogError("blank target should not reach this method.")
-            fatalError("blank target should not reach this method.")
+            S1FatalError("blank target should not reach this method.")
         }
 
         return TopicListCellViewModel(topic: topic, isPinningTop: isPinningTop, attributedTitle: attributedTitle)
@@ -677,8 +676,7 @@ extension TopicListViewModel {
         case .search(let search):
             topic = search.topics[indexPath.row]
         case .blank:
-            S1LogError("blank target should not reach this method.")
-            fatalError("blank target should not reach this method.")
+            S1FatalError("blank target should not reach this method.")
         }
 
         return ContentViewModel(topic: topic, dataCenter: dataCenter)
