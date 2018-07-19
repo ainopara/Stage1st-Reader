@@ -151,6 +151,7 @@ final class TopicListViewModel: NSObject {
 
         stateTransitionBehaviors = [
             TableViewUpdateBehavior(viewModel: self),
+            RefreshControlBehavior(viewModel: self),
             RestorePositionBehavior(viewModel: self),
             RefreshTimeCachingBehavior(viewModel: self),
             HudBehavior(viewModel: self),
@@ -248,14 +249,12 @@ final class TopicListViewModel: NSObject {
         }.skipRepeats()
 
         model.producer.startWithValues { [weak self] (model) in
-            guard let strongSelf = self else { return }
-
             switch (model.target, model.state) {
             case (_, .loaded):
-                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
+                break
 
             case (.blank, .error):
-                strongSelf.refreshControlEndRefreshingObserver.send(value: ())
+                break
 
             case (.forum, .fetchingMore):
                 break
@@ -832,6 +831,25 @@ extension TopicListViewModel {
                 viewModel.tabBarSelection.value = .key(forum.key)
             case (.search, _), (.blank, _):
                 viewModel.tabBarSelection.value = .none
+            }
+        }
+    }
+
+
+    /// Calling ODRefreshControl.endRefreshing() may cause UITableVIew request cellForRowAtIndexPath.
+    /// This behavior must be performed after TableViewUpdateBehavior.
+    /// See: Crashlytics #648
+    final class RefreshControlBehavior: StateTransitionBehavior<TopicListViewModel, Model, Action> {
+        override func postTransition(action: Action, from: Model, to: Model) {
+            guard let viewModel = self.viewModel else { return }
+
+            switch (to.target, to.state) {
+            case (_, .loaded):
+                viewModel.refreshControlEndRefreshingObserver.send(value: ())
+            case (.blank, .error):
+                viewModel.refreshControlEndRefreshingObserver.send(value: ())
+            default:
+                break
             }
         }
     }
