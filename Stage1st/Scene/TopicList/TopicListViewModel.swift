@@ -248,7 +248,7 @@ final class TopicListViewModel: NSObject {
             }
         }.skipRepeats()
 
-        model.producer.startWithValues { [weak self] (model) in
+        model.producer.startWithValues { (model) in
             switch (model.target, model.state) {
             case (_, .loaded):
                 break
@@ -834,7 +834,6 @@ extension TopicListViewModel {
             }
         }
     }
-
 
     /// Calling ODRefreshControl.endRefreshing() may cause UITableVIew request cellForRowAtIndexPath.
     /// This behavior must be performed after TableViewUpdateBehavior.
