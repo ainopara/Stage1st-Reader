@@ -9,8 +9,8 @@
 import CocoaLumberjack
 import Alamofire
 import Mustache
-import ReactiveCocoa
 import ReactiveSwift
+import ReactiveCocoa
 import WebKit
 
 class ContentViewModel: NSObject, PageRenderer {

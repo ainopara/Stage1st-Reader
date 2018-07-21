@@ -13,7 +13,6 @@ import ActionSheetPicker_3_0
 import JTSImageViewController
 import Crashlytics
 import ReactiveSwift
-import ReactiveCocoa
 import Photos
 
 private let topOffset: CGFloat = -80.0

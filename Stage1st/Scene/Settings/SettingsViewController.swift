@@ -11,7 +11,6 @@ import WebKit
 import CocoaLumberjack
 import Ainoaibo
 import ReactiveSwift
-import ReactiveCocoa
 import Files
 
 extension SettingsViewController {

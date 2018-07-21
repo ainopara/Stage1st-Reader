@@ -8,7 +8,6 @@
 
 import SnapKit
 import ReactiveSwift
-import ReactiveCocoa
 
 extension Reactive where Base: UILabel {
     public var font: BindingTarget<UIFont> {

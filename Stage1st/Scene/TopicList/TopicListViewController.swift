@@ -8,7 +8,6 @@
 
 import Ainoaibo
 import ReactiveSwift
-import ReactiveCocoa
 import DeviceKit
 import Crashlytics
 
