@@ -73,7 +73,7 @@ PODS:
     - CocoaLumberjack/Default
   - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
-  - CrashlyticsLogger (0.3.0):
+  - CrashlyticsLogger (0.3.1):
     - CocoaLumberjack
     - CocoaLumberjack/Swift
     - Crashlytics
@@ -179,7 +179,7 @@ DEPENDENCIES:
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - Crashlytics
-  - CrashlyticsLogger (from `./Frameworks/CrashlyticsLogger`)
+  - CrashlyticsLogger (~> 0.3.1)
   - DeviceKit
   - Fabric
   - FBSnapshotTestCase
@@ -210,6 +210,7 @@ SPEC REPOS:
     - AlamofireImage
     - CocoaLumberjack
     - Crashlytics
+    - CrashlyticsLogger
     - DeviceKit
     - Fabric
     - FBSnapshotTestCase
@@ -229,8 +230,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Ainoaibo:
     :path: "./Frameworks/Ainoaibo"
-  CrashlyticsLogger:
-    :path: "./Frameworks/CrashlyticsLogger"
   GRMustache.swift:
     :git: https://github.com/ainopara/GRMustache.swift.git
   JTSImageViewController:
@@ -270,7 +269,7 @@ SPEC CHECKSUMS:
   AlamofireImage: 3b35b586853abaf94ca1250f4e94cff3c21a4c0d
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
-  CrashlyticsLogger: 1c42a21cbe559d5e7fa2f783c3697011aa605562
+  CrashlyticsLogger: c21938d9fde27884d8341173aeba482a9e30f01a
   DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -292,6 +291,6 @@ SPEC CHECKSUMS:
   YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 947c3f7b4a60c745e99e2013dd86fb319170b729
+PODFILE CHECKSUM: 61e6327bd4bf4f18c802a09e9b0a435ba765ee35
 
 COCOAPODS: 1.5.3
