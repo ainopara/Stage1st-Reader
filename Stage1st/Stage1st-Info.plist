@@ -77,6 +77,8 @@
 	<string>Stage1st Reader 需要访问照片库以保存图片</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Stage1st Reader 需要访问照片库以保存图片</string>
+	<key>NSCameraUsageDescription</key>
+	<string>您访问的页面需要使用摄像头</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>Stage1st.view-topic</string>
