@@ -6,6 +6,7 @@
 @private
 	
 	BOOL isImmutable;
+    BOOL initializerCalled;
 	NSMutableSet *changedProperties;
 	NSMutableDictionary *originalCloudValues;
 }
@@ -27,13 +28,16 @@
 		if ([[self class] storesOriginalCloudValues]) {
 			originalCloudValues = [[NSMutableDictionary alloc] init];
 		}
+        initializerCalled = YES;
 	}
 	return self;
 }
 
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"isImmutable" context:NULL];
+    if (initializerCalled) {
+        [self removeObserver:self forKeyPath:@"isImmutable" context:NULL];
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

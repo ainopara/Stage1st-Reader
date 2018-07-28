@@ -50,7 +50,7 @@ extension S1Topic {
     convenience init?(element: DDXMLElement) {
         let links = (try? element.elements(for: ".//a[@target='_blank']")) ?? []
 
-        guard links.count == 3 else {
+        guard links.count == 3 || links.count == 2 else {
             return nil
         }
 
@@ -62,18 +62,28 @@ extension S1Topic {
             return nil
         }
 
-        let authorPart = links[1]
-        let authorName = authorPart.firstText ?? ""
+        let authorUserID: Int?
+        let authorName: String
 
-        guard let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue else {
-            return nil
+        if links.count == 3 {
+            let authorPart = links[1]
+
+            guard let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue else {
+                return nil
+            }
+
+            guard let theAuthorUserID = Int(authorHomeURL.split(separator: "-")[2].split(separator: ".")[0]) else {
+                return nil
+            }
+
+            authorName = authorPart.firstText ?? ""
+            authorUserID = theAuthorUserID
+        } else {
+            authorName = ""
+            authorUserID = nil
         }
 
-        guard let authorUserID = Int(authorHomeURL.split(separator: "-")[2].split(separator: ".")[0]) else {
-            return nil
-        }
-
-        let fieldIDPart = links[2]
+        let fieldIDPart = links.count == 3 ? links[2] : links[1]
         guard let fieldURL = fieldIDPart.attribute(forName: "href")?.stringValue else {
             return nil
         }
@@ -97,7 +107,7 @@ extension S1Topic {
         self.init(topicID: topicID)
 
         self.title = titleString
-        self.authorUserID = authorUserID as NSNumber
+        self.authorUserID = authorUserID as NSNumber?
         self.authorUserName = authorName
         self.fID = fieldID as NSNumber
         self.replyCount = replyCount as NSNumber
