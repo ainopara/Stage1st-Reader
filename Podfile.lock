@@ -94,77 +94,77 @@ PODS:
   - Masonry (1.1.0)
   - QuickTableViewController (0.9.1)
   - Reachability (3.2)
-  - ReactiveCocoa (7.2.0):
-    - ReactiveSwift (~> 3.1)
-  - ReactiveSwift (3.1.0):
-    - Result (~> 3.2)
-  - Result (3.2.4)
+  - ReactiveCocoa (8.0.0):
+    - ReactiveSwift (~> 4.0)
+  - ReactiveSwift (4.0.0):
+    - Result (~> 4.0)
+  - Result (4.0.0)
   - Reveal-SDK (16)
   - SnapKit (4.0.0)
   - SwiftyJSON (4.1.0)
   - TextAttributes (1.0)
-  - YapDatabase (3.0.2):
-    - YapDatabase/Standard (= 3.0.2)
-  - YapDatabase/Standard (3.0.2):
-    - YapDatabase/Standard/Core (= 3.0.2)
-    - YapDatabase/Standard/Extensions (= 3.0.2)
-  - YapDatabase/Standard/Core (3.0.2):
+  - YapDatabase (3.1.1):
+    - YapDatabase/Standard (= 3.1.1)
+  - YapDatabase/Standard (3.1.1):
+    - YapDatabase/Standard/Core (= 3.1.1)
+    - YapDatabase/Standard/Extensions (= 3.1.1)
+  - YapDatabase/Standard/Core (3.1.1):
     - CocoaLumberjack
-  - YapDatabase/Standard/Extensions (3.0.2):
+  - YapDatabase/Standard/Extensions (3.1.1):
     - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/ActionManager (= 3.0.2)
-    - YapDatabase/Standard/Extensions/AutoView (= 3.0.2)
-    - YapDatabase/Standard/Extensions/CloudCore (= 3.0.2)
-    - YapDatabase/Standard/Extensions/CloudKit (= 3.0.2)
-    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.0.2)
-    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.0.2)
-    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.0.2)
-    - YapDatabase/Standard/Extensions/FilteredView (= 3.0.2)
-    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.0.2)
-    - YapDatabase/Standard/Extensions/Hooks (= 3.0.2)
-    - YapDatabase/Standard/Extensions/ManualView (= 3.0.2)
-    - YapDatabase/Standard/Extensions/Relationships (= 3.0.2)
-    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.0.2)
-    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.0.2)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.0.2)
-    - YapDatabase/Standard/Extensions/View (= 3.0.2)
-  - YapDatabase/Standard/Extensions/ActionManager (3.0.2):
+    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.1)
+    - YapDatabase/Standard/Extensions/AutoView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Hooks (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ManualView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Relationships (= 3.1.1)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/View (= 3.1.1)
+  - YapDatabase/Standard/Extensions/ActionManager (3.1.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/AutoView
-  - YapDatabase/Standard/Extensions/AutoView (3.0.2):
+  - YapDatabase/Standard/Extensions/AutoView (3.1.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/CloudCore (3.0.2):
+  - YapDatabase/Standard/Extensions/CloudCore (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/CloudKit (3.0.2):
+  - YapDatabase/Standard/Extensions/CloudKit (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionPool (3.0.2):
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionProxy (3.0.2):
+  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.0.2):
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/FilteredView (3.0.2):
-    - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/FullTextSearch (3.0.2):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Hooks (3.0.2):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ManualView (3.0.2):
+  - YapDatabase/Standard/Extensions/FilteredView (3.1.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/Relationships (3.0.2):
+  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/RTreeIndex (3.0.2):
+  - YapDatabase/Standard/Extensions/Hooks (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/SearchResultsView (3.0.2):
+  - YapDatabase/Standard/Extensions/ManualView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/Relationships (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.1):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/AutoView
     - YapDatabase/Standard/Extensions/FullTextSearch
-  - YapDatabase/Standard/Extensions/SecondaryIndex (3.0.2):
+  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.1):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/View (3.0.2):
+  - YapDatabase/Standard/Extensions/View (3.1.1):
     - YapDatabase/Standard/Core
   - YYKeyboardManager (1.0.1)
 
@@ -256,7 +256,7 @@ CHECKOUT OPTIONS:
     :commit: f652507be7d2159fb98adcebf65c6f9b5fa0f5f2
     :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
-    :commit: 5844a010fe807bcf67599b7efa76f505205e428f
+    :commit: a5806fb13a62375d0f53719518710d5dabf7dc6d
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -281,14 +281,14 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 5cbe91041c00b3ef4cfc405e3fad92b1fb63d6d2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 476dae7ca790f40d30d186a1bd7ebae4290395d5
-  ReactiveSwift: 5b26d2e988fe0eed2daf48c4054d1de74db50184
-  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
+  ReactiveCocoa: 87cb64d78424d749a0bbfd9b07e4825e8d834066
+  ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
+  Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
   Reveal-SDK: ed36bdbb3cbf90b94ae5da0dbcb3c7ae6738c51f
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
-  YapDatabase: 178cc1eabfa25a1307a6245ca0de9dadadc6c331
+  YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
 PODFILE CHECKSUM: 61e6327bd4bf4f18c802a09e9b0a435ba765ee35
