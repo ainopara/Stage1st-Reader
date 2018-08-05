@@ -183,7 +183,7 @@ extension S1AppDelegate {
             return
         }
 
-        let contentViewController = S1ContentViewController(topic: topic)
+        let contentViewController = ContentViewController(topic: topic)
         rootNavigationController.pushViewController(contentViewController, animated: true)
     }
 }

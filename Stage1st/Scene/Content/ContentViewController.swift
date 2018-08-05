@@ -29,7 +29,7 @@ private let blankPageHTMLString = """
     </html>
     """
 
-class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
+class ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: ContentViewModel
 
     lazy var webView: WKWebView = {
@@ -306,7 +306,7 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
 }
 
 // MARK: - Life Cycle
-extension S1ContentViewController {
+extension ContentViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -409,7 +409,7 @@ extension S1ContentViewController {
 }
 
 // MARK: - Actions
-extension S1ContentViewController {
+extension ContentViewController {
     @objc open func back(sender: Any?) {
         if viewModel.isInFirstPage() {
             _ = navigationController?.popViewController(animated: true)
@@ -817,7 +817,7 @@ extension S1ContentViewController {
 
 // MARK: -
 // MARK: WKNavigationDelegate
-extension S1ContentViewController: WKNavigationDelegate {
+extension ContentViewController: WKNavigationDelegate {
     func webView(_: WKWebView, didFinish _: WKNavigation!) {
         S1LogInfo("[ContentVC] webViewDidFinishLoad")
     }
@@ -917,7 +917,7 @@ extension S1ContentViewController: WKNavigationDelegate {
 }
 
 // MARK: - WebViewEventDelegate
-extension S1ContentViewController: WebViewEventDelegate {
+extension ContentViewController: WebViewEventDelegate {
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, readyWith _: [String: Any]) {
         webPageReadyForAutomaticScrolling.value = true
     }
@@ -937,7 +937,7 @@ extension S1ContentViewController: WebViewEventDelegate {
     }
 }
 
-extension S1ContentViewController {
+extension ContentViewController {
     func sharedWKWebViewConfiguration() -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
@@ -952,7 +952,7 @@ extension S1ContentViewController {
 }
 
 // MARK: - JTSImageViewControllerInteractionsDelegate
-extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
+extension ContentViewController: JTSImageViewControllerInteractionsDelegate {
     func imageViewerDidLongPress(_ imageViewer: JTSImageViewController!, at rect: CGRect) {
         let imageActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
@@ -994,14 +994,14 @@ extension S1ContentViewController: JTSImageViewControllerInteractionsDelegate {
 }
 
 // MARK: JTSImageViewControllerOptionsDelegate
-extension S1ContentViewController: JTSImageViewControllerOptionsDelegate {
+extension ContentViewController: JTSImageViewControllerOptionsDelegate {
     func alphaForBackgroundDimmingOverlay(inImageViewer _: JTSImageViewController!) -> CGFloat {
         return 0.3
     }
 }
 
 // MARK: - PullToActionDelagete
-extension S1ContentViewController: PullToActionDelagete {
+extension ContentViewController: PullToActionDelagete {
 
     // To fix bug in WKWebView
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -1102,7 +1102,7 @@ extension S1ContentViewController: PullToActionDelagete {
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
-extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
+extension ContentViewController: UIPopoverPresentationControllerDelegate {
     func popoverPresentationController(_: UIPopoverPresentationController, willRepositionPopoverTo _: UnsafeMutablePointer<CGRect>, in _: AutoreleasingUnsafeMutablePointer<UIView>) {
         // TODO: find a solution.
         //        guard case .action(let floorID) = presentType else { return }
@@ -1114,7 +1114,7 @@ extension S1ContentViewController: UIPopoverPresentationControllerDelegate {
 }
 
 // MARK: - ReplyViewControllerDraftDelegate
-extension S1ContentViewController: ReplyViewControllerDraftDelegate {
+extension ContentViewController: ReplyViewControllerDraftDelegate {
     func replyViewController(_ replyViewController: ReplyViewController, didCancelledWith draft: NSAttributedString) {
         self.replyDraft = draft
     }
@@ -1125,7 +1125,7 @@ extension S1ContentViewController: ReplyViewControllerDraftDelegate {
 }
 
 // MARK: - Layout & Style
-extension S1ContentViewController {
+extension ContentViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -1149,7 +1149,7 @@ extension S1ContentViewController {
 }
 
 // MARK: - NSUserActivity (aspect)
-extension S1ContentViewController {
+extension ContentViewController {
     func _setupActivity() {
         DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
@@ -1175,7 +1175,7 @@ extension S1ContentViewController {
 }
 
 // MARK: - Main Function
-extension S1ContentViewController {
+extension ContentViewController {
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func _showHud() {
             refreshHUD.showActivityIndicator()
@@ -1273,7 +1273,7 @@ extension S1ContentViewController {
 }
 
 // MARK: Helper
-private extension S1ContentViewController {
+private extension ContentViewController {
 
     func _hook_preChangeCurrentPage() {
         S1LogDebug("[webView] pre change current page")
@@ -1441,7 +1441,7 @@ private extension S1ContentViewController {
 }
 
 // MARK: - State
-extension S1ContentViewController {
+extension ContentViewController {
     enum ScrollType: String {
         case restorePosition
         case pullUpForNext

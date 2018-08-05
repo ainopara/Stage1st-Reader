@@ -255,7 +255,7 @@ extension S1ArchiveListViewController: UITableViewDataSource {
 extension S1ArchiveListViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        let contentViewController = S1ContentViewController(viewModel: viewModel.contentViewModel(at: indexPath))
+        let contentViewController = ContentViewController(viewModel: viewModel.contentViewModel(at: indexPath))
         self.navigationController?.pushViewController(contentViewController, animated: true)
     }
 
@@ -321,7 +321,7 @@ extension S1ArchiveListViewController: UISearchBarDelegate {
 
         let topic = dataCenter.traced(topicID: topicID.intValue) ?? S1Topic(topicID: topicID)
 
-        let contentViewController = S1ContentViewController(topic: topic)
+        let contentViewController = ContentViewController(topic: topic)
         navigationController?.pushViewController(contentViewController, animated: true)
     }
 }

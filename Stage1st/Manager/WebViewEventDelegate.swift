@@ -135,7 +135,7 @@ extension ContentPresenter where Self: UIViewController {
         mutableSelf.presentType = .content
 
         let contentViewModel = viewModel.contentViewModel(topic: topic)
-        let contentViewController = S1ContentViewController(viewModel: contentViewModel)
+        let contentViewController = ContentViewController(viewModel: contentViewModel)
         navigationController?.pushViewController(contentViewController, animated: true)
     }
 }
