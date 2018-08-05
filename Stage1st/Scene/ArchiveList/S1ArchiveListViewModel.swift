@@ -221,7 +221,7 @@ extension S1ArchiveListViewModel {
             S1FatalError("Expecting topic at \(indexPath) exist but get nil.")
         }
 
-        return ContentViewModel(topic: unwrappedTopic, dataCenter: dataCenter)
+        return ContentViewModel(topic: unwrappedTopic)
     }
 }
 

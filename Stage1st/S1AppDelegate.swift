@@ -179,11 +179,11 @@ extension S1AppDelegate {
     }
 
     func pushContentViewController(for topic: S1Topic) {
-        guard let rootNavigationController = self.window?.rootViewController as? UINavigationController else {
+        guard let rootNavigationController = self.rootNavigationController else {
             return
         }
 
-        let contentViewController = S1ContentViewController(topic: topic, dataCenter: AppEnvironment.current.dataCenter)
+        let contentViewController = S1ContentViewController(topic: topic)
         rootNavigationController.pushViewController(contentViewController, animated: true)
     }
 }

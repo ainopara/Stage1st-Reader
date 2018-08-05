@@ -678,7 +678,7 @@ extension TopicListViewModel {
             S1FatalError("blank target should not reach this method.")
         }
 
-        return ContentViewModel(topic: topic, dataCenter: dataCenter)
+        return ContentViewModel(topic: topic)
     }
 }
 

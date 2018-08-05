@@ -89,11 +89,11 @@ class S1ContentViewController: UIViewController, ImagePresenter, UserPresenter, 
     var replyDraft: NSAttributedString?
 
     // MARK: -
-    @objc convenience init(topic: S1Topic, dataCenter: DataCenter) {
-        self.init(viewModel: ContentViewModel(topic: topic, dataCenter: dataCenter))
+    convenience init(topic: S1Topic) {
+        self.init(viewModel: ContentViewModel(topic: topic))
     }
 
-    @objc init(viewModel: ContentViewModel) {
+    init(viewModel: ContentViewModel) {
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)

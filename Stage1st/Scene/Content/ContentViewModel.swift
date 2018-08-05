@@ -31,7 +31,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
     // MARK: Initialize
 
-    init(topic: S1Topic, dataCenter: DataCenter) {
+    init(topic: S1Topic) {
         self.topic = topic.copy() as! S1Topic
 
         if let currentPage = topic.lastViewedPage?.intValue {
@@ -50,7 +50,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
         S1LogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
 
-        self.dataCenter = dataCenter
+        self.dataCenter = AppEnvironment.current.dataCenter
         apiManager = dataCenter.apiManager
 
         title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
@@ -235,7 +235,7 @@ extension ContentViewModel {
 // MARK: - View Model
 extension ContentViewModel: ContentViewModelMaker {
     func contentViewModel(topic: S1Topic) -> ContentViewModel {
-        return ContentViewModel(topic: topic, dataCenter: dataCenter)
+        return ContentViewModel(topic: topic)
     }
 }
 

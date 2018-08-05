@@ -321,7 +321,7 @@ extension S1ArchiveListViewController: UISearchBarDelegate {
 
         let topic = dataCenter.traced(topicID: topicID.intValue) ?? S1Topic(topicID: topicID)
 
-        let contentViewController = S1ContentViewController(topic: topic, dataCenter: self.dataCenter)
+        let contentViewController = S1ContentViewController(topic: topic)
         navigationController?.pushViewController(contentViewController, animated: true)
     }
 }
