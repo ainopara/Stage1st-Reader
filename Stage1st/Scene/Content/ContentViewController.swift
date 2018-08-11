@@ -325,30 +325,29 @@ extension ContentViewController {
 
         view.layoutIfNeeded()
 
-        webView.scrollView.addSubview(topDecorateLine)
-        topDecorateLine.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(self.webView)
-            make.height.equalTo(1.0)
-            make.bottom.equalTo(self.webView.scrollView.subviews[0].snp.top).offset(topOffset)
-        }
+        if let contentView = self.webView.scrollView.s1_firstSubview(with: NSClassFromString("WKContentView")!) {
+            webView.scrollView.addSubview(topDecorateLine)
+            topDecorateLine.snp.makeConstraints { make in
+                make.leading.trailing.equalTo(self.webView)
+                make.height.equalTo(1.0)
+                make.bottom.equalTo(contentView.snp.top).offset(topOffset)
+            }
 
-        webView.scrollView.addSubview(bottomDecorateLine)
-        bottomDecorateLine.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(self.webView)
-            make.height.equalTo(1.0)
-            make.top.equalTo(self.webView.scrollView.subviews[0].snp.bottom).offset(bottomOffset)
-        }
+            webView.scrollView.addSubview(bottomDecorateLine)
+            bottomDecorateLine.snp.makeConstraints { make in
+                make.leading.trailing.equalTo(self.webView)
+                make.height.equalTo(1.0)
+                make.top.equalTo(contentView.snp.bottom).offset(bottomOffset)
+            }
 
-        webView.scrollView.insertSubview(titleLabel, at: 0)
-        titleLabel.snp.makeConstraints { make in
-            let contentView = self.webView.scrollView.subviews[1]
-            assert(
-                contentView.isKind(of: NSClassFromString("WKContentView")!),
-                "titleLabel can not layout correctly if WKContentView missing."
-            )
-            make.bottom.equalTo(contentView.snp.top)
-            make.centerX.equalTo(contentView.snp.centerX)
-            make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
+            webView.scrollView.insertSubview(titleLabel, at: 0)
+            titleLabel.snp.makeConstraints { make in
+                make.bottom.equalTo(contentView.snp.top)
+                make.centerX.equalTo(contentView.snp.centerX)
+                make.width.equalTo(self.webView.scrollView.snp.width).offset(-24.0)
+            }
+        } else {
+            assert(false, "titleLabel can not layout correctly if WKContentView missing.")
         }
 
         view.addSubview(refreshHUD)

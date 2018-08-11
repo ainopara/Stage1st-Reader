@@ -106,6 +106,14 @@ extension UIView {
         UIGraphicsEndImageContext()
         return viewScreenShot
     }
+
+    func s1_firstSubview(with clazz: AnyClass) -> UIView? {
+        for subview in self.subviews where subview.isKind(of: clazz) {
+            return subview
+        }
+
+        return nil
+    }
 }
 
 extension UIViewController {
