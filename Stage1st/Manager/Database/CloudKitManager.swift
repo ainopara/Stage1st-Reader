@@ -435,7 +435,7 @@ private extension CloudKitManager {
             return
         }
 
-        var previousChangeToken: CKServerChangeToken? = nil
+        var previousChangeToken: CKServerChangeToken?
 
         databaseConnection.read { (transaction) in
             previousChangeToken = transaction.object(forKey: Key_serverChangeToken, inCollection: Collection_cloudKit) as? CKServerChangeToken
@@ -1008,7 +1008,7 @@ private extension YapDatabaseReadWriteTransaction {
 
 private extension YapDatabaseCloudKitTransaction {
     func getRecordChangeTag(for recordID: CKRecordID, databaseIdentifier: String?) -> (String?, Bool, Bool) {
-        var recordChangeTag: NSString? = nil
+        var recordChangeTag: NSString?
         var hasPendingModifications: ObjCBool = false
         var hasPendingDelete: ObjCBool = false
 

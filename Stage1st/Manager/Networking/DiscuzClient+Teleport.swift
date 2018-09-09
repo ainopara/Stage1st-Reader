@@ -136,11 +136,11 @@ public extension DiscuzClient {
             "answer": secureQuestionAnswer,
         ]
 
-        var debugHeader: String? = nil
-        var debugRequestMethod: String? = nil
-        var debugURLString: String? = nil
-        var debugMIMEType: String? = nil
-        var debugBodyString: String? = nil
+        var debugHeader: String?
+        var debugRequestMethod: String?
+        var debugURLString: String?
+        var debugMIMEType: String?
+        var debugBodyString: String?
 
         return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default).responseString(completionHandler: { (response) in
             debugRequestMethod = response.request?.httpMethod
@@ -421,7 +421,7 @@ public extension DiscuzClient {
                 S1LogDebug("Search result topic count: \(elements.count)")
                 let topics = elements.compactMap { S1Topic(element: $0) }
 
-                var searchID: String? = nil
+                var searchID: String?
                 let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
                 if
                     let rawNextPageURL = theNextPageLinks.first?.stringValue,
@@ -467,7 +467,7 @@ public extension DiscuzClient {
                 S1LogDebug("Search result page \(page) topic count: \(elements.count)")
                 let topics = elements.compactMap { S1Topic(element: $0) }
 
-                var searchID: String? = nil
+                var searchID: String?
                 let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
                 if
                     let rawNextPageURL = theNextPageLinks.first?.firstText,

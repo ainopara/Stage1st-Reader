@@ -260,7 +260,7 @@ extension S1ArchiveListViewModel {
     }
 
     func archivedTopic(at indexPath: IndexPath) -> S1Topic? {
-        var topic: S1Topic? = nil
+        var topic: S1Topic?
         databaseConnection.read { transaction in
             if let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseViewTransaction, let viewMappings = self.viewMappings {
                 topic = ext.object(at: indexPath, with: viewMappings) as? S1Topic
