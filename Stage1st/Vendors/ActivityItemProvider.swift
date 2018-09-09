@@ -8,12 +8,12 @@
 
 import UIKit
 
-extension UIActivityType {
-    static let weibo = UIActivityType("com.sina.weibo.ShareExtension")
-    static let moke2 = UIActivityType("com.moke.moke-2.Share")
-    static let jidian = UIActivityType("me.imtx.NewLime.NewLimeShare")
+extension UIActivity.ActivityType {
+    static let weibo = UIActivity.ActivityType("com.sina.weibo.ShareExtension")
+    static let moke2 = UIActivity.ActivityType("com.moke.moke-2.Share")
+    static let jidian = UIActivity.ActivityType("me.imtx.NewLime.NewLimeShare")
 
-    static let tweetBot4 = UIActivityType("com.tapbots.Tweetbot4.shareextension")
+    static let tweetBot4 = UIActivity.ActivityType("com.tapbots.Tweetbot4.shareextension")
 }
 
 class ContentTextActivityItemProvider: UIActivityItemProvider {

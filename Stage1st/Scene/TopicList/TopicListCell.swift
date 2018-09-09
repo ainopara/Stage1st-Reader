@@ -19,7 +19,7 @@ final class TopicListCell: UITableViewCell {
     let drawingSubview = S1TopicListCellSubView(frame: .zero)
     let titleLabel = UILabel(frame: .zero)
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         backgroundColor = .clear

@@ -124,7 +124,7 @@ final class TopicListViewController: UIViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(cloudKitStateChanged),
-            name: .UIApplicationWillEnterForeground,
+            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
 
@@ -304,7 +304,7 @@ extension TopicListViewController {
             guard let strongSelf = self else { return }
 
             strongSelf.tableView.beginUpdates()
-            strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableViewRowAnimation.automatic)
+            strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableView.RowAnimation.automatic)
             strongSelf.tableView.endUpdates()
         }
 

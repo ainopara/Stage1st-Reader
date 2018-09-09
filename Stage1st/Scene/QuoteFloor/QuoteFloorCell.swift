@@ -19,7 +19,7 @@ final class QuoteFloorCell: UITableViewCell {
     let contentLabel = UILabel(frame: .zero)
     var webViewHeightConstraint: Constraint?
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.webview.background")

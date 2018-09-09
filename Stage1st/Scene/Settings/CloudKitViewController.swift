@@ -155,7 +155,7 @@ class CloudKitUploadQueueViewController: UIViewController {
 
         changeSets = AppEnvironment.current.cloudkitManager.cloudKitExtension.pendingChangeSets()
 
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100.0
         tableView.delegate = self
         tableView.dataSource = self
@@ -229,7 +229,7 @@ class CloudKitErrorListViewController: UIViewController {
 
         errors = AppEnvironment.current.cloudkitManager.errors.reversed()
 
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100.0
         tableView.delegate = self
         tableView.dataSource = self

@@ -90,7 +90,7 @@ class CloudKitManager: NSObject {
         }
 
         NotificationCenter.default.reactive
-            .notifications(forName: .UIApplicationWillEnterForeground)
+            .notifications(forName: UIApplication.willEnterForegroundNotification)
             .signal.observeValues { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.setNeedsFetchChanges(completion: { (_) in
@@ -396,9 +396,9 @@ private extension CloudKitManager {
             return
         }
 
-        let recordZoneID = CKRecordZoneID(zoneName: cloudkitZoneName, ownerName: CKCurrentUserDefaultName)
+        let recordZoneID = CKRecordZone.ID(zoneName: cloudkitZoneName, ownerName: CKCurrentUserDefaultName)
         let subscription = CKRecordZoneSubscription(zoneID: recordZoneID, subscriptionID: cloudkitZoneName)
-        let notificationInfo = CKNotificationInfo()
+        let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo = notificationInfo
 
@@ -445,12 +445,12 @@ private extension CloudKitManager {
     }
 
     private func fetchRecordChange(with previousServerChangeToken: CKServerChangeToken?, completion: @escaping (S1CloudKitFetchResult) -> Void) {
-        let recordZoneID = CKRecordZoneID(zoneName: cloudkitZoneName, ownerName: CKCurrentUserDefaultName)
-        let fetchOptions = CKFetchRecordZoneChangesOptions()
+        let recordZoneID = CKRecordZone.ID(zoneName: cloudkitZoneName, ownerName: CKCurrentUserDefaultName)
+        let fetchOptions = CKFetchRecordZoneChangesOperation.ZoneOptions()
         fetchOptions.previousServerChangeToken = previousServerChangeToken
 
         let fetchOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZoneID], optionsByRecordZoneID: [recordZoneID: fetchOptions])
-        var deletedRecordIDs = [CKRecordID]()
+        var deletedRecordIDs = [CKRecord.ID]()
         var changedRecords = [CKRecord]()
 
         fetchOperation.recordWithIDWasDeletedBlock = { (recordID, recordType) in
@@ -903,7 +903,7 @@ extension CloudKitManager {
 // MARK: -
 
 private extension YapDatabaseReadWriteTransaction {
-    func deleteKeysAssociatedWithRecordIDs(_ recordIDs: [CKRecordID]) {
+    func deleteKeysAssociatedWithRecordIDs(_ recordIDs: [CKRecord.ID]) {
         guard let cloudkitTransaction = self.ext(Ext_CloudKit) as? YapDatabaseCloudKitTransaction else {
             // CloudKit Extension is unregistered.
             return
@@ -1007,7 +1007,7 @@ private extension YapDatabaseReadWriteTransaction {
 }
 
 private extension YapDatabaseCloudKitTransaction {
-    func getRecordChangeTag(for recordID: CKRecordID, databaseIdentifier: String?) -> (String?, Bool, Bool) {
+    func getRecordChangeTag(for recordID: CKRecord.ID, databaseIdentifier: String?) -> (String?, Bool, Bool) {
         var recordChangeTag: NSString?
         var hasPendingModifications: ObjCBool = false
         var hasPendingDelete: ObjCBool = false

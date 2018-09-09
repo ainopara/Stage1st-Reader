@@ -83,7 +83,7 @@ final class TopicListViewModel: NSObject {
     let refreshControlIsRefreshing = MutableProperty<Bool>(false)
 
     // Internal
-    let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
+    let cellTitleAttributes = MutableProperty([NSAttributedString.Key: Any]())
     let paletteNotification = MutableProperty(())
     let databaseChangedNotification = MutableProperty([Notification]())
 

@@ -131,7 +131,7 @@ extension UIWebView {
     func s1_positionOfElementWithId(_ elementID: String) -> CGRect? {
         let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
         if let result = stringByEvaluatingJavaScript(from: script) {
-            let rect = CGRectFromString(result)
+            let rect = NSCoder.cgRect(for: result)
             return rect == CGRect.zero ? nil : rect
         } else {
             return nil
@@ -168,7 +168,7 @@ extension WKWebView {
                 return
             }
 
-            completion(CGRectFromString(resultString))
+            completion(NSCoder.cgRect(for: resultString))
         }
     }
 

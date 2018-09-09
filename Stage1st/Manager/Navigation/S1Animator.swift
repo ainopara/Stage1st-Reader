@@ -17,7 +17,7 @@ import CocoaLumberjack
 @objcMembers
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
     let direction: TransitionDirection
-    var curve: UIViewAnimationOptions = .curveEaseInOut
+    var curve: UIView.AnimationOptions = .curveEaseInOut
 
     init(direction: TransitionDirection) {
         self.direction = direction

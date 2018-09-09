@@ -23,7 +23,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) var navigationControllerDelegate: NavigationControllerDelegate?
     // swiftlint:enable weak_delegate
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Fabric
         #if DEBUG
         #else
@@ -118,7 +118,7 @@ extension S1AppDelegate {
     private func updateStage1stDomainIfNecessary() {
         let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
-        let stage1stDomainRecordID = CKRecordID(recordName: stage1stDomainRecordName)
+        let stage1stDomainRecordID = CKRecord.ID(recordName: stage1stDomainRecordName)
         let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [stage1stDomainRecordID])
 
         fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
@@ -161,7 +161,7 @@ extension S1AppDelegate {
 // MARK: URL Scheme
 
 extension S1AppDelegate {
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
 
         if
@@ -196,7 +196,7 @@ extension S1AppDelegate {
         return true
     }
 
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         S1LogDebug("Receive Hand Off: \(String(describing: userActivity.userInfo))")
 
         guard

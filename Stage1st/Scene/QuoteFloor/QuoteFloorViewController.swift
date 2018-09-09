@@ -40,14 +40,14 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
 
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = .clear
-        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        webView.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         webView.scrollView.delegate = self
         webView.isOpaque = false
 
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
-            name: .UIApplicationWillEnterForeground,
+            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
@@ -262,7 +262,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
             strongSelf.presentType = .background
             S1LogDebug("[ContentVC] Open in Safari: \(url)")
 
-            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+            UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (success) in
                 if !success {
                     S1LogWarn("Failed to open url: \(url)")
                 }
@@ -317,7 +317,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 extension QuoteFloorViewController: UIScrollViewDelegate {
     // To fix bug in WKWebView
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
     }
 }
 
@@ -349,4 +349,9 @@ extension QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

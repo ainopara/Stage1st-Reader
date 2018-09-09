@@ -326,7 +326,7 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(LoginViewController.keyboardFrameWillChange(_:)),
-            name: .UIKeyboardWillChangeFrame,
+            name: UIResponder.keyboardWillChangeFrameNotification,
             object: nil
         )
     }
@@ -440,7 +440,7 @@ extension LoginViewController {
     @objc func keyboardFrameWillChange(_ notification: Notification) {
         guard
             let userInfo = notification.userInfo,
-            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
+            let endFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
         else {
             return
         }

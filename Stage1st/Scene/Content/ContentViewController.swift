@@ -135,7 +135,7 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
         // WebView
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = .clear
-        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        webView.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         webView.isOpaque = false
         webView.loadHTMLString(blankPageHTMLString, baseURL: URL(string: "about:blank"))
 
@@ -256,13 +256,13 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
-            name: .UIApplicationWillEnterForeground,
+            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationDidEnterBackground),
-            name: .UIApplicationDidEnterBackground,
+            name: UIApplication.didEnterBackgroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(
@@ -444,7 +444,7 @@ extension ContentViewController {
 
     @objc open func backLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
-            gestureRecognizer.state == UIGestureRecognizerState.began,
+            gestureRecognizer.state == UIGestureRecognizer.State.began,
             !viewModel.isInFirstPage() else {
             return
         }
@@ -457,7 +457,7 @@ extension ContentViewController {
 
     @objc open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
-            gestureRecognizer.state == UIGestureRecognizerState.began,
+            gestureRecognizer.state == UIGestureRecognizer.State.began,
             !viewModel.isInLastPage() else {
             return
         }
@@ -505,9 +505,9 @@ extension ContentViewController {
         let labelParagraphStyle = NSMutableParagraphStyle()
         labelParagraphStyle.alignment = .center
         picker?.pickerTextAttributes = [
-            NSAttributedStringKey.paragraphStyle: labelParagraphStyle,
-            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 19.0),
-            NSAttributedStringKey.foregroundColor: AppEnvironment.current.colorManager.colorForKey("content.picker.text"),
+            NSAttributedString.Key.paragraphStyle: labelParagraphStyle,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 19.0),
+            NSAttributedString.Key.foregroundColor: AppEnvironment.current.colorManager.colorForKey("content.picker.text"),
         ]
         picker?.show()
     }
@@ -900,7 +900,7 @@ extension ContentViewController: WKNavigationDelegate {
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""), style: .default, handler: { _ in
             S1LogInfo("[ContentVC] Open in Safari: \(url)")
 
-            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
+            UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (success) in
                 if !success {
                     S1LogWarn("Failed to open url: \(url)")
                 }
@@ -1004,7 +1004,7 @@ extension ContentViewController: PullToActionDelagete {
 
     // To fix bug in WKWebView
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
     }
 
     public func scrollViewDidEndDraggingOutsideTopBound(with offset: CGFloat) {
@@ -1472,4 +1472,9 @@ enum PresentType {
     case actionSheet // Note: UIAlertController do not hide view controller under it
     case alert // Note: UIAlertController do not hide view controller under it
     case reply // Note: REComposeViewController do not hide view controller under it
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

@@ -67,7 +67,7 @@ private extension AnimationView {
         animation.duration = 3.0
         animation.values = cgImages
         animation.repeatCount = HUGE
-        animation.fillMode = kCAFillModeForwards
+        animation.fillMode = CAMediaTimingFillMode.forwards
         return animation
     }
 }
@@ -98,7 +98,7 @@ extension AnimationView {
         if let firstImage = self.images.first {
             return firstImage.size
         }
-        return CGSize(width: UIViewNoIntrinsicMetric, height: UIViewNoIntrinsicMetric)
+        return CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
     }
 }
 

@@ -51,13 +51,13 @@ class MessageHUD: UIWindow {
             make.height.equalTo(1.0 / UIScreen.main.scale)
         }
 
-        windowLevel = UIWindowLevelStatusBar - 1.0
+        windowLevel = UIWindow.Level.statusBar - 1.0
 
         didReceivePaletteChangeNotification(nil)
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveStatusBarFrameWillChangeNotification(_:)),
-                                               name: .UIApplicationWillChangeStatusBarFrame,
+                                               name: UIApplication.willChangeStatusBarFrameNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceivePaletteChangeNotification(_:)),
@@ -149,7 +149,7 @@ class MessageHUD: UIWindow {
     }
 
     @objc func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {
-        guard let newFrame = notification?.userInfo?[UIApplicationStatusBarFrameUserInfoKey] as? CGRect else {
+        guard let newFrame = notification?.userInfo?[UIApplication.statusBarFrameUserInfoKey] as? CGRect else {
             return
         }
 

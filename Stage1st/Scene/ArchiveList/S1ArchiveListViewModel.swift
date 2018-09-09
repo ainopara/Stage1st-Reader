@@ -30,7 +30,7 @@ final class S1ArchiveListViewModel {
     let segmentControlIndex = MutableProperty(0)
 
     // Internal
-    let cellTitleAttributes = MutableProperty([NSAttributedStringKey: Any]())
+    let cellTitleAttributes = MutableProperty([NSAttributedString.Key: Any]())
     let paletteNotification = MutableProperty(())
     let databaseChangedNotification = MutableProperty([Notification]())
 

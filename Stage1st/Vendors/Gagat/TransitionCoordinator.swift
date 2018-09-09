@@ -92,7 +92,7 @@ public class TransitionCoordinator: NSObject {
         // it's positioned on top of all the other content.
         previousStyleTargetViewSnapshot = targetView.snapshotView(afterScreenUpdates: false)
         targetView.addSubview(previousStyleTargetViewSnapshot!)
-        targetView.bringSubview(toFront: previousStyleTargetViewSnapshot!)
+        targetView.bringSubviewToFront(previousStyleTargetViewSnapshot!)
 
         // When we have the snapshot we create a new mask layer that's used to
         // control how much of the previous view we display as the transition

@@ -89,7 +89,7 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationWillEnterForeground),
-            name: .UIApplicationWillEnterForeground,
+            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(

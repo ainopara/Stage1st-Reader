@@ -125,24 +125,24 @@ class ContainerViewController: UIViewController {
         let previous = previouslySelectedViewController
 
         /// Suggested by https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html
-        self.addChildViewController(current)
+        self.addChild(current)
         self.view.addSubview(current.view)
         current.view.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalTo(self.view)
             make.bottom.equalTo(self.scrollTabBar.snp.top)
         }
-        current.didMove(toParentViewController: self)
+        current.didMove(toParent: self)
 
-        previous?.willMove(toParentViewController: nil)
+        previous?.willMove(toParent: nil)
         previous?.view.removeFromSuperview()
-        previous?.removeFromParentViewController()
+        previous?.removeFromParent()
     }
 
-    override var childViewControllerForStatusBarStyle: UIViewController? {
+    override var childForStatusBarStyle: UIViewController? {
         return self.selectedViewController.value
     }
 
-    override var childViewControllerForStatusBarHidden: UIViewController? {
+    override var childForStatusBarHidden: UIViewController? {
         return self.selectedViewController.value
     }
 }

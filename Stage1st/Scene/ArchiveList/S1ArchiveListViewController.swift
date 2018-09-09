@@ -199,7 +199,7 @@ class S1ArchiveListViewController: UIViewController {
             guard let strongSelf = self else { return }
 
             strongSelf.tableView.beginUpdates()
-            strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableViewRowAnimation.automatic)
+            strongSelf.tableView.reloadRows(at: updatedModelIndexPaths, with: UITableView.RowAnimation.automatic)
             strongSelf.tableView.endUpdates()
         }
 
