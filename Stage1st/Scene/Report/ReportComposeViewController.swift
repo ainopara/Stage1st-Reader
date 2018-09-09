@@ -147,7 +147,10 @@ extension ReportComposeViewController {
         textView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("report.background")
         textView.tintColor = AppEnvironment.current.colorManager.colorForKey("report.tint")
         textView.textColor = AppEnvironment.current.colorManager.colorForKey("report.text")
-        textView.typingAttributes = convertToNSAttributedStringKeyDictionary(TextAttributes().font(UIFont.systemFont(ofSize: 15.0)).foregroundColor(AppEnvironment.current.colorManager.colorForKey("report.text")).dictionary)
+        textView.typingAttributes = [
+            .font: UIFont.systemFont(ofSize: 15.0),
+            .foregroundColor: AppEnvironment.current.colorManager.colorForKey("report.text")
+        ]
         textView.keyboardAppearance = AppEnvironment.current.colorManager.isDarkTheme() ? .dark : .light
 
         navigationController?.navigationBar.barStyle = AppEnvironment.current.colorManager.isDarkTheme() ? .black : .default
@@ -159,9 +162,4 @@ extension ReportComposeViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

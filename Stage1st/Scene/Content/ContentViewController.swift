@@ -900,7 +900,7 @@ extension ContentViewController: WKNavigationDelegate {
         alertViewController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.WebView.OpenLinkAlert.Open", comment: ""), style: .default, handler: { _ in
             S1LogInfo("[ContentVC] Open in Safari: \(url)")
 
-            UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (success) in
+            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
                 if !success {
                     S1LogWarn("Failed to open url: \(url)")
                 }
@@ -1472,9 +1472,4 @@ enum PresentType {
     case actionSheet // Note: UIAlertController do not hide view controller under it
     case alert // Note: UIAlertController do not hide view controller under it
     case reply // Note: REComposeViewController do not hide view controller under it
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

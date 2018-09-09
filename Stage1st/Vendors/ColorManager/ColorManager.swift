@@ -62,10 +62,10 @@ public final class ColorManager: NSObject {
             .font: UIFont.boldSystemFont(ofSize: 17.0)
         ]
         UISwitch.appearance().onTintColor = colorForKey("appearance.switch.tint")
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = convertToNSAttributedStringKeyDictionary([
-            NSAttributedString.Key.foregroundColor.rawValue: self.colorForKey("appearance.searchbar.text"),
-            NSAttributedString.Key.font.rawValue: UIFont.systemFont(ofSize: 14.0)
-        ])
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [
+            .foregroundColor: self.colorForKey("appearance.searchbar.text"),
+            .font: UIFont.systemFont(ofSize: 14.0)
+        ]
         UIScrollView.appearance().indicatorStyle = isDarkTheme() ? .white : .default
         UITextField.appearance().keyboardAppearance = isDarkTheme() ? .dark : .default
         (UIApplication.shared.delegate as! S1AppDelegate).window?.backgroundColor = colorForKey("window.background")
@@ -126,9 +126,4 @@ public extension Notification.Name {
 @objc public enum PaletteType: NSInteger {
     case day
     case night
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

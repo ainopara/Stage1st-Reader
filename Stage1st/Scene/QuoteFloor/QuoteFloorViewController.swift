@@ -262,7 +262,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
             strongSelf.presentType = .background
             S1LogDebug("[ContentVC] Open in Safari: \(url)")
 
-            UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: { (success) in
+            UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
                 if !success {
                     S1LogWarn("Failed to open url: \(url)")
                 }
@@ -349,9 +349,4 @@ extension QuoteFloorViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }
