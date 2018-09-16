@@ -56,6 +56,19 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
+        pods_with_swift4 = [
+            'QuickTableViewController',
+            'SnapKit',
+            'DeviceKit',
+            'ReactiveCocoa',
+            'ReactiveSwift'
+        ]
+        if pods_with_swift4.include? target.name then
+            target.build_configurations.each do |config|
+                config.build_settings['SWIFT_VERSION'] = '4.0'
+            end
+        end
+
         pods_with_swift3 = [
             'TextAttributes',
         ]
