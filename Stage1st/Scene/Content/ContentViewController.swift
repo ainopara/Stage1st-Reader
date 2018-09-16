@@ -1402,27 +1402,31 @@ private extension ContentViewController {
     func updateBackButtonAppearance(_ oldValue: BackButtonState) {
         switch (backButtonState, oldValue) {
         case let (.back(rotateAngle), .back(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-            backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            backButton.imageView?.layer.transform = transform(with: rotateAngle)
 
         case let (.back(rotateAngle), _):
             backButton.setImage(viewModel.backwardButtonImage(), for: .normal)
-            backButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            backButton.imageView?.layer.transform = transform(with: rotateAngle)
         }
     }
 
     func updateForwardButtonAppearance(_ oldValue: ForwardButtonState) {
         switch (forwardButtonState, oldValue) {
         case let (.forward(rotateAngle), .forward(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         case let (.forward(rotateAngle), _):
             forwardButton.setImage(viewModel.forwardButtonImage(), for: .normal)
-            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         case let (.refresh(rotateAngle), .refresh(oldRotateAngle)) where rotateAngle != oldRotateAngle:
-            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         case let (.refresh(rotateAngle), _):
             forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
-            forwardButton.imageView?.layer.transform = CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
+            forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         }
+    }
+
+    func transform(with rotateAngle: Double) -> CATransform3D {
+        return CATransform3DRotate(CATransform3DIdentity, CGFloat(Double.pi / 2 * rotateAngle), 0.0, 0.0, 1.0)
     }
 
     func logCurrentPresentingViewController() {
