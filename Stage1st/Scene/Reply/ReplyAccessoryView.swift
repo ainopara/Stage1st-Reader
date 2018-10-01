@@ -43,6 +43,10 @@ class ReplyAccessoryView: UIView {
         let flexItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.setItems([flexItem, spoilerItem, fixItem, faceItem, flexItem], animated: false)
         addSubview(toolBar)
+
+        toolBar.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
     }
 
     required init?(coder _: NSCoder) {
@@ -53,10 +57,11 @@ class ReplyAccessoryView: UIView {
         super.didMoveToWindow()
 
         if let window = self.window {
-            if #available(iOS 11.0, *) {
+            if #available(iOS 12.0, *) {
+                // Nothing to do.
+            } else if #available(iOS 11.0, *) {
                 self.snp.remakeConstraints { (make) in
-                    let height = 35.0 + window.safeAreaInsets.bottom
-                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                    make.top.lessThanOrEqualTo(window.safeAreaLayoutGuide.snp.bottom).offset(-35.0)
                 }
                 toolBar.snp.remakeConstraints { (make) in
                     make.leading.trailing.top.equalTo(self)
@@ -75,7 +80,9 @@ class ReplyAccessoryView: UIView {
     }
 
     func removeExtraConstraints() {
-        if #available(iOS 11.0, *) {
+        if #available(iOS 12.0, *) {
+            // Nothing to do.
+        } else if #available(iOS 11.0, *) {
             self.snp.removeConstraints()
         }
     }

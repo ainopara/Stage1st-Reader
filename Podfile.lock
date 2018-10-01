@@ -61,7 +61,7 @@ PODS:
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (4.7.3)
-  - AlamofireImage (3.4.0):
+  - AlamofireImage (3.4.1):
     - Alamofire (~> 4.7)
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
@@ -71,36 +71,37 @@ PODS:
     - CocoaLumberjack/Default
   - CocoaLumberjack/Swift (3.4.2):
     - CocoaLumberjack/Default
-  - Crashlytics (3.10.7):
-    - Fabric (~> 1.7.11)
+  - Crashlytics (3.10.8):
+    - Fabric (~> 1.7.12)
   - CrashlyticsLogger (0.3.1):
     - CocoaLumberjack
     - CocoaLumberjack/Swift
     - Crashlytics
-  - DeviceKit (1.7.0)
-  - Fabric (1.7.11)
+  - DeviceKit (1.8.1)
+  - Fabric (1.7.12)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
   - Files (2.2.1)
-  - FMDB (2.7.2):
-    - FMDB/standard (= 2.7.2)
-  - FMDB/standard (2.7.2)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - GRMustache.swift (2.0.0)
+  - HorizontalFloatingHeaderLayout (2.0.0)
   - JTSImageViewController (1.5)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
-  - QuickTableViewController (0.9.1)
+  - QuickTableViewController (1.0.0)
   - Reachability (3.2)
   - ReactiveCocoa (8.0.0):
     - ReactiveSwift (~> 4.0)
   - ReactiveSwift (4.0.0):
     - Result (~> 4.0)
   - Result (4.0.0)
-  - Reveal-SDK (17)
-  - SnapKit (4.0.0)
+  - Reveal-SDK (18)
+  - SnapKit (4.0.1)
   - SwiftyJSON (4.1.0)
   - TextAttributes (1.0)
   - YapDatabase (3.1.1):
@@ -186,6 +187,7 @@ DEPENDENCIES:
   - Files
   - FMDB
   - GRMustache.swift (from `https://github.com/ainopara/GRMustache.swift.git`)
+  - HorizontalFloatingHeaderLayout
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
@@ -216,6 +218,7 @@ SPEC REPOS:
     - FBSnapshotTestCase
     - Files
     - FMDB
+    - HorizontalFloatingHeaderLayout
     - Masonry
     - QuickTableViewController
     - Reachability
@@ -266,31 +269,32 @@ SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Ainoaibo: 352a156a00081b26f73c32632d061bc719efd2f3
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  AlamofireImage: 5f79836de27236819b13b27d0c97be6c205976fe
+  AlamofireImage: 78d67ccbb763d87ba44b21583d2153500a195630
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
-  Crashlytics: ccaac42660eb9351b9960c0d66106b0bcf99f4fa
+  Crashlytics: 058dc1ba579f6c100bc60a6878703779bff383c4
   CrashlyticsLogger: c21938d9fde27884d8341173aeba482a9e30f01a
-  DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
-  Fabric: f233c9492b3bbc1f04e3882986740f7988a58edb
+  DeviceKit: eb29be542f5473b46b1c719011cf7de3ec5264ca
+  Fabric: d7387db9a31aadff63b147a4b91d982c53afaa4f
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
-  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
+  HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
-  QuickTableViewController: 5cbe91041c00b3ef4cfc405e3fad92b1fb63d6d2
+  QuickTableViewController: a49fb6dc5623b9dbe301a03ac5c563099e234fbc
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 87cb64d78424d749a0bbfd9b07e4825e8d834066
   ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
   Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
-  Reveal-SDK: a6df49f47319bd19a110c960c498af32df72c0af
-  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
+  Reveal-SDK: cce79388da3fd0bbb6ae19d769b906cfc3a33a89
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 98e088ca042431a8d9d4d1592af2e6dbd9440ef6
+PODFILE CHECKSUM: bcc5f0b09cd9ebc1e7828323e55524b18eab205e
 
 COCOAPODS: 1.5.3

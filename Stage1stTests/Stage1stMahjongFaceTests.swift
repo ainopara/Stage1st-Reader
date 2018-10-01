@@ -8,7 +8,7 @@
 
 import XCTest
 import Files
-@testable import Stage1st
+import Foundation
 
 class Stage1stMahjongFaceTests: XCTestCase {
     let categories = S1MahjongFaceView().categories()

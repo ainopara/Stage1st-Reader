@@ -7,6 +7,7 @@
 //
 
 import SnapKit
+import JTSImageViewController
 
 protocol ReplyViewControllerDraftDelegate: class {
     func replyViewController(_ replyViewController: ReplyViewController, didCancelledWith draft: NSAttributedString)
@@ -18,7 +19,7 @@ final class ReplyViewController: REComposeViewController {
 
     weak var draftDelegate: ReplyViewControllerDraftDelegate?
 
-    let mahjongFaceView = S1MahjongFaceView()
+    let mahjongFaceInputView = MahjongFaceInputView()
     let replyAccessoryView = ReplyAccessoryView()
 
     init(viewModel: ReplyViewModel) {
@@ -40,9 +41,11 @@ final class ReplyViewController: REComposeViewController {
 
         replyAccessoryView.delegate = self
 
-        mahjongFaceView.delegate = self
-        mahjongFaceView.historyCountLimit = 99
-        mahjongFaceView.historyArray = AppEnvironment.current.cacheDatabaseManager.mahjongFaceHistory()
+//        mahjongFaceView.delegate = self
+//        mahjongFaceView.historyCountLimit = 99
+//        mahjongFaceView.historyArray = AppEnvironment.current.cacheDatabaseManager.mahjongFaceHistory()
+
+        mahjongFaceInputView.delegate = self
 
         NotificationCenter.default.addObserver(
             self,
@@ -59,10 +62,10 @@ final class ReplyViewController: REComposeViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
 
-        let historyArray = self.mahjongFaceView.historyArray
-        DispatchQueue.global().async {
-            AppEnvironment.current.cacheDatabaseManager.set(mahjongFaceHistory: historyArray)
-        }
+//        let historyArray = self.mahjongFaceView.historyArray
+//        DispatchQueue.global().async {
+//            AppEnvironment.current.cacheDatabaseManager.set(mahjongFaceHistory: historyArray)
+//        }
     }
 }
 
@@ -85,10 +88,9 @@ extension ReplyViewController {
         replyAccessoryView.toolBar.barTintColor = colorManager.colorForKey("appearance.toolbar.bartint")
         replyAccessoryView.toolBar.tintColor = colorManager.colorForKey("appearance.toolbar.tint")
 
-        mahjongFaceView.backgroundColor = colorManager.colorForKey("mahjongface.background")
-        mahjongFaceView.pageControl.pageIndicatorTintColor = colorManager.colorForKey("mahjongface.pagecontrol.indicatortint")
-        mahjongFaceView.pageControl.currentPageIndicatorTintColor = colorManager.colorForKey("mahjongface.pagecontrol.currentpage")
-        mahjongFaceView.tabBar.updateColor()
+        mahjongFaceInputView.collectionView.backgroundColor = colorManager.colorForKey("reply.background")
+        mahjongFaceInputView.collectionView.reloadData()
+        mahjongFaceInputView.tabBar.updateColor()
         textView.reloadInputViews()
 
         navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
@@ -112,7 +114,7 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             draftDelegate?.replyViewController(self, didCancelledWith: attributedDraft)
 
             self.replyAccessoryView.removeExtraConstraints()
-            self.mahjongFaceView.removeExtraConstraints()
+//            self.mahjongFaceView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
         case .posted:
@@ -164,7 +166,7 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             }
 
             self.replyAccessoryView.removeExtraConstraints()
-            self.mahjongFaceView.removeExtraConstraints()
+//            self.mahjongFaceView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
         }
@@ -195,18 +197,44 @@ extension ReplyViewController: S1MahjongFaceViewDelegate {
     }
 }
 
+extension ReplyViewController: MahjongFaceInputViewDelegate {
+    func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceItem) {
+        let attachment = S1MahjongFaceTextAttachment()
+        attachment.mahjongFaceTag = item.key
+        attachment.image = JTSAnimatedGIFUtility.animatedImage(withAnimatedGIFURL: item.url)
+
+        // Insert Mahjong Face Attachment
+        textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
+        // Move selection location
+        textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
+        // Reset Text Style
+        textView.s1_resetToReplyStyle()
+    }
+
+    func mahjongFaceInputViewDidTapDeleteButton(_ inputView: MahjongFaceInputView) {
+        var range = textView.selectedRange
+        if range.length == 0 && range.location > 0 {
+            range.location -= 1
+            range.length = 1
+        }
+        textView.selectedRange = range
+        textView.textStorage.deleteCharacters(in: textView.selectedRange)
+        textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
+    }
+}
+
 // MARK: - ReplyAccessoryViewDelegate
 
 extension ReplyViewController: ReplyAccessoryViewDelegate {
     func accessoryView(_ accessoryView: ReplyAccessoryView, didTappedMahjongFaceButton button: UIButton) {
         if self.inputView != nil {
             button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
-            mahjongFaceView.removeExtraConstraints()
+//            mahjongFaceView.removeExtraConstraints()
             inputView = nil
             reloadInputViews()
         } else {
             button.setImage(UIImage(named: "KeyboardButton"), for: .normal)
-            inputView = mahjongFaceView
+            inputView = mahjongFaceInputView
             reloadInputViews()
         }
     }

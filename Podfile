@@ -20,6 +20,7 @@ target "Stage1st" do
 
     pod 'YYKeyboardManager'
     pod 'TextAttributes'
+    pod 'HorizontalFloatingHeaderLayout'
 
     # Database
     pod 'FMDB'
@@ -61,7 +62,8 @@ post_install do |installer|
             'SnapKit',
             'DeviceKit',
             'ReactiveCocoa',
-            'ReactiveSwift'
+            'ReactiveSwift',
+            'HorizontalFloatingHeaderLayout'
         ]
         if pods_with_swift4.include? target.name then
             target.build_configurations.each do |config|
