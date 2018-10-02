@@ -12,6 +12,8 @@ import CocoaLumberjack
 import Reachability
 import Crashlytics
 
+private let mahjongFaceBaseURLString = "https://static.saraba1st.com/image/smiley"
+
 protocol PageRenderer {
     var topic: S1Topic { get }
 
@@ -122,7 +124,7 @@ extension PageRenderer {
             func process(HTMLString: String, with floorID: Int) -> String {
                 func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     func isMahjongFaceImage(imageSourceString: String?) -> Bool {
-                        if let srcString = imageSourceString, srcString.hasPrefix("http://static.saraba1st.com/image/smiley") {
+                        if let srcString = imageSourceString, srcString.hasPrefix(mahjongFaceBaseURLString) {
                             return true
                         }
                         return false
@@ -179,12 +181,12 @@ extension PageRenderer {
                                 linkElement.addChild(imageElement)
                             }
                         } else {
-                            let mahjongFacePath = srcString!.replacingOccurrences(of: "http://static.saraba1st.com/image/smiley", with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
+                            let mahjongFacePath = srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
                             if FileManager.default.fileExists(atPath: mahjongFacePath) {
                                 image.removeAttribute(forName: "src")
                                 image.addAttribute(withName: "src", stringValue: mahjongFacePath)
                             } else {
-                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v3", customAttributes: ["url": srcString!.replacingOccurrences(of: "http://static.saraba1st.com/image/smiley", with: "")])
+                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v3", customAttributes: ["url": srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: "")])
                             }
                         }
 
