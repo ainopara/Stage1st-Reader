@@ -126,7 +126,7 @@ class ContainerViewController: UIViewController {
 
         /// Suggested by https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html
         self.addChild(current)
-        self.view.addSubview(current.view)
+        self.view.insertSubview(current.view, at: 0) // child view controller's view should always be covered by tab bar.
         current.view.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalTo(self.view)
             make.bottom.equalTo(self.scrollTabBar.snp.top)
