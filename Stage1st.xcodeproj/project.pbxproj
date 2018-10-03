@@ -484,9 +484,11 @@
 			path = Content;
 			sourceTree = "<group>";
 		};
-		865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */ = {
+		865BE0E91AB6F03B0097BB59 /* MahjongFaceInputView */ = {
 			isa = PBXGroup;
 			children = (
+				86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */,
+				86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */,
 				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
 				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
 				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
@@ -494,7 +496,7 @@
 				8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */,
 				8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */,
 			);
-			path = S1MahjongFaceView;
+			path = MahjongFaceInputView;
 			sourceTree = "<group>";
 		};
 		865C251B1C99110C0075B303 /* Scene */ = {
@@ -631,9 +633,7 @@
 				8667FD0020D3D254000C5432 /* ReplyViewModel.swift */,
 				86FD238E20C66B8A00106A90 /* ReplyViewController.swift */,
 				862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */,
-				86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */,
-				86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */,
-				865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */,
+				865BE0E91AB6F03B0097BB59 /* MahjongFaceInputView */,
 			);
 			path = Reply;
 			sourceTree = "<group>";
