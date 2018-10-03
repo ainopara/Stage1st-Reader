@@ -87,7 +87,7 @@ class Environment: NSObject {
 
         apiService = DiscuzClient(baseURL: serverAddress.api)
         networkManager = S1NetworkManager(baseURL: serverAddress.page)
-        webKitImageDownloader = WebKitImageDownloader()
+        webKitImageDownloader = WebKitImageDownloader(name: "ImageDownloader")
 
         databaseManager = DatabaseManager.sharedInstance()
         cloudkitManager = CloudKitManager(cloudkitContainer: CKContainer.default(), databaseManager: databaseManager)
