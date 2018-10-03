@@ -7,7 +7,6 @@
 //
 
 import WebKit
-import Crashlytics
 import CocoaLumberjack
 import JTSImageViewController
 import Photos
@@ -23,9 +22,9 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         didSet {
             switch presentType {
             case .none:
-                Crashlytics.sharedInstance().setObjectValue("QuoteViewController", forKey: "lastViewController")
+                AppEnvironment.current.eventTracker.setObjectValue("QuoteViewController", forKey: "lastViewController")
             case .image:
-                Crashlytics.sharedInstance().setObjectValue("ImageViewController", forKey: "lastViewController")
+                AppEnvironment.current.eventTracker.setObjectValue("ImageViewController", forKey: "lastViewController")
             default:
                 break
             }
@@ -227,7 +226,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+            AppEnvironment.current.eventTracker.logEvent(with: "Inspect Image", attributes: [
                 "type": "hijack",
                 "source": "QuoteFloor",
             ])
@@ -248,7 +247,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
                     }
                 }
 
-                Answers.logCustomEvent(withName: "Open Topic Link", customAttributes: [
+                AppEnvironment.current.eventTracker.logEvent(with: "Open Topic Link", attributes: [
                     "source": "QuoteFloor",
                 ])
                 showContentViewController(topic: topic)

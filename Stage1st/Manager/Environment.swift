@@ -23,6 +23,7 @@ class Environment: NSObject {
     let cloudkitManager: CloudKitManager
     let cacheDatabaseManager: CacheDatabaseManager
     let colorManager: ColorManager
+    let eventTracker: EventTracker
 
     let databaseAdapter: S1YapDatabaseAdapter
     let dataCenter: DataCenter
@@ -40,6 +41,7 @@ class Environment: NSObject {
         cloudkitManager: CloudKitManager,
         cacheDatabaseManager: CacheDatabaseManager,
         colorManager: ColorManager,
+        eventTracker: EventTracker,
         databaseAdapter: S1YapDatabaseAdapter,
         dataCenter: DataCenter
     ) {
@@ -56,6 +58,7 @@ class Environment: NSObject {
         self.cloudkitManager = cloudkitManager
         self.cacheDatabaseManager = cacheDatabaseManager
         self.colorManager = colorManager
+        self.eventTracker = eventTracker
         self.databaseAdapter = databaseAdapter
         self.dataCenter = dataCenter
     }
@@ -73,6 +76,7 @@ class Environment: NSObject {
         reachability.startNotifier()
 
         colorManager = ColorManager(nightMode: settings.nightMode.value)
+        eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
 
         if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {

@@ -9,7 +9,6 @@
 import SnapKit
 import ActionSheetPicker_3_0
 import OnePasswordExtension
-import Crashlytics
 
 private class UserInfoInputView: UIView {
     let usernameField = UITextField(frame: CGRect.zero)
@@ -357,10 +356,10 @@ extension LoginViewController {
 
     @objc func logIn(_: UIButton) {
         if inLoginState() {
-            Answers.logCustomEvent(withName: "Log Out", customAttributes: nil)
+            AppEnvironment.current.eventTracker.logEvent(with: "Log Out")
             logoutAction()
         } else {
-            Answers.logCustomEvent(withName: "Log In", customAttributes: nil)
+            AppEnvironment.current.eventTracker.logEvent(with: "Log In")
             loginAction()
         }
     }

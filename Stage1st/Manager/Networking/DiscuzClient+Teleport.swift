@@ -9,7 +9,6 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
-import Crashlytics
 import KissXML
 
 private func generateURLString(_ baseURLString: String, parameters: Parameters) -> String {
@@ -169,7 +168,7 @@ public extension DiscuzClient {
                         "body": debugBodyString ?? ""
                     ]
                     let recoredError = NSError(domain: "LoginSerializationFailed", code: 0, userInfo: userInfo)
-                    Crashlytics.sharedInstance().recordError(recoredError)
+                    AppEnvironment.current.eventTracker.recordError(recoredError)
                 }
                 completion(.failure(error))
             }

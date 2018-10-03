@@ -11,7 +11,6 @@ import ReactiveSwift
 import YapDatabase
 import CocoaLumberjack
 import Reachability
-import Crashlytics
 
 private let cloudkitZoneName = "zone1"
 
@@ -586,7 +585,7 @@ extension CloudKitManager {
         S1LogWarn("Error creating zone: \(error)")
 
         errors.append(.createZoneError(error))
-        Crashlytics().recordError(S1CloudKitError.createZoneError(error).reportableError())
+        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.createZoneError(error).reportableError())
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -624,7 +623,7 @@ extension CloudKitManager {
         S1LogWarn("Error creating zone subscription: \(error)")
 
         errors.append(.createZoneSubscriptionError(error))
-        Crashlytics().recordError(S1CloudKitError.createZoneSubscriptionError(error).reportableError())
+        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.createZoneSubscriptionError(error).reportableError())
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -655,7 +654,7 @@ extension CloudKitManager {
         S1LogWarn("Fetch Record Changes Error: \(error)")
 
         errors.append(.fetchChangesError(error))
-        Crashlytics().recordError(S1CloudKitError.fetchChangesError(error).reportableError())
+        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.fetchChangesError(error).reportableError())
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -722,7 +721,7 @@ extension CloudKitManager {
         S1LogWarn("Upload Error: \(error)")
 
         errors.append(.uploadError(error))
-        Crashlytics().recordError(S1CloudKitError.uploadError(error).reportableError())
+        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.uploadError(error).reportableError())
 
         if let ckError = error as? CKError {
             switch ckError.code {

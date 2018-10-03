@@ -9,7 +9,6 @@
 import WebKit
 import JTSImageViewController
 import CocoaLumberjack
-import Crashlytics
 
 class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
     weak var delegate: WebViewEventDelegate?
@@ -109,7 +108,7 @@ extension UserPresenter where Self: UIViewController {
 
 extension WebViewEventDelegate where Self: UserPresenter {
     func generalScriptMessageHandler(_: GeneralScriptMessageHandler, showUserProfileWith userID: Int) {
-        Answers.logCustomEvent(withName: "Click User", customAttributes: [
+        AppEnvironment.current.eventTracker.logEvent(with: "Click User", attributes: [
             "source": "UserPresenter",
         ])
         showUserViewController(userID: userID)
@@ -226,7 +225,7 @@ extension WebViewEventDelegate where Self: ImagePresenter {
         guard let url = URL(string: imageURLString) else {
             return
         }
-        Answers.logCustomEvent(withName: "Inspect Image", customAttributes: [
+        AppEnvironment.current.eventTracker.logEvent(with: "Inspect Image", attributes: [
             "type": "Processed",
             "source": "ImagePresenter",
         ])

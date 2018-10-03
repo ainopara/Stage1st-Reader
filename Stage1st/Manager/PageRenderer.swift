@@ -10,7 +10,6 @@ import Mustache
 import KissXML
 import CocoaLumberjack
 import Reachability
-import Crashlytics
 
 private let mahjongFaceBaseURLString = "https://static.saraba1st.com/image/smiley"
 
@@ -186,7 +185,7 @@ extension PageRenderer {
                                 image.removeAttribute(forName: "src")
                                 image.addAttribute(withName: "src", stringValue: mahjongFacePath)
                             } else {
-                                Answers.logCustomEvent(withName: "MahjongFace Cache Miss v3", customAttributes: ["url": srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: "")])
+                                AppEnvironment.current.eventTracker.logEvent(with: "MahjongFace Cache Miss v3", attributes: ["url": srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: "")])
                             }
                         }
 

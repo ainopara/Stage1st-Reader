@@ -9,7 +9,6 @@
 import Ainoaibo
 import ReactiveSwift
 import DeviceKit
-import Crashlytics
 
 final class TopicListViewController: UIViewController {
     let viewModel: TopicListViewModel
@@ -157,7 +156,7 @@ extension TopicListViewController {
         super.viewDidAppear(animated)
 
         S1LogDebug("viewDidAppear")
-        Crashlytics.sharedInstance().setObjectValue("TopicListViewController", forKey: "lastViewController")
+        AppEnvironment.current.eventTracker.setObjectValue("TopicListViewController", forKey: "lastViewController")
     }
 
     override func viewDidLoad() {

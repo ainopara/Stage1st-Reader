@@ -109,6 +109,7 @@
 		86F1A90D20FB942F00646736 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F1A90C20FB942F00646736 /* ContainerViewController.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
 		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
+		86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9E2FB21648D490087A1A4 /* EventTracker.swift */; };
 		86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD238E20C66B8A00106A90 /* ReplyViewController.swift */; };
 		86FD82781CF9A75600C9700E /* S1FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD82771CF9A75600C9700E /* S1FoundationTests.swift */; };
 		86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */; };
@@ -283,6 +284,7 @@
 		86F1A90C20FB942F00646736 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorCell.swift; sourceTree = "<group>"; };
+		86F9E2FB21648D490087A1A4 /* EventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTracker.swift; sourceTree = "<group>"; };
 		86FD238E20C66B8A00106A90 /* ReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
 		86FD82771CF9A75600C9700E /* S1FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1FoundationTests.swift; sourceTree = "<group>"; };
 		86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscuzClient.swift; sourceTree = "<group>"; };
@@ -580,6 +582,7 @@
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
+				86F9E2FB21648D490087A1A4 /* EventTracker.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1173,6 +1176,7 @@
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
 				8634ADA61FAAF309004A9CB7 /* S1NavigationViewController.swift in Sources */,
+				86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
