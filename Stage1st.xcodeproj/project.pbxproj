@@ -62,10 +62,8 @@
 		8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */; };
 		8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */; };
 		8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */; };
-		8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E2101EA3253200E426B2 /* MahjongFaceView.swift */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
-		865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
 		8667FD0120D3D254000C5432 /* ReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0020D3D254000C5432 /* ReplyViewModel.swift */; };
 		8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */; };
@@ -98,7 +96,6 @@
 		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86B1C31C2161F41100532D06 /* MahjongFaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
-		86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */; };
 		86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */; };
 		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
@@ -224,12 +221,9 @@
 		8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stage1stLog.swift; sourceTree = "<group>"; };
 		8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceCategory.swift; sourceTree = "<group>"; };
-		8635E2101EA3253200E426B2 /* MahjongFaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceView.swift; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
-		865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1MahjongFaceView.h; sourceTree = "<group>"; };
-		865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1MahjongFaceView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8661263B1CB289EF00180C6A /* S1AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1AppDelegate.swift; sourceTree = "<group>"; };
 		8667FD0020D3D254000C5432 /* ReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewModel.swift; sourceTree = "<group>"; };
 		8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportComposeViewModel.swift; sourceTree = "<group>"; };
@@ -269,8 +263,6 @@
 		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
 		86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceCell.swift; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
-		86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1MahjongFacePageView.h; sourceTree = "<group>"; };
-		86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1MahjongFacePageView.m; sourceTree = "<group>"; };
 		86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceInputView.swift; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
@@ -495,11 +487,6 @@
 		865BE0E91AB6F03B0097BB59 /* S1MahjongFaceView */ = {
 			isa = PBXGroup;
 			children = (
-				865BE0EA1AB6F08C0097BB59 /* S1MahjongFaceView.h */,
-				865BE0EB1AB6F08C0097BB59 /* S1MahjongFaceView.m */,
-				8635E2101EA3253200E426B2 /* MahjongFaceView.swift */,
-				86CA71DD1B19548E00204A5C /* S1MahjongFacePageView.h */,
-				86CA71DE1B19548E00204A5C /* S1MahjongFacePageView.m */,
 				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
 				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
 				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
@@ -1132,8 +1119,6 @@
 				8634ADF11FAAF3C2004A9CB7 /* GSReorderableTableViewController.m in Sources */,
 				8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */,
 				86F1A90D20FB942F00646736 /* ContainerViewController.swift in Sources */,
-				8635E2111EA3253200E426B2 /* MahjongFaceView.swift in Sources */,
-				86CA71DF1B19548E00204A5C /* S1MahjongFacePageView.m in Sources */,
 				867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */,
 				86319B411CA69EEB004F7586 /* Floor.swift in Sources */,
 				86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */,
@@ -1192,7 +1177,6 @@
 				8679AFAF20B59821007A73B2 /* S1ArchiveListViewController.swift in Sources */,
 				8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */,
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
-				865BE0EC1AB6F08C0097BB59 /* S1MahjongFaceView.m in Sources */,
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */,
 				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,

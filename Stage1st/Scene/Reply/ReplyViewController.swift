@@ -173,34 +173,10 @@ extension ReplyViewController: REComposeViewControllerDelegate {
     }
 }
 
-// MARK: - S1MahjongFaceViewDelegate
-
-extension ReplyViewController: S1MahjongFaceViewDelegate {
-    func mahjongFaceViewController(_: S1MahjongFaceView, didFinishWithResult attachment: S1MahjongFaceTextAttachment) {
-        // Insert Mahjong Face Attachment
-        textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
-        // Move selection location
-        textView.selectedRange = NSRange(location: textView.selectedRange.location + 1, length: textView.selectedRange.length)
-        // Reset Text Style
-        textView.s1_resetToReplyStyle()
-    }
-
-    func mahjongFaceViewControllerDidPressBackSpace(_: S1MahjongFaceView) {
-        var range = textView.selectedRange
-        if range.length == 0 && range.location > 0 {
-            range.location -= 1
-            range.length = 1
-        }
-        textView.selectedRange = range
-        textView.textStorage.deleteCharacters(in: textView.selectedRange)
-        textView.selectedRange = NSRange(location: textView.selectedRange.location, length: 0)
-    }
-}
-
 extension ReplyViewController: MahjongFaceInputViewDelegate {
-    func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceItem) {
+    func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceInputView.Category.Item) {
         let attachment = S1MahjongFaceTextAttachment()
-        attachment.mahjongFaceTag = item.key
+        attachment.mahjongFaceTag = item.id
         attachment.image = JTSAnimatedGIFUtility.animatedImage(withAnimatedGIFURL: item.url)
 
         // Insert Mahjong Face Attachment

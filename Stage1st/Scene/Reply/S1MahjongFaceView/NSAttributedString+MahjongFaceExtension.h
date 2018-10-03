@@ -9,5 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSAttributedString (MahjongFaceExtension)
+
 - (NSString *)getPlainString;
+
 @end

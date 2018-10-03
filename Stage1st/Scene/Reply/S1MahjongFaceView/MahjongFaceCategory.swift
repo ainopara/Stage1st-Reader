@@ -26,7 +26,8 @@ class MahjongFaceCategory: NSObject {
         guard
             let id = dictionary["id"] as? String,
             let name = dictionary["name"] as? String,
-            let content = dictionary["content"] as? [[String: Any]] else {
+            let content = dictionary["content"] as? [[String: Any]]
+        else {
             return nil
         }
 

@@ -17,8 +17,6 @@ class MahjongFaceItem: NSObject, NSCoding {
     let key: String
     let category: String
     let path: String
-    let width: Int
-    let height: Int
 
     var url: URL {
         let baseURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
@@ -28,9 +26,7 @@ class MahjongFaceItem: NSObject, NSCoding {
     init?(dictionary: [String: Any], category: String) {
         guard
             let id = dictionary["id"] as? String,
-            let path = dictionary["path"] as? String,
-            let width = dictionary["width"] as? Int,
-            let height = dictionary["height"] as? Int
+            let path = dictionary["path"] as? String
         else {
             return nil
         }
@@ -38,8 +34,6 @@ class MahjongFaceItem: NSObject, NSCoding {
         self.key = id
         self.category = category
         self.path = path
-        self.width = width
-        self.height = height
 
         super.init()
     }
@@ -48,8 +42,6 @@ class MahjongFaceItem: NSObject, NSCoding {
         self.key = key
         self.category = category
         self.path = path
-        self.width = 44
-        self.height = 44
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -63,8 +55,6 @@ class MahjongFaceItem: NSObject, NSCoding {
         self.key = key
         self.category = category
         self.path = path
-        self.width = 44
-        self.height = 44
     }
 
     func encode(with aCoder: NSCoder) {

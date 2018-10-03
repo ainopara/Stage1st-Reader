@@ -10,7 +10,7 @@ import SnapKit
 import HorizontalFloatingHeaderLayout
 
 protocol MahjongFaceInputViewDelegate: class {
-    func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceItem)
+    func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceInputView.Category.Item)
     func mahjongFaceInputViewDidTapDeleteButton(_ inputView: MahjongFaceInputView)
 }
 
@@ -34,12 +34,33 @@ final class MahjongFaceInputHeaderView: UICollectionReusableView {
     }
 }
 
+extension MahjongFaceInputView.Category.Item {
+    var url: URL {
+        let baseURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
+        return baseURL.appendingPathComponent(path)
+    }
+}
+
 final class MahjongFaceInputView: UIView {
     weak var delegate: MahjongFaceInputViewDelegate?
     let collectionView: UICollectionView
     let tabBar: S1TabBar
 
-    var categories: [MahjongFaceCategory]
+    struct Category: Codable {
+        let id: String
+        let name: String
+        struct Item: Codable {
+            let id: String
+            let path: String
+            let width: Int
+            let height: Int
+        }
+        var content: [Item]
+    }
+    var categories: [Category]
+    var historyCategory: Category
+
+    let embeddedCategories: [Category]
 
     override init(frame: CGRect) {
         let layout = HorizontalFloatingHeaderLayout()
@@ -50,8 +71,9 @@ final class MahjongFaceInputView: UIView {
             .appendingPathComponent("Mahjong", isDirectory: true)
             .appendingPathComponent("index").appendingPathExtension("json")
 
-        let categoryData: [[String: Any]] = Array.s1_array(fromJSONFileURL: categoryIndexFileURL) ?? []
-        categories = [MahjongFaceCategory(id: "history", name: "历史", content: [])] + categoryData.compactMap { MahjongFaceCategory(dictionary: $0) }
+        embeddedCategories = try! JSONDecoder().decode([Category].self, from: Data(contentsOf: categoryIndexFileURL))
+        historyCategory = Category(id: "history", name: "历史", content: [])
+        categories = [historyCategory] + embeddedCategories
 
         super.init(frame: frame)
 
@@ -191,5 +213,41 @@ extension MahjongFaceInputView: UICollectionViewDelegateFlowLayout {
     ) -> CGSize {
         let item = self.categories[indexPath.section].content[indexPath.item]
         return CGSize(width: max(item.width, 44), height: max(item.height, 44))
+    }
+}
+
+extension MahjongFaceInputView {
+    override public func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        if let window = self.window {
+            if #available(iOS 12.0, *) {
+                // Nothing to do.
+            } else if #available(iOS 11.0, *) {
+                self.snp.remakeConstraints { (make) in
+                    let height = 275.0 + window.safeAreaInsets.bottom
+                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
+                    make.bottom.equalTo(window.snp.bottom)
+                }
+                tabBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.bottom.equalTo(self)
+                    make.height.equalTo(35.0 + window.safeAreaInsets.bottom)
+                }
+            } else {
+                // Fallback on earlier versions
+                tabBar.snp.remakeConstraints { (make) in
+                    make.leading.trailing.bottom.equalTo(self)
+                    make.height.equalTo(35.0)
+                }
+            }
+        }
+    }
+
+    func removeExtraConstraints() {
+        if #available(iOS 12.0, *) {
+            // Nothing to do.
+        } else if #available(iOS 11.0, *) {
+            self.snp.removeConstraints()
+        }
     }
 }
