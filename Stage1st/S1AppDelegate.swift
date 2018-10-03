@@ -279,15 +279,16 @@ extension S1AppDelegate {
 extension S1AppDelegate {
 
     @objc func migrate() {
-        migrateTo3400()
-        migrateTo3600()
-        migrateTo3700()
-        migrateTo3800()
-        migrateTo3900()
-        migrateTo3940()
+        migrateTo3_4()
+        migrateTo3_6()
+        migrateTo3_7()
+        migrateTo3_8()
+        migrateTo3_9()
+        migrateTo3_9_4()
+        migrateTo3_12_2()
     }
 
-    private func migrateTo3400() {
+    private func migrateTo3_4() {
         guard
             let orderArray = UserDefaults.standard.value(forKey: "Order") as? [[String]],
             let firstArray = orderArray.first,
@@ -311,17 +312,17 @@ extension S1AppDelegate {
         }
     }
 
-    private func migrateTo3600() {
+    private func migrateTo3_6() {
         S1Tracer.upgradeDatabase()
     }
 
-    private func migrateTo3700() {
+    private func migrateTo3_7() {
         if UI_USER_INTERFACE_IDIOM() == .pad && UserDefaults.standard.object(forKey: "FontSize") as? String == "17px" {
             UserDefaults.standard.set("18px", forKey: "FontSize")
         }
     }
 
-    private func migrateTo3800() {
+    private func migrateTo3_8() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
@@ -335,7 +336,7 @@ extension S1AppDelegate {
         }
     }
 
-    private func migrateTo3900() {
+    private func migrateTo3_9() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
@@ -349,7 +350,7 @@ extension S1AppDelegate {
         }
     }
 
-    private func migrateTo3940() {
+    private func migrateTo3_9_4() {
         guard
             let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
@@ -361,6 +362,10 @@ extension S1AppDelegate {
         if !(displayForumArray + hiddenForumArray).contains("泥潭") {
             UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
         }
+    }
+
+    private func migrateTo3_12_2() {
+
     }
 }
 
