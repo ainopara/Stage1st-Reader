@@ -34,6 +34,7 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
+    pod 'AppCenter'
     pod 'Reachability'
     pod 'Reveal-SDK', :configurations => ['Debug']
 #    pod 'FBMemoryProfiler'
