@@ -45,6 +45,10 @@ final class MahjongFaceCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        self.imageView.af_cancelImageRequest()
+    }
+
     func configure(with item: MahjongFaceInputView.Category.Item) {
         self.imageView.af_setImage(withURL: item.url, placeholderImage: MahjongFaceCell.placeholderImage)
         self.imageView.snp.remakeConstraints { (make) in

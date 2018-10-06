@@ -19,8 +19,8 @@ final class ReplyViewController: REComposeViewController {
 
     weak var draftDelegate: ReplyViewControllerDraftDelegate?
 
-    let mahjongFaceInputView = MahjongFaceInputView()
     let replyAccessoryView = ReplyAccessoryView()
+    let mahjongFaceInputView = MahjongFaceInputView()
 
     init(viewModel: ReplyViewModel) {
         self.viewModel = viewModel

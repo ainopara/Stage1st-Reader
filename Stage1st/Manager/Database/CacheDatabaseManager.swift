@@ -15,6 +15,7 @@ private let collectionMahjongFace = "mahjongFace"
 private let collectionServerAddress = "serverAddress"
 private let metadataLastUsed = "lastUsed"
 private let keyMahjongFaceHistoryV2 = "mahjongFaceHistoryV2"
+private let keyMahjongFaceHistoryV3 = "mahjongFaceHistoryV3"
 private let keyServerAddress = "serverAddress"
 
 class CacheDatabaseManager: NSObject {
@@ -160,18 +161,40 @@ extension CacheDatabaseManager {
 
 // MARK: - Mahjong Face History
 extension CacheDatabaseManager {
-    func set(mahjongFaceHistory: [MahjongFaceItem]) {
+    func set(mahjongFaceHistoryV2 history: [MahjongFaceItem]) {
         backgroundWriteConnection.asyncReadWrite { transaction in
-            transaction.setObject(mahjongFaceHistory, forKey: keyMahjongFaceHistoryV2, inCollection: collectionMahjongFace)
+            transaction.setObject(history, forKey: keyMahjongFaceHistoryV2, inCollection: collectionMahjongFace)
         }
     }
 
-    func mahjongFaceHistory() -> [MahjongFaceItem] {
+    func mahjongFaceHistoryV2() -> [MahjongFaceItem] {
         var mahjongFaceHistory: [MahjongFaceItem]?
         readConnection.read { transaction in
             mahjongFaceHistory = transaction.object(forKey: keyMahjongFaceHistoryV2, inCollection: collectionMahjongFace) as? [MahjongFaceItem]
         }
         return mahjongFaceHistory ?? [MahjongFaceItem]()
+    }
+
+    func set(mahjongFaceHistory history: [MahjongFaceInputView.HistoryItem]) {
+        let jsonData = try! JSONEncoder().encode(history)
+        backgroundWriteConnection.asyncReadWrite { transaction in
+            transaction.setObject(jsonData, forKey: keyMahjongFaceHistoryV3, inCollection: collectionMahjongFace)
+        }
+    }
+
+    func mahjongFaceHistory() -> [MahjongFaceInputView.HistoryItem] {
+        var data: Data?
+        readConnection.read { transaction in
+            data = transaction.object(forKey: keyMahjongFaceHistoryV3, inCollection: collectionMahjongFace) as? Data
+        }
+
+        if
+            let data = data,
+            let model = try? JSONDecoder().decode([MahjongFaceInputView.HistoryItem].self, from: data) {
+            return model
+        } else {
+            return [MahjongFaceInputView.HistoryItem]()
+        }
     }
 }
 

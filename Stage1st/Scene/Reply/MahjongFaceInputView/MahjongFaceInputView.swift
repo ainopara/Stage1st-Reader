@@ -8,37 +8,11 @@
 
 import SnapKit
 import HorizontalFloatingHeaderLayout
+import ReactiveSwift
 
 protocol MahjongFaceInputViewDelegate: class {
     func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceInputView.Category.Item)
     func mahjongFaceInputViewDidTapDeleteButton(_ inputView: MahjongFaceInputView)
-}
-
-final class MahjongFaceInputHeaderView: UICollectionReusableView {
-    let label = UILabel()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        label.font = .boldSystemFont(ofSize: 14.0)
-        addSubview(label)
-
-        label.snp.makeConstraints { (make) in
-            make.centerY.equalTo(self.snp.centerY)
-            make.leading.equalTo(self.snp.leading).offset(4.0)
-        }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension MahjongFaceInputView.Category.Item {
-    var url: URL {
-        let baseURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
-        return baseURL.appendingPathComponent(path)
-    }
 }
 
 final class MahjongFaceInputView: UIView {
@@ -57,8 +31,13 @@ final class MahjongFaceInputView: UIView {
         }
         var content: [Item]
     }
-    var categories: [Category]
-    var historyCategory: Category
+
+    struct HistoryItem: Codable {
+        let id: String
+    }
+
+    let categories: MutableProperty<[Category]> = MutableProperty([])
+    let historyCategory: MutableProperty<Category>
 
     let embeddedCategories: [Category]
 
@@ -72,10 +51,16 @@ final class MahjongFaceInputView: UIView {
             .appendingPathComponent("index").appendingPathExtension("json")
 
         embeddedCategories = try! JSONDecoder().decode([Category].self, from: Data(contentsOf: categoryIndexFileURL))
-        historyCategory = Category(id: "history", name: "历史", content: [])
-        categories = [historyCategory] + embeddedCategories
+        let historyItems = AppEnvironment.current.cacheDatabaseManager.mahjongFaceHistory()
+        let availableItems = embeddedCategories.flatMap { $0.content }
+        let historyContent = historyItems
+            .map { historyItem in availableItems.first(where: { $0.id == historyItem.id })}
+            .compactMap { $0 }
+        historyCategory = MutableProperty(Category(id: "Frequently Used", name: "常用", content: historyContent))
 
         super.init(frame: frame)
+
+        setupSignal()
 
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
@@ -94,6 +79,19 @@ final class MahjongFaceInputView: UIView {
 
         addSubview(tabBar)
 
+        setupAutoLayout()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        let historyItems = self.historyCategory.value.content.map { HistoryItem(id: $0.id) }
+        AppEnvironment.current.cacheDatabaseManager.set(mahjongFaceHistory: historyItems)
+    }
+
+    fileprivate func setupAutoLayout() {
         tabBar.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(self)
             if #available(iOS 11.0, *) {
@@ -110,8 +108,20 @@ final class MahjongFaceInputView: UIView {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    fileprivate func setupSignal() {
+        categories <~ historyCategory.map { [weak self] historyCategory in
+            guard let strongSelf = self else { return [] }
+            if historyCategory.content.count > 0 {
+                return [historyCategory] + strongSelf.embeddedCategories
+            } else {
+                return strongSelf.embeddedCategories
+            }
+        }
+
+        categories.signal.observeValues { [weak self] (_) in
+            guard let strongSelf = self else { return }
+            strongSelf.collectionView.reloadData()
+        }
     }
 }
 
@@ -119,16 +129,16 @@ final class MahjongFaceInputView: UIView {
 
 extension MahjongFaceInputView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self.categories.count
+        return self.categories.value.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.categories[section].content.count
+        return self.categories.value[section].content.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "mahjong", for: indexPath) as! MahjongFaceCell
-        cell.configure(with: self.categories[indexPath.section].content[indexPath.item])
+        cell.configure(with: self.categories.value[indexPath.section].content[indexPath.item])
         return cell
     }
 
@@ -139,7 +149,7 @@ extension MahjongFaceInputView: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! MahjongFaceInputHeaderView
-            let category = self.categories[indexPath.section]
+            let category = self.categories.value[indexPath.section]
             cell.label.text = category.name
             cell.label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.title")
             return cell
@@ -153,12 +163,12 @@ extension MahjongFaceInputView: UICollectionViewDataSource {
 
 extension MahjongFaceInputView: HorizontalFloatingHeaderLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderItemSizeAt indexPath: IndexPath) -> CGSize {
-        let item = self.categories[indexPath.section].content[indexPath.item]
+        let item = self.categories.value[indexPath.section].content[indexPath.item]
         return CGSize(width: max(item.width, 44), height: max(item.height, 44))
     }
 
     func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderSizeAt section: Int) -> CGSize {
-        return CGSize(width: 100.0, height: 30.0)
+        return CGSize(width: 40.0, height: 30.0)
     }
 
     func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderItemSpacingForSectionAt section: Int) -> CGFloat {
@@ -174,80 +184,23 @@ extension MahjongFaceInputView: HorizontalFloatingHeaderLayoutDelegate {
 
 extension MahjongFaceInputView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let item = self.categories[indexPath.section].content[indexPath.item]
+        let item = self.categories.value[indexPath.section].content[indexPath.item]
+
+        var historyItems = self.historyCategory.value.content
+        historyItems.removeAll(where: { $0.id == item.id })
+        historyItems.insert(item, at: 0)
+        historyItems = Array(historyItems.prefix(100))
+        self.historyCategory.value.content = historyItems
+
         self.delegate?.mahjongFaceInputView(self, didTapItem: item)
     }
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: -
 
-extension MahjongFaceInputView: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumLineSpacingForSectionAt section: Int
-    ) -> CGFloat {
-        return 0.0
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumInteritemSpacingForSectionAt section: Int
-    ) -> CGFloat {
-        return 0.0
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        referenceSizeForHeaderInSection section: Int
-    ) -> CGSize {
-        return CGSize(width: 100.0, height: 30.0)
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        let item = self.categories[indexPath.section].content[indexPath.item]
-        return CGSize(width: max(item.width, 44), height: max(item.height, 44))
-    }
-}
-
-extension MahjongFaceInputView {
-    override public func didMoveToWindow() {
-        super.didMoveToWindow()
-
-        if let window = self.window {
-            if #available(iOS 12.0, *) {
-                // Nothing to do.
-            } else if #available(iOS 11.0, *) {
-                self.snp.remakeConstraints { (make) in
-                    let height = 275.0 + window.safeAreaInsets.bottom
-                    make.top.lessThanOrEqualTo(window.snp.bottom).offset(-height)
-                    make.bottom.equalTo(window.snp.bottom)
-                }
-                tabBar.snp.remakeConstraints { (make) in
-                    make.leading.trailing.bottom.equalTo(self)
-                    make.height.equalTo(35.0 + window.safeAreaInsets.bottom)
-                }
-            } else {
-                // Fallback on earlier versions
-                tabBar.snp.remakeConstraints { (make) in
-                    make.leading.trailing.bottom.equalTo(self)
-                    make.height.equalTo(35.0)
-                }
-            }
-        }
-    }
-
-    func removeExtraConstraints() {
-        if #available(iOS 12.0, *) {
-            // Nothing to do.
-        } else if #available(iOS 11.0, *) {
-            self.snp.removeConstraints()
-        }
+extension MahjongFaceInputView.Category.Item {
+    var url: URL {
+        let baseURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
+        return baseURL.appendingPathComponent(path)
     }
 }
