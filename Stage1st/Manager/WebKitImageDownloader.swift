@@ -9,8 +9,8 @@
 import WebKit
 import CocoaLumberjack
 
-public class WebKitImageDownloader: NSObject {
-    public let name: String
+class WebKitImageDownloader: NSObject {
+    let name: String
 
     private lazy var session = {
         URLSession(
@@ -94,7 +94,7 @@ private extension WebKitImageDownloader {
 // MARK: - URLSessionDataDelegate
 
 extension WebKitImageDownloader: URLSessionDataDelegate {
-    private func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         if #available(iOS 11.0, *) {
             if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
                 S1LogDebug("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
@@ -111,7 +111,7 @@ extension WebKitImageDownloader: URLSessionDataDelegate {
         completionHandler(.allow)
     }
 
-    private func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if #available(iOS 11.0, *) {
             if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
                 S1LogVerbose("Task Receive Data \(schemeTask.request) Running: \(dataTask.state == .running)")
@@ -126,7 +126,7 @@ extension WebKitImageDownloader: URLSessionDataDelegate {
         }
     }
 
-    private func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if #available(iOS 11.0, *) {
             if let schemeTask = self.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
                 if let error = error {
