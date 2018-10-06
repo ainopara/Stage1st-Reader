@@ -40,11 +40,6 @@ final class ReplyViewController: REComposeViewController {
         textView.s1_resetToReplyStyle()
 
         replyAccessoryView.delegate = self
-
-//        mahjongFaceView.delegate = self
-//        mahjongFaceView.historyCountLimit = 99
-//        mahjongFaceView.historyArray = AppEnvironment.current.cacheDatabaseManager.mahjongFaceHistory()
-
         mahjongFaceInputView.delegate = self
 
         NotificationCenter.default.addObserver(
@@ -61,11 +56,6 @@ final class ReplyViewController: REComposeViewController {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
-
-//        let historyArray = self.mahjongFaceView.historyArray
-//        DispatchQueue.global().async {
-//            AppEnvironment.current.cacheDatabaseManager.set(mahjongFaceHistory: historyArray)
-//        }
     }
 }
 
@@ -90,7 +80,7 @@ extension ReplyViewController {
 
         mahjongFaceInputView.collectionView.backgroundColor = colorManager.colorForKey("reply.background")
         mahjongFaceInputView.collectionView.reloadData()
-        mahjongFaceInputView.tabBar.updateColor()
+        mahjongFaceInputView.decorationView.backgroundColor = colorManager.colorForKey("tabbar.button.background.normal")
         textView.reloadInputViews()
 
         navigationBar.barTintColor = AppEnvironment.current.colorManager.colorForKey("appearance.navigationbar.bartint")
@@ -114,7 +104,6 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             draftDelegate?.replyViewController(self, didCancelledWith: attributedDraft)
 
             self.replyAccessoryView.removeExtraConstraints()
-//            self.mahjongFaceView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
         case .posted:
@@ -166,7 +155,6 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             }
 
             self.replyAccessoryView.removeExtraConstraints()
-//            self.mahjongFaceView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
         }
@@ -205,7 +193,6 @@ extension ReplyViewController: ReplyAccessoryViewDelegate {
     func accessoryView(_ accessoryView: ReplyAccessoryView, didTappedMahjongFaceButton button: UIButton) {
         if self.inputView != nil {
             button.setImage(UIImage(named: "MahjongFaceButton"), for: .normal)
-//            mahjongFaceView.removeExtraConstraints()
             inputView = nil
             reloadInputViews()
         } else {

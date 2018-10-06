@@ -59,11 +59,7 @@ class ReplyAccessoryView: UIView {
         if let window = self.window {
             if #available(iOS 12.0, *) {
                 // Nothing to do.
-                self.snp.remakeConstraints { (make) in
-                    make.top.equalTo(self.superview!.subviews.first!.snp.top).offset(-58.0)
-                }
-            } else
-            if #available(iOS 11.0, *) {
+            } else if #available(iOS 11.0, *) {
                 self.snp.remakeConstraints { (make) in
                     make.top.lessThanOrEqualTo(window.safeAreaLayoutGuide.snp.bottom).offset(-35.0)
                 }
@@ -84,10 +80,9 @@ class ReplyAccessoryView: UIView {
     }
 
     func removeExtraConstraints() {
-//        if #available(iOS 12.0, *) {
-//            // Nothing to do.
-//        } else
-        if #available(iOS 11.0, *) {
+        if #available(iOS 12.0, *) {
+            // Nothing to do.
+        } else if #available(iOS 11.0, *) {
             self.snp.removeConstraints()
         }
     }

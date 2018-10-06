@@ -365,7 +365,10 @@ extension S1AppDelegate {
     }
 
     private func migrateTo3_12_2() {
-
+        let cacheDatabaseManager = AppEnvironment.current.cacheDatabaseManager
+        let mahjongFaceItems = cacheDatabaseManager.mahjongFaceHistoryV2().map { item in MahjongFaceInputView.HistoryItem(id: item.key) }
+        cacheDatabaseManager.set(mahjongFaceHistory: cacheDatabaseManager.mahjongFaceHistory() + mahjongFaceItems)
+        cacheDatabaseManager.set(mahjongFaceHistoryV2: [])
     }
 }
 

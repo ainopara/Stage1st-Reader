@@ -18,7 +18,8 @@ protocol MahjongFaceInputViewDelegate: class {
 final class MahjongFaceInputView: UIView {
     weak var delegate: MahjongFaceInputViewDelegate?
     let collectionView: UICollectionView
-    let tabBar: S1TabBar
+//    let tabBar: S1TabBar
+    let decorationView: UIView
 
     struct Category: Codable {
         let id: String
@@ -34,6 +35,10 @@ final class MahjongFaceInputView: UIView {
 
     struct HistoryItem: Codable {
         let id: String
+
+        init(id: String) {
+            self.id = id
+        }
     }
 
     let categories: MutableProperty<[Category]> = MutableProperty([])
@@ -44,7 +49,8 @@ final class MahjongFaceInputView: UIView {
     override init(frame: CGRect) {
         let layout = HorizontalFloatingHeaderLayout()
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        tabBar = S1TabBar(frame: .zero)
+//        tabBar = S1TabBar(frame: .zero)
+        decorationView = UIView()
 
         let categoryIndexFileURL = Bundle.main.bundleURL
             .appendingPathComponent("Mahjong", isDirectory: true)
@@ -77,7 +83,7 @@ final class MahjongFaceInputView: UIView {
         )
         addSubview(collectionView)
 
-        addSubview(tabBar)
+        addSubview(decorationView)
 
         setupAutoLayout()
     }
@@ -92,7 +98,7 @@ final class MahjongFaceInputView: UIView {
     }
 
     fileprivate func setupAutoLayout() {
-        tabBar.snp.makeConstraints { (make) in
+        decorationView.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(self)
             if #available(iOS 11.0, *) {
                 make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom)
@@ -104,7 +110,7 @@ final class MahjongFaceInputView: UIView {
 
         collectionView.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalTo(self)
-            make.bottom.equalTo(tabBar.snp.top)
+            make.bottom.equalTo(decorationView.snp.top)
         }
     }
 
