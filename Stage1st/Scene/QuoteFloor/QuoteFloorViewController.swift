@@ -58,7 +58,7 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
-            name: .UserBlockStatusDidChangedNotification,
+            name: .UserBlockStatusDidChanged,
             object: nil
         )
     }

@@ -9,27 +9,26 @@
 import Foundation
 import Alamofire
 import ReactiveSwift
+import Result
 
 class UserViewModel {
     let dataCenter: DataCenter
     let user: MutableProperty<User>
-    let isBlocked: MutableProperty<Bool>
-
-    let avatarURL: MutableProperty<URL?> = MutableProperty(nil)
-    let username: MutableProperty<String> = MutableProperty("")
+    let isBlocked: SignalProducer<Bool, NoError>
+    let username: SignalProducer<String, NoError>
 
     init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
         self.user = MutableProperty(user)
-        isBlocked = MutableProperty(dataCenter.userIDIsBlocked(ID: user.ID))
 
-        avatarURL <~ self.user.map { (user) in
-            return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(user.ID)&size=middle")
-        }.skipRepeats()
+        isBlocked = self.user
+            .map({ dataCenter.userIDIsBlocked(ID: $0.ID) })
+            .producer
 
-        username <~ self.user.map({ (user) in
-            return user.name
-        }).skipRepeats()
+        username = self.user
+            .map({ $0.name })
+            .skipRepeats()
+            .producer
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
@@ -68,15 +67,17 @@ class UserViewModel {
     }
 
     func toggleBlockStatus() {
-        isBlocked.value = !isBlocked.value
-        if isBlocked.value {
+        let isBlocked = dataCenter.userIDIsBlocked(ID: user.value.ID)
+        if isBlocked {
             dataCenter.blockUser(with: user.value.ID)
         } else {
             dataCenter.unblockUser(with: user.value.ID)
         }
+
+        user.value = user.value
     }
 }
 
 public extension Notification.Name {
-    public static let UserBlockStatusDidChangedNotification = Notification.Name.init(rawValue: "UserBlockStatusDidChangedNotification")
+    public static let UserBlockStatusDidChanged = Notification.Name.init(rawValue: "UserBlockStatusDidChanged")
 }

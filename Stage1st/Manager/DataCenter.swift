@@ -353,12 +353,12 @@ extension DataCenter {
 extension DataCenter {
     func blockUser(with ID: Int) {
         tracer.blockUser(withID: ID)
-        NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
+        NotificationCenter.default.post(name: .UserBlockStatusDidChanged, object: nil)
     }
 
     func unblockUser(with ID: Int) {
         tracer.unblockUser(withID: ID)
-        NotificationCenter.default.post(name: .UserBlockStatusDidChangedNotification, object: nil)
+        NotificationCenter.default.post(name: .UserBlockStatusDidChanged, object: nil)
     }
 
     func userIDIsBlocked(ID: Int) -> Bool {

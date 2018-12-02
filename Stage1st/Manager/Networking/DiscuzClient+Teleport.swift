@@ -135,44 +135,33 @@ public extension DiscuzClient {
             "answer": secureQuestionAnswer,
         ]
 
-        var debugHeader: String?
-        var debugRequestMethod: String?
-        var debugURLString: String?
-        var debugMIMEType: String?
-        var debugBodyString: String?
-
-        return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default).responseString(completionHandler: { (response) in
-            debugRequestMethod = response.request?.httpMethod
-            debugHeader = response.response?.description
-            debugURLString = response.response?.url?.absoluteString
-            debugMIMEType = response.response?.mimeType
-            debugBodyString = response.value
-        }).responseSwiftyJSON { response in
-            debugPrint(response.request as Any)
-            switch response.result {
-            case let .success(json):
-                if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
-                    AppEnvironment.current.settings.currentUsername.value = username
-                    NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
-                    completion(.success(json["Message"]["messagestr"].string))
-                } else {
-                    completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].stringValue, messageString: json["Message"]["messagestr"].stringValue)))
+        return Alamofire.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default)
+            .responseSwiftyJSON { response in
+                debugPrint(response.request as Any)
+                switch response.result {
+                case let .success(json):
+                    if let messageValue = json["Message"]["messageval"].string, messageValue.contains("login_succeed") {
+                        AppEnvironment.current.settings.currentUsername.value = username
+                        NotificationCenter.default.post(name: .DZLoginStatusDidChangeNotification, object: nil)
+                        completion(.success(json["Message"]["messagestr"].string))
+                    } else {
+                        completion(.failure(DZError.loginFailed(messageValue: json["Message"]["messageval"].stringValue, messageString: json["Message"]["messagestr"].stringValue)))
+                    }
+                case let .failure(error):
+                    if case AFError.responseSerializationFailed = error {
+                        let userInfo: [String: Any] = [
+                            "method": response.request?.httpMethod ?? "",
+                            "header": response.response?.description ?? "",
+                            "url": response.response?.url?.absoluteString ?? "",
+                            "MIME": response.response?.mimeType ?? "",
+                            "body": response.data.map { String(data: $0, encoding: .utf8) ?? "" } ?? ""
+                        ]
+                        let recoredError = NSError(domain: "LoginSerializationFailed", code: 0, userInfo: userInfo)
+                        AppEnvironment.current.eventTracker.recordError(recoredError)
+                    }
+                    completion(.failure(error))
                 }
-            case let .failure(error):
-                if case AFError.responseSerializationFailed = error {
-                    let userInfo = [
-                        "method": debugRequestMethod ?? "",
-                        "header": debugHeader ?? "",
-                        "url": debugURLString ?? "",
-                        "MIME": debugMIMEType ?? "",
-                        "body": debugBodyString ?? ""
-                    ]
-                    let recoredError = NSError(domain: "LoginSerializationFailed", code: 0, userInfo: userInfo)
-                    AppEnvironment.current.eventTracker.recordError(recoredError)
-                }
-                completion(.failure(error))
             }
-        }
     }
 
     @discardableResult
@@ -254,7 +243,7 @@ public extension DiscuzClient {
                 }
 
                 let topics = topicList
-                    .map { S1Topic(json: $0, fieldID: field.ID) }
+                    .map { S1Topic(json: $0, fieldID: field.id) }
                     .compactMap { $0 }
 
                 let username = json["Variables"]["member_username"].string
@@ -348,6 +337,22 @@ public extension DiscuzClient {
                 completion(.failure(error))
             }
         }
+    }
+
+    @discardableResult
+    public func notices(
+        page: Int,
+        completion: @escaping (DataResponse<RawNoticeList>) -> Void
+    ) -> DataRequest {
+        let parameters: Parameters = [
+            "module": "mynotelist",
+            "version": 2,
+            "view": "mypost",
+            "page": page,
+            "mobile": "no",
+        ]
+
+        return Alamofire.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable(completionHandler: completion)
     }
 }
 

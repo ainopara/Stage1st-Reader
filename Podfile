@@ -10,6 +10,7 @@ target "Stage1st" do
 
     # Model
     pod 'SwiftyJSON', :git => 'https://github.com/ainopara/SwiftyJSON.git'
+    pod 'CodableExtensions'
 
     # UI
     pod 'ActionSheetPicker-3.0'
@@ -41,6 +42,7 @@ target "Stage1st" do
 
     # Others
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
+    pod 'Fuzi', '~> 2.1'
     pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
     pod '1PasswordExtension'
     pod 'AcknowList'
@@ -52,18 +54,13 @@ target "Stage1st" do
 
     target "Stage1stTests" do
         inherit! :search_paths
-        pod 'FBSnapshotTestCase'
+        pod 'iOSSnapshotTestCase'
     end
 end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         pods_with_swift4 = [
-            'QuickTableViewController',
-            'SnapKit',
-            'DeviceKit',
-            'ReactiveCocoa',
-            'ReactiveSwift',
             'HorizontalFloatingHeaderLayout'
         ]
         if pods_with_swift4.include? target.name then

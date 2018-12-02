@@ -64,10 +64,10 @@ final class UserViewController: UIViewController {
     }
 
     func bindViewModel() {
-        viewModel.avatarURL.producer.startWithValues { [weak self] (url) in
+        viewModel.user.producer.startWithValues { [weak self] (user) in
             guard let strongSelf = self else { return }
 
-            if let avatarURL = url {
+            if let avatarURL = user.avatarURL {
                 strongSelf.avatarView.af_setImage(withURL: avatarURL)
             }
         }

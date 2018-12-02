@@ -45,31 +45,30 @@ extension Date {
     func s1_gracefulDateTimeString() -> String {
         let interval = -timeIntervalSinceNow
         if interval < 60 { return "刚刚" }
-        if interval < 60 * 60 { return "\(UInt(interval / 60.0))分钟前" }
+        if interval < 60 * 60 { return "\(Int(interval / 60.0))分钟前" }
         if interval < 60 * 60 * 2 { return "1小时前" }
         if interval < 60 * 60 * 3 { return "2小时前" }
         if interval < 60 * 60 * 4 { return "3小时前" }
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-M-d"
-        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: 0.0)) {
+        let day = formatter.string(from: self)
+        if day == formatter.string(from: Date()) {
             formatter.dateFormat = "HH:mm"
-            return formatter.string(from: self)
-        }
-        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24.0)) {
+        } else if day == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24.0)) {
             formatter.dateFormat = "昨天HH:mm"
-            return formatter.string(from: self)
-        }
-        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24 * 2.0)) {
+        } else if day == formatter.string(from: Date(timeIntervalSinceNow: -60 * 60 * 24 * 2.0)) {
             formatter.dateFormat = "前天HH:mm"
-            return formatter.string(from: self)
+        } else {
+            formatter.dateFormat = "yyyy"
+            let year = formatter.string(from: self)
+            if year == formatter.string(from: Date()) {
+                formatter.dateFormat = "M-d HH:mm"
+            } else {
+                formatter.dateFormat = "yyyy-M-d HH:mm"
+            }
         }
-        formatter.dateFormat = "yyyy"
-        if formatter.string(from: self) == formatter.string(from: Date(timeIntervalSinceNow: 0.0)) {
-            formatter.dateFormat = "M-d HH:mm"
-            return formatter.string(from: self)
-        }
-        formatter.dateFormat = "yyyy-M-d HH:mm"
+
         return formatter.string(from: self)
     }
 }

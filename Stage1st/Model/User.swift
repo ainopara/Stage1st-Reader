@@ -73,3 +73,9 @@ public final class User: NSObject {
         }
     }
 }
+
+extension User {
+    var avatarURL: URL? {
+        return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(ID)&size=middle")
+    }
+}

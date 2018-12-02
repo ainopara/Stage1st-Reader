@@ -9,8 +9,8 @@
 import Foundation
 import SwiftyJSON
 
-public struct Field {
-    let ID: Int
+public struct Field: Codable {
+    let id: Int
     let name: String
     let threadCount: Int
     let postCount: Int
@@ -18,7 +18,7 @@ public struct Field {
 
     init?(json: JSON) {
         guard
-            let ID = json["forum"]["fid"].string.flatMap({ Int($0) }),
+            let id = json["forum"]["fid"].string.flatMap({ Int($0) }),
             let name = json["forum"]["name"].string,
             let threadCount = json["forum"]["threads"].string.flatMap({ Int($0) }),
             let postCount = json["forum"]["posts"].string.flatMap({ Int($0) })
@@ -26,7 +26,7 @@ public struct Field {
             return nil
         }
 
-        self.ID = ID
+        self.id = id
         self.name = name
         self.threadCount = threadCount
         self.postCount = postCount

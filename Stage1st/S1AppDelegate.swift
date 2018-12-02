@@ -243,7 +243,7 @@ extension S1AppDelegate {
 
         #if DEBUG
 
-        defaultDebugLevel = .verbose
+        defaultDebugLevel = .debug
 
         let formatter = DDMultiFormatter()
         formatter.add(FileLogFormatter())
