@@ -80,6 +80,8 @@
 "AdvancedSettingsViewController.ReverseFloorActionRow.header" = "Topic Content";
 "AdvancedSettingsViewController.ReverseFloorActionRow.title" = "Floor Action to Reply";
 "AdvancedSettingsViewController.ReverseFloorActionRow.footer" = "Click the three dot button to directly reply the floor. This option will prevent you from getting access to other actions to a floor.";
+"AdvancedSettingsViewController.ShareWithoutImageRow.header" = "Share";
+"AdvancedSettingsViewController.ShareWithoutImageRow.title" = "Share without image";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "Reset";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "Reset to Default Settings";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "Reset settings in advanced settings to default.";

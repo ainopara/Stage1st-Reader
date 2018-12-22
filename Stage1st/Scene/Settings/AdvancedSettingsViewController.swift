@@ -45,6 +45,18 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             action: { row in settings.reverseAction.value = (row as! SwitchRow).switchValue }
         ))
 
+        let shareWithoutImageSection = Section(
+            title: NSLocalizedString("AdvancedSettingsViewController.ShareWithoutImageRow.header", comment: ""),
+            rows: [],
+            footer: ""
+        )
+
+        shareWithoutImageSection.rows.append(SwitchRow(
+            title: NSLocalizedString("AdvancedSettingsViewController.ShareWithoutImageRow.title", comment: ""),
+            switchValue: settings.shareWithoutImage.value,
+            action: { row in settings.shareWithoutImage.value = (row as! SwitchRow).switchValue }
+        ))
+
         let resetSection = Section(
             title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""),
             rows: [],
@@ -59,6 +71,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         tableContents = [
             hideStickTopicsSection,
             reverseFloorSection,
+            shareWithoutImageSection,
             resetSection
         ]
     }

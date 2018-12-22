@@ -579,16 +579,19 @@ extension ContentViewController {
                 value.size.height -= 20.0
             }
 
-            let items: [Any] = [
+            var items: [Any] = [
                 ContentTextActivityItemProvider(
                     title: strongSelf.viewModel.topic.title ?? "",
                     urlString: strongSelf.viewModel.correspondingWebPageURL()?.absoluteString ?? ""
-                ),
-                ContentImageActivityItemProvider(
-                    view: strongSelf.view,
-                    cropTo: rect
                 )
             ]
+
+            if !AppEnvironment.current.settings.shareWithoutImage.value {
+                items.append(ContentImageActivityItemProvider(
+                    view: strongSelf.view,
+                    cropTo: rect
+                ))
+            }
 
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
