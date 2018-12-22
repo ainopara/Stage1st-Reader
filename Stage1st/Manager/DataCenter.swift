@@ -36,7 +36,8 @@ class DataCenter: NSObject {
     }
 }
 
-extension String: Error {}
+extension String: LocalizedError {
+}
 
 // MARK: - Topic List
 extension DataCenter {

@@ -255,6 +255,37 @@ public extension DiscuzClient {
             }
         }
     }
+
+    @discardableResult
+    func topic(
+        with referencePath: String,
+        completion: @escaping (Result<S1Topic>) -> Void
+    ) -> Alamofire.Request {
+        guard let url = URL(string: baseURL)?.appendingPathComponent(referencePath) else {
+            return Alamofire.request(FailureURL("Failed to generate url with baseURL: \(baseURL) path: \(referencePath)"))
+                .response(completionHandler: { (response) in
+//                    completion()
+                })
+        }
+        return Alamofire.request(url, method: .get).response(completionHandler: { (response) in
+            guard let response = response.response else {
+                completion(.failure("Failed to get response from requesting URL: \(url)"))
+                return
+            }
+        })
+    }
+}
+
+struct FailureURL: URLConvertible {
+    let message: String
+
+    init(_ message: String) {
+        self.message = message
+    }
+
+    func asURL() throws -> URL {
+        throw message
+    }
 }
 
 // MARK: - Content
