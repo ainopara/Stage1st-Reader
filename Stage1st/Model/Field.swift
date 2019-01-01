@@ -7,29 +7,46 @@
 //
 
 import Foundation
-import SwiftyJSON
+import CodableExtensions
+
+public struct RawForum: Decodable {
+    public let id: String
+    public let name: String
+    public let threadCount: String
+    public let postCount: String
+    public let rules: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case id = "fid"
+        case name
+        case threadCount = "threads"
+        case postCount = "posts"
+        case rules
+    }
+}
 
 public struct Field: Codable {
-    let id: Int
-    let name: String
-    let threadCount: Int
-    let postCount: Int
-    let rules: String?
+    public let id: Int
+    public let name: String
+    public let threadCount: Int
+    public let postCount: Int
+    public let rules: String?
+}
 
-    init?(json: JSON) {
+extension Field {
+    init?(rawForum: RawForum) {
         guard
-            let id = json["forum"]["fid"].string.flatMap({ Int($0) }),
-            let name = json["forum"]["name"].string,
-            let threadCount = json["forum"]["threads"].string.flatMap({ Int($0) }),
-            let postCount = json["forum"]["posts"].string.flatMap({ Int($0) })
+            let id = Int(rawForum.id),
+            let threadCount = Int(rawForum.threadCount),
+            let postCount = Int(rawForum.postCount)
         else {
             return nil
         }
 
         self.id = id
-        self.name = name
+        self.name = rawForum.name
         self.threadCount = threadCount
         self.postCount = postCount
-        self.rules = json["forum"]["rules"].string
+        self.rules = rawForum.rules
     }
 }

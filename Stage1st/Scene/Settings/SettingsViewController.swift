@@ -68,8 +68,14 @@ extension SettingsViewController {
     }
 
     @objc func setupObservation() {
+
+        usernameDetail.reactive.text <~ AppEnvironment.current.settings.currentUsername.map { currentUserName in
+            return currentUserName ?? NSLocalizedString("SettingsViewController.Not_Login_State_Mark", comment: "")
+        }
+
         NotificationCenter.default.reactive
             .notifications(forName: .YapDatabaseCloudKitSuspendCountChanged)
+            .take(during: self.reactive.lifetime)
             .signal.observeValues { [weak self] (_) in
                 self?.updateCloudKitStatus(
                     state: AppEnvironment.current.cloudkitManager.state.value,
@@ -79,6 +85,7 @@ extension SettingsViewController {
 
         NotificationCenter.default.reactive
             .notifications(forName: .YapDatabaseCloudKitInFlightChangeSetChanged)
+            .take(during: self.reactive.lifetime)
             .signal.observeValues { [weak self] (_) in
                 self?.updateCloudKitStatus(
                     state: AppEnvironment.current.cloudkitManager.state.value,

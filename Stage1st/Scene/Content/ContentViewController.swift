@@ -254,12 +254,6 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
         // Notification
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(applicationWillEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(applicationDidEnterBackground),
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
@@ -363,6 +357,8 @@ extension ContentViewController {
         }
 
         view.layoutIfNeeded()
+
+        refreshCurrentPage(forceUpdate: !finishFirstLoading.value && viewModel.isInLastPage(), scrollType: .restorePosition)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -377,9 +373,6 @@ extension ContentViewController {
         }
 
         didReceivePaletteChangeNotification(nil)
-
-        // Also use this method to initialize content.
-        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -392,11 +385,6 @@ extension ContentViewController {
         viewModel.cancelRequest()
         saveTopicViewedState(sender: nil)
         S1LogDebug("[ContentVC] View did disappear end")
-    }
-
-    @objc func applicationWillEnterForeground() {
-        S1LogDebug("[ContentVC] \(self) will enter foreground begin")
-        _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated()
     }
 
     @objc func applicationDidEnterBackground() {
@@ -829,6 +817,7 @@ extension ContentViewController: WKNavigationDelegate {
 
     func webViewWebContentProcessDidTerminate(_: WKWebView) {
         S1LogError("[ContentVC] webViewWebContentProcessDidTerminate")
+        refreshCurrentPage(forceUpdate: !finishFirstLoading.value && viewModel.isInLastPage(), scrollType: .restorePosition)
     }
 
     func webView(_: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -890,7 +879,7 @@ extension ContentViewController: WKNavigationDelegate {
                 AppEnvironment.current.eventTracker.logEvent(with: "Open Quote Link", attributes: [
                     "source": "Content",
                 ])
-                showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.ID)
+                showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.id)
                 decisionHandler(.cancel)
                 return
             }
@@ -965,14 +954,13 @@ extension ContentViewController: JTSImageViewControllerInteractionsDelegate {
                         return
                     }
 
-                    let imageData = imageViewer.imageData
-                    guard imageData != nil else {
+                    guard let imageData = imageViewer.imageData else {
                         S1LogError("Image data is nil")
                         return
                     }
 
                     PHPhotoLibrary.shared().performChanges({
-                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData!, options: nil)
+                        PHAssetCreationRequest.forAsset().addResource(with: .photo, data: imageData, options: nil)
                     }, completionHandler: { _, error in
                         if let error = error {
                             S1LogError("\(error)")
@@ -1239,7 +1227,7 @@ extension ContentViewController {
                     //            if (strongSelf.refreshHUD != nil) {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
                     //            }
-                } else if case let DZError.serverError(message) = error {
+                } else if case let DiscuzError.serverError(message) = error {
                     S1LogInfo("[ContentVC] Permission denied with message: \(error)")
                     strongSelf.refreshHUD.showMessage(message)
                     strongSelf.refreshHUD.hide(withDelay: 3.0)
@@ -1368,13 +1356,6 @@ private extension ContentViewController {
     func _updateDecorationLines(contentSize _: CGSize) {
         topDecorateLine.isHidden = viewModel.isInFirstPage() || !finishFirstLoading.value
         bottomDecorateLine.isHidden = !finishFirstLoading.value
-    }
-
-    func _tryToReloadWKWebViewIfPageIsBlankDueToWebKitProcessTerminated() {
-        guard let title = webView.title, title != "" else {
-            refreshCurrentPage(forceUpdate: !finishFirstLoading.value && viewModel.isInLastPage(), scrollType: .restorePosition)
-            return
-        }
     }
 
     func saveViewPositionForCurrentPage() {

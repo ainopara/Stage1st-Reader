@@ -24,7 +24,32 @@ class CacheDatabaseManager: NSObject {
     let backgroundWriteConnection: YapDatabaseConnection
 
     init(path: String) {
-        cacheDatabase = YapDatabase(path: path)!
+        let serializer: YapDatabaseSerializer = { (collection, key, object) in
+            switch collection {
+            case collectionPageFloors:
+                return (try? JSONEncoder().encode(object as! [Floor])) ?? Data()
+            default:
+                return NSKeyedArchiver.archivedData(withRootObject: object)
+            }
+        }
+
+        let deserializer: YapDatabaseDeserializer = { (collection, key, data) in
+            switch collection {
+            case collectionPageFloors:
+                return (try? JSONDecoder().decode([Floor].self, from: data)) as Any
+            default:
+                return (data.count > 0 ? NSKeyedUnarchiver.unarchiveObject(with: data) : nil) as Any
+            }
+        }
+
+        cacheDatabase = YapDatabase(
+            path: path,
+            objectSerializer: serializer,
+            objectDeserializer: deserializer,
+            metadataSerializer: YapDatabase.defaultSerializer(),
+            metadataDeserializer: YapDatabase.defaultDeserializer()
+        )!
+
         readConnection = cacheDatabase.newConnection()
         backgroundWriteConnection = cacheDatabase.newConnection()
 
@@ -37,7 +62,7 @@ class CacheDatabaseManager: NSObject {
         backgroundWriteConnection.asyncReadWrite({ transaction in
 
             for floor in floors {
-                transaction.setObject(key, forKey: "\(floor.ID)", inCollection: collectionFloorIDs)
+                transaction.setObject(key, forKey: "\(floor.id)", inCollection: collectionFloorIDs)
             }
 
             transaction.setObject(floors, forKey: key, inCollection: collectionPageFloors, withMetadata: [metadataLastUsed: Date()])
@@ -86,20 +111,20 @@ class CacheDatabaseManager: NSObject {
 }
 
 extension CacheDatabaseManager {
-    func floor(ID: Int) -> Floor? {
+    func floor(id: Int) -> Floor? {
         var floor: Floor?
         readConnection.read { transaction in
             guard
-                let key = transaction.object(forKey: "\(ID)", inCollection: collectionFloorIDs) as? String,
+                let key = transaction.object(forKey: "\(id)", inCollection: collectionFloorIDs) as? String,
                 let floors = transaction.object(forKey: key, inCollection: collectionPageFloors) as? [Floor] else {
-                S1LogWarn("Failed to find floor(ID: \(ID)) in cache database due to index or cache not exist.")
+                S1LogWarn("Failed to find floor(id: \(id)) in cache database due to index or cache not exist.")
                 return
             }
             floor = floors.first(where: { (aFloor) -> Bool in
-                aFloor.ID == ID
+                aFloor.id == id
             })
             if floor == nil {
-                S1LogWarn("Failed to find floor(ID: \(ID)) in cache database due to floor not in indexed batch.")
+                S1LogWarn("Failed to find floor(id: \(id)) in cache database due to floor not in indexed batch.")
             }
         }
         return floor

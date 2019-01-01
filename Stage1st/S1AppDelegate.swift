@@ -10,13 +10,13 @@ import Ainoaibo
 import CocoaLumberjack
 import CrashlyticsLogger
 import CloudKit
-import AlamofireImage
 import Fabric
 import Crashlytics
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Reachability
+import Kingfisher
 
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,9 +40,6 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupLogging()
 
-        // NSCoding Mapping
-        NSKeyedUnarchiver.setClass(Floor.self, forClassName: "S1Floor")
-
         // UserDefaults Initialize
         let userDefaults = AppEnvironment.current.settings.defaults
 
@@ -59,8 +56,6 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         updateStage1stDomainIfNecessary()
-
-        URLCache.shared = ImageDownloader.defaultURLCache()
 
         // Start database & cloudKit (in order)
         DatabaseManager.initialize()

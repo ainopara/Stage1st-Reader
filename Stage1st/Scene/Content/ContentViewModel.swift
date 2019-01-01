@@ -261,10 +261,10 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
 
 extension ContentViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
-        let username = currentFloors.first(where: { $0.author.ID == userID })?.author.name
+        let username = currentFloors.first(where: { $0.author.id == userID })?.author.name
         return UserViewModel(
             dataCenter: dataCenter,
-            user: User(ID: userID, name: username ?? "")
+            user: User(id: userID, name: username ?? "")
         )
     }
 }

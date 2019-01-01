@@ -32,13 +32,13 @@ final class ReportComposeViewModel {
             return
         }
 
-        AppEnvironment.current.dataCenter.blockUser(with: floor.author.ID)
+        AppEnvironment.current.dataCenter.blockUser(with: floor.author.id)
 
         isSubmitting.value = true
 
         AppEnvironment.current.apiService.report(
             topicID: "\(topic.topicID)",
-            floorID: "\(floor.ID)",
+            floorID: "\(floor.id)",
             forumID: "\(forumID)",
             reason: content.value,
             formhash: formhash

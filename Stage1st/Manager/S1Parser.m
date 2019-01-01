@@ -15,72 +15,7 @@
 
 @implementation S1Parser
 
-# pragma mark - Process Data
-
-+ (NSString *)preprocessAPIcontent:(NSString *)content withAttachments:(NSMutableDictionary *)attachments {
-    NSMutableString *mutableContent = [content mutableCopy];
-    //process message
-    [S1Global regexReplaceString:mutableContent matchPattern:@"提示: <em>(.*?)</em>" withTemplate:@"<div class=\"s1-alert\">$1</div>"];
-    //process quote string
-    [S1Global regexReplaceString:mutableContent matchPattern:@"<blockquote><p>引用:</p>" withTemplate:@"<blockquote>"];
-    //process imgwidth issue
-    [S1Global regexReplaceString:mutableContent matchPattern:@"<imgwidth=([^>]*)>" withTemplate:@"<img width=$1>"];
-    // process embeded bilibili video to link
-    [S1Global regexReplaceString:mutableContent matchPattern:@"\\[thgame_biliplay\\{,=av\\}(\\d+)\\{,=page\\}(\\d+)[^\\]]*\\]\\[/thgame_biliplay\\]" withTemplate:@"<a href=\"https://www.bilibili.com/video/av$1/index_$2.html\">https://www.bilibili.com/video/av$1/index_$2.html</a>"];
-    //process embeded image attachments
-    __block NSString *finalString = [mutableContent copy];
-    NSString *preprocessAttachmentImagePattern = @"\\[attach\\]([\\d]*)\\[/attach\\]";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:preprocessAttachmentImagePattern options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    [re enumerateMatchesInString:mutableContent options:NSMatchingReportProgress range:NSMakeRange(0, [mutableContent length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        if (result != nil && attachments != nil) {
-            NSRange range = [result rangeAtIndex:1];
-            NSString *attachmentID = [mutableContent substringWithRange:range];
-            for (NSNumber *attachmentKey in [attachments allKeys]) {
-                if ([attachmentKey integerValue] == [attachmentID integerValue]) {
-                    NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
-                    NSString *imageNode = [NSString stringWithFormat:@"<img src=\"%@\" />", imageURL];
-                    finalString = [finalString stringByReplacingOccurrencesOfString:[NSString stringWithFormat: @"[attach]%@[/attach]", attachmentID] withString:imageNode];
-                    [attachments removeObjectForKey:attachmentKey];
-                    break;
-                }
-            }
-        }
-    }];
-    
-    return finalString;
-}
-
 #pragma mark - Page Parsing
-
-+ (NSMutableArray<S1Topic *> *)topicsFromAPI:(NSDictionary *)responseDict {
-    NSArray *rawTopicList = responseDict[@"Variables"][@"forum_threadlist"];
-    NSMutableArray *topics = [[NSMutableArray alloc] init];
-    for (NSDictionary *rawTopic in rawTopicList) {
-        S1Topic *topic = [[S1Topic alloc] initWithTopicID:[NSNumber numberWithInteger:[rawTopic[@"tid"] integerValue]]];
-        topic.title = [(NSString *)rawTopic[@"subject"] gtm_stringByUnescapingFromHTML];
-        topic.replyCount = [NSNumber numberWithInteger:[rawTopic[@"replies"] integerValue]];
-        topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"forum"][@"fid"] integerValue]];
-        topic.authorUserID = [NSNumber numberWithInteger:[rawTopic[@"authorid"] integerValue]];
-        topic.authorUserName = rawTopic[@"author"];
-        if (rawTopic[@"dblastpost"] != nil) {
-            topic.lastReplyDate = [NSDate dateWithTimeIntervalSince1970:[rawTopic[@"dblastpost"] integerValue]];
-        }
-
-        BOOL isStickThread = NO;
-        for (NSInteger i = [rawTopicList indexOfObject:rawTopic]; i< rawTopicList.count; i++) {
-            NSDictionary *theTopic = [rawTopicList objectAtIndex:i];
-            if ([rawTopic[@"dblastpost"] integerValue] < [theTopic[@"dblastpost"] integerValue]) {
-                isStickThread = YES;
-                //DDLogDebug(@"remove stick subject:%@", topic.title);
-                break;
-            }
-        }
-        if (isStickThread == NO || ![[NSUserDefaults standardUserDefaults] boolForKey:@"Stage1st_TopicList_HideStickTopics"]) {
-            [topics addObject:topic];
-        }
-    }
-    return topics;
-}
 
 + (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData {
     DDXMLDocument *xmlDoc = [[DDXMLDocument alloc] initWithData:rawData options:0 error:nil];
@@ -111,87 +46,7 @@
     return mutableArray;
 }
 
-+ (NSArray *)contentsFromAPI:(NSDictionary *)responseDict {
-    NSArray *rawFloorList = responseDict[@"Variables"][@"postlist"];
-    NSMutableArray *floorList = [[NSMutableArray alloc] init];
-    for (NSDictionary *rawFloor in rawFloorList) {
-        Floor *floor = [[Floor alloc] initWithID:[rawFloor[@"pid"] integerValue] author:[[User alloc] initWithID:[rawFloor[@"authorid"] integerValue] name:rawFloor[@"author"]]];
-        floor.indexMark = rawFloor[@"number"];
-        floor.creationDate = [NSDate dateWithTimeIntervalSince1970:[rawFloor[@"dbdateline"] doubleValue]];
-        NSMutableDictionary *attachments = nil;
-        if ([rawFloor valueForKey:@"attachments"]!= nil) {
-            attachments = [rawFloor[@"attachments"] mutableCopy];
-        }
-        floor.content = [S1Parser preprocessAPIcontent:[NSString stringWithFormat:@"<td class=\"t_f\" id=\"postmessage_%ld\">%@</td>", (long)floor.ID, rawFloor[@"message"]] withAttachments:attachments];
-        //process attachments left.
-
-        if (attachments != nil && [attachments count] > 0) {
-            NSMutableArray *imageAttachmentList = [[NSMutableArray alloc] init];
-            for (NSNumber *attachmentKey in [attachments allKeys]) {
-                NSString *imageURL = [attachments[attachmentKey][@"url"] stringByAppendingString:attachments[attachmentKey][@"attachment"]];
-                if (imageURL != nil) {
-                    [imageAttachmentList addObject:imageURL];
-                }
-            }
-            floor.imageAttachmentURLStringList = imageAttachmentList;
-        }
-        [floorList addObject:floor];
-    }
-    return floorList;
-}
-
 #pragma mark - Pick Information
-
-+ (S1Topic *)topicInfoFromThreadPage:(NSData *)rawData page:(NSNumber *)page withTopicID:(NSNumber *)topicID {
-    S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
-    //update title
-    NSString *title = [S1Parser topicTitleFromPage:rawData];
-    if (title != nil) {
-        topic.title = title;
-    }
-    
-    //pick message
-    topic.message = [S1Parser messageFromPage:rawData];
-    
-    // get formhash
-    NSString* HTMLString = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
-    [topic setFormhash:[S1Parser formhashFromPage:HTMLString]];
-    
-    //set reply count
-    if ([page isEqualToNumber:@1]) {
-        NSInteger parsedReplyCount = [S1Parser replyCountFromThreadString:HTMLString];
-        if (parsedReplyCount != 0) {
-            [topic setReplyCount:[NSNumber numberWithInteger:parsedReplyCount]];
-        }
-    }
-
-    // update total page
-    NSInteger parsedTotalPages = [S1Parser totalPagesFromThreadString:HTMLString];
-    if (parsedTotalPages != 0) {
-        [topic setTotalPageCount:[NSNumber numberWithInteger:parsedTotalPages]];
-    }
-    return topic;
-}
-
-+ (S1Topic *)topicInfoFromAPI:(NSDictionary *)responseDict {
-    NSNumber *topicID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"tid"] integerValue]];
-    if (topicID == nil || [topicID isEqualToNumber:@0]) {
-        return nil;
-    }
-    S1Topic *topic = [[S1Topic alloc] initWithTopicID:topicID];
-    //Update Topic
-    topic.title = [(NSString *)responseDict[@"Variables"][@"thread"][@"subject"] gtm_stringByUnescapingFromHTML];
-    topic.authorUserID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"authorid"] integerValue]];
-    topic.authorUserName = responseDict[@"Variables"][@"thread"][@"author"];
-    topic.formhash = responseDict[@"Variables"][@"formhash"];
-    topic.fID = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"fid"] integerValue]];
-    topic.replyCount = [NSNumber numberWithInteger:[responseDict[@"Variables"][@"thread"][@"replies"] integerValue]];
-    double postPerPage = [responseDict[@"Variables"][@"ppp"] integerValue];
-    topic.totalPageCount = [NSNumber numberWithInteger:([topic.replyCount integerValue] / postPerPage) + 1];
-    topic.message = responseDict[@"Message"][@"messagestr"];
-    return topic;
-}
-
 
 + (NSString *)formhashFromPage:(NSString *)HTMLString {
     NSString *pattern = @"name=\"formhash\" value=\"([0-9a-zA-Z]+)\"";
@@ -257,11 +112,6 @@
     }
     return nil;
     
-}
-
-+ (NSString *)loginUserName:(NSString *)HTMLString {
-    NSString *username = [[S1Global regexExtractFromString:HTMLString withPattern:@"<strong class=\"vwmy\"><a[^>]*>([^<]*)</a></strong>" andColums:@[@1]] firstObject];
-    return [username isEqualToString:@""]?nil:username;
 }
 
 + (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {

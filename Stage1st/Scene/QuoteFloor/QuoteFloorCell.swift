@@ -7,7 +7,6 @@
 //
 
 import SnapKit
-import AlamofireImage
 import CocoaLumberjack
 
 final class QuoteFloorCell: UITableViewCell {

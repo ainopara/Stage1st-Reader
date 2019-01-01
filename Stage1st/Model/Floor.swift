@@ -7,94 +7,95 @@
 //
 
 import Foundation
-import SwiftyJSON
-import CocoaLumberjack
+import Html
 
-private let kFloorID = "floorID"
-private let kIndexMark = "indexMark"
-private let kAuthor = "author"
-private let kAuthorID = "authorID"
-private let kPostTime = "postTime"
-private let kContent = "content"
-private let kPoll = "poll"
-private let kMessage = "message"
-private let kImageAttachmentURLStringList = "imageAttachmentList"
-private let kFirstQuoteReplyFloorID = "firstQuoteReplyFloorID"
+public struct Floor: Codable {
+    public let id: Int
+    public let author: User
+    public var indexMark: String?
 
-@objcMembers
-public final class Floor: NSObject, NSCoding {
-    let ID: Int
-    var indexMark: String?
-    var author: User
-    var creationDate: Date?
-    var content: String?
-    var message: String?
-    var imageAttachmentURLStringList: [String]?
+    public var creationDate: Date?
+    public var content: String = ""
+    public var attachments: [String: URL] = [:]
+    public var inlinedAttachmentIDs: [String] = []
 
-    init(ID: Int, author: User) {
-        self.ID = ID
+    public var floatingAttachments: [String: URL] {
+        return attachments.filter { (key, value) in !inlinedAttachmentIDs.contains(key) }
+    }
+
+    public init(id: Int, author: User) {
+        self.id = id
         self.author = author
-    }
-
-    init?(json: JSON) {
-        guard
-            let IDString = json["pid"].string,
-            let ID = Int(IDString),
-            let authorIDString = json["authorid"].string,
-            let authorID = Int(authorIDString),
-            let authorName = json["author"].string
-        else {
-            return nil
-        }
-
-        self.ID = ID
-        author = User(ID: authorID, name: authorName)
-
-        super.init()
-        // FIXME: finish this.
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        let ID = aDecoder.decodeObject(forKey: kFloorID) as? Int ?? aDecoder.decodeInteger(forKey: kFloorID)
-        let authorID = aDecoder.decodeObject(forKey: kAuthorID) as? Int ?? aDecoder.decodeInteger(forKey: kAuthorID)
-
-        guard
-            ID != 0,
-            authorID != 0,
-            let authorName = aDecoder.decodeObject(forKey: kAuthor) as? String
-        else {
-            return nil
-        }
-
-        self.ID = ID
-        author = User(ID: authorID, name: authorName)
-
-        super.init()
-
-        indexMark = aDecoder.decodeObject(forKey: kIndexMark) as? String
-
-        creationDate = aDecoder.decodeObject(forKey: kPostTime) as? Date
-        content = aDecoder.decodeObject(forKey: kContent) as? String
-        message = aDecoder.decodeObject(forKey: kMessage) as? String
-        imageAttachmentURLStringList = aDecoder.decodeObject(forKey: kImageAttachmentURLStringList) as? [String]
-    }
-
-    public func encode(with aCoder: NSCoder) {
-        aCoder.encode(ID, forKey: kFloorID)
-        aCoder.encode(indexMark, forKey: kIndexMark)
-        aCoder.encode(author.name, forKey: kAuthor)
-        aCoder.encode(author.ID, forKey: kAuthorID)
-        aCoder.encode(creationDate, forKey: kPostTime)
-        aCoder.encode(content, forKey: kContent)
-        aCoder.encode(message, forKey: kMessage)
-        aCoder.encode(imageAttachmentURLStringList, forKey: kImageAttachmentURLStringList)
     }
 }
 
 extension Floor {
-    var firstQuoteReplyFloorID: Int? {
+    init?(rawPost: RawFloorList.Variables.Post) {
         guard
-            let content = self.content,
+            let id = Int(rawPost.pid),
+            let authorID = Int(rawPost.authorid)
+        else { return nil }
+
+        self.id = id
+        self.author = User(id: authorID, name: rawPost.author)
+        self.indexMark = rawPost.number
+        self.creationDate = Date(timeIntervalSince1970: TimeInterval(rawPost.dbdateline) ?? 0)
+        self.content = rawPost.message
+        self.attachments = (rawPost.attachments ?? [:]).mapValues({ (attachment) in
+            return attachment.url.appendingPathComponent(attachment.attachment)
+        })
+
+        self.preprocess()
+    }
+}
+
+extension Floor {
+    mutating func preprocess() {
+        content =
+            render(td([Html.class("t_f"), Html.id("postmessage_\(id)")], [.raw(content)]))
+            .s1_replace(
+                pattern: "提示: <em>(.*?)</em>",
+                with: render(div([Html.class("s1-alert")], [.raw("$1")]))
+            )
+            .s1_replace(
+                pattern: "<blockquote><p>引用:</p>",
+                with: "<blockquote>"
+            )
+            .s1_replace(
+                pattern: "<imgwidth=([^>]*)>",
+                with: "<img width=$1>"
+            )
+            .s1_replace(
+                pattern: "\\[thgame_biliplay\\{,=av\\}(\\d+)\\{,=page\\}(\\d+)[^\\]]*\\]\\[/thgame_biliplay\\]",
+                with: render(a([href("https://www.bilibili.com/video/av$1/index_$2.html")], [.raw("https://www.bilibili.com/video/av$1/index_$2.html")]))
+            )
+
+        guard
+            attachments.count > 0,
+            let re = try? NSRegularExpression(pattern: "\\[attach\\]([\\d]*)\\[/attach\\]", options: [.dotMatchesLineSeparators])
+        else {
+            return
+        }
+
+        var processedContent = content as NSString
+        let range = NSRange(location: 0, length: processedContent.length)
+
+        re.enumerateMatches(in: content, options: [.reportProgress], range: range) { (result, flags, stop) in
+            guard let result = result else { return }
+            let attachmentID = processedContent.substring(with: result.range(at: 1))
+            guard let attachmentURL = self.attachments[attachmentID] else { return }
+            let imageNode = render(img([Html.src(attachmentURL.absoluteString)]))
+            processedContent = processedContent.replacingOccurrences(of: "[attach]" + attachmentID + "[/attach]", with: imageNode) as NSString
+            inlinedAttachmentIDs.append(attachmentID)
+        }
+
+        content = processedContent as String
+    }
+}
+
+public extension Floor {
+    public var firstQuoteReplyFloorID: Int? {
+        guard
             let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
             let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),
             let floorIDString = resultDict["pid"],

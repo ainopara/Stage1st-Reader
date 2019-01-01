@@ -5,11 +5,10 @@ use_frameworks!
 target "Stage1st" do
     # Network
     pod 'AFNetworking'
-    pod 'Alamofire'
-    pod 'AlamofireImage'
+    pod 'Alamofire', '5.0.0.beta.1'
+    pod 'Kingfisher'
 
     # Model
-    pod 'SwiftyJSON', :git => 'https://github.com/ainopara/SwiftyJSON.git'
     pod 'CodableExtensions'
 
     # UI
@@ -32,6 +31,8 @@ target "Stage1st" do
     pod 'CocoaLumberjack/Swift'
     pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
+    pod 'RxSwift'
+    pod 'RxCocoa'
 
     pod 'Fabric'
     pod 'Crashlytics'
@@ -50,7 +51,14 @@ target "Stage1st" do
     pod 'Files'
     pod 'DeviceKit'
     pod 'CrashlyticsLogger', '~> 0.3.1'
-    pod 'Ainoaibo', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/OSLogger', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/InMemoryLogger', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/InMemoryLogViewer', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/LogFormatters', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/SwiftExtension', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/DefaultsBasedSettings', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/StateTransition', :path => './Frameworks/Ainoaibo'
+    pod 'Ainoaibo/Stash', :path => './Frameworks/Ainoaibo'
 
     target "Stage1stTests" do
         inherit! :search_paths

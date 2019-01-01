@@ -8,7 +8,7 @@
 
 import ReactiveSwift
 import SnapKit
-import AlamofireImage
+import Kingfisher
 import CocoaLumberjack
 
 final class UserViewController: UIViewController {
@@ -35,32 +35,22 @@ final class UserViewController: UIViewController {
 
         bindViewModel()
 
-        viewModel.updateCurrentUserProfile { [weak self] result in
-            guard let strongSelf = self else { return }
-            switch result {
-            case let .success(user):
-                strongSelf.customStatusLabel.text = user.customStatus
-                strongSelf.infoLabel.text = strongSelf.viewModel.infoLabelText()
-            case let .failure(error):
-                S1LogDebug("Failed to update user profile. error: \(error)")
-//                strongSelf.s1_presentAlertView("Error", message: "\(error)")
-            }
-        }
+//        viewModel.updateCurrentUserProfile { [weak self] result in
+//            guard let strongSelf = self else { return }
+//            switch result {
+//            case let .success(user):
+//                break
+//            case let .failure(error):
+//                S1LogDebug("Failed to update user profile. error: \(error)")
+////                strongSelf.s1_presentAlertView("Error", message: "\(error)")
+//            }
+//        }
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(UserViewController.didReceivePaletteChangeNotification(_:)),
-            name: .APPaletteDidChange,
-            object: nil
-        )
+        NotificationCenter.default.reactive.notifications(forName: .APPaletteDidChange).observeValues(didReceivePaletteChangeNotification(_:))
     }
 
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
     func bindViewModel() {
@@ -68,7 +58,7 @@ final class UserViewController: UIViewController {
             guard let strongSelf = self else { return }
 
             if let avatarURL = user.avatarURL {
-                strongSelf.avatarView.af_setImage(withURL: avatarURL)
+                strongSelf.avatarView.kf.setImage(with: avatarURL)
             }
         }
 

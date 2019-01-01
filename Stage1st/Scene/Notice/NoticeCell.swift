@@ -8,6 +8,7 @@
 
 import SnapKit
 import Fuzi
+import Kingfisher
 
 class NoticeCell: UICollectionViewCell {
     let avatarImageView = UIImageView()
@@ -55,13 +56,13 @@ class NoticeCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
+        avatarImageView.kf.cancelDownloadTask()
         avatarImageView.image = nil
-        avatarImageView.af_cancelImageRequest()
     }
 
     func configure(with viewModel: ViewModel) {
         if let avatarURL = viewModel.user.avatarURL {
-            avatarImageView.af_setImage(withURL: avatarURL)
+            avatarImageView.kf.setImage(with: avatarURL)
         }
 
         titleLabel.text = viewModel.title
@@ -115,7 +116,7 @@ extension NoticeCell {
             self.title = message
             self.path = link
             self.date = replyNotice.dateline
-            self.user = User(ID: replyNotice.authorid, name: replyNotice.author)
+            self.user = User(id: replyNotice.authorid, name: replyNotice.author)
             self.isNew = replyNotice.new
         }
     }

@@ -33,7 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, nullable) NSNumber *lastReplyCount;
 @property (nonatomic, strong, nullable) NSDate *lastReplyDate;
-@property (nonatomic, copy, nullable) NSNumber *totalPageCount;
 @property (nonatomic, copy, nullable) NSString *authorUserName;
 @property (nonatomic, copy, nullable) NSString *formhash;
 @property (nonatomic, copy, nullable) NSString *message;

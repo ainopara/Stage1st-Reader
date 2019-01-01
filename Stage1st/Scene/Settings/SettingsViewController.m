@@ -67,18 +67,11 @@
                                                  name:@"APPaletteDidChangeNotification"
                                                object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didReceiveLoginStatusChangeNotification:)
-                                                 name:@"DZLoginStatusDidChangeNotification"
-                                               object:nil];
-
     [self setupObservation];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    [self _resetLoginStatus];
 
     self.fontSizeDetail.text = [[NSUserDefaults standardUserDefaults] valueForKey:@"FontSize"];
     self.keepHistoryDetail.text = [S1Global HistoryLimitNumber2String:[[NSUserDefaults standardUserDefaults] valueForKey:@"HistoryLimit"]];
@@ -245,21 +238,6 @@
         NSFontAttributeName:[UIFont boldSystemFontOfSize:17.0],
     }];
     [self.navigationController.navigationBar setBarStyle: [AppEnvironment.current.colorManager isDarkTheme] ? UIBarStyleBlack : UIBarStyleDefault];
-}
-
-- (void)didReceiveLoginStatusChangeNotification:(NSNotification *)notification {
-    [self _resetLoginStatus];
-}
-
-#pragma mark - Helper
-
-- (void)_resetLoginStatus {
-    NSString *inLoginStateID = [[NSUserDefaults standardUserDefaults] valueForKey:@"InLoginStateID"];
-    if (inLoginStateID != nil && [inLoginStateID isKindOfClass:[NSString class]]) {
-        self.usernameDetail.text = inLoginStateID;
-    } else {
-        self.usernameDetail.text = NSLocalizedString(@"SettingsViewController.Not_Login_State_Mark", @"");
-    }
 }
 
 @end

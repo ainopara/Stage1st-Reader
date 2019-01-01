@@ -70,7 +70,7 @@ extension DataCenter {
     }
 
     private func topicsFromServer(for key: String, page: Int, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
-        apiManager.topics(in: UInt(key)!, page: UInt(page)) { [weak self] (result) in
+        apiManager.topics(in: Int(key)!, page: page) { [weak self] (result) in
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
 
@@ -211,15 +211,29 @@ extension DataCenter {
 extension DataCenter {
     @discardableResult
     fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ completion: @escaping (Result<([Floor], Bool)>) -> Void) -> Request {
-        return apiManager.floors(in: UInt(truncating: topic.topicID), page: UInt(page)) { [weak self] (result) in
+        return apiManager.floors(in: Int(truncating: topic.topicID), page: page) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
             switch result {
-            case let .success(topicInfo, floors, username):
-                strongSelf.updateLoginState(username)
-                if let topicInfo = topicInfo {
-                    topic.update(topicInfo)
+            case let .success(rawFloorList):
+                strongSelf.updateLoginState(rawFloorList.variables?.memberUsername)
+
+                if let latestTopic = S1Topic(rawFloorList: rawFloorList) {
+                    topic.update(latestTopic)
                 }
+
+                guard let rawFloors = rawFloorList.variables?.postList else {
+                    completion(.failure("Empty floors."))
+                    return
+                }
+
+                let floors = rawFloors.compactMap { Floor(rawPost: $0) }
+
+                guard floors.count > 0 else {
+                    completion(.failure("Empty floors."))
+                    return
+                }
+
                 strongSelf.cacheDatabaseManager.set(floors: floors, topicID: topic.topicID.intValue, page: page, completion: {
                     completion(.success((floors, false)))
                 })
@@ -265,7 +279,7 @@ extension DataCenter {
     }
 
     func searchFloorInCache(by floorID: Int) -> Floor? {
-        return cacheDatabaseManager.floor(ID: floorID)
+        return cacheDatabaseManager.floor(id: floorID)
     }
 }
 
@@ -298,7 +312,7 @@ extension DataCenter {
             return
         }
 
-        networkManager.requestReplyRefereanceContent(forTopicID: topic.topicID, withPage: page as NSNumber, floorID: floor.ID as NSNumber, forumID: forumID, success: { [weak self] _, responseObject in
+        networkManager.requestReplyRefereanceContent(forTopicID: topic.topicID, withPage: page as NSNumber, floorID: floor.id as NSNumber, forumID: forumID, success: { [weak self] _, responseObject in
             guard let strongSelf = self else { return }
             guard let responseData = responseObject as? Data,
                 let responseString = String(data: responseData, encoding: .utf8),

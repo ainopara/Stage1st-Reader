@@ -284,11 +284,11 @@ extension PageRenderer {
             }
 
             guard let content = content else {
-                S1LogWarn("[PageRenderer] nil content in floor \(floor.ID)")
+                S1LogWarn("[PageRenderer] nil content in floor \(floor.id)")
                 return ""
             }
 
-            var processedContent = process(HTMLString: content, with: floor.ID)
+            var processedContent = process(HTMLString: content, with: floor.id)
 
             if AppEnvironment.current.settings.removeTails.value {
                 processedContent = stripTails(content: processedContent)
@@ -298,7 +298,7 @@ extension PageRenderer {
         }
 
         func processAuthor(floor: Floor) -> String {
-            if let topicAuthorID = topicAuthorID, topicAuthorID == floor.author.ID, let floorIndexMark = floor.indexMark, floorIndexMark != "楼主" {
+            if let topicAuthorID = topicAuthorID, topicAuthorID == floor.author.id, let floorIndexMark = floor.indexMark, floorIndexMark != "楼主" {
                 return "\(floor.author.name) (楼主)"
             }
 
@@ -316,39 +316,35 @@ extension PageRenderer {
             }
         }
 
-        func processAttachments(attachmentImageURLs: [String]?) -> [[String: String]]? {
+        func processAttachments(attachmentImageURLs: [String: URL]) -> [[String: String]] {
             if #available(iOS 11.0, *) {
-                return attachmentImageURLs.flatMap { (list: [String]) in
-                    return list.map {
-                        return [
-                            "url": $0.s1_replace(pattern: "^https", with: "images").s1_replace(pattern: "^http", with: "image"),
-                            "trueURL": $0,
-                            "ID": UUID().uuidString
-                        ]
-                    }
+                return attachmentImageURLs.map { (attachmentID, attachmentURL) in
+                    return [
+                        "url": attachmentURL.absoluteString.s1_replace(pattern: "^http", with: "image"),
+                        "trueURL": attachmentURL.absoluteString,
+                        "ID": attachmentID
+                    ]
                 }
             } else {
-                return attachmentImageURLs.flatMap { (list: [String]) in
-                    return list.map {
-                        return [
-                            "url": $0,
-                            "trueURL": $0,
-                            "ID": UUID().uuidString
-                        ]
-                    }
+                return attachmentImageURLs.map { (attachmentID, attachmentURL) in
+                    return [
+                        "url": attachmentURL.absoluteString,
+                        "trueURL": attachmentURL.absoluteString,
+                        "ID": attachmentID
+                    ]
                 }
             }
         }
 
         return [
             "index-mark": processIndexMark(indexMark: floor.indexMark),
-            "author-ID": floor.author.ID,
+            "author-ID": floor.author.id,
             "author-name": processAuthor(floor: floor),
             "post-time": floor.creationDate?.s1_gracefulDateTimeString() ?? "无日期",
-            "ID": "\(floor.ID)",
+            "ID": "\(floor.id)",
             "poll": nil,
-            "content": userIsBlocked(with: floor.author.ID) ? "<td class=\"t_f\"><div class=\"s1-alert\">该用户已被您屏蔽</i></td>" : processContent(content: floor.content),
-            "attachments": processAttachments(attachmentImageURLs: floor.imageAttachmentURLStringList),
+            "content": userIsBlocked(with: floor.author.id) ? "<td class=\"t_f\"><div class=\"s1-alert\">该用户已被您屏蔽</i></td>" : processContent(content: floor.content),
+            "attachments": processAttachments(attachmentImageURLs: floor.floatingAttachments),
             "is-first": isFirstInPage,
         ]
     }

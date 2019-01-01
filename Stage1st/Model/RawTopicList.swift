@@ -7,157 +7,144 @@
 //
 
 import Foundation
-import CodableExtensions
 
-struct RawTopicList: Codable {
-    struct Variables: Codable {
-        let cookiepre: String
-        let auth: String
-        let saltkey: String
-        let memberUid: String
-        let memberUsername: String
-        let memberAvatar: URL
-        let groupid: String
-        let formhash: String
-        let readaccess: String
-        let notice: NoticeCount
-        struct Topic: Codable {
-            let tid: String
-            let fid: String
-            let posttableid: String
-            let typeid: String
-            let sortid: String
-            let readperm: String
-            let price: String
-            let author: String
-            let authorid: String
-            let subject: String
-            let dateline: String
-            let lastpost: String
-            let lastposter: String
-            let views: String
-            let replies: String
-            let displayorder: String
-            let highlight: String
-            let digest: String
-            let rate: String
-            let special: String
-            let attachment: String
-            let moderated: String
-            let closed: String
-            let stickreply: String
-            let recommends: String
-            let recommendAdd: String
-            let recommendSub: String
-            let heats: String
-            let status: String
-            let isgroup: String
-            let favtimes: String
-            let sharetimes: String
-            let stamp: String
-            let icon: String
-            let pushedaid: String
-            let cover: String
-            let replycredit: String
-            let relatebytag: String
-            let maxposition: String
-            let bgcolor: String
-            let comments: String
-            let hidden: String
-            let lastposterenc: String
-            let multipage: String
-            let pages: String?
-            let recommendicon: String
-            let new: String
-            let heatlevel: String
-            let moved: String
-            let icontid: String
-            let folder: String
-            let weeknew: String
-            let istoday: String
-            let dbdateline: String
-            let dblastpost: String
-            let id: String
-            let rushreply: String
-            private enum CodingKeys: String, CodingKey {
-                case tid
-                case fid
-                case posttableid
-                case typeid
-                case sortid
-                case readperm
-                case price
-                case author
-                case authorid
-                case subject
-                case dateline
-                case lastpost
-                case lastposter
-                case views
-                case replies
-                case displayorder
-                case highlight
-                case digest
-                case rate
-                case special
-                case attachment
-                case moderated
-                case closed
-                case stickreply
-                case recommends
-                case recommendAdd = "recommend_add"
-                case recommendSub = "recommend_sub"
-                case heats
-                case status
-                case isgroup
-                case favtimes
-                case sharetimes
-                case stamp
-                case icon
-                case pushedaid
-                case cover
-                case replycredit
-                case relatebytag
-                case maxposition
-                case bgcolor
-                case comments
-                case hidden
-                case lastposterenc
-                case multipage
-                case pages
-                case recommendicon
-                case new
-                case heatlevel
-                case moved
-                case icontid
-                case folder
-                case weeknew
-                case istoday
-                case dbdateline
-                case dblastpost
-                case id
-                case rushreply
-            }
+public struct RawTopicList: Decodable {
+    public struct Variables: Decodable {
+        public let memberUid: String?
+        public let memberUsername: String?
+        public let memberAvatar: URL?
+        public let formhash: String?
+        public let notice: NoticeCount
+        public let forum: RawForum
+        public struct Thread: Decodable {
+            public let tid: String
+            public let readperm: String
+            public let author: String
+            public let authorid: String
+            public let subject: String
+            public let lastposter: String
+            public let views: String
+            public let replies: String
+            public let dbdateline: String
+            public let dblastpost: String
         }
-        let data: [Topic]
-        let perpage: String
+        public let threadList: [Thread]
         private enum CodingKeys: String, CodingKey {
-            case cookiepre
-            case auth
-            case saltkey
             case memberUid = "member_uid"
             case memberUsername = "member_username"
             case memberAvatar = "member_avatar"
-            case groupid
             case formhash
-            case readaccess
             case notice
-            case data
-            case perpage
+            case forum
+            case threadList = "forum_threadlist"
         }
     }
-    let variables: Variables
+    public let variables: Variables?
+    public let message: RawMessage?
+    public let error: String?
+
     private enum CodingKeys: String, CodingKey {
         case variables = "Variables"
+        case message = "Message"
+        case error
+    }
+}
+
+public struct RawFloorList: Decodable {
+    public struct Variables: Decodable {
+        public let memberUid: String?
+        public let memberUsername: String?
+        public let memberAvatar: URL?
+        public let formhash: String?
+        public let notice: NoticeCount
+        public struct Thread: Decodable {
+            public let tid: String
+            public let fid: String
+            public let subject: String
+            public let authorid: String
+            public let views: String
+            public let author: String
+            public let lastpost: String
+            public let replies: String
+
+            private enum CodingKeys: String, CodingKey {
+                case tid
+                case fid
+                case subject
+                case authorid
+                case views
+                case author
+                case lastpost
+                case replies
+            }
+        }
+        public let thread: Thread
+        public struct Post: Decodable {
+            public let pid: String
+            public let tid: String
+            public let first: String
+            public let author: String
+            public let authorid: String
+            public let dateline: String
+            public let message: String
+            public let anonymous: String
+            public let attachment: String
+            public let status: String
+            public let username: String
+            public let adminid: String
+            public let groupid: String
+            public let memberstatus: String
+            public let number: String
+            public let dbdateline: String
+            public struct Attachment: Decodable {
+                public let aid: String
+                public let tid: String
+                public let pid: String
+                public let uid: String
+                public let dateline: String
+                public let filename: String
+                public let filesize: String
+                public let attachment: String
+                public let remote: String
+                public let description: String
+                public let readperm: String
+                public let price: String
+                public let isimage: String
+                public let width: String
+                public let thumb: String
+                public let picid: String
+                public let ext: String
+                public let imgalt: String
+                public let attachicon: String
+                public let attachsize: String
+                public let attachimg: String
+                public let payed: String
+                public let url: URL
+                public let dbdateline: String
+                public let downloads: String
+            }
+            public let attachments: [String: Attachment]?
+            public let imageList: [String]?
+        }
+        public let postList: [Post]
+
+        private enum CodingKeys: String, CodingKey {
+            case memberUid = "member_uid"
+            case memberUsername = "member_username"
+            case memberAvatar = "member_avatar"
+            case formhash
+            case notice
+            case thread
+            case postList = "postlist"
+        }
+    }
+    public let variables: Variables?
+    public let message: RawMessage?
+    public let error: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case variables = "Variables"
+        case message = "Message"
+        case error
     }
 }

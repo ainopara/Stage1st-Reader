@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.5)
-  - AcknowList (1.7)
+  - AcknowList (1.8)
   - ActionSheetPicker-3.0 (2.3.0)
   - AFNetworking (3.2.1):
     - AFNetworking/NSURLSession (= 3.2.1)
@@ -17,25 +17,6 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - Ainoaibo (0.1.0):
-    - "Ainoaibo/Alamofire+ResponseDecodable (= 0.1.0)"
-    - Ainoaibo/AuthNetworkManager (= 0.1.0)
-    - Ainoaibo/DefaultsBasedSettings (= 0.1.0)
-    - Ainoaibo/InMemoryLogger (= 0.1.0)
-    - Ainoaibo/InMemoryLogViewer (= 0.1.0)
-    - Ainoaibo/LogFormatters (= 0.1.0)
-    - Ainoaibo/Logging (= 0.1.0)
-    - Ainoaibo/LoggingProtocol (= 0.1.0)
-    - Ainoaibo/OSLogger (= 0.1.0)
-    - Ainoaibo/Stash (= 0.1.0)
-    - Ainoaibo/StateTransition (= 0.1.0)
-    - Ainoaibo/SwiftExtension (= 0.1.0)
-  - "Ainoaibo/Alamofire+ResponseDecodable (0.1.0)":
-    - Ainoaibo/Logging
-    - Alamofire
-  - Ainoaibo/AuthNetworkManager (0.1.0):
-    - "Ainoaibo/Alamofire+ResponseDecodable"
-    - Ainoaibo/Logging
   - Ainoaibo/DefaultsBasedSettings (0.1.0):
     - Ainoaibo/Logging
     - ReactiveSwift
@@ -60,16 +41,14 @@ PODS:
   - Ainoaibo/Stash (0.1.0)
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
-  - Alamofire (4.8.0)
-  - AlamofireImage (3.5.0):
-    - Alamofire (~> 4.8)
-  - AppCenter (1.11.0):
-    - AppCenter/Analytics (= 1.11.0)
-    - AppCenter/Crashes (= 1.11.0)
-  - AppCenter/Analytics (1.11.0):
+  - Alamofire (5.0.0.beta.1)
+  - AppCenter (1.12.0):
+    - AppCenter/Analytics (= 1.12.0)
+    - AppCenter/Crashes (= 1.12.0)
+  - AppCenter/Analytics (1.12.0):
     - AppCenter/Core
-  - AppCenter/Core (1.11.0)
-  - AppCenter/Crashes (1.11.0):
+  - AppCenter/Core (1.12.0)
+  - AppCenter/Crashes (1.12.0):
     - AppCenter/Core
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
@@ -86,7 +65,7 @@ PODS:
     - CocoaLumberjack
     - CocoaLumberjack/Swift
     - Crashlytics
-  - DeviceKit (1.10.0)
+  - DeviceKit (1.11.0)
   - Fabric (1.9.0)
   - Files (2.2.1)
   - FMDB (2.7.5):
@@ -101,6 +80,7 @@ PODS:
   - iOSSnapshotTestCase/SwiftSupport (4.0.1):
     - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
+  - Kingfisher (5.0.1)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (1.0.0)
@@ -111,8 +91,12 @@ PODS:
     - Result (~> 4.0)
   - Result (4.0.0)
   - Reveal-SDK (20)
+  - RxAtomic (4.4.0)
+  - RxCocoa (4.4.0):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
   - SnapKit (4.2.0)
-  - SwiftyJSON (4.1.0)
   - TextAttributes (1.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
@@ -184,9 +168,15 @@ DEPENDENCIES:
   - AcknowList
   - ActionSheetPicker-3.0
   - AFNetworking
-  - Ainoaibo (from `./Frameworks/Ainoaibo`)
-  - Alamofire
-  - AlamofireImage
+  - Ainoaibo/DefaultsBasedSettings (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/InMemoryLogger (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/InMemoryLogViewer (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/LogFormatters (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/OSLogger (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/Stash (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/StateTransition (from `./Frameworks/Ainoaibo`)
+  - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
+  - Alamofire (= 5.0.0.beta.1)
   - AppCenter
   - CocoaLumberjack
   - CocoaLumberjack/Swift
@@ -202,6 +192,7 @@ DEPENDENCIES:
   - HorizontalFloatingHeaderLayout
   - iOSSnapshotTestCase
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
+  - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - QuickTableViewController
@@ -209,8 +200,9 @@ DEPENDENCIES:
   - ReactiveCocoa
   - ReactiveSwift
   - Reveal-SDK
+  - RxCocoa
+  - RxSwift
   - SnapKit
-  - SwiftyJSON (from `https://github.com/ainopara/SwiftyJSON.git`)
   - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
   - YYKeyboardManager
@@ -222,7 +214,6 @@ SPEC REPOS:
     - ActionSheetPicker-3.0
     - AFNetworking
     - Alamofire
-    - AlamofireImage
     - AppCenter
     - CocoaLumberjack
     - CodableExtensions
@@ -235,6 +226,7 @@ SPEC REPOS:
     - Fuzi
     - HorizontalFloatingHeaderLayout
     - iOSSnapshotTestCase
+    - Kingfisher
     - Masonry
     - QuickTableViewController
     - Reachability
@@ -242,6 +234,9 @@ SPEC REPOS:
     - ReactiveSwift
     - Result
     - Reveal-SDK
+    - RxAtomic
+    - RxCocoa
+    - RxSwift
     - SnapKit
     - TextAttributes
     - YYKeyboardManager
@@ -255,8 +250,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/ainopara/JTSImageViewController.git
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  SwiftyJSON:
-    :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
     :branch: stage
     :git: https://github.com/ainopara/YapDatabase.git
@@ -271,27 +264,23 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
-  SwiftyJSON:
-    :commit: f652507be7d2159fb98adcebf65c6f9b5fa0f5f2
-    :git: https://github.com/ainopara/SwiftyJSON.git
   YapDatabase:
     :commit: a5806fb13a62375d0f53719518710d5dabf7dc6d
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
-  AcknowList: 286185b24c2c2df63a2bb4137f853e4384b4358b
+  AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  Ainoaibo: 352a156a00081b26f73c32632d061bc719efd2f3
-  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  AlamofireImage: 1aea346f4dda2f6c67622fa5a89fcbb80d79cc16
-  AppCenter: 3bccf8d733e337d0db574dd4cb0e33ab9637b7f2
+  Ainoaibo: f9b5d652c2aa548e99bf3d740d9998226015127f
+  Alamofire: 2ef6d6c984c5d21c366e9b41a9ae7dfee2b67a44
+  AppCenter: 4d27bdafd74b1b3e90946b9989fd6011a7e39c5e
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   CrashlyticsLogger: c21938d9fde27884d8341173aeba482a9e30f01a
-  DeviceKit: 2a6cf0d1ec05e2ac7f9b24cdfdb3cb358900a247
+  DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -300,6 +289,7 @@ SPEC CHECKSUMS:
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   iOSSnapshotTestCase: f3b2b7e606fe03fdbe49af84316bd235df32dc44
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
+  Kingfisher: 4f771421b9208185217550528a06fd48756cb7c2
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: a49fb6dc5623b9dbe301a03ac5c563099e234fbc
@@ -308,12 +298,14 @@ SPEC CHECKSUMS:
   ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
   Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
   Reveal-SDK: 43206a57f575632fd304e85385cc259b5d359e32
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 930a02788954c3473ba3f98cbed6a869ebe10d35
+PODFILE CHECKSUM: 11818a1a55b8dbb93cea64e6668bce013cc8fece
 
 COCOAPODS: 1.5.3

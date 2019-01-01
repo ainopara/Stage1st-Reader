@@ -7,34 +7,16 @@
 //
 
 import Alamofire
-import AlamofireImage
-import JTSImageViewController
+import Kingfisher
 
 final class MahjongFaceCell: UICollectionViewCell {
     let imageView = UIImageView(frame: .zero)
-
-    static let imageDownloader: ImageDownloader = {
-        let downloader = ImageDownloader()
-
-        downloader.imageResponseSerializer = DataResponseSerializer { request, response, data, error in
-            guard error == nil else { return .failure(error!) }
-
-            if let image = JTSAnimatedGIFUtility.animatedImage(withAnimatedGIFData: data) {
-                return .success(image)
-            } else {
-                return DataRequest.imageResponseSerializer().serializeResponse(request, response, data, error)
-            }
-        }
-
-        return downloader
-    }()
 
     static let placeholderImage = UIImage(named: "MahjongFacePlaceholder")
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        imageView.af_imageDownloader = MahjongFaceCell.imageDownloader
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in
             make.center.equalTo(self.contentView)
@@ -46,13 +28,13 @@ final class MahjongFaceCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
-        self.imageView.af_cancelImageRequest()
+        self.imageView.kf.cancelDownloadTask()
     }
 
     func configure(with item: MahjongFaceInputView.Category.Item) {
-        self.imageView.af_setImage(withURL: item.url, placeholderImage: MahjongFaceCell.placeholderImage)
-        self.imageView.snp.remakeConstraints { (make) in
-            make.center.equalTo(self.contentView)
+        imageView.kf.setImage(with: item.url, placeholder: MahjongFaceCell.placeholderImage)
+        imageView.snp.remakeConstraints { (make) in
+            make.center.equalTo(contentView)
             make.width.equalTo(item.width)
             make.height.equalTo(item.height)
         }

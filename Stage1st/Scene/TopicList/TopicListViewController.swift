@@ -437,9 +437,9 @@ extension TopicListViewController: UINavigationBarDelegate {
 
 extension TopicListViewController {
     @objc func settings(_ sender: Any) {
-        let navi = UINavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
-        self.present(navi, animated: true, completion: nil)
-        return;
+//        let navi = UINavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
+//        self.present(navi, animated: true, completion: nil)
+//        return;
         let storyboard = UIStoryboard(name: "Settings", bundle: nil)
         let settingsViewController = storyboard.instantiateViewController(withIdentifier: "SettingsNavigation")
         self.present(settingsViewController, animated: true, completion: nil)

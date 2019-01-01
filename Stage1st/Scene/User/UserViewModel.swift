@@ -22,7 +22,7 @@ class UserViewModel {
         self.user = MutableProperty(user)
 
         isBlocked = self.user
-            .map({ dataCenter.userIDIsBlocked(ID: $0.ID) })
+            .map({ dataCenter.userIDIsBlocked(ID: $0.id) })
             .producer
 
         username = self.user
@@ -32,7 +32,7 @@ class UserViewModel {
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
-        dataCenter.apiManager.profile(userID: user.value.ID) { [weak self] result in
+        dataCenter.apiManager.profile(userID: user.value.id) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case let .success(user):
@@ -44,34 +44,12 @@ class UserViewModel {
         }
     }
 
-    func infoLabelText() -> String {
-        var infoLabelString = ""
-
-        if let lastVisitDateString = user.value.lastVisitDateString {
-            infoLabelString += "最后访问：\n\(lastVisitDateString)\n"
-        }
-        if let registerDateString = user.value.registerDateString {
-            infoLabelString += "注册日期：\n\(registerDateString)\n"
-        }
-        if let threadCount = user.value.threadCount {
-            infoLabelString += "发帖数：\n\(threadCount)\n"
-        }
-        if let postCount = user.value.postCount {
-            infoLabelString += "回复数：\n\(postCount)\n"
-        }
-        if let sigHTML = user.value.sigHTML {
-            infoLabelString += "签名：\n\(sigHTML.s1_htmlStripped(trimWhitespace: false) ?? sigHTML)\n"
-        }
-
-        return infoLabelString
-    }
-
     func toggleBlockStatus() {
-        let isBlocked = dataCenter.userIDIsBlocked(ID: user.value.ID)
+        let isBlocked = dataCenter.userIDIsBlocked(ID: user.value.id)
         if isBlocked {
-            dataCenter.blockUser(with: user.value.ID)
+            dataCenter.blockUser(with: user.value.id)
         } else {
-            dataCenter.unblockUser(with: user.value.ID)
+            dataCenter.unblockUser(with: user.value.id)
         }
 
         user.value = user.value

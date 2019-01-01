@@ -112,7 +112,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     copy->_lastViewedPosition = _lastViewedPosition;
     copy->_authorUserID = _authorUserID;
     copy->_authorUserName = _authorUserName;
-    copy->_totalPageCount = _totalPageCount;
     copy->_fID = _fID;
     copy->_formhash = _formhash;
     copy->_lastViewedPage = _lastViewedPage;
@@ -183,7 +182,6 @@ static NSString *const k_favoriteDate = @"favoriteDate";
 + (NSMutableDictionary *)mappings_localKeyToCloudKey {
     NSMutableDictionary *mappings_localKeyToCloudKey = [super mappings_localKeyToCloudKey];
     [mappings_localKeyToCloudKey removeObjectForKey:@"formhash"];
-    [mappings_localKeyToCloudKey removeObjectForKey:@"totalPageCount"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"floors"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"message"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyCount"];
