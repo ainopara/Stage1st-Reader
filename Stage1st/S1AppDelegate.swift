@@ -251,6 +251,16 @@ extension S1AppDelegate {
         osLogger.logFormatter = formatter
         DDLog.add(osLogger)
 
+        let inMemoryLogFormatter = DDMultiFormatter()
+        inMemoryLogFormatter.add(FileLogFormatter())
+        inMemoryLogFormatter.add(queueFormatter)
+        inMemoryLogFormatter.add(ErrorLevelLogFormatter())
+        inMemoryLogFormatter.add(DateLogFormatter())
+
+        let inMemoryLogger = InMemoryLogger.shared
+        inMemoryLogger.logFormatter = inMemoryLogFormatter
+        DDLog.add(inMemoryLogger)
+
         #else
 
         defaultDebugLevel = .debug
