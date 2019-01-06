@@ -138,12 +138,6 @@
         return 0.0;
     }
 
-    if (indexPath.section == 0 && indexPath.row == 9) {
-#ifndef DEBUG
-        return 0.0;
-#endif
-    }
-
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
