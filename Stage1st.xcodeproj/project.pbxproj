@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		227E524DA1649A1734CF6F8A /* Pods_Stage1st.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02C50BA390A6FD7AE28E6DE4 /* Pods_Stage1st.framework */; };
-		366714091E4C4CD400813310 /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366714081E4C4CD400813310 /* Field.swift */; };
+		366714091E4C4CD400813310 /* Forum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366714081E4C4CD400813310 /* Forum.swift */; };
 		3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF3E1E763DD600629E25 /* AppEnvironment.swift */; };
 		3674BF411E763DE100629E25 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF401E763DE100629E25 /* Environment.swift */; };
 		36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE3F481E962126006C5984 /* ServerAddress.swift */; };
@@ -65,6 +65,11 @@
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */; };
 		8655449321E1E20F007B7557 /* S1TabBarSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */; };
+		865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544A721E2379D007B7557 /* DiscuzClient+Search.swift */; };
+		865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */; };
+		865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B021E238AB007B7557 /* DiscuzClient+Report.swift */; };
+		865544B421E23A0D007B7557 /* RawForum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B321E23A0D007B7557 /* RawForum.swift */; };
+		865544B621E23A22007B7557 /* RawFloorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B521E23A22007B7557 /* RawFloorList.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A892D21CDFD0400692C7D /* DiscuzError.swift */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
@@ -115,7 +120,7 @@
 		86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AD218DB379002C2A66 /* StringDateTransformer.swift */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
 		86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */; };
-		86DD319F1D129406009C2F44 /* Poll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* Poll.swift */; };
+		86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* RawPoll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
 		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
@@ -222,7 +227,7 @@
 /* Begin PBXFileReference section */
 		00D0B1A9C926E01B7ECBC066 /* Pods_Stage1stTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1stTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02C50BA390A6FD7AE28E6DE4 /* Pods_Stage1st.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1st.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		366714081E4C4CD400813310 /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
+		366714081E4C4CD400813310 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
 		3674BF3E1E763DD600629E25 /* AppEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		3674BF401E763DE100629E25 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		36BE3F481E962126006C5984 /* ServerAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerAddress.swift; sourceTree = "<group>"; };
@@ -306,6 +311,11 @@
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorProcessTests.swift; sourceTree = "<group>"; };
 		8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1TabBarSnapshotTests.swift; sourceTree = "<group>"; };
+		865544A721E2379D007B7557 /* DiscuzClient+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Search.swift"; sourceTree = "<group>"; };
+		865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Profile.swift"; sourceTree = "<group>"; };
+		865544B021E238AB007B7557 /* DiscuzClient+Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Report.swift"; sourceTree = "<group>"; };
+		865544B321E23A0D007B7557 /* RawForum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawForum.swift; sourceTree = "<group>"; };
+		865544B521E23A22007B7557 /* RawFloorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawFloorList.swift; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		865A892D21CDFD0400692C7D /* DiscuzError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscuzError.swift; sourceTree = "<group>"; };
@@ -363,7 +373,7 @@
 		86B464AD218DB379002C2A66 /* StringDateTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDateTransformer.swift; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
 		86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceInputView.swift; sourceTree = "<group>"; };
-		86DD319E1D129406009C2F44 /* Poll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poll.swift; sourceTree = "<group>"; };
+		86DD319E1D129406009C2F44 /* RawPoll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawPoll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
 		86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewEventDelegate.swift; sourceTree = "<group>"; };
 		86E4396D1BEC471900027FFA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Settings.strings; sourceTree = "<group>"; };
@@ -585,6 +595,22 @@
 			path = Content;
 			sourceTree = "<group>";
 		};
+		865544B221E239BD007B7557 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				86B464AF218DB3C3002C2A66 /* Transformers */,
+				86654BF4217B80A300F50A90 /* RawTopicList.swift */,
+				865544B521E23A22007B7557 /* RawFloorList.swift */,
+				865544B321E23A0D007B7557 /* RawForum.swift */,
+				86654BFC217C61B700F50A90 /* NoticeCount.swift */,
+				86654BF6217C614200F50A90 /* ReplyNotice.swift */,
+				86654BFE217C61D500F50A90 /* RawNoticeList.swift */,
+				86B464A9218D4FEC002C2A66 /* RawMessage.swift */,
+				86DD319E1D129406009C2F44 /* RawPoll.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		865BE0E91AB6F03B0097BB59 /* MahjongFaceInputView */ = {
 			isa = PBXGroup;
 			children = (
@@ -632,9 +658,13 @@
 		866756AA21DB951B00D71479 /* DiscuzClient */ = {
 			isa = PBXGroup;
 			children = (
+				865544B221E239BD007B7557 /* Models */,
 				86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */,
 				86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */,
 				866756A821DB5F7800D71479 /* DiscuzClient+Login.swift */,
+				865544A721E2379D007B7557 /* DiscuzClient+Search.swift */,
+				865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */,
+				865544B021E238AB007B7557 /* DiscuzClient+Report.swift */,
 			);
 			path = DiscuzClient;
 			sourceTree = "<group>";
@@ -750,6 +780,7 @@
 		86B464AF218DB3C3002C2A66 /* Transformers */ = {
 			isa = PBXGroup;
 			children = (
+				86654C00217C623800F50A90 /* DiscuzCommonInfo.swift */,
 				86654BF8217C616800F50A90 /* StringIntTransformer.swift */,
 				86654BFA217C619000F50A90 /* StringDoubleTransformer.swift */,
 				86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */,
@@ -897,19 +928,11 @@
 				860573581B762C3B00C70781 /* MyDatabaseObject.m */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
-				366714081E4C4CD400813310 /* Field.swift */,
+				366714081E4C4CD400813310 /* Forum.swift */,
 				8681E6B61CEF4683004269D3 /* Topic.swift */,
 				86319B401CA69EEB004F7586 /* Floor.swift */,
 				862DB7A91C8AB1870068F75F /* User.swift */,
-				86DD319E1D129406009C2F44 /* Poll.swift */,
 				36BE3F481E962126006C5984 /* ServerAddress.swift */,
-				86B464AF218DB3C3002C2A66 /* Transformers */,
-				86654BF4217B80A300F50A90 /* RawTopicList.swift */,
-				86654C00217C623800F50A90 /* DiscuzCommonInfo.swift */,
-				86654BFC217C61B700F50A90 /* NoticeCount.swift */,
-				86654BF6217C614200F50A90 /* ReplyNotice.swift */,
-				86654BFE217C61D500F50A90 /* RawNoticeList.swift */,
-				86B464A9218D4FEC002C2A66 /* RawMessage.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1320,6 +1343,7 @@
 				3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */,
 				86654C01217C623800F50A90 /* DiscuzCommonInfo.swift in Sources */,
 				8634ADA81FAAF309004A9CB7 /* S1Animator.swift in Sources */,
+				865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */,
 				86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */,
 				8671E5711CFDEB3E00F4A854 /* UserViewModel.swift in Sources */,
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
@@ -1327,6 +1351,7 @@
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
 				86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */,
 				860223521895051400A3E66E /* S1Global.m in Sources */,
+				865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */,
 				8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */,
 				8681E6B71CEF4683004269D3 /* Topic.swift in Sources */,
 				86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */,
@@ -1348,20 +1373,23 @@
 				8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */,
 				86F9CD5021B394AA0015FA3D /* NoticeViewModel.swift in Sources */,
 				C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */,
+				865544B621E23A22007B7557 /* RawFloorList.swift in Sources */,
 				8634ADE71FAAF3C2004A9CB7 /* MessageHUD.swift in Sources */,
 				86654BF9217C616800F50A90 /* StringIntTransformer.swift in Sources */,
 				C05286C316D3428E000B0DBD /* S1Parser.m in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */,
+				865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */,
 				8667FD0120D3D254000C5432 /* ReplyViewModel.swift in Sources */,
 				86221B861CA65E3600015522 /* Utilities.swift in Sources */,
-				366714091E4C4CD400813310 /* Field.swift in Sources */,
+				366714091E4C4CD400813310 /* Forum.swift in Sources */,
 				8679AFB220B59A55007A73B2 /* S1ArchiveListViewModel.swift in Sources */,
 				8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */,
 				8634ADEB1FAAF3C2004A9CB7 /* AnimationUtilities.swift in Sources */,
 				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
 				86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */,
+				865544B421E23A0D007B7557 /* RawForum.swift in Sources */,
 				86654BF7217C614200F50A90 /* ReplyNotice.swift in Sources */,
 				866756A921DB5F7800D71479 /* DiscuzClient+Login.swift in Sources */,
 				86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */,
@@ -1378,7 +1406,7 @@
 				86A1834420845F08000F5F8A /* CloudKitManager.swift in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
-				86DD319F1D129406009C2F44 /* Poll.swift in Sources */,
+				86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */,
 				36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */,
 				8634ADEF1FAAF3C2004A9CB7 /* GSRow.m in Sources */,
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,

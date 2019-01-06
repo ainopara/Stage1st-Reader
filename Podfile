@@ -26,29 +26,34 @@ target "Stage1st" do
     pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'stage'
 
+    # XML
+    pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
+    pod 'Fuzi', '~> 2.1'
+    pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
+
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'ReactiveCocoa'
-    pod 'ReactiveSwift'
+    pod 'CrashlyticsLogger', '~> 0.3.1'
 
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'AppCenter'
-    pod 'Reachability'
     pod 'Reveal-SDK', :configurations => ['Debug']
-#    pod 'FBMemoryProfiler'
+
+    # RAC
+    pod 'ReactiveSwift'
+    pod 'ReactiveCocoa'
 
     # Others
-    pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
-    pod 'Fuzi', '~> 2.1'
-    pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
+    pod 'Reachability'
     pod '1PasswordExtension'
     pod 'AcknowList'
     pod 'QuickTableViewController'
     pod 'Files'
     pod 'DeviceKit'
-    pod 'CrashlyticsLogger', '~> 0.3.1'
+
+    # Aibo
     pod 'Ainoaibo/OSLogger', :path => './Frameworks/Ainoaibo'
     pod 'Ainoaibo/InMemoryLogger', :path => './Frameworks/Ainoaibo'
     pod 'Ainoaibo/InMemoryLogViewer', :path => './Frameworks/Ainoaibo'

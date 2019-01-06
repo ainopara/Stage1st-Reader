@@ -74,7 +74,6 @@ class S1LoggerTag: OSLoggerTag {
 }
 
 extension OSLog {
-    @available(iOS 10.0, *)
     convenience init(subsystem: LogSubsystem, category: LogCategory) {
         self.init(subsystem: subsystem.description, category: category.description)
     }
