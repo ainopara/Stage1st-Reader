@@ -31,8 +31,6 @@ target "Stage1st" do
     pod 'CocoaLumberjack/Swift'
     pod 'ReactiveCocoa'
     pod 'ReactiveSwift'
-    pod 'RxSwift'
-    pod 'RxCocoa'
 
     pod 'Fabric'
     pod 'Crashlytics'
