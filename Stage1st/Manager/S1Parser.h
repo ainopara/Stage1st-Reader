@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface S1Parser : NSObject
 
-+ (NSArray *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
++ (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
 
-+ (NSMutableDictionary *_Nullable)replyFloorInfoFromResponseString:(NSString *)ResponseString;
++ (NSMutableDictionary<NSString *, id> *_Nullable)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 + (S1Topic *_Nullable)extractTopicInfoFromLink:(NSString *)URLString;
 + (NSDictionary<NSString *, NSString *> *_Nullable)extractQuerysFromURLString:(NSString *)URLString;
 

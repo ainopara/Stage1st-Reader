@@ -16,28 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithBaseURL:(NSString *)baseURL;
 
-#pragma mark - Reply
-
-- (void)requestReplyRefereanceContentForTopicID:(NSNumber *)topicID
-                                       withPage:(NSNumber *)page
-                                        floorID:(NSNumber *)floorID
-                                        forumID:(NSNumber *)forumID
-                                        success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                                        failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-// Reply Specific Floor.
-- (void)postReplyForTopicID:(NSNumber *)topicID
-                   withPage:(NSNumber *)page
-                    forumID:(NSNumber *)forumID
-                  andParams:(NSDictionary *)params
-                    success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                    failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-// Reply Topic.
-- (void)postReplyForTopicID:(NSNumber *)topicID
-                    forumID:(NSNumber *)forumID
-                  andParams:(NSDictionary *)params
-                    success:(void (^)(NSURLSessionDataTask *task, id _Nullable responseObject))success
-                    failure:(void (^)(NSURLSessionDataTask *_Nullable task, NSError *error))failure;
-
 #pragma mark - User Info
 
 - (void)requestThreadListForID:(NSNumber *)userID

@@ -51,4 +51,48 @@ public extension DiscuzClient {
         return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters)
             .responseDecodable(completionHandler: completion)
     }
+
+    @discardableResult
+    public func threadList(
+        for userID: Int,
+        page: Int,
+        completion: @escaping (DataResponse<Data>) -> Void
+    ) -> DataRequest {
+
+        let parameters: Parameters = [
+            "mod": "space",
+            "uid": userID,
+            "do": "thread",
+            "view": "me",
+            "from": "space",
+            "type": "thread",
+            "page": page,
+            "order": "dateline"
+        ]
+
+        return AF.request(baseURL + "/home.php", parameters: parameters)
+            .responseData(completionHandler: completion)
+    }
+
+    @discardableResult
+    public func replyList(
+        for userID: Int,
+        page: Int,
+        completion: @escaping (DataResponse<Data>) -> Void
+    ) -> DataRequest {
+
+        let parameters: Parameters = [
+            "mod": "space",
+            "uid": userID,
+            "do": "thread",
+            "view": "me",
+            "from": "space",
+            "type": "reply",
+            "page": page,
+            "order": "dateline"
+        ]
+
+        return AF.request(baseURL + "/home.php", parameters: parameters)
+            .responseData(completionHandler: completion)
+    }
 }

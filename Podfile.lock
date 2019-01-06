@@ -2,21 +2,6 @@ PODS:
   - 1PasswordExtension (1.8.5)
   - AcknowList (1.8)
   - ActionSheetPicker-3.0 (2.3.0)
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
-  - AFNetworking/UIKit (3.2.1):
-    - AFNetworking/NSURLSession
   - Ainoaibo/DefaultsBasedSettings (0.1.0):
     - Ainoaibo/Logging
     - ReactiveSwift
@@ -163,7 +148,6 @@ DEPENDENCIES:
   - 1PasswordExtension
   - AcknowList
   - ActionSheetPicker-3.0
-  - AFNetworking
   - Ainoaibo/DefaultsBasedSettings (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/InMemoryLogger (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/InMemoryLogViewer (from `./Frameworks/Ainoaibo`)
@@ -207,7 +191,6 @@ SPEC REPOS:
     - 1PasswordExtension
     - AcknowList
     - ActionSheetPicker-3.0
-    - AFNetworking
     - Alamofire
     - AppCenter
     - CocoaLumberjack
@@ -265,7 +248,6 @@ SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
-  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   Ainoaibo: f9b5d652c2aa548e99bf3d740d9998226015127f
   Alamofire: 2ef6d6c984c5d21c366e9b41a9ae7dfee2b67a44
   AppCenter: 4d27bdafd74b1b3e90946b9989fd6011a7e39c5e
@@ -297,6 +279,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 6caf641df6c446d250d4842f378611a6b643d69b
+PODFILE CHECKSUM: 78f7f61a52a7bd7ea36b75f8822787298d53f139
 
 COCOAPODS: 1.5.3

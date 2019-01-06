@@ -13,7 +13,6 @@ import Alamofire
 
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
-    let networkManager: S1NetworkManager
     let tracer: S1YapDatabaseAdapter
     let cacheDatabaseManager: CacheDatabaseManager
 
@@ -25,12 +24,10 @@ class DataCenter: NSObject {
 
     init(
         apiManager: DiscuzClient,
-        networkManager: S1NetworkManager,
         databaseManager: DatabaseManager,
         cacheDatabaseManager: CacheDatabaseManager
     ) {
         self.apiManager = apiManager
-        self.networkManager = networkManager
         tracer = S1YapDatabaseAdapter(database: databaseManager)
         self.cacheDatabaseManager = cacheDatabaseManager
     }
@@ -284,56 +281,75 @@ extension DataCenter {
 }
 
 // MARK: Reply
+
 extension DataCenter {
+
     func reply(topic: S1Topic, text: String, successblock: @escaping () -> Void, failureBlock: @escaping (Error) -> Void) {
         guard let formhash = topic.formhash, let forumID = topic.fID else {
             failureBlock("fID or formhash missing.")
             return
         }
-        let parameters = [
-            "posttime": "\(Int(Date().timeIntervalSinceNow))",
-            "formhash": formhash,
-            "usesig": "1",
-            "subject": "",
-            "message": text,
-        ]
 
-        networkManager.postReply(forTopicID: topic.topicID, forumID: forumID, andParams: parameters, success: { _, _ in
-            successblock()
-        }) { _, error in
-            failureBlock(error)
+        apiManager.quickReply(
+            topicID: Int(truncating: topic.topicID),
+            forumID: Int(truncating: forumID),
+            formhash: formhash,
+            text: text
+        ) { (result) in
+            switch result {
+            case .success:
+                successblock()
+            case .failure(let error):
+                failureBlock(error)
+            }
         }
     }
 
-    func reply(floor: Floor, in topic: S1Topic, at page: Int, text: String,
-               successblock: @escaping () -> Void, failureBlock: @escaping (Error) -> Void) {
+    func reply(floor: Floor, in topic: S1Topic, at page: Int, text: String, successblock: @escaping () -> Void, failureBlock: @escaping (Error) -> Void) {
         guard let forumID = topic.fID else {
             failureBlock("fID missing.")
             return
         }
 
-        networkManager.requestReplyRefereanceContent(forTopicID: topic.topicID, withPage: page as NSNumber, floorID: floor.id as NSNumber, forumID: forumID, success: { [weak self] _, responseObject in
-            guard let strongSelf = self else { return }
-            guard let responseData = responseObject as? Data,
-                let responseString = String(data: responseData, encoding: .utf8),
-                let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString) else {
+        apiManager.replyReferenceContent(
+            topicID: Int(truncating: topic.topicID),
+            page: page,
+            floorID: floor.id,
+            forumID: Int(truncating: forumID),
+            completion: { [weak self] result in
+                guard let strongSelf = self else { return }
+                switch result {
+                case .success(let data):
+                    guard
+                        let responseString = String(data: data, encoding: .utf8),
+                        let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString)
+                    else {
+                        failureBlock("bad response from server.")
+                        return
+                    }
 
-                failureBlock("bad response from server.")
-                return
+                    mutableParameters["replysubmit"] = "true"
+                    mutableParameters["message"] = text
+
+                    strongSelf.apiManager.reply(
+                        topicID: Int(truncating: topic.topicID),
+                        page: page,
+                        forumID: Int(truncating: forumID),
+                        parameters: mutableParameters as! [String: Any],
+                        completion: { result in
+                            switch result {
+                            case .success:
+                                successblock()
+                            case .failure(let error):
+                                failureBlock(error)
+                            }
+                        }
+                    )
+                case .failure(let error):
+                    failureBlock(error)
+                }
             }
-
-            mutableParameters["replysubmit"] = "true"
-            mutableParameters["message"] = text
-
-            strongSelf.networkManager.postReply(forTopicID: topic.topicID, withPage: page as NSNumber, forumID: forumID, andParams: mutableParameters as! [AnyHashable: Any], success: { _, _ in
-                successblock()
-            }, failure: { _, error in
-                failureBlock(error)
-            })
-
-        }) { _, error in
-            failureBlock(error)
-        }
+        )
     }
 }
 
@@ -429,7 +445,6 @@ extension DataCenter {
 
 extension DataCenter {
     func cancelRequest() {
-        networkManager.cancelRequest()
         while let request = workingRequests.popLast() {
             request.cancel()
         }

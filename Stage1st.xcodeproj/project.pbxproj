@@ -16,7 +16,6 @@
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
-		86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
 		860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */; };
 		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
@@ -70,6 +69,7 @@
 		865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B021E238AB007B7557 /* DiscuzClient+Report.swift */; };
 		865544B421E23A0D007B7557 /* RawForum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B321E23A0D007B7557 /* RawForum.swift */; };
 		865544B621E23A22007B7557 /* RawFloorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B521E23A22007B7557 /* RawFloorList.swift */; };
+		865544B821E23C4B007B7557 /* DiscuzClient+Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A892D21CDFD0400692C7D /* DiscuzError.swift */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
@@ -139,7 +139,6 @@
 		86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3271CB95F1500EF742A /* ContentViewController.swift */; };
 		B6246405E9453D3472C8DC49 /* Pods_Stage1stTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D0B1A9C926E01B7ECBC066 /* Pods_Stage1stTests.framework */; };
 		C05286C316D3428E000B0DBD /* S1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C216D3428E000B0DBD /* S1Parser.m */; };
-		C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */; };
 		C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F716E22E1F0035C1AA /* S1TabBar.m */; };
 		C083351616E34DCF0035C1AA /* ForumKeyMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083351516E34DCF0035C1AA /* ForumKeyMap.plist */; };
 		C083351916E363870035C1AA /* S1Tracer.m in Sources */ = {isa = PBXBuildFile; fileRef = C083351816E363870035C1AA /* S1Tracer.m */; };
@@ -237,8 +236,6 @@
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
-		86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1NetworkManager.h; sourceTree = "<group>"; };
-		86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1NetworkManager.m; sourceTree = "<group>"; };
 		8605734E1B7623A300C70781 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1YapDatabaseAdapter.h; sourceTree = "<group>"; };
 		860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1YapDatabaseAdapter.m; sourceTree = "<group>"; };
@@ -316,6 +313,7 @@
 		865544B021E238AB007B7557 /* DiscuzClient+Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Report.swift"; sourceTree = "<group>"; };
 		865544B321E23A0D007B7557 /* RawForum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawForum.swift; sourceTree = "<group>"; };
 		865544B521E23A22007B7557 /* RawFloorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawFloorList.swift; sourceTree = "<group>"; };
+		865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Reply.swift"; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		865A892D21CDFD0400692C7D /* DiscuzError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscuzError.swift; sourceTree = "<group>"; };
@@ -395,8 +393,6 @@
 		86FFD3271CB95F1500EF742A /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		C05286C116D3428E000B0DBD /* S1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Parser.h; sourceTree = "<group>"; };
 		C05286C216D3428E000B0DBD /* S1Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Parser.m; sourceTree = "<group>"; };
-		C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1HTTPSessionManager.h; sourceTree = "<group>"; };
-		C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1HTTPSessionManager.m; sourceTree = "<group>"; };
 		C08334F616E22E1F0035C1AA /* S1TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1TabBar.h; sourceTree = "<group>"; };
 		C08334F716E22E1F0035C1AA /* S1TabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1TabBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C083351516E34DCF0035C1AA /* ForumKeyMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumKeyMap.plist; sourceTree = "<group>"; };
@@ -598,7 +594,6 @@
 		865544B221E239BD007B7557 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				86B464AF218DB3C3002C2A66 /* Transformers */,
 				86654BF4217B80A300F50A90 /* RawTopicList.swift */,
 				865544B521E23A22007B7557 /* RawFloorList.swift */,
 				865544B321E23A0D007B7557 /* RawForum.swift */,
@@ -609,6 +604,15 @@
 				86DD319E1D129406009C2F44 /* RawPoll.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		865544B921E246A1007B7557 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				86B464AF218DB3C3002C2A66 /* Transformers */,
+				86EFEE5621CDFE4700A8A8BB /* MultipartFormEncoding.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		865BE0E91AB6F03B0097BB59 /* MahjongFaceInputView */ = {
@@ -658,13 +662,16 @@
 		866756AA21DB951B00D71479 /* DiscuzClient */ = {
 			isa = PBXGroup;
 			children = (
+				865544B921E246A1007B7557 /* Utilities */,
 				865544B221E239BD007B7557 /* Models */,
+				865A892D21CDFD0400692C7D /* DiscuzError.swift */,
 				86FEACE51CDF5F5B00ECD694 /* DiscuzClient.swift */,
 				86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */,
 				866756A821DB5F7800D71479 /* DiscuzClient+Login.swift */,
 				865544A721E2379D007B7557 /* DiscuzClient+Search.swift */,
 				865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */,
 				865544B021E238AB007B7557 /* DiscuzClient+Report.swift */,
+				865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */,
 			);
 			path = DiscuzClient;
 			sourceTree = "<group>";
@@ -728,7 +735,6 @@
 			children = (
 				866756AA21DB951B00D71479 /* DiscuzClient */,
 				8634ADA11FAAEF0C004A9CB7 /* Navigation */,
-				C08A440D16DA775F003BF44C /* Networking */,
 				86A5AD871B56BAAE00E80790 /* Database */,
 				860F11C61E4EC21E00875AB9 /* DataCenter.swift */,
 				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
@@ -816,19 +822,6 @@
 				865BE0E91AB6F03B0097BB59 /* MahjongFaceInputView */,
 			);
 			path = Reply;
-			sourceTree = "<group>";
-		};
-		C08A440D16DA775F003BF44C /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				86040B8119DE3B0B004BF2BC /* S1NetworkManager.h */,
-				86040B8219DE3B0B004BF2BC /* S1NetworkManager.m */,
-				C05286C416D3B881000B0DBD /* S1HTTPSessionManager.h */,
-				C05286C516D3B881000B0DBD /* S1HTTPSessionManager.m */,
-				865A892D21CDFD0400692C7D /* DiscuzError.swift */,
-				86EFEE5621CDFE4700A8A8BB /* MultipartFormEncoding.swift */,
-			);
-			path = Networking;
 			sourceTree = "<group>";
 		};
 		C095872B16CA8A36007E0119 = {
@@ -928,8 +921,8 @@
 				860573581B762C3B00C70781 /* MyDatabaseObject.m */,
 				C095877D16CA8E7E007E0119 /* S1Topic.h */,
 				C095877E16CA8E7E007E0119 /* S1Topic.m */,
-				366714081E4C4CD400813310 /* Forum.swift */,
 				8681E6B61CEF4683004269D3 /* Topic.swift */,
+				366714081E4C4CD400813310 /* Forum.swift */,
 				86319B401CA69EEB004F7586 /* Floor.swift */,
 				862DB7A91C8AB1870068F75F /* User.swift */,
 				36BE3F481E962126006C5984 /* ServerAddress.swift */,
@@ -1185,7 +1178,6 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AcknowList/AcknowList.framework",
 				"${BUILT_PRODUCTS_DIR}/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework",
 				"${BUILT_PRODUCTS_DIR}/Ainoaibo/Ainoaibo.framework",
@@ -1216,7 +1208,6 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AcknowList.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ActionSheetPicker_3_0.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Ainoaibo.framework",
@@ -1349,7 +1340,6 @@
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
 				862501B420A13D8400B7617D /* ExceptionCatcher.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
-				86040B8319DE3B0B004BF2BC /* S1NetworkManager.m in Sources */,
 				860223521895051400A3E66E /* S1Global.m in Sources */,
 				865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */,
 				8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */,
@@ -1383,6 +1373,7 @@
 				865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */,
 				8667FD0120D3D254000C5432 /* ReplyViewModel.swift in Sources */,
 				86221B861CA65E3600015522 /* Utilities.swift in Sources */,
+				865544B821E23C4B007B7557 /* DiscuzClient+Reply.swift in Sources */,
 				366714091E4C4CD400813310 /* Forum.swift in Sources */,
 				8679AFB220B59A55007A73B2 /* S1ArchiveListViewModel.swift in Sources */,
 				8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */,
@@ -1400,7 +1391,6 @@
 				86654BF5217B80A300F50A90 /* RawTopicList.swift in Sources */,
 				86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */,
 				86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */,
-				C05286C616D3B881000B0DBD /* S1HTTPSessionManager.m in Sources */,
 				86654BFB217C619000F50A90 /* StringDoubleTransformer.swift in Sources */,
 				8634ADE61FAAF3C2004A9CB7 /* WebViewController.swift in Sources */,
 				86A1834420845F08000F5F8A /* CloudKitManager.swift in Sources */,

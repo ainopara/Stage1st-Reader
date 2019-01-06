@@ -17,7 +17,6 @@ class Environment: NSObject {
     let settings: Stage1stSettings
     let reachability: Reachability
     let apiService: DiscuzClient
-    let networkManager: S1NetworkManager
     let webKitImageDownloader: WebKitImageDownloader
     let databaseManager: DatabaseManager
     let cloudkitManager: CloudKitManager
@@ -35,7 +34,6 @@ class Environment: NSObject {
         settings: Stage1stSettings,
         reachability: Reachability,
         apiService: DiscuzClient,
-        networkManager: S1NetworkManager,
         webKitImageDownloader: WebKitImageDownloader,
         databaseManager: DatabaseManager,
         cloudkitManager: CloudKitManager,
@@ -52,7 +50,6 @@ class Environment: NSObject {
         self.reachability = reachability
         reachability.startNotifier()
         self.apiService = apiService
-        self.networkManager = networkManager
         self.webKitImageDownloader = webKitImageDownloader
         self.databaseManager = databaseManager
         self.cloudkitManager = cloudkitManager
@@ -86,7 +83,6 @@ class Environment: NSObject {
         }
 
         apiService = DiscuzClient(baseURL: serverAddress.api)
-        networkManager = S1NetworkManager(baseURL: serverAddress.page)
         webKitImageDownloader = WebKitImageDownloader(name: "ImageDownloader")
 
         databaseManager = DatabaseManager.sharedInstance()
@@ -95,7 +91,6 @@ class Environment: NSObject {
 
         dataCenter = DataCenter(
             apiManager: apiService,
-            networkManager: networkManager,
             databaseManager: databaseManager,
             cacheDatabaseManager: cacheDatabaseManager
         )
