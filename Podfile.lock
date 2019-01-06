@@ -97,6 +97,7 @@ PODS:
   - RxSwift (4.4.0):
     - RxAtomic (~> 4.4)
   - SnapKit (4.2.0)
+  - SnapshotTesting (1.1.0)
   - TextAttributes (1.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
@@ -203,6 +204,7 @@ DEPENDENCIES:
   - RxCocoa
   - RxSwift
   - SnapKit
+  - SnapshotTesting (~> 1.1)
   - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
   - YYKeyboardManager
@@ -238,6 +240,7 @@ SPEC REPOS:
     - RxCocoa
     - RxSwift
     - SnapKit
+    - SnapshotTesting
     - TextAttributes
     - YYKeyboardManager
 
@@ -302,10 +305,11 @@ SPEC CHECKSUMS:
   RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SnapshotTesting: 8ed6a4dceee63f59a60e1bc86f9adbba54eb9287
   TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 11818a1a55b8dbb93cea64e6668bce013cc8fece
+PODFILE CHECKSUM: a1573864ca0de8d98e797104a11a5cb40ebf88c6
 
 COCOAPODS: 1.5.3

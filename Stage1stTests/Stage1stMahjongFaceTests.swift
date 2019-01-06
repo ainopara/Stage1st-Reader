@@ -9,9 +9,12 @@
 import XCTest
 import Files
 import Foundation
+import ReactiveSwift
+import ReactiveCocoa
+@testable import Stage1st
 
 class Stage1stMahjongFaceTests: XCTestCase {
-    let categories = S1MahjongFaceView().categories()
+    let categories = MahjongFaceInputView().categories.value
 
     func testCategoriesInIndexAlsoExistInFileSystem() throws {
         let mahjongFaceFolderURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
