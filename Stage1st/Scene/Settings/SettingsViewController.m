@@ -53,14 +53,9 @@
     self.keepHistoryCell.selectionStyle = UITableViewCellSelectionStyleBlue;
     self.keepHistoryCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-#ifdef DEBUG
     NSUInteger totalCacheSize = [[NSURLCache sharedURLCache] currentDiskUsage];
     double prettyPrintedCacheSize = (totalCacheSize / (102 * 1024)) / 10.0;
     self.imageCacheCell.detailTextLabel.text = [NSString stringWithFormat:@"%.1f MiB", prettyPrintedCacheSize];
-#else
-    self.imageCacheCell.hidden = YES;
-#endif
-
 
     // Pull to dismiss
     self.offset = 0;
