@@ -70,6 +70,8 @@
 		865544B421E23A0D007B7557 /* RawForum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B321E23A0D007B7557 /* RawForum.swift */; };
 		865544B621E23A22007B7557 /* RawFloorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B521E23A22007B7557 /* RawFloorList.swift */; };
 		865544B821E23C4B007B7557 /* DiscuzClient+Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */; };
+		865544BC21E2498E007B7557 /* MahjongFaceImageAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544BB21E2498E007B7557 /* MahjongFaceImageAttachment.swift */; };
+		865544C321E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544C221E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift */; };
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A892D21CDFD0400692C7D /* DiscuzError.swift */; };
 		8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* S1AppDelegate.swift */; };
@@ -112,8 +114,6 @@
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
 		86A6A4EA200B86670037AB38 /* Stage1stMahjongFaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */; };
-		86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */; };
-		86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */; };
 		86B1C31C2161F41100532D06 /* MahjongFaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */; };
 		86B464AA218D4FEC002C2A66 /* RawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464A9218D4FEC002C2A66 /* RawMessage.swift */; };
 		86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */; };
@@ -314,6 +314,8 @@
 		865544B321E23A0D007B7557 /* RawForum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawForum.swift; sourceTree = "<group>"; };
 		865544B521E23A22007B7557 /* RawFloorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawFloorList.swift; sourceTree = "<group>"; };
 		865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Reply.swift"; sourceTree = "<group>"; };
+		865544BB21E2498E007B7557 /* MahjongFaceImageAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceImageAttachment.swift; sourceTree = "<group>"; };
+		865544C221E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MahjongFaceExtension.swift"; sourceTree = "<group>"; };
 		865616821AC6C48C00CFD773 /* Stage1st.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Stage1st.entitlements; sourceTree = "<group>"; };
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		865A892D21CDFD0400692C7D /* DiscuzError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscuzError.swift; sourceTree = "<group>"; };
@@ -361,10 +363,6 @@
 		86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stMahjongFaceTests.swift; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Teleport.swift"; sourceTree = "<group>"; };
-		86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1MahjongFaceTextAttachment.h; sourceTree = "<group>"; };
-		86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1MahjongFaceTextAttachment.m; sourceTree = "<group>"; };
-		86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+MahjongFaceExtension.m"; sourceTree = "<group>"; };
-		86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+MahjongFaceExtension.h"; sourceTree = "<group>"; };
 		86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceCell.swift; sourceTree = "<group>"; };
 		86B464A9218D4FEC002C2A66 /* RawMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawMessage.swift; sourceTree = "<group>"; };
 		86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBoolTransformer.swift; sourceTree = "<group>"; };
@@ -621,12 +619,10 @@
 				86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */,
 				8673EEBC2165A5B900871288 /* MahjongFaceInputHeaderView.swift */,
 				86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */,
-				86B052EE1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.h */,
-				86B052EF1B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m */,
-				86B052F11B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m */,
-				86B052F31B0B04C800CBEF54 /* NSAttributedString+MahjongFaceExtension.h */,
 				8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */,
 				8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */,
+				865544BB21E2498E007B7557 /* MahjongFaceImageAttachment.swift */,
+				865544C221E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift */,
 			);
 			path = MahjongFaceInputView;
 			sourceTree = "<group>";
@@ -1358,7 +1354,6 @@
 				868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */,
 				8661263C1CB289EF00180C6A /* S1AppDelegate.swift in Sources */,
 				8634ADE51FAAF3C2004A9CB7 /* REComposeSheetView.m in Sources */,
-				86B052F21B0B04AD00CBEF54 /* NSAttributedString+MahjongFaceExtension.m in Sources */,
 				8634ADE81FAAF3C2004A9CB7 /* ODRefreshControl.m in Sources */,
 				8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */,
 				86F9CD5021B394AA0015FA3D /* NoticeViewModel.swift in Sources */,
@@ -1385,7 +1380,9 @@
 				866756A921DB5F7800D71479 /* DiscuzClient+Login.swift in Sources */,
 				86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */,
 				8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */,
+				865544C321E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift in Sources */,
 				8634ADEA1FAAF3C2004A9CB7 /* TransitionCoordinator.swift in Sources */,
+				865544BC21E2498E007B7557 /* MahjongFaceImageAttachment.swift in Sources */,
 				86FEACE61CDF5F5B00ECD694 /* DiscuzClient.swift in Sources */,
 				8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */,
 				86654BF5217B80A300F50A90 /* RawTopicList.swift in Sources */,
@@ -1425,7 +1422,6 @@
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */,
-				86B052F01B0B039000CBEF54 /* S1MahjongFaceTextAttachment.m in Sources */,
 				8634ADF51FAAF3C2004A9CB7 /* TFHpple.m in Sources */,
 				8634ADF71FAAF3C2004A9CB7 /* XPathQuery.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,

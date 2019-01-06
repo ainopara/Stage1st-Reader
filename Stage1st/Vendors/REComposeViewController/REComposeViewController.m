@@ -26,7 +26,7 @@
 #import "REComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Masonry/Masonry.h>
-#import "NSAttributedString+MahjongFaceExtension.h"
+#import "Stage1st-Swift.h"
 
 @interface REComposeViewController () <REComposeSheetViewDelegate> {
     UIView *_backgroundView;
@@ -184,7 +184,7 @@
 }
 
 - (NSString *)plainText {
-    return [self.sheetView.textView.attributedText getPlainString];
+    return [self.sheetView.textView.attributedText s1_getPlainString];
 }
 
 - (void)setSheetBackgroundColor:(UIColor *)sheetBackgroundColor {

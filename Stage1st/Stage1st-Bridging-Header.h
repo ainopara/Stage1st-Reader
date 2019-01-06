@@ -8,7 +8,6 @@
 #import "S1HUD.h"
 #import "CloudKitManager.h"
 #import "DatabaseManager.h"
-#import "S1MahjongFaceTextAttachment.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
 #import "NavigationControllerDelegate.h"

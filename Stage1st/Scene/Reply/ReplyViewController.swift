@@ -163,9 +163,10 @@ extension ReplyViewController: REComposeViewControllerDelegate {
 
 extension ReplyViewController: MahjongFaceInputViewDelegate {
     func mahjongFaceInputView(_ inputView: MahjongFaceInputView, didTapItem item: MahjongFaceInputView.Category.Item) {
-        let attachment = S1MahjongFaceTextAttachment()
-        attachment.mahjongFaceTag = item.id
-        attachment.image = JTSAnimatedGIFUtility.animatedImage(withAnimatedGIFURL: item.url)
+        let attachment = MahjongFaceTextAttachment(
+            tag: item.id,
+            image: JTSAnimatedGIFUtility.animatedImage(withAnimatedGIFURL: item.url)
+        )
 
         // Insert Mahjong Face Attachment
         textView.textStorage.insert(NSAttributedString(attachment: attachment), at: textView.selectedRange.location)
