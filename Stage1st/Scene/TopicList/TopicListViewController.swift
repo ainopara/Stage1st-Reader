@@ -469,10 +469,18 @@ extension TopicListViewController {
     }
 
     func switchToPresenting(key: String) {
+        if AppEnvironment.current.settings.tapticFeedbackForForumSwitch.value {
+            UISelectionFeedbackGenerator().selectionChanged()
+        }
+
         viewModel.tabBarTapped(key: key)
     }
 
     func switchToPresentingKeyIfChanged(key: String) {
+        if AppEnvironment.current.settings.tapticFeedbackForForumSwitch.value {
+            UISelectionFeedbackGenerator().selectionChanged()
+        }
+
         if case let .forum(forum) = self.viewModel.model.value.target, forum.key == key {
             /// We already presenting this key, nothing to do.
         } else {

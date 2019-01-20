@@ -182,6 +182,10 @@
 "AdvancedSettingsViewController.ReverseFloorActionRow.footer" = "点击楼层功能键回复该楼层，开启此选项后，将没办法触发楼层功能键中的其他操作。";
 "AdvancedSettingsViewController.ShareWithoutImageRow.header" = "分享";
 "AdvancedSettingsViewController.ShareWithoutImageRow.title" = "分享时不带图片";
+"AdvancedSettingsViewController.TapticFeedbackRow.header" = "Taptic 反馈";
+"AdvancedSettingsViewController.TapticFeedbackRow.title" = "切换论坛时开启 Taptic 反馈";
+"AdvancedSettingsViewController.NightNodeGestureRow.header" = "夜间模式";
+"AdvancedSettingsViewController.NightNodeGestureRow.title" = "通过手势切换夜间模式";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "重置";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "重置为默认设置";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "将高级选项中的设置重置为默认设置。";

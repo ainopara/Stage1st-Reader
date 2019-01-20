@@ -33,8 +33,7 @@
 		862DB7AA1C8AB1870068F75F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A91C8AB1870068F75F /* User.swift */; };
 		86319B411CA69EEB004F7586 /* Floor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86319B401CA69EEB004F7586 /* Floor.swift */; };
 		8632C46E20F3B15000ACCBB0 /* StripTailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */; };
-		8634ADA61FAAF309004A9CB7 /* S1NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA21FAAF309004A9CB7 /* S1NavigationViewController.swift */; };
-		8634ADA71FAAF309004A9CB7 /* NavigationControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA41FAAF309004A9CB7 /* NavigationControllerDelegate.m */; };
+		8634ADA61FAAF309004A9CB7 /* RootNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */; };
 		8634ADA81FAAF309004A9CB7 /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA51FAAF309004A9CB7 /* S1Animator.swift */; };
 		8634ADE21FAAF3C2004A9CB7 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADAC1FAAF3C0004A9CB7 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADAE1FAAF3C0004A9CB7 /* DEComposeTextView.m */; };
@@ -62,6 +61,7 @@
 		8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */; };
 		8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
+		864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */; };
 		8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */; };
 		8655449321E1E20F007B7557 /* S1TabBarSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */; };
 		865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544A721E2379D007B7557 /* DiscuzClient+Search.swift */; };
@@ -260,9 +260,7 @@
 		862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		86319B401CA69EEB004F7586 /* Floor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Floor.swift; sourceTree = "<group>"; };
 		8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripTailTests.swift; sourceTree = "<group>"; };
-		8634ADA21FAAF309004A9CB7 /* S1NavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1NavigationViewController.swift; sourceTree = "<group>"; };
-		8634ADA31FAAF309004A9CB7 /* NavigationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationControllerDelegate.h; sourceTree = "<group>"; };
-		8634ADA41FAAF309004A9CB7 /* NavigationControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationControllerDelegate.m; sourceTree = "<group>"; };
+		8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationViewController.swift; sourceTree = "<group>"; };
 		8634ADA51FAAF309004A9CB7 /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Animator.swift; sourceTree = "<group>"; };
 		8634ADAA1FAAF3C0004A9CB7 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		8634ADAB1FAAF3C0004A9CB7 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
@@ -306,6 +304,7 @@
 		8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceCategory.swift; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerDelegate.swift; sourceTree = "<group>"; };
 		8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorProcessTests.swift; sourceTree = "<group>"; };
 		8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1TabBarSnapshotTests.swift; sourceTree = "<group>"; };
 		865544A721E2379D007B7557 /* DiscuzClient+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Search.swift"; sourceTree = "<group>"; };
@@ -458,9 +457,8 @@
 		8634ADA11FAAEF0C004A9CB7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				8634ADA21FAAF309004A9CB7 /* S1NavigationViewController.swift */,
-				8634ADA31FAAF309004A9CB7 /* NavigationControllerDelegate.h */,
-				8634ADA41FAAF309004A9CB7 /* NavigationControllerDelegate.m */,
+				8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */,
+				864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */,
 				8634ADA51FAAF309004A9CB7 /* S1Animator.swift */,
 			);
 			path = Navigation;
@@ -1324,7 +1322,6 @@
 				8634ADF41FAAF3C2004A9CB7 /* PullToActionController.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
-				8634ADA71FAAF309004A9CB7 /* NavigationControllerDelegate.m in Sources */,
 				8634ADF01FAAF3C2004A9CB7 /* GSSingleSelectionTableViewController.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */,
@@ -1393,6 +1390,7 @@
 				86A1834420845F08000F5F8A /* CloudKitManager.swift in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
 				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
+				864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */,
 				86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */,
 				36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */,
 				8634ADEF1FAAF3C2004A9CB7 /* GSRow.m in Sources */,
@@ -1400,7 +1398,7 @@
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
-				8634ADA61FAAF309004A9CB7 /* S1NavigationViewController.swift in Sources */,
+				8634ADA61FAAF309004A9CB7 /* RootNavigationViewController.swift in Sources */,
 				86654BFD217C61B700F50A90 /* NoticeCount.swift in Sources */,
 				86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,

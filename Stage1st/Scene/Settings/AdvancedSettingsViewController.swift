@@ -57,6 +57,30 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             action: { row in settings.shareWithoutImage.value = (row as! SwitchRow).switchValue }
         ))
 
+        let tapticFeedbackSection = Section(
+            title: NSLocalizedString("AdvancedSettingsViewController.TapticFeedbackRow.header", comment: ""),
+            rows: [],
+            footer: ""
+        )
+
+        tapticFeedbackSection.rows.append(SwitchRow(
+            title: NSLocalizedString("AdvancedSettingsViewController.TapticFeedbackRow.title", comment: ""),
+            switchValue: settings.tapticFeedbackForForumSwitch.value,
+            action: { row in settings.tapticFeedbackForForumSwitch.value = (row as! SwitchRow).switchValue }
+        ))
+
+        let nightNodeGestureSection = Section(
+            title: NSLocalizedString("AdvancedSettingsViewController.NightNodeGestureRow.header", comment: ""),
+            rows: [],
+            footer: ""
+        )
+
+        nightNodeGestureSection.rows.append(SwitchRow(
+            title: NSLocalizedString("AdvancedSettingsViewController.NightNodeGestureRow.title", comment: ""),
+            switchValue: settings.gestureControledNightModeSwitch.value,
+            action: { row in settings.gestureControledNightModeSwitch.value = (row as! SwitchRow).switchValue }
+        ))
+
         let resetSection = Section(
             title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""),
             rows: [],
@@ -72,6 +96,8 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             hideStickTopicsSection,
             reverseFloorSection,
             shareWithoutImageSection,
+            tapticFeedbackSection,
+            nightNodeGestureSection,
             resetSection
         ]
     }
@@ -80,6 +106,9 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         let settings = AppEnvironment.current.settings
         settings.removeValue(for: .reverseAction)
         settings.removeValue(for: .hideStickTopics)
+        settings.removeValue(for: .shareWithoutImage)
+        settings.removeValue(for: .tapticFeedbackForForumSwitch)
+        settings.removeValue(for: .gestureControledNightModeSwitch)
         updateTable()
     }
 }

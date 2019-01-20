@@ -23,7 +23,7 @@
 
 @implementation NavigationControllerDelegate
 
-- (instancetype)initWithNavigationController:(S1NavigationViewController *)navigationController
+- (instancetype)initWithNavigationController:(RootNavigationViewController *)navigationController
 {
     self = [super init];
     if (self != nil) {

@@ -21,7 +21,7 @@ import Kingfisher
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    private(set) var rootNavigationController: S1NavigationViewController?
+    private(set) var rootNavigationController: RootNavigationViewController?
     // swiftlint:disable weak_delegate
     private(set) var navigationControllerDelegate: NavigationControllerDelegate?
     // swiftlint:enable weak_delegate
@@ -68,20 +68,20 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Setup Window
-        let rootNavigationController = S1NavigationViewController(navigationBarClass: nil, toolbarClass: nil)
-        self.navigationControllerDelegate = NavigationControllerDelegate(navigationController: rootNavigationController)
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+
+        let rootNavigationController = RootNavigationViewController(navigationBarClass: nil, toolbarClass: nil)
+        self.navigationControllerDelegate = NavigationControllerDelegate(window: self.window!, navigationController: rootNavigationController)
         rootNavigationController.delegate = self.navigationControllerDelegate
         rootNavigationController.viewControllers = [ContainerViewController(nibName: nil, bundle: nil)]
         rootNavigationController.isNavigationBarHidden = true
         self.rootNavigationController = rootNavigationController
 
-        self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = rootNavigationController
-        self.window?.makeKeyAndVisible()
+        self.window!.rootViewController = rootNavigationController
+        self.window!.makeKeyAndVisible()
 
         // Appearence
         AppEnvironment.current.colorManager.updateGlobalAppearance()
-        navigationControllerDelegate!.setUpGagat()
 
         #if DEBUG
         let defaultsDictionary = AppEnvironment.current.settings.defaults.dictionaryRepresentation()

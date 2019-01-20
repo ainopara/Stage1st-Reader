@@ -24,6 +24,8 @@ extension DefaultsKeys {
     static let reverseAction = DefaultsKey<Bool>("Stage1st_Content_ReverseFloorAction")
     static let hideStickTopics = DefaultsKey<Bool>("Stage1st_TopicList_HideStickTopics")
     static let shareWithoutImage = DefaultsKey<Bool>("ShareWithoutImage")
+    static let tapticFeedbackForForumSwitch = DefaultsKey<Bool>("TapticFeedbackForForumSwitch")
+    static let gestureControledNightModeSwitch = DefaultsKey<Bool>("gestureControledNightModeSwitch")
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
 }
@@ -48,6 +50,8 @@ class Stage1stSettings: DefaultsBasedSettings {
     let reverseAction: MutableProperty<Bool> = MutableProperty(false)
     let hideStickTopics: MutableProperty<Bool> = MutableProperty(false)
     let shareWithoutImage: MutableProperty<Bool> = MutableProperty(false)
+    let tapticFeedbackForForumSwitch: MutableProperty<Bool> = MutableProperty(false)
+    let gestureControledNightModeSwitch: MutableProperty<Bool> = MutableProperty(false)
 
     // Cleaning
     let previousWebKitCacheCleaningDate: MutableProperty<Date?> = MutableProperty(nil)
@@ -74,6 +78,8 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: reverseAction, to: .reverseAction, defaultValue: false)
         bind(property: hideStickTopics, to: .hideStickTopics, defaultValue: true)
         bind(property: shareWithoutImage, to: .shareWithoutImage, defaultValue: false)
+        bind(property: tapticFeedbackForForumSwitch, to: .tapticFeedbackForForumSwitch, defaultValue: false)
+        bind(property: gestureControledNightModeSwitch, to: .gestureControledNightModeSwitch, defaultValue: true)
 
         // Cleaning
         bind(property: previousWebKitCacheCleaningDate, to: .previousWebKitCacheCleaningDate)
@@ -114,6 +120,12 @@ class Stage1stSettings: DefaultsBasedSettings {
         }
         shareWithoutImage.producer.startWithValues { (value) in
             S1LogDebug("Settings: shareWithoutImage -> \(String(describing: value))")
+        }
+        tapticFeedbackForForumSwitch.producer.startWithValues { (value) in
+            S1LogDebug("Settings: tapticFeedbackForForumSwitch -> \(String(describing: value))")
+        }
+        gestureControledNightModeSwitch.producer.startWithValues { (value) in
+            S1LogDebug("Settings: gestureControledNightModeSwitch -> \(String(describing: value))")
         }
         previousWebKitCacheCleaningDate.producer.startWithValues { (value) in
             S1LogDebug("Settings: previousWebKitCacheCleaningDate -> \(String(describing: value))")

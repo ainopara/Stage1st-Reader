@@ -10,7 +10,6 @@
 #import "DatabaseManager.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
-#import "NavigationControllerDelegate.h"
 #import "S1TabBar.h"
 #import "S1Parser.h"
 #import "GTMNSString+HTML.h"

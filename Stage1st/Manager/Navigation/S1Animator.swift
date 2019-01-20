@@ -9,17 +9,14 @@
 import UIKit
 import CocoaLumberjack
 
-@objc enum TransitionDirection: Int {
-    case push
-    case pop
-}
-
-@objcMembers
 class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
-    let direction: TransitionDirection
-    var curve: UIView.AnimationOptions = .curveEaseInOut
+    enum Direction: Int {
+        case push
+        case pop
+    }
+    let direction: Direction
 
-    init(direction: TransitionDirection) {
+    init(direction: Direction) {
         self.direction = direction
         super.init()
     }
@@ -60,7 +57,8 @@ class S1Animator: NSObject, UIViewControllerAnimatedTransitioning {
             toViewController.view.transform = CGAffineTransform(translationX: -containerViewWidth / 2.0, y: 0.0)
         }
 
-        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.0, options: curve, animations: { [weak self] in
+        let options: UIView.AnimationOptions = direction == .pop ? .curveLinear : .curveEaseInOut
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.0, options: options, animations: { [weak self] in
             guard let strongSelf = self else { return }
             switch strongSelf.direction {
             case .push:
