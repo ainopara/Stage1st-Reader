@@ -28,7 +28,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         hideStickTopicsSection.rows.append(SwitchRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.HideStickTopicsRow.title", comment: ""),
             switchValue: settings.hideStickTopics.value,
             action: { row in settings.hideStickTopics.value = (row as! SwitchRow).switchValue }
         ))
@@ -40,7 +40,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         reverseFloorSection.rows.append(SwitchRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.ReverseFloorActionRow.title", comment: ""),
             switchValue: settings.reverseAction.value,
             action: { row in settings.reverseAction.value = (row as! SwitchRow).switchValue }
         ))
@@ -52,7 +52,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         shareWithoutImageSection.rows.append(SwitchRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.ShareWithoutImageRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.ShareWithoutImageRow.title", comment: ""),
             switchValue: settings.shareWithoutImage.value,
             action: { row in settings.shareWithoutImage.value = (row as! SwitchRow).switchValue }
         ))
@@ -64,7 +64,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         tapticFeedbackSection.rows.append(SwitchRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.TapticFeedbackRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.TapticFeedbackRow.title", comment: ""),
             switchValue: settings.tapticFeedbackForForumSwitch.value,
             action: { row in settings.tapticFeedbackForForumSwitch.value = (row as! SwitchRow).switchValue }
         ))
@@ -76,7 +76,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         nightNodeGestureSection.rows.append(SwitchRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.NightNodeGestureRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.NightNodeGestureRow.title", comment: ""),
             switchValue: settings.gestureControledNightModeSwitch.value,
             action: { row in settings.gestureControledNightModeSwitch.value = (row as! SwitchRow).switchValue }
         ))
@@ -88,7 +88,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         )
 
         resetSection.rows.append(TapActionRow(
-            title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.title", comment: ""),
+            text: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.title", comment: ""),
             action: { [weak self] row in self?.resetDefaultSettings(row) }
         ))
 
@@ -119,7 +119,7 @@ final class DebugViewController: QuickTableViewController {
 
         tableContents = [
             Section(title: "Logging", rows: [
-                TapActionRow(title: "Logs", action: showLoggingViewController),
+                TapActionRow(text: "Logs", action: showLoggingViewController),
             ]),
         ]
     }

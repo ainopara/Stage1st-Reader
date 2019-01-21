@@ -65,12 +65,12 @@ class CloudKitViewController: QuickTableViewController {
         )
 
         iCloudSection.rows.append(NavigationRow(
-            title: NSLocalizedString("CloudKitViewController.AccountStatusRow.title", comment: ""),
-            subtitle: Subtitle.rightAligned(AppEnvironment.current.cloudkitManager.accountStatus.value.debugDescription)
+            text: NSLocalizedString("CloudKitViewController.AccountStatusRow.title", comment: ""),
+            detailText: DetailText.value1(AppEnvironment.current.cloudkitManager.accountStatus.value.debugDescription)
         ))
 
         iCloudSection.rows.append(SwitchRow(
-            title: NSLocalizedString("CloudKitViewController.iCloudSwitchRow.title", comment: ""),
+            text: NSLocalizedString("CloudKitViewController.iCloudSwitchRow.title", comment: ""),
             switchValue: AppEnvironment.current.settings.enableCloudKitSync.value,
             action: { [weak self] row in
                 AppEnvironment.current.settings.enableCloudKitSync.value.toggle()
@@ -104,25 +104,25 @@ class CloudKitViewController: QuickTableViewController {
         )
 
         detailSection.rows.append(NavigationRow(
-            title: "Container ID",
-            subtitle: Subtitle.rightAligned(AppEnvironment.current.cloudkitManager.cloudKitContainer.containerIdentifier ?? "")
+            text: "Container ID",
+            detailText: DetailText.value1(AppEnvironment.current.cloudkitManager.cloudKitContainer.containerIdentifier ?? "")
         ))
 
         detailSection.rows.append(NavigationRow(
-            title: NSLocalizedString("CloudKitViewController.StateRow.title", comment: ""),
-            subtitle: Subtitle.rightAligned(AppEnvironment.current.cloudkitManager.state.value.debugDescription)
+            text: NSLocalizedString("CloudKitViewController.StateRow.title", comment: ""),
+            detailText: DetailText.value1(AppEnvironment.current.cloudkitManager.state.value.debugDescription)
         ))
 
         detailSection.rows.append(NavigationRow(
-            title: NSLocalizedString("CloudKitViewController.SuspendCountRow.title", comment: ""),
-            subtitle: Subtitle.rightAligned("\(AppEnvironment.current.databaseManager.cloudKitExtension.suspendCount)")
+            text: NSLocalizedString("CloudKitViewController.SuspendCountRow.title", comment: ""),
+            detailText: DetailText.value1("\(AppEnvironment.current.databaseManager.cloudKitExtension.suspendCount)")
         ))
 
         let queued = AppEnvironment.current.databaseManager.cloudKitExtension.numberOfQueuedChangeSets
         let inFlight = AppEnvironment.current.databaseManager.cloudKitExtension.numberOfInFlightChangeSets
         detailSection.rows.append(NavigationRow(
-            title: NSLocalizedString("CloudKitViewController.UploadQueueRow.title", comment: ""),
-            subtitle: Subtitle.rightAligned("\(inFlight) - \(queued)"),
+            text: NSLocalizedString("CloudKitViewController.UploadQueueRow.title", comment: ""),
+            detailText: DetailText.value1("\(inFlight) - \(queued)"),
             action: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.navigationController?.pushViewController(CloudKitUploadQueueViewController(nibName: nil, bundle: nil), animated: true)
@@ -130,8 +130,8 @@ class CloudKitViewController: QuickTableViewController {
         ))
 
         detailSection.rows.append(NavigationRow(
-            title: NSLocalizedString("CloudKitViewController.ErrorsRow.title", comment: ""),
-            subtitle: Subtitle.rightAligned("\(AppEnvironment.current.cloudkitManager.errors.count)"),
+            text: NSLocalizedString("CloudKitViewController.ErrorsRow.title", comment: ""),
+            detailText: DetailText.value1("\(AppEnvironment.current.cloudkitManager.errors.count)"),
             action: { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 strongSelf.navigationController?.pushViewController(CloudKitErrorListViewController(nibName: nil, bundle: nil), animated: true)
