@@ -8,7 +8,6 @@
 
 #import "S1Parser.h"
 #import "S1Topic.h"
-#import "TFHpple.h"
 #import "GTMNSString+HTML.h"
 #import "S1Global.h"
 #import "Stage1st-Swift.h"
@@ -92,26 +91,6 @@
         }
     }
     return infoDict;
-}
-
-+ (NSString *)topicTitleFromPage:(NSData *)rawData {
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//span[@id='thread_subject']"] firstObject];
-    if (element) {
-        return [element text];
-    }
-    return nil;
-    
-}
-
-+ (NSString *)messageFromPage:(NSData *)rawData {
-    TFHpple *xpathParser = [[TFHpple alloc] initWithHTMLData:rawData];
-    TFHppleElement *element = [[xpathParser searchWithXPathQuery:@"//div[@id='messagetext']/p"] firstObject];
-    if (element) {
-        return [element text];
-    }
-    return nil;
-    
 }
 
 + (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {

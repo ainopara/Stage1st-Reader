@@ -54,9 +54,6 @@
 		8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADCC1FAAF3C1004A9CB7 /* GSStaticTableViewController.m */; };
 		8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADCD1FAAF3C1004A9CB7 /* GSSection.m */; };
 		8634ADF41FAAF3C2004A9CB7 /* PullToActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD11FAAF3C2004A9CB7 /* PullToActionController.swift */; };
-		8634ADF51FAAF3C2004A9CB7 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD41FAAF3C2004A9CB7 /* TFHpple.m */; };
-		8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD71FAAF3C2004A9CB7 /* TFHppleElement.m */; };
-		8634ADF71FAAF3C2004A9CB7 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADD81FAAF3C2004A9CB7 /* XPathQuery.m */; };
 		8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */; };
 		8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */; };
 		8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */; };
@@ -207,6 +204,62 @@
 			remoteGlobalIDString = C095873316CA8A36007E0119;
 			remoteInfo = Stage1st;
 		};
+		86EF61D221F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_4024F32C566BA88E351F72CADE1F9287;
+			remoteInfo = HtmlSnapshotTestingTests_iOS;
+		};
+		86EF61D421F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_426253E0818C46FC1DB97614AD713830;
+			remoteInfo = HtmlSnapshotTestingTests_macOS;
+		};
+		86EF61D621F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_60FE2FD7DED430CDB41B57A0CAECD79A;
+			remoteInfo = HtmlSnapshotTestingTests_tvOS;
+		};
+		86EF61D821F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_5C5B2F5B06548979136A244E4C89D95A;
+			remoteInfo = HtmlSnapshotTesting_iOS;
+		};
+		86EF61DA21F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_0738B551A3F66674027ADC5E96FB6433;
+			remoteInfo = HtmlSnapshotTesting_macOS;
+		};
+		86EF61DC21F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_D0E4DB97B85C77E83808CFAA36086DFC;
+			remoteInfo = HtmlSnapshotTesting_tvOS;
+		};
+		86EF61DE21F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_207D0187D4F8218348DEFA383C2B838C;
+			remoteInfo = HtmlTests_watchOS;
+		};
+		86EF61E021F5937800B7ECD5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 867F977621E04B6800611D16 /* Html.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FR_A851F66F18D71D07E129E4B1177B980C;
+			remoteInfo = Html_watchOS;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -294,12 +347,6 @@
 		8634ADCE1FAAF3C1004A9CB7 /* GSSingleSelectionTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSSingleSelectionTableViewController.h; sourceTree = "<group>"; };
 		8634ADCF1FAAF3C1004A9CB7 /* GSRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSRow.h; sourceTree = "<group>"; };
 		8634ADD11FAAF3C2004A9CB7 /* PullToActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PullToActionController.swift; sourceTree = "<group>"; };
-		8634ADD31FAAF3C2004A9CB7 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHppleElement.h; sourceTree = "<group>"; };
-		8634ADD41FAAF3C2004A9CB7 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHpple.m; sourceTree = "<group>"; };
-		8634ADD51FAAF3C2004A9CB7 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
-		8634ADD61FAAF3C2004A9CB7 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
-		8634ADD71FAAF3C2004A9CB7 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
-		8634ADD81FAAF3C2004A9CB7 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
 		8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stage1stLog.swift; sourceTree = "<group>"; };
 		8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceCategory.swift; sourceTree = "<group>"; };
@@ -551,19 +598,6 @@
 			path = PullToActionController;
 			sourceTree = "<group>";
 		};
-		8634ADD21FAAF3C2004A9CB7 /* TFHpple */ = {
-			isa = PBXGroup;
-			children = (
-				8634ADD31FAAF3C2004A9CB7 /* TFHppleElement.h */,
-				8634ADD41FAAF3C2004A9CB7 /* TFHpple.m */,
-				8634ADD51FAAF3C2004A9CB7 /* XPathQuery.h */,
-				8634ADD61FAAF3C2004A9CB7 /* TFHpple.h */,
-				8634ADD71FAAF3C2004A9CB7 /* TFHppleElement.m */,
-				8634ADD81FAAF3C2004A9CB7 /* XPathQuery.m */,
-			);
-			path = TFHpple;
-			sourceTree = "<group>";
-		};
 		863580111A945DED007B21AD /* TopicList */ = {
 			isa = PBXGroup;
 			children = (
@@ -701,12 +735,20 @@
 		867F977721E04B6800611D16 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				86EF61D321F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */,
+				86EF61D521F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */,
+				86EF61D721F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */,
+				86EF61D921F5937800B7ECD5 /* HtmlSnapshotTesting.framework */,
+				86EF61DB21F5937800B7ECD5 /* HtmlSnapshotTesting.framework */,
+				86EF61DD21F5937800B7ECD5 /* HtmlSnapshotTesting.framework */,
 				867F978021E04B6800611D16 /* HtmlTests.xctest */,
 				867F978221E04B6800611D16 /* HtmlTests.xctest */,
 				867F978421E04B6800611D16 /* HtmlTests.xctest */,
+				86EF61DF21F5937800B7ECD5 /* HtmlTests.xctest */,
 				867F978621E04B6800611D16 /* Html.framework */,
 				867F978821E04B6800611D16 /* Html.framework */,
 				867F978A21E04B6800611D16 /* Html.framework */,
+				86EF61E121F5937800B7ECD5 /* Html.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -878,7 +920,6 @@
 				8634ADD01FAAF3C2004A9CB7 /* PullToActionController */,
 				8634ADAD1FAAF3C0004A9CB7 /* REComposeViewController */,
 				8634ADC21FAAF3C1004A9CB7 /* StaticTableViewBuilder */,
-				8634ADD21FAAF3C2004A9CB7 /* TFHpple */,
 				86221B851CA65E3600015522 /* Utilities.swift */,
 				8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */,
 				860223501895051400A3E66E /* S1Global.h */,
@@ -1102,6 +1143,62 @@
 			fileType = wrapper.framework;
 			path = Html.framework;
 			remoteRef = 867F978921E04B6800611D16 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61D321F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = HtmlSnapshotTestingTests.xctest;
+			remoteRef = 86EF61D221F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61D521F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = HtmlSnapshotTestingTests.xctest;
+			remoteRef = 86EF61D421F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61D721F5937800B7ECD5 /* HtmlSnapshotTestingTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = HtmlSnapshotTestingTests.xctest;
+			remoteRef = 86EF61D621F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61D921F5937800B7ECD5 /* HtmlSnapshotTesting.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HtmlSnapshotTesting.framework;
+			remoteRef = 86EF61D821F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61DB21F5937800B7ECD5 /* HtmlSnapshotTesting.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HtmlSnapshotTesting.framework;
+			remoteRef = 86EF61DA21F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61DD21F5937800B7ECD5 /* HtmlSnapshotTesting.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HtmlSnapshotTesting.framework;
+			remoteRef = 86EF61DC21F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61DF21F5937800B7ECD5 /* HtmlTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = HtmlTests.xctest;
+			remoteRef = 86EF61DE21F5937800B7ECD5 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86EF61E121F5937800B7ECD5 /* Html.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Html.framework;
+			remoteRef = 86EF61E021F5937800B7ECD5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1368,7 +1465,6 @@
 				865544B821E23C4B007B7557 /* DiscuzClient+Reply.swift in Sources */,
 				366714091E4C4CD400813310 /* Forum.swift in Sources */,
 				8679AFB220B59A55007A73B2 /* S1ArchiveListViewModel.swift in Sources */,
-				8634ADF61FAAF3C2004A9CB7 /* TFHppleElement.m in Sources */,
 				8634ADEB1FAAF3C2004A9CB7 /* AnimationUtilities.swift in Sources */,
 				868799231CE629D700F5C75C /* LoginViewController.swift in Sources */,
 				86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */,
@@ -1420,8 +1516,6 @@
 				8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */,
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */,
-				8634ADF51FAAF3C2004A9CB7 /* TFHpple.m in Sources */,
-				8634ADF71FAAF3C2004A9CB7 /* XPathQuery.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
 				865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */,
 				86654C06217C85A200F50A90 /* NoticeCell.swift in Sources */,
