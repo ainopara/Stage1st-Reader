@@ -57,6 +57,12 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
         updateStage1stDomainIfNecessary()
 
+        URLCache.shared = URLCache(
+            memoryCapacity: 20 * 1024 * 1024, // 20 MB
+            diskCapacity: 150 * 1024 * 1024,  // 150 MB
+            diskPath: "org.alamofire.imagedownloader"
+        )
+
         // Start database & cloudKit (in order)
         DatabaseManager.initialize()
 
