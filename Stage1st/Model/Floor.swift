@@ -77,24 +77,28 @@ extension Floor {
             return
         }
 
-        var processedContent = content as NSString
-        let range = NSRange(location: 0, length: processedContent.length)
+        let contentAsNSString = content as NSString
+        let range = NSRange(location: 0, length: contentAsNSString.length)
 
-        re.enumerateMatches(in: content, options: [.reportProgress], range: range) { (result, flags, stop) in
+        var replaceList = [(String, String)]()
+
+        re.enumerateMatches(in: content, options: [], range: range) { (result, flags, stop) in
             guard let result = result else { return }
-            let attachmentID = processedContent.substring(with: result.range(at: 1))
+            let attachmentID = contentAsNSString.substring(with: result.range(at: 1))
             guard let attachmentURL = self.attachments[attachmentID] else { return }
             let imageNode = render(img([Html.src(attachmentURL.absoluteString)]))
-            processedContent = processedContent.replacingOccurrences(of: "[attach]" + attachmentID + "[/attach]", with: imageNode) as NSString
+            replaceList.append(("[attach]" + attachmentID + "[/attach]", imageNode))
             inlinedAttachmentIDs.append(attachmentID)
         }
 
-        content = processedContent as String
+        for replacePair in replaceList {
+            content = content.replacingOccurrences(of: replacePair.0, with: replacePair.1)
+        }
     }
 }
 
 public extension Floor {
-    public var firstQuoteReplyFloorID: Int? {
+    var firstQuoteReplyFloorID: Int? {
         guard
             let URLString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
             let resultDict = S1Parser.extractQuerys(fromURLString: URLString.gtm_stringByUnescapingFromHTML()),

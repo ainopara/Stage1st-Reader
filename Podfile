@@ -18,7 +18,6 @@ target "Stage1st" do
     pod 'SnapKit'
 
     pod 'YYKeyboardManager'
-    pod 'TextAttributes'
     pod 'HorizontalFloatingHeaderLayout'
 
     # Database
@@ -77,15 +76,6 @@ post_install do |installer|
         if pods_with_swift4.include? target.name then
             target.build_configurations.each do |config|
                 config.build_settings['SWIFT_VERSION'] = '4.0'
-            end
-        end
-
-        pods_with_swift3 = [
-            'TextAttributes',
-        ]
-        if pods_with_swift3.include? target.name then
-            target.build_configurations.each do |config|
-                config.build_settings['SWIFT_VERSION'] = '3.0'
             end
         end
     end

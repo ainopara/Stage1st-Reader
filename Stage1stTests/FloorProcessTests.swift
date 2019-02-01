@@ -9,3 +9,12 @@
 import Foundation
 @testable import Stage1st
 import SnapshotTesting
+
+class FloorProcessTests: XCTestCase {
+
+    func testProcessInlineAttachmentImage() {
+        /// TopicID: 1637906 Floor: 32
+        let rawPost = RawFloorList.Variables.Post()
+        let floor = Floor(rawPost: rawPost)
+    }
+}

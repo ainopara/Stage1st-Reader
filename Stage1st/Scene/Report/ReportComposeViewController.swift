@@ -10,7 +10,6 @@ import ReactiveSwift
 import SnapKit
 import CocoaLumberjack
 import YYKeyboardManager
-import TextAttributes
 
 final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)

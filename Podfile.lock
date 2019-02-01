@@ -78,7 +78,6 @@ PODS:
   - Reveal-SDK (20)
   - SnapKit (4.2.0)
   - SnapshotTesting (1.1.0)
-  - TextAttributes (1.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
   - YapDatabase/Standard (3.1.1):
@@ -182,7 +181,6 @@ DEPENDENCIES:
   - Reveal-SDK
   - SnapKit
   - SnapshotTesting (~> 1.1)
-  - TextAttributes
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
   - YYKeyboardManager
 
@@ -214,7 +212,6 @@ SPEC REPOS:
     - Reveal-SDK
     - SnapKit
     - SnapshotTesting
-    - TextAttributes
     - YYKeyboardManager
 
 EXTERNAL SOURCES:
@@ -275,10 +272,9 @@ SPEC CHECKSUMS:
   Reveal-SDK: 43206a57f575632fd304e85385cc259b5d359e32
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SnapshotTesting: 8ed6a4dceee63f59a60e1bc86f9adbba54eb9287
-  TextAttributes: 45b2713a1d174c377d320b51129c304eac381638
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 78f7f61a52a7bd7ea36b75f8822787298d53f139
+PODFILE CHECKSUM: 199fe79d3bae39010e8ea827d9c169747c996bb4
 
 COCOAPODS: 1.5.3
