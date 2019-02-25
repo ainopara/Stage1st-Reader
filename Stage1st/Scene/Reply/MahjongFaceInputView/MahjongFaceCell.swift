@@ -17,6 +17,7 @@ final class MahjongFaceCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        imageView.contentMode = .scaleAspectFit
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in
             make.center.equalTo(self.contentView)
@@ -32,7 +33,7 @@ final class MahjongFaceCell: UICollectionViewCell {
     }
 
     func configure(with item: MahjongFaceInputView.Category.Item) {
-        imageView.kf.setImage(with: item.url, placeholder: MahjongFaceCell.placeholderImage)
+        imageView.kf.setImage(with: .provider(LocalFileImageDataProvider(fileURL: item.url)), placeholder: MahjongFaceCell.placeholderImage)
         imageView.snp.remakeConstraints { (make) in
             make.center.equalTo(contentView)
             make.width.equalTo(item.width)
