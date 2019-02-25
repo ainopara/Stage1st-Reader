@@ -96,40 +96,66 @@ extension S1Topic {
         if links.count == 3 {
             let authorPart = links[1]
 
-            guard let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue else {
-                return nil
+            /// Try extracting authorUserID and authorName
+            if let authorHomeURL = authorPart.attribute(forName: "href")?.stringValue {
+                var theAuthorUserID: Int?
+
+                /// First Attempt
+                let hyphenSeparated = authorHomeURL.split(separator: "-")
+                if hyphenSeparated.count > 3 {
+                    let thirdPart = hyphenSeparated[2]
+                    if let authorUserIDString = thirdPart.split(separator: ".").first {
+                        theAuthorUserID = Int(authorUserIDString)
+                    }
+                }
+
+                /// Second Attempt
+                if theAuthorUserID == nil || theAuthorUserID == 0 {
+                    let queries = S1Parser.extractQuerys(fromURLString: authorHomeURL)
+                    if let authorUserIDString = queries?["uid"] {
+                        theAuthorUserID = Int(authorUserIDString)
+                    }
+                }
+
+                authorName = authorPart.firstText ?? ""
+                authorUserID = theAuthorUserID
+            } else {
+                authorName = ""
+                authorUserID = nil
             }
 
-            guard let theAuthorUserID = Int(authorHomeURL.split(separator: "-")[2].split(separator: ".")[0]) else {
-                return nil
-            }
-
-            authorName = authorPart.firstText ?? ""
-            authorUserID = theAuthorUserID
         } else {
             authorName = ""
             authorUserID = nil
         }
 
+        /// Try extracting fid
+        var fieldID: Int?
         let fieldIDPart = links.count == 3 ? links[2] : links[1]
-        guard let fieldURL = fieldIDPart.attribute(forName: "href")?.stringValue else {
-            return nil
+        if let fieldURL = fieldIDPart.attribute(forName: "href")?.stringValue {
+            /// First Attempt
+            let hyphenSeperated = fieldURL.split(separator: "-")
+            if hyphenSeperated.count > 2 {
+                fieldID = Int(hyphenSeperated[1])
+            }
+
+            /// Second Attempt
+            if fieldID == nil || fieldID == 0 {
+                let queries = S1Parser.extractQuerys(fromURLString: fieldURL)
+                if let fieldIDString = queries?["fid"] {
+                    fieldID = Int(fieldIDString)
+                }
+            }
         }
 
-        guard let fieldID = Int(fieldURL.split(separator: "-")[1]) else {
-            return nil
-        }
-
-        guard let replyCountPart = (try? element.elements(for: ".//p[@class='xg1']"))?.first else {
-            return nil
-        }
-
-        guard let replyCountString = replyCountPart.firstText?.split(separator: " ").first else {
-            return nil
-        }
-
-        guard let replyCount = Int(replyCountString) else {
-            return nil
+        /// Try extracting reply count
+        var replyCount: Int = 0
+        if
+            let replyCountPart = (try? element.elements(for: ".//p[@class='xg1']"))?.first,
+            let replyCountString = replyCountPart.firstText?.split(separator: " ").first,
+            let extractedReplyCount = Int(replyCountString)
+        {
+            replyCount = extractedReplyCount
         }
 
         self.init(topicID: topicID)
@@ -137,7 +163,7 @@ extension S1Topic {
         self.title = titleString
         self.authorUserID = authorUserID as NSNumber?
         self.authorUserName = authorName
-        self.fID = fieldID as NSNumber
+        self.fID = fieldID as NSNumber?
         self.replyCount = replyCount as NSNumber
     }
 
