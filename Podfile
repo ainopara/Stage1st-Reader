@@ -30,14 +30,14 @@ target "Stage1st" do
     pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
 
     # Debug
-    pod 'CocoaLumberjack'
-    pod 'CocoaLumberjack/Swift'
+    pod 'CocoaLumberjack', '< 3.5.0'
+    pod 'CocoaLumberjack/Swift', '< 3.5.0'
     pod 'CrashlyticsLogger', '~> 0.3.1'
 
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'AppCenter'
-    pod 'Reveal-SDK', :configurations => ['Debug']
+#    pod 'Reveal-SDK', :configurations => ['Debug']
 
     # RAC
     pod 'ReactiveSwift'

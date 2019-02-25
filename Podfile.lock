@@ -27,13 +27,13 @@ PODS:
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (5.0.0.beta.1)
-  - AppCenter (1.13.0):
-    - AppCenter/Analytics (= 1.13.0)
-    - AppCenter/Crashes (= 1.13.0)
-  - AppCenter/Analytics (1.13.0):
+  - AppCenter (1.13.2):
+    - AppCenter/Analytics (= 1.13.2)
+    - AppCenter/Crashes (= 1.13.2)
+  - AppCenter/Analytics (1.13.2):
     - AppCenter/Core
-  - AppCenter/Core (1.13.0)
-  - AppCenter/Crashes (1.13.0):
+  - AppCenter/Core (1.13.2)
+  - AppCenter/Crashes (1.13.2):
     - AppCenter/Core
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
@@ -59,13 +59,13 @@ PODS:
   - Fuzi (2.1.0)
   - GRMustache.swift (2.0.0)
   - HorizontalFloatingHeaderLayout (2.0.0)
-  - iOSSnapshotTestCase (5.0.2):
-    - iOSSnapshotTestCase/SwiftSupport (= 5.0.2)
-  - iOSSnapshotTestCase/Core (5.0.2)
-  - iOSSnapshotTestCase/SwiftSupport (5.0.2):
+  - iOSSnapshotTestCase (6.0.0):
+    - iOSSnapshotTestCase/SwiftSupport (= 6.0.0)
+  - iOSSnapshotTestCase/Core (6.0.0)
+  - iOSSnapshotTestCase/SwiftSupport (6.0.0):
     - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
-  - Kingfisher (5.1.0)
+  - Kingfisher (5.1.1)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (1.1.0)
@@ -75,9 +75,8 @@ PODS:
   - ReactiveSwift (4.0.0):
     - Result (~> 4.0)
   - Result (4.1.0)
-  - Reveal-SDK (20)
   - SnapKit (4.2.0)
-  - SnapshotTesting (1.1.0)
+  - SnapshotTesting (1.2.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
   - YapDatabase/Standard (3.1.1):
@@ -157,8 +156,8 @@ DEPENDENCIES:
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
   - Alamofire (= 5.0.0.beta.1)
   - AppCenter
-  - CocoaLumberjack
-  - CocoaLumberjack/Swift
+  - CocoaLumberjack (< 3.5.0)
+  - CocoaLumberjack/Swift (< 3.5.0)
   - CodableExtensions
   - Crashlytics
   - CrashlyticsLogger (~> 0.3.1)
@@ -178,7 +177,6 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa
   - ReactiveSwift
-  - Reveal-SDK
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
@@ -209,7 +207,6 @@ SPEC REPOS:
     - ReactiveCocoa
     - ReactiveSwift
     - Result
-    - Reveal-SDK
     - SnapKit
     - SnapshotTesting
     - YYKeyboardManager
@@ -245,9 +242,9 @@ SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
-  Ainoaibo: f9b5d652c2aa548e99bf3d740d9998226015127f
+  Ainoaibo: 378197db72b050fe00c78b706f46b64709fcd18d
   Alamofire: 2ef6d6c984c5d21c366e9b41a9ae7dfee2b67a44
-  AppCenter: a70408f15de23f925001bfc7b7473094a009a4eb
+  AppCenter: bce7fe1098e8e8aeb70aaae1898600534069f549
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
@@ -259,9 +256,9 @@ SPEC CHECKSUMS:
   Fuzi: 8c57344debff6d3a0c76a9e0f549152defdaaa48
   GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
-  iOSSnapshotTestCase: 2d51aa06775e95cecb0a1fb9c5c159ccd1dd4596
+  iOSSnapshotTestCase: f592adfdedffe6113a55528ce698ccc457a550f1
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  Kingfisher: fcec238063d17404fca89bf0a850583211c4cbf6
+  Kingfisher: 2558186963e5be42d98c5b110ccb3130148b77e4
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 129e71fc37a69991aff02bc946723d51a13d6aa5
@@ -269,12 +266,11 @@ SPEC CHECKSUMS:
   ReactiveCocoa: fbd26e9ba60e98417ee47433e59465a98ed9da0f
   ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
-  Reveal-SDK: 43206a57f575632fd304e85385cc259b5d359e32
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  SnapshotTesting: 8ed6a4dceee63f59a60e1bc86f9adbba54eb9287
+  SnapshotTesting: bd92e40aaef4a735f7950d42cb0b8ea7c3716b00
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 199fe79d3bae39010e8ea827d9c169747c996bb4
+PODFILE CHECKSUM: 4c27aa9c61e2333e4ab5c1a3b25531cf96f6cf72
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0

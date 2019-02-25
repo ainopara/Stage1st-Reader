@@ -8,8 +8,7 @@
 
 #import "S1Tracer.h"
 #import "S1Topic.h"
-#import "FMDatabase.h"
-#import "FMDatabaseAdditions.h"
+#import <FMDB/FMDB.h>
 #import "DatabaseManager.h"
 #import <YapDatabase/YapDatabase.h>
 

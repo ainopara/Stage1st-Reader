@@ -10,8 +10,8 @@
 
 #import "S1YapDatabaseAdapter.h"
 #import "DatabaseManager.h"
-#import "YapDatabaseQuery.h"
-#import "YapDatabaseFullTextSearchTransaction.h"
+#import <YapDatabase/YapDatabaseQuery.h>
+#import <YapDatabase/YapDatabaseFullTextSearchTransaction.h>
 #import "S1Topic.h"
 
 NS_ASSUME_NONNULL_BEGIN
