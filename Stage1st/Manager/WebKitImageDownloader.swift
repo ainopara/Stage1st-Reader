@@ -35,6 +35,12 @@ class WebKitImageDownloader: NSObject {
 
         super.init()
     }
+
+    deinit {
+        taskMap.keys.forEach { (task) in
+            task.cancel()
+        }
+    }
 }
 
 // MARK: - WKURLSchemeHandler
