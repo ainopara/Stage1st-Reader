@@ -26,7 +26,7 @@ PODS:
   - Ainoaibo/Stash (0.1.0)
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
-  - Alamofire (5.0.0.beta.1)
+  - Alamofire (5.0.0-beta.2)
   - AppCenter (1.13.2):
     - AppCenter/Analytics (= 1.13.2)
     - AppCenter/Crashes (= 1.13.2)
@@ -65,7 +65,7 @@ PODS:
   - iOSSnapshotTestCase/SwiftSupport (6.0.0):
     - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
-  - Kingfisher (5.1.1)
+  - Kingfisher (5.2.0)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (1.1.0)
@@ -154,7 +154,7 @@ DEPENDENCIES:
   - Ainoaibo/Stash (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/StateTransition (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
-  - Alamofire (= 5.0.0.beta.1)
+  - Alamofire (= 5.0.0.beta.2)
   - AppCenter
   - CocoaLumberjack (< 3.5.0)
   - CocoaLumberjack/Swift (< 3.5.0)
@@ -243,7 +243,7 @@ SPEC CHECKSUMS:
   AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 378197db72b050fe00c78b706f46b64709fcd18d
-  Alamofire: 2ef6d6c984c5d21c366e9b41a9ae7dfee2b67a44
+  Alamofire: d1e5493588babe3e7b56ae29e8032942f4de09fe
   AppCenter: bce7fe1098e8e8aeb70aaae1898600534069f549
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
@@ -258,7 +258,7 @@ SPEC CHECKSUMS:
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   iOSSnapshotTestCase: f592adfdedffe6113a55528ce698ccc457a550f1
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  Kingfisher: 2558186963e5be42d98c5b110ccb3130148b77e4
+  Kingfisher: 07067cfacf371117330dceb4b4b8f5c4b691ab42
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 129e71fc37a69991aff02bc946723d51a13d6aa5
@@ -271,6 +271,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 4c27aa9c61e2333e4ab5c1a3b25531cf96f6cf72
+PODFILE CHECKSUM: 6a116477c64ace0858ce815bca8b2b826867b46a
 
 COCOAPODS: 1.6.0
