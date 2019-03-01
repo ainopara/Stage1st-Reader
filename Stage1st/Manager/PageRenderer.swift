@@ -11,8 +11,6 @@ import KissXML
 import CocoaLumberjack
 import Reachability
 
-private let mahjongFaceBaseURLString = "https://static.saraba1st.com/image/smiley"
-
 protocol PageRenderer {
     var topic: S1Topic { get }
 
@@ -123,7 +121,12 @@ extension PageRenderer {
             func process(HTMLString: String, with floorID: Int) -> String {
                 func processImages(xmlDocument: DDXMLDocument) -> DDXMLDocument {
                     func isMahjongFaceImage(imageSourceString: String?) -> Bool {
-                        if let srcString = imageSourceString, srcString.hasPrefix(mahjongFaceBaseURLString) {
+                        if
+                            let srcString = imageSourceString,
+                            let urlComponents = URLComponents(string: srcString),
+                            urlComponents.host == "static.saraba1st.com",
+                            urlComponents.path.hasPrefix("/image/smiley")
+                        {
                             return true
                         }
                         return false
@@ -180,12 +183,22 @@ extension PageRenderer {
                                 linkElement.addChild(imageElement)
                             }
                         } else {
-                            let mahjongFacePath = srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString.replacingOccurrences(of: "file://", with: ""))
-                            if FileManager.default.fileExists(atPath: mahjongFacePath) {
-                                image.removeAttribute(forName: "src")
-                                image.addAttribute(withName: "src", stringValue: mahjongFacePath)
-                            } else {
-                                AppEnvironment.current.eventTracker.logEvent(with: "MahjongFace Cache Miss v3", attributes: ["url": srcString!.replacingOccurrences(of: mahjongFaceBaseURLString, with: "")])
+                            if let urlComponents = URLComponents(string: srcString!) {
+                                var components = urlComponents
+                                components.scheme = nil
+                                components.host = nil
+                                let pathOfMahjongFaceFolder = Bundle.main.bundleURL.appendingPathComponent("Mahjong").absoluteString
+                                    .replacingOccurrences(of: "file://", with: "")
+                                components.path = components.path.replacingOccurrences(of: "/image/smiley/", with: pathOfMahjongFaceFolder)
+                                if let finalURL = try? components.asURL(), FileManager.default.fileExists(atPath: finalURL.absoluteString) {
+                                    image.removeAttribute(forName: "src")
+                                    image.addAttribute(withName: "src", stringValue: finalURL.absoluteString)
+                                } else {
+                                    AppEnvironment.current.eventTracker.logEvent(
+                                        with: "MahjongFace Cache Miss v3",
+                                        attributes: ["url": srcString!]
+                                    )
+                                }
                             }
                         }
 
