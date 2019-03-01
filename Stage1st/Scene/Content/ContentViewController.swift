@@ -13,6 +13,7 @@ import ActionSheetPicker_3_0
 import JTSImageViewController
 import ReactiveSwift
 import Photos
+import Alamofire
 
 private let topOffset: CGFloat = -80.0
 private let bottomOffset: CGFloat = 60.0
@@ -1231,11 +1232,15 @@ extension ContentViewController {
                     //                [strongSelf.refreshHUD hideWithDelay:0.3];
                     //            }
                 } else if case let DiscuzError.serverError(message) = error {
-                    S1LogInfo("[ContentVC] Permission denied with message: \(error)")
+                    S1LogInfo("Permission denied with message: \(error)")
                     strongSelf.refreshHUD.showMessage(message)
                     strongSelf.refreshHUD.hide(withDelay: 3.0)
+                } else if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
+                    S1LogWarn("Decoding Error: \(error)")
+                    AppEnvironment.current.eventTracker.recordError(decodingError)
+                    strongSelf.refreshHUD.showRefreshButton()
                 } else {
-                    S1LogWarn("[ContentVC] fetch failed with error: \(error)")
+                    S1LogWarn("Fetch failed with error: \(error)")
                     strongSelf.refreshHUD.showRefreshButton()
                 }
             }

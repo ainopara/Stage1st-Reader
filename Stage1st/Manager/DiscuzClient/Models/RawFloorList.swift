@@ -44,14 +44,14 @@ public struct RawFloorList: Decodable {
             public let author: String
             public let authorid: String
             public let dateline: String
-            public let message: String
+            public let message: String?
             public let anonymous: String
             public let attachment: String
             public let status: String
-            public let username: String
-            public let adminid: String
+            public let username: String?
+            public let adminid: String?
             public let groupid: String
-            public let memberstatus: String
+            public let memberstatus: String?
             public let number: String
             public let dbdateline: String
             public struct Attachment: Decodable {

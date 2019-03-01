@@ -40,7 +40,7 @@ extension Floor {
         self.author = User(id: authorID, name: rawPost.author)
         self.indexMark = rawPost.number
         self.creationDate = Date(timeIntervalSince1970: TimeInterval(rawPost.dbdateline) ?? 0)
-        self.content = rawPost.message
+        self.content = rawPost.message ?? ""
         self.attachments = (rawPost.attachments ?? [:]).mapValues({ (attachment) in
             return attachment.url.appendingPathComponent(attachment.attachment)
         })
