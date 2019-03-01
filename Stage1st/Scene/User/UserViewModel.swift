@@ -47,9 +47,9 @@ class UserViewModel {
     func toggleBlockStatus() {
         let isBlocked = dataCenter.userIDIsBlocked(ID: user.value.id)
         if isBlocked {
-            dataCenter.blockUser(with: user.value.id)
-        } else {
             dataCenter.unblockUser(with: user.value.id)
+        } else {
+            dataCenter.blockUser(with: user.value.id)
         }
 
         user.value = user.value
