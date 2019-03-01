@@ -19,7 +19,7 @@ public extension DiscuzClient {
      - returns: Request object.
      */
     @discardableResult
-    public func checkLoginType(
+    func checkLoginType(
         noSechashBlock: @escaping () -> Void,
         hasSeccodeBlock: @escaping (_ sechash: String) -> Void,
         failureBlock: @escaping (_ error: Error) -> Void
@@ -59,7 +59,7 @@ public extension DiscuzClient {
         }
     }
 
-    public enum AuthMode {
+    enum AuthMode {
         case basic
         case secure(hash: String, code: String)
     }
@@ -78,7 +78,7 @@ public extension DiscuzClient {
      - returns: Request object.
      */
     @discardableResult
-    public func logIn(
+    func logIn(
         username: String,
         password: String,
         secureQuestionNumber: Int,

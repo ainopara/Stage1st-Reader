@@ -57,5 +57,5 @@ class UserViewModel {
 }
 
 public extension Notification.Name {
-    public static let UserBlockStatusDidChanged = Notification.Name.init(rawValue: "UserBlockStatusDidChanged")
+    static let UserBlockStatusDidChanged = Notification.Name.init(rawValue: "UserBlockStatusDidChanged")
 }

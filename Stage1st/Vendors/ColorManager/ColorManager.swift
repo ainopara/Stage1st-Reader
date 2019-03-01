@@ -115,12 +115,12 @@ private extension ColorManager {
 // MARK: - Miscs
 
 public extension UIViewController {
-    @objc public func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    @objc func didReceivePaletteChangeNotification(_ notification: Notification?) {
     }
 }
 
 public extension Notification.Name {
-    public static let APPaletteDidChange = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
+    static let APPaletteDidChange = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
 }
 
 @objc public enum PaletteType: NSInteger {

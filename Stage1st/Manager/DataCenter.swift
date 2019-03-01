@@ -466,5 +466,5 @@ extension DataCenter {
 }
 
 public extension Notification.Name {
-    public static let S1FloorsDidCachedNotification = Notification.Name.init(rawValue: "S1FloorDidCached")
+    static let S1FloorsDidCachedNotification = Notification.Name.init(rawValue: "S1FloorDidCached")
 }

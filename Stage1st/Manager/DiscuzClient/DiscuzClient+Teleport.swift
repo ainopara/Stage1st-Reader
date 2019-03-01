@@ -20,7 +20,7 @@ func generateURLString(_ baseURLString: String, parameters: Parameters) -> Strin
 public extension DiscuzClient {
 
     @discardableResult
-    public func topics(
+    func topics(
         in fieldID: Int,
         page: Int,
         completion: @escaping (Result<(Forum, [S1Topic], String?, String?)>) -> Void
@@ -103,7 +103,7 @@ public extension DiscuzClient {
 public extension DiscuzClient {
 
     @discardableResult
-    public func floors(
+    func floors(
         in topicID: Int,
         page: Int,
         completion: @escaping (Result<RawFloorList>) -> Void

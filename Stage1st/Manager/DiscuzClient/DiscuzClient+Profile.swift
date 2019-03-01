@@ -11,7 +11,7 @@ import Alamofire
 public extension DiscuzClient {
 
     @discardableResult
-    public func profile(
+    func profile(
         userID: Int,
         completion: @escaping (Result<User>) -> Void
     ) -> Request {
@@ -35,7 +35,7 @@ public extension DiscuzClient {
     }
 
     @discardableResult
-    public func notices(
+    func notices(
         page: Int,
         completion: @escaping (DataResponse<RawNoticeList>) -> Void
     ) -> DataRequest {
@@ -53,7 +53,7 @@ public extension DiscuzClient {
     }
 
     @discardableResult
-    public func threadList(
+    func threadList(
         for userID: Int,
         page: Int,
         completion: @escaping (DataResponse<Data>) -> Void
@@ -75,7 +75,7 @@ public extension DiscuzClient {
     }
 
     @discardableResult
-    public func replyList(
+    func replyList(
         for userID: Int,
         page: Int,
         completion: @escaping (DataResponse<Data>) -> Void
