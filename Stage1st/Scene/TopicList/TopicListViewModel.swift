@@ -460,6 +460,8 @@ extension TopicListViewModel {
                         return
                     }
 
+                    AppEnvironment.current.eventTracker.recordError(error, withAdditionalUserInfo: ["S1Context": "Fetch Topic List"])
+
                     let new = Model(
                         target: .blank,
                         state: .error(target: .forum(key: key), message: error.localizedDescription)
