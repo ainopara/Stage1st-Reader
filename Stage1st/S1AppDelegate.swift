@@ -20,6 +20,7 @@ import Kingfisher
 
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
+
     var window: UIWindow?
     private(set) var rootNavigationController: RootNavigationViewController?
     // swiftlint:disable weak_delegate
@@ -124,6 +125,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: Setup
 
 extension S1AppDelegate {
+
     private func updateStage1stDomainIfNecessary() {
         let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
@@ -162,6 +164,7 @@ extension S1AppDelegate {
 // MARK: Cleaning
 
 extension S1AppDelegate {
+
     func applicationDidEnterBackground(_ application: UIApplication) {
         AppEnvironment.current.dataCenter.cleaning()
     }
@@ -170,6 +173,7 @@ extension S1AppDelegate {
 // MARK: URL Scheme
 
 extension S1AppDelegate {
+
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
 
@@ -187,7 +191,7 @@ extension S1AppDelegate {
         return true
     }
 
-    func pushContentViewController(for topic: S1Topic) {
+    private func pushContentViewController(for topic: S1Topic) {
         guard let rootNavigationController = self.rootNavigationController else {
             return
         }
@@ -200,6 +204,7 @@ extension S1AppDelegate {
 // MARK: Hand Off
 
 extension S1AppDelegate {
+
     func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
         // TODO: Show an alert to tell user we are restoring state from hand off here.
         return true
@@ -230,6 +235,7 @@ extension S1AppDelegate {
 // MARK: Background Refresh
 
 extension S1AppDelegate {
+
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         S1LogInfo("[Backgournd Fetch] fetch called")
         completionHandler(.noData)
@@ -238,6 +244,7 @@ extension S1AppDelegate {
 }
 
 // MARK: Logging
+
 extension S1AppDelegate {
 
     @objc func setupLogging() {
@@ -247,7 +254,6 @@ extension S1AppDelegate {
         defaultDebugLevel = .debug
 
         let formatter = DDMultiFormatter()
-        formatter.add(FileLogFormatter())
         let queueFormatter = DispatchQueueLogFormatter()
         queueFormatter?.setReplacementString("cloudkit", forQueueLabel: "com.ainopara.stage1st.cloudkit")
         formatter.add(queueFormatter)
@@ -287,6 +293,7 @@ extension S1AppDelegate {
 }
 
 // MARK: Migration
+
 extension S1AppDelegate {
 
     @objc func migrate() {
@@ -386,6 +393,7 @@ extension S1AppDelegate {
 // MARK: Push Notification For CloudKit Sync
 
 extension S1AppDelegate {
+
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         S1LogDebug("[APNS] Registered for Push notifications with token: \(deviceToken)", category: .cloudkit)
     }
@@ -410,7 +418,8 @@ extension S1AppDelegate {
 
 // MARK: -
 
-fileprivate extension UserDefaults {
+private extension UserDefaults {
+
     func s1_setObjectIfNotExist(object: Any, key: String) {
         if value(forKey: key) == nil {
             `set`(object, forKey: key)

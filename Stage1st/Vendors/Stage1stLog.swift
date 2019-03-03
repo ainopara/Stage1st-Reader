@@ -44,12 +44,19 @@ enum LogCategory: String, OSLoggerIndexable {
     }
 }
 
-enum LogSubsystem: String, OSLoggerIndexable {
+enum LogSubsystem: OSLoggerIndexable {
     case `default`
+    case file(StaticString)
+
     var description: String {
         switch self {
         case .default:
             return "stage1st.default"
+        case .file(let path):
+            let pathString = path.description
+            let lastComponent = pathString.split(separator: "/").last ?? ""
+            let name = lastComponent.split(separator: ".").first ?? "unknown"
+            return String(name)
         }
     }
 
@@ -88,7 +95,6 @@ func S1LogDebug(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = asynchronousLogging,
     ddlog: DDLog = DDLog.sharedInstance
 ) {
@@ -100,7 +106,7 @@ func S1LogDebug(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )
@@ -115,7 +121,6 @@ func S1LogInfo(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = asynchronousLogging,
     ddlog: DDLog = DDLog.sharedInstance
 ) {
@@ -127,7 +132,7 @@ func S1LogInfo(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )
@@ -142,7 +147,6 @@ func S1LogWarn(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = asynchronousLogging,
     ddlog: DDLog = DDLog.sharedInstance
 ) {
@@ -154,7 +158,7 @@ func S1LogWarn(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )
@@ -169,7 +173,6 @@ func S1LogVerbose(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = asynchronousLogging,
     ddlog: DDLog = DDLog.sharedInstance
 ) {
@@ -181,7 +184,7 @@ func S1LogVerbose(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )
@@ -196,7 +199,6 @@ func S1LogError(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = false,
     ddlog: DDLog = DDLog.sharedInstance
 ) {
@@ -208,7 +210,7 @@ func S1LogError(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )
@@ -247,7 +249,6 @@ func S1FatalError(
     function: StaticString = #function,
     line: UInt = #line,
     category: LogCategory = .default,
-    subsystem: LogSubsystem = .default,
     asynchronous async: Bool = false,
     ddlog: DDLog = DDLog.sharedInstance
 ) -> Never {
@@ -259,7 +260,7 @@ func S1FatalError(
         file: file,
         function: function,
         line: line,
-        tag: S1LoggerTag(subsystem: subsystem, category: category, dso: dso),
+        tag: S1LoggerTag(subsystem: .file(file), category: category, dso: dso),
         asynchronous: async,
         ddlog: ddlog
     )

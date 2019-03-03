@@ -33,7 +33,7 @@ class GeneralScriptMessageHandler: NSObject, WKScriptMessageHandler {
             S1LogDebug("[WebView] load")
             delegate?.generalScriptMessageHandler(self, loadWith: messageDictionary)
         case "touch":
-            S1LogDebug("[WebView] touch event")
+            S1LogVerbose("[WebView] touch event")
             delegate?.generalScriptMessageHandlerTouchEvent(self)
         case "action":
             guard let floorID = messageDictionary["id"] as? Int else {
