@@ -116,6 +116,8 @@
 		86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */; };
 		86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AD218DB379002C2A66 /* StringDateTransformer.swift */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
+		86CCA179222CC73E00E633F5 /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CCA178222CC73E00E633F5 /* DecodingTests.swift */; };
+		86CCA189222CD1A300E633F5 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 86CCA188222CD1A300E633F5 /* Fixtures */; };
 		86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */; };
 		86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* RawPoll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
@@ -412,6 +414,8 @@
 		86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBoolTransformer.swift; sourceTree = "<group>"; };
 		86B464AD218DB379002C2A66 /* StringDateTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDateTransformer.swift; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
+		86CCA178222CC73E00E633F5 /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
+		86CCA188222CD1A300E633F5 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceInputView.swift; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* RawPoll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawPoll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
@@ -756,11 +760,13 @@
 		8681E6BD1CEF61ED004269D3 /* Stage1stTests */ = {
 			isa = PBXGroup;
 			children = (
+				86CCA188222CD1A300E633F5 /* Fixtures */,
 				8681E6BE1CEF61ED004269D3 /* TopicTests.swift */,
 				86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */,
 				8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */,
 				8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */,
 				8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */,
+				86CCA178222CC73E00E633F5 /* DecodingTests.swift */,
 				8681E6C01CEF61ED004269D3 /* Info.plist */,
 			);
 			path = Stage1stTests;
@@ -1208,6 +1214,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86CCA189222CD1A300E633F5 /* Fixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1398,6 +1405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86CCA179222CC73E00E633F5 /* DecodingTests.swift in Sources */,
 				86A6A4EA200B86670037AB38 /* Stage1stMahjongFaceTests.swift in Sources */,
 				8632C46E20F3B15000ACCBB0 /* StripTailTests.swift in Sources */,
 				8655449321E1E20F007B7557 /* S1TabBarSnapshotTests.swift in Sources */,

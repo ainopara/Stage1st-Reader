@@ -1,0 +1,70 @@
+{
+	"Version": "1",
+	"Charset": "UTF-8",
+	"Variables": {
+		"cookiepre": "B7Y9_2132_",
+		"auth": "ff56kzB3bqf+X5oAVR\/Xy+l8yEhKPdOljKwbtK1yWGiWoivWP7\/Hrri4heXP5ACllhrmWL2fg0YktHjg2rMpIJhpA4c",
+		"saltkey": "B9295LWh",
+		"member_uid": "206905",
+		"member_username": "ainopara",
+		"member_avatar": "https:\/\/avatar.saraba1st.com\/data\/avatar\/000\/20\/69\/05_avatar_small.jpg",
+		"groupid": "52",
+		"formhash": "ec6618f9",
+		"ismoderator": null,
+		"readaccess": "89",
+		"notice": {
+			"newpush": "0",
+			"newpm": "0",
+			"newprompt": "0",
+			"newmypost": "1"
+		},
+		"allowperm": {
+			"allowpost": "0",
+			"allowreply": "0",
+			"allowupload": {
+				"jpg": "-1",
+				"jpeg": "-1",
+				"gif": "-1",
+				"png": "-1",
+				"mp3": "-1",
+				"txt": "-1",
+				"zip": "-1",
+				"rar": "-1",
+				"pdf": "-1"
+			},
+			"attachremain": {
+				"size": "-1",
+				"count": "-1"
+			},
+			"uploadhash": "bd2cc5da27ad715ac5dc63278c7ea6ab"
+		},
+		"thread": {
+			"lastpost": "1970-1-1 08:00"
+		},
+		"fid": "0",
+		"postlist": [],
+		"imagelist": [],
+		"ppp": "30",
+		"setting_rewriterule": {
+			"portal_topic": "topic-{name}.html",
+			"portal_article": "article-{id}-{page}.html",
+			"forum_forumdisplay": "forum-{fid}-{page}.html",
+			"forum_viewthread": "thread-{tid}-{page}-{prevpage}.html",
+			"group_group": "group-{fid}-{page}.html",
+			"home_space": "space-{user}-{value}.html",
+			"home_blog": "blog-{uid}-{blogid}.html",
+			"forum_archiver": "{action}-{value}.html",
+			"plugin": "{pluginid}-{module}.html"
+		},
+		"setting_rewritestatus": ["portal_topic", "portal_article", "forum_forumdisplay", "forum_viewthread", "group_group", "home_space", "home_blog", "forum_archiver", "plugin"],
+		"forum_threadpay": null,
+		"cache_custominfo_postno": ["<sup>#<\/sup>", "\u697c\u4e3b", ""],
+		"forum": {
+			"password": "0"
+		}
+	},
+	"Message": {
+		"messageval": "thread_nonexistence",
+		"messagestr": "\u62b1\u6b49\uff0c\u6307\u5b9a\u7684\u4e3b\u9898\u4e0d\u5b58\u5728\u6216\u5df2\u88ab\u5220\u9664\u6216\u6b63\u5728\u88ab\u5ba1\u6838"
+	}
+}

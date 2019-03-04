@@ -22,7 +22,7 @@ public struct RawTopicList: Decodable {
             public let author: String
             public let authorid: String
             public let subject: String
-            public let lastposter: String
+            public let lastposter: String?
             public let views: String
             public let replies: String
             public let dbdateline: String

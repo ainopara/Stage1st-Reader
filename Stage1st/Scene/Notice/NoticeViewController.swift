@@ -42,6 +42,7 @@ class NoticeViewController: UIViewController {
 // MARK: - Setup
 
 extension NoticeViewController {
+
     private func setupSubviews() {
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.minimumLineSpacing = 0.0

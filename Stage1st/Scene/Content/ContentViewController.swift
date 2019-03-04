@@ -1237,7 +1237,10 @@ extension ContentViewController {
                     strongSelf.refreshHUD.hide(withDelay: 3.0)
                 } else if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
                     S1LogWarn("Decoding Error: \(error)")
-                    AppEnvironment.current.eventTracker.recordError(decodingError)
+                    AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: [
+                        "topicID": strongSelf.viewModel.topic.topicID,
+                        "page": strongSelf.viewModel.currentPage.value
+                    ])
                     strongSelf.refreshHUD.showRefreshButton()
                 } else {
                     S1LogWarn("Fetch failed with error: \(error)")

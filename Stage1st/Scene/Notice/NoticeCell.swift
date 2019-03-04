@@ -11,6 +11,7 @@ import Fuzi
 import Kingfisher
 
 class NoticeCell: UICollectionViewCell {
+
     let avatarImageView = UIImageView()
     let authorLabel = UILabel()
     let titleLabel = UILabel()

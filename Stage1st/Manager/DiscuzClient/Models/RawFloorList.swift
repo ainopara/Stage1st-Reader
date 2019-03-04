@@ -56,30 +56,30 @@ public struct RawFloorList: Decodable {
             public let dbdateline: String
             public struct Attachment: Decodable {
                 public let aid: String
-                public let tid: String
-                public let pid: String
-                public let uid: String
-                public let dateline: String
-                public let filename: String
-                public let filesize: String
+                public let tid: String?
+                public let pid: String?
+                public let uid: String?
+                public let dateline: String?
+                public let filename: String?
+                public let filesize: String?
                 public let attachment: String
-                public let remote: String
-                public let description: String
-                public let readperm: String
-                public let price: String
-                public let isimage: String
-                public let width: String
-                public let thumb: String
-                public let picid: String
-                public let ext: String
-                public let imgalt: String
-                public let attachicon: String
-                public let attachsize: String
-                public let attachimg: String
-                public let payed: String
+                public let remote: String?
+                public let description: String?
+                public let readperm: String?
+                public let price: String?
+                public let isimage: String?
+                public let width: String?
+                public let thumb: String?
+                public let picid: String?
+                public let ext: String?
+                public let imgalt: String?
+                public let attachicon: String?
+                public let attachsize: String?
+                public let attachimg: String?
+                public let payed: String?
                 public let url: URL
-                public let dbdateline: String
-                public let downloads: String
+                public let dbdateline: String?
+                public let downloads: String?
             }
             public let attachments: [String: Attachment]?
             public let imageList: [String]?
