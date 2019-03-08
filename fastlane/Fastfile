@@ -34,7 +34,20 @@ platform :ios do
       include_bitcode: false,
       output_directory: "Archive/#{options[:version]}"
     )
-    pilot
+
+    retry_count = 10
+    begin
+      pilot
+    rescue => ex
+      if retry_count > 0
+        retry_count -= 1
+        sleep 3
+        retry
+      else
+        raise ex
+      end
+    end
+
     commit_version_bump(
       xcodeproj: "Stage1st.xcodeproj",
       message: "Version bump to #{options[:version]}(#{build_number})."
