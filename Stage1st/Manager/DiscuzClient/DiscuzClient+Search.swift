@@ -44,8 +44,7 @@ public extension DiscuzClient {
                     var searchID: String?
                     let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
                     if
-                        let rawNextPageURL = theNextPageLinks.first?.stringValue,
-                        let nextPageURL = rawNextPageURL.gtm_stringByUnescapingFromHTML(),
+                        let nextPageURL = theNextPageLinks.first?.stringValue?.aibo_stringByUnescapingFromHTML(),
                         let queryItems = URLComponents(string: nextPageURL)?.queryItems,
                         let theSearchID = queryItems.first(where: { $0.name == "searchid" })?.value
                     {
@@ -92,8 +91,7 @@ public extension DiscuzClient {
                     var searchID: String?
                     let theNextPageLinks = (try? document.nodes(forXPath: "//div[@class='pg']/a[@class='nxt']/@href")) ?? []
                     if
-                        let rawNextPageURL = theNextPageLinks.first?.firstText,
-                        let nextPageURL = rawNextPageURL.gtm_stringByUnescapingFromHTML(),
+                        let nextPageURL = theNextPageLinks.first?.firstText?.aibo_stringByUnescapingFromHTML(),
                         let queryItems = URLComponents(string: nextPageURL)?.queryItems,
                         let theSearchID = queryItems.first(where: { $0.name == "searchid" })?.value
                     {

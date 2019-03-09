@@ -35,7 +35,6 @@
 		8632C46E20F3B15000ACCBB0 /* StripTailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */; };
 		8634ADA61FAAF309004A9CB7 /* RootNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */; };
 		8634ADA81FAAF309004A9CB7 /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA51FAAF309004A9CB7 /* S1Animator.swift */; };
-		8634ADE21FAAF3C2004A9CB7 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADAC1FAAF3C0004A9CB7 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADAE1FAAF3C0004A9CB7 /* DEComposeTextView.m */; };
 		8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB21FAAF3C0004A9CB7 /* REComposeViewController.m */; };
 		8634ADE51FAAF3C2004A9CB7 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB31FAAF3C0004A9CB7 /* REComposeSheetView.m */; };
@@ -102,6 +101,7 @@
 		868799231CE629D700F5C75C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799221CE629D700F5C75C /* LoginViewController.swift */; };
 		8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */; };
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
+		8691DF32223349C7002819D5 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8691DF31223349C7002819D5 /* Parser.swift */; };
 		8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */; };
 		8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
@@ -315,9 +315,6 @@
 		8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripTailTests.swift; sourceTree = "<group>"; };
 		8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationViewController.swift; sourceTree = "<group>"; };
 		8634ADA51FAAF309004A9CB7 /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Animator.swift; sourceTree = "<group>"; };
-		8634ADAA1FAAF3C0004A9CB7 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
-		8634ADAB1FAAF3C0004A9CB7 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
-		8634ADAC1FAAF3C0004A9CB7 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		8634ADAE1FAAF3C0004A9CB7 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		8634ADAF1FAAF3C0004A9CB7 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
 		8634ADB01FAAF3C0004A9CB7 /* REComposeSheetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeSheetView.h; sourceTree = "<group>"; };
@@ -397,6 +394,7 @@
 		868799221CE629D700F5C75C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceItem.swift; sourceTree = "<group>"; };
 		868A98041CA7F22500498C38 /* AnimationButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationButton.swift; sourceTree = "<group>"; };
+		8691DF31223349C7002819D5 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitViewController.swift; sourceTree = "<group>"; };
 		8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicListViewModel.swift; sourceTree = "<group>"; };
 		86991FD7188E76E800B7054F /* S1TopicListCellSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1TopicListCellSubView.h; sourceTree = "<group>"; };
@@ -513,16 +511,6 @@
 				8634ADA51FAAF309004A9CB7 /* S1Animator.swift */,
 			);
 			path = Navigation;
-			sourceTree = "<group>";
-		};
-		8634ADA91FAAF3C0004A9CB7 /* GoogleToolbox */ = {
-			isa = PBXGroup;
-			children = (
-				8634ADAA1FAAF3C0004A9CB7 /* GTMNSString+HTML.h */,
-				8634ADAB1FAAF3C0004A9CB7 /* GTMDefines.h */,
-				8634ADAC1FAAF3C0004A9CB7 /* GTMNSString+HTML.m */,
-			);
-			path = GoogleToolbox;
 			sourceTree = "<group>";
 		};
 		8634ADAD1FAAF3C0004A9CB7 /* REComposeViewController */ = {
@@ -783,6 +771,7 @@
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
 				C05286C116D3428E000B0DBD /* S1Parser.h */,
 				C05286C216D3428E000B0DBD /* S1Parser.m */,
+				8691DF31223349C7002819D5 /* Parser.swift */,
 				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
@@ -921,7 +910,6 @@
 			children = (
 				8634ADBB1FAAF3C1004A9CB7 /* ColorManager */,
 				8634ADBD1FAAF3C1004A9CB7 /* Gagat */,
-				8634ADA91FAAF3C0004A9CB7 /* GoogleToolbox */,
 				8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */,
 				8634ADD01FAAF3C2004A9CB7 /* PullToActionController */,
 				8634ADAD1FAAF3C0004A9CB7 /* REComposeViewController */,
@@ -1087,6 +1075,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				"zh-Hans",
 				Base,
@@ -1485,6 +1474,7 @@
 				866756A921DB5F7800D71479 /* DiscuzClient+Login.swift in Sources */,
 				86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */,
 				8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */,
+				8691DF32223349C7002819D5 /* Parser.swift in Sources */,
 				865544C321E24AD1007B7557 /* NSAttributedString+MahjongFaceExtension.swift in Sources */,
 				8634ADEA1FAAF3C2004A9CB7 /* TransitionCoordinator.swift in Sources */,
 				865544BC21E2498E007B7557 /* MahjongFaceImageAttachment.swift in Sources */,
@@ -1512,7 +1502,6 @@
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
 				8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
-				8634ADE21FAAF3C2004A9CB7 /* GTMNSString+HTML.m in Sources */,
 				86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */,
 				36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */,
 				8634ADEC1FAAF3C2004A9CB7 /* PessimisticPanGestureRecognizer.swift in Sources */,

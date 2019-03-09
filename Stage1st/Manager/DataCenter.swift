@@ -322,12 +322,13 @@ extension DataCenter {
                 case .success(let data):
                     guard
                         let responseString = String(data: data, encoding: .utf8),
-                        let mutableParameters = S1Parser.replyFloorInfo(fromResponseString: responseString)
+                        let parameters = Parser.replyFloorInfo(from: responseString)
                     else {
                         failureBlock("bad response from server.")
                         return
                     }
 
+                    var mutableParameters = parameters
                     mutableParameters["replysubmit"] = "true"
                     mutableParameters["message"] = text
 
@@ -335,7 +336,7 @@ extension DataCenter {
                         topicID: Int(truncating: topic.topicID),
                         page: page,
                         forumID: Int(truncating: forumID),
-                        parameters: mutableParameters as! [String: Any],
+                        parameters: mutableParameters,
                         completion: { result in
                             switch result {
                             case .success:

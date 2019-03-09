@@ -8,7 +8,6 @@
 
 #import "S1Parser.h"
 #import "S1Topic.h"
-#import "GTMNSString+HTML.h"
 #import "S1Global.h"
 #import "Stage1st-Swift.h"
 
@@ -70,39 +69,6 @@
     }
 }
 
-+ (NSMutableDictionary *_Nullable)replyFloorInfoFromResponseString:(NSString *)responseString {
-    NSMutableDictionary *infoDict = [[NSMutableDictionary alloc] init];
-    if (responseString == nil) {
-        return nil;
-    }
-    NSString *pattern = @"<input[^>]*name=\"([^>\"]*)\"[^>]*value=\"([^>\"]*)\"";
-    NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
-    NSArray *results = [re matchesInString:responseString options:NSMatchingReportProgress range:NSMakeRange(0, responseString.length)];
-    if ([results count] == 0) {
-        return nil;
-    }
-    for (NSTextCheckingResult *result in results) {
-        NSString *key = [responseString substringWithRange:[result rangeAtIndex:1]];
-        NSString *value = [responseString substringWithRange:[result rangeAtIndex:2]];
-        if ([key isEqualToString:@"noticetrimstr"]) {
-            [infoDict setObject:[value gtm_stringByUnescapingFromHTML] forKey:key];
-        } else {
-            [infoDict setObject:value forKey:key];
-        }
-    }
-    return infoDict;
-}
-
-+ (NSNumber *)firstQuoteReplyFloorIDFromFloorString:(NSString *)floorString {
-    NSString *urlString = [[S1Global regexExtractFromString:floorString withPattern:@"<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"" andColums:@[@1]] firstObject];
-    //DDLogDebug(@"First Quote URL: %@",urlString);
-    if (urlString) {
-        NSDictionary *resultDict = [S1Parser extractQuerysFromURLString:[urlString gtm_stringByUnescapingFromHTML]];
-        return [NSNumber numberWithInteger:[resultDict[@"pid"] integerValue]];
-    }
-    return nil;
-}
-
 #pragma mark - Extract From Link
 
 + (S1Topic *)extractTopicInfoFromLink:(NSString *)URLString {
@@ -118,7 +84,7 @@
     }
     // Php Scheme
     if (topicIDString == nil || [topicIDString isEqualToString:@""]) {
-        NSDictionary<NSString *, NSString *> *dict = [S1Parser extractQuerysFromURLString:URLString];
+        NSDictionary<NSString *, NSString *> *dict = [Parser extractQuerysFrom:URLString];
         topicIDString = [dict objectForKey:@"tid"];
         topicPageString = [dict objectForKey:@"page"];
         if (topicPageString == nil) {
@@ -132,24 +98,6 @@
     topic.lastViewedPage = [NSNumber numberWithInteger:[topicPageString integerValue]];
     DDLogDebug(@"[Parser] Extract Topic: %@", topic);
     return topic;
-}
-
-+ (NSDictionary<NSString *, NSString *> *)extractQuerysFromURLString:(NSString *)URLString {
-    NSURL *url = [[NSURL alloc] initWithString:URLString];
-    if (url!= nil) {
-        NSString *queryString = [url.query gtm_stringByUnescapingFromHTML];
-        if (queryString != nil) {
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-            for (NSString *component in [queryString componentsSeparatedByString:@"&"]) {
-                NSArray *part = [component componentsSeparatedByString:@"="];
-                if ([part count] == 2) {
-                    [dict setObject:[part lastObject] forKey:[part firstObject]];
-                }
-            }
-            return dict;
-        }
-    }
-    return nil;
 }
 
 @end

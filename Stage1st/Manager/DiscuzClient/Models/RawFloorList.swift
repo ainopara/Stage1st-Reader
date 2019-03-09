@@ -18,7 +18,7 @@ public struct RawFloorList: Decodable {
         public struct Thread: Decodable {
             public let tid: String
             public let fid: String
-            public let subject: String
+            public let subject: String?
             public let authorid: String
             public let views: String
             public let author: String

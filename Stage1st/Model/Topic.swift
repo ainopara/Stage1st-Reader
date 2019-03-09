@@ -19,7 +19,7 @@ extension S1Topic {
 
         self.init(topicID: topicID as NSNumber)
 
-        if let unescapedTitle = (rawTopic.subject as NSString?)?.gtm_stringByUnescapingFromHTML() {
+        if let unescapedTitle = rawTopic.subject?.aibo_stringByUnescapingFromHTML() {
             self.title = unescapedTitle
         }
 
@@ -53,8 +53,8 @@ extension S1Topic {
 
         self.init(topicID: topicID as NSNumber)
 
-        if let unescapedTitle = (rawTopic.subject as NSString).gtm_stringByUnescapingFromHTML() {
-            self.title = unescapedTitle
+        if let title = rawTopic.subject?.aibo_stringByUnescapingFromHTML() {
+            self.title = title
         }
 
         if let authorUserID = Int(rawTopic.authorid) {
@@ -112,8 +112,8 @@ extension S1Topic {
 
                 /// Second Attempt
                 if theAuthorUserID == nil || theAuthorUserID == 0 {
-                    let queries = S1Parser.extractQuerys(fromURLString: authorHomeURL)
-                    if let authorUserIDString = queries?["uid"] {
+                    let queries = Parser.extractQuerys(from: authorHomeURL)
+                    if let authorUserIDString = queries["uid"] {
                         theAuthorUserID = Int(authorUserIDString)
                     }
                 }
@@ -142,8 +142,8 @@ extension S1Topic {
 
             /// Second Attempt
             if fieldID == nil || fieldID == 0 {
-                let queries = S1Parser.extractQuerys(fromURLString: fieldURL)
-                if let fieldIDString = queries?["fid"] {
+                let queries = Parser.extractQuerys(from: fieldURL)
+                if let fieldIDString = queries["fid"] {
                     fieldID = Int(fieldIDString)
                 }
             }

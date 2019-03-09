@@ -177,9 +177,9 @@ extension S1AppDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
 
+        let queries = Parser.extractQuerys(from: url.absoluteString)
         if
             url.host == "open",
-            let queries = S1Parser.extractQuerys(fromURLString: url.absoluteString),
             let topicIDString = queries["tid"],
             let topicID = Int(topicIDString)
         {

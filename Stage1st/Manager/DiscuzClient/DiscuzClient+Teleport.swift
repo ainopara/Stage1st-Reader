@@ -61,7 +61,7 @@ public extension DiscuzClient {
                 }
 
                 let topics = rawTopics
-                    .map { S1Topic(rawTopic: $0, fieldID: forum.id) }
+                    .map { S1Topic(rawTopic: $0, forumID: forum.id) }
                     .compactMap { $0 }
 
                 let username = rawTopicList.variables?.memberUsername

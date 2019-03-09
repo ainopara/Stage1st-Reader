@@ -870,13 +870,15 @@ extension ContentViewController: WKNavigationDelegate {
             }
 
             // Open Quote Link
-            if let querys = S1Parser.extractQuerys(fromURLString: url.absoluteString),
-                let mod = querys["mod"], mod == "redirect",
-                let tidString = querys["ptid"],
+            let queries = Parser.extractQuerys(from: url.absoluteString)
+            if
+                let mod = queries["mod"], mod == "redirect",
+                let tidString = queries["ptid"],
                 let tid = Int(tidString), tid == viewModel.topic.topicID.intValue,
-                let pidString = querys["pid"],
+                let pidString = queries["pid"],
                 let pid = Int(pidString),
-                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0 {
+                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0
+            {
                 AppEnvironment.current.eventTracker.logEvent(with: "Open Quote Link", attributes: [
                     "source": "Content",
                 ])

@@ -16,9 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray<S1Topic *> *)topicsFromPersonalInfoHTMLData:(NSData *)rawData;
 
-+ (NSMutableDictionary<NSString *, id> *_Nullable)replyFloorInfoFromResponseString:(NSString *)ResponseString;
 + (S1Topic *_Nullable)extractTopicInfoFromLink:(NSString *)URLString;
-+ (NSDictionary<NSString *, NSString *> *_Nullable)extractQuerysFromURLString:(NSString *)URLString;
 
 @end
 
