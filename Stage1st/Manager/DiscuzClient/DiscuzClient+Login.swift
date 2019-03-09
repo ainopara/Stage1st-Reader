@@ -45,7 +45,7 @@ public extension DiscuzClient {
             }
         }
 
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<CheckLoginTypeResult>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<CheckLoginTypeResult>) in
             switch response.result {
             case let .success(result):
                 hasSeccodeBlock(result.variables.sechash)
@@ -115,7 +115,7 @@ public extension DiscuzClient {
             }
         }
 
-        return AF.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default)
+        return session.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default)
             .responseDecodable { (response: DataResponse<LoginOperationResult>) in
                 switch response.result {
                 case .success(let operationResult):
@@ -149,7 +149,7 @@ public extension DiscuzClient {
             "mobile": "no",
             "sechash": sechash
         ]
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseData { response in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseData { response in
             switch response.result {
             case let .success(imageData):
                 guard let image = UIImage(data: imageData) else {

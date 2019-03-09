@@ -41,7 +41,7 @@ public extension DiscuzClient {
             "formhash": formhash,
         ]
 
-        return AF.request(URLString, method: .post, parameters: bodyParameters)
+        return session.request(URLString, method: .post, parameters: bodyParameters)
             .responseData { response in
                 completion(response.result.error)
             }

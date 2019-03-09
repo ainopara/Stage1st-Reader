@@ -462,6 +462,11 @@ extension TopicListViewModel {
 
                     if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
                         AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: ["S1Context": "Fetch Topic List"])
+                    } else if let urlError = error as? URLError, urlError.code == .httpTooManyRedirects {
+                        URLCache.shared.removeAllCachedResponses()
+                        AppEnvironment.current.eventTracker.recordError(urlError, withAdditionalUserInfo: [
+                            "S1Context": "Fetch Topic List"
+                        ])
                     }
 
                     let new = Model(

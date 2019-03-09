@@ -28,7 +28,7 @@ public extension DiscuzClient {
             "searchsubmit": "true"
         ]
 
-        return AF.request(baseURL + "/search.php?searchsubmit=yes", method: .post, parameters: params)
+        return session.request(baseURL + "/search.php?searchsubmit=yes", method: .post, parameters: params)
             .responseData { (response) in
                 switch response.result {
                 case .success(let data):
@@ -75,7 +75,7 @@ public extension DiscuzClient {
             "searchsubmit": "yes"
         ]
 
-        return AF.request(baseURL + "/search.php", parameters: params)
+        return session.request(baseURL + "/search.php", parameters: params)
             .responseData { (response) in
                 switch response.result {
                 case .success(let data):

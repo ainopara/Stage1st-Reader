@@ -11,8 +11,30 @@ import Alamofire
 public final class DiscuzClient: NSObject {
     public let baseURL: String
 
+    let session: Session
+
     public init(baseURL: String) {
         self.baseURL = baseURL
+        self.session = Session(
+            redirectHandler: Redirector(behavior: Redirector.Behavior.modify({ (task, request, response) -> URLRequest? in
+                if task.originalRequest?.url?.absoluteString == request.url?.absoluteString {
+                    S1LogWarn("Redirect to self detected! request \(String(describing: task.originalRequest?.url?.absoluteString)) will redirect to \(String(describing: request.url?.absoluteString))")
+                    AppEnvironment.current.eventTracker.recordError(NSError(
+                        domain: "S1RedirectIssue",
+                        code: 0,
+                        userInfo: [
+                            "originalRequest": task.originalRequest?.url?.absoluteString ?? "",
+                            "currentRequest": task.currentRequest?.url?.absoluteString ?? "",
+                            "redirectedTo": request.url?.absoluteString ?? ""
+                        ]
+                    ))
+                    return request
+                } else {
+                    S1LogDebug("request \(String(describing: task.originalRequest?.url?.absoluteString)) will redirect to \(String(describing: request.url?.absoluteString))")
+                    return request
+                }
+            }))
+        )
         super.init()
     }
 }

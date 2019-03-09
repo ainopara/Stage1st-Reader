@@ -36,7 +36,7 @@ public extension DiscuzClient {
             "orderby": "dblastpost",
         ]
 
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawTopicList>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawTopicList>) in
             switch response.result {
             case let .success(rawTopicList):
 
@@ -81,13 +81,13 @@ public extension DiscuzClient {
     ) -> Alamofire.Request {
 
         guard let url = URL(string: baseURL)?.appendingPathComponent(referencePath) else {
-            return AF.request(FailureURL("Failed to generate url with baseURL: \(baseURL) path: \(referencePath)"))
+            return session.request(FailureURL("Failed to generate url with baseURL: \(baseURL) path: \(referencePath)"))
                 .response(completionHandler: { (response) in
 //                    completion()
                 })
         }
 
-        let request = AF.request(url, method: .get)
+        let request = session.request(url, method: .get)
         return request
             .response(completionHandler: { (response) in
                 guard let response = response.response else {
@@ -119,7 +119,7 @@ public extension DiscuzClient {
             "page": page,
         ]
 
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawFloorList>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawFloorList>) in
             switch response.result {
             case let .success(rawFloorList):
                 if let serverErrorMessage = rawFloorList.error, serverErrorMessage != "" {

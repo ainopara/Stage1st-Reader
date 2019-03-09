@@ -33,7 +33,7 @@ public extension DiscuzClient {
             "ajaxtarget": "fwin_content_reply"
         ]
 
-        return AF.request(baseURL + "/forum.php", parameters: parameters)
+        return session.request(baseURL + "/forum.php", parameters: parameters)
             .responseData { response in
                 completion(response.result)
             }
@@ -63,7 +63,7 @@ public extension DiscuzClient {
 
         let bodyParameters: Parameters = parameters
 
-        return AF.request(urlString, method: .post, parameters: bodyParameters)
+        return session.request(urlString, method: .post, parameters: bodyParameters)
             .responseData { response in
                 completion(response.result.map({ _ in () }))
         }
@@ -100,7 +100,7 @@ public extension DiscuzClient {
             "message": text,
         ]
 
-        return AF.request(urlString, method: .post, parameters: bodyParameters)
+        return session.request(urlString, method: .post, parameters: bodyParameters)
             .responseData { response in
                 completion(response.result.map({ _ in () }))
         }

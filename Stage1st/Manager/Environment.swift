@@ -11,6 +11,7 @@ import Reachability
 
 @objcMembers
 class Environment: NSObject {
+
     let forumName: String
     let serverAddress: ServerAddress
     let cookieStorage: HTTPCookieStorage

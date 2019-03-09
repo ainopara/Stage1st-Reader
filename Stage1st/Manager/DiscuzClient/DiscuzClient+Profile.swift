@@ -23,7 +23,7 @@ public extension DiscuzClient {
             "mobile": "no",
         ]
 
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters)
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters)
             .responseDecodable { (response: DataResponse<User>) in
                 switch response.result {
                 case let .success(user):
@@ -48,7 +48,7 @@ public extension DiscuzClient {
             "mobile": "no",
         ]
 
-        return AF.request(baseURL + "/api/mobile/index.php", parameters: parameters)
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters)
             .responseDecodable(completionHandler: completion)
     }
 
@@ -70,7 +70,7 @@ public extension DiscuzClient {
             "order": "dateline"
         ]
 
-        return AF.request(baseURL + "/home.php", parameters: parameters)
+        return session.request(baseURL + "/home.php", parameters: parameters)
             .responseData(completionHandler: completion)
     }
 
@@ -92,7 +92,7 @@ public extension DiscuzClient {
             "order": "dateline"
         ]
 
-        return AF.request(baseURL + "/home.php", parameters: parameters)
+        return session.request(baseURL + "/home.php", parameters: parameters)
             .responseData(completionHandler: completion)
     }
 }
