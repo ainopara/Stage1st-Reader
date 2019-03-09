@@ -326,7 +326,7 @@ extension TopicListViewModel {
                 state: .loading(.init(target: .forum(key: key), showingHUD: true))
             )
             transitModel(to: new, with: .tabTapped)
-            topicList(for: key)
+            fetchTopicList(for: key)
         }
     }
 
@@ -347,7 +347,7 @@ extension TopicListViewModel {
                 state: .loading(.init(target: .forum(key: forum.key), showingHUD: true))
             )
             transitModel(to: new, with: .pullToRefresh)
-            topicList(for: forum.key)
+            fetchTopicList(for: forum.key)
 
         case .search(let search):
             let new = Model(
@@ -415,7 +415,7 @@ extension TopicListViewModel {
         transitModel(to: Model(target: .blank, state: .loaded), with: .reset)
     }
 
-    private func topicList(for key: String) {
+    private func fetchTopicList(for key: String) {
         dispatchPrecondition(condition: .onQueue(.main))
 
         guard let mappedKey = self.forumKeyMap[key] else {
@@ -460,7 +460,9 @@ extension TopicListViewModel {
                         return
                     }
 
-                    AppEnvironment.current.eventTracker.recordError(error, withAdditionalUserInfo: ["S1Context": "Fetch Topic List"])
+                    if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
+                        AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: ["S1Context": "Fetch Topic List"])
+                    }
 
                     let new = Model(
                         target: .blank,

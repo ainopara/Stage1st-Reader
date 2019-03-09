@@ -21,7 +21,7 @@ public extension DiscuzClient {
 
     @discardableResult
     func topics(
-        in fieldID: Int,
+        in forumID: Int,
         page: Int,
         completion: @escaping (Result<(Forum, [S1Topic], String?, String?)>) -> Void
     ) -> Alamofire.Request {
@@ -31,7 +31,7 @@ public extension DiscuzClient {
             "tpp": 50,
             "submodule": "checkpost",
             "mobile": "no",
-            "fid": fieldID,
+            "fid": forumID,
             "page": page,
             "orderby": "dblastpost",
         ]

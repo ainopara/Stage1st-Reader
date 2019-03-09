@@ -11,26 +11,27 @@ import KissXML
 
 extension S1Topic {
 
-    convenience init?(rawTopic: RawTopicList.Variables.Thread, fieldID: Int?) {
+    convenience init?(rawTopic: RawTopicList.Variables.Thread, forumID: Int?) {
+
         guard let topicID = Int(rawTopic.tid) else {
             return nil
         }
 
         self.init(topicID: topicID as NSNumber)
 
-        if let unescapedTitle = (rawTopic.subject as NSString).gtm_stringByUnescapingFromHTML() {
+        if let unescapedTitle = (rawTopic.subject as NSString?)?.gtm_stringByUnescapingFromHTML() {
             self.title = unescapedTitle
         }
 
-        if let replyCount = Int(rawTopic.replies) {
+        if let replyCount = Int(rawTopic.replies ?? "0") {
             self.replyCount = max(0, replyCount) as NSNumber
         }
 
-        if let fieldID = fieldID {
-            fID = fieldID as NSNumber
+        if let forumID = forumID {
+            fID = forumID as NSNumber
         }
 
-        if let authorUserID = Int(rawTopic.authorid) {
+        if let unwrappedUserID = rawTopic.authorid, let authorUserID = Int(unwrappedUserID) {
             self.authorUserID = authorUserID as NSNumber
         }
 
