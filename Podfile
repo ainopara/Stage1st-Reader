@@ -4,7 +4,7 @@ use_frameworks!
 
 target "Stage1st" do
     # Network
-    pod 'Alamofire', '5.0.0.beta.2'
+    pod 'Alamofire', '5.0.0.beta.3'
     pod 'Kingfisher'
 
     # Model
