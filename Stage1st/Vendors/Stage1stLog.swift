@@ -99,7 +99,7 @@ func S1LogDebug(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .debug,
         context: context,
@@ -125,7 +125,7 @@ func S1LogInfo(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .info,
         context: context,
@@ -151,7 +151,7 @@ func S1LogWarn(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .warning,
         context: context,
@@ -177,7 +177,7 @@ func S1LogVerbose(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .verbose,
         context: context,
@@ -203,7 +203,7 @@ func S1LogError(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .error,
         context: context,
@@ -227,7 +227,7 @@ public func DDLogTracking(
     ddlog: DDLog = DDLog.sharedInstance
 ) {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .error,
         context: 1024,
@@ -253,7 +253,7 @@ func S1FatalError(
     ddlog: DDLog = DDLog.sharedInstance
 ) -> Never {
     _DDLogMessage(
-        message,
+        message(),
         level: level,
         flag: .error,
         context: context,
@@ -265,5 +265,5 @@ func S1FatalError(
         ddlog: ddlog
     )
 
-    fatalError(message, file: file, line: line)
+    fatalError(message(), file: file, line: line)
 }

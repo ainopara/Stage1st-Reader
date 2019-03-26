@@ -639,7 +639,7 @@ extension LoginViewController {
 extension LoginViewController {
 
     fileprivate func currentSecureQuestionNumber() -> Int {
-        if let text = userInfoInputView.questionSelectButton.currentTitle, let index = self.secureQuestionChoices.index(of: text) {
+        if let text = userInfoInputView.questionSelectButton.currentTitle, let index = self.secureQuestionChoices.firstIndex(of: text) {
             return index
         } else {
             return 0

@@ -22,7 +22,7 @@ extension Reactive where Base: S1TabBar {
             case .none:
                 tabBar.deselectAll()
             case .key(let name):
-                if let index = tabBar.keys.index(of: name) {
+                if let index = tabBar.keys.firstIndex(of: name) {
                     tabBar.setSelectedIndex(index)
                 } else {
                     S1FatalError("Could not found key \(name) in \(tabBar.keys)")
