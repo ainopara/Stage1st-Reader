@@ -35,19 +35,16 @@ PODS:
   - AppCenter/Core (1.14.0)
   - AppCenter/Crashes (1.14.0):
     - AppCenter/Core
-  - CocoaLumberjack (3.4.2):
-    - CocoaLumberjack/Default (= 3.4.2)
-    - CocoaLumberjack/Extensions (= 3.4.2)
-  - CocoaLumberjack/Default (3.4.2)
-  - CocoaLumberjack/Extensions (3.4.2):
-    - CocoaLumberjack/Default
-  - CocoaLumberjack/Swift (3.4.2):
-    - CocoaLumberjack/Default
+  - CocoaLumberjack (3.5.2):
+    - CocoaLumberjack/Core (= 3.5.2)
+  - CocoaLumberjack/Core (3.5.2)
+  - CocoaLumberjack/Swift (3.5.2):
+    - CocoaLumberjack/Core
   - CodableExtensions (0.2.1)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
-  - CrashlyticsLogger (0.3.1):
-    - CocoaLumberjack
+  - CrashlyticsLogger (0.4.0):
+    - CocoaLumberjack (~> 3.5)
     - CocoaLumberjack/Swift
     - Crashlytics
   - DeviceKit (1.12.0)
@@ -71,15 +68,10 @@ PODS:
   - Masonry (1.1.0)
   - QuickTableViewController (1.1.0)
   - Reachability (3.2)
-  - ReactiveCocoa (2.5):
-    - ReactiveCocoa/UI (= 2.5)
-  - ReactiveCocoa/Core (2.5):
-    - ReactiveCocoa/no-arc
-  - ReactiveCocoa/no-arc (2.5)
-  - ReactiveCocoa/UI (2.5):
-    - ReactiveCocoa/Core
-  - ReactiveSwift (5.0.0):
-    - Result (~> 4.1)
+  - ReactiveCocoa (8.0.2):
+    - ReactiveSwift (~> 4.0)
+  - ReactiveSwift (4.0.0):
+    - Result (~> 4.0)
   - Result (4.1.0)
   - SnapKit (4.2.0)
   - SnapshotTesting (1.4.0)
@@ -162,11 +154,11 @@ DEPENDENCIES:
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
   - Alamofire (= 5.0.0.beta.3)
   - AppCenter
-  - CocoaLumberjack (< 3.5.0)
-  - CocoaLumberjack/Swift (< 3.5.0)
+  - CocoaLumberjack
+  - CocoaLumberjack/Swift
   - CodableExtensions
   - Crashlytics
-  - CrashlyticsLogger (~> 0.3.1)
+  - CrashlyticsLogger (~> 0.4.0)
   - DeviceKit
   - Fabric
   - Files
@@ -182,8 +174,8 @@ DEPENDENCIES:
   - Masonry
   - QuickTableViewController
   - Reachability
-  - ReactiveCocoa
-  - ReactiveSwift
+  - ReactiveCocoa (~> 8.0.2)
+  - ReactiveSwift (~> 4.0)
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
@@ -253,10 +245,10 @@ SPEC CHECKSUMS:
   Ainoaibo: 378197db72b050fe00c78b706f46b64709fcd18d
   Alamofire: 50d6fa7e8cbe7f84559e86ab641ffd029db655f8
   AppCenter: 02c5efe08d3bbab5421ae41d5f7aa7238906b817
-  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
-  CrashlyticsLogger: c21938d9fde27884d8341173aeba482a9e30f01a
+  CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
   DeviceKit: f5dbd2e70cafd420d6a09379b8800cdf5fe92ba5
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
@@ -272,14 +264,14 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 129e71fc37a69991aff02bc946723d51a13d6aa5
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
-  ReactiveSwift: bd4c122943593e67cb441409370c5c1e3cb32791
+  ReactiveCocoa: fbd26e9ba60e98417ee47433e59465a98ed9da0f
+  ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SnapshotTesting: f50ca26f5f9dd8b26e158289ea1c2a89e2e54742
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: ef1cdf349fc3ccaf83b661037fc6081011006d05
+PODFILE CHECKSUM: a3d16e42e934d87c391c0513fe9dae07c9543ccf
 
 COCOAPODS: 1.6.0

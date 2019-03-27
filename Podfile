@@ -31,9 +31,9 @@ target "Stage1st" do
     pod 'Html', '~> 0.3'
 
     # Debug
-    pod 'CocoaLumberjack', '< 3.5.0'
-    pod 'CocoaLumberjack/Swift', '< 3.5.0'
-    pod 'CrashlyticsLogger', '~> 0.3.1'
+    pod 'CocoaLumberjack'
+    pod 'CocoaLumberjack/Swift'
+    pod 'CrashlyticsLogger', '~> 0.4.0'
 
     pod 'Fabric'
     pod 'Crashlytics'
@@ -41,8 +41,8 @@ target "Stage1st" do
 #    pod 'Reveal-SDK', :configurations => ['Debug']
 
     # RAC
-    pod 'ReactiveSwift'
-    pod 'ReactiveCocoa'
+    pod 'ReactiveSwift', '~> 4.0'
+    pod 'ReactiveCocoa', '~> 8.0.2'
 
     # Others
     pod 'Reachability'
@@ -77,6 +77,15 @@ post_install do |installer|
         if pods_with_swift4.include? target.name then
             target.build_configurations.each do |config|
                 config.build_settings['SWIFT_VERSION'] = '4.0'
+            end
+        end
+
+        pods_with_swift4_2 = [
+            'Fuzi'
+        ]
+        if pods_with_swift4_2.include? target.name then
+            target.build_configurations.each do |config|
+                config.build_settings['SWIFT_VERSION'] = '4.2'
             end
         end
     end
