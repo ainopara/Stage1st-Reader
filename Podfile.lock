@@ -27,13 +27,13 @@ PODS:
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (5.0.0-beta.3)
-  - AppCenter (1.13.2):
-    - AppCenter/Analytics (= 1.13.2)
-    - AppCenter/Crashes (= 1.13.2)
-  - AppCenter/Analytics (1.13.2):
+  - AppCenter (1.14.0):
+    - AppCenter/Analytics (= 1.14.0)
+    - AppCenter/Crashes (= 1.14.0)
+  - AppCenter/Analytics (1.14.0):
     - AppCenter/Core
-  - AppCenter/Core (1.13.2)
-  - AppCenter/Crashes (1.13.2):
+  - AppCenter/Core (1.14.0)
+  - AppCenter/Crashes (1.14.0):
     - AppCenter/Core
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
@@ -50,7 +50,7 @@ PODS:
     - CocoaLumberjack
     - CocoaLumberjack/Swift
     - Crashlytics
-  - DeviceKit (1.11.0)
+  - DeviceKit (1.12.0)
   - Fabric (1.9.0)
   - Files (2.2.1)
   - FMDB (2.7.5):
@@ -59,24 +59,30 @@ PODS:
   - Fuzi (2.1.0)
   - GRMustache.swift (2.0.0)
   - HorizontalFloatingHeaderLayout (2.0.0)
-  - iOSSnapshotTestCase (6.0.0):
-    - iOSSnapshotTestCase/SwiftSupport (= 6.0.0)
-  - iOSSnapshotTestCase/Core (6.0.0)
-  - iOSSnapshotTestCase/SwiftSupport (6.0.0):
+  - Html (0.3.0)
+  - iOSSnapshotTestCase (6.0.2):
+    - iOSSnapshotTestCase/SwiftSupport (= 6.0.2)
+  - iOSSnapshotTestCase/Core (6.0.2)
+  - iOSSnapshotTestCase/SwiftSupport (6.0.2):
     - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
-  - Kingfisher (5.2.0)
+  - Kingfisher (5.3.0)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (1.1.0)
   - Reachability (3.2)
-  - ReactiveCocoa (8.0.2):
-    - ReactiveSwift (~> 4.0)
-  - ReactiveSwift (4.0.0):
-    - Result (~> 4.0)
+  - ReactiveCocoa (2.5):
+    - ReactiveCocoa/UI (= 2.5)
+  - ReactiveCocoa/Core (2.5):
+    - ReactiveCocoa/no-arc
+  - ReactiveCocoa/no-arc (2.5)
+  - ReactiveCocoa/UI (2.5):
+    - ReactiveCocoa/Core
+  - ReactiveSwift (5.0.0):
+    - Result (~> 4.1)
   - Result (4.1.0)
   - SnapKit (4.2.0)
-  - SnapshotTesting (1.2.0)
+  - SnapshotTesting (1.4.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
   - YapDatabase/Standard (3.1.1):
@@ -168,6 +174,7 @@ DEPENDENCIES:
   - Fuzi (~> 2.1)
   - GRMustache.swift (from `https://github.com/ainopara/GRMustache.swift.git`)
   - HorizontalFloatingHeaderLayout
+  - Html (~> 0.3)
   - iOSSnapshotTestCase
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - Kingfisher
@@ -199,6 +206,7 @@ SPEC REPOS:
     - FMDB
     - Fuzi
     - HorizontalFloatingHeaderLayout
+    - Html
     - iOSSnapshotTestCase
     - Kingfisher
     - Masonry
@@ -244,33 +252,34 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 378197db72b050fe00c78b706f46b64709fcd18d
   Alamofire: 50d6fa7e8cbe7f84559e86ab641ffd029db655f8
-  AppCenter: bce7fe1098e8e8aeb70aaae1898600534069f549
+  AppCenter: 02c5efe08d3bbab5421ae41d5f7aa7238906b817
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   CrashlyticsLogger: c21938d9fde27884d8341173aeba482a9e30f01a
-  DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
+  DeviceKit: f5dbd2e70cafd420d6a09379b8800cdf5fe92ba5
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Fuzi: 8c57344debff6d3a0c76a9e0f549152defdaaa48
   GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
-  iOSSnapshotTestCase: f592adfdedffe6113a55528ce698ccc457a550f1
+  Html: 56257a2aa1d5a03ac929bff0cdf553d861a178b5
+  iOSSnapshotTestCase: 20083a7be9b8ef742610e16c79f15ad829441f29
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  Kingfisher: 07067cfacf371117330dceb4b4b8f5c4b691ab42
+  Kingfisher: 4692c783ffb99e9e2e40a6eb3e518c3b96c6fa8c
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 129e71fc37a69991aff02bc946723d51a13d6aa5
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: fbd26e9ba60e98417ee47433e59465a98ed9da0f
-  ReactiveSwift: a2bb9ace428a109e9c0209615645d9d286c8c433
+  ReactiveCocoa: e2db045570aa97c695e7aa97c2bcab222ae51f4a
+  ReactiveSwift: bd4c122943593e67cb441409370c5c1e3cb32791
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  SnapshotTesting: bd92e40aaef4a735f7950d42cb0b8ea7c3716b00
+  SnapshotTesting: f50ca26f5f9dd8b26e158289ea1c2a89e2e54742
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: bdf95f352d5eff8f0f65b4165bd2f932b940f603
+PODFILE CHECKSUM: ef1cdf349fc3ccaf83b661037fc6081011006d05
 
 COCOAPODS: 1.6.0

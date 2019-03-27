@@ -1,6 +1,3 @@
 [submodule "Frameworks/Ainoaibo"]
 	path = Frameworks/Ainoaibo
 	url = https://github.com/ainopara/Ainoaibo.git
-[submodule "Frameworks/swift-html"]
-	path = Frameworks/swift-html
-	url = https://github.com/ainopara/swift-html.git

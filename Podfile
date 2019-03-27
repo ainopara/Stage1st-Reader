@@ -28,6 +28,7 @@ target "Stage1st" do
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'Fuzi', '~> 2.1'
     pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
+    pod 'Html', '~> 0.3'
 
     # Debug
     pod 'CocoaLumberjack', '< 3.5.0'
