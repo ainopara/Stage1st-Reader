@@ -81,8 +81,8 @@ class NoticeCell: UICollectionViewCell {
         // Calculate the size (height) using Auto Layout
         let autoLayoutSize = contentView.systemLayoutSizeFitting(
             targetSize,
-            withHorizontalFittingPriority: UILayoutPriority.required,
-            verticalFittingPriority: UILayoutPriority.defaultLow
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .defaultLow
         )
         let autoLayoutFrame = CGRect(origin: autoLayoutAttributes.frame.origin, size: autoLayoutSize)
 
