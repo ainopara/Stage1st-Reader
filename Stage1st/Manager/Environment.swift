@@ -8,6 +8,7 @@
 
 import Foundation
 import Reachability
+import GRDB
 
 @objcMembers
 class Environment: NSObject {
@@ -22,6 +23,7 @@ class Environment: NSObject {
     let databaseManager: DatabaseManager
     let cloudkitManager: CloudKitManager
     let cacheDatabaseManager: CacheDatabaseManager
+    let grdb: DatabaseQueue
     let colorManager: ColorManager
     let eventTracker: EventTracker
 
@@ -39,6 +41,7 @@ class Environment: NSObject {
         databaseManager: DatabaseManager,
         cloudkitManager: CloudKitManager,
         cacheDatabaseManager: CacheDatabaseManager,
+        grdb: DatabaseQueue,
         colorManager: ColorManager,
         eventTracker: EventTracker,
         databaseAdapter: S1YapDatabaseAdapter,
@@ -55,6 +58,7 @@ class Environment: NSObject {
         self.databaseManager = databaseManager
         self.cloudkitManager = cloudkitManager
         self.cacheDatabaseManager = cacheDatabaseManager
+        self.grdb = grdb
         self.colorManager = colorManager
         self.eventTracker = eventTracker
         self.databaseAdapter = databaseAdapter
@@ -76,6 +80,7 @@ class Environment: NSObject {
         colorManager = ColorManager(nightMode: settings.nightMode.value)
         eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
+        grdb = try! DatabaseQueue(path: Environment.grdbPath())
 
         if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
             serverAddress = cachedServerAddress
@@ -106,6 +111,13 @@ class Environment: NSObject {
 
     static func cacheDatabasePath() -> String {
         let databaseName = "Cache.sqlite"
+        let baseURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let cacheDatabaseURL = baseURL.appendingPathComponent(databaseName, isDirectory: false)
+        return cacheDatabaseURL.standardizedFileURL.path
+    }
+
+    static func grdbPath() -> String {
+        let databaseName = "Stage1stCache.sqlite"
         let baseURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let cacheDatabaseURL = baseURL.appendingPathComponent(databaseName, isDirectory: false)
         return cacheDatabaseURL.standardizedFileURL.path

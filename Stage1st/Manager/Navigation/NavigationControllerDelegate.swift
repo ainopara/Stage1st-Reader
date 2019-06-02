@@ -82,6 +82,8 @@ extension NavigationControllerDelegate {
             S1LogDebug("\(gestureRecognizer.state.rawValue)")
             interactionController?.cancel()
             interactionController = nil
+        @unknown default:
+            break
         }
     }
 }
@@ -119,6 +121,8 @@ extension NavigationControllerDelegate: UINavigationControllerDelegate {
         case .pop:
             return S1Animator(direction: .pop)
         case .none:
+            return nil
+        @unknown default:
             return nil
         }
     }

@@ -16,7 +16,7 @@ public extension DiscuzClient {
         page: Int,
         floorID: Int,
         forumID: Int,
-        completion: @escaping (Result<Data>) -> Void
+        completion: @escaping (Result<Data, Error>) -> Void
     ) -> Request {
 
         let parameters: Parameters = [
@@ -45,7 +45,7 @@ public extension DiscuzClient {
         page: Int,
         forumID: Int,
         parameters: [String: Any],
-        completion: @escaping (Result<Void>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     ) -> Request {
 
         let urlParameters: Parameters = [
@@ -75,7 +75,7 @@ public extension DiscuzClient {
         forumID: Int,
         formhash: String,
         text: String,
-        completion: @escaping (Result<Void>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     ) -> Request {
 
         let urlParameters: Parameters = [

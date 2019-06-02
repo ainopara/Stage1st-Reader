@@ -22,6 +22,8 @@ class NoticeViewModel {
     let state = MutableProperty<State>(.loading)
 
     let cellViewModels = MutableProperty<[NoticeCell.ViewModel]>([])
+    let isEmptyViewHidden = MutableProperty<Bool>(false)
+    let shouldShowErrorView = MutableProperty<Bool>(false)
 
     init() {
         cellViewModels <~ state
@@ -37,15 +39,52 @@ class NoticeViewModel {
                 models.compactMap { try? NoticeCell.ViewModel(replyNotice: $0) }
             }
 
-        AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in
-            guard let strongSelf = self else { return }
+        isEmptyViewHidden <~ state.map { state in
+            switch state {
+            case .loaded(let data), .allLoaded(let data):
+                return !data.isEmpty
+            case .loading, .error, .fetchingMore:
+                return true
+            }
+        }
 
-            switch response.result {
-            case .success(let notices):
-                let notices = notices.list.sorted(by: { $0.dateline > $1.dateline })
-                strongSelf.state.value = .loaded(notices)
-            case .failure(let error):
-                strongSelf.state.value = .error(.networkError(error))
+        shouldShowErrorView <~ state.map { (state) in
+            switch state {
+            case .error:
+                return true
+            default:
+                return false
+            }
+        }
+
+        if AppEnvironment.current.settings.currentUsername.value != nil {
+            AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in
+                guard let strongSelf = self else { return }
+
+                switch response.result {
+                case .success(let notices):
+                    let notices = notices.list.sorted(by: { $0.dateline > $1.dateline })
+                    strongSelf.state.value = .loaded(notices)
+                case .failure(let error):
+                    strongSelf.state.value = .error(.networkError(error))
+                }
+            }
+        } else {
+            state.value = .allLoaded([])
+        }
+
+        state.producer.startWithValues { (state) in
+            switch state {
+            case .loading:
+                S1LogDebug("state -> loading")
+            case .loaded(let data):
+                S1LogDebug("state -> laoded(\(data.count))")
+            case .fetchingMore(let data):
+                S1LogDebug("state -> fetchingMore(\(data.count))")
+            case .allLoaded(let data):
+                S1LogDebug("state -> allLoaded(\(data.count))")
+            case .error(let error):
+                S1LogDebug("state -> error(\(error))")
             }
         }
     }
@@ -54,6 +93,7 @@ class NoticeViewModel {
 // MARK: - Output
 
 extension NoticeViewModel {
+
     func numberOfItem() -> Int {
         return cellViewModels.value.count
     }

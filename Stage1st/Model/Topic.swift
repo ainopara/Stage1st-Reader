@@ -87,7 +87,7 @@ extension S1Topic {
         let titleString = titlePart.recursiveText
 
         let url = titlePart.attribute(forName: "href")?.stringValue ?? ""
-        guard let topicID = S1Parser.extractTopicInfo(fromLink: url)?.topicID else {
+        guard let topicID = Parser.extractTopic(from: url)?.topicID else {
             return nil
         }
 

@@ -11,7 +11,6 @@
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
 #import "S1TabBar.h"
-#import "S1Parser.h"
 #import "UIScrollView+WKWebViewHack.h"
 #import "S1YapDatabaseAdapter.h"
 #import "S1TopicListCellSubView.h"

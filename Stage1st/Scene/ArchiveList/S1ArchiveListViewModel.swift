@@ -9,7 +9,6 @@
 import Foundation
 import YapDatabase.YapDatabaseSearchResultsView
 import ReactiveSwift
-import Result
 
 final class S1ArchiveListViewModel {
     enum State: Equatable {
@@ -35,19 +34,19 @@ final class S1ArchiveListViewModel {
     let databaseChangedNotification = MutableProperty([Notification]())
 
     // Output
-    let tableViewReloading: Signal<(), NoError>
-    private let tableViewReloadingObserver: Signal<(), NoError>.Observer
+    let tableViewReloading: Signal<(), Never>
+    private let tableViewReloadingObserver: Signal<(), Never>.Observer
 
-    let tableViewCellUpdate: Signal<[IndexPath], NoError>
-    private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
+    let tableViewCellUpdate: Signal<[IndexPath], Never>
+    private let tableViewCellUpdateObserver: Signal<[IndexPath], Never>.Observer
 
     let searchBarPlaceholderText = MutableProperty("")
 
     // MARK: -
 
     init() {
-        (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
-        (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
+        (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), Never>.pipe()
+        (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], Never>.pipe()
 
         databaseChangedNotification <~ NotificationCenter.default.reactive
             .notifications(forName: .UIDatabaseConnectionDidUpdate)

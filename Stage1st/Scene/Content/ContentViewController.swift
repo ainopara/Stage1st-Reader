@@ -29,7 +29,7 @@ private let blankPageHTMLString = """
     </html>
     """
 
-class ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
+final class ContentViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter, QuoteFloorPresenter {
     let viewModel: ContentViewModel
 
     lazy var webView: WKWebView = {
@@ -197,9 +197,7 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
         // Binding
         viewModel.currentPage.producer
             .combineLatest(with: viewModel.totalPages.producer)
-            .startWithValues { [weak self] arg in
-                let (currentPage, totalPage) = arg
-
+            .startWithValues { [weak self] (currentPage, totalPage) in
                 S1LogVerbose("[ContentVM] Current page or totoal page changed: \(currentPage)/\(totalPage)")
                 guard let strongSelf = self else { return }
                 strongSelf.pageButton.setTitle(strongSelf.viewModel.pageButtonString(), for: .normal)
@@ -207,9 +205,7 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
 
         SignalProducer
             .combineLatest(webPageReadyForAutomaticScrolling.producer, webPageCurrentContentHeight.producer)
-            .startWithValues { [weak self] arg in
-                let (webPageReady, currentHeight) = arg
-
+            .startWithValues { [weak self] (webPageReady, currentHeight) in
                 guard let strongSelf = self else { return }
                 let finishFirstLoading = strongSelf.finishFirstLoading.value
                 S1LogVerbose("[ContentVC] document ready: \(webPageReady), finish first loading: \(finishFirstLoading), current height: \(currentHeight), scrolling enable: \(strongSelf.webPageAutomaticScrollingEnabled)")
@@ -241,9 +237,11 @@ class ContentViewController: UIViewController, ImagePresenter, UserPresenter, Co
             .startWithValues { [weak self] title in
                 guard let strongSelf = self else { return }
                 if let title = title, title != "" {
+                    strongSelf.title = title as String
                     strongSelf.titleLabel.text = title as String
                     strongSelf.titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.normal")
                 } else {
+                    strongSelf.title = "\(strongSelf.viewModel.topic.topicID) 载入中..."
                     strongSelf.titleLabel.text = "\(strongSelf.viewModel.topic.topicID) 载入中..."
                     strongSelf.titleLabel.textColor = AppEnvironment.current.colorManager.colorForKey("content.titlelabel.text.disable")
                 }
@@ -397,7 +395,7 @@ extension ContentViewController {
 
 // MARK: - Actions
 extension ContentViewController {
-    @objc open func back(sender: Any?) {
+    @objc func back(sender: Any?) {
         if viewModel.isInFirstPage() {
             _ = navigationController?.popViewController(animated: true)
         } else {
@@ -412,7 +410,7 @@ extension ContentViewController {
         }
     }
 
-    @objc open func forward(sender: Any?) {
+    @objc func forward(sender: Any?) {
         switch (viewModel.isInLastPage(), webView.s1_atBottom()) {
         case (true, false):
             webView.s1_scrollToBottom(animated: true)
@@ -430,7 +428,7 @@ extension ContentViewController {
         }
     }
 
-    @objc open func backLongPressed(gestureRecognizer: UIGestureRecognizer) {
+    @objc func backLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
             gestureRecognizer.state == UIGestureRecognizer.State.began,
             !viewModel.isInFirstPage() else {
@@ -443,7 +441,7 @@ extension ContentViewController {
         fetchContentForCurrentPage(forceUpdate: false)
     }
 
-    @objc open func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
+    @objc func forwardLongPressed(gestureRecognizer: UIGestureRecognizer) {
         guard
             gestureRecognizer.state == UIGestureRecognizer.State.began,
             !viewModel.isInLastPage() else {
@@ -456,7 +454,7 @@ extension ContentViewController {
         fetchContentForCurrentPage(forceUpdate: false)
     }
 
-    @objc open func pickPage(sender _: Any?) {
+    @objc func pickPage(sender _: Any?) {
         func generatePageList() -> [String] {
             var pageList = [String]()
 
@@ -500,7 +498,7 @@ extension ContentViewController {
         picker?.show()
     }
 
-    @objc open func forceRefreshPressed(gestureRecognizer: UIGestureRecognizer) {
+    @objc func forceRefreshPressed(gestureRecognizer: UIGestureRecognizer) {
         guard gestureRecognizer.state == .began else {
             return
         }
@@ -509,7 +507,7 @@ extension ContentViewController {
         refreshCurrentPage(forceUpdate: true, scrollType: .restorePosition)
     }
 
-    @objc open func action(sender _: Any?) {
+    @objc func action(sender _: Any?) {
         let moreActionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         // Reply Action
@@ -622,7 +620,7 @@ extension ContentViewController {
         present(moreActionSheet, animated: true, completion: nil)
     }
 
-    open func actionButtonTapped(for floorID: Int) {
+    private func actionButtonTapped(for floorID: Int) {
         guard let floor = viewModel.searchFloorInCache(floorID) else {
             return
         }
@@ -741,7 +739,7 @@ extension ContentViewController {
         present(refreshAlertController, animated: true, completion: nil)
     }
 
-    open func saveTopicViewedState(sender _: Any?) {
+    func saveTopicViewedState(sender _: Any?) {
         if finishFirstLoading.value {
             viewModel.saveTopicViewedState(lastViewedPosition: Double(webView.scrollView.contentOffset.y))
         } else {
@@ -749,7 +747,7 @@ extension ContentViewController {
         }
     }
 
-    open override func didReceivePaletteChangeNotification(_ notification: Notification?) {
+    override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         // Color
         view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
         webView.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.webview.background")
@@ -773,7 +771,7 @@ extension ContentViewController {
         }
     }
 
-    @objc open func didReceiveFloorCachedNotification(_ notification: Notification?) {
+    @objc func didReceiveFloorCachedNotification(_ notification: Notification?) {
         guard
             let topicID = notification?.userInfo?["topicID"] as? NSNumber,
             let page = notification?.userInfo?["page"] as? NSNumber,
@@ -785,11 +783,11 @@ extension ContentViewController {
         updateToolBar()
     }
 
-    @objc open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
+    @objc func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
         refreshCurrentPage(forceUpdate: false, scrollType: .restorePosition)
     }
 
-    @objc open func didReceiveReplyDidPostedNotification(_ notification: Notification) {
+    @objc func didReceiveReplyDidPostedNotification(_ notification: Notification) {
         guard
             let topicID = notification.userInfo?["topicID"] as? NSNumber,
             viewModel.topic.topicID.isEqual(to: topicID)
@@ -832,7 +830,7 @@ extension ContentViewController: WKNavigationDelegate {
             return
         }
 
-        if url.absoluteString.hasPrefix("file://") && url.absoluteString.hasSuffix("html") {
+        if url.absoluteString.hasPrefix("file://") && url.path.hasSuffix("html") {
             decisionHandler(.allow)
             return
         }
@@ -850,7 +848,7 @@ extension ContentViewController: WKNavigationDelegate {
 
         if AppEnvironment.current.serverAddress.hasSameDomain(with: url) {
             // Open as S1 topic
-            if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
+            if let topic = Parser.extractTopic(from: url.absoluteString) {
                 // TODO: Make this logic easy to understand.
                 var topic = topic
                 if let tracedTopic = viewModel.dataCenter.traced(topicID: topic.topicID.intValue) {
@@ -1138,14 +1136,14 @@ extension ContentViewController {
         }
     }
 
-    open override var preferredStatusBarStyle: UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 
 // MARK: - NSUserActivity (aspect)
 extension ContentViewController {
-    func _setupActivity() {
+    private func _setupActivity() {
         DispatchQueue.global().async { [weak self] in
             guard let strongSelf = self else { return }
             let activity = NSUserActivity(activityType: "Stage1st.view-topic")
@@ -1162,7 +1160,7 @@ extension ContentViewController {
         }
     }
 
-    open override func updateUserActivityState(_ activity: NSUserActivity) {
+    public override func updateUserActivityState(_ activity: NSUserActivity) {
         S1LogDebug("[ContentVC] Hand Off Activity Updated")
         activity.userInfo = viewModel.activityUserInfo()
         activity.webpageURL = viewModel.correspondingWebPageURL() as URL?
@@ -1170,7 +1168,7 @@ extension ContentViewController {
 }
 
 // MARK: - Main Function
-extension ContentViewController {
+private extension ContentViewController {
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func _showHud() {
             refreshHUD.showActivityIndicator()
@@ -1345,14 +1343,18 @@ private extension ContentViewController {
 
             webView.evaluateJavaScript("$('html, body').animate({ scrollTop: $(document).height()}, 300);", completionHandler: nil)
         case .restorePosition:
-            // Restore last view position from cached position in this view controller.
-            webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
-            if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.aibo_clamped(to: 0.0...maxOffset) {
-                S1LogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
-
-                changeOffsetIfNeeded(to: positionForPage)
+            if let tag = viewModel.topic.locateFloorIDTag {
+                webView.evaluateJavaScript("window.location.hash = '#\(tag)'", completionHandler: nil)
             } else {
-                changeOffsetIfNeeded(to: 0.0)
+                // Restore last view position from cached position in this view controller.
+                webView.scrollView.s1_ignoringContentOffsetChangedToZero = true
+                if let positionForPage = viewModel.cachedOffsetForCurrentPage()?.aibo_clamped(to: 0.0...maxOffset) {
+                    S1LogInfo("[ContentVC] Trying to restore position of \(positionForPage)")
+
+                    changeOffsetIfNeeded(to: positionForPage)
+                } else {
+                    changeOffsetIfNeeded(to: 0.0)
+                }
             }
         }
 

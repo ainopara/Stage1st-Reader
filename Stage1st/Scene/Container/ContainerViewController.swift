@@ -78,7 +78,7 @@ class ContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
+        if Device.current.isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
             scrollTabBar.expectedButtonHeight = 49.0
         }
 
@@ -87,7 +87,7 @@ class ContainerViewController: UIViewController {
             scrollTabBar.snp.makeConstraints { (make) in
                 make.leading.trailing.equalTo(view)
                 make.bottom.equalTo(view.snp.bottom)
-                if Device().isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
+                if Device.current.isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
                     make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-49.0)
                 } else {
                     make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)

@@ -49,12 +49,21 @@ final class TopicListViewController: UIViewController {
             target: self,
             action: #selector(settings)
         )
-        naviItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Archive"),
-            style: .plain,
-            target: self,
-            action: #selector(archive)
-        )
+
+        naviItem.rightBarButtonItems = [
+            UIBarButtonItem(
+                image: UIImage(named: "Archive"),
+                style: .plain,
+                target: self,
+                action: #selector(archive)
+            ),
+            UIBarButtonItem(
+                image: UIImage(named: "Notify"),
+                style: .plain,
+                target: self,
+                action: #selector(notification)
+            )
+        ]
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -436,10 +445,8 @@ extension TopicListViewController: UINavigationBarDelegate {
 // MARK: - Actions
 
 extension TopicListViewController {
+
     @objc func settings(_ sender: Any) {
-//        let navi = UINavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
-//        self.present(navi, animated: true, completion: nil)
-//        return;
         let storyboard = UIStoryboard(name: "Settings", bundle: nil)
         let settingsViewController = storyboard.instantiateViewController(withIdentifier: "SettingsNavigation")
         self.present(settingsViewController, animated: true, completion: nil)
@@ -447,6 +454,11 @@ extension TopicListViewController {
 
     @objc func archive(_ sender: Any) {
         self.containerViewController.switchToArchiveList()
+    }
+
+    @objc func notification(_ sender: Any) {
+        let navigationController = RootNavigationViewController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
+        self.present(navigationController, animated: true, completion: nil)
     }
 
     @objc func refresh(_ sender: Any) {

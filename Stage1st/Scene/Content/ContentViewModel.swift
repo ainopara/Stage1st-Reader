@@ -87,7 +87,7 @@ class ContentViewModel: NSObject, PageRenderer {
 
 // MARK: - Network
 extension ContentViewModel {
-    func currentContentPage(completion: @escaping (Result<String>) -> Void) {
+    func currentContentPage(completion: @escaping (Result<String, Error>) -> Void) {
         dataCenter.floors(for: topic, with: Int(currentPage.value)) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {

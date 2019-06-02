@@ -47,3 +47,14 @@ public extension DiscuzClient {
             }
     }
 }
+
+private extension Result where Failure == Error {
+    var error: Error? {
+        switch self {
+        case .success:
+            return nil
+        case .failure(let error):
+            return error
+        }
+    }
+}

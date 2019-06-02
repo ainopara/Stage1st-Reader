@@ -14,7 +14,7 @@ public struct ReplyNotice: Codable {
     public let type: String
     public let new: Bool
     public let authorid: Int
-    public let author: String
+    public let author: String?
     public let note: String
     public let dateline: Date
     public let fromId: Int
@@ -41,7 +41,7 @@ public struct ReplyNotice: Codable {
         self.type = try container.decode(String.self, forKey: .type)
         self.new = try container.decode(.new, transformer: StringBoolTransformer())
         self.authorid = try container.decode(.authorid, transformer: StringIntTransformer())
-        self.author = try container.decode(String.self, forKey: .author)
+        self.author = try container.decodeIfPresent(String.self, forKey: .author)
         self.note = try container.decode(String.self, forKey: .note)
         self.dateline = try container.decode(.dateline, transformer: StringDateTransformer(dateType: .secondSince1970))
         self.fromId = try container.decode(.fromId, transformer: StringIntTransformer())

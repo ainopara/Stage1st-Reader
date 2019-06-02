@@ -46,11 +46,11 @@ extension DataCenter {
         return topicListCache[key]
     }
 
-    func topics(for key: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
+    func topics(for key: String, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         topicsFromServer(for: key, page: 1, completion: completion)
     }
 
-    func loadNextPage(for key: String, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
+    func loadNextPage(for key: String, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         if let currentPageNumber = topicListCachePageNumber[key] {
             topicsFromServer(for: key, page: currentPageNumber + 1, completion: completion)
         } else {
@@ -66,7 +66,7 @@ extension DataCenter {
         }
     }
 
-    private func topicsFromServer(for key: String, page: Int, completion: @escaping (Alamofire.Result<[S1Topic]>) -> Void) {
+    private func topicsFromServer(for key: String, page: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         apiManager.topics(in: Int(key)!, page: page) { [weak self] (result) in
             DispatchQueue.global(qos: .default).async { [weak self] in
                 guard let strongSelf = self else { return }
@@ -159,7 +159,7 @@ extension DataCenter {
         return formHash != nil
     }
 
-    func searchTopics(for keyword: String, completion: @escaping (Alamofire.Result<([S1Topic], String?)>) -> Void) {
+    func searchTopics(for keyword: String, completion: @escaping (Result<([S1Topic], String?), Error>) -> Void) {
         apiManager.search(for: keyword, formhash: formHash!) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
@@ -181,7 +181,7 @@ extension DataCenter {
         }
     }
 
-    func nextSearchPage(for searchID: String, page: Int, completion: @escaping (Alamofire.Result<([S1Topic], String?)>) -> Void) {
+    func nextSearchPage(for searchID: String, page: Int, completion: @escaping (Result<([S1Topic], String?), Error>) -> Void) {
         apiManager.search(with: searchID, page: page) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
@@ -207,7 +207,7 @@ extension DataCenter {
 // MARK: - Content
 extension DataCenter {
     @discardableResult
-    fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ completion: @escaping (Result<([Floor], Bool)>) -> Void) -> Request {
+    fileprivate func requestFloorsFromServer(_ topic: S1Topic, _ page: Int, _ completion: @escaping (Result<([Floor], Bool), Error>) -> Void) -> Request {
         return apiManager.floors(in: Int(truncating: topic.topicID), page: page) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
@@ -240,7 +240,7 @@ extension DataCenter {
         }
     }
 
-    func floors(for topic: S1Topic, with page: Int, completion: @escaping (Result<([Floor], Bool)>) -> Void) {
+    func floors(for topic: S1Topic, with page: Int, completion: @escaping (Result<([Floor], Bool), Error>) -> Void) {
         assert(!topic.isImmutable)
 
         if let cachedFloors = cacheDatabaseManager.floors(in: topic.topicID.intValue, page: page), cachedFloors.count > 0 {

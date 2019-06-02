@@ -1067,6 +1067,8 @@ extension CKAccountStatus: CustomDebugStringConvertible {
             return "noAccount"
         case .restricted:
             return "restricted"
+        @unknown default:
+            return "unknown(\(self.rawValue))"
         }
     }
 }

@@ -4,7 +4,7 @@ use_frameworks!
 
 target "Stage1st" do
     # Network
-    pod 'Alamofire', '5.0.0.beta.3'
+    pod 'Alamofire', '5.0.0.beta.6'
     pod 'Kingfisher'
 
     # Model
@@ -23,10 +23,11 @@ target "Stage1st" do
     # Database
     pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'stage'
+    pod 'GRDB.swift', '~> 3.7'
 
     # XML
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
-    pod 'Fuzi', '~> 2.1'
+    pod 'Fuzi', '~> 3.0'
     pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
     pod 'Html', '~> 0.3'
 
@@ -41,8 +42,8 @@ target "Stage1st" do
 #    pod 'Reveal-SDK', :configurations => ['Debug']
 
     # RAC
-    pod 'ReactiveSwift', '~> 4.0'
-    pod 'ReactiveCocoa', '~> 8.0.2'
+    pod 'ReactiveSwift', '~> 6.0'
+    pod 'ReactiveCocoa', '~> 10.0'
 
     # Others
     pod 'Reachability'
@@ -81,7 +82,8 @@ post_install do |installer|
         end
 
         pods_with_swift4_2 = [
-            'Fuzi'
+            'Fuzi',
+            'GRDB.swift'
         ]
         if pods_with_swift4_2.include? target.name then
             target.build_configurations.each do |config|

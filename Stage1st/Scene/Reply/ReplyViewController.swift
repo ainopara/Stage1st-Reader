@@ -157,6 +157,8 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             self.replyAccessoryView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
+        @unknown default:
+            break
         }
     }
 }

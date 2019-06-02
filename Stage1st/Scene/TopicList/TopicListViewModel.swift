@@ -11,7 +11,6 @@ import Foundation
 import YapDatabase
 import Alamofire
 import ReactiveSwift
-import Result
 
 // swiftlint:disable nesting
 
@@ -103,14 +102,14 @@ final class TopicListViewModel: NSObject {
         case restore(CGPoint)
     }
 
-    let tableViewOffsetAction: Signal<TableViewContentOffsetAction, NoError>
-    private let tableViewOffsetActionObserver: Signal<TableViewContentOffsetAction, NoError>.Observer
+    let tableViewOffsetAction: Signal<TableViewContentOffsetAction, Never>
+    private let tableViewOffsetActionObserver: Signal<TableViewContentOffsetAction, Never>.Observer
 
-    let tableViewReloading: Signal<(), NoError>
-    private let tableViewReloadingObserver: Signal<(), NoError>.Observer
+    let tableViewReloading: Signal<(), Never>
+    private let tableViewReloadingObserver: Signal<(), Never>.Observer
 
-    let tableViewCellUpdate: Signal<[IndexPath], NoError>
-    private let tableViewCellUpdateObserver: Signal<[IndexPath], NoError>.Observer
+    let tableViewCellUpdate: Signal<[IndexPath], Never>
+    private let tableViewCellUpdateObserver: Signal<[IndexPath], Never>.Observer
 
     enum HudAction {
         case loading
@@ -118,16 +117,16 @@ final class TopicListViewModel: NSObject {
         case hide(delay: Double)
     }
 
-    let hudAction: Signal<HudAction, NoError>
-    private let hudActionObserver: Signal<HudAction, NoError>.Observer
+    let hudAction: Signal<HudAction, Never>
+    private let hudActionObserver: Signal<HudAction, Never>.Observer
 
-    let refreshControlEndRefreshing: Signal<(), NoError>
-    private let refreshControlEndRefreshingObserver: Signal<(), NoError>.Observer
+    let refreshControlEndRefreshing: Signal<(), Never>
+    private let refreshControlEndRefreshingObserver: Signal<(), Never>.Observer
 
     let tabBarSelection: MutableProperty<S1TabBar.Selection> = MutableProperty(.none)
 
-    let searchTextClearAction: Signal<(), NoError>
-    private let searchTextClearActionObserver: Signal<(), NoError>.Observer
+    let searchTextClearAction: Signal<(), Never>
+    private let searchTextClearActionObserver: Signal<(), Never>.Observer
 
     let searchBarPlaceholderText = MutableProperty(NSLocalizedString("TopicListViewController.SearchBar_Hint", comment: "Search"))
     let isTableViewHidden = MutableProperty(true)
@@ -140,12 +139,12 @@ final class TopicListViewModel: NSObject {
     init(dataCenter: DataCenter) {
         self.dataCenter = dataCenter
 
-        (self.tableViewOffsetAction, self.tableViewOffsetActionObserver) = Signal<TableViewContentOffsetAction, NoError>.pipe()
-        (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), NoError>.pipe()
-        (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], NoError>.pipe()
-        (self.hudAction, self.hudActionObserver) = Signal<HudAction, NoError>.pipe()
-        (self.refreshControlEndRefreshing, self.refreshControlEndRefreshingObserver) = Signal<(), NoError>.pipe()
-        (self.searchTextClearAction, self.searchTextClearActionObserver) = Signal<(), NoError>.pipe()
+        (self.tableViewOffsetAction, self.tableViewOffsetActionObserver) = Signal<TableViewContentOffsetAction, Never>.pipe()
+        (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), Never>.pipe()
+        (self.tableViewCellUpdate, self.tableViewCellUpdateObserver) = Signal<[IndexPath], Never>.pipe()
+        (self.hudAction, self.hudActionObserver) = Signal<HudAction, Never>.pipe()
+        (self.refreshControlEndRefreshing, self.refreshControlEndRefreshingObserver) = Signal<(), Never>.pipe()
+        (self.searchTextClearAction, self.searchTextClearActionObserver) = Signal<(), Never>.pipe()
 
         super.init()
 

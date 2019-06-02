@@ -15,7 +15,7 @@ public extension DiscuzClient {
     func search(
         for keyword: String,
         formhash: String,
-        completion: @escaping (Result<([S1Topic], String?)>) -> Void
+        completion: @escaping (Result<([S1Topic], String?), Error>) -> Void
     ) -> Request {
 
         let params: Parameters = [
@@ -63,7 +63,7 @@ public extension DiscuzClient {
     func search(
         with searchID: String,
         page: Int,
-        completion: @escaping (Result<([S1Topic], String?)>) -> Void
+        completion: @escaping (Result<([S1Topic], String?), Error>) -> Void
     ) -> Request {
 
         let params: Parameters = [

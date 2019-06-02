@@ -84,7 +84,7 @@ public extension DiscuzClient {
         secureQuestionNumber: Int,
         secureQuestionAnswer: String,
         authMode: AuthMode,
-        completion: @escaping (Result<String?>) -> Void
+        completion: @escaping (Result<String?, Error>) -> Void
         ) -> Request {
         var URLParameters: Parameters = [
             "module": "login",
@@ -142,7 +142,7 @@ public extension DiscuzClient {
     }
 
     @discardableResult
-    func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage>) -> Void) -> Request {
+    func getSeccodeImage(sechash: String, completion: @escaping (Result<UIImage, Error>) -> Void) -> Request {
         let parameters: Parameters = [
             "module": "seccode",
             "version": 1,

@@ -88,7 +88,7 @@ extension OSLog {
 
 func S1LogDebug(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,
@@ -114,7 +114,7 @@ func S1LogDebug(
 
 func S1LogInfo(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,
@@ -140,7 +140,7 @@ func S1LogInfo(
 
 func S1LogWarn(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,
@@ -166,7 +166,7 @@ func S1LogWarn(
 
 func S1LogVerbose(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,
@@ -192,7 +192,7 @@ func S1LogVerbose(
 
 func S1LogError(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,
@@ -218,7 +218,7 @@ func S1LogError(
 
 public func DDLogTracking(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     file: StaticString = #file,
     function: StaticString = #function,
     line: UInt = #line,
@@ -242,7 +242,7 @@ public func DDLogTracking(
 
 func S1FatalError(
     _ message: @autoclosure () -> String,
-    level: DDLogLevel = defaultDebugLevel,
+    level: DDLogLevel = dynamicLogLevel,
     context: Int = 0,
     dso: UnsafeRawPointer = #dsohandle,
     file: StaticString = #file,

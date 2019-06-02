@@ -251,7 +251,7 @@ extension S1AppDelegate {
 
         #if DEBUG
 
-        defaultDebugLevel = .debug
+        dynamicLogLevel = .debug
 
         let formatter = DDMultiFormatter()
         let queueFormatter = DispatchQueueLogFormatter()
@@ -275,7 +275,7 @@ extension S1AppDelegate {
 
         #else
 
-        defaultDebugLevel = .debug
+        dynamicLogLevel = .debug
 
         let formatter = DDMultiFormatter()
         formatter.add(FileLogFormatter())

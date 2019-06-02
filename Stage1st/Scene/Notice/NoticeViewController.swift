@@ -9,12 +9,19 @@
 import SnapKit
 import ReactiveSwift
 
+@objc(S1NoticeViewController)
 class NoticeViewController: UIViewController {
     let viewModel: NoticeViewModel
 
     let layout = UICollectionViewFlowLayout()
     let collectionView: UICollectionView
-    let closeButton = UIButton()
+    private let emptyView = EmptyView()
+    let refreshHUD = S1HUD(frame: .zero)
+
+    @objc
+    convenience init() {
+        self.init(viewModel: NoticeViewModel())
+    }
 
     init(viewModel: NoticeViewModel) {
         self.viewModel = viewModel
@@ -22,8 +29,8 @@ class NoticeViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        closeButton.setImage(UIImage(named: "Close"), for: .normal)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: closeButton)
+        title = "回复提醒"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(closeAction))
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -53,6 +60,11 @@ extension NoticeViewController {
         collectionView.delegate = self
         collectionView.register(NoticeCell.self, forCellWithReuseIdentifier: "notice")
         view.addSubview(collectionView)
+
+        view.addSubview(emptyView)
+        emptyView.snp.makeConstraints { (make) in
+            make.edges.equalTo(collectionView)
+        }
     }
 
     private func setupAutoLayout() {
@@ -62,15 +74,22 @@ extension NoticeViewController {
     }
 
     private func setupBindings() {
-        closeButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] (_) in
-            guard let strongSelf = self else { return }
-            strongSelf.dismiss(animated: true, completion: nil)
-        }
 
         viewModel.state.producer.startWithValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.collectionView.reloadData()
         }
+
+        emptyView.reactive.isHidden <~ viewModel.isEmptyViewHidden
+    }
+}
+
+// MARK: - Actions
+
+extension NoticeViewController {
+
+    @objc func closeAction(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -106,8 +125,45 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath.item)
 
-        let contentViewModel = ContentViewModel(topic: S1Topic(topicID: 0))
-        let contentViewController = ContentViewController(viewModel: contentViewModel)
-        navigationController?.pushViewController(contentViewController, animated: true)
+        refreshHUD.showActivityIndicator()
+        AppEnvironment.current.apiService.topic(with: cellViewModel.path) { [weak self] (result) in
+            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let topic):
+                strongSelf.refreshHUD.hide(withDelay: 0.0)
+                let contentViewModel = ContentViewModel(topic: topic)
+                let contentViewController = ContentViewController(viewModel: contentViewModel)
+                strongSelf.navigationController?.pushViewController(contentViewController, animated: true)
+            case .failure(let error):
+                strongSelf.refreshHUD.showMessage("\(error.localizedDescription)")
+                strongSelf.refreshHUD.hide(withDelay: 2.0)
+            }
+        }
+    }
+}
+
+private class EmptyView: UIView {
+    let label = UILabel()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        label.numberOfLines = 0
+        label.reactive.text <~ AppEnvironment.current.settings.currentUsername
+            .map { (username) -> String in
+                return username == nil ? "未登录" : "无信息"
+            }
+        label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
+        label.font = .boldSystemFont(ofSize: 18.0)
+        addSubview(label)
+
+        label.snp.makeConstraints { (make) in
+            make.center.equalTo(self)
+            make.left.greaterThanOrEqualTo(self)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

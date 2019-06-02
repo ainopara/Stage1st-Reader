@@ -190,7 +190,11 @@
         [self presentViewController:safariViewController animated:YES completion:NULL];
 #endif
     } else if (indexPath.section == 2 && indexPath.row == 3) {
+#ifdef DEBUG
+        [self.navigationController pushViewController:[[S1NoticeViewController alloc] init] animated:YES];
+#else
         [self.navigationController pushViewController:[self acknowledgementListViewController] animated:YES];
+#endif
     }
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -237,7 +237,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 
         if AppEnvironment.current.serverAddress.hasSameDomain(with: url) {
             // Open as S1 topic
-            if let topic = S1Parser.extractTopicInfo(fromLink: url.absoluteString) {
+            if let topic = Parser.extractTopic(from: url.absoluteString) {
                 var topic = topic
                 if let tracedTopic = AppEnvironment.current.dataCenter.traced(topicID: topic.topicID.intValue) {
                     let lastViewedPage = topic.lastViewedPage

@@ -25,6 +25,8 @@ class NoticeCell: UICollectionViewCell {
         avatarImageView.clipsToBounds = true
         contentView.addSubview(avatarImageView)
 
+        contentView.addSubview(authorLabel)
+
         contentView.addSubview(dateLabel)
 
         titleLabel.numberOfLines = 0
@@ -36,17 +38,23 @@ class NoticeCell: UICollectionViewCell {
             make.bottom.lessThanOrEqualTo(contentView).offset(-8.0)
         }
 
-        dateLabel.snp.makeConstraints { (make) in
+        authorLabel.snp.makeConstraints { (make) in
             make.leading.equalTo(avatarImageView.snp.trailing).offset(8.0)
+            make.top.equalTo(avatarImageView)
+        }
+
+        dateLabel.setContentHuggingPriority(.defaultLow + 1.0, for: .horizontal)
+        dateLabel.snp.makeConstraints { (make) in
+            make.leading.equalTo(authorLabel.snp.trailing).offset(8.0)
             make.trailing.equalTo(contentView).offset(-8.0)
             make.top.equalTo(avatarImageView)
         }
 
         titleLabel.snp.makeConstraints { (make) in
             make.top.equalTo(dateLabel.snp.bottom).offset(8.0)
-            make.leading.equalTo(dateLabel)
+            make.leading.equalTo(authorLabel)
             make.trailing.equalTo(contentView).offset(-8.0)
-            make.bottom.equalTo(contentView)
+            make.bottom.lessThanOrEqualTo(contentView).offset(-8.0)
         }
     }
 
@@ -67,6 +75,7 @@ class NoticeCell: UICollectionViewCell {
         }
 
         titleLabel.text = viewModel.title
+        authorLabel.text = viewModel.user.name
         dateLabel.text = viewModel.date.s1_gracefulDateTimeString()
 //        widthConstraint?.update(offset: width)
         // "\(author.name) 于 \(date) 回复\n\(message) \n\(link)"
@@ -115,9 +124,9 @@ extension NoticeCell {
             let message = targetMessage.stringValue
 
             self.title = message
-            self.path = link
+            self.path = link.aibo_stringByUnescapingFromHTML()
             self.date = replyNotice.dateline
-            self.user = User(id: replyNotice.authorid, name: replyNotice.author)
+            self.user = User(id: replyNotice.authorid, name: replyNotice.author ?? "")
             self.isNew = replyNotice.new
         }
     }

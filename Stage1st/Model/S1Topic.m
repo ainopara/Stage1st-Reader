@@ -118,6 +118,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     copy->_lastReplyDate = _lastReplyDate;
     copy->_message = _message;
     copy->_modelVersion = _modelVersion;
+    copy->_locateFloorIDTag = _locateFloorIDTag;
     return copy;
 }
 
@@ -128,6 +129,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [despString appendString:@"\n[Basic Information]"];
     [despString appendFormat:@"\nTitle: %@", self.title];
     [despString appendFormat:@"\nFromhash: %@", self.formhash];
+    [despString appendFormat:@"\nJumpToFloor: %@", self.locateFloorIDTag];
     
     [despString appendFormat:@"\n[Changed CloudKit Property] Count: %lu", (unsigned long)[self.changedCloudProperties count]];
     for (NSString *property in self.changedCloudProperties) {
@@ -187,6 +189,7 @@ static NSString *const k_favoriteDate = @"favoriteDate";
     [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyCount"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"authorUserName"];
     [mappings_localKeyToCloudKey removeObjectForKey:@"lastReplyDate"];
+    [mappings_localKeyToCloudKey removeObjectForKey:@"locateFloorIDTag"];
     return mappings_localKeyToCloudKey;
     
 }

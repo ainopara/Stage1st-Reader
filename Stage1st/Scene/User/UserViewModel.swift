@@ -9,13 +9,12 @@
 import Foundation
 import Alamofire
 import ReactiveSwift
-import Result
 
 class UserViewModel {
     let dataCenter: DataCenter
     let user: MutableProperty<User>
-    let isBlocked: SignalProducer<Bool, NoError>
-    let username: SignalProducer<String, NoError>
+    let isBlocked: SignalProducer<Bool, Never>
+    let username: SignalProducer<String, Never>
 
     init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
@@ -31,7 +30,7 @@ class UserViewModel {
             .producer
     }
 
-    func updateCurrentUserProfile(_ resultBlock: @escaping (Alamofire.Result<User>) -> Void) {
+    func updateCurrentUserProfile(_ resultBlock: @escaping (Result<User, Error>) -> Void) {
         dataCenter.apiManager.profile(userID: user.value.id) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {

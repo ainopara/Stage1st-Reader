@@ -13,7 +13,7 @@ public extension DiscuzClient {
     @discardableResult
     func profile(
         userID: Int,
-        completion: @escaping (Result<User>) -> Void
+        completion: @escaping (Result<User, Error>) -> Void
     ) -> Request {
 
         let parameters: Parameters = [

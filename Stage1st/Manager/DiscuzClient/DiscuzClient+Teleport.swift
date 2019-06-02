@@ -23,7 +23,7 @@ public extension DiscuzClient {
     func topics(
         in forumID: Int,
         page: Int,
-        completion: @escaping (Result<(Forum, [S1Topic], String?, String?)>) -> Void
+        completion: @escaping (Result<(Forum, [S1Topic], String?, String?), Error>) -> Void
     ) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
@@ -77,10 +77,10 @@ public extension DiscuzClient {
     @discardableResult
     func topic(
         with referencePath: String,
-        completion: @escaping (Result<S1Topic>) -> Void
+        completion: @escaping (Result<S1Topic, Error>) -> Void
     ) -> Alamofire.Request {
 
-        guard let url = URL(string: baseURL)?.appendingPathComponent(referencePath) else {
+        guard let url = URL(string: baseURL + "/" + referencePath) else {
             return session.request(FailureURL("Failed to generate url with baseURL: \(baseURL) path: \(referencePath)"))
                 .response(completionHandler: { (response) in
 //                    completion()
@@ -88,6 +88,20 @@ public extension DiscuzClient {
         }
 
         let request = session.request(url, method: .get)
+        request.redirect(using: TheRedirectHandler(newRequestProcessor: { (newRequest) in
+
+            guard let absoluteURLString = newRequest.url?.absoluteString else {
+                completion(.failure("Failed to get absoluteString from redirected request \(newRequest)"))
+                return
+            }
+
+            guard let topic = Parser.extractTopic(from: absoluteURLString) else {
+                completion(.failure("Failed to parse topic from absoluteString \(absoluteURLString)"))
+                return
+            }
+
+            completion(.success(topic))
+        }))
         return request
             .response(completionHandler: { (response) in
                 guard let response = response.response else {
@@ -98,6 +112,23 @@ public extension DiscuzClient {
     }
 }
 
+struct TheRedirectHandler: RedirectHandler {
+
+    let newRequestProcessor: (URLRequest) -> Void
+
+    init(newRequestProcessor: @escaping (URLRequest) -> Void) {
+        self.newRequestProcessor = newRequestProcessor
+    }
+
+    func task(_ task: URLSessionTask, willBeRedirectedTo request: URLRequest, for response: HTTPURLResponse, completion: @escaping (URLRequest?) -> Void) {
+        completion(nil)
+        DispatchQueue.main.async {
+            self.newRequestProcessor(request)
+        }
+    }
+
+}
+
 // MARK: - Content
 
 public extension DiscuzClient {
@@ -106,7 +137,7 @@ public extension DiscuzClient {
     func floors(
         in topicID: Int,
         page: Int,
-        completion: @escaping (Result<RawFloorList>) -> Void
+        completion: @escaping (Result<RawFloorList, Error>) -> Void
     ) -> Alamofire.Request {
 
         let parameters: Parameters = [
