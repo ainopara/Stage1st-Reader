@@ -52,10 +52,10 @@ extension Floor {
 extension Floor {
     mutating func preprocess() {
         content =
-            render(td([Html.class("t_f"), Html.id("postmessage_\(id)")], [.raw(content)]))
+            render(ChildOf<Tag.Tr>.td(attributes: [.class("t_f"), .id("postmessage_\(id)")], .raw(content)))
             .s1_replace(
                 pattern: "提示: <em>(.*?)</em>",
-                with: render(div([Html.class("s1-alert")], [.raw("$1")]))
+                with: render(Node.div(attributes: [.class("s1-alert")], .raw("$1")))
             )
             .s1_replace(
                 pattern: "<blockquote><p>引用:</p>",
@@ -67,7 +67,7 @@ extension Floor {
             )
             .s1_replace(
                 pattern: "\\[thgame_biliplay\\{,=av\\}(\\d+)\\{,=page\\}(\\d+)[^\\]]*\\]\\[/thgame_biliplay\\]",
-                with: render(a([href("https://www.bilibili.com/video/av$1/index_$2.html")], [.raw("https://www.bilibili.com/video/av$1/index_$2.html")]))
+                with: render(Node.a(attributes: [.href("https://www.bilibili.com/video/av$1/index_$2.html")], .raw("https://www.bilibili.com/video/av$1/index_$2.html")))
             )
 
         guard
@@ -86,7 +86,7 @@ extension Floor {
             guard let result = result else { return }
             let attachmentID = contentAsNSString.substring(with: result.range(at: 1))
             guard let attachmentURL = self.attachments[attachmentID] else { return }
-            let imageNode = render(img([Html.src(attachmentURL.absoluteString)]))
+            let imageNode = render(Node.img(attributes: [.src(attachmentURL.absoluteString)]))
             replaceList.append(("[attach]" + attachmentID + "[/attach]", imageNode))
             inlinedAttachmentIDs.append(attachmentID)
         }
