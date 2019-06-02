@@ -10,24 +10,18 @@ import UIKit
 
 class NavigationControllerDelegate: NSObject {
 
-    let window: UIWindow
-    weak var navigationController: RootNavigationViewController?
+    weak var navigationController: UINavigationController?
     lazy var panRecognizer: UIPanGestureRecognizer = { UIPanGestureRecognizer(target: self, action: #selector(pan(_:))) }()
-    lazy var gagatTransitionHandle: Gagat.TransitionHandle = { Gagat.configure(for: window, with: self) }()
-    var colorPanRecognizer: UIPanGestureRecognizer { return gagatTransitionHandle.panGestureRecognizer }
 
     private var interactionController: UIPercentDrivenInteractiveTransition?
 
-    init(window: UIWindow, navigationController: RootNavigationViewController) {
-        self.window = window
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
 
         super.init()
 
         panRecognizer.delegate = self
         navigationController.view.addGestureRecognizer(panRecognizer)
-
-        colorPanRecognizer.maximumNumberOfTouches = 5
     }
 }
 
@@ -139,34 +133,6 @@ extension NavigationControllerDelegate: UINavigationControllerDelegate {
             return .portrait
         } else {
             return .all
-        }
-    }
-}
-
-// MAKR: - GagatStyleable
-
-extension NavigationControllerDelegate: GagatStyleable {
-
-    public func shouldStartTransition(with direction: TransitionCoordinator.Direction) -> Bool {
-
-        guard AppEnvironment.current.settings.gestureControledNightModeSwitch.value else {
-            return false
-        }
-
-        if AppEnvironment.current.settings.nightMode.value == true {
-            return direction == .up
-        } else {
-            return direction == .down
-        }
-    }
-
-    public func toggleActiveStyle() {
-        if AppEnvironment.current.settings.nightMode.value == true {
-            AppEnvironment.current.settings.nightMode.value = false
-            AppEnvironment.current.colorManager.switchPalette(.day)
-        } else {
-            AppEnvironment.current.settings.nightMode.value = true
-            AppEnvironment.current.colorManager.switchPalette(.night)
         }
     }
 }

@@ -22,7 +22,7 @@ import Kingfisher
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    private(set) var rootNavigationController: RootNavigationViewController?
+    private(set) var rootNavigationController: RootNavigationController?
     // swiftlint:disable weak_delegate
     private(set) var navigationControllerDelegate: NavigationControllerDelegate?
     // swiftlint:enable weak_delegate
@@ -77,11 +77,9 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup Window
         self.window = UIWindow(frame: UIScreen.main.bounds)
 
-        let rootNavigationController = RootNavigationViewController(navigationBarClass: nil, toolbarClass: nil)
-        self.navigationControllerDelegate = NavigationControllerDelegate(window: self.window!, navigationController: rootNavigationController)
+        let rootNavigationController = RootNavigationController(rootViewController: ContainerViewController(nibName: nil, bundle: nil))
+        self.navigationControllerDelegate = NavigationControllerDelegate(navigationController: rootNavigationController)
         rootNavigationController.delegate = self.navigationControllerDelegate
-        rootNavigationController.viewControllers = [ContainerViewController(nibName: nil, bundle: nil)]
-        rootNavigationController.isNavigationBarHidden = true
         self.rootNavigationController = rootNavigationController
 
         self.window!.rootViewController = rootNavigationController

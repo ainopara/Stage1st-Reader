@@ -50,20 +50,25 @@ final class TopicListViewController: UIViewController {
             action: #selector(settings)
         )
 
-        naviItem.rightBarButtonItems = [
-            UIBarButtonItem(
-                image: UIImage(named: "Archive"),
-                style: .plain,
-                target: self,
-                action: #selector(archive)
-            ),
-            UIBarButtonItem(
-                image: UIImage(named: "Notify"),
-                style: .plain,
-                target: self,
-                action: #selector(notification)
-            )
-        ]
+        AppEnvironment.current.dataCenter.noticeCount
+            .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
+            .producer.startWithValues { [weak self] (image) in
+                guard let strongSelf = self else { return }
+                strongSelf.naviItem.rightBarButtonItems = [
+                    UIBarButtonItem(
+                        image: UIImage(named: "Archive"),
+                        style: .plain,
+                        target: strongSelf,
+                        action: #selector(TopicListViewController.archive)
+                    ),
+                    UIBarButtonItem(
+                        image: image,
+                        style: .plain,
+                        target: strongSelf,
+                        action: #selector(TopicListViewController.notification)
+                    )
+                ]
+            }
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -457,7 +462,7 @@ extension TopicListViewController {
     }
 
     @objc func notification(_ sender: Any) {
-        let navigationController = RootNavigationViewController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
+        let navigationController = PanNavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
         self.present(navigationController, animated: true, completion: nil)
     }
 

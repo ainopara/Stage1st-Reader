@@ -33,7 +33,7 @@
 		862DB7AA1C8AB1870068F75F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862DB7A91C8AB1870068F75F /* User.swift */; };
 		86319B411CA69EEB004F7586 /* Floor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86319B401CA69EEB004F7586 /* Floor.swift */; };
 		8632C46E20F3B15000ACCBB0 /* StripTailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */; };
-		8634ADA61FAAF309004A9CB7 /* RootNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */; };
+		8634ADA61FAAF309004A9CB7 /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA21FAAF309004A9CB7 /* RootNavigationController.swift */; };
 		8634ADA81FAAF309004A9CB7 /* S1Animator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADA51FAAF309004A9CB7 /* S1Animator.swift */; };
 		8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADAE1FAAF3C0004A9CB7 /* DEComposeTextView.m */; };
 		8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB21FAAF3C0004A9CB7 /* REComposeViewController.m */; };
@@ -121,6 +121,7 @@
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
 		86E02C521DC6671A00A16692 /* WebViewEventDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */; };
 		86E5C2721A0BDD19006D8D6A /* S1ReorderForumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */; };
+		86EA335E22A3BEF200FDB05D /* PanNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EA335D22A3BEF200FDB05D /* PanNavigationController.swift */; };
 		86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */; };
 		86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */; };
 		86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86EFEE5621CDFE4700A8A8BB /* MultipartFormEncoding.swift */; };
@@ -191,7 +192,7 @@
 		862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		86319B401CA69EEB004F7586 /* Floor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Floor.swift; sourceTree = "<group>"; };
 		8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripTailTests.swift; sourceTree = "<group>"; };
-		8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationViewController.swift; sourceTree = "<group>"; };
+		8634ADA21FAAF309004A9CB7 /* RootNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
 		8634ADA51FAAF309004A9CB7 /* S1Animator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S1Animator.swift; sourceTree = "<group>"; };
 		8634ADAE1FAAF3C0004A9CB7 /* DEComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DEComposeTextView.m; sourceTree = "<group>"; };
 		8634ADAF1FAAF3C0004A9CB7 /* REComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REComposeViewController.h; sourceTree = "<group>"; };
@@ -299,6 +300,7 @@
 		86E4396F1BEC478700027FFA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Settings.strings"; sourceTree = "<group>"; };
 		86E5C2701A0BDD19006D8D6A /* S1ReorderForumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1ReorderForumViewController.h; sourceTree = "<group>"; };
 		86E5C2711A0BDD19006D8D6A /* S1ReorderForumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1ReorderForumViewController.m; sourceTree = "<group>"; };
+		86EA335D22A3BEF200FDB05D /* PanNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanNavigationController.swift; sourceTree = "<group>"; };
 		86EBF1EE1CE6F19D00641A2D /* WebTemplate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WebTemplate.bundle; sourceTree = "<group>"; };
 		86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewModel.swift; sourceTree = "<group>"; };
 		86EFEE5621CDFE4700A8A8BB /* MultipartFormEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipartFormEncoding.swift; sourceTree = "<group>"; };
@@ -380,7 +382,8 @@
 		8634ADA11FAAEF0C004A9CB7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				8634ADA21FAAF309004A9CB7 /* RootNavigationViewController.swift */,
+				8634ADA21FAAF309004A9CB7 /* RootNavigationController.swift */,
+				86EA335D22A3BEF200FDB05D /* PanNavigationController.swift */,
 				864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */,
 				8634ADA51FAAF309004A9CB7 /* S1Animator.swift */,
 			);
@@ -1230,7 +1233,7 @@
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
-				8634ADA61FAAF309004A9CB7 /* RootNavigationViewController.swift in Sources */,
+				8634ADA61FAAF309004A9CB7 /* RootNavigationController.swift in Sources */,
 				86654BFD217C61B700F50A90 /* NoticeCount.swift in Sources */,
 				86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */,
 				C083351916E363870035C1AA /* S1Tracer.m in Sources */,
@@ -1252,6 +1255,7 @@
 				8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */,
 				8634ADE31FAAF3C2004A9CB7 /* DEComposeTextView.m in Sources */,
 				862DB7A71C8AB1680068F75F /* ReplyAccessoryView.swift in Sources */,
+				86EA335E22A3BEF200FDB05D /* PanNavigationController.swift in Sources */,
 				865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */,
 				86654C06217C85A200F50A90 /* NoticeCell.swift in Sources */,
 				86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */,

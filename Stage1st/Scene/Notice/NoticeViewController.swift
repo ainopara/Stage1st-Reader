@@ -43,6 +43,30 @@ class NoticeViewController: UIViewController {
         setupSubviews()
         setupAutoLayout()
         setupBindings()
+
+        NotificationCenter.default.reactive.notifications(forName: .APPaletteDidChange).producer
+            .map { _ in () }
+            .prefix(value: ())
+            .startWithValues { [weak self] (_) in
+                guard let strongSelf = self else { return }
+                let colorManager = AppEnvironment.current.colorManager
+                strongSelf.collectionView.backgroundColor = colorManager.colorForKey("notice.background")
+
+                strongSelf.navigationController?.navigationBar.barTintColor = colorManager.colorForKey("appearance.navigationbar.bartint")
+                strongSelf.navigationController?.navigationBar.tintColor = colorManager.colorForKey("appearance.navigationbar.tint")
+                strongSelf.navigationController?.navigationBar.titleTextAttributes = [
+                    .foregroundColor: colorManager.colorForKey("appearance.navigationbar.title"),
+                    .font: UIFont.boldSystemFont(ofSize: 17.0)
+                ]
+
+                strongSelf.collectionView.reloadData()
+
+                strongSelf.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
     }
 }
 

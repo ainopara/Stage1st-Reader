@@ -23,7 +23,7 @@ public extension DiscuzClient {
     func topics(
         in forumID: Int,
         page: Int,
-        completion: @escaping (Result<(Forum, [S1Topic], String?, String?), Error>) -> Void
+        completion: @escaping (Result<(Forum, [S1Topic], String?, String?, NoticeCount?), Error>) -> Void
     ) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
@@ -66,8 +66,9 @@ public extension DiscuzClient {
 
                 let username = rawTopicList.variables?.memberUsername
                 let formhash = rawTopicList.variables?.formhash
+                let notice = rawTopicList.variables?.notice
 
-                completion(.success((forum, topics, username, formhash)))
+                completion(.success((forum, topics, username, formhash, notice)))
             case let .failure(error):
                 completion(.failure(error))
             }

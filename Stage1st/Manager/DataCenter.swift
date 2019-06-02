@@ -10,6 +10,7 @@ import Ainoaibo
 import YapDatabase
 import WebKit
 import Alamofire
+import ReactiveSwift
 
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
@@ -17,6 +18,7 @@ class DataCenter: NSObject {
     let cacheDatabaseManager: CacheDatabaseManager
 
     var formHash: String?
+    let noticeCount: MutableProperty<NoticeCount?> = MutableProperty(nil)
 
     private var topicListCache = [String: [S1Topic]]()
     private var topicListCachePageNumber = [String: Int]()
@@ -72,13 +74,15 @@ extension DataCenter {
                 guard let strongSelf = self else { return }
 
                 switch result {
-                case let .success(_, topics, username, formhash):
+                case let .success(_, topics, username, formhash, noticeCount):
 
                     strongSelf.updateLoginState(username)
 
                     if let formhash = formhash {
                         strongSelf.formHash = formhash
                     }
+
+                    strongSelf.noticeCount.value = noticeCount
 
                     let processedTopics = strongSelf.processAndCacheTopics(topics, key: key, page: page)
                     completion(.success(processedTopics))

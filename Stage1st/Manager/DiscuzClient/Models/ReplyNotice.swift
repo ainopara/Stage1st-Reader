@@ -11,7 +11,11 @@ import CodableExtensions
 public struct ReplyNotice: Codable {
     public let id: Int
     public let uid: Int
-    public let type: String
+    public enum Kind {
+        case post
+        case unknown(String)
+    }
+    public let type: Kind
     public let new: Bool
     public let authorid: Int
     public let author: String?
@@ -38,7 +42,7 @@ public struct ReplyNotice: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(.id, transformer: StringIntTransformer())
         self.uid = try container.decode(.uid, transformer: StringIntTransformer())
-        self.type = try container.decode(String.self, forKey: .type)
+        self.type = try container.decode(Kind.self, forKey: .type)
         self.new = try container.decode(.new, transformer: StringBoolTransformer())
         self.authorid = try container.decode(.authorid, transformer: StringIntTransformer())
         self.author = try container.decodeIfPresent(String.self, forKey: .author)
@@ -47,5 +51,33 @@ public struct ReplyNotice: Codable {
         self.fromId = try container.decode(.fromId, transformer: StringIntTransformer())
         self.fromIdtype = try container.decode(String.self, forKey: .fromIdtype)
         self.fromNum = try container.decode(.fromNum, transformer: StringIntTransformer())
+    }
+}
+
+extension ReplyNotice.Kind: Codable {
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let stringValue = try container.decode(String.self)
+        switch stringValue {
+        case "post":
+            self = .post
+        default:
+            self = .unknown(stringValue)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+
+    public var rawValue: String {
+        switch self {
+        case .post:
+            return "post"
+        case .unknown(let rawValue):
+            return rawValue
+        }
     }
 }

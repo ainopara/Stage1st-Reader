@@ -28,7 +28,8 @@ final class UserViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         avatarView.contentMode = .scaleAspectFill
-        avatarView.layer.borderWidth = 1.0 / UIScreen.main.scale
+        avatarView.layer.borderWidth = 1.0
+        avatarView.layer.cornerRadius = 4.0
         avatarView.clipsToBounds = true
         customStatusLabel.numberOfLines = 0
         infoLabel.numberOfLines = 0
@@ -143,10 +144,12 @@ extension UserViewController {
     }
 
     override func didReceivePaletteChangeNotification(_: Notification?) {
-        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("content.background")
-        usernameLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
-        customStatusLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
-        infoLabel.textColor = AppEnvironment.current.colorManager.colorForKey("default.text.tint")
+        let colorManager = AppEnvironment.current.colorManager
+        view.backgroundColor = colorManager.colorForKey("content.background")
+        usernameLabel.textColor = colorManager.colorForKey("default.text.tint")
+        customStatusLabel.textColor = colorManager.colorForKey("default.text.tint")
+        infoLabel.textColor = colorManager.colorForKey("default.text.tint")
+        avatarView.layer.borderColor = colorManager.colorForKey("user.avatar.border").cgColor
         setNeedsStatusBarAppearanceUpdate()
     }
 }

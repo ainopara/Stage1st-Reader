@@ -98,7 +98,7 @@ extension QuoteFloorViewController {
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
         // FIXME: find a way to make sure this only called once. Prefer this not work.
-        if let colorPanRecognizer = (navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+        if let colorPanRecognizer = (navigationController as? RootNavigationController)?.colorPanRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
         }
 

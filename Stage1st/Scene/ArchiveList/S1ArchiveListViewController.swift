@@ -48,6 +48,24 @@ class S1ArchiveListViewController: UIViewController {
         segControl.selectedSegmentIndex = 0
 
         naviItem.titleView = segControl
+        naviItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "Settings"),
+            style: .plain,
+            target: self,
+            action: #selector(settings)
+        )
+
+        AppEnvironment.current.dataCenter.noticeCount
+            .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
+            .producer.startWithValues { [weak self] (image) in
+                guard let strongSelf = self else { return }
+                strongSelf.naviItem.rightBarButtonItem = UIBarButtonItem(
+                    image: image,
+                    style: .plain,
+                    target: strongSelf,
+                    action: #selector(S1ArchiveListViewController.notification)
+                )
+        }
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -214,6 +232,19 @@ class S1ArchiveListViewController: UIViewController {
 
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return AppEnvironment.current.colorManager.isDarkTheme() ? .lightContent : .default
+    }
+}
+
+extension S1ArchiveListViewController {
+    @objc func settings(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Settings", bundle: nil)
+        let settingsViewController = storyboard.instantiateViewController(withIdentifier: "SettingsNavigation")
+        self.present(settingsViewController, animated: true, completion: nil)
+    }
+
+    @objc func notification(_ sender: Any) {
+        let navigationController = PanNavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
+        self.present(navigationController, animated: true, completion: nil)
     }
 }
 

@@ -21,26 +21,31 @@ class NoticeCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        selectedBackgroundView = UIView()
+
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.clipsToBounds = true
+        avatarImageView.layer.borderWidth = 1.0
+        avatarImageView.layer.cornerRadius = 4.0
         contentView.addSubview(avatarImageView)
 
         contentView.addSubview(authorLabel)
 
         contentView.addSubview(dateLabel)
 
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = 2
         contentView.addSubview(titleLabel)
 
         avatarImageView.snp.makeConstraints { (make) in
-            make.leading.top.equalTo(contentView).inset(8.0)
+            make.leading.equalTo(contentView).offset(8.0)
+            make.top.equalTo(contentView).offset(10.0)
             make.width.height.equalTo(60.0)
             make.bottom.lessThanOrEqualTo(contentView).offset(-8.0)
         }
 
         authorLabel.snp.makeConstraints { (make) in
             make.leading.equalTo(avatarImageView.snp.trailing).offset(8.0)
-            make.top.equalTo(avatarImageView)
+            make.top.equalTo(contentView).inset(8.0)
         }
 
         dateLabel.setContentHuggingPriority(.defaultLow + 1.0, for: .horizontal)
@@ -51,11 +56,24 @@ class NoticeCell: UICollectionViewCell {
         }
 
         titleLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(dateLabel.snp.bottom).offset(8.0)
+            make.top.equalTo(dateLabel.snp.bottom).offset(4.0)
             make.leading.equalTo(authorLabel)
             make.trailing.equalTo(contentView).offset(-8.0)
             make.bottom.lessThanOrEqualTo(contentView).offset(-8.0)
         }
+
+        NotificationCenter.default.reactive.notifications(forName: .APPaletteDidChange).producer
+            .map { _ in () }
+            .prefix(value: ())
+            .startWithValues { [weak self] (_) in
+                guard let strongSelf = self else { return }
+                let colorManager = AppEnvironment.current.colorManager
+                strongSelf.titleLabel.textColor = colorManager.colorForKey("notice.cell.title")
+                strongSelf.authorLabel.textColor = colorManager.colorForKey("notice.cell.author")
+                strongSelf.dateLabel.textColor = colorManager.colorForKey("notice.cell.date")
+                strongSelf.avatarImageView.layer.borderColor = colorManager.colorForKey("notice.cell.avatar.border").cgColor
+                strongSelf.selectedBackgroundView?.backgroundColor = colorManager.colorForKey("notice.cell.background.selected")
+            }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -110,6 +128,10 @@ extension NoticeCell {
         let isNew: Bool
 
         init(replyNotice: ReplyNotice) throws {
+            guard case .post = replyNotice.type else {
+                AppEnvironment.current.eventTracker.logEvent(with: "Unknown Reply Type", attributes: ["type": replyNotice.type.rawValue])
+                throw "Unexpected notice type \(replyNotice.type.rawValue)"
+            }
             let document = try HTMLDocument(string: replyNotice.note)
             let result = document.xpath("//a")
 

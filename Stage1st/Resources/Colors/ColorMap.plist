@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>user.avatar.border</key>
+	<string>17</string>
+	<key>notice.background</key>
+	<string>5</string>
+	<key>notice.cell.avatar.border</key>
+	<string>17</string>
+	<key>notice.cell.author</key>
+	<string>3</string>
+	<key>notice.cell.date</key>
+	<string>17</string>
+	<key>notice.cell.title</key>
+	<string>21</string>
+	<key>notice.cell.background.selected</key>
+	<string>6</string>
 	<key>default</key>
 	<string>1</string>
 	<key>default.text.tint</key>

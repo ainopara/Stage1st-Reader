@@ -367,7 +367,7 @@ extension ContentViewController {
 
         // defer from initializer to here to make sure navigationController exist (i.e. self be added to navigation stack)
         // FIXME: find a way to make sure this only called once. Prefer this not work.
-        if let colorPanRecognizer = (self.navigationController?.delegate as? NavigationControllerDelegate)?.colorPanRecognizer {
+        if let colorPanRecognizer = (self.navigationController as? RootNavigationController)?.colorPanRecognizer {
             webView.scrollView.panGestureRecognizer.require(toFail: colorPanRecognizer)
         }
 
@@ -915,8 +915,7 @@ extension ContentViewController: WebViewEventDelegate {
 
     func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {
         let appDelegate = UIApplication.shared.delegate as! S1AppDelegate
-        let navigationControllerDelegate = appDelegate.navigationControllerDelegate
-        let currentColorPanGestureState = navigationControllerDelegate?.colorPanRecognizer.state ?? .possible
+        let currentColorPanGestureState = appDelegate.rootNavigationController?.colorPanRecognizer.state ?? .possible
 
         let shouldIgnoreTouchEvent = currentColorPanGestureState == .began || currentColorPanGestureState == .changed
         if webPageDidFinishFirstAutomaticScrolling && webPageAutomaticScrollingEnabled && !shouldIgnoreTouchEvent {
