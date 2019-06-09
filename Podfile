@@ -38,7 +38,6 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
-    pod 'AppCenter'
 #    pod 'Reveal-SDK', :configurations => ['Debug']
 
     # RAC

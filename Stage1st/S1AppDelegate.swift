@@ -12,9 +12,6 @@ import CrashlyticsLogger
 import CloudKit
 import Fabric
 import Crashlytics
-import AppCenter
-import AppCenterAnalytics
-import AppCenterCrashes
 import Reachability
 import Kingfisher
 
@@ -33,11 +30,6 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         #else
         Fabric.with([Crashlytics.self])
         #endif
-
-        MSAppCenter.start("5e568861-6634-458c-ae01-3e8d1f4ec386", withServices: [
-            MSAnalytics.self,
-            MSCrashes.self
-        ])
 
         setupLogging()
 

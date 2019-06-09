@@ -7,7 +7,6 @@
 //
 
 import Crashlytics
-import AppCenterAnalytics
 
 protocol EventTracker {
     func recordError(_ error: Error)
@@ -31,12 +30,10 @@ class S1EventTracker: EventTracker {
 
     func logEvent(with name: String) {
         Answers.logCustomEvent(withName: name, customAttributes: nil)
-        MSAnalytics.trackEvent(name)
     }
 
     func logEvent(with name: String, attributes: [String: Any]) {
         Answers.logCustomEvent(withName: name, customAttributes: attributes)
-        MSAnalytics.trackEvent(name, withProperties: attributes.mapValues({ "\($0)" }))
     }
 
     func setObjectValue(_ value: String, forKey key: String) {

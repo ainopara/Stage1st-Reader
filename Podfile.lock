@@ -27,14 +27,6 @@ PODS:
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (5.0.0-beta.6)
-  - AppCenter (2.0.1):
-    - AppCenter/Analytics (= 2.0.1)
-    - AppCenter/Crashes (= 2.0.1)
-  - AppCenter/Analytics (2.0.1):
-    - AppCenter/Core
-  - AppCenter/Core (2.0.1)
-  - AppCenter/Crashes (2.0.1):
-    - AppCenter/Core
   - CocoaLumberjack (3.5.3):
     - CocoaLumberjack/Core (= 3.5.3)
   - CocoaLumberjack/Core (3.5.3)
@@ -152,7 +144,6 @@ DEPENDENCIES:
   - Ainoaibo/StateTransition (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
   - Alamofire (= 5.0.0.beta.6)
-  - AppCenter
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - CodableExtensions
@@ -187,7 +178,6 @@ SPEC REPOS:
     - AcknowList
     - ActionSheetPicker-3.0
     - Alamofire
-    - AppCenter
     - CocoaLumberjack
     - CodableExtensions
     - Crashlytics
@@ -244,7 +234,6 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 7e5c5a1ad511561b8f78b820da15213c9ac20bd2
   Alamofire: cd08a4402bd12cacd0c66f23fb12fec8d6b965e4
-  AppCenter: 6a5ff2fd007b53431259fdd74f91eb3d0dfea3d1
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   CodableExtensions: dfc7a008a5951e3667ffdad5b43f1e9ed87213a7
   Crashlytics: 5aa8e90dcbf2f34898b4f5a0037787531246cca0
@@ -272,6 +261,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 352fd222ed12e4050ad69343b8381e4567eb778f
+PODFILE CHECKSUM: 9bbc22c1b3d3562b948dd1f2bd1e3243e76e4300
 
 COCOAPODS: 1.7.1
