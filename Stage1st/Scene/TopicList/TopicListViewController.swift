@@ -52,7 +52,10 @@ final class TopicListViewController: UIViewController {
 
         AppEnvironment.current.dataCenter.noticeCount
             .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
-            .producer.startWithValues { [weak self] (image) in
+            .producer
+            .start(on: UIScheduler())
+            .observe(on: UIScheduler())
+            .startWithValues { [weak self] (image) in
                 guard let strongSelf = self else { return }
                 strongSelf.naviItem.rightBarButtonItems = [
                     UIBarButtonItem(
