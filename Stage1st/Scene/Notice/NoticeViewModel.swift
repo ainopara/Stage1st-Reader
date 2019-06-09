@@ -23,6 +23,7 @@ class NoticeViewModel {
 
     let cellViewModels = MutableProperty<[NoticeCell.ViewModel]>([])
     let isEmptyViewHidden = MutableProperty<Bool>(false)
+    let isLoadingIndicatorAnimating = MutableProperty<Bool>(false)
     let shouldShowErrorView = MutableProperty<Bool>(false)
 
     init() {
@@ -47,6 +48,17 @@ class NoticeViewModel {
                 return true
             }
         }
+        .skipRepeats()
+
+        isLoadingIndicatorAnimating <~ state.map { state in
+            switch state {
+            case .loaded, .allLoaded, .error, .fetchingMore:
+                return false
+            case .loading:
+                return true
+            }
+        }
+        .skipRepeats()
 
         shouldShowErrorView <~ state.map { (state) in
             switch state {
@@ -56,6 +68,7 @@ class NoticeViewModel {
                 return false
             }
         }
+        .skipRepeats()
 
         if AppEnvironment.current.settings.currentUsername.value != nil {
             AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in

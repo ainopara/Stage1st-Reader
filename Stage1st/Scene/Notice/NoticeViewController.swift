@@ -18,6 +18,8 @@ class NoticeViewController: UIViewController {
     private let emptyView = EmptyView()
     let refreshHUD = S1HUD(frame: .zero)
 
+    let loadingIndicator = UIActivityIndicatorView(style: .gray)
+
     @objc
     convenience init() {
         self.init(viewModel: NoticeViewModel())
@@ -50,6 +52,7 @@ class NoticeViewController: UIViewController {
             .startWithValues { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 let colorManager = AppEnvironment.current.colorManager
+                strongSelf.loadingIndicator.style = colorManager.isDarkTheme() ? .white : .gray
                 strongSelf.collectionView.backgroundColor = colorManager.colorForKey("notice.background")
 
                 strongSelf.navigationController?.navigationBar.barTintColor = colorManager.colorForKey("appearance.navigationbar.bartint")
@@ -62,7 +65,7 @@ class NoticeViewController: UIViewController {
                 strongSelf.collectionView.reloadData()
 
                 strongSelf.setNeedsStatusBarAppearanceUpdate()
-        }
+            }
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -86,14 +89,21 @@ extension NoticeViewController {
         view.addSubview(collectionView)
 
         view.addSubview(emptyView)
-        emptyView.snp.makeConstraints { (make) in
-            make.edges.equalTo(collectionView)
-        }
+
+        view.addSubview(loadingIndicator)
     }
 
     private func setupAutoLayout() {
         collectionView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view)
+        }
+
+        loadingIndicator.snp.makeConstraints { (make) in
+            make.center.equalTo(collectionView)
+        }
+
+        emptyView.snp.makeConstraints { (make) in
+            make.edges.equalTo(collectionView)
         }
     }
 
@@ -105,6 +115,7 @@ extension NoticeViewController {
         }
 
         emptyView.reactive.isHidden <~ viewModel.isEmptyViewHidden
+        loadingIndicator.reactive.isAnimating <~ viewModel.isLoadingIndicatorAnimating
     }
 }
 
