@@ -16,7 +16,8 @@ class NoticeCell: UICollectionViewCell {
     let authorLabel = UILabel()
     let titleLabel = UILabel()
     let dateLabel = UILabel()
-    var widthConstraint: Constraint?
+
+    var isNew: Bool = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -72,7 +73,7 @@ class NoticeCell: UICollectionViewCell {
                 strongSelf.authorLabel.textColor = colorManager.colorForKey("notice.cell.author")
                 strongSelf.dateLabel.textColor = colorManager.colorForKey("notice.cell.date")
                 strongSelf.avatarImageView.layer.borderColor = colorManager.colorForKey("notice.cell.avatar.border").cgColor
-                strongSelf.selectedBackgroundView?.backgroundColor = colorManager.colorForKey("notice.cell.background.selected")
+                strongSelf.updateBackgroundAppearance()
             }
     }
 
@@ -95,8 +96,19 @@ class NoticeCell: UICollectionViewCell {
         titleLabel.text = viewModel.title
         authorLabel.text = viewModel.user.name
         dateLabel.text = viewModel.date.s1_gracefulDateTimeString()
-//        widthConstraint?.update(offset: width)
-        // "\(author.name) 于 \(date) 回复\n\(message) \n\(link)"
+        self.isNew = viewModel.isNew
+        updateBackgroundAppearance()
+    }
+
+    func updateBackgroundAppearance() {
+        let colorManager = AppEnvironment.current.colorManager
+        if isNew || true {
+            selectedBackgroundView?.backgroundColor = colorManager.colorForKey("notice.cell.background.selected.new")
+            backgroundColor = colorManager.colorForKey("notice.cell.background.new")
+        } else {
+            selectedBackgroundView?.backgroundColor = colorManager.colorForKey("notice.cell.background.selected")
+            backgroundColor = colorManager.colorForKey("notice.cell.background")
+        }
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
