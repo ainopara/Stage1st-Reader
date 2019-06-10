@@ -23,12 +23,12 @@ target "Stage1st" do
     # Database
     pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'stage'
-    pod 'GRDB.swift', '~> 3.7'
+    pod 'GRDB.swift', '~> 4.1'
 
     # XML
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'Fuzi', '~> 3.0'
-    pod 'GRMustache.swift', :git => 'https://github.com/ainopara/GRMustache.swift.git'
+    pod 'GRMustache.swift'
     pod 'Html', '~> 0.3'
 
     # Debug
@@ -43,6 +43,8 @@ target "Stage1st" do
     # RAC
     pod 'ReactiveSwift', '~> 6.0'
     pod 'ReactiveCocoa', '~> 10.0'
+    pod 'RxSwift', '~> 5.0'
+    pod 'RxCocoa', '~> 5.0'
 
     # Others
     pod 'Reachability'

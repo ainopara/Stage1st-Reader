@@ -9,6 +9,7 @@
 import SnapKit
 import DeviceKit
 import Ainoaibo
+import ReactiveSwift
 
 class S1ArchiveListViewController: UIViewController {
 
@@ -57,7 +58,10 @@ class S1ArchiveListViewController: UIViewController {
 
         AppEnvironment.current.dataCenter.noticeCount
             .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
-            .producer.startWithValues { [weak self] (image) in
+            .producer
+            .start(on: UIScheduler())
+            .observe(on: UIScheduler())
+            .startWithValues { [weak self] (image) in
                 guard let strongSelf = self else { return }
                 strongSelf.naviItem.rightBarButtonItem = UIBarButtonItem(
                     image: image,

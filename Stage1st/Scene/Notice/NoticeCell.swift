@@ -102,7 +102,7 @@ class NoticeCell: UICollectionViewCell {
 
     func updateBackgroundAppearance() {
         let colorManager = AppEnvironment.current.colorManager
-        if isNew || true {
+        if isNew {
             selectedBackgroundView?.backgroundColor = colorManager.colorForKey("notice.cell.background.selected.new")
             backgroundColor = colorManager.colorForKey("notice.cell.background.new")
         } else {

@@ -70,25 +70,23 @@ extension DataCenter {
 
     private func topicsFromServer(for key: String, page: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         apiManager.topics(in: Int(key)!, page: page) { [weak self] (result) in
-            DispatchQueue.global(qos: .default).async { [weak self] in
-                guard let strongSelf = self else { return }
+            guard let strongSelf = self else { return }
 
-                switch result {
-                case let .success(_, topics, username, formhash, noticeCount):
+            switch result {
+            case .success(let parsedTopics):
 
-                    strongSelf.updateLoginState(username)
+                strongSelf.updateLoginState(parsedTopics.username)
 
-                    if let formhash = formhash {
-                        strongSelf.formHash = formhash
-                    }
-
-                    strongSelf.noticeCount.value = noticeCount
-
-                    let processedTopics = strongSelf.processAndCacheTopics(topics, key: key, page: page)
-                    completion(.success(processedTopics))
-                case let .failure(error):
-                    completion(.failure(error))
+                if let formhash = parsedTopics.formhash {
+                    strongSelf.formHash = formhash
                 }
+
+                strongSelf.noticeCount.value = parsedTopics.noticeCount
+
+                let processedTopics = strongSelf.processAndCacheTopics(parsedTopics.topics, key: key, page: page)
+                completion(.success(processedTopics))
+            case let .failure(error):
+                completion(.failure(error))
             }
         }
     }
@@ -218,6 +216,9 @@ extension DataCenter {
             switch result {
             case let .success(rawFloorList):
                 strongSelf.updateLoginState(rawFloorList.variables?.memberUsername)
+                if let notice = rawFloorList.variables?.notice {
+                    strongSelf.noticeCount.value = notice
+                }
 
                 if let latestTopic = S1Topic(rawFloorList: rawFloorList) {
                     topic.update(latestTopic)

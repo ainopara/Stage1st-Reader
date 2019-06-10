@@ -14,6 +14,8 @@ disabled_rules: # rule identifiers to exclude from running
   - multiple_closures_with_trailing_closure
   - opening_brace
   - nesting
+  - type_name
+  - cyclomatic_complexity
 included: # paths to include during linting. `--path` is ignored if present.
   - Stage1st
   - Vendors

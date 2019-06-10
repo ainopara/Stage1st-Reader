@@ -33,6 +33,7 @@ final class TopicListViewController: UIViewController {
     let searchBarWrapperView = UIView(frame: .zero)
     let footerView = MessageFooterView()
     let refreshHUD = S1HUD(frame: .zero)
+    let composeButton = UIButton()
 
     private var observations = [NSKeyValueObservation]()
 
@@ -113,6 +114,13 @@ final class TopicListViewController: UIViewController {
         } else {
             tableView.tableHeaderView = searchBar
         }
+
+        composeButton.setTitle("发帖", for: .normal)
+        composeButton.layer.cornerRadius = 25.0
+        composeButton.clipsToBounds = true
+        composeButton.setTitleColor(AppEnvironment.current.colorManager.colorForKey("topiclist.compose.title"), for: .normal)
+        composeButton.backgroundColor = AppEnvironment.current.colorManager.colorForKey("topiclist.compose.background")
+        composeButton.isHidden = true
 
         tableView.register(
             TopicListCell.self,
@@ -205,6 +213,12 @@ extension TopicListViewController {
             make.center.equalTo(view)
             make.width.lessThanOrEqualTo(view.snp.width).offset(-10.0)
             make.height.lessThanOrEqualTo(view.snp.height).offset(-10.0)
+        }
+
+        view.addSubview(composeButton)
+        composeButton.snp.makeConstraints { (make) in
+            make.right.bottom.equalTo(view).inset(10.0)
+            make.width.height.equalTo(50.0)
         }
     }
 
@@ -381,6 +395,14 @@ extension TopicListViewController {
         }
 
         observations.append(refreshControlRefreshingToken)
+
+        composeButton.reactive.controlEvents(.touchUpInside).signal.observeValues { [weak self] (button) in
+            guard let strongSelf = self else { return }
+            guard case let .forum(forum) = strongSelf.viewModel.model.value.target else { return }
+            let forumID = strongSelf.viewModel.forumKeyMap[forum.key]!
+            let composeViewController = TopicComposeViewController(forumID: Int(forumID)!)
+            strongSelf.present(UINavigationController(rootViewController: composeViewController), animated: true, completion: nil)
+        }
     }
 }
 

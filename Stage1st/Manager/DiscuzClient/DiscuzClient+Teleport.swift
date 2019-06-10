@@ -19,11 +19,19 @@ func generateURLString(_ baseURLString: String, parameters: Parameters) -> Strin
 
 public extension DiscuzClient {
 
+    struct ParsedTopics {
+        let forum: Forum
+        let topics: [S1Topic]
+        let username: String?
+        let formhash: String?
+        let noticeCount: NoticeCount?
+    }
+
     @discardableResult
     func topics(
         in forumID: Int,
         page: Int,
-        completion: @escaping (Result<(Forum, [S1Topic], String?, String?, NoticeCount?), Error>) -> Void
+        completion: @escaping (Result<ParsedTopics, Error>) -> Void
     ) -> Alamofire.Request {
         let parameters: Parameters = [
             "module": "forumdisplay",
@@ -68,7 +76,15 @@ public extension DiscuzClient {
                 let formhash = rawTopicList.variables?.formhash
                 let notice = rawTopicList.variables?.notice
 
-                completion(.success((forum, topics, username, formhash, notice)))
+                let parsedTopics = ParsedTopics(
+                    forum: forum,
+                    topics: topics,
+                    username: username,
+                    formhash: formhash,
+                    noticeCount: notice
+                )
+
+                completion(.success(parsedTopics))
             case let .failure(error):
                 completion(.failure(error))
             }
