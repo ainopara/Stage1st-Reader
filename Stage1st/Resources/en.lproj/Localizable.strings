@@ -115,6 +115,9 @@
 "REComposeSheetView.Cancel" = "Cancel";
 "REComposeSheetView.Post" = "Post";
 
+"TopicComposeViewController.Close" = "Close";
+"TopicComposeViewController.Submit" = "Submit";
+
 "TopicListViewController.MessageFooterView.loading" = "Loading...";
 "TopicListViewController.MessageFooterView.allTopics" = "All %@ Topics";
 "TopicListViewController.MessageFooterView.allSearchResults" = "All %@ Search Result";

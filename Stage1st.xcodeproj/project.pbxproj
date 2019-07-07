@@ -41,7 +41,7 @@
 		8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB21FAAF3C0004A9CB7 /* REComposeViewController.m */; };
 		8634ADE51FAAF3C2004A9CB7 /* REComposeSheetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB31FAAF3C0004A9CB7 /* REComposeSheetView.m */; };
 		8634ADE61FAAF3C2004A9CB7 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB51FAAF3C1004A9CB7 /* WebViewController.swift */; };
-		8634ADE71FAAF3C2004A9CB7 /* MessageHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB71FAAF3C1004A9CB7 /* MessageHUD.swift */; };
+		8634ADE71FAAF3C2004A9CB7 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADB71FAAF3C1004A9CB7 /* Toast.swift */; };
 		8634ADE81FAAF3C2004A9CB7 /* ODRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADBA1FAAF3C1004A9CB7 /* ODRefreshControl.m */; };
 		8634ADE91FAAF3C2004A9CB7 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADBC1FAAF3C1004A9CB7 /* ColorManager.swift */; };
 		8634ADEA1FAAF3C2004A9CB7 /* TransitionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADBE1FAAF3C1004A9CB7 /* TransitionCoordinator.swift */; };
@@ -121,6 +121,7 @@
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
 		86CCA179222CC73E00E633F5 /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CCA178222CC73E00E633F5 /* DecodingTests.swift */; };
 		86CCA189222CD1A300E633F5 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 86CCA188222CD1A300E633F5 /* Fixtures */; };
+		86D0090922D1F02A008099D6 /* Hud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D0090822D1F02A008099D6 /* Hud.swift */; };
 		86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */; };
 		86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DD319E1D129406009C2F44 /* RawPoll.swift */; };
 		86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */; };
@@ -146,7 +147,6 @@
 		C083351916E363870035C1AA /* S1Tracer.m in Sources */ = {isa = PBXBuildFile; fileRef = C083351816E363870035C1AA /* S1Tracer.m */; };
 		C083353716E4FB220035C1AA /* InitialOrder.plist in Resources */ = {isa = PBXBuildFile; fileRef = C083353616E4FB220035C1AA /* InitialOrder.plist */; };
 		C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */ = {isa = PBXBuildFile; fileRef = C08DB46E16DE41FB002B4A92 /* Mahjong */; };
-		C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C090DA8E16D8F39F00BF7780 /* S1HUD.m */; };
 		C095874216CA8A36007E0119 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C095874016CA8A36007E0119 /* Localizable.strings */; };
 		C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = C095877E16CA8E7E007E0119 /* S1Topic.m */; };
 		C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C09587A516CB623E007E0119 /* SettingsViewController.m */; };
@@ -208,7 +208,7 @@
 		8634ADB21FAAF3C0004A9CB7 /* REComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeViewController.m; sourceTree = "<group>"; };
 		8634ADB31FAAF3C0004A9CB7 /* REComposeSheetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = REComposeSheetView.m; sourceTree = "<group>"; };
 		8634ADB51FAAF3C1004A9CB7 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
-		8634ADB71FAAF3C1004A9CB7 /* MessageHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageHUD.swift; sourceTree = "<group>"; };
+		8634ADB71FAAF3C1004A9CB7 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		8634ADB91FAAF3C1004A9CB7 /* ODRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ODRefreshControl.h; sourceTree = "<group>"; };
 		8634ADBA1FAAF3C1004A9CB7 /* ODRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ODRefreshControl.m; sourceTree = "<group>"; };
 		8634ADBC1FAAF3C1004A9CB7 /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
@@ -302,6 +302,7 @@
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
 		86CCA178222CC73E00E633F5 /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		86CCA188222CD1A300E633F5 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
+		86D0090822D1F02A008099D6 /* Hud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
 		86D3ADAF214E22AF00FCB189 /* MahjongFaceInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceInputView.swift; sourceTree = "<group>"; };
 		86DD319E1D129406009C2F44 /* RawPoll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawPoll.swift; sourceTree = "<group>"; };
 		86DD5BFB1B57754E00A6FD34 /* DefaultPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPalette.plist; sourceTree = "<group>"; };
@@ -331,8 +332,6 @@
 		C083351816E363870035C1AA /* S1Tracer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Tracer.m; sourceTree = "<group>"; };
 		C083353616E4FB220035C1AA /* InitialOrder.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InitialOrder.plist; sourceTree = "<group>"; };
 		C08DB46E16DE41FB002B4A92 /* Mahjong */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Mahjong; sourceTree = "<group>"; };
-		C090DA8D16D8F39F00BF7780 /* S1HUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1HUD.h; sourceTree = "<group>"; };
-		C090DA8E16D8F39F00BF7780 /* S1HUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1HUD.m; sourceTree = "<group>"; };
 		C095873416CA8A36007E0119 /* Stage1st.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stage1st.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C095873F16CA8A36007E0119 /* Stage1st-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Stage1st-Info.plist"; sourceTree = "<group>"; };
 		C095874116CA8A36007E0119 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -420,14 +419,6 @@
 				8634ADB31FAAF3C0004A9CB7 /* REComposeSheetView.m */,
 			);
 			path = REComposeViewController;
-			sourceTree = "<group>";
-		};
-		8634ADB61FAAF3C1004A9CB7 /* MessageHUD */ = {
-			isa = PBXGroup;
-			children = (
-				8634ADB71FAAF3C1004A9CB7 /* MessageHUD.swift */,
-			);
-			path = MessageHUD;
 			sourceTree = "<group>";
 		};
 		8634ADB81FAAF3C1004A9CB7 /* ODRefreshControl */ = {
@@ -836,10 +827,9 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				8634ADB61FAAF3C1004A9CB7 /* MessageHUD */,
+				8634ADB71FAAF3C1004A9CB7 /* Toast.swift */,
+				86D0090822D1F02A008099D6 /* Hud.swift */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
-				C090DA8D16D8F39F00BF7780 /* S1HUD.h */,
-				C090DA8E16D8F39F00BF7780 /* S1HUD.m */,
 				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
 				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
 				8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */,
@@ -1207,6 +1197,7 @@
 				86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */,
 				8673EEBD2165A5B900871288 /* MahjongFaceInputHeaderView.swift in Sources */,
 				86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */,
+				86D0090922D1F02A008099D6 /* Hud.swift in Sources */,
 				8634ADF11FAAF3C2004A9CB7 /* GSReorderableTableViewController.m in Sources */,
 				86654C03217C698200F50A90 /* NoticeViewController.swift in Sources */,
 				8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */,
@@ -1224,7 +1215,7 @@
 				86F9CD5021B394AA0015FA3D /* NoticeViewModel.swift in Sources */,
 				C09587A616CB623E007E0119 /* SettingsViewController.m in Sources */,
 				865544B621E23A22007B7557 /* RawFloorList.swift in Sources */,
-				8634ADE71FAAF3C2004A9CB7 /* MessageHUD.swift in Sources */,
+				8634ADE71FAAF3C2004A9CB7 /* Toast.swift in Sources */,
 				86654BF9217C616800F50A90 /* StringIntTransformer.swift in Sources */,
 				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
@@ -1257,7 +1248,6 @@
 				8634ADE61FAAF3C2004A9CB7 /* WebViewController.swift in Sources */,
 				86A1834420845F08000F5F8A /* CloudKitManager.swift in Sources */,
 				86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */,
-				C090DA8F16D8F39F00BF7780 /* S1HUD.m in Sources */,
 				864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */,
 				86DD319F1D129406009C2F44 /* RawPoll.swift in Sources */,
 				36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */,

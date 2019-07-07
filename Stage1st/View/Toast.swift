@@ -1,5 +1,5 @@
 //
-//  MessageHUD.swift
+//  Toast.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 1/11/17.
@@ -9,14 +9,14 @@
 import Ainoaibo
 import SnapKit
 
-class MessageHUD: UIWindow {
+class Toast: UIWindow {
     enum State {
         case hidden
         case appearing
         case presenting
         case hiding
     }
-    static var shared = MessageHUD(frame: .zero)
+    static var shared = Toast(frame: .zero)
 
     let backgroundView = UIVisualEffectView(effect: nil)
     let textLabel = UILabel(frame: .zero)

@@ -844,7 +844,7 @@ extension CloudKitManager {
 
     func alertAccountAuthIssue() {
         DispatchQueue.main.async {
-            MessageHUD.shared.post(
+            Toast.shared.post(
                 message: "请在 iOS 系统设置中登录 iCloud 或启用应用 iCloud 功能以使用同步功能。",
                 duration: 1.0,
                 animated: true
@@ -854,7 +854,7 @@ extension CloudKitManager {
 
     func alertQuotaExceedIssue() {
         DispatchQueue.main.async {
-            MessageHUD.shared.post(
+            Toast.shared.post(
                 message: "iCloud 空间不足，请确保足够空间以使用同步功能。您可以到 iOS 系统设置中清理 iCloud 空间。",
                 duration: 1.0,
                 animated: true
@@ -864,7 +864,7 @@ extension CloudKitManager {
 
     func alertUserDeleteZoneIssue() {
         DispatchQueue.main.async {
-            MessageHUD.shared.post(
+            Toast.shared.post(
                 message: "检测到云端数据已删除。同步暂停，若要与当前 iCloud 帐号同步，请在应用设置中关闭再重新开启 iCloud 同步开关。",
                 duration: 1.0,
                 animated: true
@@ -874,7 +874,7 @@ extension CloudKitManager {
 
     func alertZoneNotFoundIssue() {
         DispatchQueue.main.async {
-            MessageHUD.shared.post(
+            Toast.shared.post(
                 message: "云端数据未初始化。同步暂停，若要与当前 iCloud 帐号同步，请在应用设置中关闭再重新开启 iCloud 同步开关。",
                 duration: 1.0,
                 animated: true
@@ -884,7 +884,7 @@ extension CloudKitManager {
 
     func alertAssertFailure(message: String) {
         DispatchQueue.main.async {
-            MessageHUD.shared.post(
+            Toast.shared.post(
                 message: "Assert Failure: \(message)",
                 duration: .forever,
                 animated: true

@@ -17,6 +17,8 @@ final class TopicComposeViewController: UIViewController {
     let separatorView = SeparatorView()
     let textView = UITextView()
 
+    let hud = Hud()
+
     init(forumID: Int) {
         assert(forumID != 0)
         self.forumID = forumID
@@ -31,13 +33,13 @@ final class TopicComposeViewController: UIViewController {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Submit",
+            title: NSLocalizedString("Submit", comment: ""),
             style: .done,
             target: self,
             action: #selector(submitAction)
         )
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Close",
+            title: NSLocalizedString("Close", comment: ""),
             style: .plain,
             target: self,
             action: #selector(closeAction)
@@ -52,6 +54,8 @@ final class TopicComposeViewController: UIViewController {
 
         textView.backgroundColor = .white
         view.addSubview(textView)
+
+        view.addSubview(hud)
 
         textField.snp.makeConstraints { (make) in
             if #available(iOS 11.0, *) {
@@ -72,6 +76,10 @@ final class TopicComposeViewController: UIViewController {
             make.leading.trailing.equalTo(view)
             make.top.equalTo(textField.snp.bottom)
             make.bottom.equalTo(view)
+        }
+
+        hud.snp.makeConstraints { (make) in
+            make.center.equalTo(self.view)
         }
     }
 }
@@ -101,11 +109,11 @@ extension TopicComposeViewController {
 
             switch processedResult {
             case .success(let string):
-                break
+                strongSelf.dismiss(animated: true, completion: nil)
             case .failure(let error):
-                break
+                strongSelf.hud.show(message: error.localizedDescription)
+                strongSelf.hud.hide(delay: 2.0)
             }
-            strongSelf.dismiss(animated: true, completion: nil)
         }
     }
 

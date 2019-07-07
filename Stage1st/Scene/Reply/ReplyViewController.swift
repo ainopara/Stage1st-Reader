@@ -115,7 +115,7 @@ extension ReplyViewController: REComposeViewControllerDelegate {
 
             /// Note: self is supposed to be dealloced when completion block called.
             let successBlock = {
-                MessageHUD.shared.post(message: "回复成功", duration: .second(2.5))
+                Toast.shared.post(message: "回复成功", duration: .second(2.5))
 
                 NotificationCenter.default.post(name: .ReplyDidPosted, object: nil, userInfo: [
                     "topicID": topicID
@@ -128,13 +128,13 @@ extension ReplyViewController: REComposeViewControllerDelegate {
                 theDraftDelegate?.replyViewControllerDidFailed(with: attributedDraft)
                 if let urlError = error as? URLError, urlError.code == .cancelled {
                     S1LogDebug("[Network] NSURLErrorCancelled")
-                    MessageHUD.shared.post(message: "回复请求取消", duration: .second(1.0))
+                    Toast.shared.post(message: "回复请求取消", duration: .second(1.0))
                 } else {
                     S1LogDebug("[Network] reply error: \(error)")
-                    MessageHUD.shared.post(message: "回复失败", duration: .second(2.5))
+                    Toast.shared.post(message: "回复失败", duration: .second(2.5))
                 }
             }
-            MessageHUD.shared.post(message: "回复发送中", duration: .forever)
+            Toast.shared.post(message: "回复发送中", duration: .forever)
 
             if case let .floor(floor, page) = viewModel.target {
                 AppEnvironment.current.dataCenter.reply(

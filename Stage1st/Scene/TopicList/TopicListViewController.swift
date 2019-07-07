@@ -32,7 +32,7 @@ final class TopicListViewController: UIViewController {
     let searchBar = UISearchBar(frame: .zero)
     let searchBarWrapperView = UIView(frame: .zero)
     let footerView = MessageFooterView()
-    let refreshHUD = S1HUD(frame: .zero)
+    let refreshHUD = Hud(frame: .zero)
     let composeButton = UIButton()
 
     private var observations = [NSKeyValueObservation]()
@@ -344,11 +344,11 @@ extension TopicListViewController {
 
             switch action {
             case .loading:
-                strongSelf.refreshHUD.showActivityIndicator()
+                strongSelf.refreshHUD.showLoadingIndicator()
             case let .text(text):
-                strongSelf.refreshHUD.showMessage(text)
+                strongSelf.refreshHUD.show(message: text)
             case let .hide(delay):
-                strongSelf.refreshHUD.hide(withDelay: delay)
+                strongSelf.refreshHUD.hide(delay: delay)
             }
         }
 

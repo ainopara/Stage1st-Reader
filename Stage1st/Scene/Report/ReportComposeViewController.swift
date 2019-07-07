@@ -13,7 +13,7 @@ import YYKeyboardManager
 
 final class ReportComposeViewController: UIViewController {
     let textView = UITextView(frame: .zero, textContainer: nil)
-    let loadingHUD = S1HUD(frame: .zero)
+    let loadingHUD = Hud(frame: .zero)
     let keyboardManager = YYKeyboardManager.default()
     var textViewBottomConstraint: Constraint?
 
@@ -50,7 +50,7 @@ final class ReportComposeViewController: UIViewController {
         view.layoutIfNeeded()
 
         // Binding
-        viewModel.content <~ textView.reactive.continuousTextValues.map { $0 ?? "" }
+        viewModel.content <~ textView.reactive.continuousTextValues
 
         viewModel.canSubmit.producer.startWithValues { [weak self] canSubmit in
             guard let strongSelf = self else { return }
@@ -60,9 +60,9 @@ final class ReportComposeViewController: UIViewController {
         viewModel.isSubmitting.producer.startWithValues { [weak self] submiting in
             guard let strongSelf = self else { return }
             if submiting {
-                strongSelf.loadingHUD.showActivityIndicator()
+                strongSelf.loadingHUD.showLoadingIndicator()
             } else {
-                strongSelf.loadingHUD.hide(withDelay: 0.0)
+                strongSelf.loadingHUD.hide(delay: 0.0)
             }
         }
 
@@ -123,15 +123,15 @@ extension ReportComposeViewController: YYKeyboardObserver {
 extension ReportComposeViewController {
     @objc func submit() {
         view.endEditing(true)
-        MessageHUD.shared.post(message: "举报发送中", duration: .forever)
+        Toast.shared.post(message: "举报发送中", duration: .forever)
         viewModel.submit { [weak self] error in
             guard let strongSelf = self else { return }
             if let error = error {
                 // FIXME: Alert Error
                 S1LogError("Report Submit Error: \(error)")
-                MessageHUD.shared.post(message: "举报发送失败", duration: .second(2.5))
+                Toast.shared.post(message: "举报发送失败", duration: .second(2.5))
             } else {
-                MessageHUD.shared.post(message: "举报发送成功", duration: .second(2.5))
+                Toast.shared.post(message: "举报发送成功", duration: .second(2.5))
                 strongSelf.dismiss(animated: true, completion: nil)
             }
         }

@@ -211,3 +211,6 @@
 "TopicListViewController.MessageFooterView.loading" = "加载中";
 "TopicListViewController.MessageFooterView.allTopics" = "共 %@ 主题";
 "TopicListViewController.MessageFooterView.allSearchResults" = "共 %@ 搜索结果";
+
+"TopicComposeViewController.Close" = "关闭";
+"TopicComposeViewController.Submit" = "提交";

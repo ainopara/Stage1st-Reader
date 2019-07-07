@@ -16,7 +16,7 @@ class NoticeViewController: UIViewController {
     let layout = UICollectionViewFlowLayout()
     let collectionView: UICollectionView
     private let emptyView = EmptyView()
-    let refreshHUD = S1HUD(frame: .zero)
+    let refreshHUD = Hud(frame: .zero)
 
     let loadingIndicator = UIActivityIndicatorView(style: .gray)
 
@@ -160,18 +160,18 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath.item)
 
-        refreshHUD.showActivityIndicator()
+        refreshHUD.showLoadingIndicator()
         AppEnvironment.current.apiService.topic(with: cellViewModel.path) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {
             case .success(let topic):
-                strongSelf.refreshHUD.hide(withDelay: 0.0)
+                strongSelf.refreshHUD.hide(delay: 0.0)
                 let contentViewModel = ContentViewModel(topic: topic)
                 let contentViewController = ContentViewController(viewModel: contentViewModel)
                 strongSelf.navigationController?.pushViewController(contentViewController, animated: true)
             case .failure(let error):
-                strongSelf.refreshHUD.showMessage("\(error.localizedDescription)")
-                strongSelf.refreshHUD.hide(withDelay: 2.0)
+                strongSelf.refreshHUD.show(message: "\(error.localizedDescription)")
+                strongSelf.refreshHUD.hide(delay: 2.0)
             }
         }
     }

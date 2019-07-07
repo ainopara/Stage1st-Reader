@@ -39,8 +39,8 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
         PullToActionController(scrollView: self.webView.scrollView)
     }()
 
-    let refreshHUD = S1HUD(frame: .zero)
-    let hintHUD = S1HUD(frame: .zero)
+    let refreshHUD = Hud(frame: .zero)
+    let hintHUD = Hud(frame: .zero)
 
     let toolBar = UIToolbar(frame: .zero)
     let backButton = UIButton(type: .system)
@@ -547,13 +547,14 @@ extension ContentViewController {
 
         if !shouldPresentingFavoriteButtonOnToolBar() {
             // Favorite Action
-            let title = viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentViewController.ActionSheet.CancelFavorite", comment: "Cancel Favorite") : NSLocalizedString("ContentViewController.ActionSheet.Favorite", comment: "Favorite")
+            let isFavorite = viewModel.topic.favorite?.boolValue ?? false
+            let title = isFavorite ? NSLocalizedString("ContentViewController.ActionSheet.CancelFavorite", comment: "Cancel Favorite") : NSLocalizedString("ContentViewController.ActionSheet.Favorite", comment: "Favorite")
             moreActionSheet.addAction(UIAlertAction(title: title, style: .default, handler: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.toggleFavorite()
                 let message = strongSelf.viewModel.topic.favorite?.boolValue ?? false ? NSLocalizedString("ContentViewController.ActionSheet.Favorite", comment: "Favorite") : NSLocalizedString("ContentViewController.ActionSheet.CancelFavorite", comment: "Cancel Favorite")
-                strongSelf.hintHUD.showMessage(message)
-                strongSelf.hintHUD.hide(withDelay: 0.5)
+                strongSelf.hintHUD.show(message: message)
+                strongSelf.hintHUD.hide(delay: 0.5)
             }))
         }
 
@@ -595,8 +596,8 @@ extension ContentViewController {
             guard let strongSelf = self else { return }
             if let urlString = strongSelf.viewModel.correspondingWebPageURL()?.absoluteString {
                 UIPasteboard.general.string = urlString
-                strongSelf.hintHUD.showMessage(NSLocalizedString("ContentViewController.ActionSheet.CopyLink", comment: "Copy Link"))
-                strongSelf.hintHUD.hide(withDelay: 0.3)
+                strongSelf.hintHUD.show(message: NSLocalizedString("ContentViewController.ActionSheet.CopyLink", comment: "Copy Link"))
+                strongSelf.hintHUD.hide(delay: 0.3)
             } else {
                 S1LogWarn("[ContentVC] can not generate corresponding web page url.")
             }
@@ -1170,14 +1171,7 @@ extension ContentViewController {
 private extension ContentViewController {
     func fetchContentForCurrentPage(forceUpdate: Bool) {
         func _showHud() {
-            refreshHUD.showActivityIndicator()
-
-            refreshHUD.refreshEventHandler = { [weak self] hud in
-                guard let strongSelf = self else { return }
-
-                hud?.hide(withDelay: 0.0)
-                strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: strongSelf.scrollType)
-            }
+            refreshHUD.showLoadingIndicator()
         }
 
         updateToolBar()
@@ -1220,7 +1214,7 @@ private extension ContentViewController {
                 // Dismiss HUD if exist
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else { return }
-                    strongSelf.refreshHUD.hide(withDelay: 0.3)
+                    strongSelf.refreshHUD.hide(delay: 0.3)
                 }
 
             case let .failure(error):
@@ -1232,18 +1226,24 @@ private extension ContentViewController {
                     //            }
                 } else if case let DiscuzError.serverError(message) = error {
                     S1LogInfo("Permission denied with message: \(error)")
-                    strongSelf.refreshHUD.showMessage(message)
-                    strongSelf.refreshHUD.hide(withDelay: 3.0)
+                    strongSelf.refreshHUD.show(message: message)
+                    strongSelf.refreshHUD.hide(delay: 3.0)
                 } else if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
                     S1LogWarn("Decoding Error: \(error)")
                     AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: [
                         "topicID": strongSelf.viewModel.topic.topicID,
                         "page": strongSelf.viewModel.currentPage.value
                     ])
-                    strongSelf.refreshHUD.showRefreshButton()
+                    strongSelf.refreshHUD.showRefresh { [weak self] in
+                        guard let strongSelf = self else { return }
+                        strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: strongSelf.scrollType)
+                    }
                 } else {
                     S1LogWarn("Fetch failed with error: \(error)")
-                    strongSelf.refreshHUD.showRefreshButton()
+                    strongSelf.refreshHUD.showRefresh { [weak self] in
+                        guard let strongSelf = self else { return }
+                        strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: strongSelf.scrollType)
+                    }
                 }
             }
         }
