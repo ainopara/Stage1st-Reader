@@ -14,6 +14,7 @@ class NoticeViewController: UIViewController {
     let viewModel: NoticeViewModel
 
     let layout = UICollectionViewFlowLayout()
+    let navigationBar = UINavigationBar()
     let collectionView: UICollectionView
     private let emptyView = EmptyView()
     let refreshHUD = Hud(frame: .zero)
@@ -32,7 +33,7 @@ class NoticeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         title = "回复提醒"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Close"), style: .plain, target: self, action: #selector(closeAction))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(backAction))
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -78,6 +79,12 @@ class NoticeViewController: UIViewController {
 extension NoticeViewController {
 
     private func setupSubviews() {
+
+        navigationBar.isTranslucent = false
+        navigationBar.delegate = self
+        navigationBar.pushItem(self.navigationItem, animated: false)
+        view.addSubview(navigationBar)
+
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.minimumLineSpacing = 0.0
         layout.minimumInteritemSpacing = 0.0
@@ -94,8 +101,23 @@ extension NoticeViewController {
     }
 
     private func setupAutoLayout() {
+        view.addSubview(navigationBar)
+        if #available(iOS 11.0, *) {
+            navigationBar.snp.makeConstraints({ (make) in
+                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.leading.trailing.equalTo(self.view)
+            })
+        } else {
+            navigationBar.snp.makeConstraints({ (make) in
+                make.top.equalTo(view.snp.top)
+                make.leading.trailing.equalTo(self.view)
+                make.bottom.equalTo(self.topLayoutGuide.snp.bottom).offset(44.0)
+            })
+        }
+
         collectionView.snp.makeConstraints { (make) in
-            make.edges.equalTo(self.view)
+            make.top.equalTo(navigationBar.snp.bottom)
+            make.leading.trailing.bottom.equalTo(self.view)
         }
 
         loadingIndicator.snp.makeConstraints { (make) in
@@ -119,12 +141,19 @@ extension NoticeViewController {
     }
 }
 
+// MARK: - UINavigationBarDelegate
+
+extension NoticeViewController: UINavigationBarDelegate {
+    func position(for bar: UIBarPositioning) -> UIBarPosition {
+        return .topAttached
+    }
+}
 // MARK: - Actions
 
 extension NoticeViewController {
 
-    @objc func closeAction(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
+    @objc func backAction(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
     }
 }
 

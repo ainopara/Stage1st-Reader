@@ -487,8 +487,7 @@ extension TopicListViewController {
     }
 
     @objc func notification(_ sender: Any) {
-        let navigationController = PanNavigationController(rootViewController: NoticeViewController(viewModel: NoticeViewModel()))
-        self.present(navigationController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(NoticeViewController(viewModel: NoticeViewModel()), animated: true)
     }
 
     @objc func refresh(_ sender: Any) {
