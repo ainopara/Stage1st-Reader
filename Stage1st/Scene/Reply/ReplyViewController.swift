@@ -97,6 +97,15 @@ extension ReplyViewController {
 // MARK: - REComposeViewControllerDelegate
 
 extension ReplyViewController: REComposeViewControllerDelegate {
+
+    static func processReplyContent(_ content: String) -> String {
+        return content.replacingOccurrences(
+            of: #"(?<!\])(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\p{Ll}\p{Lu}\p{Lt}\p{Nd}@?^=%&/~+#-])?"#,
+            with: "[url]$0[/url]",
+            options: [.regularExpression]
+        )
+    }
+
     func composeViewController(_ composeViewController: REComposeViewController!, didFinishWith result: REComposeResult) {
         let attributedDraft = composeViewController.textView.attributedText ?? NSAttributedString()
         switch result {
@@ -112,6 +121,8 @@ extension ReplyViewController: REComposeViewControllerDelegate {
             }
 
             let topicID = viewModel.topic.topicID
+
+            let processedContent = ReplyViewController.processReplyContent(composeViewController.plainText)
 
             /// Note: self is supposed to be dealloced when completion block called.
             let successBlock = {
@@ -141,14 +152,14 @@ extension ReplyViewController: REComposeViewControllerDelegate {
                     floor: floor,
                     in: viewModel.topic,
                     at: page,
-                    text: composeViewController.plainText,
+                    text: processedContent,
                     successblock: successBlock,
                     failureBlock: failureBlock
                 )
             } else {
                 AppEnvironment.current.dataCenter.reply(
                     topic: viewModel.topic,
-                    text: composeViewController.plainText,
+                    text: processedContent,
                     successblock: successBlock,
                     failureBlock: failureBlock
                 )
