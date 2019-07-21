@@ -14,6 +14,7 @@
     NSInteger _index;
     CGFloat _lastContentOffset;
     CGFloat _lastFrameWidth;
+    CGFloat _lastFrameHeight;
     BOOL _needRecalculateButtonWidth;
 }
 
@@ -22,6 +23,7 @@
     if (self) {
         _index = -1;
         _lastFrameWidth = 0;
+        _lastFrameHeight = 0;
         _enabled = YES;
         _needRecalculateButtonWidth = YES;
         _minButtonWidth = [NSNumber numberWithDouble:80.0];
@@ -135,7 +137,8 @@
 
 
 - (void)layoutSubviews {
-    if (self.frame.size.width == _lastFrameWidth && !_needRecalculateButtonWidth) {
+    [super layoutSubviews];
+    if (self.frame.size.width == _lastFrameWidth && self.frame.size.height == _lastFrameHeight && !_needRecalculateButtonWidth) {
         return;
     }
     CGFloat widthPerItem = [self determineWidthPerItem];
@@ -150,6 +153,7 @@
     }
     [self setContentSize:CGSizeMake(widthPerItem * (maxIndex + 1), self.bounds.size.height)];
     _lastFrameWidth = self.frame.size.width;
+    _lastFrameHeight = self.frame.size.height;
     _needRecalculateButtonWidth = NO;
 }
 

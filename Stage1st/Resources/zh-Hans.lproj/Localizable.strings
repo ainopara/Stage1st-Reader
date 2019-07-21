@@ -214,3 +214,5 @@
 
 "TopicComposeViewController.Close" = "关闭";
 "TopicComposeViewController.Submit" = "提交";
+
+"ContainerViewController.PasteboardLintHint.title" = "打开剪切板中的链接";

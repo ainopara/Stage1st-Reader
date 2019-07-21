@@ -9,6 +9,8 @@
 import SnapKit
 import DeviceKit
 import ReactiveSwift
+import RxSwift
+import RxCocoa
 
 protocol ContainerDelegate: class {
     func containerViewControllerShouldSelectTabButton(at index: Int)
@@ -28,6 +30,15 @@ class ContainerViewController: UIViewController {
 
     var selectedViewController: MutableProperty<UIViewController>
     var previouslySelectedViewController: UIViewController?
+
+    private let pasteboardToast = PasteboardLinkHintToast()
+
+    let pasteboardString = BehaviorRelay<String>(value: "")
+    let pasteboardContainsValidURL = BehaviorRelay<Bool>(value: false)
+
+    let pasteboardAnimator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UICubicTimingParameters(animationCurve: .easeInOut))
+
+    let bag = DisposeBag()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.selectedViewController = MutableProperty(self.topicListViewController)
@@ -66,6 +77,18 @@ class ContainerViewController: UIViewController {
             object: nil
         )
 
+        NotificationCenter.default.rx.notification(UIPasteboard.changedNotification)
+            .map { _ in return () }
+            .startWith(())
+            .map { UIPasteboard.general.string ?? "" }
+            .bind(to: pasteboardString)
+            .disposed(by: bag)
+
+        NotificationCenter.default.rx.notification(UIPasteboard.removedNotification)
+            .map { _ in "" }
+            .bind(to: pasteboardString)
+            .disposed(by: bag)
+
         // Initialize Child View Controller
 
         applyChildViewControllerSwitch()
@@ -78,20 +101,12 @@ class ContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if Device.current.isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
-            scrollTabBar.expectedButtonHeight = 49.0
-        }
-
         view.addSubview(scrollTabBar)
         if #available(iOS 11.0, *) {
             scrollTabBar.snp.makeConstraints { (make) in
                 make.leading.trailing.equalTo(view)
                 make.bottom.equalTo(view.snp.bottom)
-                if Device.current.isOneOf([.iPhoneX, .simulator(.iPhoneX)]) {
-                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-49.0)
-                } else {
-                    make.top.equalTo(self.bottomLayoutGuide.snp.top).offset(-44.0)
-                }
+                make.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-44.0)
             }
         } else {
             scrollTabBar.snp.makeConstraints { (make) in
@@ -100,6 +115,67 @@ class ContainerViewController: UIViewController {
                 make.height.equalTo(44.0)
             }
         }
+
+        pasteboardToast.alpha = 0.0
+        view.addSubview(pasteboardToast)
+
+        pasteboardString
+            .map { (string) -> Bool in
+                guard string.hasPrefix("http") else { return false }
+                for serverAddress in AppEnvironment.current.serverAddress.used where string.hasPrefix(serverAddress) {
+                    return true
+                }
+                return false
+            }
+            .bind(to: pasteboardContainsValidURL)
+            .disposed(by: bag)
+
+        pasteboardContainsValidURL
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] shouldBeShowing in
+                guard let strongSelf = self else { return }
+                strongSelf.view.layoutIfNeeded()
+                if shouldBeShowing {
+                    strongSelf.pasteboardAnimator.addAnimations {
+                        strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
+                            make.height.equalTo(44.0)
+                            make.bottom.equalTo(strongSelf.scrollTabBar.snp.top).offset(-8.0)
+                            make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
+                            make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
+                        })
+                        strongSelf.view.layoutIfNeeded()
+                        strongSelf.pasteboardToast.alpha = 1.0
+                    }
+                } else {
+                    strongSelf.pasteboardAnimator.addAnimations {
+                        strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
+                            make.height.equalTo(44.0)
+                            make.top.equalTo(strongSelf.scrollTabBar.snp.top).offset(8.0)
+                            make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
+                            make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
+                        })
+                        strongSelf.view.layoutIfNeeded()
+                        strongSelf.pasteboardToast.alpha = 0.0
+                    }
+                }
+                strongSelf.pasteboardAnimator.startAnimation()
+            })
+            .disposed(by: bag)
+
+        pasteboardToast.button.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                guard let strongSelf = self else { return }
+
+                guard let topic = Parser.extractTopic(from: strongSelf.pasteboardString.value) else {
+                    return
+                }
+
+                let topicID = topic.topicID
+                let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
+                strongSelf.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
+                UIPasteboard.general.string = ""
+            })
+            .disposed(by: bag)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -147,6 +223,8 @@ class ContainerViewController: UIViewController {
     }
 }
 
+// MARK: - S1TabBarDelegate
+
 extension ContainerViewController: S1TabBarDelegate {
     func tabbar(_ tabbar: S1TabBar, didSelectedKey key: String) {
         if selectedViewController.value === self.topicListViewController {
@@ -160,8 +238,34 @@ extension ContainerViewController: S1TabBarDelegate {
     }
 }
 
+// MARK: - PlatteChange
+
 extension ContainerViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
         scrollTabBar.updateColor()
+        pasteboardToast.button.setTitleColor(AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint"), for: .normal)
+        pasteboardToast.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+    }
+}
+
+private class PasteboardLinkHintToast: UIView {
+    let button = UIButton()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        clipsToBounds = true
+        layer.cornerRadius = 8.0
+        addSubview(button)
+
+        button.setTitle(NSLocalizedString("ContainerViewController.PasteboardLintHint.title", comment: ""), for: .normal)
+
+        button.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
