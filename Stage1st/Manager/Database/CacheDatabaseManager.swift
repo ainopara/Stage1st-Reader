@@ -42,13 +42,26 @@ class CacheDatabaseManager: NSObject {
             }
         }
 
-        cacheDatabase = YapDatabase(
+        let instance = YapDatabase(
             path: path,
             objectSerializer: serializer,
             objectDeserializer: deserializer,
             metadataSerializer: YapDatabase.defaultSerializer(),
             metadataDeserializer: YapDatabase.defaultDeserializer()
-        )!
+        )
+
+        if let instance = instance {
+            cacheDatabase = instance
+        } else {
+            try! FileManager.default.removeItem(at: URL(fileURLWithPath: path))
+            cacheDatabase = YapDatabase(
+                path: path,
+                objectSerializer: serializer,
+                objectDeserializer: deserializer,
+                metadataSerializer: YapDatabase.defaultSerializer(),
+                metadataDeserializer: YapDatabase.defaultDeserializer()
+            )!
+        }
 
         readConnection = cacheDatabase.newConnection()
         backgroundWriteConnection = cacheDatabase.newConnection()
