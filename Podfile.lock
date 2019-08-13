@@ -26,14 +26,14 @@ PODS:
   - Ainoaibo/Stash (0.1.0)
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
-  - Alamofire (5.0.0-beta.6)
+  - Alamofire (5.0.0-beta.7)
   - CocoaLumberjack (3.5.3):
     - CocoaLumberjack/Core (= 3.5.3)
   - CocoaLumberjack/Core (3.5.3)
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
   - CodableExtensions (0.3.0)
-  - Crashlytics (3.13.2):
+  - Crashlytics (3.13.4):
     - Fabric (~> 1.10.2)
   - CrashlyticsLogger (0.4.0):
     - CocoaLumberjack (~> 3.5)
@@ -151,7 +151,7 @@ DEPENDENCIES:
   - Ainoaibo/Stash (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/StateTransition (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
-  - Alamofire (= 5.0.0.beta.6)
+  - Alamofire (= 5.0.0.beta.7)
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - CodableExtensions
@@ -242,10 +242,10 @@ SPEC CHECKSUMS:
   AcknowList: 06fde3319971dfd517ea1b1c194d78eb8cd774a2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 7e5c5a1ad511561b8f78b820da15213c9ac20bd2
-  Alamofire: cd08a4402bd12cacd0c66f23fb12fec8d6b965e4
+  Alamofire: bd07938ceecad59d2492aeecb1f785a8f2721160
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
-  Crashlytics: 611738c7847f8291a1a51084e35987b86ba6b3ee
+  Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
   CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
   DeviceKit: 72d36709552d4b3582abd76a53949148acad9811
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
@@ -273,6 +273,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: a2083c793eebb08b2f0b9433cd0cfcc2f931c465
+PODFILE CHECKSUM: 88dcd4be2b3ccba33995c1473b4be092f9a9dcf2
 
-COCOAPODS: 1.7.3
+COCOAPODS: 1.7.5
