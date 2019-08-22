@@ -272,7 +272,7 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didReceiveUserBlockStatusDidChangedNotification(_:)),
-            name: .UserBlockStatusDidChanged,
+            name: UserViewModel.userBlockStatusDidChangeNotification,
             object: nil
         )
         NotificationCenter.default.addObserver(

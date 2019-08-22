@@ -6,21 +6,23 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import ReactiveSwift
+import RxSwift
+import RxCocoa
 import SnapKit
 import Kingfisher
-import CocoaLumberjack
 
 final class UserViewController: UIViewController {
     private let viewModel: UserViewModel
 
-    fileprivate let scrollView = UIScrollView(frame: .zero)
-    fileprivate let containerView = UIView(frame: .zero)
-    fileprivate let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
-    fileprivate let usernameLabel = UILabel(frame: .zero)
-    fileprivate let blockButton = UIButton(type: .system)
-    fileprivate let customStatusLabel = UILabel(frame: .zero)
-    fileprivate let infoLabel = UILabel(frame: .zero)
+    private let scrollView = UIScrollView(frame: .zero)
+    private let containerView = UIView(frame: .zero)
+    private let avatarView = UIImageView(image: nil) // TODO: Add placeholder image.
+    private let usernameLabel = UILabel(frame: .zero)
+    private let blockButton = UIButton(type: .system)
+    private let customStatusLabel = UILabel(frame: .zero)
+    private let infoLabel = UILabel(frame: .zero)
+
+    private let bag = DisposeBag()
 
     // MARK: - Life Cycle
     init(viewModel: UserViewModel) {
@@ -36,6 +38,13 @@ final class UserViewController: UIViewController {
 
         bindViewModel()
 
+        NotificationCenter.default.rx.notification(.APPaletteDidChange)
+            .subscribe(onNext: { [weak self] notification in
+                guard let strongSelf = self else { return }
+                strongSelf.didReceivePaletteChangeNotification(notification)
+            })
+            .disposed(by: bag)
+
 //        viewModel.updateCurrentUserProfile { [weak self] result in
 //            guard let strongSelf = self else { return }
 //            switch result {
@@ -46,8 +55,6 @@ final class UserViewController: UIViewController {
 ////                strongSelf.s1_presentAlertView("Error", message: "\(error)")
 //            }
 //        }
-
-        NotificationCenter.default.reactive.notifications(forName: .APPaletteDidChange).observeValues(didReceivePaletteChangeNotification(_:))
     }
 
     required init?(coder _: NSCoder) {
@@ -55,25 +62,32 @@ final class UserViewController: UIViewController {
     }
 
     func bindViewModel() {
-        viewModel.user.producer.startWithValues { [weak self] (user) in
-            guard let strongSelf = self else { return }
 
-            if let avatarURL = user.avatarURL {
-                strongSelf.avatarView.kf.setImage(with: avatarURL)
-            }
-        }
+        viewModel.user
+            .subscribe(onNext: { [weak self] (user) in
+                guard let strongSelf = self else { return }
 
-        usernameLabel.reactive.text <~ viewModel.username
+                if let avatarURL = user.avatarURL {
+                    strongSelf.avatarView.kf.setImage(with: avatarURL)
+                }
+            })
+            .disposed(by: bag)
 
-        viewModel.isBlocked.producer.startWithValues { [weak self] isBlocked in
-            guard let strongSelf = self else { return }
-            strongSelf.blockButton.setTitle(isBlocked ? "解除屏蔽" : "屏蔽", for: .normal)
-        }
+        viewModel.username
+            .bind(to: usernameLabel.rx.text)
+            .disposed(by: bag)
 
-        blockButton.reactive.controlEvents(.touchUpInside).observeValues { [weak self] _ in
-            guard let strongSelf = self else { return }
-            strongSelf.viewModel.toggleBlockStatus()
-        }
+        viewModel.isBlocked
+            .map { $0 ? "解除屏蔽" : "屏蔽" }
+            .bind(to: blockButton.rx.title())
+            .disposed(by: bag)
+
+        blockButton.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.viewModel.toggleBlockStatus()
+            })
+            .disposed(by: bag)
     }
 
     override func viewDidLoad() {

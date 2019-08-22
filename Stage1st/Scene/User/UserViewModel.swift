@@ -8,26 +8,33 @@
 
 import Foundation
 import Alamofire
-import ReactiveSwift
+import RxSwift
+import RxRelay
 
 class UserViewModel {
     let dataCenter: DataCenter
-    let user: MutableProperty<User>
-    let isBlocked: SignalProducer<Bool, Never>
-    let username: SignalProducer<String, Never>
+    let user: BehaviorRelay<User>
+    let isBlocked = BehaviorRelay<Bool>(value: false)
+    let username = BehaviorRelay<String>(value: "")
+
+    let bag = DisposeBag()
+
+    static let userBlockStatusDidChangeNotification = Notification.Name(rawValue: "UserViewModel.userBlockStatusDidChangeNotification")
 
     init(dataCenter: DataCenter, user: User) {
         self.dataCenter = dataCenter
-        self.user = MutableProperty(user)
+        self.user = BehaviorRelay(value: user)
 
-        isBlocked = self.user
-            .map({ dataCenter.userIDIsBlocked(ID: $0.id) })
-            .producer
+        self.user
+            .map { dataCenter.userIDIsBlocked(ID: $0.id) }
+            .bind(to: isBlocked)
+            .disposed(by: bag)
 
-        username = self.user
-            .map({ $0.name })
-            .skipRepeats()
-            .producer
+        self.user
+            .map { $0.name }
+            .distinctUntilChanged()
+            .bind(to: username)
+            .disposed(by: bag)
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Result<User, Error>) -> Void) {
@@ -35,7 +42,7 @@ class UserViewModel {
             guard let strongSelf = self else { return }
             switch result {
             case let .success(user):
-                strongSelf.user.value = user
+                strongSelf.user.accept(user)
                 resultBlock(.success(user))
             case let .failure(error):
                 resultBlock(.failure(error))
@@ -51,10 +58,6 @@ class UserViewModel {
             dataCenter.blockUser(with: user.value.id)
         }
 
-        user.value = user.value
+        user.accept(user.value)
     }
-}
-
-public extension Notification.Name {
-    static let UserBlockStatusDidChanged = Notification.Name.init(rawValue: "UserBlockStatusDidChanged")
 }
