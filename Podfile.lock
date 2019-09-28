@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.5)
-  - AcknowList (1.9)
+  - AcknowList (1.9.1)
   - ActionSheetPicker-3.0 (2.3.0)
   - Ainoaibo/DefaultsBasedSettings (0.1.0):
     - Ainoaibo/Logging
@@ -33,22 +33,22 @@ PODS:
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
   - CodableExtensions (0.3.0)
-  - Crashlytics (3.13.4):
+  - Crashlytics (3.14.0):
     - Fabric (~> 1.10.2)
   - CrashlyticsLogger (0.4.0):
     - CocoaLumberjack (~> 3.5)
     - CocoaLumberjack/Swift
     - Crashlytics
-  - DeviceKit (2.0.0)
+  - DeviceKit (2.2.0)
   - Fabric (1.10.2)
   - Files (2.2.1)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
   - Fuzi (3.1.1)
-  - GRDB.swift (4.1.1):
-    - GRDB.swift/standard (= 4.1.1)
-  - GRDB.swift/standard (4.1.1)
+  - GRDB.swift (4.4.0):
+    - GRDB.swift/standard (= 4.4.0)
+  - GRDB.swift/standard (4.4.0)
   - GRMustache.swift (4.0.1)
   - HorizontalFloatingHeaderLayout (2.0.0)
   - Html (0.3.1)
@@ -58,22 +58,24 @@ PODS:
   - iOSSnapshotTestCase/SwiftSupport (6.1.0):
     - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
-  - Kingfisher (5.7.0)
+  - Kingfisher (5.8.1):
+    - Kingfisher/Core (= 5.8.1)
+  - Kingfisher/Core (5.8.1)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - QuickTableViewController (1.2.0)
   - Reachability (3.2)
-  - ReactiveCocoa (10.0.0):
-    - ReactiveSwift (~> 6.0)
-  - ReactiveSwift (6.0.0)
+  - ReactiveCocoa (10.1.0):
+    - ReactiveSwift (~> 6.1)
+  - ReactiveSwift (6.1.0)
   - RxCocoa (5.0.0):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
   - RxRelay (5.0.0):
     - RxSwift (~> 5)
   - RxSwift (5.0.0)
-  - SnapKit (5.0.0)
-  - SnapshotTesting (1.5.0)
+  - SnapKit (5.0.1)
+  - SnapshotTesting (1.6.0)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
   - YapDatabase/Standard (3.1.1):
@@ -183,7 +185,7 @@ DEPENDENCIES:
   - YYKeyboardManager
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - 1PasswordExtension
     - AcknowList
     - ActionSheetPicker-3.0
@@ -239,40 +241,40 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
-  AcknowList: 06fde3319971dfd517ea1b1c194d78eb8cd774a2
+  AcknowList: 70efb7554e257914da0aea2724a72fb30c45dfe2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 7e5c5a1ad511561b8f78b820da15213c9ac20bd2
   Alamofire: bd07938ceecad59d2492aeecb1f785a8f2721160
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
-  Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
-  DeviceKit: 72d36709552d4b3582abd76a53949148acad9811
+  DeviceKit: ee5d2ec3bc8ad3847f9f0f202de0be09448707e1
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Fuzi: bcc5694488dd6e672e126cbf3c5471d7a79506d1
-  GRDB.swift: 99b10e1afa666ff024d76e38b37fefd34b57def4
+  GRDB.swift: 4f9b6e7efc9470426f6a6de10ec1fee798ff7e43
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   Html: 36e4910baff75809d3640ccbd306d6d1571397e9
   iOSSnapshotTestCase: 30d540b0c8feb9d7f8ff97acc25a3804b48ee264
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  Kingfisher: c7d211b54f1f30d8060aadab177d52b4349c825b
+  Kingfisher: de969e451c81ca6c07a454bc36fea84b8b08c3c7
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   QuickTableViewController: 4730f2b4044e6b6805ee898e1794ecbb83898f20
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  ReactiveCocoa: 6d4c37ba236f5d9a7a55b2172cd09f19ba85f574
-  ReactiveSwift: 24b7ed245617bbfd30ee0c87779b6c64ac1b4518
+  ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
+  ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
   RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
-  SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
-  SnapshotTesting: 9ca1d80f6322509a035856170c11d0571b1f7171
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 88dcd4be2b3ccba33995c1473b4be092f9a9dcf2
+PODFILE CHECKSUM: b5f44c869d38ce9fd61d0852e069f1e83be9cb86
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.1
