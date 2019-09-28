@@ -4,7 +4,7 @@ use_frameworks!
 
 target "Stage1st" do
     # Network
-    pod 'Alamofire', '5.0.0.beta.7'
+    pod 'Alamofire', '5.0.0-rc.2'
     pod 'Kingfisher'
 
     # Model
@@ -38,7 +38,7 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
-#    pod 'Reveal-SDK', :configurations => ['Debug']
+    pod 'Reveal-SDK', :configurations => ['Debug']
 
     # RAC
     pod 'ReactiveSwift', '~> 6.0'

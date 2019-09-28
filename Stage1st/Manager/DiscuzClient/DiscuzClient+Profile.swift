@@ -24,7 +24,7 @@ public extension DiscuzClient {
         ]
 
         return session.request(baseURL + "/api/mobile/index.php", parameters: parameters)
-            .responseDecodable { (response: DataResponse<User>) in
+            .responseDecodable { (response: AFDataResponse<User>) in
                 switch response.result {
                 case let .success(user):
                     completion(.success(user))
@@ -37,7 +37,7 @@ public extension DiscuzClient {
     @discardableResult
     func notices(
         page: Int,
-        completion: @escaping (DataResponse<RawNoticeList>) -> Void
+        completion: @escaping (AFDataResponse<RawNoticeList>) -> Void
     ) -> DataRequest {
 
         let parameters: Parameters = [
@@ -56,7 +56,7 @@ public extension DiscuzClient {
     func threadList(
         for userID: Int,
         page: Int,
-        completion: @escaping (DataResponse<Data>) -> Void
+        completion: @escaping (AFDataResponse<Data>) -> Void
     ) -> DataRequest {
 
         let parameters: Parameters = [
@@ -78,7 +78,7 @@ public extension DiscuzClient {
     func replyList(
         for userID: Int,
         page: Int,
-        completion: @escaping (DataResponse<Data>) -> Void
+        completion: @escaping (AFDataResponse<Data>) -> Void
     ) -> DataRequest {
 
         let parameters: Parameters = [

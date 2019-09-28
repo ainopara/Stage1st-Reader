@@ -45,12 +45,12 @@ public extension DiscuzClient {
             }
         }
 
-        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<CheckLoginTypeResult>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: AFDataResponse<CheckLoginTypeResult>) in
             switch response.result {
             case let .success(result):
                 hasSeccodeBlock(result.variables.sechash)
             case let .failure(error):
-                if let afError = error as? AFError, case AFError.responseSerializationFailed = afError {
+                if case AFError.responseSerializationFailed = error {
                     noSechashBlock()
                 } else {
                     failureBlock(error)
@@ -116,7 +116,7 @@ public extension DiscuzClient {
         }
 
         return session.request(URLString, method: .post, parameters: bodyParameters, encoding: MultipartFormEncoding.default)
-            .responseDecodable { (response: DataResponse<LoginOperationResult>) in
+            .responseDecodable { (response: AFDataResponse<LoginOperationResult>) in
                 switch response.result {
                 case .success(let operationResult):
                     guard operationResult.message.key.contains("login_succeed") else {

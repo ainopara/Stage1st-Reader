@@ -48,8 +48,8 @@ public extension DiscuzClient {
     }
 }
 
-private extension Result where Failure == Error {
-    var error: Error? {
+private extension Result {
+    var error: Failure? {
         switch self {
         case .success:
             return nil

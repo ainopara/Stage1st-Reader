@@ -20,7 +20,7 @@ public extension DiscuzClient {
         message: String,
         saveAsDraft: Bool,
         noticeUser: Bool,
-        completion: @escaping (Result<String, Error>) -> Void
+        completion: @escaping (Result<String, AFError>) -> Void
     ) -> Request {
 
         let urlParameters: Parameters = [

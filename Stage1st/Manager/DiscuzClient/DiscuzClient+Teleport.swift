@@ -44,7 +44,7 @@ public extension DiscuzClient {
             "orderby": "dblastpost",
         ]
 
-        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawTopicList>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: AFDataResponse<RawTopicList>) in
             switch response.result {
             case let .success(rawTopicList):
 
@@ -167,7 +167,7 @@ public extension DiscuzClient {
             "page": page,
         ]
 
-        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: DataResponse<RawFloorList>) in
+        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: AFDataResponse<RawFloorList>) in
             switch response.result {
             case let .success(rawFloorList):
                 if let serverErrorMessage = rawFloorList.error, serverErrorMessage != "" {

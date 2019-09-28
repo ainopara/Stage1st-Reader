@@ -26,7 +26,7 @@ PODS:
   - Ainoaibo/Stash (0.1.0)
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
-  - Alamofire (5.0.0-beta.7)
+  - Alamofire (5.0.0-rc.2)
   - CocoaLumberjack (3.5.3):
     - CocoaLumberjack/Core (= 3.5.3)
   - CocoaLumberjack/Core (3.5.3)
@@ -68,6 +68,7 @@ PODS:
   - ReactiveCocoa (10.1.0):
     - ReactiveSwift (~> 6.1)
   - ReactiveSwift (6.1.0)
+  - Reveal-SDK (24)
   - RxCocoa (5.0.0):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -153,7 +154,7 @@ DEPENDENCIES:
   - Ainoaibo/Stash (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/StateTransition (from `./Frameworks/Ainoaibo`)
   - Ainoaibo/SwiftExtension (from `./Frameworks/Ainoaibo`)
-  - Alamofire (= 5.0.0.beta.7)
+  - Alamofire (= 5.0.0-rc.2)
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - CodableExtensions
@@ -177,6 +178,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
+  - Reveal-SDK
   - RxCocoa (~> 5.0)
   - RxSwift (~> 5.0)
   - SnapKit
@@ -210,6 +212,7 @@ SPEC REPOS:
     - Reachability
     - ReactiveCocoa
     - ReactiveSwift
+    - Reveal-SDK
     - RxCocoa
     - RxRelay
     - RxSwift
@@ -244,7 +247,7 @@ SPEC CHECKSUMS:
   AcknowList: 70efb7554e257914da0aea2724a72fb30c45dfe2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 7e5c5a1ad511561b8f78b820da15213c9ac20bd2
-  Alamofire: bd07938ceecad59d2492aeecb1f785a8f2721160
+  Alamofire: f9450d3c7f6bea2ad62e7a541c3e9b186c7991d6
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
@@ -267,6 +270,7 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
+  Reveal-SDK: 5d7e56b8f018c0a88b3a2c10bf68d598bbd3b071
   RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
@@ -275,6 +279,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: b5f44c869d38ce9fd61d0852e069f1e83be9cb86
+PODFILE CHECKSUM: 268f8c0f4999f42f7eae9bc86dee143bc10e3557
 
 COCOAPODS: 1.8.1

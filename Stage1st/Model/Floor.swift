@@ -100,7 +100,7 @@ extension Floor {
 public extension Floor {
     var firstQuoteReplyFloorID: Int? {
         guard
-            let urlString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first as? String,
+            let urlString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first,
             let floorIDString = Parser.extractQuerys(from: urlString.aibo_stringByUnescapingFromHTML())["pid"],
             let floorID = Int(floorIDString)
         else {
