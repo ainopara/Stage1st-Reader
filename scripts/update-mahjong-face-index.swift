@@ -1,4 +1,4 @@
-import Files
+import Files // @JohnSundell ~> 4.0
 import Foundation
 
 func shell(launchPath: String, arguments: [String]) -> String? {
@@ -72,7 +72,7 @@ let categoryInfo: [String: CategoryInfo] = [
 ]
 
 func main() throws {
-    var projectRoot = FileSystem().currentFolder
+    var projectRoot = Folder.current
     while projectRoot.name != "Stage1st-Reader" {
         guard let newRoot = projectRoot.parent else {
             fatalError("Failed to find project root")
@@ -85,7 +85,7 @@ func main() throws {
         .subfolder(named: "Resources")
         .subfolder(named: "Mahjong")
 
-    let mahjongCategories = mahjongRoot.makeSubfolderSequence()
+    let mahjongCategories = mahjongRoot.subfolders
         .filter { $0.name.hasSuffix("2017") }
         .sorted { (lhs: Folder, rhs: Folder) -> Bool in
             return categoryInfo[lhs.name]!.order < categoryInfo[rhs.name]!.order
@@ -94,7 +94,7 @@ func main() throws {
             return Category(
                 id: folder.name,
                 name: categoryInfo[folder.name]!.chineseName,
-                content: folder.makeFileSequence().map { (file: File) in
+                content: folder.files.map { (file: File) in
                     return Category.Item(folderName: folder.name, file: file)
                 }
             )
@@ -108,7 +108,7 @@ func main() throws {
     encoder.outputFormatting = [.prettyPrinted]
     let encodedData = try encoder.encode(mahjongCategories)
     let indexFile = try mahjongRoot.file(named: "index.json")
-    try indexFile.write(data: encodedData)
+    try indexFile.write(encodedData)
 }
 
 try main()
