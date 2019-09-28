@@ -60,7 +60,11 @@
     // Pull to dismiss
     self.offset = 0;
     self.tableView.delegate = self;
-    [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    if (@available(iOS 13.0, *)) {
+        // iOS 13 has a better solution fot this
+    } else {
+        [self.tableView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    }
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didReceivePaletteChangeNotification:)
@@ -86,15 +90,23 @@
 }
 
 - (void)dealloc {
-    [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+    if (@available(iOS 13.0, *)) {
+        // iOS 13 has a better solution fot this
+    } else {
+        [self.tableView removeObserver:self forKeyPath:@"contentOffset"];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Pull To Close
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (self.offset < -36) {
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    if (@available(iOS 13.0, *)) {
+        // iOS 13 has a better solution fot this
+    } else {
+        if (self.offset < -36) {
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        }
     }
 }
 

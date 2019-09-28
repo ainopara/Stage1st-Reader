@@ -186,6 +186,8 @@ class S1ArchiveListViewController: UIViewController {
             make.top.equalTo(navigationBar.snp.bottom)
             make.bottom.equalTo(view.snp.bottom)
         })
+
+        viewModel.traitCollection.value = self.traitCollection
     }
 
     override func viewDidLayoutSubviews() {

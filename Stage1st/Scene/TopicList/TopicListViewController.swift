@@ -220,6 +220,8 @@ extension TopicListViewController {
             make.right.bottom.equalTo(view).inset(10.0)
             make.width.height.equalTo(50.0)
         }
+
+        viewModel.traitCollection.value = self.traitCollection
     }
 
     override func didReceiveMemoryWarning() {
