@@ -48,7 +48,14 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
     let pageButton = UIButton(frame: .zero)
     let favoriteButton = UIButton(type: .system)
     lazy var actionBarButtonItem: UIBarButtonItem = {
-        UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
+        if #available(iOS 13.0, *) {
+            let configuration = UIImage.SymbolConfiguration(weight: .light)
+            let image = UIImage(systemName: "square.and.arrow.up", withConfiguration: configuration)
+            return UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(action(sender:)))
+        } else {
+            return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(action(sender:)))
+        }
+
     }()
 
     var basicToolBarItems = [UIBarButtonItem]()
