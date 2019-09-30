@@ -39,6 +39,10 @@ target "Stage1st" do
     pod 'Crashlytics'
     pod 'Reveal-SDK', :configurations => ['Debug']
 
+    # Test
+    pod 'SWHttpTrafficRecorder', :configurations => ['Debug']
+    pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
+
     # RAC
     pod 'ReactiveSwift', '~> 6.0'
     pod 'ReactiveCocoa', '~> 10.0'

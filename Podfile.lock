@@ -60,6 +60,19 @@ PODS:
   - Kingfisher/Core (5.8.1)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
+  - OHHTTPStubs/Core (8.0.0)
+  - OHHTTPStubs/Default (8.0.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (8.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (8.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (8.0.0)
+  - OHHTTPStubs/Swift (8.0.0):
+    - OHHTTPStubs/Default
   - QuickTableViewController (1.2.0)
   - Reachability (3.2)
   - ReactiveCocoa (10.1.0):
@@ -74,6 +87,7 @@ PODS:
   - RxSwift (5.0.0)
   - SnapKit (5.0.1)
   - SnapshotTesting (1.6.0)
+  - SWHttpTrafficRecorder (1.0.2)
   - YapDatabase (3.1.1):
     - YapDatabase/Standard (= 3.1.1)
   - YapDatabase/Standard (3.1.1):
@@ -170,6 +184,7 @@ DEPENDENCIES:
   - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
+  - OHHTTPStubs/Swift
   - QuickTableViewController
   - Reachability
   - ReactiveCocoa (~> 10.0)
@@ -179,6 +194,7 @@ DEPENDENCIES:
   - RxSwift (~> 5.0)
   - SnapKit
   - SnapshotTesting (~> 1.1)
+  - SWHttpTrafficRecorder
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
   - YYKeyboardManager
 
@@ -203,6 +219,7 @@ SPEC REPOS:
     - iOSSnapshotTestCase
     - Kingfisher
     - Masonry
+    - OHHTTPStubs
     - QuickTableViewController
     - Reachability
     - ReactiveCocoa
@@ -213,6 +230,7 @@ SPEC REPOS:
     - RxSwift
     - SnapKit
     - SnapshotTesting
+    - SWHttpTrafficRecorder
     - YYKeyboardManager
 
 EXTERNAL SOURCES:
@@ -260,6 +278,7 @@ SPEC CHECKSUMS:
   Kingfisher: de969e451c81ca6c07a454bc36fea84b8b08c3c7
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  OHHTTPStubs: 9cbce6364bec557cc3439aa6bb7514670d780881
   QuickTableViewController: 4730f2b4044e6b6805ee898e1794ecbb83898f20
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
@@ -270,9 +289,10 @@ SPEC CHECKSUMS:
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
+  SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 10a3e47e995cc31936ee9be232794d83285896ca
+PODFILE CHECKSUM: ec4608a998d73eb5573a04b0ef370cb62d36128f
 
 COCOAPODS: 1.8.1
