@@ -8,7 +8,6 @@
 
 #import "SettingsViewController.h"
 #import "GSStaticTableViewBuilder.h"
-#import "CloudKitManager.h"
 #import <Crashlytics/Answers.h>
 #import <YapDatabase/YapDatabaseCloudKit.h>
 #import <SafariServices/SafariServices.h>

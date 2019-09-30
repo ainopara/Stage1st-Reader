@@ -1,5 +1,4 @@
 #import "DatabaseManager.h"
-#import "CloudKitManager.h"
 #import "MyDatabaseObject.h"
 #import "S1Topic.h"
 #import <YapDatabase/YapDatabase.h>
@@ -26,24 +25,7 @@ NSString *const Ext_CloudKit = @"cloudKit";
 
 NSString *const CloudKitZoneName = @"zone1";
 
-DatabaseManager *MyDatabaseManager;
-
-
 @implementation DatabaseManager
-
-+ (void)initialize
-{
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		
-		MyDatabaseManager = [[DatabaseManager alloc] init];
-	});
-}
-
-+ (instancetype)sharedInstance
-{
-	return MyDatabaseManager;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Instance
@@ -55,13 +37,11 @@ DatabaseManager *MyDatabaseManager;
 @synthesize uiDatabaseConnection = uiDatabaseConnection;
 @synthesize bgDatabaseConnection = bgDatabaseConnection;
 
-- (id)init
+- (id)initWithName:(NSString *)name
 {
-	NSAssert(MyDatabaseManager == nil, @"Must use sharedInstance singleton (global MyDatabaseManager)");
-	
 	if ((self = [super init]))
 	{
-		[self setupDatabase];
+		[self setupDatabaseWithName:name];
 	}
 	return self;
 }
@@ -138,9 +118,9 @@ DatabaseManager *MyDatabaseManager;
 	return postSanitizer;
 }
 
-- (void)setupDatabase
+- (void)setupDatabaseWithName:(NSString *)name
 {
-	NSString *databasePath = [Environment databasePath];
+    NSString *databasePath = [Environment databasePathWith:name];
 
 	DDLogDebug(@"databasePath: %@", databasePath);
 	

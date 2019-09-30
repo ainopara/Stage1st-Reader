@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		366714091E4C4CD400813310 /* Forum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366714081E4C4CD400813310 /* Forum.swift */; };
-		3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF3E1E763DD600629E25 /* AppEnvironment.swift */; };
 		3674BF411E763DE100629E25 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3674BF401E763DE100629E25 /* Environment.swift */; };
 		36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE3F481E962126006C5984 /* ServerAddress.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
@@ -18,7 +17,6 @@
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
 		860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */; };
-		860573591B762C3B00C70781 /* CloudKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573541B762C3B00C70781 /* CloudKitManager.m */; };
 		8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573561B762C3B00C70781 /* DatabaseManager.m */; };
 		8605735B1B762C3B00C70781 /* MyDatabaseObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 860573581B762C3B00C70781 /* MyDatabaseObject.m */; };
 		8606D48C22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8606D48B22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift */; };
@@ -174,7 +172,6 @@
 
 /* Begin PBXFileReference section */
 		366714081E4C4CD400813310 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
-		3674BF3E1E763DD600629E25 /* AppEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		3674BF401E763DE100629E25 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		36BE3F481E962126006C5984 /* ServerAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerAddress.swift; sourceTree = "<group>"; };
 		36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-Stage1st-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
@@ -186,8 +183,6 @@
 		8605734E1B7623A300C70781 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1YapDatabaseAdapter.h; sourceTree = "<group>"; };
 		860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1YapDatabaseAdapter.m; sourceTree = "<group>"; };
-		860573531B762C3B00C70781 /* CloudKitManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudKitManager.h; sourceTree = "<group>"; };
-		860573541B762C3B00C70781 /* CloudKitManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudKitManager.m; sourceTree = "<group>"; };
 		860573551B762C3B00C70781 /* DatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		860573561B762C3B00C70781 /* DatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		860573571B762C3B00C70781 /* MyDatabaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDatabaseObject.h; sourceTree = "<group>"; };
@@ -661,7 +656,6 @@
 				86E02C511DC6671A00A16692 /* WebViewEventDelegate.swift */,
 				869F8AB21DB374CF0055046B /* PageRenderer.swift */,
 				8691DF31223349C7002819D5 /* Parser.swift */,
-				3674BF3E1E763DD600629E25 /* AppEnvironment.swift */,
 				3674BF401E763DE100629E25 /* Environment.swift */,
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
@@ -692,8 +686,6 @@
 			children = (
 				860573501B76290D00C70781 /* S1YapDatabaseAdapter.h */,
 				860573511B76290D00C70781 /* S1YapDatabaseAdapter.m */,
-				860573531B762C3B00C70781 /* CloudKitManager.h */,
-				860573541B762C3B00C70781 /* CloudKitManager.m */,
 				86A1834320845F08000F5F8A /* CloudKitManager.swift */,
 				860573551B762C3B00C70781 /* DatabaseManager.h */,
 				860573561B762C3B00C70781 /* DatabaseManager.m */,
@@ -1260,7 +1252,6 @@
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
 				8634ADF01FAAF3C2004A9CB7 /* GSSingleSelectionTableViewController.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
-				3674BF3F1E763DD600629E25 /* AppEnvironment.swift in Sources */,
 				86654C01217C623800F50A90 /* DiscuzCommonInfo.swift in Sources */,
 				8634ADA81FAAF309004A9CB7 /* S1Animator.swift in Sources */,
 				865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */,
@@ -1297,7 +1288,6 @@
 				865544B621E23A22007B7557 /* RawFloorList.swift in Sources */,
 				8634ADE71FAAF3C2004A9CB7 /* Toast.swift in Sources */,
 				86654BF9217C616800F50A90 /* StringIntTransformer.swift in Sources */,
-				860573591B762C3B00C70781 /* CloudKitManager.m in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */,
 				865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */,

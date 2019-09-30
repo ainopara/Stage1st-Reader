@@ -137,7 +137,7 @@ extension S1AppDelegate {
 
             if serverAddress.isPrefered(to: AppEnvironment.current.serverAddress) {
                 AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
-                AppEnvironment.current = Environment()
+                AppEnvironment.replaceCurrent(with: Environment())
 
                 DispatchQueue.main.async {
                     Toast.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
@@ -297,8 +297,9 @@ extension S1AppDelegate {
     }
 
     private func migrateTo3_4() {
+        let userDefaults = AppEnvironment.current.settings.defaults
         guard
-            let orderArray = UserDefaults.standard.value(forKey: "Order") as? [[String]],
+            let orderArray = userDefaults.value(forKey: "Order") as? [[String]],
             let firstArray = orderArray.first,
             let secondArray = orderArray.last
         else {
@@ -314,9 +315,9 @@ extension S1AppDelegate {
                 return
             }
 
-            UserDefaults.standard.set(order, forKey: "Order")
-            UserDefaults.standard.removeObject(forKey: "UserID")
-            UserDefaults.standard.removeObject(forKey: "UserPassword")
+            userDefaults.set(order, forKey: "Order")
+            userDefaults.removeObject(forKey: "UserID")
+            userDefaults.removeObject(forKey: "UserPassword")
         }
     }
 
@@ -325,14 +326,16 @@ extension S1AppDelegate {
     }
 
     private func migrateTo3_7() {
-        if UI_USER_INTERFACE_IDIOM() == .pad && UserDefaults.standard.object(forKey: "FontSize") as? String == "17px" {
-            UserDefaults.standard.set("18px", forKey: "FontSize")
+        let userDefaults = AppEnvironment.current.settings.defaults
+        if UI_USER_INTERFACE_IDIOM() == .pad && userDefaults.object(forKey: "FontSize") as? String == "17px" {
+            userDefaults.set("18px", forKey: "FontSize")
         }
     }
 
     private func migrateTo3_8() {
+        let userDefaults = AppEnvironment.current.settings.defaults
         guard
-            let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
+            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
             S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
@@ -340,13 +343,14 @@ extension S1AppDelegate {
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
         if !(displayForumArray + hiddenForumArray).contains("真碉堡山") {
-            UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["真碉堡山"]], forKey: "Order")
+            userDefaults.set([displayForumArray, hiddenForumArray + ["真碉堡山"]], forKey: "Order")
         }
     }
 
     private func migrateTo3_9() {
+        let userDefaults = AppEnvironment.current.settings.defaults
         guard
-            let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
+            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
             S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
@@ -354,13 +358,14 @@ extension S1AppDelegate {
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
         if !(displayForumArray + hiddenForumArray).contains("DOTA") {
-            UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["DOTA", "欧美动漫"]], forKey: "Order")
+            userDefaults.set([displayForumArray, hiddenForumArray + ["DOTA", "欧美动漫"]], forKey: "Order")
         }
     }
 
     private func migrateTo3_9_4() {
+        let userDefaults = AppEnvironment.current.settings.defaults
         guard
-            let orderForumArray = UserDefaults.standard.object(forKey: "Order") as? [[String]],
+            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2 else {
             S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
@@ -368,7 +373,7 @@ extension S1AppDelegate {
         let displayForumArray = orderForumArray[0]
         let hiddenForumArray = orderForumArray[1]
         if !(displayForumArray + hiddenForumArray).contains("泥潭") {
-            UserDefaults.standard.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
+            userDefaults.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
         }
     }
 
@@ -403,6 +408,18 @@ extension S1AppDelegate {
         AppEnvironment.current.cloudkitManager.setNeedsFetchChanges { (fetchResult) in
             completionHandler(fetchResult.toUIBackgroundFetchResult())
         }
+    }
+}
+
+extension S1AppDelegate {
+
+    private func prepareForSnapshotTest() {
+        AppEnvironment.replaceCurrent(with: Environment(
+            databaseName: "SnapshotYap.sqlite",
+            cacheDatabaseName: "SnapshotCache.sqlite",
+            grdbName: "SnapshotGRDB.sqlite",
+            settings: Stage1stSettings(defaults: UserDefaults(suiteName: "snapshot")!)
+        ))
     }
 }
 

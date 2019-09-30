@@ -279,7 +279,7 @@ extension S1ArchiveListViewModel {
 
         searchQueue.enqueueQuery(query)
 
-        MyDatabaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
+        AppEnvironment.current.databaseManager.bgDatabaseConnection.asyncReadWrite { transaction in
             guard let ext = transaction.ext(Ext_searchResultView_Archive) as? YapDatabaseSearchResultsViewTransaction else {
                 return
             }

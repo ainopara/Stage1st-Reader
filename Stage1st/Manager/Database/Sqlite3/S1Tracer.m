@@ -11,7 +11,7 @@
 #import <FMDB/FMDB.h>
 #import "DatabaseManager.h"
 #import <YapDatabase/YapDatabase.h>
-
+#import "Stage1st-Swift.h"
 
 @implementation S1Tracer
 
@@ -98,7 +98,7 @@
     __block NSInteger failCount = 0;
     __block BOOL allImported = NO;
     while (!allImported) {
-        [MyDatabaseManager.bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
+        [[[AppEnvironment current] databaseManager].bgDatabaseConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction * __nonnull transaction) {
             while ([result next]) {
                 S1Topic *topic = [S1Tracer topicFromQueryResult:result];
                 S1Topic *tracedTopic = [transaction objectForKey:[topic.topicID stringValue] inCollection:Collection_Topics];

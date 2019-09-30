@@ -55,20 +55,7 @@ extern NSString *const Ext_CloudKit;
 **/
 extern NSString *const CloudKitZoneName;
 
-/**
- * You can use this as an alternative to the sharedInstance:
- * [[DatabaseManager sharedInstance] uiDatabaseConnection] -> STDatabaseManager.uiDatabaseConnection
-**/
-extern DatabaseManager *MyDatabaseManager;
-
-
 @interface DatabaseManager : NSObject
-
-/**
- * Standard singleton pattern.
- * As a shortcut, you can use the global MyDatabaseManager ivar instead.
-**/
-+ (instancetype)sharedInstance; // Or MyDatabaseManager global ivar
 
 /**
  * The root database class, and extension(s)
@@ -88,5 +75,7 @@ extern DatabaseManager *MyDatabaseManager;
  * A generic databaseConnection for other asynchronous & background stuff.
 **/
 @property (nonatomic, strong, readonly) YapDatabaseConnection *bgDatabaseConnection;
+
+- (instancetype)initWithName:(NSString *)name NS_DESIGNATED_INITIALIZER;
 
 @end

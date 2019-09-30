@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDatabase:(DatabaseManager *)database {
     self = [super init];
     if (self != nil) {
-        _database = MyDatabaseManager;
+        _database = database;
     }
     return self;
 }

@@ -11,6 +11,20 @@ import Reachability
 import GRDB
 
 @objcMembers
+class AppEnvironment: NSObject {
+    private static var stack: [Environment] = [Environment()]
+
+    static var current: Environment {
+        return stack.last!
+    }
+
+    static func replaceCurrent(with newEnvironment: Environment) {
+        stack.append(newEnvironment)
+        stack.remove(at: stack.count - 2)
+    }
+}
+
+@objcMembers
 class Environment: NSObject {
 
     let forumName: String
@@ -31,42 +45,10 @@ class Environment: NSObject {
     let dataCenter: DataCenter
 
     init(
-        forumName: String,
-        serverAddress: ServerAddress,
-        cookieStorage: HTTPCookieStorage,
-        settings: Stage1stSettings,
-        reachability: Reachability,
-        apiService: DiscuzClient,
-        webKitImageDownloader: WebKitImageDownloader,
-        databaseManager: DatabaseManager,
-        cloudkitManager: CloudKitManager,
-        cacheDatabaseManager: CacheDatabaseManager,
-        grdb: DatabaseQueue,
-        colorManager: ColorManager,
-        eventTracker: EventTracker,
-        databaseAdapter: S1YapDatabaseAdapter,
-        dataCenter: DataCenter
-    ) {
-        self.forumName = forumName
-        self.serverAddress = serverAddress
-        self.cookieStorage = cookieStorage
-        self.settings = settings
-        self.reachability = reachability
-        reachability.startNotifier()
-        self.apiService = apiService
-        self.webKitImageDownloader = webKitImageDownloader
-        self.databaseManager = databaseManager
-        self.cloudkitManager = cloudkitManager
-        self.cacheDatabaseManager = cacheDatabaseManager
-        self.grdb = grdb
-        self.colorManager = colorManager
-        self.eventTracker = eventTracker
-        self.databaseAdapter = databaseAdapter
-        self.dataCenter = dataCenter
-    }
-
-    init(
         forumName: String = "Stage1st",
+        databaseName: String = "Stage1stYap.sqlite",
+        cacheDatabaseName: String = "Cache.sqlite",
+        grdbName: String = "Stage1stGRDB.sqlite",
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
         reachability: Reachability = Reachability.forInternetConnection()
@@ -79,8 +61,8 @@ class Environment: NSObject {
 
         colorManager = ColorManager(nightMode: settings.nightMode.value)
         eventTracker = S1EventTracker()
-        cacheDatabaseManager = CacheDatabaseManager(path: Environment.cacheDatabasePath())
-        grdb = try! DatabaseQueue(path: Environment.grdbPath())
+        cacheDatabaseManager = CacheDatabaseManager(path: Self.cacheDatabasePath(with: cacheDatabaseName))
+        grdb = try! DatabaseQueue(path: Self.grdbPath(with: grdbName))
 
         if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
             serverAddress = cachedServerAddress
@@ -91,7 +73,7 @@ class Environment: NSObject {
         apiService = DiscuzClient(baseURL: serverAddress.api)
         webKitImageDownloader = WebKitImageDownloader(name: "ImageDownloader")
 
-        databaseManager = DatabaseManager.sharedInstance()
+        databaseManager = DatabaseManager(name: databaseName)
         cloudkitManager = CloudKitManager(cloudkitContainer: CKContainer.default(), databaseManager: databaseManager)
         databaseAdapter = S1YapDatabaseAdapter(database: databaseManager)
 
@@ -102,24 +84,21 @@ class Environment: NSObject {
         )
     }
 
-    static func databasePath() -> String {
-        let databaseName = "Stage1stYap.sqlite"
+    static func databasePath(with name: String) -> String {
+        return Self.filePath(with: name)
+    }
+
+    static func cacheDatabasePath(with name: String) -> String {
+        return filePath(with: name)
+    }
+
+    static func grdbPath(with name: String) -> String {
+        return filePath(with: name)
+    }
+
+    static func filePath(with name: String) -> String {
         let baseURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let databaseURL = baseURL.appendingPathComponent(databaseName, isDirectory: false)
+        let databaseURL = baseURL.appendingPathComponent(name, isDirectory: false)
         return databaseURL.standardizedFileURL.path
-    }
-
-    static func cacheDatabasePath() -> String {
-        let databaseName = "Cache.sqlite"
-        let baseURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let cacheDatabaseURL = baseURL.appendingPathComponent(databaseName, isDirectory: false)
-        return cacheDatabaseURL.standardizedFileURL.path
-    }
-
-    static func grdbPath() -> String {
-        let databaseName = "Stage1stCache.sqlite"
-        let baseURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let cacheDatabaseURL = baseURL.appendingPathComponent(databaseName, isDirectory: false)
-        return cacheDatabaseURL.standardizedFileURL.path
     }
 }
