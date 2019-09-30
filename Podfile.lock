@@ -66,6 +66,8 @@ PODS:
     - OHHTTPStubs/JSON
     - OHHTTPStubs/NSURLSession
     - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/HTTPMessage (8.0.0):
+    - OHHTTPStubs/Core
   - OHHTTPStubs/JSON (8.0.0):
     - OHHTTPStubs/Core
   - OHHTTPStubs/NSURLSession (8.0.0):
@@ -184,6 +186,7 @@ DEPENDENCIES:
   - Kingfisher
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
+  - OHHTTPStubs/HTTPMessage
   - OHHTTPStubs/Swift
   - QuickTableViewController
   - Reachability
@@ -293,6 +296,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: ec4608a998d73eb5573a04b0ef370cb62d36128f
+PODFILE CHECKSUM: 95d02e199c3ecd561140dad9283afd381766f389
 
 COCOAPODS: 1.8.1

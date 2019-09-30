@@ -18,7 +18,7 @@ final class S1ArchiveListViewModel {
 
     let currentState = MutableProperty(State.history)
 
-    let dataCenter: DataCenter = AppEnvironment.current.dataCenter
+    var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
     let databaseConnection: YapDatabaseConnection = AppEnvironment.current.databaseManager.uiDatabaseConnection
     var viewMappings: YapDatabaseViewMappings?
     let searchQueue = YapDatabaseSearchQueue()

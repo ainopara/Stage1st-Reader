@@ -49,6 +49,7 @@ class Environment: NSObject {
         databaseName: String = "Stage1stYap.sqlite",
         cacheDatabaseName: String = "Cache.sqlite",
         grdbName: String = "Stage1stGRDB.sqlite",
+        sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.af.default,
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
         reachability: Reachability = Reachability.forInternetConnection()
@@ -70,7 +71,7 @@ class Environment: NSObject {
             serverAddress = ServerAddress.default
         }
 
-        apiService = DiscuzClient(baseURL: serverAddress.api)
+        apiService = DiscuzClient(baseURL: serverAddress.api, configuration: sessionConfiguration)
         webKitImageDownloader = WebKitImageDownloader(name: "ImageDownloader")
 
         databaseManager = DatabaseManager(name: databaseName)

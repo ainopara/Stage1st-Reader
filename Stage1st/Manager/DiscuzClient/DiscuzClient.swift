@@ -13,9 +13,10 @@ public final class DiscuzClient: NSObject {
 
     let session: Session
 
-    public init(baseURL: String) {
+    public init(baseURL: String, configuration: URLSessionConfiguration) {
         self.baseURL = baseURL
         self.session = Session(
+            configuration: configuration,
             redirectHandler: Redirector(behavior: Redirector.Behavior.modify({ (task, request, response) -> URLRequest? in
                 if task.originalRequest?.url?.absoluteString == request.url?.absoluteString {
                     S1LogWarn("Redirect to self detected! request \(String(describing: task.originalRequest?.url?.absoluteString)) will redirect to \(String(describing: request.url?.absoluteString))")

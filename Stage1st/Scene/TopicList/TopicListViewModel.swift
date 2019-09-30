@@ -15,7 +15,7 @@ import ReactiveSwift
 // swiftlint:disable nesting
 
 final class TopicListViewModel: NSObject {
-    let dataCenter: DataCenter
+    var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
 
     struct Model: Equatable {
         enum Target: Equatable {
@@ -136,8 +136,7 @@ final class TopicListViewModel: NSObject {
 
     // MARK: -
 
-    init(dataCenter: DataCenter) {
-        self.dataCenter = dataCenter
+    override init() {
 
         (self.tableViewOffsetAction, self.tableViewOffsetActionObserver) = Signal<TableViewContentOffsetAction, Never>.pipe()
         (self.tableViewReloading, self.tableViewReloadingObserver) = Signal<(), Never>.pipe()

@@ -12,7 +12,7 @@ import RxSwift
 import RxRelay
 
 class UserViewModel {
-    let dataCenter: DataCenter
+    var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
     let user: BehaviorRelay<User>
     let isBlocked = BehaviorRelay<Bool>(value: false)
     let username = BehaviorRelay<String>(value: "")
@@ -21,12 +21,11 @@ class UserViewModel {
 
     static let userBlockStatusDidChangeNotification = Notification.Name(rawValue: "UserViewModel.userBlockStatusDidChangeNotification")
 
-    init(dataCenter: DataCenter, user: User) {
-        self.dataCenter = dataCenter
+    init(user: User) {
         self.user = BehaviorRelay(value: user)
 
         self.user
-            .map { dataCenter.userIDIsBlocked(ID: $0.id) }
+            .map { [weak self] in self?.dataCenter.userIDIsBlocked(ID: $0.id) ?? false }
             .bind(to: isBlocked)
             .disposed(by: bag)
 

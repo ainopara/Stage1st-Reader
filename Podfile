@@ -40,8 +40,9 @@ target "Stage1st" do
     pod 'Reveal-SDK', :configurations => ['Debug']
 
     # Test
-    pod 'SWHttpTrafficRecorder', :configurations => ['Debug']
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
+    pod 'OHHTTPStubs/HTTPMessage', :configurations => ['Debug']
+    pod 'SWHttpTrafficRecorder', :configurations => ['Debug']
 
     # RAC
     pod 'ReactiveSwift', '~> 6.0'

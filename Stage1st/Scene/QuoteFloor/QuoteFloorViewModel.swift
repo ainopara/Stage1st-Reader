@@ -38,10 +38,7 @@ final class QuoteFloorViewModel: NSObject, PageRenderer {
 extension QuoteFloorViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
         let username = floors.first(where: { $0.author.id == userID })?.author.name
-        return UserViewModel(
-            dataCenter: AppEnvironment.current.dataCenter,
-            user: User(id: userID, name: username ?? "")
-        )
+        return UserViewModel(user: User(id: userID, name: username ?? ""))
     }
 }
 

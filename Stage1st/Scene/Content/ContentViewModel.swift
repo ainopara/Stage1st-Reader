@@ -16,8 +16,8 @@ import WebKit
 class ContentViewModel: NSObject, PageRenderer {
     let topic: S1Topic
     var currentFloors: [Floor] = []
-    let dataCenter: DataCenter
-    let apiManager: DiscuzClient
+    var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
+    var apiManager: DiscuzClient { dataCenter.apiManager }
 
     let currentPage: MutableProperty<Int>
     let previousPage: MutableProperty<Int>
@@ -49,9 +49,6 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         S1LogInfo("[ContentVM] Initialize with TopicID: \(topic.topicID)")
-
-        self.dataCenter = AppEnvironment.current.dataCenter
-        apiManager = dataCenter.apiManager
 
         title = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.title))
         replyCount = DynamicProperty(object: self.topic, keyPath: #keyPath(S1Topic.replyCount))
@@ -262,10 +259,7 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
 extension ContentViewModel: UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel {
         let username = currentFloors.first(where: { $0.author.id == userID })?.author.name
-        return UserViewModel(
-            dataCenter: dataCenter,
-            user: User(id: userID, name: username ?? "")
-        )
+        return UserViewModel(user: User(id: userID, name: username ?? ""))
     }
 }
 

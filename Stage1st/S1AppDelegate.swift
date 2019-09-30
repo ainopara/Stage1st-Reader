@@ -15,6 +15,10 @@ import Crashlytics
 import Reachability
 import Kingfisher
 
+#if DEBUG
+import OHHTTPStubs
+#endif
+
 @UIApplicationMain
 final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -32,6 +36,12 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         setupLogging()
+
+        #if DEBUG
+        if let isSnapshotTest = ProcessInfo().environment["STAGE1ST_SNAPSHOT_TEST"], isSnapshotTest == "true" {
+            prepareForSnapshotTest()
+        }
+        #endif
 
         // UserDefaults Initialize
         let userDefaults = AppEnvironment.current.settings.defaults
@@ -89,6 +99,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
             name: .reachabilityChanged,
             object: nil
         )
+
         #endif
 
         return true
@@ -379,17 +390,51 @@ extension S1AppDelegate {
     }
 }
 
+// MARK: Snapshot Test Support
+
+#if DEBUG
+
+import SWHttpTrafficRecorder
+
 extension S1AppDelegate {
 
     private func prepareForSnapshotTest() {
+        URLCache.shared.removeAllCachedResponses()
+        let sessionConfiguration = URLSessionConfiguration.af.default
+
+        let fixtureFolder = URL(fileURLWithPath: String(#file))
+                    .deletingLastPathComponent()
+                    .deletingLastPathComponent()
+                    .appendingPathComponent("Stage1stTests")
+                    .appendingPathComponent("Fixtures")
+                    .appendingPathComponent("SnapshotResponse")
+
+        // Record
+//        SWHttpTrafficRecorder.shared().recordingFormat = .httpMessage
+//        try! SWHttpTrafficRecorder.shared().startRecording(atPath: fixtureFolder.path, for: sessionConfiguration)
+//        SWHttpTrafficRecorder.shared().fileNamingBlock = { (request, response, defaultName) in
+//            return RequestNameGenerator.name(for: request!) + ".response"
+//        }
+
+        // Replay
+        stub(condition: isHost("bbs.saraba1st.com")) { (request) -> OHHTTPStubsResponse in
+            let stubName = RequestNameGenerator.name(for: request)
+            let stubURL = fixtureFolder.appendingPathComponent(stubName).appendingPathExtension("response")
+            let data = try! Data(contentsOf: stubURL)
+            return OHHTTPStubsResponse(httpMessageData: data)
+        }
+
         AppEnvironment.replaceCurrent(with: Environment(
             databaseName: "SnapshotYap.sqlite",
             cacheDatabaseName: "SnapshotCache.sqlite",
             grdbName: "SnapshotGRDB.sqlite",
+            sessionConfiguration: sessionConfiguration,
             settings: Stage1stSettings(defaults: UserDefaults(suiteName: "snapshot")!)
         ))
     }
 }
+
+#endif
 
 // MARK: -
 

@@ -55,6 +55,7 @@
 		8634ADF91FAAF3C2004A9CB7 /* Stage1stLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */; };
 		8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */; };
 		8635E20F1EA30C9F00E426B2 /* MahjongFaceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */; };
+		864DF0512341EE46005504A5 /* RequestNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864DF0502341EE46005504A5 /* RequestNameGenerator.swift */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */; };
 		8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */; };
@@ -234,6 +235,7 @@
 		8634ADDD1FAAF3C2004A9CB7 /* Stage1stLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stage1stLog.swift; sourceTree = "<group>"; };
 		8634ADFE1FAAFE9C004A9CB7 /* ReportComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportComposeViewController.swift; sourceTree = "<group>"; };
 		8635E20E1EA30C9F00E426B2 /* MahjongFaceCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MahjongFaceCategory.swift; sourceTree = "<group>"; };
+		864DF0502341EE46005504A5 /* RequestNameGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestNameGenerator.swift; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerDelegate.swift; sourceTree = "<group>"; };
 		8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorProcessTests.swift; sourceTree = "<group>"; };
@@ -645,6 +647,7 @@
 				867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */,
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
 				86F9E2FB21648D490087A1A4 /* EventTracker.swift */,
+				864DF0502341EE46005504A5 /* RequestNameGenerator.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1234,6 +1237,7 @@
 				8634ADF41FAAF3C2004A9CB7 /* PullToActionController.swift in Sources */,
 				862DB7AA1C8AB1870068F75F /* User.swift in Sources */,
 				86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */,
+				864DF0512341EE46005504A5 /* RequestNameGenerator.swift in Sources */,
 				8634ADF01FAAF3C2004A9CB7 /* GSSingleSelectionTableViewController.m in Sources */,
 				C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */,
 				86654C01217C623800F50A90 /* DiscuzCommonInfo.swift in Sources */,

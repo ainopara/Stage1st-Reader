@@ -38,7 +38,7 @@ final class TopicListViewController: UIViewController {
     private var observations = [NSKeyValueObservation]()
 
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        viewModel = TopicListViewModel(dataCenter: AppEnvironment.current.dataCenter)
+        viewModel = TopicListViewModel()
 
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
