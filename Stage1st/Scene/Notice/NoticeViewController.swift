@@ -9,7 +9,6 @@
 import SnapKit
 import ReactiveSwift
 
-@objc(S1NoticeViewController)
 class NoticeViewController: UIViewController {
     let viewModel: NoticeViewModel
 
@@ -231,3 +230,26 @@ private class EmptyView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#if DEBUG
+import SwiftUI
+
+@available(iOS 13.0, *)
+struct NoticeView: UIViewControllerRepresentable {
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<NoticeView>) -> NoticeViewController {
+        return NoticeViewController()
+    }
+
+    func updateUIViewController(_ uiViewController: NoticeViewController, context: UIViewControllerRepresentableContext<NoticeView>) {
+    }
+}
+
+@available(iOS 13.0, *)
+struct NoticeView_Previews: PreviewProvider {
+    static var previews: some View {
+        NoticeView()
+    }
+}
+
+#endif
