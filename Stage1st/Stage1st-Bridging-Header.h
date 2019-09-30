@@ -4,7 +4,6 @@
 
 #import "S1Global.h"
 #import "S1Topic.h"
-#import "S1Tracer.h"
 #import "DatabaseManager.h"
 #import "SettingsViewController.h"
 #import "REComposeViewController.h"
@@ -13,4 +12,3 @@
 #import "S1YapDatabaseAdapter.h"
 #import "S1TopicListCellSubView.h"
 #import "ODRefreshControl.h"
-#import "ExceptionCatcher.h"

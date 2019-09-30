@@ -42,9 +42,6 @@ PODS:
   - DeviceKit (2.2.0)
   - Fabric (1.10.2)
   - Files (2.2.1)
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - Fuzi (3.1.1)
   - GRDB.swift (4.4.0):
     - GRDB.swift/standard (= 4.4.0)
@@ -163,7 +160,6 @@ DEPENDENCIES:
   - DeviceKit
   - Fabric
   - Files
-  - FMDB
   - Fuzi (~> 3.0)
   - GRDB.swift (~> 4.1)
   - GRMustache.swift
@@ -199,7 +195,6 @@ SPEC REPOS:
     - DeviceKit
     - Fabric
     - Files
-    - FMDB
     - Fuzi
     - GRDB.swift
     - GRMustache.swift
@@ -255,7 +250,6 @@ SPEC CHECKSUMS:
   DeviceKit: ee5d2ec3bc8ad3847f9f0f202de0be09448707e1
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Fuzi: bcc5694488dd6e672e126cbf3c5471d7a79506d1
   GRDB.swift: 4f9b6e7efc9470426f6a6de10ec1fee798ff7e43
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
@@ -279,6 +273,6 @@ SPEC CHECKSUMS:
   YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 268f8c0f4999f42f7eae9bc86dee143bc10e3557
+PODFILE CHECKSUM: 10a3e47e995cc31936ee9be232794d83285896ca
 
 COCOAPODS: 1.8.1

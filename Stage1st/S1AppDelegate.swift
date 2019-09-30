@@ -56,9 +56,6 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
             diskPath: "org.alamofire.imagedownloader"
         )
 
-        // Start database & cloudKit (in order)
-        DatabaseManager.initialize()
-
         migrate()
 
         if AppEnvironment.current.settings.enableCloudKitSync.value {
@@ -85,7 +82,6 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         let defaultsPlistData = try! PropertyListSerialization.data(fromPropertyList: defaultsDictionary, format: .xml, options: 0)
         let defaultsPlistString = String(data: defaultsPlistData, encoding: .utf8)!
         S1LogVerbose("Dump user defaults: \(defaultsPlistString)")
-        #endif
 
         NotificationCenter.default.addObserver(
             self,
@@ -93,6 +89,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
             name: .reachabilityChanged,
             object: nil
         )
+        #endif
 
         return true
     }
@@ -287,42 +284,11 @@ extension S1AppDelegate {
 extension S1AppDelegate {
 
     @objc func migrate() {
-        migrateTo3_4()
-        migrateTo3_6()
         migrateTo3_7()
         migrateTo3_8()
         migrateTo3_9()
         migrateTo3_9_4()
         migrateTo3_12_2()
-    }
-
-    private func migrateTo3_4() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderArray = userDefaults.value(forKey: "Order") as? [[String]],
-            let firstArray = orderArray.first,
-            let secondArray = orderArray.last
-        else {
-            return
-        }
-
-        if !firstArray.contains("模玩专区") && !secondArray.contains("模玩专区") {
-            S1LogDebug("Update Order List")
-            guard
-                let path = Bundle.main.path(forResource: "InitialOrder", ofType: "plist"),
-                let order = NSArray(contentsOfFile: path)
-            else {
-                return
-            }
-
-            userDefaults.set(order, forKey: "Order")
-            userDefaults.removeObject(forKey: "UserID")
-            userDefaults.removeObject(forKey: "UserPassword")
-        }
-    }
-
-    private func migrateTo3_6() {
-        S1Tracer.upgradeDatabase()
     }
 
     private func migrateTo3_7() {
@@ -351,7 +317,8 @@ extension S1AppDelegate {
         let userDefaults = AppEnvironment.current.settings.defaults
         guard
             let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else {
+            orderForumArray.count == 2 else
+        {
             S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
         }
@@ -366,7 +333,8 @@ extension S1AppDelegate {
         let userDefaults = AppEnvironment.current.settings.defaults
         guard
             let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else {
+            orderForumArray.count == 2 else
+        {
             S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
             return
         }

@@ -21,7 +21,6 @@ target "Stage1st" do
     pod 'HorizontalFloatingHeaderLayout'
 
     # Database
-    pod 'FMDB'
     pod 'YapDatabase', :git => 'https://github.com/ainopara/YapDatabase.git', :branch => 'stage'
     pod 'GRDB.swift', '~> 4.1'
 
