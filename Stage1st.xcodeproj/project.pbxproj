@@ -117,6 +117,7 @@
 		86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */; };
 		86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AD218DB379002C2A66 /* StringDateTransformer.swift */; };
 		86BA383B1C0635EC00D508AC /* DarkPalette.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86BA383A1C0635EC00D508AC /* DarkPalette.plist */; };
+		86CB9CAB2342F6BD00CE6D0A /* assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CB9CAA2342F6BD00CE6D0A /* assert.swift */; };
 		86CCA179222CC73E00E633F5 /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CCA178222CC73E00E633F5 /* DecodingTests.swift */; };
 		86CCA189222CD1A300E633F5 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 86CCA188222CD1A300E633F5 /* Fixtures */; };
 		86D0090922D1F02A008099D6 /* Hud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D0090822D1F02A008099D6 /* Hud.swift */; };
@@ -303,6 +304,7 @@
 		86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBoolTransformer.swift; sourceTree = "<group>"; };
 		86B464AD218DB379002C2A66 /* StringDateTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDateTransformer.swift; sourceTree = "<group>"; };
 		86BA383A1C0635EC00D508AC /* DarkPalette.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DarkPalette.plist; sourceTree = "<group>"; };
+		86CB9CAA2342F6BD00CE6D0A /* assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = assert.swift; sourceTree = "<group>"; };
 		86CCA178222CC73E00E633F5 /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		86CCA188222CD1A300E633F5 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		86D0090822D1F02A008099D6 /* Hud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
@@ -648,6 +650,7 @@
 				8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */,
 				86F9E2FB21648D490087A1A4 /* EventTracker.swift */,
 				864DF0502341EE46005504A5 /* RequestNameGenerator.swift */,
+				86CB9CAA2342F6BD00CE6D0A /* assert.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1314,6 +1317,7 @@
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
 				8634ADA61FAAF309004A9CB7 /* RootNavigationController.swift in Sources */,
+				86CB9CAB2342F6BD00CE6D0A /* assert.swift in Sources */,
 				86654BFD217C61B700F50A90 /* NoticeCount.swift in Sources */,
 				86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */,
 				8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */,
