@@ -9,4 +9,4 @@ xcbaselines
 /fastlane
 /.idea
 /Archive
-
+/Stage1stTests/Fixtures/SnapshotResponse

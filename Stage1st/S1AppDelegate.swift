@@ -445,20 +445,30 @@ extension S1AppDelegate {
                     .appendingPathComponent("Fixtures")
                     .appendingPathComponent("SnapshotResponse")
 
-        // Record
-//        SWHttpTrafficRecorder.shared().recordingFormat = .httpMessage
-//        try! SWHttpTrafficRecorder.shared().startRecording(atPath: fixtureFolder.path, for: sessionConfiguration)
-//        SWHttpTrafficRecorder.shared().fileNamingBlock = { (request, response, defaultName) in
-//            return RequestNameGenerator.name(for: request!) + ".response"
-//        }
-
-        // Replay
-        stub(condition: isHost("bbs.saraba1st.com")) { (request) -> OHHTTPStubsResponse in
-            let stubName = RequestNameGenerator.name(for: request)
-            let stubURL = fixtureFolder.appendingPathComponent(stubName).appendingPathExtension("response")
-            let data = try! Data(contentsOf: stubURL)
-            return OHHTTPStubsResponse(httpMessageData: data)
+        func record() {
+            SWHttpTrafficRecorder.shared().recordingFormat = .httpMessage
+            try! SWHttpTrafficRecorder.shared().startRecording(atPath: fixtureFolder.path, for: sessionConfiguration)
+            SWHttpTrafficRecorder.shared().fileNamingBlock = { (request, response, defaultName) in
+                return RequestNameGenerator.name(for: request!) + ".response"
+            }
         }
+
+        func replay() {
+            stub(condition: isHost("bbs.saraba1st.com")) { (request) -> OHHTTPStubsResponse in
+                let stubName = RequestNameGenerator.name(for: request)
+                S1LogDebug("\(stubName) <- \(request.url!.absoluteString)")
+                let stubURL = fixtureFolder.appendingPathComponent(stubName).appendingPathExtension("response")
+                do {
+                    let data = try Data(contentsOf: stubURL)
+                    return OHHTTPStubsResponse(httpMessageData: data)
+                } catch {
+                    return OHHTTPStubsResponse(error: error)
+                }
+            }
+        }
+
+//        record()
+        replay()
 
         AppEnvironment.replaceCurrent(with: Environment(
             databaseName: "SnapshotYap.sqlite",
@@ -467,6 +477,11 @@ extension S1AppDelegate {
             sessionConfiguration: sessionConfiguration,
             settings: Stage1stSettings(defaults: UserDefaults(suiteName: "snapshot")!)
         ))
+
+        AppEnvironment.current.databaseManager.bgDatabaseConnection.readWrite { (transaction) in
+            transaction.removeAllObjectsInAllCollections()
+        }
+        AppEnvironment.current.cacheDatabaseManager.removeAllData()
     }
 }
 

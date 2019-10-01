@@ -146,6 +146,13 @@ extension CacheDatabaseManager {
 
 // MARK: - Cleaning
 extension CacheDatabaseManager {
+
+    func removeAllData() {
+        backgroundWriteConnection.readWrite { transaction in
+            transaction.removeAllObjectsInAllCollections()
+        }
+    }
+
     func removeAllCaches() {
         backgroundWriteConnection.readWrite { transaction in
             transaction.removeAllObjects(inCollection: collectionPageFloors)

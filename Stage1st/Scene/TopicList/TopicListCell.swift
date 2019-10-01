@@ -45,6 +45,7 @@ final class TopicListCell: UITableViewCell {
     }
 
     func configure(with model: TopicListCellViewModel) {
+        accessibilityLabel = model.topic.title
         drawingSubview.topic = model.topic
         drawingSubview.pinningToTop = model.isPinningTop
         drawingSubview.setNeedsDisplay()

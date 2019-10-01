@@ -418,7 +418,8 @@ extension TopicListViewController: UITableViewDelegate {
     }
 
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        viewModel.willDisplayCell(at: indexPath)
+        // TODO: Make this friendly for UI Snapshot tests
+        self.viewModel.willDisplayCell(at: indexPath)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {

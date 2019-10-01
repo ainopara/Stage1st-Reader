@@ -11,52 +11,45 @@ import XCTest
 class Stage1stUISnapshotTests: XCTestCase {
 
     override func setUp() {
+        super.setUp()
         continueAfterFailure = false
-
-        let app = XCUIApplication()
-        app.launchEnvironment = ["STAGE1ST_SNAPSHOT_TEST": "true"]
-        setupSnapshot(app)
-        app.launch()
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
     }
 
     func testSnapshot() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        app.launchEnvironment = ["STAGE1ST_SNAPSHOT_TEST": "true"]
+        setupSnapshot(app)
         app.launch()
 
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
 
-        app/*@START_MENU_TOKEN@*/.buttons["动漫论坛"]/*[[".scrollViews.buttons[\"动漫论坛\"]",".buttons[\"动漫论坛\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        snapshot("1-TopicList")
+        app/*@START_MENU_TOKEN@*/.buttons["游戏论坛"]/*[[".scrollViews.buttons[\"游戏论坛\"]",".buttons[\"游戏论坛\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        snapshot("0TopicList")
 
-        let stage1stNavigationBar = app.navigationBars["Stage1st"]
-        stage1stNavigationBar.buttons["Settings"].tap()
-        snapshot("2-Settings")
+        app.cells.staticTexts["【怪物猎人世界:冰原】综合讨论帖[DLC发售日2019.09.06]"].tap()
 
-        app.navigationBars["Settings"].buttons["Back"].tap()
-        stage1stNavigationBar.buttons["Archive"].tap()
-        snapshot("3-Archive")
+        let exist = NSPredicate(format: "exists == 1")
+        let expection = expectation(for: exist, evaluatedWith: app.links["・・・"], handler: nil)
+        wait(for: [expection], timeout: 10.0)
+        snapshot("1Detail")
 
-        app.tables/*@START_MENU_TOKEN@*/.staticTexts["真·中华一番 动画化"]/*[[".cells.staticTexts[\"真·中华一番 动画化\"]",".staticTexts[\"真·中华一番 动画化\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        snapshot("4-Detail")
-
-        app.toolbars["Toolbar"].buttons["Share"].tap()
+        let toolbar = app.toolbars["Toolbar"]
+        toolbar.buttons["Share"].tap()
         app.sheets.scrollViews.otherElements.buttons["Reply"].tap()
-        app.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other).element.children(matching: .other).element(boundBy: 1).tap()
-        snapshot("5-Reply")
-    }
+        toolbar.buttons["MahjongFaceButton"].tap()
+        app.cells["[f:033]"].tap()
+        snapshot("2Reply")
 
-    func testLaunchPerformance() {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
-                XCUIApplication().launch()
-            }
-        }
+        app.navigationBars["Reply"].buttons["Cancel"].tap()
+        toolbar.buttons["Back"].tap()
+        app.navigationBars["Stage1st"].buttons["Archive"].tap()
+        snapshot("3Archive")
+        app.navigationBars.buttons["Settings"].tap()
+        snapshot("4Settings")
     }
 }

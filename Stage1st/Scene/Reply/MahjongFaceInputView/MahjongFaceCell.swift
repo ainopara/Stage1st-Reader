@@ -33,6 +33,7 @@ final class MahjongFaceCell: UICollectionViewCell {
     }
 
     func configure(with item: MahjongFaceInputView.Category.Item) {
+        accessibilityIdentifier = item.id
         imageView.kf.setImage(with: .provider(LocalFileImageDataProvider(fileURL: item.url)), placeholder: MahjongFaceCell.placeholderImage)
         imageView.snp.remakeConstraints { (make) in
             make.center.equalTo(contentView)
