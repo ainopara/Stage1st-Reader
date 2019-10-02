@@ -377,26 +377,24 @@ extension S1AppDelegate {
         var displayForumArray = orderForumArray[0]
         var hiddenForumArray = orderForumArray[1]
 
-        guard (displayForumArray + hiddenForumArray).contains("卓明谷") else {
-            return
-        }
-
-        displayForumArray = displayForumArray.map {
-            if $0 == "外野" {
-                return "卓明谷"
-            } else {
-                return $0
+        if !(displayForumArray + hiddenForumArray).contains("卓明谷") {
+            displayForumArray = displayForumArray.map {
+                if $0 == "外野" {
+                    return "卓明谷"
+                } else {
+                    return $0
+                }
             }
-        }
 
-        hiddenForumArray = hiddenForumArray.map {
-            if $0 == "外野" {
-                return "卓明谷"
-            } else {
-                return $0
+            hiddenForumArray = hiddenForumArray.map {
+                if $0 == "外野" {
+                    return "卓明谷"
+                } else {
+                    return $0
+                }
             }
+            userDefaults.set([displayForumArray, hiddenForumArray + ["火星里侧", "菠菜"]], forKey: "Order")
         }
-        userDefaults.set([displayForumArray, hiddenForumArray + ["火星里侧", "菠菜"]], forKey: "Order")
     }
 }
 
