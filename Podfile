@@ -1,5 +1,5 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, "10.0"
+platform :ios, "13.1"
 use_frameworks!
 
 target "Stage1st" do
