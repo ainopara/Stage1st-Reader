@@ -7,49 +7,108 @@
 //
 
 import UIKit
-import CocoaLumberjack
+import Combine
+import RxSwift
 
 @objcMembers
 public final class ColorManager: NSObject {
+
     private var palette = [String: Any]()
+    private var darkPalette = [String: Any]()
     private var colorMap = [String: String]()
     private let fallbackColor = UIColor.black
-    private let defaultPaletteURL = Bundle.main.url(forResource: "DarkPalette", withExtension: "plist")
 
-    init(nightMode: Bool) {
+    weak var window: UIWindow? { didSet { bindTraitCollection() } }
+    private let overrideNightMode: CurrentValueSubject<Bool?, Never>
+    private let traitCollection: CurrentValueSubject<UITraitCollection, Never> = CurrentValueSubject(UITraitCollection.current)
+
+    private let bag = DisposeBag()
+    private var windowBag = DisposeBag()
+
+    init(overrideNightMode: CurrentValueSubject<Bool?, Never>) {
+        self.overrideNightMode = overrideNightMode
+
         super.init()
 
-        let paletteName = nightMode ? "DarkPalette": "DefaultPalette"
+        setupPalette()
 
-        let palettePath = Bundle.main.path(forResource: paletteName, ofType: "plist")
+        traitCollection
+            .map(\.userInterfaceStyle)
+            .removeDuplicates()
+            .sink { (style) in
+                NotificationCenter.default.post(name: .APPaletteDidChange, object: nil, userInfo: nil)
+            }
+            .disposed(by: bag)
+
+        self.overrideNightMode
+            .map { (isNightMode) -> UIUserInterfaceStyle in
+                switch isNightMode {
+                case .none:
+                    return .unspecified
+                case .some(true):
+                    return .dark
+                case .some(false):
+                    return .light
+                }
+            }
+            .sink { [weak self] (style) in
+                guard let strongSelf = self else { return }
+                strongSelf.window?.overrideUserInterfaceStyle = style
+            }
+            .disposed(by: bag)
+    }
+
+    func bindTraitCollection() {
+        windowBag = DisposeBag()
+
+        guard let window = self.window as? DarkModeDetectWindow else { return }
+
+        window.traitCollectionSubject
+            .subscribe(traitCollection)
+            .disposed(by: windowBag)
+    }
+
+    func setupPalette() {
         if
-            let palettePath = palettePath,
+            let palettePath = Bundle.main.path(forResource: "DefaultPalette", ofType: "plist"),
             let palette = NSDictionary(contentsOfFile: palettePath) as? [String: Any]
         {
             self.palette = palette
         }
 
-        let colorMapPath = Bundle.main.path(forResource: "ColorMap", ofType: "plist")
         if
-            let colorMapPath = colorMapPath,
+            let darkPalettePath = Bundle.main.path(forResource: "DarkPalette", ofType: "plist"),
+            let darkPalette = NSDictionary(contentsOfFile: darkPalettePath) as? [String: Any]
+        {
+            self.darkPalette = darkPalette
+        }
+
+        if
+            let colorMapPath = Bundle.main.path(forResource: "ColorMap", ofType: "plist"),
             let colorMap = NSDictionary(contentsOfFile: colorMapPath) as? [String: String]
         {
             self.colorMap = colorMap
         }
     }
 
-    public func switchPalette(_ type: PaletteType) {
-        let paletteName: String = type == .night ? "DarkPalette" : "DefaultPalette"
-        let paletteURL = Bundle.main.url(forResource: paletteName, withExtension: "plist")
-        loadPaletteByURL(paletteURL, shouldPushNotification: true)
+    @objc(PaletteType)
+    public enum PaletteType: Int {
+        case day
+        case night
     }
-
-    public func htmlColorStringWithID(_ paletteID: String) -> String {
-        return palette[paletteID] as? String ?? "#000000"
+    public func switchPalette(_ type: PaletteType) {
+        // TODO: Override system dark mode
     }
 
     public func isDarkTheme() -> Bool {
-        return palette["Dark"] as? Bool ?? false
+        switch self.traitCollection.value.userInterfaceStyle {
+        case .dark:
+            return true
+        case .light, .unspecified:
+            fallthrough
+        @unknown default:
+            return false
+        }
     }
 
     public func updateGlobalAppearance() {
@@ -74,8 +133,16 @@ public final class ColorManager: NSObject {
         if let paletteID = colorMap[key] {
             return colorInPaletteWithID(paletteID)
         } else {
-            S1LogWarn("[Color Manager] can't found color \(key), default color used")
+            assertionFailure("[Color Manager] can't found color \(key), default color used")
             return colorInPaletteWithID("default")
+        }
+    }
+
+    public func htmlColorStringWithID(_ paletteID: String) -> String {
+        if isDarkTheme() {
+            return darkPalette[paletteID] as? String ?? "#FFFFFF"
+        } else {
+            return palette[paletteID] as? String ?? "#000000"
         }
     }
 }
@@ -83,28 +150,23 @@ public final class ColorManager: NSObject {
 // MARK: - Private
 
 private extension ColorManager {
-    func loadPaletteByURL(_ paletteURL: URL?, shouldPushNotification shouldPush: Bool) {
-        guard
-            let paletteURL = paletteURL,
-            let palette = NSDictionary(contentsOf: paletteURL) as? [String: Any]
-        else {
-            return
-        }
-
-        self.palette = palette
-
-        updateGlobalAppearance()
-        if shouldPush {
-            NotificationCenter.default.post(name: .APPaletteDidChange, object: nil)
-        }
-    }
-
     func colorInPaletteWithID(_ paletteID: String) -> UIColor {
         if
             let colorString = palette[paletteID] as? String,
-            let color = S1Global.color(fromHexString: colorString)
+            let color = S1Global.color(fromHexString: colorString),
+            let darkColorString = darkPalette[paletteID] as? String,
+            let darkColor = S1Global.color(fromHexString: darkColorString)
         {
-            return color
+            return UIColor { (traitCollection) -> UIColor in
+                switch traitCollection.userInterfaceStyle {
+                case .light, .unspecified:
+                    return color
+                case .dark:
+                    return darkColor
+                @unknown default:
+                    return color
+                }
+            }
         } else {
             return fallbackColor
         }
@@ -120,9 +182,4 @@ public extension UIViewController {
 
 public extension Notification.Name {
     static let APPaletteDidChange = Notification.Name.init(rawValue: "APPaletteDidChangeNotification")
-}
-
-@objc public enum PaletteType: NSInteger {
-    case day
-    case night
 }

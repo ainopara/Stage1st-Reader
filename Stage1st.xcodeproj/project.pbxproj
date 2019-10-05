@@ -28,6 +28,7 @@
 		861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */; };
 		8619023423489420000A0750 /* Future+sinkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023323489420000A0750 /* Future+sinkResult.swift */; };
 		8619023623489446000A0750 /* Cancellable+DisposeBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023523489446000A0750 /* Cancellable+DisposeBag.swift */; };
+		861902382348E9C5000A0750 /* DarkModeDetectWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861902372348E9C5000A0750 /* DarkModeDetectWindow.swift */; };
 		8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* Utilities.swift */; };
@@ -201,6 +202,7 @@
 		861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+DailyTask.swift"; sourceTree = "<group>"; };
 		8619023323489420000A0750 /* Future+sinkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Future+sinkResult.swift"; sourceTree = "<group>"; };
 		8619023523489446000A0750 /* Cancellable+DisposeBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cancellable+DisposeBag.swift"; sourceTree = "<group>"; };
+		861902372348E9C5000A0750 /* DarkModeDetectWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeDetectWindow.swift; sourceTree = "<group>"; };
 		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -791,8 +793,8 @@
 		C095873D16CA8A36007E0119 /* Stage1st */ = {
 			isa = PBXGroup;
 			children = (
-				8619023223489407000A0750 /* Utilities */,
 				C095875516CA8A43007E0119 /* Resources */,
+				8619023223489407000A0750 /* Utilities */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				865C251B1C99110C0075B303 /* Scene */,
 				C095877A16CA8DB0007E0119 /* Model */,
@@ -862,6 +864,7 @@
 		C095877B16CA8DBE007E0119 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				861902372348E9C5000A0750 /* DarkModeDetectWindow.swift */,
 				8634ADB71FAAF3C1004A9CB7 /* Toast.swift */,
 				86D0090822D1F02A008099D6 /* Hud.swift */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
@@ -1298,6 +1301,7 @@
 				865544B621E23A22007B7557 /* RawFloorList.swift in Sources */,
 				8634ADE71FAAF3C2004A9CB7 /* Toast.swift in Sources */,
 				86654BF9217C616800F50A90 /* StringIntTransformer.swift in Sources */,
+				861902382348E9C5000A0750 /* DarkModeDetectWindow.swift in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */,
 				865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */,

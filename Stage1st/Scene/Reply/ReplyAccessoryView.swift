@@ -52,40 +52,6 @@ class ReplyAccessoryView: UIView {
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-
-        if let window = self.window {
-            if #available(iOS 12.0, *) {
-                // Nothing to do.
-            } else if #available(iOS 11.0, *) {
-                self.snp.remakeConstraints { (make) in
-                    make.top.lessThanOrEqualTo(window.safeAreaLayoutGuide.snp.bottom).offset(-35.0)
-                }
-                toolBar.snp.remakeConstraints { (make) in
-                    make.leading.trailing.top.equalTo(self)
-                    make.height.equalTo(35.0)
-                }
-            } else {
-                // Fallback on earlier versions
-                self.snp.remakeConstraints { (make) in
-                    make.height.equalTo(35.0)
-                }
-                toolBar.snp.remakeConstraints { (make) in
-                    make.edges.equalTo(self)
-                }
-            }
-        }
-    }
-
-    func removeExtraConstraints() {
-        if #available(iOS 12.0, *) {
-            // Nothing to do.
-        } else if #available(iOS 11.0, *) {
-            self.snp.removeConstraints()
-        }
-    }
 }
 
 // MARK: - Actions

@@ -18,7 +18,7 @@ class NoticeViewController: UIViewController {
     private let emptyView = EmptyView()
     let refreshHUD = Hud(frame: .zero)
 
-    let loadingIndicator = UIActivityIndicatorView(style: .gray)
+    let loadingIndicator = UIActivityIndicatorView(style: .medium)
 
     @objc
     convenience init() {
@@ -52,7 +52,7 @@ class NoticeViewController: UIViewController {
             .startWithValues { [weak self] (_) in
                 guard let strongSelf = self else { return }
                 let colorManager = AppEnvironment.current.colorManager
-                strongSelf.loadingIndicator.style = colorManager.isDarkTheme() ? .white : .gray
+                strongSelf.loadingIndicator.style = .medium
                 strongSelf.collectionView.backgroundColor = colorManager.colorForKey("notice.background")
 
                 strongSelf.navigationController?.navigationBar.barTintColor = colorManager.colorForKey("appearance.navigationbar.bartint")
@@ -103,7 +103,7 @@ extension NoticeViewController {
         view.addSubview(navigationBar)
         if #available(iOS 11.0, *) {
             navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
                 make.leading.trailing.equalTo(self.view)
             })
         } else {
@@ -205,17 +205,26 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+import Combine
+import RxSwift
+
 private class EmptyView: UIView {
     let label = UILabel()
+
+    private let bag = DisposeBag()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         label.numberOfLines = 0
-        label.reactive.text <~ AppEnvironment.current.settings.currentUsername
+
+        AppEnvironment.current.settings.currentUsername
             .map { (username) -> String in
                 return username == nil ? "未登录" : "无信息"
             }
+            .assign(to: \.text, on: label)
+            .disposed(by: bag)
+
         label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
         label.font = .boldSystemFont(ofSize: 18.0)
         addSubview(label)

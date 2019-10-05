@@ -8,6 +8,8 @@
 
 import CloudKit
 import ReactiveSwift
+import Combine
+import RxSwift
 import YapDatabase
 import CocoaLumberjack
 import Reachability
@@ -30,7 +32,7 @@ class CloudKitManager: NSObject {
     let databaseConnection: YapDatabaseConnection
     let cloudKitExtension: YapDatabaseCloudKit
 
-    private(set) var state: MutableProperty<State> = MutableProperty(.waitingSetupTriggered)
+    private(set) var state: CurrentValueSubject<State, Never> = CurrentValueSubject(.waitingSetupTriggered)
     private(set) var accountStatus: MutableProperty<CKAccountStatus> = MutableProperty(.couldNotDetermine)
 
     private var fetchCompletionHandlers: [(S1CloudKitFetchResult) -> Void] = []
@@ -55,6 +57,8 @@ class CloudKitManager: NSObject {
         case networkError(Error)
         case halt
     }
+
+    private let bag = DisposeBag()
 
     func updateAccountStatus() {
         cloudKitContainer.accountStatus { [weak self] (accountStatus, error) in
@@ -109,7 +113,7 @@ class CloudKitManager: NSObject {
                 }
         }
 
-        state.producer.startWithValues { [weak self] (state) in
+        state.sink { [weak self] (state) in
             guard let strongSelf = self else { return }
 
             switch state {
@@ -190,12 +194,13 @@ class CloudKitManager: NSObject {
             case .halt:
                 strongSelf.ensureSuspend()
             }
-        }
+        }.disposed(by: bag)
 
         // Debug
-        state.producer.combinePrevious().startWithValues { (previous, current) in
-            S1LogDebug("State: \(previous) -> \(current)")
-        }
+//        state.combinePrevious().startWithValues { (previous, current) in
+//            S1LogDebug("State: \(previous) -> \(current)")
+//        }
+        // TODO: Implement combinePrevious for Combine
 
         accountStatus.producer.combinePrevious().startWithValues { (previous, current) in
             S1LogDebug("AccountStatus: \(previous.debugDescription) -> \(current.debugDescription)")
@@ -445,10 +450,10 @@ private extension CloudKitManager {
 
     private func fetchRecordChange(with previousServerChangeToken: CKServerChangeToken?, completion: @escaping (S1CloudKitFetchResult) -> Void) {
         let recordZoneID = CKRecordZone.ID(zoneName: cloudkitZoneName, ownerName: CKCurrentUserDefaultName)
-        let fetchOptions = CKFetchRecordZoneChangesOperation.ZoneOptions()
-        fetchOptions.previousServerChangeToken = previousServerChangeToken
+        let fetchConfiguration = CKFetchRecordZoneChangesOperation.ZoneConfiguration()
+        fetchConfiguration.previousServerChangeToken = previousServerChangeToken
 
-        let fetchOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZoneID], optionsByRecordZoneID: [recordZoneID: fetchOptions])
+        let fetchOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZoneID], configurationsByRecordZoneID: [recordZoneID: fetchConfiguration])
         var deletedRecordIDs = [CKRecord.ID]()
         var changedRecords = [CKRecord]()
 

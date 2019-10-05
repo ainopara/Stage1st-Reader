@@ -12,6 +12,7 @@ import CocoaLumberjack
 import Ainoaibo
 import ReactiveSwift
 import ReactiveCocoa
+import Combine
 import Files
 
 extension SettingsViewController {
@@ -73,9 +74,12 @@ extension SettingsViewController {
 
     @objc func setupObservation() {
 
-        usernameDetail.reactive.text <~ AppEnvironment.current.settings.currentUsername.map { currentUserName in
-            return currentUserName ?? NSLocalizedString("SettingsViewController.Not_Login_State_Mark", comment: "")
-        }
+        AppEnvironment.current.settings.currentUsername
+            .map { currentUserName in
+                return currentUserName ?? NSLocalizedString("SettingsViewController.Not_Login_State_Mark", comment: "")
+            }
+            .assign(to: \.text, on: usernameDetail)
+        // TODO: Fix the memory leak
 
         NotificationCenter.default.reactive
             .notifications(forName: .YapDatabaseCloudKitSuspendCountChanged)
@@ -97,15 +101,13 @@ extension SettingsViewController {
                 )
             }
 
-        MutableProperty.combineLatest(
-            AppEnvironment.current.cloudkitManager.state,
-            AppEnvironment.current.settings.enableCloudKitSync
-        )
-            .producer
-            .startWithValues { [weak self] (args) in
+        AppEnvironment.current.cloudkitManager.state
+            .combineLatest(AppEnvironment.current.settings.enableCloudKitSync)
+            .sink { [weak self] (args) in
                 let (state, enableSync) = args
                 self?.updateCloudKitStatus(state: state, enableSync: enableSync)
             }
+        // TODO: Fix the memory leak
     }
 
     @objc func setupInitialValue() {

@@ -25,7 +25,7 @@ private class UserInfoInputView: UIView {
         usernameField.autocorrectionType = .no
         usernameField.autocapitalizationType = .none
         usernameField.returnKeyType = .next
-        usernameField.backgroundColor = UIColor.white
+        usernameField.backgroundColor = UIColor.systemBackground
         addSubview(usernameField)
 
         usernameField.snp.makeConstraints { make in
@@ -39,7 +39,7 @@ private class UserInfoInputView: UIView {
         passwordField.borderStyle = .line
         passwordField.isSecureTextEntry = true
         passwordField.returnKeyType = .go
-        passwordField.backgroundColor = UIColor.white
+        passwordField.backgroundColor = UIColor.systemBackground
         addSubview(passwordField)
 
         passwordField.snp.makeConstraints { make in

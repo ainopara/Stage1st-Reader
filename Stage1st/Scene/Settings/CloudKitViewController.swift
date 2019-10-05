@@ -9,8 +9,11 @@
 import SnapKit
 import QuickTableViewController
 import YapDatabase
+import RxSwift
 
 class CloudKitViewController: QuickTableViewController {
+
+    private let bag = DisposeBag()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -29,9 +32,9 @@ class CloudKitViewController: QuickTableViewController {
             object: nil
         )
 
-        AppEnvironment.current.cloudkitManager.state.signal.observeValues { [weak self] (_) in
+        AppEnvironment.current.cloudkitManager.state.sink { [weak self] (_) in
             self?.dataSourceDidChanged()
-        }
+        }.disposed(by: bag)
 
         AppEnvironment.current.cloudkitManager.accountStatus.signal.observeValues { [weak self] (_) in
             self?.dataSourceDidChanged()

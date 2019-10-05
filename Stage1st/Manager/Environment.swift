@@ -9,6 +9,8 @@
 import Foundation
 import Reachability
 import GRDB
+import Combine
+import RxSwift
 
 @objcMembers
 class AppEnvironment: NSObject {
@@ -44,6 +46,8 @@ class Environment: NSObject {
     let databaseAdapter: S1YapDatabaseAdapter
     let dataCenter: DataCenter
 
+    private let bag = DisposeBag()
+
     init(
         forumName: String = "Stage1st",
         databaseName: String = "Stage1stYap.sqlite",
@@ -60,7 +64,21 @@ class Environment: NSObject {
         self.reachability = reachability
         reachability.startNotifier()
 
-        colorManager = ColorManager(nightMode: settings.nightMode.value)
+        let overrideNightMode = CurrentValueSubject<Bool?, Never>(nil)
+
+        settings.manualControlInterfaceStyle.combineLatest(settings.nightMode)
+            .map { (manualControlInterfaceStyle, isNightMode) -> Bool? in
+                if manualControlInterfaceStyle {
+                    return isNightMode
+                } else {
+                    return nil
+                }
+            }
+            .subscribe(overrideNightMode)
+            .disposed(by: bag)
+
+        colorManager = ColorManager(overrideNightMode: overrideNightMode)
+        colorManager.window = UIApplication.shared.delegate!.window!
         eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Self.cacheDatabasePath(with: cacheDatabaseName))
         grdb = try! DatabaseQueue(path: Self.grdbPath(with: grdbName))

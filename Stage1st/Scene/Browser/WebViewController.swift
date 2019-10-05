@@ -136,9 +136,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
 
         statusBarOverlayView.snp.makeConstraints { (make) in
-            make.top.equalTo(self.topLayoutGuide.snp.top)
+            make.top.equalTo(view.snp.top)
             make.leading.trailing.equalTo(view)
-            make.bottom.equalTo(self.topLayoutGuide.snp.bottom)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.top)
         }
 
         statusBarSeparatorView.snp.makeConstraints { (make) in
@@ -147,16 +147,9 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             make.height.equalTo(1.0 / UIScreen.main.scale)
         }
 
-        if #available(iOS 11.0, *) {
-            toolBar.snp.makeConstraints { (make) in
-                make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-                make.leading.trailing.equalTo(view)
-            }
-        } else {
-            toolBar.snp.makeConstraints { (make) in
-                make.bottom.equalTo(view.snp.bottom)
-                make.leading.trailing.equalTo(view)
-            }
+        toolBar.snp.makeConstraints { (make) in
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+            make.leading.trailing.equalTo(view)
         }
 
         progressView.snp.makeConstraints { (make) in

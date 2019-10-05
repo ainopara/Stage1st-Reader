@@ -126,24 +126,6 @@ extension UIViewController {
 
 // MARK: - WebView
 
-extension UIWebView {
-    func s1_positionOfElementWithId(_ elementID: String) -> CGRect? {
-        let script = "function f(){ var r = document.getElementById('\(elementID)').getBoundingClientRect(); return '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}'; } f();"
-        if let result = stringByEvaluatingJavaScript(from: script) {
-            let rect = NSCoder.cgRect(for: result)
-            return rect == CGRect.zero ? nil : rect
-        } else {
-            return nil
-        }
-    }
-
-    func s1_atBottom() -> Bool {
-        let offsetY = scrollView.contentOffset.y
-        let maxOffsetY = scrollView.contentSize.height - bounds.size.height
-        return offsetY >= maxOffsetY
-    }
-}
-
 extension WKWebView {
 
     func s1_positionOfElement(with ID: String, completion: @escaping (CGRect?) -> Void) {

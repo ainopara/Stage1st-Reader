@@ -74,7 +74,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Setup Window
-        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = DarkModeDetectWindow(frame: UIScreen.main.bounds)
 
         let rootNavigationController = RootNavigationController(rootViewController: ContainerViewController(nibName: nil, bundle: nil))
         self.navigationControllerDelegate = NavigationControllerDelegate(navigationController: rootNavigationController)
@@ -83,6 +83,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window!.rootViewController = rootNavigationController
         self.window!.makeKeyAndVisible()
+        AppEnvironment.current.colorManager.window = self.window!
 
         // Appearence
         AppEnvironment.current.colorManager.updateGlobalAppearance()
@@ -305,7 +306,7 @@ extension S1AppDelegate {
 
     private func migrateTo3_7() {
         let userDefaults = AppEnvironment.current.settings.defaults
-        if UI_USER_INTERFACE_IDIOM() == .pad && userDefaults.object(forKey: "FontSize") as? String == "17px" {
+        if UIDevice.current.userInterfaceIdiom == .pad && userDefaults.object(forKey: "FontSize") as? String == "17px" {
             userDefaults.set("18px", forKey: "FontSize")
         }
     }

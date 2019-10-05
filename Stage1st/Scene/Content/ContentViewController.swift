@@ -305,6 +305,7 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
 }
 
 // MARK: - Life Cycle
+
 extension ContentViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -312,13 +313,13 @@ extension ContentViewController {
         view.addSubview(toolBar)
         toolBar.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.view)
-            make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
 
         view.addSubview(webView)
         webView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.view)
-            make.top.equalTo(self.topLayoutGuide.snp.bottom)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
             make.bottom.equalTo(self.toolBar.snp.top)
         }
 

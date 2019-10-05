@@ -52,12 +52,13 @@ class ContainerViewController: UIViewController {
 
         AppEnvironment.current.settings.forumOrder
             .map({ $0.first ?? [] })
-            .skipRepeats()
-            .producer.startWithValues { [weak self] (keys) in
+            .removeDuplicates()
+            .sink { [weak self] (keys) in
                 guard let strongSelf = self else { return }
                 strongSelf.scrollTabBar.keys = keys
                 strongSelf.topicListViewController.reset()
             }
+            .disposed(by: bag)
 
         scrollTabBar.reactive.selection <~ MutableProperty
             .combineLatest(topicListSelection, selectedViewController)

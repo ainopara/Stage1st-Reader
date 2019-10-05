@@ -112,8 +112,6 @@ extension ReplyViewController: REComposeViewControllerDelegate {
         case .cancelled:
             draftDelegate?.replyViewController(self, didCancelledWith: attributedDraft)
 
-            self.replyAccessoryView.removeExtraConstraints()
-
             composeViewController.dismiss(animated: true, completion: nil)
         case .posted:
             guard composeViewController.plainText.count > 0 else {
@@ -164,8 +162,6 @@ extension ReplyViewController: REComposeViewControllerDelegate {
                     failureBlock: failureBlock
                 )
             }
-
-            self.replyAccessoryView.removeExtraConstraints()
 
             composeViewController.dismiss(animated: true, completion: nil)
         @unknown default:

@@ -67,11 +67,12 @@ extension PageRenderer {
         }
 
         func colorStyle() -> [String: Any?] {
+            let colorManager = AppEnvironment.current.colorManager
             return [
-                "background": AppEnvironment.current.colorManager.htmlColorStringWithID("5"),
-                "text": AppEnvironment.current.colorManager.htmlColorStringWithID("21"),
-                "border": AppEnvironment.current.colorManager.htmlColorStringWithID("14"),
-                "borderText": AppEnvironment.current.colorManager.htmlColorStringWithID("17"),
+                "background": colorManager.htmlColorStringWithID("5"),
+                "text": colorManager.htmlColorStringWithID("21"),
+                "border": colorManager.htmlColorStringWithID("14"),
+                "borderText": colorManager.htmlColorStringWithID("17"),
             ]
         }
 

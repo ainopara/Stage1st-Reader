@@ -21,7 +21,7 @@ final class Hud: UIView {
     }
     private var kind: Kind = .nothing
 
-    private let loadingIndicator = UIActivityIndicatorView(style: .white)
+    private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     private let messageLabel = UILabel()
     private let refreshButton = UIButton(type: .custom)
 
@@ -40,6 +40,7 @@ final class Hud: UIView {
         layer.cornerRadius = 3.0
 
         loadingIndicator.alpha = 0.0
+        loadingIndicator.overrideUserInterfaceStyle = .dark
         addSubview(loadingIndicator)
 
         messageLabel.font = .systemFont(ofSize: 13.0)

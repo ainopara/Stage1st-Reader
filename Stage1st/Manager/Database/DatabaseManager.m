@@ -37,7 +37,7 @@ NSString *const CloudKitZoneName = @"zone1";
 @synthesize uiDatabaseConnection = uiDatabaseConnection;
 @synthesize bgDatabaseConnection = bgDatabaseConnection;
 
-- (id)initWithName:(NSString *)name
+- (instancetype)initWithName:(NSString *)name
 {
 	if ((self = [super init]))
 	{

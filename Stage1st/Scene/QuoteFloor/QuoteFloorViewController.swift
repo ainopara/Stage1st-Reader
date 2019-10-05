@@ -85,8 +85,8 @@ extension QuoteFloorViewController {
 
         view.addSubview(webView)
         webView.snp.makeConstraints({ (make) -> Void in
-            make.top.equalTo(self.topLayoutGuide.snp.bottom)
-            make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
             make.leading.trailing.equalTo(self.view)
         })
     }

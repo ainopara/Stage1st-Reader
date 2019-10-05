@@ -6,7 +6,7 @@
 //  Copyright © 2018 Renaissance. All rights reserved.
 //
 
-import ReactiveSwift
+import RxSwift
 import Combine
 import Ainoaibo
 
@@ -19,6 +19,7 @@ extension DefaultsKeys {
     static let precacheNextPage = DefaultsKey<Bool>("PrecacheNextPage")
     static let forcePortraitForPhone = DefaultsKey<Bool>("ForcePortraitForPhone")
     static let nightMode = DefaultsKey<Bool>("NightMode")
+    static let manualControlInterfaceStyle = DefaultsKey<Bool>("manualControlInterfaceStyle")
     static let enableCloudKitSync = DefaultsKey<Bool>("EnableSync")
     static let historyLimit = DefaultsKey<Int>("HistoryLimit")
 
@@ -36,28 +37,31 @@ class Stage1stSettings: DefaultsBasedSettings {
     // Note: Initial value of MutablePropery will be overwrited by value in UserDefaults while binding.
 
     // Login
-    let currentUsername: MutableProperty<String?> = MutableProperty(nil)
+    let currentUsername: CurrentValueSubject<String?, Never> = CurrentValueSubject(nil)
 
     // Settings
-    let displayImage: MutableProperty<Bool> = MutableProperty(false)
-    let removeTails: MutableProperty<Bool> = MutableProperty(false)
-    let precacheNextPage: MutableProperty<Bool> = MutableProperty(false)
-    let forcePortraitForPhone: MutableProperty<Bool> = MutableProperty(false)
-    let nightMode: MutableProperty<Bool> = MutableProperty(false)
-    let enableCloudKitSync: MutableProperty<Bool> = MutableProperty(false)
-    let historyLimit: MutableProperty<Int> = MutableProperty(-1)
-    let forumOrder: MutableProperty<[[String]]> = MutableProperty([[], []])
+    let displayImage: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let removeTails: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let precacheNextPage: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let forcePortraitForPhone: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let nightMode: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let manualControlInterfaceStyle: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let enableCloudKitSync: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let historyLimit: CurrentValueSubject<Int, Never> = CurrentValueSubject(-1)
+    let forumOrder: CurrentValueSubject<[[String]], Never> = CurrentValueSubject([[], []])
 
     // Advanced Settings
-    let reverseAction: MutableProperty<Bool> = MutableProperty(false)
-    let hideStickTopics: MutableProperty<Bool> = MutableProperty(false)
-    let shareWithoutImage: MutableProperty<Bool> = MutableProperty(false)
-    let tapticFeedbackForForumSwitch: MutableProperty<Bool> = MutableProperty(false)
-    let gestureControledNightModeSwitch: MutableProperty<Bool> = MutableProperty(false)
+    let reverseAction: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let hideStickTopics: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let shareWithoutImage: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let tapticFeedbackForForumSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let gestureControledNightModeSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
 
     // Cleaning
-    let previousWebKitCacheCleaningDate: MutableProperty<Date?> = MutableProperty(nil)
-    let lastDailyTaskDate: MutableProperty<Date> = MutableProperty(.distantPast)
+    let previousWebKitCacheCleaningDate: CurrentValueSubject<Date?, Never> = CurrentValueSubject(nil)
+    let lastDailyTaskDate: CurrentValueSubject<Date, Never> = CurrentValueSubject(.distantPast)
+
+    private let bag = DisposeBag()
 
     // MARK: -
 
@@ -73,6 +77,7 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: precacheNextPage, to: .precacheNextPage, defaultValue: true)
         bind(property: forcePortraitForPhone, to: .forcePortraitForPhone, defaultValue: true)
         bind(property: nightMode, to: .nightMode, defaultValue: false)
+        bind(property: manualControlInterfaceStyle, to: .manualControlInterfaceStyle, defaultValue: false)
         bind(property: enableCloudKitSync, to: .enableCloudKitSync, defaultValue: false)
         bind(property: historyLimit, to: .historyLimit, defaultValue: -1)
         bind(property: forumOrder, to: .forumOrder, defaultValue: [[], []])
@@ -91,53 +96,53 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: lastDailyTaskDate, to: .lastDailyTaskDate, defaultValue: .distantPast)
 
         // Debug
-        currentUsername.producer.startWithValues { (value) in
+        currentUsername.sink { (value) in
             S1LogDebug("Settings: currentUsername -> \(String(describing: value))")
-        }
-        displayImage.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        displayImage.sink { (value) in
             S1LogDebug("Settings: displayImage -> \(String(describing: value))")
-        }
-        removeTails.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        removeTails.sink { (value) in
             S1LogDebug("Settings: removeTails -> \(String(describing: value))")
-        }
-        precacheNextPage.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        precacheNextPage.sink { (value) in
             S1LogDebug("Settings: precacheNextPage -> \(String(describing: value))")
-        }
-        forcePortraitForPhone.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        forcePortraitForPhone.sink { (value) in
             S1LogDebug("Settings: forcePortraitForPhone -> \(String(describing: value))")
-        }
-        nightMode.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        nightMode.sink { (value) in
             S1LogDebug("Settings: nightMode -> \(String(describing: value))")
-        }
-        enableCloudKitSync.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        enableCloudKitSync.sink { (value) in
             S1LogDebug("Settings: enableCloudKitSync -> \(String(describing: value))")
-        }
-        historyLimit.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        historyLimit.sink { (value) in
             S1LogDebug("Settings: historyLimit -> \(String(describing: value))")
-        }
-        forumOrder.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        forumOrder.sink { (value) in
             S1LogDebug("Settings: forumOrder -> \(String(describing: value))")
-        }
-        reverseAction.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        reverseAction.sink { (value) in
             S1LogDebug("Settings: reverseAction -> \(String(describing: value))")
-        }
-        hideStickTopics.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        hideStickTopics.sink { (value) in
             S1LogDebug("Settings: hideStickTopics -> \(String(describing: value))")
-        }
-        shareWithoutImage.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        shareWithoutImage.sink { (value) in
             S1LogDebug("Settings: shareWithoutImage -> \(String(describing: value))")
-        }
-        tapticFeedbackForForumSwitch.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        tapticFeedbackForForumSwitch.sink { (value) in
             S1LogDebug("Settings: tapticFeedbackForForumSwitch -> \(String(describing: value))")
-        }
-        gestureControledNightModeSwitch.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        gestureControledNightModeSwitch.sink { (value) in
             S1LogDebug("Settings: gestureControledNightModeSwitch -> \(String(describing: value))")
-        }
-        previousWebKitCacheCleaningDate.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        previousWebKitCacheCleaningDate.sink { (value) in
             S1LogDebug("Settings: previousWebKitCacheCleaningDate -> \(String(describing: value))")
-        }
-        lastDailyTaskDate.producer.startWithValues { (value) in
+        }.disposed(by: bag)
+        lastDailyTaskDate.sink { (value) in
             S1LogDebug("Settings: lastDailyTaskDate -> \(String(describing: value))")
-        }
+        }.disposed(by: bag)
     }
 }

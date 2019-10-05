@@ -77,5 +77,6 @@ extern NSString *const CloudKitZoneName;
 @property (nonatomic, strong, readonly) YapDatabaseConnection *bgDatabaseConnection;
 
 - (instancetype)initWithName:(NSString *)name NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
 @end

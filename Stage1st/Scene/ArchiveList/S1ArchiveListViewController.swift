@@ -169,7 +169,7 @@ class S1ArchiveListViewController: UIViewController {
         view.addSubview(navigationBar)
         if #available(iOS 11.0, *) {
             navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(self.topLayoutGuide.snp.bottom)
+                make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
                 make.leading.trailing.equalTo(self.view)
             })
         } else {

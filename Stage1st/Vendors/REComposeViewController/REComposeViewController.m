@@ -46,7 +46,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _cornerRadius = 6;
-        _keyboardHeight = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 387 : 197) : (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 299 : 252.0);
+        _keyboardHeight = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) ?([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad ? 387 : 197) : ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad ? 299 : 252.0);
         self.modalPresentationStyle = UIModalPresentationOverFullScreen;
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
@@ -106,7 +106,7 @@
 
 - (void)layoutWithWidth:(NSInteger)width height:(NSInteger)height {
     DDLogDebug(@"layout:w%ld, h%ld",(long)width, (long)height);
-    NSInteger offset = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 4;
+    NSInteger offset = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad ? 60 : 4;
     if (@available(iOS 11.0, *)) {
         offset += self.view.safeAreaInsets.left;
     }
