@@ -91,7 +91,7 @@ extension TopicComposeViewController {
         AppEnvironment.current.apiService.newTopic(
             forumID: self.forumID,
             typeID: 0,
-            formhash: AppEnvironment.current.dataCenter.formHash!,
+            formhash: AppEnvironment.current.dataCenter.formhash.value!,
             subject: textField.text ?? "",
             message: textView.text,
             saveAsDraft: false,

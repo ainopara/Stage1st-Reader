@@ -6,6 +6,7 @@ target "Stage1st" do
     # Network
     pod 'Alamofire', '5.0.0-rc.2'
     pod 'Kingfisher'
+    pod 'Kingfisher/SwiftUI'
 
     # Model
     pod 'CodableExtensions'
@@ -37,9 +38,8 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
-    pod 'Reveal-SDK', :configurations => ['Debug']
 
-    # Test
+    pod 'Reveal-SDK', :configurations => ['Debug']
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
     pod 'OHHTTPStubs/HTTPMessage', :configurations => ['Debug']
     pod 'SWHttpTrafficRecorder', :configurations => ['Debug']

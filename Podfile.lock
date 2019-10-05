@@ -58,6 +58,8 @@ PODS:
   - Kingfisher (5.8.1):
     - Kingfisher/Core (= 5.8.1)
   - Kingfisher/Core (5.8.1)
+  - Kingfisher/SwiftUI (5.8.1):
+    - Kingfisher/Core
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - OHHTTPStubs/Core (8.0.0)
@@ -184,6 +186,7 @@ DEPENDENCIES:
   - iOSSnapshotTestCase
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - Kingfisher
+  - Kingfisher/SwiftUI
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - OHHTTPStubs/HTTPMessage
@@ -296,6 +299,6 @@ SPEC CHECKSUMS:
   YapDatabase: 36e10c3059d33686951eba566fa15c0fce2497ed
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 328d644e56e0fa179675afa4833dc9bfe8567774
+PODFILE CHECKSUM: 650a6c60d4c7af7cb0ae4a7ccda4d2c7126ba1a5
 
 COCOAPODS: 1.8.1

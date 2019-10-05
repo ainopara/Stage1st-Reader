@@ -11,18 +11,28 @@ import YapDatabase
 import WebKit
 import Alamofire
 import ReactiveSwift
+import Combine
+import RxSwift
 
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
     let tracer: S1YapDatabaseAdapter
     let cacheDatabaseManager: CacheDatabaseManager
 
-    var formHash: String?
+    let formhash = CurrentValueSubject<String?, Never>(nil)
     let noticeCount: MutableProperty<NoticeCount?> = MutableProperty(nil)
 
     private var topicListCache = [String: [S1Topic]]()
     private var topicListCachePageNumber = [String: Int]()
     private var workingRequests = [Request]()
+
+    var lastDailyTaskFinishDate: Date {
+        get { AppEnvironment.current.settings.lastDailyTaskDate.value }
+        set { AppEnvironment.current.settings.lastDailyTaskDate.value = newValue }
+    }
+    let dailyTaskSucceed = PassthroughSubject<Bool, Never>()
+
+    private let bag = DisposeBag()
 
     init(
         apiManager: DiscuzClient,
@@ -32,13 +42,17 @@ class DataCenter: NSObject {
         self.apiManager = apiManager
         tracer = S1YapDatabaseAdapter(database: databaseManager)
         self.cacheDatabaseManager = cacheDatabaseManager
+
+        super.init()
+
+        setupDailyTask()
     }
 }
 
-extension String: LocalizedError {
-}
+extension String: LocalizedError {}
 
 // MARK: - Topic List
+
 extension DataCenter {
     func hasCache(for key: String) -> Bool {
         return topicListCache[key] != nil
@@ -78,7 +92,7 @@ extension DataCenter {
                 strongSelf.updateLoginState(parsedTopics.username)
 
                 if let formhash = parsedTopics.formhash {
-                    strongSelf.formHash = formhash
+                    strongSelf.formhash.send(formhash)
                 }
 
                 strongSelf.noticeCount.value = parsedTopics.noticeCount
@@ -158,11 +172,11 @@ extension DataCenter {
 // MARK: Search
 extension DataCenter {
     func canMakeSearchRequest() -> Bool {
-        return formHash != nil
+        return formhash.value != nil
     }
 
     func searchTopics(for keyword: String, completion: @escaping (Result<([S1Topic], String?), Error>) -> Void) {
-        apiManager.search(for: keyword, formhash: formHash!) { [weak self] (result) in
+        apiManager.search(for: keyword, formhash: formhash.value!) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
             switch result {
@@ -222,6 +236,10 @@ extension DataCenter {
 
                 if let latestTopic = S1Topic(rawFloorList: rawFloorList) {
                     topic.update(latestTopic)
+                }
+
+                if let formhash = rawFloorList.variables?.formhash {
+                    strongSelf.formhash.send(formhash)
                 }
 
                 guard let rawFloors = rawFloorList.variables?.postList else {
@@ -470,6 +488,54 @@ extension DataCenter {
         return true
     }
 }
+
+// MARK: - Daily Task
+
+private extension DataCenter {
+    func setupDailyTask() {
+        formhash
+            .sink { [weak self] (formhash) in
+                guard let strongSelf = self else { return }
+                guard let formhash = formhash else { return }
+                guard Date().timeIntervalSince(strongSelf.lastDailyTaskFinishDate) > 24.0 * 3600.0 else { return }
+                strongSelf.apiManager.dailyTask(formhash: formhash)
+                    .sinkResult { [weak self] (result) in
+                        guard let strongSelf = self else { return }
+
+                        switch result {
+                        case .success:
+                            strongSelf.lastDailyTaskFinishDate = Date()
+                            strongSelf.dailyTaskSucceed.send(true)
+                        case .failure(let error):
+                            S1LogWarn("\(error)")
+                            switch error {
+                            case .responseValidationFailed(reason: .customValidationFailed):
+                                strongSelf.lastDailyTaskFinishDate = Date()
+                            default:
+                                break
+                            }
+                            strongSelf.dailyTaskSucceed.send(false)
+                        }
+                }
+                .disposed(by: strongSelf.bag)
+        }
+        .disposed(by: bag)
+
+        dailyTaskSucceed
+            .sink { (succeed) in
+                if succeed {
+                    Toast.shared.post(message: "签到成功", duration: .second(1.0))
+                } else {
+                    #if DEBUG
+                    Toast.shared.post(message: "签到失败", duration: .second(1.0))
+                    #endif
+                }
+        }
+        .disposed(by: bag)
+    }
+}
+
+// MARK: -
 
 public extension Notification.Name {
     static let S1FloorsDidCachedNotification = Notification.Name.init(rawValue: "S1FloorDidCached")

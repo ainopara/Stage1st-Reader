@@ -24,6 +24,10 @@
 		8607E40C1D8EFEE0009B16D8 /* CacheDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */; };
 		860DAD4D18900A1D0098EA3F /* Resources.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 860DAD4C18900A1D0098EA3F /* Resources.xcassets */; };
 		860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860F11C61E4EC21E00875AB9 /* DataCenter.swift */; };
+		8619022F2345CB35000A0750 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619022E2345CB35000A0750 /* ContentCell.swift */; };
+		861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */; };
+		8619023423489420000A0750 /* Future+sinkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023323489420000A0750 /* Future+sinkResult.swift */; };
+		8619023623489446000A0750 /* Cancellable+DisposeBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023523489446000A0750 /* Cancellable+DisposeBag.swift */; };
 		8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
 		86221B861CA65E3600015522 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B851CA65E3600015522 /* Utilities.swift */; };
@@ -193,6 +197,10 @@
 		8607E40B1D8EFEE0009B16D8 /* CacheDatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheDatabaseManager.swift; sourceTree = "<group>"; };
 		860DAD4C18900A1D0098EA3F /* Resources.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Resources.xcassets; sourceTree = "<group>"; };
 		860F11C61E4EC21E00875AB9 /* DataCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataCenter.swift; sourceTree = "<group>"; };
+		8619022E2345CB35000A0750 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
+		861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+DailyTask.swift"; sourceTree = "<group>"; };
+		8619023323489420000A0750 /* Future+sinkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Future+sinkResult.swift"; sourceTree = "<group>"; };
+		8619023523489446000A0750 /* Cancellable+DisposeBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cancellable+DisposeBag.swift"; sourceTree = "<group>"; };
 		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -403,6 +411,15 @@
 			path = TopicCompose;
 			sourceTree = "<group>";
 		};
+		8619023223489407000A0750 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				8619023323489420000A0750 /* Future+sinkResult.swift */,
+				8619023523489446000A0750 /* Cancellable+DisposeBag.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		8634ADA11FAAEF0C004A9CB7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -502,6 +519,7 @@
 			children = (
 				86221B831CA6594D00015522 /* ContentViewModel.swift */,
 				86FFD3271CB95F1500EF742A /* ContentViewController.swift */,
+				8619022E2345CB35000A0750 /* ContentCell.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -587,6 +605,7 @@
 				865544B021E238AB007B7557 /* DiscuzClient+Report.swift */,
 				865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */,
 				8606D48B22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift */,
+				861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */,
 			);
 			path = DiscuzClient;
 			sourceTree = "<group>";
@@ -772,6 +791,7 @@
 		C095873D16CA8A36007E0119 /* Stage1st */ = {
 			isa = PBXGroup;
 			children = (
+				8619023223489407000A0750 /* Utilities */,
 				C095875516CA8A43007E0119 /* Resources */,
 				C095875416CA8A3E007E0119 /* Vendors */,
 				865C251B1C99110C0075B303 /* Scene */,
@@ -1291,6 +1311,7 @@
 				86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */,
 				865544B421E23A0D007B7557 /* RawForum.swift in Sources */,
 				86654BF7217C614200F50A90 /* ReplyNotice.swift in Sources */,
+				8619023623489446000A0750 /* Cancellable+DisposeBag.swift in Sources */,
 				866756A921DB5F7800D71479 /* DiscuzClient+Login.swift in Sources */,
 				86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */,
 				8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */,
@@ -1315,7 +1336,9 @@
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
 				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
+				861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
+				8619023423489420000A0750 /* Future+sinkResult.swift in Sources */,
 				8634ADA61FAAF309004A9CB7 /* RootNavigationController.swift in Sources */,
 				86CB9CAB2342F6BD00CE6D0A /* assert.swift in Sources */,
 				86654BFD217C61B700F50A90 /* NoticeCount.swift in Sources */,
@@ -1325,6 +1348,7 @@
 				86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */,
 				36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */,
 				8634ADEC1FAAF3C2004A9CB7 /* PessimisticPanGestureRecognizer.swift in Sources */,
+				8619022F2345CB35000A0750 /* ContentCell.swift in Sources */,
 				860F11C71E4EC21E00875AB9 /* DataCenter.swift in Sources */,
 				86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */,
 				86EF6CEA1C6879D7007ADEE4 /* QuoteFloorViewModel.swift in Sources */,

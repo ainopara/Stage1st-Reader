@@ -7,6 +7,7 @@
 //
 
 import ReactiveSwift
+import Combine
 import Ainoaibo
 
 extension DefaultsKeys {
@@ -28,6 +29,7 @@ extension DefaultsKeys {
     static let gestureControledNightModeSwitch = DefaultsKey<Bool>("gestureControledNightModeSwitch")
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
+    static let lastDailyTaskDate = DefaultsKey<Date>("lastDailyTaskDate")
 }
 
 class Stage1stSettings: DefaultsBasedSettings {
@@ -55,6 +57,7 @@ class Stage1stSettings: DefaultsBasedSettings {
 
     // Cleaning
     let previousWebKitCacheCleaningDate: MutableProperty<Date?> = MutableProperty(nil)
+    let lastDailyTaskDate: MutableProperty<Date> = MutableProperty(.distantPast)
 
     // MARK: -
 
@@ -83,6 +86,9 @@ class Stage1stSettings: DefaultsBasedSettings {
 
         // Cleaning
         bind(property: previousWebKitCacheCleaningDate, to: .previousWebKitCacheCleaningDate)
+
+        // DailyTask
+        bind(property: lastDailyTaskDate, to: .lastDailyTaskDate, defaultValue: .distantPast)
 
         // Debug
         currentUsername.producer.startWithValues { (value) in
@@ -129,6 +135,9 @@ class Stage1stSettings: DefaultsBasedSettings {
         }
         previousWebKitCacheCleaningDate.producer.startWithValues { (value) in
             S1LogDebug("Settings: previousWebKitCacheCleaningDate -> \(String(describing: value))")
+        }
+        lastDailyTaskDate.producer.startWithValues { (value) in
+            S1LogDebug("Settings: lastDailyTaskDate -> \(String(describing: value))")
         }
     }
 }
