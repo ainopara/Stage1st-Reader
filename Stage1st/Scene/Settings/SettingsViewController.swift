@@ -55,9 +55,12 @@ extension SettingsViewController {
 
     @objc func totalCacheSize() -> UInt {
         var totalCacheSize = UInt(URLCache.shared.currentDiskUsage)
-        if let libraryFolder = FileSystem().libraryFolder,
-           let webKitCacheFolder = try? libraryFolder.subfolder(named: "Caches").subfolder(named: "WebKit") {
-            for file in webKitCacheFolder.makeFileSequence(recursive: true, includeHidden: false) {
+        if
+            let libraryURL = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first,
+            let libraryFolder = try? Folder(path: libraryURL.relativePath),
+            let webKitCacheFolder = try? libraryFolder.subfolder(named: "Caches").subfolder(named: "WebKit")
+        {
+            for file in webKitCacheFolder.files.recursive {
                 S1LogVerbose("\(file.name)")
                 if let fileAttributes = try? FileManager.default.attributesOfItem(atPath: file.path),
                    let fileSize = fileAttributes[FileAttributeKey.size] as? UInt64 {

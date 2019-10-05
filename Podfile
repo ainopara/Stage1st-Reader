@@ -5,8 +5,8 @@ use_frameworks!
 target "Stage1st" do
     # Network
     pod 'Alamofire', '5.0.0-rc.2'
-    pod 'Kingfisher'
-    pod 'Kingfisher/SwiftUI'
+    pod 'Kingfisher', '5.8.1'
+    pod 'Kingfisher/SwiftUI', '5.8.1'
 
     # Model
     pod 'CodableExtensions'

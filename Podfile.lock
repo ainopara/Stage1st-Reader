@@ -27,10 +27,10 @@ PODS:
   - Ainoaibo/StateTransition (0.1.0)
   - Ainoaibo/SwiftExtension (0.1.0)
   - Alamofire (5.0.0-rc.2)
-  - CocoaLumberjack (3.5.3):
-    - CocoaLumberjack/Core (= 3.5.3)
-  - CocoaLumberjack/Core (3.5.3)
-  - CocoaLumberjack/Swift (3.5.3):
+  - CocoaLumberjack (3.6.0):
+    - CocoaLumberjack/Core (= 3.6.0)
+  - CocoaLumberjack/Core (3.6.0)
+  - CocoaLumberjack/Swift (3.6.0):
     - CocoaLumberjack/Core
   - CodableExtensions (0.3.0)
   - Crashlytics (3.14.0):
@@ -39,9 +39,9 @@ PODS:
     - CocoaLumberjack (~> 3.5)
     - CocoaLumberjack/Swift
     - Crashlytics
-  - DeviceKit (2.2.0)
+  - DeviceKit (2.3.0)
   - Fabric (1.10.2)
-  - Files (2.2.1)
+  - Files (4.0.2)
   - Fuzi (3.1.1)
   - GRDB.swift (4.4.0):
     - GRDB.swift/standard (= 4.4.0)
@@ -185,8 +185,8 @@ DEPENDENCIES:
   - Html (~> 0.3)
   - iOSSnapshotTestCase
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
-  - Kingfisher
-  - Kingfisher/SwiftUI
+  - Kingfisher (= 5.8.1)
+  - Kingfisher/SwiftUI (= 5.8.1)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - OHHTTPStubs/HTTPMessage
@@ -267,13 +267,13 @@ SPEC CHECKSUMS:
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 7e5c5a1ad511561b8f78b820da15213c9ac20bd2
   Alamofire: f9450d3c7f6bea2ad62e7a541c3e9b186c7991d6
-  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  CocoaLumberjack: 78b0c238666f4f58db069738ec176f4519557516
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
-  DeviceKit: ee5d2ec3bc8ad3847f9f0f202de0be09448707e1
+  DeviceKit: da103891aa928d89f64ea8dd8aca738c5f3d8ac0
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
-  Files: 18a88ede4f1e339a73adaca7272af15fa32ba69f
+  Files: d88e31b84d65e754935053b1c584ea8e2320698a
   Fuzi: bcc5694488dd6e672e126cbf3c5471d7a79506d1
   GRDB.swift: 4f9b6e7efc9470426f6a6de10ec1fee798ff7e43
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
@@ -299,6 +299,6 @@ SPEC CHECKSUMS:
   YapDatabase: 36e10c3059d33686951eba566fa15c0fce2497ed
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 650a6c60d4c7af7cb0ae4a7ccda4d2c7126ba1a5
+PODFILE CHECKSUM: 2ea5b92c3b472c3045221b52ccada072f680368a
 
-COCOAPODS: 1.8.1
+COCOAPODS: 1.8.3
