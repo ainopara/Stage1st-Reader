@@ -21,7 +21,7 @@
 
 - (id)initWithKeys:(NSArray *)keys andSelectedKey:(NSString *)selectedKey
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleInsetGrouped];
     if (!self) return nil;
     _keys = keys;
     _selectedKey = selectedKey;

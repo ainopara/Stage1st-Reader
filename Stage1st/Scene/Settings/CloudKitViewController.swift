@@ -149,7 +149,7 @@ class CloudKitViewController: QuickTableViewController {
 }
 
 class CloudKitUploadQueueViewController: UIViewController {
-    let tableView = UITableView(frame: .zero, style: .grouped)
+    let tableView = UITableView(frame: .zero, style: .insetGrouped)
 
     var changeSets = [YDBCKChangeSet]()
 
@@ -223,7 +223,7 @@ class CloudKitUploadChangeSetViewController: UIViewController {
 }
 
 class CloudKitErrorListViewController: UIViewController {
-    let tableView = UITableView(frame: .zero, style: .grouped)
+    let tableView = UITableView(frame: .zero, style: .insetGrouped)
 
     var errors: [S1CloudKitError] = []
 

@@ -19,7 +19,7 @@
 
 - (id)initWithKeys:(NSArray *)keys
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleInsetGrouped];
     if (!self) return nil;
     _keys = [NSMutableArray arrayWithCapacity:[keys count]];
     [keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
