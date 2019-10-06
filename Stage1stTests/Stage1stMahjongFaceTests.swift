@@ -19,7 +19,7 @@ class Stage1stMahjongFaceTests: XCTestCase {
     func testCategoriesInIndexAlsoExistInFileSystem() throws {
         let mahjongFaceFolderURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
         let mahjongFaceFolder = try Folder(path: mahjongFaceFolderURL.path)
-        let folderNames = Set(mahjongFaceFolder.subfolders.names)
+        let folderNames = Set(mahjongFaceFolder.subfolders.names())
         for category in categories {
             XCTAssert(folderNames.contains(category.id), "\(category.id) do not have a folder in file system.")
         }
@@ -43,7 +43,7 @@ class Stage1stMahjongFaceTests: XCTestCase {
         let mahjongFaceFolderURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
         let mahjongFaceFolder = try Folder(path: mahjongFaceFolderURL.path)
         var counter = 0
-        for mahjongFaceFile in mahjongFaceFolder.makeFileSequence(recursive: true, includeHidden: true) {
+        for mahjongFaceFile in mahjongFaceFolder.files.recursive {
             let parentFolderName = mahjongFaceFile.parent!.name
             if !categoryNames.contains(parentFolderName) {
                 // We only check items in specific folders
