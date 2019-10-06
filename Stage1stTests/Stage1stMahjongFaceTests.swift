@@ -20,7 +20,8 @@ class Stage1stMahjongFaceTests: XCTestCase {
         let mahjongFaceFolderURL = Bundle.main.bundleURL.appendingPathComponent("Mahjong", isDirectory: true)
         let mahjongFaceFolder = try Folder(path: mahjongFaceFolderURL.path)
         let folderNames = Set(mahjongFaceFolder.subfolders.names())
-        for category in categories {
+
+        for category in categories.filter({ $0.id != "Frequently Used" }) {
             XCTAssert(folderNames.contains(category.id), "\(category.id) do not have a folder in file system.")
         }
     }
@@ -34,7 +35,7 @@ class Stage1stMahjongFaceTests: XCTestCase {
     }
 
     func testItemsInFileSystemAlsoHaveAReferenceFromIndex() throws {
-        let allItemsPath = categories.flatMap { $0.content }.map { $0.url.path }
+        let allItemsPath = categories.filter({ $0.id != "Frequently Used" }).flatMap { $0.content }.map { $0.url.path }
         let allItemsPathSet = Set(allItemsPath)
         XCTAssertEqual(allItemsPath.count, allItemsPathSet.count, "No duplicated reference.")
 
