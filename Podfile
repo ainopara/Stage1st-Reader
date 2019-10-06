@@ -70,7 +70,6 @@ target "Stage1st" do
 
     target "Stage1stTests" do
         inherit! :search_paths
-        pod 'iOSSnapshotTestCase'
         pod 'SnapshotTesting', '~> 1.1'
     end
 end

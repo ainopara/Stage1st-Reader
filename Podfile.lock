@@ -48,11 +48,6 @@ PODS:
   - GRMustache.swift (4.0.1)
   - HorizontalFloatingHeaderLayout (2.0.0)
   - Html (0.3.1)
-  - iOSSnapshotTestCase (6.1.0):
-    - iOSSnapshotTestCase/SwiftSupport (= 6.1.0)
-  - iOSSnapshotTestCase/Core (6.1.0)
-  - iOSSnapshotTestCase/SwiftSupport (6.1.0):
-    - iOSSnapshotTestCase/Core
   - JTSImageViewController (1.5)
   - Kingfisher (5.8.1):
     - Kingfisher/Core (= 5.8.1)
@@ -182,7 +177,6 @@ DEPENDENCIES:
   - GRMustache.swift
   - HorizontalFloatingHeaderLayout
   - Html (~> 0.3)
-  - iOSSnapshotTestCase
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
   - Kingfisher (= 5.8.1)
   - Kingfisher/SwiftUI (= 5.8.1)
@@ -221,7 +215,6 @@ SPEC REPOS:
     - GRMustache.swift
     - HorizontalFloatingHeaderLayout
     - Html
-    - iOSSnapshotTestCase
     - Kingfisher
     - Masonry
     - OHHTTPStubs
@@ -278,7 +271,6 @@ SPEC CHECKSUMS:
   GRMustache.swift: a6436504284b22b4b05daf5f46f77bd3fe00a9a2
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   Html: 36e4910baff75809d3640ccbd306d6d1571397e9
-  iOSSnapshotTestCase: 30d540b0c8feb9d7f8ff97acc25a3804b48ee264
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
   Kingfisher: de969e451c81ca6c07a454bc36fea84b8b08c3c7
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
@@ -298,6 +290,6 @@ SPEC CHECKSUMS:
   YapDatabase: 36e10c3059d33686951eba566fa15c0fce2497ed
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 2ea5b92c3b472c3045221b52ccada072f680368a
+PODFILE CHECKSUM: 0bb13a6b7d87374bb255733ed1f32ddc78ac35ca
 
 COCOAPODS: 1.8.3

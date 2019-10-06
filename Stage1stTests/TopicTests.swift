@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import FBSnapshotTestCase
 @testable import Stage1st
 
 class S1TopicTests: XCTestCase {

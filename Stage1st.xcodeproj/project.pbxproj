@@ -65,7 +65,6 @@
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */; };
 		8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */; };
-		8655449321E1E20F007B7557 /* S1TabBarSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */; };
 		865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544A721E2379D007B7557 /* DiscuzClient+Search.swift */; };
 		865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */; };
 		865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544B021E238AB007B7557 /* DiscuzClient+Report.swift */; };
@@ -253,7 +252,6 @@
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerDelegate.swift; sourceTree = "<group>"; };
 		8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorProcessTests.swift; sourceTree = "<group>"; };
-		8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S1TabBarSnapshotTests.swift; sourceTree = "<group>"; };
 		865544A721E2379D007B7557 /* DiscuzClient+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Search.swift"; sourceTree = "<group>"; };
 		865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Profile.swift"; sourceTree = "<group>"; };
 		865544B021E238AB007B7557 /* DiscuzClient+Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Report.swift"; sourceTree = "<group>"; };
@@ -650,7 +648,6 @@
 				86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */,
 				8632C46D20F3B15000ACCBB0 /* StripTailTests.swift */,
 				8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */,
-				8655449221E1E20F007B7557 /* S1TabBarSnapshotTests.swift */,
 				86CCA178222CC73E00E633F5 /* DecodingTests.swift */,
 				86F1CA7222E47F370041F80D /* URLDetectTests.swift */,
 				8681E6C01CEF61ED004269D3 /* Info.plist */,
@@ -1068,12 +1065,10 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Stage1stTests/Pods-Stage1stTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/SnapshotTesting/SnapshotTesting.framework",
-				"${BUILT_PRODUCTS_DIR}/iOSSnapshotTestCase/FBSnapshotTestCase.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapshotTesting.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1232,7 +1227,6 @@
 				86CCA179222CC73E00E633F5 /* DecodingTests.swift in Sources */,
 				86A6A4EA200B86670037AB38 /* Stage1stMahjongFaceTests.swift in Sources */,
 				8632C46E20F3B15000ACCBB0 /* StripTailTests.swift in Sources */,
-				8655449321E1E20F007B7557 /* S1TabBarSnapshotTests.swift in Sources */,
 				86F1CA7322E47F370041F80D /* URLDetectTests.swift in Sources */,
 				8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */,
 				8681E6BF1CEF61ED004269D3 /* TopicTests.swift in Sources */,
