@@ -18,7 +18,7 @@ class Toast: UIWindow {
     }
     static var shared = Toast(frame: .zero)
 
-    let backgroundView = UIVisualEffectView(effect: nil)
+    let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     let textLabel = UILabel(frame: .zero)
     let decorationLine = UIView(frame: .zero)
     var state: State = .hidden {
@@ -39,12 +39,14 @@ class Toast: UIWindow {
         }
 
         textLabel.textAlignment = .center
+        textLabel.textColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
         backgroundView.contentView.addSubview(textLabel)
         textLabel.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(backgroundView.contentView)
             make.height.equalTo(44.0)
         }
 
+        decorationLine.backgroundColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
         addSubview(decorationLine)
         decorationLine.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(self)
@@ -53,15 +55,9 @@ class Toast: UIWindow {
 
         windowLevel = UIWindow.Level.statusBar - 1.0
 
-        didReceivePaletteChangeNotification(nil)
-
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(didReceiveStatusBarFrameWillChangeNotification(_:)),
                                                name: UIApplication.willChangeStatusBarFrameNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didReceivePaletteChangeNotification(_:)),
-                                               name: .APPaletteDidChange,
                                                object: nil)
     }
 
@@ -140,12 +136,6 @@ class Toast: UIWindow {
         public init(floatLiteral value: Double) {
             self = .second(value)
         }
-    }
-
-    @objc func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        backgroundView.effect = AppEnvironment.current.colorManager.isDarkTheme() ? UIBlurEffect(style: .light) : UIBlurEffect(style: .extraLight)
-        textLabel.textColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
-        decorationLine.backgroundColor = AppEnvironment.current.colorManager.colorForKey("reply.text")
     }
 
     @objc func didReceiveStatusBarFrameWillChangeNotification(_ notification: Notification?) {

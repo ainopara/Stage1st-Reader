@@ -30,7 +30,7 @@ extension DefaultsKeys {
     static let gestureControledNightModeSwitch = DefaultsKey<Bool>("gestureControledNightModeSwitch")
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
-    static let lastDailyTaskDate = DefaultsKey<Date>("lastDailyTaskDate")
+    static let lastDailyTaskDate = DefaultsKey<[String: Date]>("lastDailyTaskDate")
 }
 
 class Stage1stSettings: DefaultsBasedSettings {
@@ -59,7 +59,7 @@ class Stage1stSettings: DefaultsBasedSettings {
 
     // Cleaning
     let previousWebKitCacheCleaningDate: CurrentValueSubject<Date?, Never> = CurrentValueSubject(nil)
-    let lastDailyTaskDate: CurrentValueSubject<Date, Never> = CurrentValueSubject(.distantPast)
+    let lastDailyTaskDate: CurrentValueSubject<[String: Date], Never> = CurrentValueSubject([:])
 
     private let bag = DisposeBag()
 
@@ -93,7 +93,7 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: previousWebKitCacheCleaningDate, to: .previousWebKitCacheCleaningDate)
 
         // DailyTask
-        bind(property: lastDailyTaskDate, to: .lastDailyTaskDate, defaultValue: .distantPast)
+        bind(property: lastDailyTaskDate, to: .lastDailyTaskDate, defaultValue: [:])
 
         // Debug
         currentUsername.sink { (value) in

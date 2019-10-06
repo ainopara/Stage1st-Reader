@@ -26,11 +26,11 @@ class DataCenter: NSObject {
     private var topicListCachePageNumber = [String: Int]()
     private var workingRequests = [Request]()
 
-    var lastDailyTaskFinishDate: Date {
+    var lastDailyTaskFinishDate: [String: Date] {
         get { AppEnvironment.current.settings.lastDailyTaskDate.value }
         set { AppEnvironment.current.settings.lastDailyTaskDate.value = newValue }
     }
-    let dailyTaskSucceed = PassthroughSubject<Bool, Never>()
+    let dailyTaskSucceed = PassthroughSubject<Result<String, Error>, Never>()
 
     private let bag = DisposeBag()
 
@@ -49,7 +49,11 @@ class DataCenter: NSObject {
     }
 }
 
-extension String: LocalizedError {}
+extension String: LocalizedError {
+    public var errorDescription: String? {
+        return self
+    }
+}
 
 // MARK: - Topic List
 
@@ -497,24 +501,25 @@ private extension DataCenter {
             .sink { [weak self] (formhash) in
                 guard let strongSelf = self else { return }
                 guard let formhash = formhash else { return }
-                guard Date().timeIntervalSince(strongSelf.lastDailyTaskFinishDate) > 24.0 * 3600.0 else { return }
+                guard let currentUsername = AppEnvironment.current.settings.currentUsername.value else { return }
+                guard !Calendar.current.isDate(Date(), inSameDayAs: strongSelf.lastDailyTaskFinishDate[currentUsername, default: .distantPast]) else { return }
                 strongSelf.apiManager.dailyTask(formhash: formhash)
                     .sinkResult { [weak self] (result) in
                         guard let strongSelf = self else { return }
 
                         switch result {
-                        case .success:
-                            strongSelf.lastDailyTaskFinishDate = Date()
-                            strongSelf.dailyTaskSucceed.send(true)
+                        case .success(let message):
+                            strongSelf.lastDailyTaskFinishDate[currentUsername] = Date()
+                            strongSelf.dailyTaskSucceed.send(.success(message))
                         case .failure(let error):
                             S1LogWarn("\(error)")
                             switch error {
-                            case .responseValidationFailed(reason: .customValidationFailed):
-                                strongSelf.lastDailyTaskFinishDate = Date()
+                            case .responseValidationFailed(reason: .customValidationFailed(let error)):
+                                strongSelf.lastDailyTaskFinishDate[currentUsername] = Date()
+                                strongSelf.dailyTaskSucceed.send(.failure(error))
                             default:
                                 break
                             }
-                            strongSelf.dailyTaskSucceed.send(false)
                         }
                 }
                 .disposed(by: strongSelf.bag)
@@ -522,13 +527,12 @@ private extension DataCenter {
         .disposed(by: bag)
 
         dailyTaskSucceed
-            .sink { (succeed) in
-                if succeed {
-                    Toast.shared.post(message: "签到成功", duration: .second(1.0))
-                } else {
-                    #if DEBUG
-                    Toast.shared.post(message: "签到失败", duration: .second(1.0))
-                    #endif
+            .sink { (result) in
+                switch result {
+                case .success(let message):
+                    Toast.shared.post(message: message, duration: .second(1.0))
+                case .failure(let error):
+                    Toast.shared.post(message: error.localizedDescription, duration: .second(1.0))
                 }
         }
         .disposed(by: bag)

@@ -11,9 +11,10 @@ import Combine
 
 public extension DiscuzClient {
 
-    func dailyTask(formhash: String) -> Future<Void, AFError> {
+    func dailyTask(formhash: String) -> Future<String, AFError> {
         return Future { promise in
             let urlParameters: Parameters = [
+                "inajax": 1,
                 "formhash": formhash
             ]
 
@@ -23,10 +24,26 @@ public extension DiscuzClient {
                 .responseString { (response) in
                     switch response.result {
                     case .success(let content):
-                        if content.contains(#"<div id="messagetext" class="alert_info">"#) {
-                            promise(.success(()))
+                        if content.contains("succeedhandle_") {
+                            if
+                                let regex = try? NSRegularExpression(pattern: #"succeedhandle_\('forum.php'.+'(.+)'"#, options: []),
+                                let match = regex.firstMatch(in: content, options: [], range: NSRange(content.startIndex..., in: content)),
+                                let messageRange = Range(match.range(at: 1), in: content)
+                            {
+                                promise(.success(String(content[messageRange])))
+                            } else {
+                                promise(.success("签到成功"))
+                            }
                         } else {
-                            promise(.failure(AFError.responseValidationFailed(reason: .customValidationFailed(error: "Failed to find alert_info in resposne HTML String."))))
+                            if
+                                let regex = try? NSRegularExpression(pattern: #"errorhandle_\('(.+)'"#, options: []),
+                                let match = regex.firstMatch(in: content, options: [], range: NSRange(content.startIndex..., in: content)),
+                                let messageRange = Range(match.range(at: 1), in: content)
+                            {
+                                promise(.failure(AFError.responseValidationFailed(reason: .customValidationFailed(error: String(content[messageRange])))))
+                            } else {
+                                promise(.failure(AFError.responseValidationFailed(reason: .customValidationFailed(error: "签到失败"))))
+                            }
                         }
 
                     case .failure(let afError):
