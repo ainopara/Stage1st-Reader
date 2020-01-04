@@ -52,6 +52,7 @@ final class TopicListCell: UITableViewCell {
         titleLabel.attributedText = model.attributedTitle
 
         updateBackgroundColor()
+        traitCollectionDidChange(nil)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
