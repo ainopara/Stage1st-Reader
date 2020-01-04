@@ -522,9 +522,9 @@ private extension DataCenter {
                             }
                         }
                 }
-                .disposed(by: strongSelf.bag)
+                .store(in: strongSelf.bag)
         }
-        .disposed(by: bag)
+        .store(in: bag)
 
         dailyTaskSucceed
             .sink { (result) in
@@ -535,7 +535,7 @@ private extension DataCenter {
                     Toast.shared.post(message: error.localizedDescription, duration: .second(1.0))
                 }
         }
-        .disposed(by: bag)
+        .store(in: bag)
     }
 }
 

@@ -10,7 +10,7 @@ import RxSwift
 import Combine
 
 extension Cancellable {
-    func disposed(by bag: DisposeBag) {
+    func store(in bag: DisposeBag) {
         bag.insert(Disposables.create {
             self.cancel()
         })

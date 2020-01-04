@@ -58,7 +58,7 @@ class ContainerViewController: UIViewController {
                 strongSelf.scrollTabBar.keys = keys
                 strongSelf.topicListViewController.reset()
             }
-            .disposed(by: bag)
+            .store(in: bag)
 
         scrollTabBar.reactive.selection <~ MutableProperty
             .combineLatest(topicListSelection, selectedViewController)

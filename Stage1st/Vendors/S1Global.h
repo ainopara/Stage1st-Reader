@@ -32,9 +32,6 @@
 
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 
-+ (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey;
-+ (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey;
-
 //Regex wrapper
 + (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern;
 + (NSArray<NSString *> *)regexExtractFromString:(NSString *)string withPattern:(NSString *)pattern andColums:(NSArray<NSNumber *> *)colums;

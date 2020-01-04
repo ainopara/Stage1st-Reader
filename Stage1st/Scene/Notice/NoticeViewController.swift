@@ -223,7 +223,7 @@ private class EmptyView: UIView {
                 return username == nil ? "未登录" : "无信息"
             }
             .assign(to: \.text, on: label)
-            .disposed(by: bag)
+            .store(in: bag)
 
         label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
         label.font = .boldSystemFont(ofSize: 18.0)

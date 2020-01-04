@@ -8,10 +8,14 @@
 
 #import "GSStaticTableViewController.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface GSSingleSelectionTableViewController : GSStaticTableViewController
 
 @property (nonatomic, copy) void (^completionHandler)(NSString *selectedKey);
 
-- (id)initWithKeys:(NSArray *)keys andSelectedKey:(NSString *)selectedKey;
+- (id)initWithKeys:(NSArray<NSString *> *)keys andSelectedKey:(NSString *)selectedKey;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -98,51 +98,51 @@ class Stage1stSettings: DefaultsBasedSettings {
         // Debug
         currentUsername.sink { (value) in
             S1LogDebug("Settings: currentUsername -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         displayImage.sink { (value) in
             S1LogDebug("Settings: displayImage -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         removeTails.sink { (value) in
             S1LogDebug("Settings: removeTails -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         precacheNextPage.sink { (value) in
             S1LogDebug("Settings: precacheNextPage -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         forcePortraitForPhone.sink { (value) in
             S1LogDebug("Settings: forcePortraitForPhone -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         nightMode.sink { (value) in
             S1LogDebug("Settings: nightMode -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         enableCloudKitSync.sink { (value) in
             S1LogDebug("Settings: enableCloudKitSync -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         historyLimit.sink { (value) in
             S1LogDebug("Settings: historyLimit -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         forumOrder.sink { (value) in
             S1LogDebug("Settings: forumOrder -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         reverseAction.sink { (value) in
             S1LogDebug("Settings: reverseAction -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         hideStickTopics.sink { (value) in
             S1LogDebug("Settings: hideStickTopics -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         shareWithoutImage.sink { (value) in
             S1LogDebug("Settings: shareWithoutImage -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         tapticFeedbackForForumSwitch.sink { (value) in
             S1LogDebug("Settings: tapticFeedbackForForumSwitch -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         gestureControledNightModeSwitch.sink { (value) in
             S1LogDebug("Settings: gestureControledNightModeSwitch -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         previousWebKitCacheCleaningDate.sink { (value) in
             S1LogDebug("Settings: previousWebKitCacheCleaningDate -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
         lastDailyTaskDate.sink { (value) in
             S1LogDebug("Settings: lastDailyTaskDate -> \(String(describing: value))")
-        }.disposed(by: bag)
+        }.store(in: bag)
     }
 }

@@ -34,6 +34,10 @@ extension RootNavigationController: GagatStyleable {
             return false
         }
 
+        guard AppEnvironment.current.settings.manualControlInterfaceStyle.value else {
+            return false
+        }
+
         if AppEnvironment.current.settings.nightMode.value == true {
             return direction == .up
         } else {
@@ -44,10 +48,8 @@ extension RootNavigationController: GagatStyleable {
     public func toggleActiveStyle() {
         if AppEnvironment.current.settings.nightMode.value == true {
             AppEnvironment.current.settings.nightMode.value = false
-            AppEnvironment.current.colorManager.switchPalette(.day)
         } else {
             AppEnvironment.current.settings.nightMode.value = true
-            AppEnvironment.current.colorManager.switchPalette(.night)
         }
     }
 }

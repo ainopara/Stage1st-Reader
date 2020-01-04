@@ -194,7 +194,7 @@ class CloudKitManager: NSObject {
             case .halt:
                 strongSelf.ensureSuspend()
             }
-        }.disposed(by: bag)
+        }.store(in: bag)
 
         // Debug
 //        state.combinePrevious().startWithValues { (previous, current) in

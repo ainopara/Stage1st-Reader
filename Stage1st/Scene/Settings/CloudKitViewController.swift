@@ -34,7 +34,7 @@ class CloudKitViewController: QuickTableViewController {
 
         AppEnvironment.current.cloudkitManager.state.sink { [weak self] (_) in
             self?.dataSourceDidChanged()
-        }.disposed(by: bag)
+        }.store(in: bag)
 
         AppEnvironment.current.cloudkitManager.accountStatus.signal.observeValues { [weak self] (_) in
             self?.dataSourceDidChanged()

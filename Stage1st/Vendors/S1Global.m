@@ -100,46 +100,6 @@
     }
 }
 
-+ (NSNumber *)HistoryLimitString2Number:(NSString *)stringKey
-{
-    if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.3days",@"")]){
-        return @259200;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1week",@"")]){
-        return @604800;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks",@"")]){
-        return @1209600;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1month",@"")]){
-        return @2592000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.3months",@"")]){
-        return @7884000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.6months",@"")]){
-        return @15768000;
-    } else if([stringKey isEqualToString:NSLocalizedString(@"SettingsViewController.HistoryLimit.1year",@"")]){
-        return @31536000;
-    }
-    return @-1;
-}
-
-+ (NSString *)HistoryLimitNumber2String:(NSNumber *)numberKey
-{
-    if ([numberKey isEqualToNumber:@259200]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.3days",@"");
-    } else if ([numberKey isEqualToNumber:@604800]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1week",@"");
-    } else if ([numberKey isEqualToNumber:@1209600]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.2weeks",@"");
-    } else if ([numberKey isEqualToNumber:@2592000]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1month",@"");
-    } else if ([numberKey isEqualToNumber:@7884000]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.3months",@"");
-    } else if ([numberKey isEqualToNumber:@15768000]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.6months",@"");
-    } else if ([numberKey isEqualToNumber:@31536000]) {
-        return NSLocalizedString(@"SettingsViewController.HistoryLimit.1year",@"");
-    }
-    return NSLocalizedString(@"SettingsViewController.HistoryLimit.Forever",@"");
-}
-
 + (BOOL)regexMatchString:(NSString *)string withPattern:(NSString *)pattern {
     NSRegularExpression *re = [[NSRegularExpression alloc] initWithPattern:pattern options:NSRegularExpressionAnchorsMatchLines error:nil];
     NSInteger count = [[re matchesInString:string options:NSMatchingReportProgress range:NSMakeRange(0, string.length)] count];

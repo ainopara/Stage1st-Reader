@@ -75,7 +75,7 @@ class Environment: NSObject {
                 }
             }
             .subscribe(overrideNightMode)
-            .disposed(by: bag)
+            .store(in: bag)
 
         colorManager = ColorManager(overrideNightMode: overrideNightMode)
         colorManager.window = UIApplication.shared.delegate!.window!

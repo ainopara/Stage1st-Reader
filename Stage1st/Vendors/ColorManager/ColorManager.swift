@@ -38,7 +38,7 @@ public final class ColorManager: NSObject {
             .sink { (style) in
                 NotificationCenter.default.post(name: .APPaletteDidChange, object: nil, userInfo: nil)
             }
-            .disposed(by: bag)
+            .store(in: bag)
 
         self.overrideNightMode
             .map { (isNightMode) -> UIUserInterfaceStyle in
@@ -55,7 +55,7 @@ public final class ColorManager: NSObject {
                 guard let strongSelf = self else { return }
                 strongSelf.window?.overrideUserInterfaceStyle = style
             }
-            .disposed(by: bag)
+            .store(in: bag)
     }
 
     func bindTraitCollection() {
@@ -65,7 +65,7 @@ public final class ColorManager: NSObject {
 
         window.traitCollectionSubject
             .subscribe(traitCollection)
-            .disposed(by: windowBag)
+            .store(in: windowBag)
     }
 
     func setupPalette() {
@@ -95,9 +95,6 @@ public final class ColorManager: NSObject {
     public enum PaletteType: Int {
         case day
         case night
-    }
-    public func switchPalette(_ type: PaletteType) {
-        // TODO: Override system dark mode
     }
 
     public func isDarkTheme() -> Bool {
