@@ -249,6 +249,7 @@ extension S1ArchiveListViewController {
     }
 
     @objc func notification(_ sender: Any) {
+        AppEnvironment.current.dataCenter.noticeCount.value = nil
         self.navigationController?.pushViewController(NoticeViewController(viewModel: NoticeViewModel()), animated: true)
     }
 }
