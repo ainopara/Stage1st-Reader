@@ -86,68 +86,68 @@ PODS:
   - SnapKit (5.0.1)
   - SnapshotTesting (1.6.0)
   - SWHttpTrafficRecorder (1.0.2)
-  - YapDatabase (3.1.3):
-    - YapDatabase/Standard (= 3.1.3)
-  - YapDatabase/Standard (3.1.3):
-    - YapDatabase/Standard/Core (= 3.1.3)
-    - YapDatabase/Standard/Extensions (= 3.1.3)
-  - YapDatabase/Standard/Core (3.1.3):
+  - YapDatabase (3.1.4):
+    - YapDatabase/Standard (= 3.1.4)
+  - YapDatabase/Standard (3.1.4):
+    - YapDatabase/Standard/Core (= 3.1.4)
+    - YapDatabase/Standard/Extensions (= 3.1.4)
+  - YapDatabase/Standard/Core (3.1.4):
     - CocoaLumberjack
-  - YapDatabase/Standard/Extensions (3.1.3):
+  - YapDatabase/Standard/Extensions (3.1.4):
     - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.3)
-    - YapDatabase/Standard/Extensions/AutoView (= 3.1.3)
-    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.3)
-    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.3)
-    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.3)
-    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.3)
-    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.3)
-    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.3)
-    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.3)
-    - YapDatabase/Standard/Extensions/Hooks (= 3.1.3)
-    - YapDatabase/Standard/Extensions/ManualView (= 3.1.3)
-    - YapDatabase/Standard/Extensions/Relationships (= 3.1.3)
-    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.3)
-    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.3)
-    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.3)
-    - YapDatabase/Standard/Extensions/View (= 3.1.3)
-  - YapDatabase/Standard/Extensions/ActionManager (3.1.3):
+    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.4)
+    - YapDatabase/Standard/Extensions/AutoView (= 3.1.4)
+    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.4)
+    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.4)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.4)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.4)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.4)
+    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.4)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.4)
+    - YapDatabase/Standard/Extensions/Hooks (= 3.1.4)
+    - YapDatabase/Standard/Extensions/ManualView (= 3.1.4)
+    - YapDatabase/Standard/Extensions/Relationships (= 3.1.4)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.4)
+    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.4)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.4)
+    - YapDatabase/Standard/Extensions/View (= 3.1.4)
+  - YapDatabase/Standard/Extensions/ActionManager (3.1.4):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/AutoView
-  - YapDatabase/Standard/Extensions/AutoView (3.1.3):
+  - YapDatabase/Standard/Extensions/AutoView (3.1.4):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/CloudCore (3.1.3):
+  - YapDatabase/Standard/Extensions/CloudCore (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/CloudKit (3.1.3):
+  - YapDatabase/Standard/Extensions/CloudKit (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.3):
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.3):
+  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.3):
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/FilteredView (3.1.3):
-    - YapDatabase/Standard/Core
-    - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/Hooks (3.1.3):
-    - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/ManualView (3.1.3):
+  - YapDatabase/Standard/Extensions/FilteredView (3.1.4):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/View
-  - YapDatabase/Standard/Extensions/Relationships (3.1.3):
+  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.3):
+  - YapDatabase/Standard/Extensions/Hooks (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.3):
+  - YapDatabase/Standard/Extensions/ManualView (3.1.4):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/Relationships (3.1.4):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.4):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.4):
     - YapDatabase/Standard/Core
     - YapDatabase/Standard/Extensions/AutoView
     - YapDatabase/Standard/Extensions/FullTextSearch
-  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.3):
+  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.4):
     - YapDatabase/Standard/Core
-  - YapDatabase/Standard/Extensions/View (3.1.3):
+  - YapDatabase/Standard/Extensions/View (3.1.4):
     - YapDatabase/Standard/Core
   - YYKeyboardManager (1.0.1)
 
@@ -194,7 +194,7 @@ DEPENDENCIES:
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - SWHttpTrafficRecorder
-  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `stage`)
+  - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `release/3.1.4`)
   - YYKeyboardManager
 
 SPEC REPOS:
@@ -239,7 +239,7 @@ EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   YapDatabase:
-    :branch: stage
+    :branch: release/3.1.4
     :git: https://github.com/ainopara/YapDatabase.git
 
 CHECKOUT OPTIONS:
@@ -250,7 +250,7 @@ CHECKOUT OPTIONS:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   YapDatabase:
-    :commit: dc70a7d3bf883cc819d01c3ba96f8f2c5f8578c4
+    :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
     :git: https://github.com/ainopara/YapDatabase.git
 
 SPEC CHECKSUMS:
@@ -287,9 +287,9 @@ SPEC CHECKSUMS:
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
-  YapDatabase: 36e10c3059d33686951eba566fa15c0fce2497ed
+  YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 0bb13a6b7d87374bb255733ed1f32ddc78ac35ca
+PODFILE CHECKSUM: eca26997bbd3848c95acb20df0c858e1472d2ea2
 
 COCOAPODS: 1.8.4
