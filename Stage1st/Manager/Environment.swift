@@ -78,7 +78,6 @@ class Environment: NSObject {
             .store(in: bag)
 
         colorManager = ColorManager(overrideNightMode: overrideNightMode)
-        colorManager.window = UIApplication.shared.delegate!.window!
         eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Self.cacheDatabasePath(with: cacheDatabaseName))
         grdb = try! DatabaseQueue(path: Self.grdbPath(with: grdbName))

@@ -8,7 +8,6 @@
 
 import UIKit
 import Combine
-import RxSwift
 
 @objcMembers
 public final class ColorManager: NSObject {
@@ -20,13 +19,15 @@ public final class ColorManager: NSObject {
 
     weak var window: UIWindow? { didSet { bindTraitCollection() } }
     private let overrideNightMode: CurrentValueSubject<Bool?, Never>
+    let resolvedUserInterfaceStyle: CurrentValueSubject<UIUserInterfaceStyle, Never>
     private let traitCollection: CurrentValueSubject<UITraitCollection, Never> = CurrentValueSubject(UITraitCollection.current)
 
-    private let bag = DisposeBag()
-    private var windowBag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
+    private var windowBag = Set<AnyCancellable>()
 
     init(overrideNightMode: CurrentValueSubject<Bool?, Never>) {
         self.overrideNightMode = overrideNightMode
+        self.resolvedUserInterfaceStyle = CurrentValueSubject(.unspecified)
 
         super.init()
 
@@ -38,9 +39,9 @@ public final class ColorManager: NSObject {
             .sink { (style) in
                 NotificationCenter.default.post(name: .APPaletteDidChange, object: nil, userInfo: nil)
             }
-            .store(in: bag)
+            .store(in: &bag)
 
-        self.overrideNightMode
+        overrideNightMode
             .map { (isNightMode) -> UIUserInterfaceStyle in
                 switch isNightMode {
                 case .none:
@@ -51,21 +52,28 @@ public final class ColorManager: NSObject {
                     return .light
                 }
             }
+            .subscribe(resolvedUserInterfaceStyle)
+            .store(in: &bag)
+
+        resolvedUserInterfaceStyle
+            .dropFirst(1)
             .sink { [weak self] (style) in
                 guard let strongSelf = self else { return }
                 strongSelf.window?.overrideUserInterfaceStyle = style
             }
-            .store(in: bag)
+            .store(in: &bag)
     }
 
     func bindTraitCollection() {
-        windowBag = DisposeBag()
+        windowBag = Set<AnyCancellable>()
 
         guard let window = self.window as? DarkModeDetectWindow else { return }
 
+        window.overrideUserInterfaceStyle = resolvedUserInterfaceStyle.value
+
         window.traitCollectionSubject
             .subscribe(traitCollection)
-            .store(in: windowBag)
+            .store(in: &windowBag)
     }
 
     func setupPalette() {

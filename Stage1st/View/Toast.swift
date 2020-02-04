@@ -67,6 +67,9 @@ class Toast: UIWindow {
 
     func post(message: String, duration: Duration = .forever, animated: Bool = true) {
         makeKeyAndVisible()
+
+        self.overrideUserInterfaceStyle = AppEnvironment.current.colorManager.resolvedUserInterfaceStyle.value
+
         switch state {
         case .presenting:
             textLabel.text = message
