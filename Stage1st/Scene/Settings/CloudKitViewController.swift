@@ -9,7 +9,7 @@
 import SnapKit
 import QuickTableViewController
 import YapDatabase
-import RxSwift
+import Combine
 
 class CloudKitViewController: QuickTableViewController {
 
@@ -34,7 +34,7 @@ class CloudKitViewController: QuickTableViewController {
 
         AppEnvironment.current.cloudkitManager.state.sink { [weak self] (_) in
             self?.dataSourceDidChanged()
-        }store(in: &bag)
+        }.store(in: &bag)
 
         AppEnvironment.current.cloudkitManager.accountStatus.signal.observeValues { [weak self] (_) in
             self?.dataSourceDidChanged()

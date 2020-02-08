@@ -8,8 +8,7 @@
 
 import Foundation
 import SnapKit
-import RxSwift
-import RxCocoa
+import Combine
 
 final class Hud: UIView {
 
@@ -75,24 +74,24 @@ final class Hud: UIView {
             make.width.height.equalTo(40.0)
         }
 
-        refreshButton.rx.tap
-            .subscribe(onNext: { [weak self] in
+        refreshButton.publisher(for: .touchUpInside)
+            .sink { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.refreshBlock?()
                 strongSelf.hide()
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
 
-        NotificationCenter.default.rx.notification(.APPaletteDidChange)
+        NotificationCenter.default.publisher(for: .APPaletteDidChange)
             .map { _ -> Void in return }
-            .startWith(())
-            .subscribe(onNext: { [weak self] _ in
+            .prepend(())
+            .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.layer.borderColor = AppEnvironment.current.colorManager.colorForKey("hud.border").cgColor
                 self.backgroundColor = AppEnvironment.current.colorManager.colorForKey("hud.background")
                 self.messageLabel.textColor = AppEnvironment.current.colorManager.colorForKey("hud.text")
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
     }
 
     required init?(coder: NSCoder) {

@@ -10,7 +10,6 @@ import Foundation
 import Reachability
 import GRDB
 import Combine
-import RxSwift
 
 @objcMembers
 class AppEnvironment: NSObject {

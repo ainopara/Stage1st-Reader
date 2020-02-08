@@ -206,7 +206,6 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
 }
 
 import Combine
-import RxSwift
 
 private class EmptyView: UIView {
     let label = UILabel()
@@ -223,7 +222,7 @@ private class EmptyView: UIView {
                 return username == nil ? "未登录" : "无信息"
             }
             .assign(to: \.text, on: label)
-            store(in: &bag)
+            .store(in: &bag)
 
         label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
         label.font = .boldSystemFont(ofSize: 18.0)
@@ -240,10 +239,8 @@ private class EmptyView: UIView {
     }
 }
 
-#if DEBUG
 import SwiftUI
 
-@available(iOS 13.0, *)
 struct NoticeView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<NoticeView>) -> NoticeViewController {
@@ -254,11 +251,8 @@ struct NoticeView: UIViewControllerRepresentable {
     }
 }
 
-@available(iOS 13.0, *)
 struct NoticeView_Previews: PreviewProvider {
     static var previews: some View {
         NoticeView()
     }
 }
-
-#endif

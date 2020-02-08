@@ -47,8 +47,6 @@ target "Stage1st" do
     # RAC
     pod 'ReactiveSwift', '~> 6.0'
     pod 'ReactiveCocoa', '~> 10.0'
-    pod 'RxSwift', '~> 5.0'
-    pod 'RxCocoa', '~> 5.0'
 
     # Others
     pod 'Reachability'

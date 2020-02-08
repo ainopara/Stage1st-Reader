@@ -9,7 +9,6 @@
 import CloudKit
 import ReactiveSwift
 import Combine
-import RxSwift
 import YapDatabase
 import CocoaLumberjack
 import Reachability
@@ -194,7 +193,7 @@ class CloudKitManager: NSObject {
             case .halt:
                 strongSelf.ensureSuspend()
             }
-        }store(in: &bag)
+        }.store(in: &bag)
 
         // Debug
 //        state.combinePrevious().startWithValues { (previous, current) in

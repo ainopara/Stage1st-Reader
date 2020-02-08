@@ -77,12 +77,6 @@ PODS:
     - ReactiveSwift (~> 6.1)
   - ReactiveSwift (6.1.0)
   - Reveal-SDK (24)
-  - RxCocoa (5.0.0):
-    - RxRelay (~> 5)
-    - RxSwift (~> 5)
-  - RxRelay (5.0.0):
-    - RxSwift (~> 5)
-  - RxSwift (5.0.0)
   - SnapKit (5.0.1)
   - SnapshotTesting (1.6.0)
   - SWHttpTrafficRecorder (1.0.2)
@@ -189,8 +183,6 @@ DEPENDENCIES:
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
   - Reveal-SDK
-  - RxCocoa (~> 5.0)
-  - RxSwift (~> 5.0)
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - SWHttpTrafficRecorder
@@ -223,9 +215,6 @@ SPEC REPOS:
     - ReactiveCocoa
     - ReactiveSwift
     - Reveal-SDK
-    - RxCocoa
-    - RxRelay
-    - RxSwift
     - SnapKit
     - SnapshotTesting
     - SWHttpTrafficRecorder
@@ -281,15 +270,12 @@ SPEC CHECKSUMS:
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
   Reveal-SDK: 5d7e56b8f018c0a88b3a2c10bf68d598bbd3b071
-  RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
-  RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
-  RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: eca26997bbd3848c95acb20df0c858e1472d2ea2
+PODFILE CHECKSUM: 4120e07de32b7e548e6ac1a6830988612c66bb34
 
 COCOAPODS: 1.8.4
