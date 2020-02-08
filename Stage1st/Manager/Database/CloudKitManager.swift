@@ -58,7 +58,7 @@ class CloudKitManager: NSObject {
         case halt
     }
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     func updateAccountStatus() {
         cloudKitContainer.accountStatus { [weak self] (accountStatus, error) in
@@ -194,7 +194,7 @@ class CloudKitManager: NSObject {
             case .halt:
                 strongSelf.ensureSuspend()
             }
-        }.store(in: bag)
+        }store(in: &bag)
 
         // Debug
 //        state.combinePrevious().startWithValues { (previous, current) in

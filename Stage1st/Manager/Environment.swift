@@ -46,7 +46,7 @@ class Environment: NSObject {
     let databaseAdapter: S1YapDatabaseAdapter
     let dataCenter: DataCenter
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     init(
         forumName: String = "Stage1st",
@@ -75,7 +75,7 @@ class Environment: NSObject {
                 }
             }
             .subscribe(overrideNightMode)
-            .store(in: bag)
+            .store(in: &bag)
 
         colorManager = ColorManager(overrideNightMode: overrideNightMode)
         eventTracker = S1EventTracker()

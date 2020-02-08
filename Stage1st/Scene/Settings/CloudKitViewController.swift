@@ -13,7 +13,7 @@ import RxSwift
 
 class CloudKitViewController: QuickTableViewController {
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -34,7 +34,7 @@ class CloudKitViewController: QuickTableViewController {
 
         AppEnvironment.current.cloudkitManager.state.sink { [weak self] (_) in
             self?.dataSourceDidChanged()
-        }.store(in: bag)
+        }store(in: &bag)
 
         AppEnvironment.current.cloudkitManager.accountStatus.signal.observeValues { [weak self] (_) in
             self?.dataSourceDidChanged()

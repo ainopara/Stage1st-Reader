@@ -30,7 +30,7 @@ final class Hud: UIView {
 
     private var refreshBlock: (() -> Void)?
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

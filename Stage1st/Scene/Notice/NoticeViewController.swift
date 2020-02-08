@@ -211,7 +211,7 @@ import RxSwift
 private class EmptyView: UIView {
     let label = UILabel()
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -223,7 +223,7 @@ private class EmptyView: UIView {
                 return username == nil ? "未登录" : "无信息"
             }
             .assign(to: \.text, on: label)
-            .store(in: bag)
+            store(in: &bag)
 
         label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
         label.font = .boldSystemFont(ofSize: 18.0)

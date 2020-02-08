@@ -29,7 +29,6 @@
 		8619022F2345CB35000A0750 /* ContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619022E2345CB35000A0750 /* ContentCell.swift */; };
 		861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */; };
 		8619023423489420000A0750 /* Future+sinkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023323489420000A0750 /* Future+sinkResult.swift */; };
-		8619023623489446000A0750 /* Cancellable+DisposeBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619023523489446000A0750 /* Cancellable+DisposeBag.swift */; };
 		861902382348E9C5000A0750 /* DarkModeDetectWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861902372348E9C5000A0750 /* DarkModeDetectWindow.swift */; };
 		8619EB1D20921D8500F1E299 /* Stage1stSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */; };
 		86221B841CA6594D00015522 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86221B831CA6594D00015522 /* ContentViewModel.swift */; };
@@ -203,7 +202,6 @@
 		8619022E2345CB35000A0750 /* ContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCell.swift; sourceTree = "<group>"; };
 		861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+DailyTask.swift"; sourceTree = "<group>"; };
 		8619023323489420000A0750 /* Future+sinkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Future+sinkResult.swift"; sourceTree = "<group>"; };
-		8619023523489446000A0750 /* Cancellable+DisposeBag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cancellable+DisposeBag.swift"; sourceTree = "<group>"; };
 		861902372348E9C5000A0750 /* DarkModeDetectWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeDetectWindow.swift; sourceTree = "<group>"; };
 		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
@@ -416,7 +414,6 @@
 			isa = PBXGroup;
 			children = (
 				8619023323489420000A0750 /* Future+sinkResult.swift */,
-				8619023523489446000A0750 /* Cancellable+DisposeBag.swift */,
 				861780F223C0ADBB008FB6F9 /* UIControl+publisher.swift */,
 			);
 			path = Utilities;
@@ -1310,7 +1307,6 @@
 				86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */,
 				865544B421E23A0D007B7557 /* RawForum.swift in Sources */,
 				86654BF7217C614200F50A90 /* ReplyNotice.swift in Sources */,
-				8619023623489446000A0750 /* Cancellable+DisposeBag.swift in Sources */,
 				866756A921DB5F7800D71479 /* DiscuzClient+Login.swift in Sources */,
 				86EFEE5721CDFE4700A8A8BB /* MultipartFormEncoding.swift in Sources */,
 				8634ADF21FAAF3C2004A9CB7 /* GSStaticTableViewController.m in Sources */,
