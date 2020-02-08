@@ -6,8 +6,7 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import RxSwift
-import RxCocoa
+import Combine
 import SnapKit
 import Kingfisher
 
@@ -22,7 +21,7 @@ final class UserViewController: UIViewController {
     private let customStatusLabel = UILabel(frame: .zero)
     private let infoLabel = UILabel(frame: .zero)
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     // MARK: - Life Cycle
     init(viewModel: UserViewModel) {
@@ -38,12 +37,12 @@ final class UserViewController: UIViewController {
 
         bindViewModel()
 
-        NotificationCenter.default.rx.notification(.APPaletteDidChange)
-            .subscribe(onNext: { [weak self] notification in
+        NotificationCenter.default.publisher(for: .APPaletteDidChange)
+            .sink { [weak self] notification in
                 guard let strongSelf = self else { return }
                 strongSelf.didReceivePaletteChangeNotification(notification)
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
 
 //        viewModel.updateCurrentUserProfile { [weak self] result in
 //            guard let strongSelf = self else { return }
@@ -64,30 +63,30 @@ final class UserViewController: UIViewController {
     func bindViewModel() {
 
         viewModel.user
-            .subscribe(onNext: { [weak self] (user) in
+            .sink { [weak self] (user) in
                 guard let strongSelf = self else { return }
 
                 if let avatarURL = user.avatarURL {
                     strongSelf.avatarView.kf.setImage(with: avatarURL)
                 }
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
 
         viewModel.username
-            .bind(to: usernameLabel.rx.text)
-            .disposed(by: bag)
+            .sink { [weak self] in self?.usernameLabel.text = $0 }
+            .store(in: &bag)
 
         viewModel.isBlocked
             .map { $0 ? "解除屏蔽" : "屏蔽" }
-            .bind(to: blockButton.rx.title())
-            .disposed(by: bag)
+            .sink { [weak self] in self?.blockButton.setTitle($0, for: .normal) }
+            .store(in: &bag)
 
-        blockButton.rx.controlEvent(.touchUpInside)
-            .subscribe(onNext: { [weak self] in
+        blockButton.publisher(for: .touchUpInside)
+            .sink { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.toggleBlockStatus()
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
     }
 
     override func viewDidLoad() {

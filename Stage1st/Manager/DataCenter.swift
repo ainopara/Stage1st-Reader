@@ -12,7 +12,6 @@ import WebKit
 import Alamofire
 import ReactiveSwift
 import Combine
-import RxSwift
 
 class DataCenter: NSObject {
     let apiManager: DiscuzClient
@@ -32,7 +31,7 @@ class DataCenter: NSObject {
     }
     let dailyTaskSucceed = PassthroughSubject<Result<String, Error>, Never>()
 
-    private let bag = DisposeBag()
+    private var bag = Set<AnyCancellable>()
 
     init(
         apiManager: DiscuzClient,
@@ -184,7 +183,7 @@ extension DataCenter {
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let topics, let searchID):
+            case .success((let topics, let searchID)):
                 let processedTopics = topics.map { topic -> S1Topic in
                     guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
                         return topic
@@ -206,7 +205,7 @@ extension DataCenter {
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let topics, let newSearchID):
+            case .success((let topics, let newSearchID)):
                 let processedTopics = topics.map { topic -> S1Topic in
                     guard let tracedTopic = strongSelf.traced(topicID: Int(truncating: topic.topicID))?.copy() as? S1Topic else {
                         return topic
@@ -522,9 +521,9 @@ private extension DataCenter {
                             }
                         }
                 }
-                .store(in: strongSelf.bag)
+                .store(in: &strongSelf.bag)
         }
-        .store(in: bag)
+        .store(in: &bag)
 
         dailyTaskSucceed
             .sink { (result) in
@@ -535,7 +534,7 @@ private extension DataCenter {
                     Toast.shared.post(message: error.localizedDescription, duration: .second(1.0))
                 }
         }
-        .store(in: bag)
+        .store(in: &bag)
     }
 }
 

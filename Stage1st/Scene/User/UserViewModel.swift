@@ -8,32 +8,32 @@
 
 import Foundation
 import Alamofire
-import RxSwift
-import RxRelay
+import Combine
 
 class UserViewModel {
-    var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
-    let user: BehaviorRelay<User>
-    let isBlocked = BehaviorRelay<Bool>(value: false)
-    let username = BehaviorRelay<String>(value: "")
+    private var dataCenter: DataCenter { AppEnvironment.current.dataCenter }
 
-    let bag = DisposeBag()
+    let user: CurrentValueSubject<User, Never>
+    let isBlocked = CurrentValueSubject<Bool, Never>(false)
+    let username = CurrentValueSubject<String, Never>("")
+
+    var bag = Set<AnyCancellable>()
 
     static let userBlockStatusDidChangeNotification = Notification.Name(rawValue: "UserViewModel.userBlockStatusDidChangeNotification")
 
     init(user: User) {
-        self.user = BehaviorRelay(value: user)
+        self.user = CurrentValueSubject(user)
 
         self.user
             .map { [weak self] in self?.dataCenter.userIDIsBlocked(ID: $0.id) ?? false }
-            .bind(to: isBlocked)
-            .disposed(by: bag)
+            .subscribe(isBlocked)
+            .store(in: &bag)
 
         self.user
             .map { $0.name }
-            .distinctUntilChanged()
-            .bind(to: username)
-            .disposed(by: bag)
+            .removeDuplicates()
+            .subscribe(username)
+            .store(in: &bag)
     }
 
     func updateCurrentUserProfile(_ resultBlock: @escaping (Result<User, Error>) -> Void) {
@@ -41,7 +41,7 @@ class UserViewModel {
             guard let strongSelf = self else { return }
             switch result {
             case let .success(user):
-                strongSelf.user.accept(user)
+                strongSelf.user.send(user)
                 resultBlock(.success(user))
             case let .failure(error):
                 resultBlock(.failure(error))
@@ -57,6 +57,7 @@ class UserViewModel {
             dataCenter.blockUser(with: user.value.id)
         }
 
-        user.accept(user.value)
+        // FIXME: Remove this workaround which trigger isBlocked recalculation.
+        user.send(user.value)
     }
 }
