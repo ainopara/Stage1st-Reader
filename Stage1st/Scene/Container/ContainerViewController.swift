@@ -9,8 +9,7 @@
 import SnapKit
 import DeviceKit
 import ReactiveSwift
-import RxSwift
-import RxCocoa
+import Combine
 
 protocol ContainerDelegate: class {
     func containerViewControllerShouldSelectTabButton(at index: Int)
@@ -33,12 +32,12 @@ class ContainerViewController: UIViewController {
 
     private let pasteboardToast = PasteboardLinkHintToast()
 
-    let pasteboardString = BehaviorRelay<String>(value: "")
-    let pasteboardContainsValidURL = BehaviorRelay<Bool>(value: false)
+    let pasteboardString = CurrentValueSubject<String, Never>("")
+    let pasteboardContainsValidURL = CurrentValueSubject<Bool, Never>(false)
 
     let pasteboardAnimator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UICubicTimingParameters(animationCurve: .easeInOut))
 
-    let bag = DisposeBag()
+    var bag = Set<AnyCancellable>()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.selectedViewController = MutableProperty(self.topicListViewController)
@@ -58,7 +57,7 @@ class ContainerViewController: UIViewController {
                 strongSelf.scrollTabBar.keys = keys
                 strongSelf.topicListViewController.reset()
             }
-            .store(in: bag)
+            .store(in: &bag)
 
         scrollTabBar.reactive.selection <~ MutableProperty
             .combineLatest(topicListSelection, selectedViewController)
@@ -78,17 +77,17 @@ class ContainerViewController: UIViewController {
             object: nil
         )
 
-        NotificationCenter.default.rx.notification(UIPasteboard.changedNotification)
+        NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)
             .map { _ in return () }
-            .startWith(())
+            .prepend(())
             .map { UIPasteboard.general.string ?? "" }
-            .bind(to: pasteboardString)
-            .disposed(by: bag)
+            .subscribe(pasteboardString)
+            .store(in: &bag)
 
-        NotificationCenter.default.rx.notification(UIPasteboard.removedNotification)
+        NotificationCenter.default.publisher(for: UIPasteboard.removedNotification)
             .map { _ in "" }
-            .bind(to: pasteboardString)
-            .disposed(by: bag)
+            .subscribe(pasteboardString)
+            .store(in: &bag)
 
         // Initialize Child View Controller
 
@@ -128,12 +127,12 @@ class ContainerViewController: UIViewController {
                 }
                 return false
             }
-            .bind(to: pasteboardContainsValidURL)
-            .disposed(by: bag)
+            .subscribe(pasteboardContainsValidURL)
+            .store(in: &bag)
 
         pasteboardContainsValidURL
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] shouldBeShowing in
+            .removeDuplicates()
+            .sink { [weak self] shouldBeShowing in
                 guard let strongSelf = self else { return }
                 strongSelf.view.layoutIfNeeded()
                 if shouldBeShowing {
@@ -160,11 +159,11 @@ class ContainerViewController: UIViewController {
                     }
                 }
                 strongSelf.pasteboardAnimator.startAnimation()
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
 
-        pasteboardToast.button.rx.controlEvent(.touchUpInside)
-            .subscribe(onNext: { [weak self] in
+        pasteboardToast.button.publisher(for: .touchUpInside)
+            .sink { [weak self] event in
                 guard let strongSelf = self else { return }
 
                 guard let topic = Parser.extractTopic(from: strongSelf.pasteboardString.value) else {
@@ -175,8 +174,8 @@ class ContainerViewController: UIViewController {
                 let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
                 strongSelf.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
                 UIPasteboard.general.string = ""
-            })
-            .disposed(by: bag)
+            }
+            .store(in: &bag)
     }
 
     override func viewWillAppear(_ animated: Bool) {
