@@ -501,7 +501,12 @@ private extension DataCenter {
                 guard let strongSelf = self else { return }
                 guard let formhash = formhash else { return }
                 guard let currentUsername = AppEnvironment.current.settings.currentUsername.value else { return }
-                guard !Calendar.current.isDate(Date(), inSameDayAs: strongSelf.lastDailyTaskFinishDate[currentUsername, default: .distantPast]) else { return }
+                guard let timezone = TimeZone(identifier: "Asia/Shanghai") else { return }
+
+                var calendar = Calendar(identifier: .chinese)
+                calendar.timeZone = timezone
+
+                guard !calendar.isDate(Date(), inSameDayAs: strongSelf.lastDailyTaskFinishDate[currentUsername, default: .distantPast]) else { return }
                 strongSelf.apiManager.dailyTask(formhash: formhash)
                     .sinkResult { [weak self] (result) in
                         guard let strongSelf = self else { return }

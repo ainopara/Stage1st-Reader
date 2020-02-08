@@ -39,7 +39,6 @@ target "Stage1st" do
     pod 'Fabric'
     pod 'Crashlytics'
 
-    pod 'Reveal-SDK', :configurations => ['Debug']
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
     pod 'OHHTTPStubs/HTTPMessage', :configurations => ['Debug']
     pod 'SWHttpTrafficRecorder', :configurations => ['Debug']
