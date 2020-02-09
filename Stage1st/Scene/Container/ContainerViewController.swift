@@ -102,18 +102,10 @@ class ContainerViewController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(scrollTabBar)
-        if #available(iOS 11.0, *) {
-            scrollTabBar.snp.makeConstraints { (make) in
-                make.leading.trailing.equalTo(view)
-                make.bottom.equalTo(view.snp.bottom)
-                make.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-44.0)
-            }
-        } else {
-            scrollTabBar.snp.makeConstraints { (make) in
-                make.leading.trailing.equalTo(view)
-                make.bottom.equalTo(view.snp.bottom)
-                make.height.equalTo(44.0)
-            }
+        scrollTabBar.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(view)
+            make.bottom.equalTo(view.snp.bottom)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-44.0)
         }
 
         pasteboardToast.alpha = 0.0

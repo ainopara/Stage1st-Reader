@@ -145,8 +145,7 @@
     NSInteger maxIndex = 0;
     for(UIButton *button in _buttons) {
         NSInteger index = button.tag;
-        [button setFrame:CGRectMake(widthPerItem * index, 0.0, ceilf(widthPerItem) + 1, self.bounds.size.height)];
-        [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 0.0, self.bounds.size.height - self.expectedButtonHeight, 0.0)];
+        [button setFrame:CGRectMake(widthPerItem * index, 0.0, ceilf(widthPerItem) + 1, _expectedButtonHeight)];
         if (index > maxIndex) {
             maxIndex = index;
         }
