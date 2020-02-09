@@ -1,5 +1,5 @@
 //
-//  S1AppDelegate.swift
+//  AppDelegate.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 4/4/16.
@@ -14,13 +14,15 @@ import Fabric
 import Crashlytics
 import Reachability
 import Kingfisher
+import Sentry
+import Keys
 
 #if DEBUG
 import OHHTTPStubs
 #endif
 
 @UIApplicationMain
-final class S1AppDelegate: UIResponder, UIApplicationDelegate {
+final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     private(set) var rootNavigationController: RootNavigationController?
@@ -29,13 +31,9 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
     // swiftlint:enable weak_delegate
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // Fabric
-        #if DEBUG
-        #else
-        Fabric.with([Crashlytics.self])
-        #endif
 
         setupLogging()
+        setupCrashReporters()
 
         #if DEBUG
         if let isSnapshotTest = ProcessInfo().environment["STAGE1ST_SNAPSHOT_TEST"], isSnapshotTest == "true" {
@@ -123,7 +121,7 @@ final class S1AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: Setup
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     private func updateStage1stDomainIfNecessary() {
         let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
@@ -162,7 +160,7 @@ extension S1AppDelegate {
 
 // MARK: Cleaning
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         AppEnvironment.current.dataCenter.cleaning()
@@ -171,7 +169,7 @@ extension S1AppDelegate {
 
 // MARK: URL Scheme
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
@@ -202,7 +200,7 @@ extension S1AppDelegate {
 
 // MARK: Hand Off
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
         // TODO: Show an alert to tell user we are restoring state from hand off here.
@@ -233,7 +231,7 @@ extension S1AppDelegate {
 
 // MARK: Background Refresh
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         S1LogInfo("[Backgournd Fetch] fetch called")
@@ -244,164 +242,108 @@ extension S1AppDelegate {
 
 // MARK: Logging
 
-extension S1AppDelegate {
+private extension AppDelegate {
 
-    @objc func setupLogging() {
+    func setupLogging() {
+
+        dynamicLogLevel = .debug
+
+        let errorLevelFormatter = ErrorLevelLogFormatter()
+        let fileLogFormatter = FileLogFormatter()
+        let queueFormatter = DispatchQueueLogFormatter()
+        queueFormatter.setReplacementString("cloudkit", forQueueLabel: "com.ainopara.stage1st.cloudkit")
+        let dateLogFormatter = DateLogFormatter()
+
+        func setupSentryLogger() {
+            let sentryLogFormatter = DDMultiFormatter()
+            sentryLogFormatter.add(fileLogFormatter)
+            sentryLogFormatter.add(queueFormatter)
+
+            let sentryLogger = SentryBreadcrumbsLogger.shared
+            sentryLogger.logFormatter = sentryLogFormatter
+            DDLog.add(sentryLogger)
+        }
 
         #if DEBUG
 
-        dynamicLogLevel = .debug
+        func setupOSLogger() {
+            let osLoggerFormatter = DDMultiFormatter()
+            osLoggerFormatter.add(queueFormatter)
+            osLoggerFormatter.add(errorLevelFormatter)
 
-        let formatter = DDMultiFormatter()
-        let queueFormatter = DispatchQueueLogFormatter()
-        queueFormatter?.setReplacementString("cloudkit", forQueueLabel: "com.ainopara.stage1st.cloudkit")
-        formatter.add(queueFormatter)
-        formatter.add(ErrorLevelLogFormatter())
+            let osLogger = OSLogger.shared
+            osLogger.logFormatter = osLoggerFormatter
+            DDLog.add(osLogger)
+        }
 
-        let osLogger = OSLogger.shared
-        osLogger.logFormatter = formatter
-        DDLog.add(osLogger)
+        func setupInMemoryLogger() {
+            let inMemoryLogFormatter = DDMultiFormatter()
+            inMemoryLogFormatter.add(fileLogFormatter)
+            inMemoryLogFormatter.add(queueFormatter)
+            inMemoryLogFormatter.add(errorLevelFormatter)
+            inMemoryLogFormatter.add(dateLogFormatter)
 
-        let inMemoryLogFormatter = DDMultiFormatter()
-        inMemoryLogFormatter.add(FileLogFormatter())
-        inMemoryLogFormatter.add(queueFormatter)
-        inMemoryLogFormatter.add(ErrorLevelLogFormatter())
-        inMemoryLogFormatter.add(DateLogFormatter())
+            let inMemoryLogger = InMemoryLogger.shared
+            inMemoryLogger.logFormatter = inMemoryLogFormatter
+            DDLog.add(inMemoryLogger)
+        }
 
-        let inMemoryLogger = InMemoryLogger.shared
-        inMemoryLogger.logFormatter = inMemoryLogFormatter
-        DDLog.add(inMemoryLogger)
+        setupOSLogger()
+        setupInMemoryLogger()
+        setupSentryLogger()
 
         #else
 
-        dynamicLogLevel = .debug
+        func setupCrashlyticsLogger() {
+            let formatter = DDMultiFormatter()
+            formatter.add(fileLogFormatter)
+            formatter.add(queueFormatter)
+            formatter.add(errorLevelFormatter)
 
-        let formatter = DDMultiFormatter()
-        formatter.add(FileLogFormatter())
-        let queueFormatter = DispatchQueueLogFormatter()
-        queueFormatter?.setReplacementString("cloudkit", forQueueLabel: "com.ainopara.stage1st.cloudkit")
-        formatter.add(queueFormatter)
-        formatter.add(ErrorLevelLogFormatter())
+            let logger = CrashlyticsLogger.shared
+            logger.logFormatter = formatter
+            DDLog.add(logger)
+        }
 
-        let logger = CrashlyticsLogger.shared
-        logger.logFormatter = formatter
-        DDLog.add(logger)
-
+        setupCrashlyticsLogger()
+        setupSentryLogger()
         #endif
     }
-}
 
-// MARK: Migration
+    func setupCrashReporters() {
 
-extension S1AppDelegate {
+        /// Setup Crashlytics
 
-    @objc func migrate() {
-        migrateTo3_7()
-        migrateTo3_8()
-        migrateTo3_9()
-        migrateTo3_9_4()
-        migrateTo3_12_2()
-        migrateTo3_14()
-    }
+        #if DEBUG
+        #else
+        Fabric.with([Crashlytics.self])
+        #endif
 
-    private func migrateTo3_7() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        if UIDevice.current.userInterfaceIdiom == .pad && userDefaults.object(forKey: "FontSize") as? String == "17px" {
-            userDefaults.set("18px", forKey: "FontSize")
-        }
-    }
+        /// Setup Sentry
 
-    private func migrateTo3_8() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("真碉堡山") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["真碉堡山"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_9() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else
-        {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("DOTA") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["DOTA", "欧美动漫"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_9_4() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else
-        {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("泥潭") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_12_2() {
-        let cacheDatabaseManager = AppEnvironment.current.cacheDatabaseManager
-        let mahjongFaceItems = cacheDatabaseManager.mahjongFaceHistoryV2().map { item in MahjongFaceInputView.HistoryItem(id: item.key) }
-        cacheDatabaseManager.set(mahjongFaceHistory: cacheDatabaseManager.mahjongFaceHistory() + mahjongFaceItems)
-        cacheDatabaseManager.set(mahjongFaceHistoryV2: [])
-    }
-
-    private func migrateTo3_14() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2
-        else {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-
-        var displayForumArray = orderForumArray[0]
-        var hiddenForumArray = orderForumArray[1]
-
-        if !(displayForumArray + hiddenForumArray).contains("卓明谷") {
-            displayForumArray = displayForumArray.map {
-                if $0 == "外野" {
-                    return "卓明谷"
-                } else {
-                    return $0
-                }
+        if !Stage1stKeys().sentryDSN.isEmpty {
+            do {
+                Client.shared = try Client(dsn: Stage1stKeys().sentryDSN)
+                Client.shared?.enableAutomaticBreadcrumbTracking()
+                Client.shared?.breadcrumbs.maxBreadcrumbs = 100
+                Client.shared?.trackMemoryPressureAsEvent()
+                try Client.shared?.startCrashHandler()
+            } catch let error {
+                S1LogError("Failed to setup sentry: \(error)")
             }
 
-            hiddenForumArray = hiddenForumArray.map {
-                if $0 == "外野" {
-                    return "卓明谷"
-                } else {
-                    return $0
-                }
-            }
-            userDefaults.set([displayForumArray, hiddenForumArray + ["火星里侧", "菠菜"]], forKey: "Order")
+            #if DEBUG
+            Client.shared?.environment = "development"
+            #else
+            Client.shared?.environment = "production"
+            #endif
         }
     }
 }
 
 // MARK: Push Notification For CloudKit Sync
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         S1LogDebug("[APNS] Registered for Push notifications with token: \(deviceToken)", category: .cloudkit)
@@ -431,7 +373,7 @@ extension S1AppDelegate {
 
 import SWHttpTrafficRecorder
 
-extension S1AppDelegate {
+extension AppDelegate {
 
     private func prepareForSnapshotTest() {
         URLCache.shared.removeAllCachedResponses()

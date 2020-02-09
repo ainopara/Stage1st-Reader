@@ -94,7 +94,7 @@ final class SettingsViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        Crashlytics.sharedInstance().setObjectValue("SettingsViewController", forKey: "lastViewController")
+        AppEnvironment.current.eventTracker.setObjectValue("SettingsViewController", forKey: "lastViewController")
     }
 
     deinit {

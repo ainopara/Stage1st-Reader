@@ -923,7 +923,7 @@ extension ContentViewController: WebViewEventDelegate {
     }
 
     func generalScriptMessageHandlerTouchEvent(_: GeneralScriptMessageHandler) {
-        let appDelegate = UIApplication.shared.delegate as! S1AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let currentColorPanGestureState = appDelegate.rootNavigationController?.colorPanRecognizer.state ?? .possible
 
         let shouldIgnoreTouchEvent = currentColorPanGestureState == .began || currentColorPanGestureState == .changed

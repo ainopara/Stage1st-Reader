@@ -1,12 +1,10 @@
 source 'https://cdn.cocoapods.org/'
 platform :ios, "13.1"
-use_frameworks!
+use_frameworks! :linkage => :static
 
 target "Stage1st" do
     # Network
     pod 'Alamofire', '5.0.0-rc.2'
-    pod 'Kingfisher', '5.8.1'
-    pod 'Kingfisher/SwiftUI', '5.8.1'
 
     # Model
     pod 'CodableExtensions'
@@ -28,7 +26,6 @@ target "Stage1st" do
     # XML
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'Fuzi', '~> 3.0'
-    pod 'GRMustache.swift'
     pod 'Html', '~> 0.3'
 
     # Debug
@@ -38,6 +35,7 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
+    pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '4.4.1'
 
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
     pod 'OHHTTPStubs/HTTPMessage', :configurations => ['Debug']
@@ -83,8 +81,7 @@ post_install do |installer|
         end
 
         pods_with_swift4_2 = [
-            'Fuzi',
-            'GRDB.swift'
+            'Fuzi'
         ]
         if pods_with_swift4_2.include? target.name then
             target.build_configurations.each do |config|
@@ -93,3 +90,11 @@ post_install do |installer|
         end
     end
 end
+
+plugin 'cocoapods-keys', {
+    :project => "Stage1st",
+    :target => "Stage1st",
+    :keys => [
+        "SentryDSN"
+    ]
+}

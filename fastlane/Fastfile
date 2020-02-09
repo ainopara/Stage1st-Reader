@@ -53,20 +53,7 @@ platform :ios do
       message: "Version bump to #{options[:version]}(#{build_number})."
     )
     upload_symbols_to_crashlytics
-  end
-
-  lane :refresh_dsyms do |options|
-    if !options[:version]
-      raise "No version specified!".red
-    end
-
-    if !options[:build]
-      raise "No build specified!".red
-    end
-
-    download_dsyms(version: options[:version], build_number: options[:build]) # Download dSYM files from iTC
-    upload_symbols_to_crashlytics     # Upload them to Crashlytics
-    clean_build_artifacts             # Delete the local dSYM files
+    upload_symbols_to_sentry
   end
 
   after_all do |lane|

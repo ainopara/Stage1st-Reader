@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Kingfisher
+import KingfisherSwiftUI
 
 struct ContentCell: View {
 

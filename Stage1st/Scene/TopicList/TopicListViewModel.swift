@@ -529,7 +529,7 @@ extension TopicListViewModel {
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let topics, let searchID):
+            case .success((let topics, let searchID)):
                 ensureMainThread {
                     guard strongSelf.activeRequestToken == token else {
                         S1LogWarn("Skipping search(for: \(term)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
@@ -576,7 +576,7 @@ extension TopicListViewModel {
             guard let strongSelf = self else { return }
 
             switch result {
-            case .success(let topics, let newSearchID):
+            case .success((let topics, let newSearchID)):
                 ensureMainThread {
                     guard strongSelf.activeRequestToken == token else {
                         S1LogWarn("Skipping loadNextSearchPage(for: \(searchID), page: \(page)) success because token(\(token)) != activeRequestToken(\(strongSelf.activeRequestToken))")
