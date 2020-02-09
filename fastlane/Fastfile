@@ -53,7 +53,7 @@ platform :ios do
       message: "Version bump to #{options[:version]}(#{build_number})."
     )
     upload_symbols_to_crashlytics
-    upload_symbols_to_sentry
+    sentry_upload_dsym
   end
 
   after_all do |lane|
