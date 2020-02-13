@@ -326,7 +326,6 @@ private extension AppDelegate {
                 Client.shared = try Client(dsn: Stage1stKeys().sentryDSN)
                 Client.shared?.enableAutomaticBreadcrumbTracking()
                 Client.shared?.breadcrumbs.maxBreadcrumbs = 100
-                Client.shared?.trackMemoryPressureAsEvent()
                 try Client.shared?.startCrashHandler()
             } catch let error {
                 S1LogError("Failed to setup sentry: \(error)")
