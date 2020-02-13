@@ -19,6 +19,8 @@ iOS Client for Stage1st. Get it on [App Store](https://itunes.apple.com/app/appl
 ## How to build
 1. Clone this repo.
 2. Checkout submodule via `git submodule update --init`
+3. Make sure you have cocoapods-keys installed (install via `gem install cocoapods-keys`)
+4. `pod keys set "SentryDSN" ""`
 3. `pod install` (Latest [CocoaPods](https://cocoapods.org) recommended)
 4. (Optional) Install [swiftlint](https://github.com/realm/SwiftLint).
 5. Build & run with Latest Xcode.
