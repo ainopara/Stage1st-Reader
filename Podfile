@@ -35,7 +35,7 @@ target "Stage1st" do
 
     pod 'Fabric'
     pod 'Crashlytics'
-    pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '4.4.1'
+    pod 'Sentry', :git => 'https://github.com/ainopara/sentry-cocoa.git', :branch => 'fix-crash'
 
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']
     pod 'OHHTTPStubs/HTTPMessage', :configurations => ['Debug']

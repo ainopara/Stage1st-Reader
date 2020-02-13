@@ -71,9 +71,9 @@ PODS:
   - ReactiveCocoa (10.1.0):
     - ReactiveSwift (~> 6.1)
   - ReactiveSwift (6.1.0)
-  - Sentry (4.4.1):
-    - Sentry/Core (= 4.4.1)
-  - Sentry/Core (4.4.1)
+  - Sentry (4.4.3):
+    - Sentry/Core (= 4.4.3)
+  - Sentry/Core (4.4.3)
   - SnapKit (5.0.1)
   - SnapshotTesting (1.6.0)
   - SWHttpTrafficRecorder (1.0.2)
@@ -177,7 +177,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
-  - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `4.4.1`)
+  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `fix-crash`)
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - SWHttpTrafficRecorder
@@ -222,8 +222,8 @@ EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 4.4.1
+    :branch: fix-crash
+    :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :branch: release/3.1.4
     :git: https://github.com/ainopara/YapDatabase.git
@@ -236,8 +236,8 @@ CHECKOUT OPTIONS:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 4.4.1
+    :commit: a2cde615527cc41201cf4cd3550a8811d09ca0c1
+    :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
     :git: https://github.com/ainopara/YapDatabase.git
@@ -268,13 +268,13 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
-  Sentry: 5d312a04e369154aeac616214f4dfc3cbcc8b296
+  Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 6c70e6ed5e1872fff4e964ec5ed13be95f4a1e18
+PODFILE CHECKSUM: f094dd5ffd4e588141b3f66ef99ef4b68221ad7e
 
 COCOAPODS: 1.9.0.beta.3
