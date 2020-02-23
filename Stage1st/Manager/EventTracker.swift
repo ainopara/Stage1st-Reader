@@ -65,6 +65,8 @@ class S1EventTracker: EventTracker {
         let event = Event(level: .info)
         event.message = name
         event.tags = attributes
+        /// Assigning an empty breadcrumbsSerialized will prevent client from attching stored breadcrumbs to this event
+        event.breadcrumbsSerialized = [:]
         Client.shared?.store(event)
     }
 

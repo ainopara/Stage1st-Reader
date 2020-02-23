@@ -325,7 +325,45 @@ private extension AppDelegate {
             do {
                 Client.shared = try Client(dsn: Stage1stKeys().sentryDSN)
                 Client.shared?.enableAutomaticBreadcrumbTracking()
-                Client.shared?.breadcrumbs.maxBreadcrumbs = 100
+                Client.shared?.maxEvents = 100
+                Client.shared?.maxBreadcrumbs = 100
+                Client.shared?.shouldQueueEvent = { (event, response, error) in
+                    // Taken from Apple Docs:
+                    // If a response from the server is received, regardless of whether the request completes successfully or fails,
+                    // the response parameter contains that information.
+                    guard let response = response else {
+                        // In case response is nil, we want to queue the event locally since this
+                        // indicates no internet connection
+                        return true
+                    }
+
+                    if response.statusCode == 429 {
+                        S1LogError("Rate limit reached, event will be stored and sent later")
+                        return true
+                    }
+                    // In all other cases we don't want to retry sending it and just discard the event
+                    let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 0, userInfo: [
+                        "release": event.releaseName ?? "",
+                        "response": "\(response)",
+                        "message": event.message,
+                        "level": event.level,
+                        "error": "\(String(describing: error))"
+                    ])
+                    Crashlytics.sharedInstance().recordError(nsError)
+                    return false
+                }
+
+                Client.shared?.willDropEvent = { (eventDict, response, error) in
+                    let nsError = NSError(domain: "SentryDropEventOnSendAllPhase", code: 0, userInfo: [
+                        "release": eventDict["release"] ?? "",
+                        "response": "\(String(describing: response))",
+                        "message": eventDict["message"] ?? "",
+                        "level": eventDict["level"] ?? "",
+                        "error": "\(String(describing: error))"
+                    ])
+                    Crashlytics.sharedInstance().recordError(nsError)
+                }
+
                 try Client.shared?.startCrashHandler()
             } catch let error {
                 S1LogError("Failed to setup sentry: \(error)")
