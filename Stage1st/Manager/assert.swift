@@ -11,7 +11,7 @@ import Foundation
 func assert(_ condition: @autoclosure () -> Bool, _ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
     if !condition() {
         let error = NSError(domain: ("\(file)" as NSString).lastPathComponent, code: Int(line), userInfo: ["message": message()])
-        AppEnvironment.current.eventTracker.recordError(error)
+        AppEnvironment.current.eventTracker.recordAssertionFailure(error)
     }
 
     Swift.assert(condition(), message(), file: file, line: line)
@@ -19,6 +19,6 @@ func assert(_ condition: @autoclosure () -> Bool, _ message: @autoclosure () -> 
 
 func assertionFailure(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) {
     let error = NSError(domain: ("\(file)" as NSString).lastPathComponent, code: Int(line), userInfo: ["message": message()])
-    AppEnvironment.current.eventTracker.recordError(error)
+    AppEnvironment.current.eventTracker.recordAssertionFailure(error)
     Swift.assertionFailure(message(), file: file, line: line)
 }
