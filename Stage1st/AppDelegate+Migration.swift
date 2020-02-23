@@ -17,6 +17,7 @@ extension AppDelegate {
         migrateTo3_9_4()
         migrateTo3_12_2()
         migrateTo3_14()
+        migrateTo3_15_4()
     }
 
     private func migrateTo3_7() {
@@ -110,6 +111,22 @@ extension AppDelegate {
                 }
             }
             userDefaults.set([displayForumArray, hiddenForumArray + ["火星里侧", "菠菜"]], forKey: "Order")
+        }
+    }
+
+    private func migrateTo3_15_4() {
+        let userDefaults = AppEnvironment.current.settings.defaults
+        guard
+            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
+            orderForumArray.count == 2 else
+        {
+            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
+            return
+        }
+        let displayForumArray = orderForumArray[0]
+        let hiddenForumArray = orderForumArray[1]
+        if !(displayForumArray + hiddenForumArray).contains("虚拟主播VTB") {
+            userDefaults.set([displayForumArray, hiddenForumArray + ["虚拟主播VTB"]], forKey: "Order")
         }
     }
 }

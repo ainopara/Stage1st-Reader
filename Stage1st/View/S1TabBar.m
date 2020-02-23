@@ -26,7 +26,7 @@
         _lastFrameHeight = 0;
         _enabled = YES;
         _needRecalculateButtonWidth = YES;
-        _minButtonWidth = [NSNumber numberWithDouble:80.0];
+        _minButtonWidth = [NSNumber numberWithDouble:90.0];
         _expectPresentingButtonCount = [NSNumber numberWithInteger:8];
         _expectedButtonHeight = 44.0;
         self.backgroundColor = [AppEnvironment.current.colorManager colorForKey:@"tabbar.background"];
@@ -63,7 +63,7 @@
     __block CGFloat width = 0.0;
     [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        CGRect rect = CGRectMake(width, 0.0, 80.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
+        CGRect rect = CGRectMake(width, 0.0, 90.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
         
@@ -80,7 +80,7 @@
         [btn setTag:idx];
         [btn addTarget:self action:@selector(tapped:) forControlEvents:UIControlEventTouchUpInside];
         [self->_buttons addObject:btn];
-        width += 80.0; // The Width will be reset by layoutSubviews
+        width += 90.0; // The Width will be reset by layoutSubviews
         [self addSubview:btn];
     }];
     //update content size when user change keys in settings.
