@@ -589,7 +589,9 @@ extension CloudKitManager {
         S1LogWarn("Error creating zone: \(error)")
 
         errors.append(.createZoneError(error))
-        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.createZoneError(error).reportableError())
+        if let reportableError = S1CloudKitError.createZoneError(error).reportableError() {
+            AppEnvironment.current.eventTracker.recordError(reportableError)
+        }
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -627,7 +629,10 @@ extension CloudKitManager {
         S1LogWarn("Error creating zone subscription: \(error)")
 
         errors.append(.createZoneSubscriptionError(error))
-        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.createZoneSubscriptionError(error).reportableError())
+
+        if let reportableError = S1CloudKitError.createZoneSubscriptionError(error).reportableError() {
+            AppEnvironment.current.eventTracker.recordError(reportableError)
+        }
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -658,7 +663,10 @@ extension CloudKitManager {
         S1LogWarn("Fetch Record Changes Error: \(error)")
 
         errors.append(.fetchChangesError(error))
-        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.fetchChangesError(error).reportableError())
+
+        if let reportableError = S1CloudKitError.fetchChangesError(error).reportableError() {
+            AppEnvironment.current.eventTracker.recordError(reportableError)
+        }
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -725,7 +733,10 @@ extension CloudKitManager {
         S1LogWarn("Upload Error: \(error)")
 
         errors.append(.uploadError(error))
-        AppEnvironment.current.eventTracker.recordError(S1CloudKitError.uploadError(error).reportableError())
+
+        if let reportableError = S1CloudKitError.uploadError(error).reportableError() {
+            AppEnvironment.current.eventTracker.recordError(reportableError)
+        }
 
         if let ckError = error as? CKError {
             switch ckError.code {
@@ -1162,7 +1173,7 @@ enum S1CloudKitError: Error {
     case fetchChangesError(Error)
     case uploadError(Error)
 
-    func reportableError() -> NSError {
+    func reportableError() -> NSError? {
         switch self {
         case let .createZoneError(error):
             if let ckError = error as? CKError {
@@ -1173,6 +1184,9 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitCreateZoneError" + "-" + nsError.domain,
                     code: nsError.code,
@@ -1188,6 +1202,9 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitCreateZoneSubscriptionError" + "-" + nsError.domain,
                     code: nsError.code,
@@ -1203,6 +1220,9 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitFetchChangesError" + "-" + nsError.domain,
                     code: nsError.code,
@@ -1230,6 +1250,9 @@ enum S1CloudKitError: Error {
                 }
             } else {
                 let nsError = error as NSError
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitUploadError" + "-" + nsError.domain,
                     code: nsError.code,
