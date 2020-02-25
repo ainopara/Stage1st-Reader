@@ -41,8 +41,10 @@ extension Floor {
         self.indexMark = rawPost.number
         self.creationDate = Date(timeIntervalSince1970: TimeInterval(rawPost.dbdateline) ?? 0)
         self.content = rawPost.message ?? ""
-        self.attachments = (rawPost.attachments ?? [:]).mapValues({ (attachment) in
-            return attachment.url.appendingPathComponent(attachment.attachment)
+        self.attachments = (rawPost.attachments ?? [:]).compactMapValues({ (attachment) in
+            guard let attachmentInfo = attachment.attachment else { return nil }
+            guard let url = attachment.url else { return nil }
+            return url.appendingPathComponent(attachmentInfo)
         })
 
         self.preprocess()

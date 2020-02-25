@@ -43,26 +43,26 @@ public struct RawFloorList: Decodable {
             public let first: String
             public let author: String
             public let authorid: String
-            public let dateline: String
+            public let dateline: String?
             public let message: String?
-            public let anonymous: String
-            public let attachment: String
-            public let status: String
+            public let anonymous: String?
+            public let attachment: String?
+            public let status: String?
             public let username: String?
             public let adminid: String?
-            public let groupid: String
+            public let groupid: String?
             public let memberstatus: String?
-            public let number: String
+            public let number: String?
             public let dbdateline: String
             public struct Attachment: Decodable {
-                public let aid: String
+                public let aid: String?
                 public let tid: String?
                 public let pid: String?
                 public let uid: String?
                 public let dateline: String?
                 public let filename: String?
                 public let filesize: String?
-                public let attachment: String
+                public let attachment: String?
                 public let remote: String?
                 public let description: String?
                 public let readperm: String?
@@ -77,7 +77,7 @@ public struct RawFloorList: Decodable {
                 public let attachsize: String?
                 public let attachimg: String?
                 public let payed: String?
-                public let url: URL
+                public let url: URL?
                 public let dbdateline: String?
                 public let downloads: String?
             }
