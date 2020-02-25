@@ -356,10 +356,10 @@ extension LoginViewController {
 
     @objc func logIn(_: UIButton) {
         if inLoginState() {
-            AppEnvironment.current.eventTracker.logEvent(with: "Log Out")
+            AppEnvironment.current.eventTracker.logEvent("Log Out")
             logoutAction()
         } else {
-            AppEnvironment.current.eventTracker.logEvent(with: "Log In")
+            AppEnvironment.current.eventTracker.logEvent("Log In")
             loginAction()
         }
     }

@@ -523,7 +523,7 @@ extension ContentViewController {
             guard let strongSelf = self else { return }
 
             guard AppEnvironment.current.settings.currentUsername.value != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                     "type": "ReplyTopic",
                     "source": "Content",
                     "result": "Failed",
@@ -535,7 +535,7 @@ extension ContentViewController {
             }
 
             guard strongSelf.viewModel.topic.fID != nil, strongSelf.viewModel.topic.formhash != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                     "type": "ReplyTopic",
                     "source": "Content",
                     "result": "Failed",
@@ -544,7 +544,7 @@ extension ContentViewController {
                 return
             }
 
-            AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                 "type": "ReplyTopic",
                 "source": "Content",
                 "result": "Succeeded",
@@ -592,7 +592,7 @@ extension ContentViewController {
             let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
             activityController.popoverPresentationController?.barButtonItem = strongSelf.actionBarButtonItem
 
-            AppEnvironment.current.eventTracker.logEvent(with: "Share", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Share", attributes: [
                 "object": "Topic",
                 "source": "Content",
             ])
@@ -639,7 +639,7 @@ extension ContentViewController {
         let replyFloorBlock = { [weak self] in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
                     "result": "Failed",
@@ -649,7 +649,7 @@ extension ContentViewController {
             }
 
             guard settings.currentUsername.value != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                     "type": "ReplyFloor",
                     "source": "Content",
                     "result": "Failed",
@@ -659,7 +659,7 @@ extension ContentViewController {
                 return
             }
 
-            AppEnvironment.current.eventTracker.logEvent(with: "Click Reply", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Click Reply", attributes: [
                 "type": "ReplyFloor",
                 "source": "Content",
                 "result": "Succeeded",
@@ -682,7 +682,7 @@ extension ContentViewController {
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Report", comment: ""), style: .destructive, handler: { [weak self] _ in
             guard let strongSelf = self else { return }
             guard strongSelf.viewModel.topic.formhash != nil && strongSelf.viewModel.topic.fID != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Report", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Report", attributes: [
                     "source": "Content",
                     "result": "Failed",
                 ])
@@ -691,7 +691,7 @@ extension ContentViewController {
             }
 
             guard AppEnvironment.current.settings.currentUsername.value != nil else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Click Report", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Click Report", attributes: [
                     "source": "Content",
                     "result": "Failed",
                 ])
@@ -700,7 +700,7 @@ extension ContentViewController {
                 return
             }
 
-            AppEnvironment.current.eventTracker.logEvent(with: "Click Report", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Click Report", attributes: [
                 "source": "Content",
                 "result": "Succeeded",
             ])
@@ -846,7 +846,7 @@ extension ContentViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            AppEnvironment.current.eventTracker.logEvent(with: "Inspect Image", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Inspect Image", attributes: [
                 "type": "Hijack",
                 "source": "Content",
             ])
@@ -868,7 +868,7 @@ extension ContentViewController: WKNavigationDelegate {
                     }
                 }
 
-                AppEnvironment.current.eventTracker.logEvent(with: "Open Topic Link", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Open Topic Link", attributes: [
                     "source": "Content",
                 ])
                 showContentViewController(topic: topic)
@@ -886,7 +886,7 @@ extension ContentViewController: WKNavigationDelegate {
                 let pid = Int(pidString),
                 let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0
             {
-                AppEnvironment.current.eventTracker.logEvent(with: "Open Quote Link", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Open Quote Link", attributes: [
                     "source": "Content",
                 ])
                 showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.id)

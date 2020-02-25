@@ -141,7 +141,7 @@ extension NoticeCell {
 
         init(replyNotice: ReplyNotice) throws {
             guard case .post = replyNotice.type else {
-                AppEnvironment.current.eventTracker.logEvent(with: "Unknown Reply Type", attributes: ["type": replyNotice.type.rawValue])
+                AppEnvironment.current.eventTracker.logEvent("Unknown Reply Type", attributes: ["type": replyNotice.type.rawValue])
                 throw "Unexpected notice type \(replyNotice.type.rawValue)"
             }
             let document = try HTMLDocument(string: replyNotice.note)

@@ -101,6 +101,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #endif
 
+        AppEnvironment.current.eventTracker.logEvent("Active", attributes: ["from": "void"], uploadImmediately: true)
+
         return true
     }
 
@@ -158,11 +160,16 @@ extension AppDelegate {
     }
 }
 
-// MARK: Cleaning
+// MARK:
 
 extension AppDelegate {
 
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        AppEnvironment.current.eventTracker.logEvent("Active", attributes: ["from": "background"], uploadImmediately: true)
+    }
+
     func applicationDidEnterBackground(_ application: UIApplication) {
+        AppEnvironment.current.eventTracker.logEvent("Inactive", uploadImmediately: true)
         AppEnvironment.current.dataCenter.cleaning()
     }
 }
@@ -342,14 +349,20 @@ private extension AppDelegate {
                         return true
                     }
                     // In all other cases we don't want to retry sending it and just discard the event
-                    let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 0, userInfo: [
-                        "release": event.releaseName ?? "",
-                        "response": "\(response)",
-                        "message": event.message,
-                        "level": event.level,
-                        "error": "\(String(describing: error))"
-                    ])
-                    Crashlytics.sharedInstance().recordError(nsError)
+
+                    if response.statusCode != 200 {
+                        let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 0, userInfo: [
+                            "release": event.releaseName ?? "",
+                            "response": "\(response)",
+                            "responseCode": "\(response.statusCode)",
+                            "X-Sentry-Error": String(describing: response.value(forHTTPHeaderField: "X-Sentry-Error")),
+                            "message": event.message,
+                            "level": event.level.rawValue,
+                            "error": "\(String(describing: error))"
+                        ])
+                        Crashlytics.sharedInstance().recordError(nsError)
+                    }
+
                     return false
                 }
 
@@ -357,6 +370,8 @@ private extension AppDelegate {
                     let nsError = NSError(domain: "SentryDropEventOnSendAllPhase", code: 0, userInfo: [
                         "release": eventDict["release"] ?? "",
                         "response": "\(String(describing: response))",
+                        "responseCode": "\(String(describing: response?.statusCode))",
+                        "X-Sentry-Error": String(describing: response?.value(forHTTPHeaderField: "X-Sentry-Error")),
                         "message": eventDict["message"] ?? "",
                         "level": eventDict["level"] ?? "",
                         "error": "\(String(describing: error))"
@@ -371,6 +386,7 @@ private extension AppDelegate {
 
             #if DEBUG
             Client.shared?.environment = "development"
+            Client.logLevel = .verbose
             #else
             Client.shared?.environment = "production"
             #endif

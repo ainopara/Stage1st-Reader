@@ -226,7 +226,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
 
         // Image URL opened in image Viewer
         if url.absoluteString.hasSuffix(".jpg") || url.absoluteString.hasSuffix(".gif") || url.absoluteString.hasSuffix(".png") {
-            AppEnvironment.current.eventTracker.logEvent(with: "Inspect Image", attributes: [
+            AppEnvironment.current.eventTracker.logEvent("Inspect Image", attributes: [
                 "type": "hijack",
                 "source": "QuoteFloor",
             ])
@@ -247,7 +247,7 @@ extension QuoteFloorViewController: WKNavigationDelegate {
                     }
                 }
 
-                AppEnvironment.current.eventTracker.logEvent(with: "Open Topic Link", attributes: [
+                AppEnvironment.current.eventTracker.logEvent("Open Topic Link", attributes: [
                     "source": "QuoteFloor",
                 ])
                 showContentViewController(topic: topic)

@@ -177,7 +177,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
-  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `stage1st-3.15.4`)
+  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `stage1st-3.15.5`)
   - SnapKit
   - SnapshotTesting (~> 1.1)
   - SWHttpTrafficRecorder
@@ -222,7 +222,7 @@ EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :branch: stage1st-3.15.4
+    :branch: stage1st-3.15.5
     :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :branch: release/3.1.4
@@ -236,7 +236,7 @@ CHECKOUT OPTIONS:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :commit: 7a09980d2c1979602bf470cc9ace65c19be9b6ff
+    :commit: 426b5374709dd44484070fc002c53a90c7e7ad6f
     :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
@@ -275,6 +275,6 @@ SPEC CHECKSUMS:
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 7e28cad6c6730744f963c8e07fd78b946389e2af
+PODFILE CHECKSUM: 5227098d87b7081fe9c4ad0847e04552a14ddff2
 
 COCOAPODS: 1.9.0.beta.3

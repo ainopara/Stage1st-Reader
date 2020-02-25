@@ -195,10 +195,9 @@ extension PageRenderer {
                                     image.removeAttribute(forName: "src")
                                     image.addAttribute(withName: "src", stringValue: finalURL.absoluteString)
                                 } else {
-                                    AppEnvironment.current.eventTracker.logEvent(
-                                        with: "MahjongFace Cache Miss v3",
-                                        attributes: ["url": srcString!]
-                                    )
+                                    AppEnvironment.current.eventTracker.logEvent("MahjongFace Cache Miss", attributes: [
+                                        "url": srcString!
+                                    ])
                                 }
                             }
                         }
