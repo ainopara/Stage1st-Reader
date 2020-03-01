@@ -13,6 +13,7 @@ public struct ReplyNotice: Codable {
     public let uid: Int
     public enum Kind {
         case post
+        case at
         case unknown(String)
     }
     public let type: Kind
@@ -62,6 +63,8 @@ extension ReplyNotice.Kind: Codable {
         switch stringValue {
         case "post":
             self = .post
+        case "at":
+            self = .at
         default:
             self = .unknown(stringValue)
         }
@@ -76,6 +79,8 @@ extension ReplyNotice.Kind: Codable {
         switch self {
         case .post:
             return "post"
+        case .at:
+            return "at"
         case .unknown(let rawValue):
             return rawValue
         }
