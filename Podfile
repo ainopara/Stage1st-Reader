@@ -4,7 +4,7 @@ use_frameworks! :linkage => :static
 
 target "Stage1st" do
     # Network
-    pod 'Alamofire', '5.0.0-rc.2'
+    pod 'Alamofire', '~> 5.0'
 
     # Model
     pod 'CodableExtensions'
