@@ -32,7 +32,7 @@ platform :ios do
       scheme: 'Stage1st', 
       export_method: "app-store", 
       include_bitcode: false,
-      output_directory: "Archive/#{options[:version]}"
+      output_directory: "Archive/#{options[:version]}(#{build_number})"
     )
 
     retry_count = 10
@@ -54,6 +54,11 @@ platform :ios do
     )
     upload_symbols_to_crashlytics
     sentry_upload_dsym
+    
+    sentry_app_version = "Stage1st-#{options[:version]}"
+    sentry_create_release(version: sentry_app_version)
+    sentry_set_commits(version: sentry_app_version, auto: true)
+    
   end
 
   after_all do |lane|
