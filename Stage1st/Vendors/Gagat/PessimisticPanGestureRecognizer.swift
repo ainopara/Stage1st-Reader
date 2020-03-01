@@ -7,7 +7,9 @@
 //
 
 import UIKit
+// swiftlint:disable duplicate_imports
 import UIKit.UIGestureRecognizerSubclass
+// swiftlint:enable duplicate_imports
 
 /// `PessimisticPanGestureRecognizer` is a `UIPanGestureRecognizer` subclass that
 /// fails earlier than the base `UIPanGestureRecognizer` class.

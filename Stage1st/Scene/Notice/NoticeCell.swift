@@ -143,7 +143,7 @@ extension NoticeCell {
             guard case .post = replyNotice.type else {
                 AppEnvironment.current.eventTracker.logEvent("Unknown Reply Type", attributes: [
                     "type": replyNotice.type.rawValue,
-                    "rawData": try String(decoding: JSONEncoder().encode(replyNotice), as: UTF8.self) 
+                    "rawData": try String(decoding: JSONEncoder().encode(replyNotice), as: UTF8.self)
                 ])
                 throw "Unexpected notice type \(replyNotice.type.rawValue)"
             }

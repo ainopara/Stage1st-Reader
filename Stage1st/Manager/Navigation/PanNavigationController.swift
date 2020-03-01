@@ -10,7 +10,9 @@ import Foundation
 
 final class PanNavigationController: UINavigationController {
 
+    //swiftlint:disable weak_delegate
     lazy var panNavigationDelegate = { NavigationControllerDelegate(navigationController: self) }()
+    //swiftlint:enable weak_delegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
