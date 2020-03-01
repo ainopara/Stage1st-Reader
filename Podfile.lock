@@ -236,7 +236,7 @@ CHECKOUT OPTIONS:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :commit: 426b5374709dd44484070fc002c53a90c7e7ad6f
+    :commit: 06f3eb09ef3d4f410f493786f12ef4bfcbf98fb8
     :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
@@ -277,4 +277,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e445026aa6695cc491a7de831b882c570e0d7427
 
-COCOAPODS: 1.9.0.beta.3
+COCOAPODS: 1.9.0
