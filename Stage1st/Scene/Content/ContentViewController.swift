@@ -1238,10 +1238,7 @@ private extension ContentViewController {
                     strongSelf.refreshHUD.hide(delay: 3.0)
                 } else if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
                     S1LogWarn("Decoding Error: \(error)")
-                    AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: [
-                        "topicID": strongSelf.viewModel.topic.topicID,
-                        "page": strongSelf.viewModel.currentPage.value
-                    ])
+                    strongSelf.recordDecodeError(decodingError: decodingError)
                     strongSelf.refreshHUD.showRefresh { [weak self] in
                         guard let strongSelf = self else { return }
                         strongSelf.refreshCurrentPage(forceUpdate: true, scrollType: strongSelf.scrollType)
@@ -1255,6 +1252,21 @@ private extension ContentViewController {
                 }
             }
         }
+    }
+
+    func recordDecodeError(decodingError: Error) {
+        if
+            let cocoaError = decodingError as? CocoaError,
+            cocoaError.code == .coderValueNotFound,
+            let description = cocoaError.userInfo["NSDebugDescription"] as? String,
+            description.hasPrefix(#"No value associated with key CodingKeys(stringValue: "tid""#)
+        {
+            return
+        }
+        AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: [
+            "topicID": viewModel.topic.topicID,
+            "page": viewModel.currentPage.value
+        ])
     }
 
     func _presentReplyView(toFloor floor: Floor?) {

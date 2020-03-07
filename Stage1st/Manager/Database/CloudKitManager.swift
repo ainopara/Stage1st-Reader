@@ -1174,9 +1174,13 @@ enum S1CloudKitError: Error {
     case uploadError(Error)
 
     func reportableError() -> NSError? {
+        let ignoredCKErrorCode: Set<CKError.Code> = [.networkUnavailable, .networkFailure, .serviceUnavailable]
         switch self {
         case let .createZoneError(error):
             if let ckError = error as? CKError {
+                guard !ignoredCKErrorCode.contains(ckError.code) else {
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitCreateZoneError",
                     code: ckError.errorCode,
@@ -1184,7 +1188,11 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
-                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else {
+                    return nil
+                }
+                guard !(nsError.domain == "NSCocoaErrorDomain" && nsError.code == 4097) else {
+                    /// NSXPCConnectionInterrupted
                     return nil
                 }
                 return NSError(
@@ -1195,6 +1203,9 @@ enum S1CloudKitError: Error {
             }
         case let .createZoneSubscriptionError(error):
             if let ckError = error as? CKError {
+                guard !ignoredCKErrorCode.contains(ckError.code) else {
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitCreateZoneSubscriptionError",
                     code: ckError.errorCode,
@@ -1202,7 +1213,11 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
-                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else {
+                    return nil
+                }
+                guard !(nsError.domain == "NSCocoaErrorDomain" && nsError.code == 4097) else {
+                    /// NSXPCConnectionInterrupted
                     return nil
                 }
                 return NSError(
@@ -1213,6 +1228,9 @@ enum S1CloudKitError: Error {
             }
         case let .fetchChangesError(error):
             if let ckError = error as? CKError {
+                guard !ignoredCKErrorCode.contains(ckError.code) else {
+                    return nil
+                }
                 return NSError(
                     domain: "S1CloudKitFetchChangesError",
                     code: ckError.errorCode,
@@ -1220,7 +1238,11 @@ enum S1CloudKitError: Error {
                 )
             } else {
                 let nsError = error as NSError
-                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else {
+                    return nil
+                }
+                guard !(nsError.domain == "NSCocoaErrorDomain" && nsError.code == 4097) else {
+                    /// NSXPCConnectionInterrupted
                     return nil
                 }
                 return NSError(
@@ -1242,6 +1264,9 @@ enum S1CloudKitError: Error {
                         userInfo: selectedError.userInfo
                     )
                 } else {
+                    guard !ignoredCKErrorCode.contains(ckError.code) else {
+                        return nil
+                    }
                     return NSError(
                         domain: "S1CloudKitUploadError",
                         code: ckError.errorCode,
@@ -1250,7 +1275,11 @@ enum S1CloudKitError: Error {
                 }
             } else {
                 let nsError = error as NSError
-                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else{
+                guard !(nsError.domain == "kCFErrorDomainCFNetwork" && nsError.code == 310) else {
+                    return nil
+                }
+                guard !(nsError.domain == "NSCocoaErrorDomain" && nsError.code == 4097) else {
+                    /// NSXPCConnectionInterrupted
                     return nil
                 }
                 return NSError(

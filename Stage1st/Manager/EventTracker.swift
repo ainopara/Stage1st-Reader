@@ -55,6 +55,14 @@ class S1EventTracker: EventTracker {
             Client.shared?.appendStacktrace(to: event)
             Client.shared?.send(event: event, completion: { sentrySendError in
                 if let sentrySendError = sentrySendError {
+                    if let urlError = sentrySendError as? URLError {
+                        switch urlError.code {
+                        case .cancelled, .timedOut, .networkConnectionLost, .notConnectedToInternet:
+                            return
+                        default:
+                            break
+                        }
+                    }
                     Crashlytics.sharedInstance().recordError(sentrySendError, withAdditionalUserInfo: [
                         "Original": "\(error)"
                     ])
@@ -86,6 +94,14 @@ class S1EventTracker: EventTracker {
         if uploadImmediately {
             Client.shared?.send(event: event, completion: { (sentrySendError) in
                 if let sentrySendError = sentrySendError {
+                    if let urlError = sentrySendError as? URLError {
+                        switch urlError.code {
+                        case .cancelled, .timedOut, .networkConnectionLost, .notConnectedToInternet:
+                            return
+                        default:
+                            break
+                        }
+                    }
                     Crashlytics.sharedInstance().recordError(sentrySendError, withAdditionalUserInfo: [
                         "Original": name
                     ])

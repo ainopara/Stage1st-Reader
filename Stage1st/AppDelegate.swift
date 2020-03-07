@@ -351,7 +351,7 @@ private extension AppDelegate {
                     // In all other cases we don't want to retry sending it and just discard the event
 
                     if response.statusCode != 200 {
-                        let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 0, userInfo: [
+                        let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 1, userInfo: [
                             "release": event.releaseName ?? "",
                             "response": "\(response)",
                             "responseCode": "\(response.statusCode)",
@@ -367,7 +367,14 @@ private extension AppDelegate {
                 }
 
                 Client.shared?.willDropEvent = { (eventDict, response, error) in
-                    let nsError = NSError(domain: "SentryDropEventOnSendAllPhase", code: 0, userInfo: [
+
+                    if let reason = response?.value(forHTTPHeaderField: "X-Sentry-Error") {
+                        if response?.statusCode == 403 && reason.hasPrefix("An event with the same ID already exists") {
+                            return
+                        }
+                    }
+
+                    let nsError = NSError(domain: "SentryDropEventOnSendAllPhase", code: 1, userInfo: [
                         "release": eventDict["release"] ?? "",
                         "response": "\(String(describing: response))",
                         "responseCode": "\(String(describing: response?.statusCode))",
