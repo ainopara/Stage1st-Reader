@@ -12,65 +12,14 @@ extension AppDelegate {
 
     @objc func migrate() {
         migrateTo3_7()
-        migrateTo3_8()
-        migrateTo3_9()
-        migrateTo3_9_4()
         migrateTo3_12_2()
-        migrateTo3_14()
-        migrateTo3_15_4()
+        migrateTo3_16()
     }
 
     private func migrateTo3_7() {
         let userDefaults = AppEnvironment.current.settings.defaults
         if UIDevice.current.userInterfaceIdiom == .pad && userDefaults.object(forKey: "FontSize") as? String == "17px" {
             userDefaults.set("18px", forKey: "FontSize")
-        }
-    }
-
-    private func migrateTo3_8() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("真碉堡山") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["真碉堡山"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_9() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else
-        {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("DOTA") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["DOTA", "欧美动漫"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_9_4() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else
-        {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
-        let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("泥潭") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["泥潭"]], forKey: "Order")
         }
     }
 
@@ -81,8 +30,9 @@ extension AppDelegate {
         cacheDatabaseManager.set(mahjongFaceHistoryV2: [])
     }
 
-    private func migrateTo3_14() {
+    private func migrateTo3_16() {
         let userDefaults = AppEnvironment.current.settings.defaults
+
         guard
             let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
             orderForumArray.count == 2
@@ -91,42 +41,12 @@ extension AppDelegate {
             return
         }
 
-        var displayForumArray = orderForumArray[0]
-        var hiddenForumArray = orderForumArray[1]
-
-        if !(displayForumArray + hiddenForumArray).contains("卓明谷") {
-            displayForumArray = displayForumArray.map {
-                if $0 == "外野" {
-                    return "卓明谷"
-                } else {
-                    return $0
-                }
-            }
-
-            hiddenForumArray = hiddenForumArray.map {
-                if $0 == "外野" {
-                    return "卓明谷"
-                } else {
-                    return $0
-                }
-            }
-            userDefaults.set([displayForumArray, hiddenForumArray + ["火星里侧", "菠菜"]], forKey: "Order")
-        }
-    }
-
-    private func migrateTo3_15_4() {
-        let userDefaults = AppEnvironment.current.settings.defaults
-        guard
-            let orderForumArray = userDefaults.object(forKey: "Order") as? [[String]],
-            orderForumArray.count == 2 else
-        {
-            S1LogError("[Migration] Order list in user defaults expected to have 2 array of forum name string but not as expected.")
-            return
-        }
         let displayForumArray = orderForumArray[0]
-        let hiddenForumArray = orderForumArray[1]
-        if !(displayForumArray + hiddenForumArray).contains("虚拟主播VTB") {
-            userDefaults.set([displayForumArray, hiddenForumArray + ["虚拟主播VTB"]], forKey: "Order")
-        }
+        guard !displayForumArray.isEmpty else { return }
+        guard let data = userDefaults.data(forKey: "forumBundle") else { return }
+        guard let bundle = try? JSONDecoder().decode(ForumBundle.self, from: data) else { return }
+        let forums = displayForumArray.compactMap { name in bundle.forums.first(where: { $0.name == name }) }
+        AppEnvironment.current.settings.forumOrderV2.value = forums.map { $0.id }
+        userDefaults.removeObject(forKey: "Order")
     }
 }
