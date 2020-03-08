@@ -41,11 +41,12 @@
     return self;
 }
 
-- (void)setKeys:(NSArray *)keys {
+- (void)setKeys:(NSArray *)keys names:(NSArray *)names {
     [self.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [(UIView *)obj removeFromSuperview];
     }];
     _keys = keys;
+    _names = names;
     _index = -1;
     if (_keys.count == 0) {
         UIToolbar *maskToolbar = [[UIToolbar alloc] initWithFrame:self.bounds];
@@ -58,15 +59,15 @@
 }
 
 - (void)addItems {
-    if (_keys.count == 0) return;
+    if (_names.count == 0) return;
     
     __block CGFloat width = 0.0;
-    [_keys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [_names enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         CGRect rect = CGRectMake(width, 0.0, 90.0, self.bounds.size.height); // The Width will be reset by layoutSubviews
         [btn setFrame:rect];
         btn.showsTouchWhenHighlighted = NO;
-        
+
         [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.normal"]] forState:UIControlStateNormal];
         [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.selected"]] forState:UIControlStateSelected];
         [btn setBackgroundImage:[S1Global imageWithColor:[AppEnvironment.current.colorManager colorForKey:@"tabbar.button.background.highlighted"]] forState:UIControlStateHighlighted];
@@ -122,7 +123,7 @@
         [_buttons[_index] setSelected:NO];
     _index = sender.tag;
     sender.selected = YES;
-    [self.tabbarDelegate tabbar:self didSelectedKey:self.keys[_index]];
+    [self.tabbarDelegate tabbar:self didSelectedKey:self.keys[_index].integerValue];
     return;
 }
 

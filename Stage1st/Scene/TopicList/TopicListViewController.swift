@@ -393,8 +393,7 @@ extension TopicListViewController {
         composeButton.reactive.controlEvents(.touchUpInside).signal.observeValues { [weak self] (button) in
             guard let strongSelf = self else { return }
             guard case let .forum(forum) = strongSelf.viewModel.model.value.target else { return }
-            let forumID = strongSelf.viewModel.forumKeyMap[forum.key]!
-            let composeViewController = TopicComposeViewController(forumID: Int(forumID)!)
+            let composeViewController = TopicComposeViewController(forumID: forum.key)
             strongSelf.present(UINavigationController(rootViewController: composeViewController), animated: true, completion: nil)
         }
     }
@@ -505,7 +504,7 @@ extension TopicListViewController {
         viewModel.reset()
     }
 
-    func switchToPresenting(key: String) {
+    func switchToPresenting(key: Int) {
         if AppEnvironment.current.settings.tapticFeedbackForForumSwitch.value {
             UISelectionFeedbackGenerator().selectionChanged()
         }
@@ -513,7 +512,7 @@ extension TopicListViewController {
         viewModel.tabBarTapped(key: key)
     }
 
-    func switchToPresentingKeyIfChanged(key: String) {
+    func switchToPresentingKeyIfChanged(key: Int) {
         if AppEnvironment.current.settings.tapticFeedbackForForumSwitch.value {
             UISelectionFeedbackGenerator().selectionChanged()
         }

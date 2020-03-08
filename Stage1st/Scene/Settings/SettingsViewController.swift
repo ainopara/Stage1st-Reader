@@ -120,6 +120,8 @@ final class SettingsViewController: UITableViewController {
         let settings = AppEnvironment.current.settings
 
         switch (indexPath.section, indexPath.row) {
+        case (0, 1):
+            navigationController?.pushViewController(ReorderForumViewController(), animated: true)
         case (0, 2):
             let keys: [String] = {
                 if UIDevice.current.userInterfaceIdiom == .phone {

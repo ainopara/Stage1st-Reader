@@ -21,8 +21,8 @@ class DataCenter: NSObject {
     let formhash = CurrentValueSubject<String?, Never>(nil)
     let noticeCount: MutableProperty<NoticeCount?> = MutableProperty(nil)
 
-    private var topicListCache = [String: [S1Topic]]()
-    private var topicListCachePageNumber = [String: Int]()
+    private var topicListCache = [Int: [S1Topic]]()
+    private var topicListCachePageNumber = [Int: Int]()
     private var workingRequests = [Request]()
 
     var lastDailyTaskFinishDate: [String: Date] {
@@ -57,19 +57,19 @@ extension String: LocalizedError {
 // MARK: - Topic List
 
 extension DataCenter {
-    func hasCache(for key: String) -> Bool {
+    func hasCache(for key: Int) -> Bool {
         return topicListCache[key] != nil
     }
 
-    func cachedTopics(for key: String) -> [S1Topic]? {
+    func cachedTopics(for key: Int) -> [S1Topic]? {
         return topicListCache[key]
     }
 
-    func topics(for key: String, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
+    func topics(for key: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         topicsFromServer(for: key, page: 1, completion: completion)
     }
 
-    func loadNextPage(for key: String, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
+    func loadNextPage(for key: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
         if let currentPageNumber = topicListCachePageNumber[key] {
             topicsFromServer(for: key, page: currentPageNumber + 1, completion: completion)
         } else {
@@ -85,8 +85,8 @@ extension DataCenter {
         }
     }
 
-    private func topicsFromServer(for key: String, page: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
-        apiManager.topics(in: Int(key)!, page: page) { [weak self] (result) in
+    private func topicsFromServer(for key: Int, page: Int, completion: @escaping (Result<[S1Topic], Error>) -> Void) {
+        apiManager.topics(in: key, page: page) { [weak self] (result) in
             guard let strongSelf = self else { return }
 
             switch result {
@@ -108,7 +108,7 @@ extension DataCenter {
         }
     }
 
-    private func eliminateDuplicatedTopics(_ topics: [S1Topic], key: String) -> [S1Topic] {
+    private func eliminateDuplicatedTopics(_ topics: [S1Topic], key: Int) -> [S1Topic] {
         if let cachedTopics = topicListCache[key] {
             let filteredCachedTopics = cachedTopics.filter { oldTopic in
                 topics.first(where: { newTopic in newTopic.topicID == oldTopic.topicID }) == nil
@@ -145,7 +145,7 @@ extension DataCenter {
         return processedTopics
     }
 
-    private func processAndCacheTopics(_ topics: [S1Topic], key: String, page: Int) -> [S1Topic] {
+    private func processAndCacheTopics(_ topics: [S1Topic], key: Int, page: Int) -> [S1Topic] {
         guard topics.count > 0 else {
             if topicListCache[key] == nil {
                 topicListCache[key] = []

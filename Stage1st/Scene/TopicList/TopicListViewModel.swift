@@ -22,7 +22,7 @@ final class TopicListViewModel: NSObject {
             case blank
 
             struct Forum: Equatable {
-                let key: String
+                let key: Int
                 let topics: [S1Topic]
                 let allResultFetched: Bool
             }
@@ -42,7 +42,7 @@ final class TopicListViewModel: NSObject {
         enum State: Equatable {
             struct Loading: Equatable {
                 enum Target: Equatable {
-                    case forum(key: String)
+                    case forum(key: Int)
                     case search(term: String)
                 }
                 let target: Target
@@ -86,14 +86,8 @@ final class TopicListViewModel: NSObject {
     let paletteNotification = MutableProperty(())
     let databaseChangedNotification = MutableProperty([Notification]())
 
-    var cachedContentOffset = [String: CGPoint]()
-    var cachedLastRefreshTime = [String: Date]()
-
-    lazy var forumKeyMap: [String: String] = {
-        let path = Bundle.main.path(forResource: "ForumKeyMap", ofType: "plist")!
-        let map = NSDictionary(contentsOfFile: path)!
-        return map as! [String: String]
-    }()
+    var cachedContentOffset = [Int: CGPoint]()
+    var cachedLastRefreshTime = [Int: Date]()
 
     // Output
 
@@ -297,7 +291,7 @@ extension TopicListViewModel {
         }
     }
 
-    func tabBarTapped(key: String) {
+    func tabBarTapped(key: Int) {
         func isTappingOnSameForumInARow() -> Bool {
             if case let .forum(forum) = model.value.target, forum.key == key {
                 return true
@@ -309,7 +303,7 @@ extension TopicListViewModel {
         if
             hasRecentlyAccessedForum(key: key),
             !isTappingOnSameForumInARow(),
-            let topics = self.dataCenter.cachedTopics(for: forumKeyMap[key]!)
+            let topics = self.dataCenter.cachedTopics(for: key)
         {
             let processedTopics = topics.map { topicWithTracedDataForTopic($0) }
             let new = Model(
@@ -413,17 +407,12 @@ extension TopicListViewModel {
         transitModel(to: Model(target: .blank, state: .loaded), with: .reset)
     }
 
-    private func fetchTopicList(for key: String) {
+    private func fetchTopicList(for key: Int) {
         dispatchPrecondition(condition: .onQueue(.main))
-
-        guard let mappedKey = self.forumKeyMap[key] else {
-            S1LogDebug("topicListForKey triggered but we can not found mapped key for \(key).")
-            return
-        }
 
         let token = newToken()
 
-        dataCenter.topics(for: mappedKey) { [weak self] result in
+        dataCenter.topics(for: key) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
             case let .success(topicList):
@@ -477,15 +466,11 @@ extension TopicListViewModel {
         }
     }
 
-    private func loadNextPage(key: String) {
-        guard let mappedKey = self.forumKeyMap[key] else {
-            S1LogDebug("loadNextPage triggered but we can not found mapped key for \(key).")
-            return
-        }
+    private func loadNextPage(key: Int) {
 
         let token = newToken()
 
-        dataCenter.loadNextPage(for: mappedKey) { [weak self] result in
+        dataCenter.loadNextPage(for: key) { [weak self] result in
             guard let strongSelf = self else { return }
 
             switch result {
@@ -696,7 +681,7 @@ extension TopicListViewModel {
         override func preTransition(action: Action, from: Model, to: Model) {
             guard let viewModel = self.viewModel else { return }
 
-            func saveOffset(forumKey: String) {
+            func saveOffset(forumKey: Int) {
                 S1LogDebug("Saving offset \(viewModel.tableViewOffset.value) for \(forumKey)")
                 viewModel.cachedContentOffset[forumKey] = mutate(viewModel.tableViewOffset.value) { (value: inout CGPoint) in
                     value.y = value.y < 0.0 ? 0.0 : value.y
@@ -864,7 +849,7 @@ extension TopicListViewModel {
 // MARK: - Private
 
 extension TopicListViewModel {
-    private func hasRecentlyAccessedForum(key: String) -> Bool {
+    private func hasRecentlyAccessedForum(key: Int) -> Bool {
         if let lastRefreshDate = cachedLastRefreshTime[key], Date().timeIntervalSince(lastRefreshDate) < 20.0 {
             return true
         } else {

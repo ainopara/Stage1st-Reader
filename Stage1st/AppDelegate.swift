@@ -44,12 +44,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // UserDefaults Initialize
         let userDefaults = AppEnvironment.current.settings.defaults
 
-        if userDefaults.value(forKey: "Order") == nil {
-            let path = Bundle.main.path(forResource: "InitialOrder", ofType: "plist")!
-            let orderArray = NSArray(contentsOfFile: path)
-            userDefaults.set(orderArray, forKey: "Order")
-        }
-
         if UIDevice.current.userInterfaceIdiom == .pad {
             userDefaults.s1_setObjectIfNotExist(object: "18px", key: "FontSize")
         } else {
@@ -57,6 +51,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         updateStage1stDomainIfNecessary()
+        updateStage1stForumListIfNecessary()
 
         URLCache.shared = URLCache(
             memoryCapacity: 20 * 1024 * 1024, // 20 MB
@@ -123,9 +118,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: Setup
 
-extension AppDelegate {
+struct ForumInfo: Codable, Equatable {
+    let id: Int
+    let name: String
+}
 
-    private func updateStage1stDomainIfNecessary() {
+struct ForumBundle: Codable, Equatable {
+    let date: Date
+    let forums: [ForumInfo]
+}
+
+private extension AppDelegate {
+
+    func updateStage1stDomainIfNecessary() {
         let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
         let stage1stDomainRecordName = "cf531e8f-eb25-4931-ba11-73f8cd344d28"
         let stage1stDomainRecordID = CKRecord.ID(recordName: stage1stDomainRecordName)
@@ -157,6 +162,63 @@ extension AppDelegate {
         }
 
         publicDatabase.add(fetchRecordOperation)
+    }
+
+    func updateStage1stForumListIfNecessary() {
+        let publicDatabase = AppEnvironment.current.cloudkitManager.cloudKitContainer.publicCloudDatabase
+        let forumInfoRecordID = CKRecord.ID(recordName: "4D943341-1910-3C82-8240-B74DDCED151F")
+        let fetchRecordOperation = CKFetchRecordsOperation(recordIDs: [forumInfoRecordID])
+
+        fetchRecordOperation.fetchRecordsCompletionBlock = { recordsDictionary, error in
+            guard let forumInfoRecord = recordsDictionary?[forumInfoRecordID], let jsonString = forumInfoRecord["json"] as? String else {
+                S1LogError("fetchedRecords: \(String(describing: recordsDictionary)) error: \(String(describing: error))")
+                return
+            }
+
+            let result: Result<[ForumInfo], Error> = tryToResult {
+                let decoder = JSONDecoder()
+                return try decoder.decode([ForumInfo].self, from: jsonString.data(using: .utf8) ?? Data())
+            }
+
+            guard case .success(let forumInfos) = result else {
+                S1LogError("Failed to parse server address from record: \(String(describing: recordsDictionary)), \(result)")
+                return
+            }
+
+
+
+            let bundle = ForumBundle(date: forumInfoRecord.modificationDate ?? .distantPast, forums: forumInfos)
+            let currentBundleData = AppEnvironment.current.settings.forumBundle.value
+            let decoder = JSONDecoder()
+            if
+                let currentBundle = try? decoder.decode(ForumBundle.self, from: currentBundleData),
+                currentBundle.date.timeIntervalSince(bundle.date) >= 0
+            {
+                S1LogInfo("No need to update forum because \(currentBundle.date) is greater than or equal to \(bundle.date)")
+                return
+            }
+
+            let encodedData: Result<Data, Error> = tryToResult {
+                let encoder = JSONEncoder()
+                return try encoder.encode(bundle)
+            }
+            guard case .success(let data) = encodedData else {
+                S1LogError("Failed to encode \(bundle) with error: \(result)")
+                return
+            }
+            S1LogInfo("Updated \(forumInfos)")
+            AppEnvironment.current.settings.forumBundle.value = data
+        }
+
+        publicDatabase.add(fetchRecordOperation)
+    }
+}
+
+func tryToResult<T>(block: () throws -> T) -> Result<T, Error> {
+    do {
+        return .success(try block())
+    } catch {
+        return .failure(error)
     }
 }
 

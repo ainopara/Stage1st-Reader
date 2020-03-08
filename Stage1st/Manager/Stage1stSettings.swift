@@ -13,6 +13,8 @@ extension DefaultsKeys {
     static let currentUsername = DefaultsKey<String>("InLoginStateID")
 
     static let forumOrder = DefaultsKey<[[String]]>("Order")
+    static let forumBundle = DefaultsKey<Data>("forumBundle")
+    static let forumOrderV2 = DefaultsKey<[Int]>("forumOrderV2")
     static let displayImage = DefaultsKey<Bool>("Display")
     static let removeTails = DefaultsKey<Bool>("RemoveTails")
     static let precacheNextPage = DefaultsKey<Bool>("PrecacheNextPage")
@@ -48,6 +50,8 @@ class Stage1stSettings: DefaultsBasedSettings {
     let enableCloudKitSync: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let historyLimit: CurrentValueSubject<Int, Never> = CurrentValueSubject(-1)
     let forumOrder: CurrentValueSubject<[[String]], Never> = CurrentValueSubject([[], []])
+    let forumBundle: CurrentValueSubject<Data, Never> = CurrentValueSubject(Data())
+    let forumOrderV2: CurrentValueSubject<[Int], Never> = CurrentValueSubject([])
 
     // Advanced Settings
     let reverseAction: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
@@ -66,6 +70,157 @@ class Stage1stSettings: DefaultsBasedSettings {
 
     override init(defaults: UserDefaults = UserDefaults.standard) {
         super.init(defaults: defaults)
+
+        bind(property: forumOrderV2, to: .forumOrderV2, defaultValue: [
+            75, 6, 4, 51, 48, 50, 31, 77
+        ])
+        bind(property: forumBundle, to: .forumBundle, defaultValue: """
+        {
+          "date": 605274000,
+          "forums": [
+            {
+              "id": 4,
+              "name": "游戏论坛"
+            },
+            {
+              "id": 6,
+              "name": "动漫论坛"
+            },
+            {
+              "id": 23,
+              "name": "火星里侧"
+            },
+            {
+              "id": 24,
+              "name": "音乐论坛"
+            },
+            {
+              "id": 27,
+              "name": "内野"
+            },
+            {
+              "id": 31,
+              "name": "彼岸文化"
+            },
+            {
+              "id": 48,
+              "name": "影视论坛"
+            },
+            {
+              "id": 50,
+              "name": "文史沙龙"
+            },
+            {
+              "id": 51,
+              "name": "ＰＣ数码"
+            },
+            {
+              "id": 53,
+              "name": "魔兽世界"
+            },
+            {
+              "id": 60,
+              "name": "激战2"
+            },
+            {
+              "id": 69,
+              "name": "怪物猎人"
+            },
+            {
+              "id": 74,
+              "name": "马叉虫"
+            },
+            {
+              "id": 75,
+              "name": "卓明谷"
+            },
+            {
+              "id": 76,
+              "name": "车欠女未"
+            },
+            {
+              "id": 77,
+              "name": "八卦体育"
+            },
+            {
+              "id": 80,
+              "name": "摄影区"
+            },
+            {
+              "id": 83,
+              "name": "动漫投票"
+            },
+            {
+              "id": 93,
+              "name": "火暴"
+            },
+            {
+              "id": 101,
+              "name": "犭苗犭句"
+            },
+            {
+              "id": 109,
+              "name": "菠菜"
+            },
+            {
+              "id": 111,
+              "name": "英雄联盟"
+            },
+            {
+              "id": 115,
+              "name": "二手交易区"
+            },
+            {
+              "id": 118,
+              "name": "真碉堡山"
+            },
+            {
+              "id": 123,
+              "name": "吃货"
+            },
+            {
+              "id": 124,
+              "name": "开箱区"
+            },
+            {
+              "id": 131,
+              "name": "车"
+            },
+            {
+              "id": 132,
+              "name": "炉石传说"
+            },
+            {
+              "id": 133,
+              "name": "剑灵"
+            },
+            {
+              "id": 134,
+              "name": "热血魔兽"
+            },
+            {
+              "id": 135,
+              "name": "手游页游"
+            },
+            {
+              "id": 136,
+              "name": "模玩专区"
+            },
+            {
+              "id": 138,
+              "name": "DOTA"
+            },
+            {
+              "id": 144,
+              "name": "欧美动漫"
+            },
+            {
+              "id": 151,
+              "name": "虚拟主播VTB"
+            }
+          ]
+        }
+        """.data(using: .utf8) ?? Data())
 
         // Login
         bind(property: currentUsername, to: .currentUsername)

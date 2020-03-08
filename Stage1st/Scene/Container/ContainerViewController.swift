@@ -49,12 +49,18 @@ class ContainerViewController: UIViewController {
 
         // Bind ViewModel
 
-        AppEnvironment.current.settings.forumOrder
-            .map({ $0.first ?? [] })
-            .removeDuplicates()
-            .sink { [weak self] (keys) in
+        AppEnvironment.current.settings.forumBundle.map { try? JSONDecoder().decode(ForumBundle.self, from: $0) }
+            .combineLatest(AppEnvironment.current.settings.forumOrderV2.removeDuplicates())
+            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] (bundle, order) in
                 guard let strongSelf = self else { return }
-                strongSelf.scrollTabBar.keys = keys
+                guard let bundle = bundle else { return }
+                let forums = order.compactMap { id in
+                    return bundle.forums.first(where: { forum in forum.id == id })
+                }
+
+                strongSelf.scrollTabBar.setKeys(forums.map { NSNumber(value: $0.id) }, names: forums.map { $0.name })
                 strongSelf.topicListViewController.reset()
             }
             .store(in: &bag)
@@ -218,7 +224,7 @@ class ContainerViewController: UIViewController {
 // MARK: - S1TabBarDelegate
 
 extension ContainerViewController: S1TabBarDelegate {
-    func tabbar(_ tabbar: S1TabBar, didSelectedKey key: String) {
+    func tabbar(_ tabbar: S1TabBar, didSelectedKey key: Int) {
         if selectedViewController.value === self.topicListViewController {
             self.topicListViewController.switchToPresenting(key: key)
         } else if selectedViewController.value === self.archiveListViewController {
