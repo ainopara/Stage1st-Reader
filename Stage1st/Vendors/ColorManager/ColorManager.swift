@@ -10,7 +10,9 @@ import UIKit
 import Combine
 
 @objcMembers
-public final class ColorManager: NSObject {
+public final class ColorManager: NSObject, ObservableObject {
+
+    public var objectWillChange = ObservableObjectPublisher()
 
     private var palette = [String: Any]()
     private var darkPalette = [String: Any]()
@@ -60,6 +62,7 @@ public final class ColorManager: NSObject {
             .sink { [weak self] (style) in
                 guard let strongSelf = self else { return }
                 strongSelf.window?.overrideUserInterfaceStyle = style
+                strongSelf.objectWillChange.send()
             }
             .store(in: &bag)
     }
@@ -154,7 +157,7 @@ public final class ColorManager: NSObject {
 
 // MARK: - Private
 
-private extension ColorManager {
+extension ColorManager {
     func colorInPaletteWithID(_ paletteID: String) -> UIColor {
         if
             let colorString = palette[paletteID] as? String,
