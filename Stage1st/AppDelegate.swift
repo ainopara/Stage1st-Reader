@@ -7,6 +7,7 @@
 //
 
 import Ainoaibo
+import Combine
 import CocoaLumberjack
 import CrashlyticsLogger
 import CloudKit
@@ -87,12 +88,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let defaultsPlistString = String(data: defaultsPlistData, encoding: .utf8)!
         S1LogVerbose("Dump user defaults: \(defaultsPlistString)")
 
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(reachabilityChanged),
-            name: .reachabilityChanged,
-            object: nil
-        )
+        _ = NotificationCenter.default.publisher(for: .reachabilityChanged)
+            .sink(receiveValue: { notification in
+                guard let reachability = notification.object as? Reachability else {
+                    assertionFailure()
+                    return
+                }
+
+                if reachability.isReachableViaWiFi() {
+                    S1LogDebug("[Reachability] WIFI: display picture")
+                } else {
+                    S1LogDebug("[Reachability] WWAN: display placeholder")
+                }
+            })
 
         #endif
 
@@ -102,21 +110,110 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func reachabilityChanged(_ notification: Notification) {
-        guard let reachability = notification.object as? Reachability else {
-            assert(false, "this should never happen!")
-            S1LogError("this should never happen!")
+
+    }
+}
+
+extension AppDelegate {
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        AppEnvironment.current.eventTracker.logEvent("Active", attributes: ["from": "background"], uploadImmediately: true)
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        AppEnvironment.current.eventTracker.logEvent("Inactive", uploadImmediately: true)
+        AppEnvironment.current.dataCenter.cleaning()
+    }
+
+    // MARK: URL Scheme
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
+
+        let queries = Parser.extractQuerys(from: url.absoluteString)
+        if
+            url.host == "open",
+            let topicIDString = queries["tid"],
+            let topicID = Int(topicIDString)
+        {
+            let topic = AppEnvironment.current.dataCenter.traced(topicID: topicID) ?? S1Topic(topicID: NSNumber(value: topicID))
+            pushContentViewController(for: topic)
+            return true
+        }
+
+        return true
+    }
+
+    private func pushContentViewController(for topic: S1Topic) {
+        guard let rootNavigationController = self.rootNavigationController else {
             return
         }
 
-        if reachability.isReachableViaWiFi() {
-            S1LogDebug("[Reachability] WIFI: display picture")
-        } else {
-            S1LogDebug("[Reachability] WWAN: display placeholder")
+        let contentViewController = ContentViewController(topic: topic)
+        rootNavigationController.pushViewController(contentViewController, animated: true)
+    }
+
+    // MARK: Hand Off
+
+    func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
+        // TODO: Show an alert to tell user we are restoring state from hand off here.
+        return true
+    }
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        S1LogDebug("Receive Hand Off: \(String(describing: userActivity.userInfo))")
+
+        guard
+            let userInfo = userActivity.userInfo,
+            let topicID = userInfo["topicID"] as? Int,
+            let page = userInfo["page"] as? Int
+        else {
+            // TODO: Show an alert to tell user something is wrong.
+            return true
+        }
+
+        var topic = AppEnvironment.current.dataCenter.traced(topicID: topicID) ?? S1Topic(topicID: NSNumber(value: topicID))
+        topic = topic.copy() as! S1Topic // To make it mutable
+        topic.lastViewedPage = NSNumber(value: page)
+
+        pushContentViewController(for: topic)
+
+        return true
+    }
+
+    // MARK: Background Refresh
+
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        S1LogInfo("[Backgournd Fetch] fetch called")
+        completionHandler(.noData)
+        // TODO: user forum notification can be fetched here, then send a local notification to user.
+    }
+
+    // MARK: Push Notification For CloudKit Sync
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        S1LogDebug("[APNS] Registered for Push notifications with token: \(deviceToken)", category: .cloudkit)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        S1LogWarn("[APNS] Push subscription failed: \(error)", category: .cloudkit)
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        S1LogDebug("[APNS] Push received: \(userInfo)", category: .cloudkit)
+        if !AppEnvironment.current.settings.enableCloudKitSync.value {
+            S1LogWarn("[APNS] push notification received when user do not enable sync feature.")
+            completionHandler(.noData)
+            return
+        }
+
+        AppEnvironment.current.cloudkitManager.setNeedsFetchChanges { (fetchResult) in
+            completionHandler(fetchResult.toUIBackgroundFetchResult())
         }
     }
 }
 
-// MARK: Setup
+// MARK: - Setup
 
 struct ForumInfo: Codable, Equatable {
     let id: Int
@@ -185,8 +282,6 @@ private extension AppDelegate {
                 return
             }
 
-
-
             let bundle = ForumBundle(date: forumInfoRecord.modificationDate ?? .distantPast, forums: forumInfos)
             let currentBundleData = AppEnvironment.current.settings.forumBundle.value
             let decoder = JSONDecoder()
@@ -211,101 +306,6 @@ private extension AppDelegate {
         }
 
         publicDatabase.add(fetchRecordOperation)
-    }
-}
-
-func tryToResult<T>(block: () throws -> T) -> Result<T, Error> {
-    do {
-        return .success(try block())
-    } catch {
-        return .failure(error)
-    }
-}
-
-// MARK:
-
-extension AppDelegate {
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        AppEnvironment.current.eventTracker.logEvent("Active", attributes: ["from": "background"], uploadImmediately: true)
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        AppEnvironment.current.eventTracker.logEvent("Inactive", uploadImmediately: true)
-        AppEnvironment.current.dataCenter.cleaning()
-    }
-}
-
-// MARK: URL Scheme
-
-extension AppDelegate {
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        S1LogDebug("[URL Scheme] \(url) from \(String(describing: options[.sourceApplication]))")
-
-        let queries = Parser.extractQuerys(from: url.absoluteString)
-        if
-            url.host == "open",
-            let topicIDString = queries["tid"],
-            let topicID = Int(topicIDString)
-        {
-            let topic = AppEnvironment.current.dataCenter.traced(topicID: topicID) ?? S1Topic(topicID: NSNumber(value: topicID))
-            pushContentViewController(for: topic)
-            return true
-        }
-
-        return true
-    }
-
-    private func pushContentViewController(for topic: S1Topic) {
-        guard let rootNavigationController = self.rootNavigationController else {
-            return
-        }
-
-        let contentViewController = ContentViewController(topic: topic)
-        rootNavigationController.pushViewController(contentViewController, animated: true)
-    }
-}
-
-// MARK: Hand Off
-
-extension AppDelegate {
-
-    func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
-        // TODO: Show an alert to tell user we are restoring state from hand off here.
-        return true
-    }
-
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        S1LogDebug("Receive Hand Off: \(String(describing: userActivity.userInfo))")
-
-        guard
-            let userInfo = userActivity.userInfo,
-            let topicID = userInfo["topicID"] as? Int,
-            let page = userInfo["page"] as? Int
-        else {
-            // TODO: Show an alert to tell user something is wrong.
-            return true
-        }
-
-        var topic = AppEnvironment.current.dataCenter.traced(topicID: topicID) ?? S1Topic(topicID: NSNumber(value: topicID))
-        topic = topic.copy() as! S1Topic // To make it mutable
-        topic.lastViewedPage = NSNumber(value: page)
-
-        pushContentViewController(for: topic)
-
-        return true
-    }
-}
-
-// MARK: Background Refresh
-
-extension AppDelegate {
-
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        S1LogInfo("[Backgournd Fetch] fetch called")
-        completionHandler(.noData)
-        // TODO: user forum notification can be fetched here, then send a local notification to user.
     }
 }
 
@@ -381,14 +381,14 @@ private extension AppDelegate {
 
     func setupCrashReporters() {
 
-        /// Setup Crashlytics
+        // Setup Crashlytics
 
-        #if DEBUG
-        #else
+//        #if DEBUG
+//        #else
         Fabric.with([Crashlytics.self])
-        #endif
+//        #endif
 
-        /// Setup Sentry
+        // Setup Sentry
 
         if !Stage1stKeys().sentryDSN.isEmpty {
             do {
@@ -455,36 +455,10 @@ private extension AppDelegate {
 
             #if DEBUG
             Client.shared?.environment = "development"
-            Client.logLevel = .verbose
+//            Client.logLevel = .verbose
             #else
             Client.shared?.environment = "production"
             #endif
-        }
-    }
-}
-
-// MARK: Push Notification For CloudKit Sync
-
-extension AppDelegate {
-
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        S1LogDebug("[APNS] Registered for Push notifications with token: \(deviceToken)", category: .cloudkit)
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        S1LogWarn("[APNS] Push subscription failed: \(error)", category: .cloudkit)
-    }
-
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        S1LogDebug("[APNS] Push received: \(userInfo)", category: .cloudkit)
-        if !AppEnvironment.current.settings.enableCloudKitSync.value {
-            S1LogWarn("[APNS] push notification received when user do not enable sync feature.")
-            completionHandler(.noData)
-            return
-        }
-
-        AppEnvironment.current.cloudkitManager.setNeedsFetchChanges { (fetchResult) in
-            completionHandler(fetchResult.toUIBackgroundFetchResult())
         }
     }
 }
@@ -550,7 +524,7 @@ extension AppDelegate {
 
 #endif
 
-// MARK: -
+// MARK: - Helpers
 
 private extension UserDefaults {
 
@@ -558,5 +532,13 @@ private extension UserDefaults {
         if value(forKey: key) == nil {
             `set`(object, forKey: key)
         }
+    }
+}
+
+func tryToResult<T>(block: () throws -> T) -> Result<T, Error> {
+    do {
+        return .success(try block())
+    } catch {
+        return .failure(error)
     }
 }
