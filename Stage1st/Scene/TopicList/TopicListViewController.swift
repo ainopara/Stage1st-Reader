@@ -11,24 +11,14 @@ import ReactiveSwift
 import DeviceKit
 
 final class TopicListViewController: UIViewController {
-    let viewModel: TopicListViewModel
 
-    /// Sometimes we can not get what we need by delegation.
-    var containerViewController: ContainerViewController! = nil {
-        didSet {
-            containerViewController.topicListSelection <~ viewModel.tabBarSelection
-        }
-    }
+    let viewModel: TopicListViewModel
 
     let naviItem = UINavigationItem()
     let navigationBar = UINavigationBar(frame: .zero)
 
     let tableView = UITableView(frame: .zero, style: .plain)
-
-    lazy var refreshControl: ODRefreshControl = {
-        return ODRefreshControl(in: tableView)
-    }()
-
+    lazy var refreshControl: ODRefreshControl = { ODRefreshControl(in: tableView) }()
     let searchBar = UISearchBar(frame: .zero)
     let searchBarWrapperView = UIView(frame: .zero)
     let footerView = MessageFooterView()
@@ -100,20 +90,16 @@ final class TopicListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
-        if #available(iOS 11.0, *) {
-            /// How wrapper view works: UISearchBar wrapped in a parent view with frame.y == 4.0 frame.height == 36
-            /// The height of the parent view is 50 or 55 (in iPhone X)
-            /// Adding the parent view to wrapper view with height == 44.0 makes searchBar looks vertical center.
-            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
-            searchBarWrapperView.clipsToBounds = true
-            searchBarWrapperView.addSubview(searchBar)
-            searchBar.snp.makeConstraints { (make) in
-                make.leading.trailing.top.equalTo(searchBarWrapperView)
-            }
-            tableView.tableHeaderView = searchBarWrapperView
-        } else {
-            tableView.tableHeaderView = searchBar
+        /// How wrapper view works: UISearchBar wrapped in a parent view with frame.y == 4.0 frame.height == 36
+        /// The height of the parent view is 50 or 55 (in iPhone X)
+        /// Adding the parent view to wrapper view with height == 44.0 makes searchBar looks vertical center.
+        searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        searchBarWrapperView.clipsToBounds = true
+        searchBarWrapperView.addSubview(searchBar)
+        searchBar.snp.makeConstraints { (make) in
+            make.leading.trailing.top.equalTo(searchBarWrapperView)
         }
+        tableView.tableHeaderView = searchBarWrapperView
 
         composeButton.setTitle("发帖", for: .normal)
         composeButton.layer.cornerRadius = 25.0
@@ -168,6 +154,7 @@ final class TopicListViewController: UIViewController {
 // MARK: -
 
 extension TopicListViewController {
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -224,20 +211,18 @@ extension TopicListViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if #available(iOS 11.0, *) {
-            if
-                searchBar.subviews.count > 0,
-                searchBar.subviews[0].subviews.count > 1,
-                searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
-            {
-                let textFieldFrame = searchBar.subviews[0].subviews[1].frame
-                let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
-                if self.searchBarWrapperView.frame.height != wrapperHeight && wrapperHeight != 0 {
-                    self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
-                        value.size.height = wrapperHeight
-                    }
-                    self.tableView.tableHeaderView = self.searchBarWrapperView
+        if
+            searchBar.subviews.count > 0,
+            searchBar.subviews[0].subviews.count > 1,
+            searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
+        {
+            let textFieldFrame = searchBar.subviews[0].subviews[1].frame
+            let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
+            if self.searchBarWrapperView.frame.height != wrapperHeight && wrapperHeight != 0 {
+                self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
+                    value.size.height = wrapperHeight
                 }
+                self.tableView.tableHeaderView = self.searchBarWrapperView
             }
         }
     }
@@ -477,7 +462,7 @@ extension TopicListViewController {
     }
 
     @objc func archive(_ sender: Any) {
-        self.containerViewController.switchToArchiveList()
+        self.viewModel.containerShouldSwitchToArchiveList.send(())
     }
 
     @objc func notification(_ sender: Any) {

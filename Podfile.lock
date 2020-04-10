@@ -75,7 +75,6 @@ PODS:
     - Sentry/Core (= 4.4.3)
   - Sentry/Core (4.4.3)
   - SnapKit (5.0.1)
-  - SnapshotTesting (1.6.0)
   - SWHttpTrafficRecorder (1.0.2)
   - YapDatabase (3.1.4):
     - YapDatabase/Standard (= 3.1.4)
@@ -179,7 +178,6 @@ DEPENDENCIES:
   - ReactiveSwift (~> 6.0)
   - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `stage1st-3.15.5`)
   - SnapKit
-  - SnapshotTesting (~> 1.1)
   - SWHttpTrafficRecorder
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `release/3.1.4`)
   - YYKeyboardManager
@@ -208,7 +206,6 @@ SPEC REPOS:
     - ReactiveCocoa
     - ReactiveSwift
     - SnapKit
-    - SnapshotTesting
     - SWHttpTrafficRecorder
     - YYKeyboardManager
 
@@ -270,11 +267,10 @@ SPEC CHECKSUMS:
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
   Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  SnapshotTesting: 9f478335073a830eafb7dc1fcd526c5e90143991
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: e445026aa6695cc491a7de831b882c570e0d7427
+PODFILE CHECKSUM: 04e4dac4bb51183566ee67faefbaf75b1bcf1b51
 
 COCOAPODS: 1.9.0

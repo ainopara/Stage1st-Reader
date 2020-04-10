@@ -8,7 +8,7 @@
 
 import Foundation
 @testable import Stage1st
-import SnapshotTesting
+//import SnapshotTesting
 import XCTest
 
 class FloorProcessTests: XCTestCase {

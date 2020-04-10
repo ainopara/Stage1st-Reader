@@ -10,48 +10,58 @@ import SnapKit
 import DeviceKit
 import ReactiveSwift
 import Combine
-
-protocol ContainerDelegate: class {
-    func containerViewControllerShouldSelectTabButton(at index: Int)
-    func containerViewControllerShouldDeselectTabButton()
-}
+import SwiftUI
 
 class ContainerViewController: UIViewController {
+
     let topicListViewController = TopicListViewController(nibName: nil, bundle: nil)
+    lazy var archiveListViewController: S1ArchiveListViewController = { S1ArchiveListViewController(nibName: nil, bundle: nil) }()
 
-    lazy var archiveListViewController: S1ArchiveListViewController = {
-        return S1ArchiveListViewController(nibName: nil, bundle: nil)
-    }()
+    let tabBarState = TabBarState()
 
-    let topicListSelection: MutableProperty<S1TabBar.Selection> = MutableProperty(.none)
-
-    let scrollTabBar = S1TabBar(frame: .zero)
-
-    var selectedViewController: MutableProperty<UIViewController>
+    var selectedViewController: CurrentValueSubject<UIViewController, Never>
     var previouslySelectedViewController: UIViewController?
+    let scrollTabbar: UIView
 
     private let pasteboardToast = PasteboardLinkHintToast()
 
     let pasteboardString = CurrentValueSubject<String, Never>("")
     let pasteboardContainsValidURL = CurrentValueSubject<Bool, Never>(false)
 
-    let pasteboardAnimator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UICubicTimingParameters(animationCurve: .easeInOut))
+    let pasteboardAnimator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UISpringTimingParameters())
 
     var bag = Set<AnyCancellable>()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.selectedViewController = MutableProperty(self.topicListViewController)
+        self.selectedViewController = CurrentValueSubject(self.topicListViewController)
+
+        let tabBarController = UIHostingController(rootView:
+            TabBar(states: tabBarState)
+                .environmentObject(AppEnvironment.current.colorManager)
+        )
+
+        self.scrollTabbar = tabBarController.view
 
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
-        topicListViewController.containerViewController = self
-        scrollTabBar.tabbarDelegate = self
-
         // Bind ViewModel
+
+        topicListViewController.viewModel.tabBarShouldReset
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.tabBarState.selectedID = nil
+            }
+            .store(in: &bag)
+
+        topicListViewController.viewModel.containerShouldSwitchToArchiveList
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.switchToArchiveList()
+            }
+            .store(in: &bag)
 
         AppEnvironment.current.settings.forumBundle.map { try? JSONDecoder().decode(ForumBundle.self, from: $0) }
             .combineLatest(AppEnvironment.current.settings.forumOrderV2.removeDuplicates())
-            .subscribe(on: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] (bundle, order) in
                 guard let strongSelf = self else { return }
@@ -60,28 +70,18 @@ class ContainerViewController: UIViewController {
                     return bundle.forums.first(where: { forum in forum.id == id })
                 }
 
-                strongSelf.scrollTabBar.setKeys(forums.map { NSNumber(value: $0.id) }, names: forums.map { $0.name })
+                strongSelf.tabBarState.selectedID = nil
+                strongSelf.tabBarState.dataSource = forums
                 strongSelf.topicListViewController.reset()
             }
             .store(in: &bag)
 
-        scrollTabBar.reactive.selection <~ MutableProperty
-            .combineLatest(topicListSelection, selectedViewController)
-            .map({ [weak self] (selection, selectedViewController) in
-                guard let strongSelf = self else { return .none }
-                if selectedViewController === strongSelf.topicListViewController {
-                    return selection
-                } else {
-                    return .none
-                }
-            })
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didReceivePaletteChangeNotification),
-            name: .APPaletteDidChange,
-            object: nil
-        )
+        NotificationCenter.default.publisher(for: .APPaletteDidChange)
+            .sink { [weak self] (notification) in
+                guard let self = self else { return }
+                self.didReceivePaletteChangeNotification(notification)
+            }
+            .store(in: &bag)
 
         NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)
             .map { _ in return () }
@@ -107,15 +107,50 @@ class ContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addSubview(scrollTabBar)
-        scrollTabBar.snp.makeConstraints { (make) in
-            make.leading.trailing.equalTo(view)
-            make.bottom.equalTo(view.snp.bottom)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-44.0)
-        }
+        setupSubviews()
+        setupActions()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        didReceivePaletteChangeNotification(nil)
+    }
+}
+
+// MARK: - Setup
+
+extension ContainerViewController {
+
+    func setupSubviews() {
+
+        view.addSubview(scrollTabbar)
 
         pasteboardToast.alpha = 0.0
         view.addSubview(pasteboardToast)
+
+        scrollTabbar.snp.makeConstraints { (make) in
+            make.leading.trailing.equalTo(view)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.height.equalTo(44.0)
+        }
+    }
+
+    func setupActions() {
+        tabBarState.$selectedID
+            .sink { [weak self] (selectedID) in
+                guard let strongSelf = self else { return }
+                guard let selectedID = selectedID else { return }
+                if strongSelf.selectedViewController.value === strongSelf.topicListViewController {
+                    strongSelf.topicListViewController.switchToPresenting(key: selectedID)
+                } else if strongSelf.selectedViewController.value === strongSelf.archiveListViewController {
+                    strongSelf.switchToTopicList()
+                    strongSelf.topicListViewController.switchToPresentingKeyIfChanged(key: selectedID)
+                } else {
+                    assertionFailure("Unknown selectedViewController \(strongSelf.selectedViewController.value)")
+                }
+            }
+            .store(in: &bag)
 
         pasteboardString
             .map { (string) -> Bool in
@@ -137,7 +172,7 @@ class ContainerViewController: UIViewController {
                     strongSelf.pasteboardAnimator.addAnimations {
                         strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
                             make.height.equalTo(44.0)
-                            make.bottom.equalTo(strongSelf.scrollTabBar.snp.top).offset(-8.0)
+                            make.bottom.equalTo(strongSelf.scrollTabbar.snp.top).offset(-8.0)
                             make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
                             make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
                         })
@@ -148,7 +183,7 @@ class ContainerViewController: UIViewController {
                     strongSelf.pasteboardAnimator.addAnimations {
                         strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
                             make.height.equalTo(44.0)
-                            make.top.equalTo(strongSelf.scrollTabBar.snp.top).offset(8.0)
+                            make.top.equalTo(strongSelf.scrollTabbar.snp.top).offset(8.0)
                             make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
                             make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
                         })
@@ -175,12 +210,9 @@ class ContainerViewController: UIViewController {
             }
             .store(in: &bag)
     }
+}
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        didReceivePaletteChangeNotification(nil)
-    }
+extension ContainerViewController {
 
     func switchToTopicList() {
         self.previouslySelectedViewController = self.selectedViewController.value
@@ -198,12 +230,12 @@ class ContainerViewController: UIViewController {
         let current = selectedViewController.value
         let previous = previouslySelectedViewController
 
-        /// Suggested by https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html
+        // Suggested by https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/ImplementingaContainerViewController.html
         self.addChild(current)
         self.view.insertSubview(current.view, at: 0) // child view controller's view should always be covered by tab bar.
         current.view.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalTo(self.view)
-            make.bottom.equalTo(self.scrollTabBar.snp.top)
+            make.bottom.equalTo(self.scrollTabbar.snp.top)
         }
         current.didMove(toParent: self)
 
@@ -240,9 +272,10 @@ extension ContainerViewController: S1TabBarDelegate {
 
 extension ContainerViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        scrollTabBar.updateColor()
         pasteboardToast.button.setTitleColor(AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint"), for: .normal)
         pasteboardToast.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        scrollTabbar.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
     }
 }
 

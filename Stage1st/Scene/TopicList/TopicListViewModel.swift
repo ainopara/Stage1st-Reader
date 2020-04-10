@@ -11,6 +11,7 @@ import Foundation
 import YapDatabase
 import Alamofire
 import ReactiveSwift
+import Combine
 
 // swiftlint:disable nesting
 
@@ -117,7 +118,8 @@ final class TopicListViewModel: NSObject {
     let refreshControlEndRefreshing: Signal<(), Never>
     private let refreshControlEndRefreshingObserver: Signal<(), Never>.Observer
 
-    let tabBarSelection: MutableProperty<S1TabBar.Selection> = MutableProperty(.none)
+    let tabBarShouldReset: PassthroughSubject<Void, Never> = .init()
+    let containerShouldSwitchToArchiveList: PassthroughSubject<Void, Never> = .init()
 
     let searchTextClearAction: Signal<(), Never>
     private let searchTextClearActionObserver: Signal<(), Never>.Observer
@@ -807,22 +809,22 @@ extension TopicListViewModel {
             switch (to.target, to.state) {
             case (.blank, .error(let failedTarget, _)):
                 switch failedTarget {
-                case .forum(let key):
-                    viewModel.tabBarSelection.value = .key(key)
+                case .forum:
+                    break
                 case .search:
-                    viewModel.tabBarSelection.value = .none
+                    viewModel.tabBarShouldReset.send(())
                 }
             case (_, .loading(let loading)):
                 switch loading.target {
-                case .forum(let key):
-                    viewModel.tabBarSelection.value = .key(key)
+                case .forum:
+                    break
                 case .search:
-                    viewModel.tabBarSelection.value = .none
+                    viewModel.tabBarShouldReset.send(())
                 }
-            case (.forum(let forum), _):
-                viewModel.tabBarSelection.value = .key(forum.key)
+            case (.forum, _):
+                break
             case (.search, _), (.blank, _):
-                viewModel.tabBarSelection.value = .none
+                viewModel.tabBarShouldReset.send(())
             }
         }
     }

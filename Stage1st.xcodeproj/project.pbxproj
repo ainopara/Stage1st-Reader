@@ -13,8 +13,8 @@
 		36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BE3F481E962126006C5984 /* ServerAddress.swift */; };
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
-		860169142349A41000FDB6CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860169132349A41000FDB6CB /* SettingsView.swift */; };
 		8600626E2413C99B00B2EB7E /* ReorderForumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8600626D2413C99B00B2EB7E /* ReorderForumViewController.swift */; };
+		860169142349A41000FDB6CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860169132349A41000FDB6CB /* SettingsView.swift */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
@@ -122,6 +122,9 @@
 		86A1834420845F08000F5F8A /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A1834320845F08000F5F8A /* CloudKitManager.swift */; };
 		86A393C61DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m in Sources */ = {isa = PBXBuildFile; fileRef = 86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */; };
 		86A6A4EA200B86670037AB38 /* Stage1stMahjongFaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */; };
+		86A7FEB42414CD9100CDFC8E /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB32414CD9100CDFC8E /* TabBar.swift */; };
+		86A7FEB62414CD9F00CDFC8E /* TabBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */; };
+		86A7FEB82414DC3F00CDFC8E /* ColorManager+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */; };
 		86B1C31C2161F41100532D06 /* MahjongFaceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */; };
 		86B464AA218D4FEC002C2A66 /* RawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464A9218D4FEC002C2A66 /* RawMessage.swift */; };
@@ -186,8 +189,8 @@
 		36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsViewController.swift; sourceTree = "<group>"; };
 		4358B1D3313628BA0A5AAF21 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		75B24BAC125C79D44D2F46F4 /* Pods_Stage1stTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1stTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		860169132349A41000FDB6CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		8600626D2413C99B00B2EB7E /* ReorderForumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderForumViewController.swift; sourceTree = "<group>"; };
+		860169132349A41000FDB6CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
@@ -314,6 +317,9 @@
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
 		86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stMahjongFaceTests.swift; sourceTree = "<group>"; };
+		86A7FEB32414CD9100CDFC8E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarButton.swift; sourceTree = "<group>"; };
+		86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorManager+SwiftUI.swift"; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Teleport.swift"; sourceTree = "<group>"; };
 		86B1C31B2161F41100532D06 /* MahjongFaceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongFaceCell.swift; sourceTree = "<group>"; };
@@ -875,6 +881,9 @@
 				8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */,
 				86A0601222C083D9000352CA /* SeparatorView.swift */,
 				86A0601422C08400000352CA /* S1TextField.swift */,
+				86A7FEB32414CD9100CDFC8E /* TabBar.swift */,
+				86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */,
+				86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1181,6 +1190,7 @@
 				8667FD0520D4D7B8000C5432 /* MessageFooterView.swift in Sources */,
 				86B1C31C2161F41100532D06 /* MahjongFaceCell.swift in Sources */,
 				869F8AB31DB374CF0055046B /* PageRenderer.swift in Sources */,
+				86A7FEB82414DC3F00CDFC8E /* ColorManager+SwiftUI.swift in Sources */,
 				8634ADE91FAAF3C2004A9CB7 /* ColorManager.swift in Sources */,
 				86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */,
 				8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */,
@@ -1203,6 +1213,7 @@
 				8634ADEE1FAAF3C2004A9CB7 /* UIControl+BlockWrapper.m in Sources */,
 				8634ADF31FAAF3C2004A9CB7 /* GSSection.m in Sources */,
 				860223521895051400A3E66E /* S1Global.m in Sources */,
+				86A7FEB42414CD9100CDFC8E /* TabBar.swift in Sources */,
 				865544B121E238AB007B7557 /* DiscuzClient+Report.swift in Sources */,
 				8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */,
 				8606D48C22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift in Sources */,
@@ -1229,6 +1240,7 @@
 				865544B621E23A22007B7557 /* RawFloorList.swift in Sources */,
 				8634ADE71FAAF3C2004A9CB7 /* Toast.swift in Sources */,
 				86654BF9217C616800F50A90 /* StringIntTransformer.swift in Sources */,
+				86A7FEB62414CD9F00CDFC8E /* TabBarButton.swift in Sources */,
 				861902382348E9C5000A0750 /* DarkModeDetectWindow.swift in Sources */,
 				86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */,
 				86734B0F1F414D56000AE19E /* TopicListHeaderView.swift in Sources */,
