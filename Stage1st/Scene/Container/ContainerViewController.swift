@@ -18,10 +18,11 @@ class ContainerViewController: UIViewController {
     lazy var archiveListViewController: S1ArchiveListViewController = { S1ArchiveListViewController(nibName: nil, bundle: nil) }()
 
     let tabBarState = TabBarState()
+    let theTabBarController: UIViewController
 
     var selectedViewController: CurrentValueSubject<UIViewController, Never>
     var previouslySelectedViewController: UIViewController?
-    let scrollTabbar: UIView
+    let scrollTabBar: UIView
 
     private let pasteboardToast = PasteboardLinkHintToast()
 
@@ -39,8 +40,8 @@ class ContainerViewController: UIViewController {
             TabBar(states: tabBarState)
                 .environmentObject(AppEnvironment.current.colorManager)
         )
-
-        self.scrollTabbar = tabBarController.view
+        self.theTabBarController = tabBarController
+        self.scrollTabBar = tabBarController.view
 
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
@@ -62,17 +63,18 @@ class ContainerViewController: UIViewController {
 
         AppEnvironment.current.settings.forumBundle.map { try? JSONDecoder().decode(ForumBundle.self, from: $0) }
             .combineLatest(AppEnvironment.current.settings.forumOrderV2.removeDuplicates())
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] (bundle, order) in
                 guard let strongSelf = self else { return }
                 guard let bundle = bundle else { return }
-                let forums = order.compactMap { id in
-                    return bundle.forums.first(where: { forum in forum.id == id })
-                }
+                ensureMainThread {
+                    let forums = order.compactMap { id in
+                        return bundle.forums.first(where: { forum in forum.id == id })
+                    }
 
-                strongSelf.tabBarState.selectedID = nil
-                strongSelf.tabBarState.dataSource = forums
-                strongSelf.topicListViewController.reset()
+                    strongSelf.tabBarState.selectedID = nil
+                    strongSelf.tabBarState.dataSource = forums
+                    strongSelf.topicListViewController.reset()
+                }
             }
             .store(in: &bag)
 
@@ -124,12 +126,12 @@ extension ContainerViewController {
 
     func setupSubviews() {
 
-        view.addSubview(scrollTabbar)
+        view.addSubview(scrollTabBar)
 
         pasteboardToast.alpha = 0.0
         view.addSubview(pasteboardToast)
 
-        scrollTabbar.snp.makeConstraints { (make) in
+        scrollTabBar.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(view)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.height.equalTo(44.0)
@@ -172,7 +174,7 @@ extension ContainerViewController {
                     strongSelf.pasteboardAnimator.addAnimations {
                         strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
                             make.height.equalTo(44.0)
-                            make.bottom.equalTo(strongSelf.scrollTabbar.snp.top).offset(-8.0)
+                            make.bottom.equalTo(strongSelf.scrollTabBar.snp.top).offset(-8.0)
                             make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
                             make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
                         })
@@ -183,7 +185,7 @@ extension ContainerViewController {
                     strongSelf.pasteboardAnimator.addAnimations {
                         strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
                             make.height.equalTo(44.0)
-                            make.top.equalTo(strongSelf.scrollTabbar.snp.top).offset(8.0)
+                            make.top.equalTo(strongSelf.scrollTabBar.snp.top).offset(8.0)
                             make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
                             make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
                         })
@@ -235,7 +237,7 @@ extension ContainerViewController {
         self.view.insertSubview(current.view, at: 0) // child view controller's view should always be covered by tab bar.
         current.view.snp.makeConstraints { (make) in
             make.leading.trailing.top.equalTo(self.view)
-            make.bottom.equalTo(self.scrollTabbar.snp.top)
+            make.bottom.equalTo(self.scrollTabBar.snp.top)
         }
         current.didMove(toParent: self)
 
@@ -260,7 +262,7 @@ extension ContainerViewController {
         pasteboardToast.button.setTitleColor(AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint"), for: .normal)
         pasteboardToast.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
         view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
-        scrollTabbar.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
+        scrollTabBar.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
     }
 }
 
