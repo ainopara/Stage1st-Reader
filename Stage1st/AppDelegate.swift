@@ -510,7 +510,6 @@ extension AppDelegate {
         AppEnvironment.replaceCurrent(with: Environment(
             databaseName: "SnapshotYap.sqlite",
             cacheDatabaseName: "SnapshotCache.sqlite",
-            grdbName: "SnapshotGRDB.sqlite",
             sessionConfiguration: sessionConfiguration,
             settings: Stage1stSettings(defaults: UserDefaults(suiteName: "snapshot")!)
         ))

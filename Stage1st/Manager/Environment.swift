@@ -8,7 +8,6 @@
 
 import Foundation
 import Reachability
-import GRDB
 import Combine
 
 @objcMembers
@@ -38,7 +37,6 @@ class Environment: NSObject {
     let databaseManager: DatabaseManager
     let cloudkitManager: CloudKitManager
     let cacheDatabaseManager: CacheDatabaseManager
-    let grdb: DatabaseQueue
     let colorManager: ColorManager
     let eventTracker: EventTracker
 
@@ -51,7 +49,6 @@ class Environment: NSObject {
         forumName: String = "Stage1st",
         databaseName: String = "Stage1stYap.sqlite",
         cacheDatabaseName: String = "Cache.sqlite",
-        grdbName: String = "Stage1stGRDB.sqlite",
         sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.af.default,
         cookieStorage: HTTPCookieStorage = HTTPCookieStorage.shared,
         settings: Stage1stSettings = Stage1stSettings(defaults: UserDefaults.standard),
@@ -79,7 +76,6 @@ class Environment: NSObject {
         colorManager = ColorManager(overrideNightMode: overrideNightMode)
         eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Self.cacheDatabasePath(with: cacheDatabaseName))
-        grdb = try! DatabaseQueue(path: Self.grdbPath(with: grdbName))
 
         if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
             serverAddress = cachedServerAddress
@@ -106,10 +102,6 @@ class Environment: NSObject {
     }
 
     static func cacheDatabasePath(with name: String) -> String {
-        return filePath(with: name)
-    }
-
-    static func grdbPath(with name: String) -> String {
         return filePath(with: name)
     }
 
