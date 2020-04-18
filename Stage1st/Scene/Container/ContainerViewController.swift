@@ -253,21 +253,6 @@ extension ContainerViewController {
     }
 }
 
-// MARK: - S1TabBarDelegate
-
-extension ContainerViewController: S1TabBarDelegate {
-    func tabbar(_ tabbar: S1TabBar, didSelectedKey key: Int) {
-        if selectedViewController.value === self.topicListViewController {
-            self.topicListViewController.switchToPresenting(key: key)
-        } else if selectedViewController.value === self.archiveListViewController {
-            self.switchToTopicList()
-            self.topicListViewController.switchToPresentingKeyIfChanged(key: key)
-        } else {
-            S1FatalError("Unknown selectedViewController \(self.selectedViewController.value)")
-        }
-    }
-}
-
 // MARK: - PlatteChange
 
 extension ContainerViewController {

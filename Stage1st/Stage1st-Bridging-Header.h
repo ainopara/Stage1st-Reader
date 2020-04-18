@@ -6,7 +6,6 @@
 #import "S1Topic.h"
 #import "DatabaseManager.h"
 #import "REComposeViewController.h"
-#import "S1TabBar.h"
 #import "UIScrollView+WKWebViewHack.h"
 #import "S1YapDatabaseAdapter.h"
 #import "S1TopicListCellSubView.h"

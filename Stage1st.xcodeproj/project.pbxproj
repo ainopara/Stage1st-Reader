@@ -90,7 +90,6 @@
 		8667FD0120D3D254000C5432 /* ReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0020D3D254000C5432 /* ReplyViewModel.swift */; };
 		8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */; };
 		8667FD0520D4D7B8000C5432 /* MessageFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0420D4D7B8000C5432 /* MessageFooterView.swift */; };
-		8667FD0720D4E1B1000C5432 /* S1TabBar+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */; };
 		8667FD0920D4E234000C5432 /* ODRefreshControl+Reactive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */; };
 		866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */; };
 		866E465822AE2F9B00938131 /* TopicComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866E465722AE2F9B00938131 /* TopicComposeView.swift */; };
@@ -156,7 +155,6 @@
 		86FFD3241CB906F200EF742A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3231CB906F200EF742A /* SettingsViewController.swift */; };
 		86FFD3261CB90C1E00EF742A /* TopicListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */; };
 		86FFD3281CB95F1500EF742A /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FFD3271CB95F1500EF742A /* ContentViewController.swift */; };
-		C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C08334F716E22E1F0035C1AA /* S1TabBar.m */; };
 		C08DB46F16DE41FB002B4A92 /* Mahjong in Resources */ = {isa = PBXBuildFile; fileRef = C08DB46E16DE41FB002B4A92 /* Mahjong */; };
 		C095874216CA8A36007E0119 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C095874016CA8A36007E0119 /* Localizable.strings */; };
 		C095877F16CA8E7E007E0119 /* S1Topic.m in Sources */ = {isa = PBXBuildFile; fileRef = C095877E16CA8E7E007E0119 /* S1Topic.m */; };
@@ -284,7 +282,6 @@
 		8667FD0020D3D254000C5432 /* ReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewModel.swift; sourceTree = "<group>"; };
 		8667FD0220D3D81A000C5432 /* ReportComposeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportComposeViewModel.swift; sourceTree = "<group>"; };
 		8667FD0420D4D7B8000C5432 /* MessageFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFooterView.swift; sourceTree = "<group>"; };
-		8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "S1TabBar+Reactive.swift"; sourceTree = "<group>"; };
 		8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ODRefreshControl+Reactive.swift"; sourceTree = "<group>"; };
 		866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorViewController.swift; sourceTree = "<group>"; };
 		866E465722AE2F9B00938131 /* TopicComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicComposeView.swift; sourceTree = "<group>"; };
@@ -356,8 +353,6 @@
 		86FFD3231CB906F200EF742A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		86FFD3251CB90C1E00EF742A /* TopicListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopicListViewController.swift; sourceTree = "<group>"; };
 		86FFD3271CB95F1500EF742A /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
-		C08334F616E22E1F0035C1AA /* S1TabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1TabBar.h; sourceTree = "<group>"; };
-		C08334F716E22E1F0035C1AA /* S1TabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = S1TabBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		C08DB46E16DE41FB002B4A92 /* Mahjong */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Mahjong; sourceTree = "<group>"; };
 		C095873416CA8A36007E0119 /* Stage1st.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stage1st.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C095873F16CA8A36007E0119 /* Stage1st-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Stage1st-Info.plist"; sourceTree = "<group>"; };
@@ -875,9 +870,6 @@
 				8634ADB71FAAF3C1004A9CB7 /* Toast.swift */,
 				86D0090822D1F02A008099D6 /* Hud.swift */,
 				868A98041CA7F22500498C38 /* AnimationButton.swift */,
-				C08334F616E22E1F0035C1AA /* S1TabBar.h */,
-				C08334F716E22E1F0035C1AA /* S1TabBar.m */,
-				8667FD0620D4E1B1000C5432 /* S1TabBar+Reactive.swift */,
 				8667FD0820D4E234000C5432 /* ODRefreshControl+Reactive.swift */,
 				86A0601222C083D9000352CA /* SeparatorView.swift */,
 				86A0601422C08400000352CA /* S1TextField.swift */,
@@ -1185,7 +1177,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8667FD0720D4E1B1000C5432 /* S1TabBar+Reactive.swift in Sources */,
 				8667FD0920D4E234000C5432 /* ODRefreshControl+Reactive.swift in Sources */,
 				8667FD0520D4D7B8000C5432 /* MessageFooterView.swift in Sources */,
 				86B1C31C2161F41100532D06 /* MahjongFaceCell.swift in Sources */,
@@ -1278,7 +1269,6 @@
 				8634ADEF1FAAF3C2004A9CB7 /* GSRow.m in Sources */,
 				869BD71723EFEE6F00AAE96C /* SentryLogger.swift in Sources */,
 				8605735A1B762C3B00C70781 /* DatabaseManager.m in Sources */,
-				C08334F816E22E1F0035C1AA /* S1TabBar.m in Sources */,
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */,
 				866CDB971B526DB100FBB133 /* QuoteFloorViewController.swift in Sources */,
