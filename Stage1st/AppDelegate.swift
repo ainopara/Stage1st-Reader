@@ -383,10 +383,10 @@ private extension AppDelegate {
 
         // Setup Crashlytics
 
-//        #if DEBUG
-//        #else
+        #if DEBUG
+        #else
         Fabric.with([Crashlytics.self])
-//        #endif
+        #endif
 
         // Setup Sentry
 
