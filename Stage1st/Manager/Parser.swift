@@ -8,8 +8,7 @@
 
 import Foundation
 
-@objc
-class Parser: NSObject {
+enum Parser {
 
     static func extractTopic(from urlString: String) -> S1Topic? {
 
@@ -59,7 +58,6 @@ class Parser: NSObject {
         return nil
     }
 
-    @objc
     static func extractQuerys(from urlString: String) -> [String: String] {
         var result = [String: String]()
 

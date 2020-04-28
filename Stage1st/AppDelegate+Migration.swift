@@ -10,7 +10,7 @@ import Foundation
 
 extension AppDelegate {
 
-    @objc func migrate() {
+    func migrate() {
         migrateTo3_7()
         migrateTo3_12_2()
         migrateTo3_16()
