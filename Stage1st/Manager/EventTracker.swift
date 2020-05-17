@@ -50,7 +50,7 @@ class S1EventTracker: EventTracker {
             event.extra = nsError.userInfo
                 .merging(userInfo ?? [:], uniquingKeysWith: { $1 })
                 .merging(extraInfoSnapshot, uniquingKeysWith: { $1 })
-            /// Make sure different message with same stack trace will be grouped into two issues
+            // Make sure different message with same stack trace will be grouped into two issues
             event.fingerprint = ["{{ default }}", event.message]
             Client.shared?.appendStacktrace(to: event)
             Client.shared?.send(event: event, completion: { sentrySendError in
@@ -89,7 +89,7 @@ class S1EventTracker: EventTracker {
         let event = Event(level: .info)
         event.message = name
         event.tags = attributes
-        /// Assigning an empty breadcrumbsSerialized will prevent client from attching stored breadcrumbs to this event
+        // Assigning an empty breadcrumbsSerialized will prevent client from attching stored breadcrumbs to this event
         event.breadcrumbsSerialized = [:]
         if uploadImmediately {
             Client.shared?.send(event: event, completion: { (sentrySendError) in
