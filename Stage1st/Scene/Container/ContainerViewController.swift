@@ -87,8 +87,15 @@ class ContainerViewController: UIViewController {
 
         NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)
             .map { _ in return () }
+            .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
             .prepend(())
-            .map { UIPasteboard.general.string ?? "" }
+            .map {
+                if UIPasteboard.general.hasStrings {
+                    return UIPasteboard.general.string ?? ""
+                } else {
+                    return ""
+                }
+            }
             .subscribe(pasteboardString)
             .store(in: &bag)
 
