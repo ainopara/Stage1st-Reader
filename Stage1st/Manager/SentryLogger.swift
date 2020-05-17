@@ -44,9 +44,13 @@ class SentryBreadcrumbsLogger: DDAbstractLogger {
             }
         }()
 
-        let breadcrumb = Breadcrumb(level: level, category: "log")
+        let rawCategory = (logMessage.tag as? S1LoggerTag)?.category.description ?? "default"
+
+        let category: String = "log[\(rawCategory)]"
+        let breadcrumb = Breadcrumb(level: level, category: category)
         breadcrumb.message = finalMessage
         breadcrumb.timestamp = logMessage.timestamp
+        breadcrumb.level = level
         Client.shared?.breadcrumbs.add(breadcrumb)
     }
 }
