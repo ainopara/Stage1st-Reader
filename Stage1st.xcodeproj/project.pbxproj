@@ -212,6 +212,7 @@
 		8619EB1C20921D8500F1E299 /* Stage1stSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stSettings.swift; sourceTree = "<group>"; };
 		86221B831CA6594D00015522 /* ContentViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		86221B851CA65E3600015522 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		8623AD0D24716C850010792B /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		862DB7991C8891070068F75F /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		862DB7A61C8AB1680068F75F /* ReplyAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyAccessoryView.swift; sourceTree = "<group>"; };
 		862DB7A81C8AB17A0068F75F /* Stage1st-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Stage1st-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -763,6 +764,7 @@
 		C095872B16CA8A36007E0119 = {
 			isa = PBXGroup;
 			children = (
+				8623AD0D24716C850010792B /* CHANGELOG.md */,
 				C095873D16CA8A36007E0119 /* Stage1st */,
 				8681E6BD1CEF61ED004269D3 /* Stage1stTests */,
 				86D8612A233F68E7003FC6BD /* Stage1stUISnapshotTests */,
