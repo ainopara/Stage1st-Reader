@@ -53,7 +53,19 @@ platform :ios do
       message: "Version bump to #{options[:version]}(#{build_number})."
     )
     upload_symbols_to_crashlytics
-    sentry_upload_dsym
+    
+    retry_count = 10
+    begin
+      sentry_upload_dsym
+    rescue => ex
+      if retry_count > 0
+        retry_count -= 1
+        sleep 3
+        retry
+      else
+        raise ex
+      end
+    end
     
     sentry_app_version = "Stage1st-#{options[:version]}"
     sentry_create_release(version: sentry_app_version)
