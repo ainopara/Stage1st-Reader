@@ -1157,7 +1157,7 @@ extension ContentViewController {
             let activity = NSUserActivity(activityType: "Stage1st.view-topic")
             activity.title = strongSelf.viewModel.activityTitle()
             activity.userInfo = strongSelf.viewModel.activityUserInfo()
-            activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL() as URL?
+            activity.webpageURL = strongSelf.viewModel.correspondingWebPageURL()
             activity.isEligibleForSearch = true
             activity.requiredUserInfoKeys = Set(["topicID"])
 

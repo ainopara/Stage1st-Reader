@@ -165,8 +165,7 @@ extension AppDelegate {
 
         guard
             let userInfo = userActivity.userInfo,
-            let topicID = userInfo["topicID"] as? Int,
-            let page = userInfo["page"] as? Int
+            let topicID = userInfo["topicID"] as? Int
         else {
             // TODO: Show an alert to tell user something is wrong.
             return true
@@ -174,7 +173,9 @@ extension AppDelegate {
 
         var topic = AppEnvironment.current.dataCenter.traced(topicID: topicID) ?? S1Topic(topicID: NSNumber(value: topicID))
         topic = topic.copy() as! S1Topic // To make it mutable
-        topic.lastViewedPage = NSNumber(value: page)
+        if let page = userInfo["page"] as? Int {
+            topic.lastViewedPage = NSNumber(value: page)
+        }
 
         pushContentViewController(for: topic)
 
