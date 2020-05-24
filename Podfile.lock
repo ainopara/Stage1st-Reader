@@ -68,9 +68,9 @@ PODS:
   - ReactiveCocoa (10.1.0):
     - ReactiveSwift (~> 6.1)
   - ReactiveSwift (6.1.0)
-  - Sentry (4.4.3):
-    - Sentry/Core (= 4.4.3)
-  - Sentry/Core (4.4.3)
+  - Sentry (5.1.4):
+    - Sentry/Core (= 5.1.4)
+  - Sentry/Core (5.1.4)
   - SnapKit (5.0.1)
   - SWHttpTrafficRecorder (1.0.2)
   - YapDatabase (3.1.4):
@@ -172,7 +172,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
-  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `stage1st-3.15.5`)
+  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `release/5.1.4`)
   - SnapKit
   - SWHttpTrafficRecorder
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `release/3.1.4`)
@@ -214,7 +214,7 @@ EXTERNAL SOURCES:
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :branch: stage1st-3.15.5
+    :branch: release/5.1.4
     :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :branch: release/3.1.4
@@ -228,7 +228,7 @@ CHECKOUT OPTIONS:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
   Sentry:
-    :commit: 06f3eb09ef3d4f410f493786f12ef4bfcbf98fb8
+    :commit: 8562ebbf0e0ee3b9ab73bb46c8dfe67b59bb7e9d
     :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
@@ -259,12 +259,12 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
-  Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
+  Sentry: 74f2ad93a20a5567a1badaedf5b3f60b142ad082
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 66f1e9dd80b848eb108766a93e85dcf50ae29965
+PODFILE CHECKSUM: f803177a62b62878d6d925b321829bfd1e38a997
 
 COCOAPODS: 1.9.0

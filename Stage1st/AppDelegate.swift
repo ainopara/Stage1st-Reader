@@ -117,11 +117,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
+        S1LogDebug("applicationWillEnterForeground")
         AppEnvironment.current.eventTracker.logEvent("Active", attributes: ["from": "background"], uploadImmediately: true)
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        AppEnvironment.current.eventTracker.logEvent("Inactive", uploadImmediately: true)
+        S1LogDebug("applicationDidEnterBackground")
         AppEnvironment.current.dataCenter.cleaning()
     }
 
@@ -392,74 +393,20 @@ private extension AppDelegate {
         // Setup Sentry
 
         if !Stage1stKeys().sentryDSN.isEmpty {
-            do {
-                Client.shared = try Client(dsn: Stage1stKeys().sentryDSN)
-                Client.shared?.enableAutomaticBreadcrumbTracking()
-                Client.shared?.maxEvents = 100
-                Client.shared?.maxBreadcrumbs = 100
-                Client.shared?.shouldQueueEvent = { (event, response, error) in
-                    // Taken from Apple Docs:
-                    // If a response from the server is received, regardless of whether the request completes successfully or fails,
-                    // the response parameter contains that information.
-                    guard let response = response else {
-                        // In case response is nil, we want to queue the event locally since this
-                        // indicates no internet connection
-                        return true
-                    }
+            let env: String = {
+                #if DEBUG
+                return "development"
+                #else
+                return "production"
+                #endif
+            }()
 
-                    if response.statusCode == 429 {
-                        S1LogError("Rate limit reached, event will be stored and sent later")
-                        return true
-                    }
-                    // In all other cases we don't want to retry sending it and just discard the event
-
-                    if response.statusCode != 200 {
-                        let nsError = NSError(domain: "SentryDropEventOnFirstAttempt", code: 1, userInfo: [
-                            "release": event.releaseName ?? "",
-                            "response": "\(response)",
-                            "responseCode": "\(response.statusCode)",
-                            "X-Sentry-Error": String(describing: response.value(forHTTPHeaderField: "X-Sentry-Error")),
-                            "message": event.message,
-                            "level": event.level.rawValue,
-                            "error": "\(String(describing: error))"
-                        ])
-                        Crashlytics.sharedInstance().recordError(nsError)
-                    }
-
-                    return false
-                }
-
-                Client.shared?.willDropEvent = { (eventDict, response, error) in
-
-                    if let reason = response?.value(forHTTPHeaderField: "X-Sentry-Error") {
-                        if response?.statusCode == 403 && reason.hasPrefix("An event with the same ID already exists") {
-                            return
-                        }
-                    }
-
-                    let nsError = NSError(domain: "SentryDropEventOnSendAllPhase", code: 1, userInfo: [
-                        "release": eventDict["release"] ?? "",
-                        "response": "\(String(describing: response))",
-                        "responseCode": "\(String(describing: response?.statusCode))",
-                        "X-Sentry-Error": String(describing: response?.value(forHTTPHeaderField: "X-Sentry-Error")),
-                        "message": eventDict["message"] ?? "",
-                        "level": eventDict["level"] ?? "",
-                        "error": "\(String(describing: error))"
-                    ])
-                    Crashlytics.sharedInstance().recordError(nsError)
-                }
-
-                try Client.shared?.startCrashHandler()
-            } catch let error {
-                S1LogError("Failed to setup sentry: \(error)")
-            }
-
-            #if DEBUG
-            Client.shared?.environment = "development"
-//            Client.logLevel = .verbose
-            #else
-            Client.shared?.environment = "production"
-            #endif
+            SentrySDK.start(options: [
+                "dsn": Stage1stKeys().sentryDSN,
+                "environment": env,
+                "enableAutoSessionTracking": true,
+                "maxBreadcrumbs": 150
+            ])
         }
     }
 }

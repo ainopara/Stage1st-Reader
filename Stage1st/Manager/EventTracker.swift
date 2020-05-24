@@ -38,37 +38,19 @@ class S1EventTracker: EventTracker {
         recordError(error, withAdditionalUserInfo: userInfo, level: .warning)
     }
 
-    func recordError(_ error: Error, withAdditionalUserInfo userInfo: [String: Any]?, level: SentrySeverity) {
+    func recordError(_ error: Error, withAdditionalUserInfo userInfo: [String: Any]?, level: SentryLevel) {
         Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: userInfo)
 
         let extraInfoSnapshot = self.extraInfo
 
-        Client.shared?.snapshotStacktrace {
-            let event = Event(level: .warning)
-            let nsError = error as NSError
-            event.message = "\(nsError.domain):\(nsError.code)"
-            event.extra = nsError.userInfo
-                .merging(userInfo ?? [:], uniquingKeysWith: { $1 })
-                .merging(extraInfoSnapshot, uniquingKeysWith: { $1 })
-            // Make sure different message with same stack trace will be grouped into two issues
-            event.fingerprint = ["{{ default }}", event.message]
-            Client.shared?.appendStacktrace(to: event)
-            Client.shared?.send(event: event, completion: { sentrySendError in
-                if let sentrySendError = sentrySendError {
-                    if let urlError = sentrySendError as? URLError {
-                        switch urlError.code {
-                        case .cancelled, .timedOut, .networkConnectionLost, .notConnectedToInternet:
-                            return
-                        default:
-                            break
-                        }
-                    }
-                    Crashlytics.sharedInstance().recordError(sentrySendError, withAdditionalUserInfo: [
-                        "Original": "\(error)"
-                    ])
-                }
-            })
-        }
+        let event = Event(level: .warning)
+        let nsError = error as NSError
+        event.message = "\(nsError.domain):\(nsError.code)"
+        event.extra = nsError.userInfo
+            .merging(userInfo ?? [:], uniquingKeysWith: { $1 })
+            .merging(extraInfoSnapshot, uniquingKeysWith: { $1 })
+        event.fingerprint = [event.message]
+        SentrySDK.capture(event: event)
     }
 
     func logEvent(_ name: String) {
@@ -90,26 +72,8 @@ class S1EventTracker: EventTracker {
         event.message = name
         event.tags = attributes
         // Assigning an empty breadcrumbsSerialized will prevent client from attching stored breadcrumbs to this event
-        event.breadcrumbsSerialized = [:]
-        if uploadImmediately {
-            Client.shared?.send(event: event, completion: { (sentrySendError) in
-                if let sentrySendError = sentrySendError {
-                    if let urlError = sentrySendError as? URLError {
-                        switch urlError.code {
-                        case .cancelled, .timedOut, .networkConnectionLost, .notConnectedToInternet:
-                            return
-                        default:
-                            break
-                        }
-                    }
-                    Crashlytics.sharedInstance().recordError(sentrySendError, withAdditionalUserInfo: [
-                        "Original": name
-                    ])
-                }
-            })
-        } else {
-            Client.shared?.store(event)
-        }
+        event.breadcrumbs = []
+        SentrySDK.capture(event: event)
     }
 
     func setObjectValue(_ value: String, forKey key: String) {

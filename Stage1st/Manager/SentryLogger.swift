@@ -34,7 +34,7 @@ class SentryBreadcrumbsLogger: DDAbstractLogger {
             return
         }
 
-        let level: SentrySeverity = {
+        let level: SentryLevel = {
             switch logMessage.level {
             case .debug: return .debug
             case .info: return .info
@@ -46,11 +46,11 @@ class SentryBreadcrumbsLogger: DDAbstractLogger {
 
         let rawCategory = (logMessage.tag as? S1LoggerTag)?.category.description ?? "default"
 
-        let category: String = "log[\(rawCategory)]"
+        let category: String = "log / \(rawCategory)"
         let breadcrumb = Breadcrumb(level: level, category: category)
         breadcrumb.message = finalMessage
         breadcrumb.timestamp = logMessage.timestamp
         breadcrumb.level = level
-        Client.shared?.breadcrumbs.add(breadcrumb)
+        SentrySDK.addBreadcrumb(crumb: breadcrumb)
     }
 }
