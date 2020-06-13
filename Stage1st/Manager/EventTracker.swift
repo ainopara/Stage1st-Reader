@@ -51,6 +51,7 @@ class S1EventTracker: EventTracker {
             .merging(extraInfoSnapshot, uniquingKeysWith: { $1 })
         event.fingerprint = [event.message]
         event.type = "error"
+        SentrySDK.currentHub().getClient()?.attachStacktrace(event)
         SentrySDK.capture(event: event)
     }
 
