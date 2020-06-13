@@ -85,20 +85,6 @@ class ContainerViewController: UIViewController {
             }
             .store(in: &bag)
 
-        NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)
-            .map { _ in return () }
-            .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
-            .prepend(())
-            .map {
-                if UIPasteboard.general.hasStrings {
-                    return UIPasteboard.general.string ?? ""
-                } else {
-                    return ""
-                }
-            }
-            .subscribe(pasteboardString)
-            .store(in: &bag)
-
         NotificationCenter.default.publisher(for: UIPasteboard.removedNotification)
             .map { _ in "" }
             .subscribe(pasteboardString)
@@ -124,6 +110,12 @@ class ContainerViewController: UIViewController {
         super.viewWillAppear(animated)
 
         didReceivePaletteChangeNotification(nil)
+
+        if UIPasteboard.general.hasStrings {
+            pasteboardString.send(UIPasteboard.general.string ?? "")
+        } else {
+            pasteboardString.send("")
+        }
     }
 }
 
