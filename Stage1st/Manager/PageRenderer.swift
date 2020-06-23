@@ -48,21 +48,17 @@ extension PageRenderer {
 
     private func pageData(with floors: [Floor], topic: S1Topic) -> [String: Any] {
         func fontStyleFile() -> String {
-            switch (UIDevice.current.userInterfaceIdiom, AppEnvironment.current.settings.defaults.object(forKey: "FontSize") as? String) {
-            case (.phone, .some("15px")):
-                return "content_15px.css"
-            case (.phone, .some("17px")):
+            guard let fontSize = AppEnvironment.current.settings.defaults.object(forKey: "FontSize") as? String else {
                 return "content_17px.css"
-            case (.phone, .some("19px")):
-                return "content_19px.css"
-            case (.pad, .some("18px")):
-                return "content_ipad_18px.css"
-            case (.pad, .some("20px")):
-                return "content_ipad_20px.css"
-            case (.pad, .some("22px")):
-                return "content_ipad_22px.css"
+            }
+
+            switch UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                return "content_\(fontSize).css"
+            case .pad:
+                return "content_ipad_\(fontSize).css"
             default:
-                return "content_15px.css"
+                return "content_17px.css"
             }
         }
 

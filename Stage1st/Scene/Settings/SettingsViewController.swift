@@ -125,9 +125,9 @@ final class SettingsViewController: UITableViewController {
         case (0, 2):
             let keys: [String] = {
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    return ["15px", "17px", "19px"]
+                    return ["15px", "17px", "19px", "21px", "23px"]
                 } else {
-                    return ["18px", "20px", "22px"]
+                    return ["18px", "20px", "22px", "24px", "26px"]
                 }
             }()
 
