@@ -70,9 +70,9 @@ struct TabBar_Previews: PreviewProvider {
             TabBar(states: states3)
             TabBar(states: states4)
         }
+            .background(AppEnvironment.current.colorManager.s1_tint)
             .environmentObject(AppEnvironment.current.colorManager)
-            .previewLayout(.fixed(width: 400.0, height: 100.0))
-
+            .previewLayout(.fixed(width: 400.0, height: 44.0))
     }
 
     static let states1: TabBarState = {

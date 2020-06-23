@@ -7,7 +7,8 @@
 //
 
 import SwiftUI
-import KingfisherSwiftUI
+// Remove KingfisherSwiftUI due to preview error in Xcode 12.0 beta1
+//import KingfisherSwiftUI
 
 struct ContentCell: View {
 
@@ -21,39 +22,35 @@ struct ContentCell: View {
     var backgroundColor: Color { Color(red: 0.96, green: 0.97, blue: 0.92) }
 
     var body: some View {
-        ZStack {
-            backgroundColor
-            VStack {
-                HStack(alignment: .center) {
-                    AvatarView(url: floor.author.avatarURL)
-                        .padding(.leading, 6.0)
+        VStack {
+            HStack(alignment: .center) {
+                AvatarView(url: floor.author.avatarURL)
+                    .padding(.leading, 6.0)
 
-                    Text(floor.author.name)
-                        .foregroundColor(textColor)
+                Text(floor.author.name)
+                    .foregroundColor(textColor)
 
-                    Text("楼主")
-                        .font(Font.system(size: 9.0))
-                        .foregroundColor(backgroundColor)
-                        .padding(EdgeInsets(top: 1, leading: 4, bottom: 1, trailing: 4))
-                        .background(textColor)
-                        .cornerRadius(3)
+                Text("楼主")
+                    .font(Font.system(size: 9.0))
+                    .foregroundColor(backgroundColor)
+                    .padding(EdgeInsets(top: 1, leading: 4, bottom: 1, trailing: 4))
+                    .background(textColor)
+                    .cornerRadius(3)
 
-                    Text("05:34")
-                        .font(Font.system(size: 12.0))
+                Text("05:34")
+                    .font(Font.system(size: 12.0))
 
-                    Spacer()
-                    Text("#\(floor.indexMark ?? "?")")
-                    Image(systemName: "dot.circle")
-                        .padding(.trailing, 6.0)
-                }
-                Text(floor.content)
-                    .lineSpacing(2.0)
+                Spacer()
+                Text("#\(floor.indexMark ?? "?")")
+                Image(systemName: "dot.circle")
+                    .padding(.trailing, 6.0)
             }
+            Text(floor.content)
+                .lineSpacing(2.0)
         }
+        .background(backgroundColor)
     }
 }
-
-#if DEBUG
 
 struct ContentCell_Previews: PreviewProvider {
 
@@ -73,20 +70,21 @@ struct ContentCell_Previews: PreviewProvider {
 
     static var previews: some View {
         ContentCell(floor: self.floor)
+            .padding(.all, 10)
+            .previewLayout(.sizeThatFits)
     }
 }
-
-#endif
 
 private struct AvatarView: View {
     var url: URL?
 
     var body: some View {
-        KFImage(url)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 40.0, height: 40.0, alignment: .center)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray, lineWidth: 0.5))
+//        KFImage(url)
+//            .resizable()
+//            .aspectRatio(contentMode: .fill)
+//            .frame(width: 40.0, height: 40.0, alignment: .center)
+//            .clipShape(Circle())
+//            .overlay(Circle().stroke(Color.gray, lineWidth: 0.5))
+        Text("")
     }
 }
