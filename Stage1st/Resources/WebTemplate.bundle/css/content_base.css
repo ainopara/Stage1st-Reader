@@ -70,10 +70,6 @@ blockquote {
     margin: 5px;
 }
 
-.head {
-    font-size: 12px;
-}
-
 .head div {
     padding: 3px;
     float: left;
@@ -100,7 +96,6 @@ blockquote {
 }
 
 .smalltext {
-    font-size: 12px;
     float: initial !important;
 }
 
