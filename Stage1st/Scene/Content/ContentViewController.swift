@@ -389,7 +389,6 @@ extension ContentViewController {
             return
         }
 
-        viewModel.cancelRequest()
         saveTopicViewedState(sender: nil)
         S1LogDebug("[ContentVC] View did disappear end")
     }
