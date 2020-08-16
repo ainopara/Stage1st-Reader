@@ -88,7 +88,7 @@ extension ContentViewModel {
         dataCenter.floors(for: topic, with: Int(currentPage.value)) { [weak self] result in
             guard let strongSelf = self else { return }
             switch result {
-            case let .success(floors, isFromCache):
+            case let .success((floors, isFromCache)):
                 let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
                 guard !shouldRefetch else {
                     strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, with: Int(strongSelf.currentPage.value))

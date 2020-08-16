@@ -51,7 +51,7 @@ final class UserViewController: UIViewController {
 //                break
 //            case let .failure(error):
 //                S1LogDebug("Failed to update user profile. error: \(error)")
-////                strongSelf.s1_presentAlertView("Error", message: "\(error)")
+//                strongSelf.s1_presentAlertView("Error", message: "\(error)")
 //            }
 //        }
     }
