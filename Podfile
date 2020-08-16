@@ -70,6 +70,7 @@ end
 
 post_install do |installer|
     installer.pods_project.targets.each do |target|
+
         pods_with_swift4 = [
             'HorizontalFloatingHeaderLayout'
         ]
@@ -85,6 +86,12 @@ post_install do |installer|
         if pods_with_swift4_2.include? target.name then
             target.build_configurations.each do |config|
                 config.build_settings['SWIFT_VERSION'] = '4.2'
+            end
+        end
+
+        target.build_configurations.each do |config|
+            if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 13.0
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
             end
         end
     end
