@@ -111,10 +111,24 @@ class ContainerViewController: UIViewController {
 
         didReceivePaletteChangeNotification(nil)
 
-        if UIPasteboard.general.hasStrings {
-            pasteboardString.send(UIPasteboard.general.string ?? "")
+        if #available(iOS 14.0, *) {
+            UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
+                guard let self = self else { return }
+                switch result {
+                case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
+                    self.pasteboardString.send(UIPasteboard.general.string ?? "")
+                case .success, .failure:
+                    S1LogDebug("Unable to detect a url in pasteboard")
+                    self.pasteboardString.send("")
+                }
+            }
         } else {
-            pasteboardString.send("")
+            // Fallback on earlier versions
+            if UIPasteboard.general.hasStrings {
+                pasteboardString.send(UIPasteboard.general.string ?? "")
+            } else {
+                pasteboardString.send("")
+            }
         }
     }
 }
