@@ -156,10 +156,21 @@ extension ContainerViewController {
         pasteboardString
             .map { (string) -> Bool in
                 guard string.hasPrefix("http") else { return false }
-                for serverAddress in AppEnvironment.current.serverAddress.used where string.hasPrefix(serverAddress) {
-                    return true
+
+                let hasValidDomain: Bool = {
+                    for serverAddress in AppEnvironment.current.serverAddress.used where string.hasPrefix(serverAddress) {
+                        return true
+                    }
+                    return false
+                }()
+
+                guard hasValidDomain else { return false }
+
+                guard Parser.extractTopic(from: string) != nil else {
+                    return false
                 }
-                return false
+
+                return true
             }
             .subscribe(pasteboardContainsValidURL)
             .store(in: &bag)
