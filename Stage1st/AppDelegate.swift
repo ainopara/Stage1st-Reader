@@ -401,12 +401,23 @@ private extension AppDelegate {
                 #endif
             }()
 
-            SentrySDK.start(options: [
-                "dsn": Stage1stKeys().sentryDSN,
-                "environment": env,
-                "enableAutoSessionTracking": true,
-                "maxBreadcrumbs": 150
-            ])
+            SentrySDK.start { (options) in
+                options.dsn = Stage1stKeys().sentryDSN
+                options.environment = env
+                options.maxBreadcrumbs = 150
+                options.beforeSend = { event in
+                    if
+                        let threads = event.threads,
+                        threads.count == 1,
+                        let debugMeta = event.debugMeta,
+                        debugMeta.count == 1
+                    {
+                        event.threads = nil
+                        event.debugMeta = nil
+                    }
+                    return event
+                }
+            }
         }
     }
 }

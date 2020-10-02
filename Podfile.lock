@@ -25,7 +25,7 @@ PODS:
   - Ainoaibo/Stash (0.2.0)
   - Ainoaibo/StateTransition (0.2.0)
   - Ainoaibo/SwiftExtension (0.2.0)
-  - Alamofire (5.0.2)
+  - Alamofire (5.2.2)
   - CocoaLumberjack (3.6.1):
     - CocoaLumberjack/Core (= 3.6.1)
   - CocoaLumberjack/Core (3.6.1)
@@ -68,9 +68,9 @@ PODS:
   - ReactiveCocoa (10.1.0):
     - ReactiveSwift (~> 6.1)
   - ReactiveSwift (6.1.0)
-  - Sentry (5.1.4):
-    - Sentry/Core (= 5.1.4)
-  - Sentry/Core (5.1.4)
+  - Sentry (6.0.0):
+    - Sentry/Core (= 6.0.0)
+  - Sentry/Core (6.0.0)
   - SnapKit (5.0.1)
   - SWHttpTrafficRecorder (1.0.2)
   - YapDatabase (3.1.4):
@@ -172,7 +172,7 @@ DEPENDENCIES:
   - Reachability
   - ReactiveCocoa (~> 10.0)
   - ReactiveSwift (~> 6.0)
-  - Sentry (from `https://github.com/ainopara/sentry-cocoa.git`, branch `release/5.1.4`)
+  - Sentry
   - SnapKit
   - SWHttpTrafficRecorder
   - YapDatabase (from `https://github.com/ainopara/YapDatabase.git`, branch `release/3.1.4`)
@@ -200,6 +200,7 @@ SPEC REPOS:
     - Reachability
     - ReactiveCocoa
     - ReactiveSwift
+    - Sentry
     - SnapKit
     - SWHttpTrafficRecorder
     - YYKeyboardManager
@@ -213,9 +214,6 @@ EXTERNAL SOURCES:
     :path: Pods/CocoaPodsKeys
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
-  Sentry:
-    :branch: release/5.1.4
-    :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :branch: release/3.1.4
     :git: https://github.com/ainopara/YapDatabase.git
@@ -227,9 +225,6 @@ CHECKOUT OPTIONS:
   KissXML:
     :commit: 98fca4630232c71a728273b220f660922188c131
     :git: https://github.com/ainopara/KissXML.git
-  Sentry:
-    :commit: 8562ebbf0e0ee3b9ab73bb46c8dfe67b59bb7e9d
-    :git: https://github.com/ainopara/sentry-cocoa.git
   YapDatabase:
     :commit: 3693d1dd84191d33a256f5c334ccc927d0fcad7e
     :git: https://github.com/ainopara/YapDatabase.git
@@ -239,13 +234,13 @@ SPEC CHECKSUMS:
   AcknowList: 70efb7554e257914da0aea2724a72fb30c45dfe2
   ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Ainoaibo: 5c3709e4f4bdcc0e593f16368fae18f8b3c8ddbc
-  Alamofire: 3ba7a4db18b4f62c4a1c0e1cb39d7f3d52e10ada
+  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
-  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
+  Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
   DeviceKit: da103891aa928d89f64ea8dd8aca738c5f3d8ac0
-  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
+  Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
   Files: d88e31b84d65e754935053b1c584ea8e2320698a
   Fuzi: bcc5694488dd6e672e126cbf3c5471d7a79506d1
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
@@ -259,12 +254,12 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   ReactiveCocoa: 2f1d942d79072eded6d8c3bc7c2a641d40855a56
   ReactiveSwift: b78c7259f8ca46368238c895ae33a6a3bf9f811c
-  Sentry: 74f2ad93a20a5567a1badaedf5b3f60b142ad082
+  Sentry: 9f6ac6d0412a09a8d610497f873ccbcf7abbe3f8
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SWHttpTrafficRecorder: 6c0804d3f8edf9c7f3a1e0eec9f6bf5e4b241b9f
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: a1255b8847867541ebb28d9914cddc6285e8fc3d
+PODFILE CHECKSUM: 57827cb6c97c2626f4e93fd6298376be2ce5ca08
 
 COCOAPODS: 1.9.0

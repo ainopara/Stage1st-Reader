@@ -45,12 +45,12 @@ class S1EventTracker: EventTracker {
 
         let event = Event(level: .warning)
         let nsError = error as NSError
-        event.message = "\(nsError.domain):\(nsError.code)"
+        let message = "\(nsError.domain):\(nsError.code)"
+        event.message = SentryMessage(formatted: message)
         event.extra = nsError.userInfo
             .merging(userInfo ?? [:], uniquingKeysWith: { $1 })
             .merging(extraInfoSnapshot, uniquingKeysWith: { $1 })
-        event.fingerprint = [event.message]
-        SentrySDK.currentHub().getClient()?.attachStacktrace(event)
+        event.fingerprint = [message]
         SentrySDK.capture(event: event)
     }
 
@@ -70,10 +70,13 @@ class S1EventTracker: EventTracker {
         Answers.logCustomEvent(withName: name, customAttributes: attributes)
 
         let event = Event(level: .info)
-        event.message = name
+        event.message = SentryMessage(formatted: name)
         event.tags = attributes
-        // Assigning an empty breadcrumbsSerialized will prevent client from attching stored breadcrumbs to this event
+        // Assigning an empty breadcrumbs will prevent client from attching stored breadcrumbs to this event
         event.breadcrumbs = []
+        // Assigning threads and debugMeta will prevent client from generating threads and debugMeta for this event
+        event.threads = [Sentry.Thread(threadId: 0)]
+        event.debugMeta = [DebugMeta()]
         SentrySDK.capture(event: event)
     }
 

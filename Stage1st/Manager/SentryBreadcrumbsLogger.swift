@@ -1,5 +1,5 @@
 //
-//  SentryLogger.swift
+//  SentryBreadcrumbsLogger.swift
 //  Stage1st
 //
 //  Created by Zheng Li on 2020/2/9.
