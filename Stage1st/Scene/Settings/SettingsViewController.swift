@@ -97,10 +97,6 @@ final class SettingsViewController: UITableViewController {
         AppEnvironment.current.eventTracker.setObjectValue("SettingsViewController", forKey: "lastViewController")
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if AppEnvironment.current.settings.forcePortraitForPhone.value && UIDevice.current.userInterfaceIdiom == .phone {
             return .portrait
