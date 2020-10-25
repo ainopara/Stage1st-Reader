@@ -52,7 +52,6 @@ platform :ios do
       xcodeproj: "Stage1st.xcodeproj",
       message: "Version bump to #{options[:version]}(#{build_number})."
     )
-    upload_symbols_to_crashlytics
     
     retry_count = 10
     begin
