@@ -32,7 +32,7 @@ class NoticeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         title = "回复提醒"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Back"), style: .plain, target: self, action: #selector(backAction))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backAction))
     }
 
     required init?(coder aDecoder: NSCoder) {

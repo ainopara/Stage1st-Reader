@@ -109,7 +109,7 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
         toolBar.isTranslucent = false
 
         // Back button
-        backButton.setImage(#imageLiteral(resourceName: "Back"), for: .normal)
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         backButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
         backButton.imageView?.clipsToBounds = false
         backButton.imageView?.contentMode = .center
@@ -119,7 +119,7 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
         backButton.addGestureRecognizer(backLongPressGestureRecognizer)
 
         // Forward button
-        let image = viewModel.isInLastPage() ? #imageLiteral(resourceName: "Refresh_black") : #imageLiteral(resourceName: "Forward")
+        let image = viewModel.isInLastPage() ? UIImage(systemName: "arrow.clockwise") : UIImage(systemName: "chevron.right")
         forwardButton.setImage(image, for: .normal)
         forwardButton.frame = CGRect(x: 0.0, y: 0.0, width: 40.0, height: 30.0)
         forwardButton.imageView?.clipsToBounds = false
@@ -131,7 +131,7 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
 
         // Page button
         pageButton.frame = CGRect(x: 0.0, y: 0.0, width: 80.0, height: 30.0)
-        pageButton.titleLabel?.font = UIFont.systemFont(ofSize: 13.0)
+        pageButton.titleLabel?.font = UIFont.systemFont(ofSize: 13.0, weight: .medium)
         pageButton.backgroundColor = .clear
         pageButton.titleLabel?.textAlignment = .center
         pageButton.addTarget(self, action: #selector(pickPage(sender:)), for: .touchUpInside)
@@ -1436,7 +1436,7 @@ private extension ContentViewController {
         case let (.refresh(rotateAngle), .refresh(oldRotateAngle)) where rotateAngle != oldRotateAngle:
             forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         case let (.refresh(rotateAngle), _):
-            forwardButton.setImage(#imageLiteral(resourceName: "Refresh_black"), for: .normal)
+            forwardButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
             forwardButton.imageView?.layer.transform = transform(with: rotateAngle)
         }
     }

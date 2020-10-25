@@ -50,14 +50,14 @@ class S1ArchiveListViewController: UIViewController {
 
         naviItem.titleView = segControl
         naviItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Settings"),
+            image: UIImage(systemName: "gear"),
             style: .plain,
             target: self,
             action: #selector(settings)
         )
 
         AppEnvironment.current.dataCenter.noticeCount
-            .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
+            .map { ($0?.myPost ?? 0) == 0 ? UIImage(systemName: "bell") : UIImage(systemName: "bell.fill") }
             .producer
             .start(on: UIScheduler())
             .observe(on: UIScheduler())

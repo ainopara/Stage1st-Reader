@@ -154,33 +154,33 @@ extension ContentViewModel {
         return dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value + 1)
     }
 
-    func forwardButtonImage() -> UIImage {
+    func forwardButtonImage() -> UIImage? {
         if dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value + 1) {
-            return #imageLiteral(resourceName: "Forward-Cached")
+            return UIImage(systemName: "chevron.right")
         } else {
-            return #imageLiteral(resourceName: "Forward")
+            return UIImage(systemName: "chevron.right")
         }
     }
 
-    func backwardButtonImage() -> UIImage {
+    func backwardButtonImage() -> UIImage? {
         if dataCenter.hasPrecachedFloors(for: Int(truncating: topic.topicID), page: currentPage.value - 1) {
-            return #imageLiteral(resourceName: "Back-Cached")
+            return UIImage(systemName: "chevron.left")
         } else {
-            return #imageLiteral(resourceName: "Back")
+            return UIImage(systemName: "chevron.left")
         }
     }
 
-    func favoriteButtonImage() -> UIImage {
+    func favoriteButtonImage() -> UIImage? {
         if let isFavorited = self.topic.favorite, isFavorited.boolValue {
-            return #imageLiteral(resourceName: "Favorited")
+            return UIImage(systemName: "star.fill")
         } else {
-            return #imageLiteral(resourceName: "Favorite")
+            return UIImage(systemName: "star")
         }
     }
 
     func pageButtonString() -> String {
         let presentingTotalPages = max(currentPage.value, totalPages.value)
-        return "\(self.currentPage.value)/\(presentingTotalPages)"
+        return "\(self.currentPage.value) / \(presentingTotalPages)"
     }
 }
 

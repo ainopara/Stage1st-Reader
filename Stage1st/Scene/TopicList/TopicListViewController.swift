@@ -35,14 +35,14 @@ final class TopicListViewController: UIViewController {
         // Navigation Bar
         naviItem.title = "Stage1st"
         naviItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Settings"),
+            image: UIImage(systemName: "gear"),
             style: .plain,
             target: self,
             action: #selector(settings)
         )
 
         AppEnvironment.current.dataCenter.noticeCount
-            .map { ($0?.myPost ?? 0) == 0 ? UIImage(named: "Notice") : UIImage(named: "Notice2") }
+            .map { ($0?.myPost ?? 0) == 0 ? UIImage(systemName: "bell") : UIImage(systemName: "bell.fill") }
             .producer
             .start(on: UIScheduler())
             .observe(on: UIScheduler())
@@ -50,7 +50,7 @@ final class TopicListViewController: UIViewController {
                 guard let strongSelf = self else { return }
                 strongSelf.naviItem.rightBarButtonItems = [
                     UIBarButtonItem(
-                        image: UIImage(named: "Archive"),
+                        image: UIImage(systemName: "archivebox"),
                         style: .plain,
                         target: strongSelf,
                         action: #selector(TopicListViewController.archive)
