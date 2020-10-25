@@ -30,10 +30,7 @@ target "Stage1st" do
     # Debug
     pod 'CocoaLumberjack'
     pod 'CocoaLumberjack/Swift'
-    pod 'CrashlyticsLogger', '~> 0.4.0'
 
-    pod 'Fabric'
-    pod 'Crashlytics'
     pod 'Sentry'
 
     pod 'OHHTTPStubs/Swift', :configurations => ['Debug']

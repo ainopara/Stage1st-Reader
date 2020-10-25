@@ -9,10 +9,7 @@
 import Ainoaibo
 import Combine
 import CocoaLumberjack
-import CrashlyticsLogger
 import CloudKit
-import Fabric
-import Crashlytics
 import Reachability
 import Kingfisher
 import Sentry
@@ -361,37 +358,12 @@ private extension AppDelegate {
 
         setupOSLogger()
         setupInMemoryLogger()
-        setupSentryLogger()
-
-        #else
-
-        func setupCrashlyticsLogger() {
-            let formatter = DDMultiFormatter()
-            formatter.add(fileLogFormatter)
-            formatter.add(queueFormatter)
-            formatter.add(errorLevelFormatter)
-
-            let logger = CrashlyticsLogger.shared
-            logger.logFormatter = formatter
-            DDLog.add(logger)
-        }
-
-        setupCrashlyticsLogger()
-        setupSentryLogger()
         #endif
+
+        setupSentryLogger()
     }
 
     func setupCrashReporters() {
-
-        // Setup Crashlytics
-
-        #if DEBUG
-        #else
-        Fabric.with([Crashlytics.self])
-        #endif
-
-        // Setup Sentry
-
         if !Stage1stKeys().sentryDSN.isEmpty {
             let env: String = {
                 #if DEBUG

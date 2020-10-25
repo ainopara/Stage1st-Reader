@@ -6,7 +6,6 @@
 //  Copyright © 2018 Renaissance. All rights reserved.
 //
 
-import Crashlytics
 import Sentry
 
 protocol EventTracker {
@@ -39,7 +38,6 @@ class S1EventTracker: EventTracker {
     }
 
     func recordError(_ error: Error, withAdditionalUserInfo userInfo: [String: Any]?, level: SentryLevel) {
-        Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: userInfo)
 
         let extraInfoSnapshot = self.extraInfo
 
@@ -67,8 +65,6 @@ class S1EventTracker: EventTracker {
     }
 
     func logEvent(_ name: String, attributes: [String: String]?, uploadImmediately: Bool) {
-        Answers.logCustomEvent(withName: name, customAttributes: attributes)
-
         let event = Event(level: .info)
         event.message = SentryMessage(formatted: name)
         event.tags = attributes
@@ -82,6 +78,5 @@ class S1EventTracker: EventTracker {
 
     func setObjectValue(_ value: String, forKey key: String) {
         extraInfo[key] = value
-        Crashlytics.sharedInstance().setObjectValue(value, forKey: key)
     }
 }

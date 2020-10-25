@@ -32,14 +32,7 @@ PODS:
   - CocoaLumberjack/Swift (3.6.1):
     - CocoaLumberjack/Core
   - CodableExtensions (0.3.0)
-  - Crashlytics (3.14.0):
-    - Fabric (~> 1.10.2)
-  - CrashlyticsLogger (0.4.0):
-    - CocoaLumberjack (~> 3.5)
-    - CocoaLumberjack/Swift
-    - Crashlytics
   - DeviceKit (2.3.0)
-  - Fabric (1.10.2)
   - Files (4.0.2)
   - Fuzi (3.1.1)
   - HorizontalFloatingHeaderLayout (2.0.0)
@@ -154,10 +147,7 @@ DEPENDENCIES:
   - CocoaLumberjack
   - CocoaLumberjack/Swift
   - CodableExtensions
-  - Crashlytics
-  - CrashlyticsLogger (~> 0.4.0)
   - DeviceKit
-  - Fabric
   - Files
   - Fuzi (~> 3.0)
   - HorizontalFloatingHeaderLayout
@@ -186,10 +176,7 @@ SPEC REPOS:
     - Alamofire
     - CocoaLumberjack
     - CodableExtensions
-    - Crashlytics
-    - CrashlyticsLogger
     - DeviceKit
-    - Fabric
     - Files
     - Fuzi
     - HorizontalFloatingHeaderLayout
@@ -237,10 +224,7 @@ SPEC CHECKSUMS:
   Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
   CodableExtensions: 59a7093d64af2ee11009890594a13cd64befc8a0
-  Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
-  CrashlyticsLogger: 6ee9b9d28aa3c43a2edb2360b34c5fec33988169
   DeviceKit: da103891aa928d89f64ea8dd8aca738c5f3d8ac0
-  Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
   Files: d88e31b84d65e754935053b1c584ea8e2320698a
   Fuzi: bcc5694488dd6e672e126cbf3c5471d7a79506d1
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
@@ -260,6 +244,6 @@ SPEC CHECKSUMS:
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: 57827cb6c97c2626f4e93fd6298376be2ce5ca08
+PODFILE CHECKSUM: fdc3135d9b792ba62fa832bc6e676e1a33182866
 
 COCOAPODS: 1.10.0

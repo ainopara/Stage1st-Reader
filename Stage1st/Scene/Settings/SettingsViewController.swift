@@ -14,7 +14,6 @@ import ReactiveSwift
 import ReactiveCocoa
 import Combine
 import Files
-import Crashlytics
 import SafariServices
 
 final class SettingsViewController: UITableViewController {
