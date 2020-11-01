@@ -57,6 +57,7 @@ platform :ios do
     begin
       sentry_upload_dsym
     rescue => ex
+      puts "#{ex}"
       if retry_count > 0
         retry_count -= 1
         sleep 3
