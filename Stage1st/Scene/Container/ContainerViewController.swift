@@ -87,6 +87,7 @@ class ContainerViewController: UIViewController {
 
         NotificationCenter.default.publisher(for: UIPasteboard.removedNotification)
             .map { _ in "" }
+            .receive(on: DispatchQueue.main)
             .subscribe(pasteboardString)
             .store(in: &bag)
 
@@ -114,12 +115,14 @@ class ContainerViewController: UIViewController {
         if #available(iOS 14.0, *) {
             UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
                 guard let self = self else { return }
-                switch result {
-                case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
-                    self.pasteboardString.send(UIPasteboard.general.string ?? "")
-                case .success, .failure:
-                    S1LogDebug("Unable to detect a url in pasteboard")
-                    self.pasteboardString.send("")
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
+                        self.pasteboardString.send(UIPasteboard.general.string ?? "")
+                    case .success, .failure:
+                        S1LogDebug("Unable to detect a url in pasteboard")
+                        self.pasteboardString.send("")
+                    }
                 }
             }
         } else {
@@ -191,6 +194,7 @@ extension ContainerViewController {
 
         pasteboardContainsValidURL
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] shouldBeShowing in
                 guard let strongSelf = self else { return }
                 strongSelf.view.layoutIfNeeded()
