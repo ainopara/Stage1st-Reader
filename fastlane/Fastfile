@@ -66,11 +66,6 @@ platform :ios do
         raise ex
       end
     end
-    
-    sentry_app_version = "Stage1st-#{options[:version]}"
-    sentry_create_release(version: sentry_app_version)
-    sentry_set_commits(version: sentry_app_version, auto: true)
-    
   end
 
   after_all do |lane|
