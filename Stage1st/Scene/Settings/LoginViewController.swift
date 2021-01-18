@@ -400,7 +400,7 @@ extension LoginViewController {
             guard let loginDict = loginDict else {
                 return
             }
-            if let error = error as NSError?, error.code != Int(AppExtensionErrorCodeCancelledByUser) {
+            if let error = error as NSError?, error.code != AppExtensionErrorCode.cancelledByUser.rawValue {
                 S1LogInfo("Error invoking 1Password App Extension for find login: \(error)")
                 return
             }

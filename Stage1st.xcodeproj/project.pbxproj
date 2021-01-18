@@ -102,7 +102,7 @@
 		867A7BD21F4EE7F3001A7C00 /* WebKitImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867A7BD11F4EE7F3001A7C00 /* WebKitImageDownloader.swift */; };
 		8681E6B71CEF4683004269D3 /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6B61CEF4683004269D3 /* Topic.swift */; };
 		8681E6BF1CEF61ED004269D3 /* TopicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681E6BE1CEF61ED004269D3 /* TopicTests.swift */; };
-		8682B15124A1C06F004E8C05 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 8682B15024A1C06F004E8C05 /* SwiftPackageProductDependency */; };
+		8682B15124A1C06F004E8C05 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8682B15024A1C06F004E8C05 /* Kingfisher */; };
 		868799231CE629D700F5C75C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868799221CE629D700F5C75C /* LoginViewController.swift */; };
 		8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8687C7BD1DA0BA630038A2F6 /* MahjongFaceItem.swift */; };
 		868A98051CA7F22500498C38 /* AnimationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868A98041CA7F22500498C38 /* AnimationButton.swift */; };
@@ -110,7 +110,7 @@
 		8692A0A32089FDB7003C5E76 /* CloudKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */; };
 		8694BCD81CED9AD400756C4A /* TopicListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8694BCD71CED9AD400756C4A /* TopicListViewModel.swift */; };
 		86991FD9188E76E800B7054F /* S1TopicListCellSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86991FD8188E76E800B7054F /* S1TopicListCellSubView.m */; };
-		869BD71023EF00C500AAE96C /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 869BD70F23EF00C500AAE96C /* SwiftPackageProductDependency */; };
+		869BD71023EF00C500AAE96C /* Mustache in Frameworks */ = {isa = PBXBuildFile; productRef = 869BD70F23EF00C500AAE96C /* Mustache */; };
 		869BD71223EFC3D400AAE96C /* AppDelegate+Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869BD71123EFC3D400AAE96C /* AppDelegate+Migration.swift */; };
 		869BD71723EFEE6F00AAE96C /* SentryBreadcrumbsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869BD71623EFEE6F00AAE96C /* SentryBreadcrumbsLogger.swift */; };
 		869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869E02391DA67293006A45FE /* ActivityItemProvider.swift */; };
@@ -384,11 +384,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				869BD71023EF00C500AAE96C /* BuildFile in Frameworks */,
+				869BD71023EF00C500AAE96C /* Mustache in Frameworks */,
 				86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */,
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
 				2353682C2ADA69420446B6FE /* Pods_Stage1st.framework in Frameworks */,
-				8682B15124A1C06F004E8C05 /* BuildFile in Frameworks */,
+				8682B15124A1C06F004E8C05 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -952,8 +952,8 @@
 			);
 			name = Stage1st;
 			packageProductDependencies = (
-				869BD70F23EF00C500AAE96C /* SwiftPackageProductDependency */,
-				8682B15024A1C06F004E8C05 /* SwiftPackageProductDependency */,
+				869BD70F23EF00C500AAE96C /* Mustache */,
+				8682B15024A1C06F004E8C05 /* Kingfisher */,
 			);
 			productName = Stage1st;
 			productReference = C095873416CA8A36007E0119 /* Stage1st.app */;
@@ -1011,8 +1011,8 @@
 			);
 			mainGroup = C095872B16CA8A36007E0119;
 			packageReferences = (
-				869BD70923EEF80200AAE96C /* RemoteSwiftPackageReference */,
-				869BD70E23EF00C500AAE96C /* RemoteSwiftPackageReference */,
+				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */,
 			);
 			productRefGroup = C095873516CA8A36007E0119 /* Products */;
 			projectDirPath = "";
@@ -1604,6 +1604,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"DEBUG\" -enable-bridging-pch";
 				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st/Stage1st-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1637,6 +1638,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Stage1st;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Stage1st/Stage1st-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1689,7 +1691,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		869BD70923EEF80200AAE96C /* RemoteSwiftPackageReference */ = {
+		869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
@@ -1697,7 +1699,7 @@
 				minimumVersion = 5.13.0;
 			};
 		};
-		869BD70E23EF00C500AAE96C /* RemoteSwiftPackageReference */ = {
+		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRMustache.swift.git";
 			requirement = {
@@ -1708,14 +1710,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8682B15024A1C06F004E8C05 /* SwiftPackageProductDependency */ = {
+		8682B15024A1C06F004E8C05 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70923EEF80200AAE96C /* RemoteSwiftPackageReference */;
+			package = 869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
 		};
-		869BD70F23EF00C500AAE96C /* SwiftPackageProductDependency */ = {
+		869BD70F23EF00C500AAE96C /* Mustache */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70E23EF00C500AAE96C /* RemoteSwiftPackageReference */;
+			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */;
 			productName = Mustache;
 		};
 /* End XCSwiftPackageProductDependency section */
