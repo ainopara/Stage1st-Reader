@@ -14,7 +14,6 @@
 		36D1E8031E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36D1E8021E38773A0035E319 /* Pods-Stage1st-acknowledgements.plist */; };
 		36D6D0511E55596B003098B8 /* AdvancedSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */; };
 		8600626E2413C99B00B2EB7E /* ReorderForumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8600626D2413C99B00B2EB7E /* ReorderForumViewController.swift */; };
-		860169142349A41000FDB6CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860169132349A41000FDB6CB /* SettingsView.swift */; };
 		860223521895051400A3E66E /* S1Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 860223511895051400A3E66E /* S1Global.m */; };
 		86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86038F431B5B3DA400F84F1A /* ColorMap.plist */; };
 		8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605734E1B7623A300C70781 /* CloudKit.framework */; };
@@ -187,7 +186,6 @@
 		4358B1D3313628BA0A5AAF21 /* Pods-Stage1st.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stage1st.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Stage1st/Pods-Stage1st.debug.xcconfig"; sourceTree = "<group>"; };
 		75B24BAC125C79D44D2F46F4 /* Pods_Stage1stTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stage1stTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8600626D2413C99B00B2EB7E /* ReorderForumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderForumViewController.swift; sourceTree = "<group>"; };
-		860169132349A41000FDB6CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		860223501895051400A3E66E /* S1Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S1Global.h; sourceTree = "<group>"; };
 		860223511895051400A3E66E /* S1Global.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S1Global.m; sourceTree = "<group>"; };
 		86038F431B5B3DA400F84F1A /* ColorMap.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ColorMap.plist; sourceTree = "<group>"; };
@@ -885,7 +883,6 @@
 			children = (
 				86FFD3231CB906F200EF742A /* SettingsViewController.swift */,
 				865673171A7A7B190025D22E /* Settings.storyboard */,
-				860169132349A41000FDB6CB /* SettingsView.swift */,
 				868799221CE629D700F5C75C /* LoginViewController.swift */,
 				8692A0A22089FDB7003C5E76 /* CloudKitViewController.swift */,
 				36D6D0501E55596B003098B8 /* AdvancedSettingsViewController.swift */,
@@ -1212,7 +1209,6 @@
 				8667FD0320D3D81A000C5432 /* ReportComposeViewModel.swift in Sources */,
 				8606D48C22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift in Sources */,
 				8681E6B71CEF4683004269D3 /* Topic.swift in Sources */,
-				860169142349A41000FDB6CB /* SettingsView.swift in Sources */,
 				86B464AE218DB379002C2A66 /* StringDateTransformer.swift in Sources */,
 				8673EEBD2165A5B900871288 /* MahjongFaceInputHeaderView.swift in Sources */,
 				86734B0D1F403788000AE19E /* TopicListCell.swift in Sources */,
@@ -1696,7 +1692,7 @@
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.13.0;
+				minimumVersion = 6.3.0;
 			};
 		};
 		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */ = {

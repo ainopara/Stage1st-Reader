@@ -85,13 +85,13 @@
 "REComposeSheetView.Post" = "发送";
 
 /* (No Commment) */
-"SettingsViewController.Append_Suffix" = "回复尾巴";
+"SettingsViewController.Remove_Tails" = "去除小尾巴";
 
 /* (No Commment) */
 "SettingsViewController.Developer" = "开发者";
 
 /* (No Commment) */
-"SettingsViewController.Display_Image" = "显示图片";
+"SettingsViewController.Display_Image" = "移动数据下显示图片";
 
 /* Font Size */
 "SettingsViewController.Font_Size" = "字体大小";

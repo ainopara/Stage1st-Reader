@@ -196,24 +196,14 @@ class WebViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if #available(iOS 11.0, *) {
-            // Top part of the workaround is no more necessary since iOS 11.
-            webView.scrollView.contentInset = UIEdgeInsets(
-                top: 0.0,
-                left: 0.0,
-                bottom: toolBar.frame.height, // It seems in iOS 11.0, WKWebView will automatically add home indicator's height, so we should not include that parts in contentInset.
-                right: 0.0
-            )
-            webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
-        } else {
-            webView.scrollView.contentInset = UIEdgeInsets(
-                top: statusBarSeparatorView.frame.maxY - webView.frame.minY,
-                left: 0.0,
-                bottom: webView.frame.maxY - toolBar.frame.minY,
-                right: 0.0
-            )
-            webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
-        }
+        // Top part of the workaround is no more necessary since iOS 11.
+        webView.scrollView.contentInset = UIEdgeInsets(
+            top: 0.0,
+            left: 0.0,
+            bottom: toolBar.frame.height, // It seems in iOS 11.0, WKWebView will automatically add home indicator's height, so we should not include that parts in contentInset.
+            right: 0.0
+        )
+        webView.scrollView.scrollIndicatorInsets = webView.scrollView.contentInset
     }
 }
 

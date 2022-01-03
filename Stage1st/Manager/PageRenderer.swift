@@ -153,15 +153,10 @@ extension PageRenderer {
                                 imageElement.addAttribute(withName: "id", stringValue: "\(floorID)-img\(imageIndexInCurrentFloor)")
                                 imageIndexInCurrentFloor += 1
                                 if AppEnvironment.current.settings.displayImage.value == true || AppEnvironment.current.reachability.isReachableViaWiFi() {
-                                    if #available(iOS 11.0, *) {
-                                        let schemeChangedImageSrcString = finalImageSrcString
-                                            .s1_replace(pattern: "^https", with: "images")
-                                            .s1_replace(pattern: "^http", with: "image")
-                                        imageElement.addAttribute(withName: "src", stringValue: schemeChangedImageSrcString)
-                                    } else {
-                                        imageElement.addAttribute(withName: "src", stringValue: finalImageSrcString)
-                                    }
-
+                                    let schemeChangedImageSrcString = finalImageSrcString
+                                        .s1_replace(pattern: "^https", with: "images")
+                                        .s1_replace(pattern: "^http", with: "image")
+                                    imageElement.addAttribute(withName: "src", stringValue: schemeChangedImageSrcString)
                                 } else {
                                     let placeholderURLString = templateBundle().path(forResource: "Placeholder", ofType: "png", inDirectory: "image")!
                                     imageElement.addAttribute(withName: "src", stringValue: placeholderURLString)
@@ -326,22 +321,12 @@ extension PageRenderer {
         }
 
         func processAttachments(attachmentImageURLs: [String: URL]) -> [[String: String]] {
-            if #available(iOS 11.0, *) {
-                return attachmentImageURLs.map { (attachmentID, attachmentURL) in
-                    return [
-                        "url": attachmentURL.absoluteString.s1_replace(pattern: "^http", with: "image"),
-                        "trueURL": attachmentURL.absoluteString,
-                        "ID": attachmentID
-                    ]
-                }
-            } else {
-                return attachmentImageURLs.map { (attachmentID, attachmentURL) in
-                    return [
-                        "url": attachmentURL.absoluteString,
-                        "trueURL": attachmentURL.absoluteString,
-                        "ID": attachmentID
-                    ]
-                }
+            return attachmentImageURLs.map { (attachmentID, attachmentURL) in
+                return [
+                    "url": attachmentURL.absoluteString.s1_replace(pattern: "^http", with: "image"),
+                    "trueURL": attachmentURL.absoluteString,
+                    "ID": attachmentID
+                ]
             }
         }
 

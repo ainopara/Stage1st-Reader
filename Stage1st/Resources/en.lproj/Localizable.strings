@@ -47,8 +47,8 @@
 "SettingsViewController.Not_Login_State_Mark" = "Not Login";
 "SettingsViewController.Forum_Order_Custom" = "Forum Order";
 "SettingsViewController.Font_Size" = "Font Size";
-"SettingsViewController.Display_Image" = "Display Image";
-"SettingsViewController.Append_Suffix" = "Reply Suffix";
+"SettingsViewController.Display_Image" = "Display Image (Mobile Data)";
+"SettingsViewController.Remove_Tails" = "Remove Tails";
 "SettingsViewController.HistoryLimit" = "Keep History";
 "SettingsViewController.CloudKit.Status.Off" = "Off";
 "SettingsViewController.CloudKit.Status.Suspended" = "Suspended(%lu)(%lu-%lu)";

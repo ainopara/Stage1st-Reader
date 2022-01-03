@@ -75,11 +75,7 @@ class S1ArchiveListViewController: UIViewController {
         navigationBar.pushItem(naviItem, animated: false)
 
         // Search Bar
-        if #available(iOS 11.0, *) {
-            searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
-        } else {
-            searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 40.0)
-        }
+        searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
         searchBar.delegate = self
         searchBar.backgroundImage = UIImage()
         let gestureRecognizer = UISwipeGestureRecognizer(
@@ -97,17 +93,13 @@ class S1ArchiveListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
-        if #available(iOS 11.0, *) {
-            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
-            searchBarWrapperView.clipsToBounds = true
-            searchBarWrapperView.addSubview(searchBar)
-            searchBar.snp.makeConstraints { (make) in
-                make.leading.trailing.top.equalTo(searchBarWrapperView)
-            }
-            tableView.tableHeaderView = searchBarWrapperView
-        } else {
-            tableView.tableHeaderView = searchBar
+        searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        searchBarWrapperView.clipsToBounds = true
+        searchBarWrapperView.addSubview(searchBar)
+        searchBar.snp.makeConstraints { (make) in
+            make.leading.trailing.top.equalTo(searchBarWrapperView)
         }
+        tableView.tableHeaderView = searchBarWrapperView
 
         tableView.register(
             TopicListCell.self,
@@ -167,18 +159,10 @@ class S1ArchiveListViewController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(navigationBar)
-        if #available(iOS 11.0, *) {
-            navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-                make.leading.trailing.equalTo(self.view)
-            })
-        } else {
-            navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(view.snp.top)
-                make.leading.trailing.equalTo(self.view)
-                make.bottom.equalTo(self.topLayoutGuide.snp.bottom).offset(44.0)
-            })
-        }
+        navigationBar.snp.makeConstraints({ (make) in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalTo(self.view)
+        })
 
         view.addSubview(tableView)
         tableView.snp.makeConstraints({ (make) in
@@ -193,20 +177,18 @@ class S1ArchiveListViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if #available(iOS 11.0, *) {
-            if
-                searchBar.subviews.count > 0,
-                searchBar.subviews[0].subviews.count > 1,
-                searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
-            {
-                let textFieldFrame = searchBar.subviews[0].subviews[1].frame
-                let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
-                if self.searchBarWrapperView.frame.height != wrapperHeight && wrapperHeight != 0 {
-                    self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
-                        value.size.height = wrapperHeight
-                    }
-                    self.tableView.tableHeaderView = self.searchBarWrapperView
+        if
+            searchBar.subviews.count > 0,
+            searchBar.subviews[0].subviews.count > 1,
+            searchBar.subviews[0].subviews[1].isKind(of: NSClassFromString("UISearchBarTextField")!)
+        {
+            let textFieldFrame = searchBar.subviews[0].subviews[1].frame
+            let wrapperHeight = 2 * textFieldFrame.origin.y + textFieldFrame.height
+            if self.searchBarWrapperView.frame.height != wrapperHeight && wrapperHeight != 0 {
+                self.searchBarWrapperView.frame = mutate(self.searchBarWrapperView.frame) { (value: inout CGRect) in
+                    value.size.height = wrapperHeight
                 }
+                self.tableView.tableHeaderView = self.searchBarWrapperView
             }
         }
     }

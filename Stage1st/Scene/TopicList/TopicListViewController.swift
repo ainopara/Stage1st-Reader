@@ -9,6 +9,7 @@
 import Ainoaibo
 import ReactiveSwift
 import DeviceKit
+import SwiftUI
 
 final class TopicListViewController: UIViewController {
 
@@ -68,11 +69,7 @@ final class TopicListViewController: UIViewController {
         navigationBar.pushItem(naviItem, animated: false)
 
         // Search Bar
-        if #available(iOS 11.0, *) {
-            searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
-        } else {
-            searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 40.0)
-        }
+        searchBar.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
         searchBar.delegate = self
         searchBar.backgroundImage = UIImage()
         let gestureRecognizer = UISwipeGestureRecognizer(
@@ -462,6 +459,16 @@ extension TopicListViewController {
     }
 
     @objc func archive(_ sender: Any) {
+//        let state = SettingsViewState(
+//            currentUsernameSubject: AppEnvironment.current.settings.currentUsername,
+//            showLoginViewController: { [weak self] in
+//                guard let self = self else { return }
+//                self.present(LoginViewController(), animated: true, completion: nil)
+//            }
+//        )
+//        let settingsViewController = UIHostingController(rootView: SettingsView(state: state))
+//        self.present(settingsViewController, animated: true, completion: nil)
+        // TODO: 
         self.viewModel.containerShouldSwitchToArchiveList.send(())
     }
 

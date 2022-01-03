@@ -100,12 +100,7 @@ final class MahjongFaceInputView: UIView {
     fileprivate func setupAutoLayout() {
         decorationView.snp.makeConstraints { (make) in
             make.leading.trailing.bottom.equalTo(self)
-            if #available(iOS 11.0, *) {
-                make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom)
-            } else {
-                // Fallback on earlier versions
-                make.height.equalTo(0)
-            }
+            make.top.equalTo(self.safeAreaLayoutGuide.snp.bottom)
         }
 
         collectionView.snp.makeConstraints { (make) in

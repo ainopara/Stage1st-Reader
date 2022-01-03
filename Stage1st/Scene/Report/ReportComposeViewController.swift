@@ -94,15 +94,12 @@ final class ReportComposeViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if #available(iOS 11.0, *) {
-            textView.textContainerInset = UIEdgeInsets(
-                top: textView.textContainerInset.top,
-                left: view.safeAreaInsets.left,
-                bottom: textView.textContainerInset.bottom,
-                right: view.safeAreaInsets.right
-            )
-        }
-
+        textView.textContainerInset = UIEdgeInsets(
+            top: textView.textContainerInset.top,
+            left: view.safeAreaInsets.left,
+            bottom: textView.textContainerInset.bottom,
+            right: view.safeAreaInsets.right
+        )
     }
 }
 

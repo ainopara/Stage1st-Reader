@@ -74,11 +74,9 @@ extension WebKitImageDownloader: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
 
-        if #available(iOS 11.0, *) {
-            if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
-                S1LogDebug("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
-                schemeTask.didReceive(response)
-            }
+        if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
+            S1LogDebug("Task Receive Response \(schemeTask.request) \(dataTask.state == .running)")
+            schemeTask.didReceive(response)
         }
 
         completionHandler(.allow)
@@ -86,28 +84,24 @@ extension WebKitImageDownloader: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 
-        if #available(iOS 11.0, *) {
-            if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
-                S1LogVerbose("Task Receive Data \(schemeTask.request) Running: \(dataTask.state == .running)")
-                schemeTask.didReceive(data)
-            }
+        if let schemeTask = self.taskMap[dataTask] as? WKURLSchemeTask {
+            S1LogVerbose("Task Receive Data \(schemeTask.request) Running: \(dataTask.state == .running)")
+            schemeTask.didReceive(data)
         }
 
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if #available(iOS 11.0, *) {
-            if let schemeTask = self.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
-                if let error = error {
-                    S1LogWarn("Task Fail \(schemeTask.request) \(error)")
-                    schemeTask.didFailWithError(error)
-                } else {
-                    S1LogDebug("Task Finish \(schemeTask.request)")
-                    schemeTask.didFinish()
-                }
-
-                self.taskMap.removeValue(forKey: task as! URLSessionDataTask)
+        if let schemeTask = self.taskMap[task as! URLSessionDataTask] as? WKURLSchemeTask {
+            if let error = error {
+                S1LogWarn("Task Fail \(schemeTask.request) \(error)")
+                schemeTask.didFailWithError(error)
+            } else {
+                S1LogDebug("Task Finish \(schemeTask.request)")
+                schemeTask.didFinish()
             }
+
+            self.taskMap.removeValue(forKey: task as! URLSessionDataTask)
         }
     }
 }

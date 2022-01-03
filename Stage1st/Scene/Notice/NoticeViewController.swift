@@ -101,18 +101,10 @@ extension NoticeViewController {
 
     private func setupAutoLayout() {
         view.addSubview(navigationBar)
-        if #available(iOS 11.0, *) {
-            navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-                make.leading.trailing.equalTo(self.view)
-            })
-        } else {
-            navigationBar.snp.makeConstraints({ (make) in
-                make.top.equalTo(view.snp.top)
-                make.leading.trailing.equalTo(self.view)
-                make.bottom.equalTo(self.topLayoutGuide.snp.bottom).offset(44.0)
-            })
-        }
+        navigationBar.snp.makeConstraints({ (make) in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalTo(self.view)
+        })
 
         collectionView.snp.makeConstraints { (make) in
             make.top.equalTo(navigationBar.snp.bottom)

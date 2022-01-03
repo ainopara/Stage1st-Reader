@@ -141,10 +141,8 @@ extension QuoteFloorViewController {
         let userContentController = WKUserContentController()
         userContentController.add(GeneralScriptMessageHandler(delegate: self), name: "stage1st")
         configuration.userContentController = userContentController
-        if #available(iOS 11.0, *) {
-            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "image")
-            configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "images")
-        }
+        configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "image")
+        configuration.setURLSchemeHandler(AppEnvironment.current.webKitImageDownloader, forURLScheme: "images")
         return configuration
     }
 }

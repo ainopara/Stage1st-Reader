@@ -58,11 +58,7 @@ final class TopicComposeViewController: UIViewController {
         view.addSubview(hud)
 
         textField.snp.makeConstraints { (make) in
-            if #available(iOS 11.0, *) {
-                make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            } else {
-                make.top.equalTo(self.topLayoutGuide.snp.top)
-            }
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalTo(view)
             make.height.equalTo(44.0)
         }

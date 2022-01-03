@@ -330,10 +330,6 @@ final class LoginViewController: UIViewController, CardWithBlurredBackground {
         )
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
