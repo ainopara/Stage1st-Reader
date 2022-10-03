@@ -13,4 +13,6 @@ extension ColorManager {
     var s1_tint_h: Color { Color(colorInPaletteWithID("2")) }
     var s1_title: Color { Color(colorInPaletteWithID("3")) }
     var s1_text: Color { Color(colorInPaletteWithID("4")) }
+    var s1_navigationText: Color { Color(colorForKey("appearance.navigationbar.tint"))}
+    var s1_navigationBackground: Color { Color(colorForKey("appearance.toolbar.bartint"))}
 }

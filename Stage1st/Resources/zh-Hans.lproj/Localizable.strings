@@ -215,4 +215,6 @@
 "TopicComposeViewController.Close" = "关闭";
 "TopicComposeViewController.Submit" = "提交";
 
-"ContainerViewController.PasteboardLintHint.title" = "打开剪切板中的链接";
+"ContainerViewController.PasteboardLinkHint.title" = "打开剪切板链接";
+"ContainerViewController.PasteboardAlert.title" = "剪切板中无法找到 Stage1st 链接";
+"ContainerViewController.PasteboardAlert.OK" = "好的";

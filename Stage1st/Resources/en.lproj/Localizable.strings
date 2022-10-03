@@ -122,4 +122,6 @@
 "TopicListViewController.MessageFooterView.allTopics" = "All %@ Topics";
 "TopicListViewController.MessageFooterView.allSearchResults" = "All %@ Search Result";
 
-"ContainerViewController.PasteboardLintHint.title" = "Open Link in Pasteboard";
+"ContainerViewController.PasteboardLinkHint.title" = "Open Pasteboard";
+"ContainerViewController.PasteboardAlert.title" = "Could not found Stage1st Link in Pasteboard";
+"ContainerViewController.PasteboardAlert.OK" = "OK";

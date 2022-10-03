@@ -26,10 +26,14 @@ class ContainerViewController: UIViewController {
 
     private let pasteboardToast = PasteboardLinkHintToast()
 
-    let pasteboardString = CurrentValueSubject<String, Never>("")
-    let pasteboardContainsValidURL = CurrentValueSubject<Bool, Never>(false)
-
-    let pasteboardAnimator = UIViewPropertyAnimator(duration: 0.3, timingParameters: UISpringTimingParameters())
+    enum PasteboardState: Equatable {
+        case emptyOrOtherContent
+        case containsURL
+        case containsStage1stURL(String)
+    }
+    let pasteboardChangeCount = CurrentValueSubject<Int, Never>(0)
+    let pasteboardState = CurrentValueSubject<PasteboardState, Never>(.emptyOrOtherContent)
+    let pasteboardAnimator = UIViewPropertyAnimator(duration: 1.0, timingParameters: UISpringTimingParameters())
 
     var bag = Set<AnyCancellable>()
 
@@ -85,12 +89,6 @@ class ContainerViewController: UIViewController {
             }
             .store(in: &bag)
 
-        NotificationCenter.default.publisher(for: UIPasteboard.removedNotification)
-            .map { _ in "" }
-            .receive(on: DispatchQueue.main)
-            .subscribe(pasteboardString)
-            .store(in: &bag)
-
         // Initialize Child View Controller
 
         applyChildViewControllerSwitch()
@@ -111,28 +109,6 @@ class ContainerViewController: UIViewController {
         super.viewWillAppear(animated)
 
         didReceivePaletteChangeNotification(nil)
-
-        if #available(iOS 14.0, *) {
-            UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
-                        self.pasteboardString.send(UIPasteboard.general.string ?? "")
-                    case .success, .failure:
-                        S1LogDebug("Unable to detect a url in pasteboard")
-                        self.pasteboardString.send("")
-                    }
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            if UIPasteboard.general.hasStrings {
-                pasteboardString.send(UIPasteboard.general.string ?? "")
-            } else {
-                pasteboardString.send("")
-            }
-        }
     }
 }
 
@@ -144,13 +120,20 @@ extension ContainerViewController {
 
         view.addSubview(scrollTabBar)
 
-        pasteboardToast.alpha = 0.0
+        pasteboardToast.alpha = 5.0
         view.addSubview(pasteboardToast)
 
         scrollTabBar.snp.makeConstraints { (make) in
             make.leading.trailing.equalTo(view)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.height.equalTo(44.0)
+        }
+
+        pasteboardToast.snp.makeConstraints { make in
+            make.height.equalTo(32.0)
+            make.width.equalTo(160.0)
+            make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
+            make.leading.equalTo(self.view.snp.trailing).offset(16.0)
         }
     }
 
@@ -170,75 +153,155 @@ extension ContainerViewController {
             }
             .store(in: &bag)
 
-        pasteboardString
-            .map { (string) -> Bool in
-                guard string.hasPrefix("http") else { return false }
-
-                let hasValidDomain: Bool = {
-                    for serverAddress in AppEnvironment.current.serverAddress.used where string.hasPrefix(serverAddress) {
-                        return true
-                    }
-                    return false
-                }()
-
-                guard hasValidDomain else { return false }
-
-                guard Parser.extractTopic(from: string) != nil else {
-                    return false
-                }
-
-                return true
-            }
-            .subscribe(pasteboardContainsValidURL)
-            .store(in: &bag)
-
-        pasteboardContainsValidURL
+        pasteboardChangeCount
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] shouldBeShowing in
-                guard let strongSelf = self else { return }
-                strongSelf.view.layoutIfNeeded()
-                if shouldBeShowing {
-                    strongSelf.pasteboardAnimator.addAnimations {
-                        strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
-                            make.height.equalTo(44.0)
-                            make.bottom.equalTo(strongSelf.scrollTabBar.snp.top).offset(-8.0)
-                            make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
-                            make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
-                        })
-                        strongSelf.view.layoutIfNeeded()
-                        strongSelf.pasteboardToast.alpha = 1.0
+            .sink { changeCount in
+                S1LogDebug("pastebard changed -> \(changeCount)")
+                if #available(iOS 15.0, *) {
+                    UIPasteboard.general.detectPatterns(for: [\.probableWebURL]) { [weak self] result in
+                        guard let self = self else { return }
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let patternDetected) where patternDetected.contains(\.probableWebURL):
+                                self.pasteboardState.send(.containsURL)
+                            case .success, .failure:
+                                self.pasteboardState.send(.emptyOrOtherContent)
+                            }
+                        }
+                    }
+                } else
+                if #available(iOS 14.0, *) {
+                    UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
+                        guard let self = self else { return }
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
+                                self.pasteboardState.send(.containsURL)
+                            case .success, .failure:
+                                S1LogDebug("Unable to detect a url in pasteboard")
+                                self.pasteboardState.send(.emptyOrOtherContent)
+                            }
+                        }
                     }
                 } else {
-                    strongSelf.pasteboardAnimator.addAnimations {
-                        strongSelf.pasteboardToast.snp.remakeConstraints({ (make) in
-                            make.height.equalTo(44.0)
-                            make.top.equalTo(strongSelf.scrollTabBar.snp.top).offset(8.0)
-                            make.leading.equalTo(strongSelf.view.snp.leading).offset(16.0)
-                            make.trailing.equalTo(strongSelf.view.snp.trailing).offset(-16.0)
-                        })
-                        strongSelf.view.layoutIfNeeded()
-                        strongSelf.pasteboardToast.alpha = 0.0
+                    // Fallback on earlier versions
+                    if UIPasteboard.general.hasStrings {
+                        let pasteBoardString = UIPasteboard.general.string ?? ""
+                        if self.isValidStage1stLink(for: pasteBoardString) {
+                            self.pasteboardState.send(.containsStage1stURL(pasteBoardString))
+                        } else {
+                            self.pasteboardState.send(.emptyOrOtherContent)
+                        }
+                    } else {
+                        self.pasteboardState.send(.emptyOrOtherContent)
                     }
                 }
-                strongSelf.pasteboardAnimator.startAnimation()
             }
             .store(in: &bag)
 
-        pasteboardToast.button.publisher(for: .touchUpInside)
-            .sink { [weak self] event in
-                guard let strongSelf = self else { return }
-
-                guard let topic = Parser.extractTopic(from: strongSelf.pasteboardString.value) else {
-                    return
+        pasteboardState
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                let shouldBeShowing: Bool = {
+                    switch state {
+                    case .containsURL, .containsStage1stURL:
+                        return true
+                    case .emptyOrOtherContent:
+                        return false
+                    }
+                }()
+                self.view.layoutIfNeeded()
+                if shouldBeShowing {
+                    self.pasteboardAnimator.addAnimations {
+                        self.pasteboardToast.snp.remakeConstraints({ (make) in
+                            make.height.equalTo(32.0)
+                            make.width.equalTo(160.0)
+                            make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
+                            make.trailing.equalTo(self.view.snp.trailing).offset(-8.0)
+                        })
+                        self.view.layoutIfNeeded()
+                        self.pasteboardToast.alpha = 1.0
+                    }
+                } else {
+                    self.pasteboardAnimator.addAnimations {
+                        self.pasteboardToast.snp.remakeConstraints({ (make) in
+                            make.height.equalTo(32.0)
+                            make.width.equalTo(160.0)
+                            make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
+                            make.leading.equalTo(self.view.snp.trailing).offset(8.0)
+                        })
+                        self.view.layoutIfNeeded()
+                        self.pasteboardToast.alpha = 5.0
+                    }
                 }
-
-                let topicID = topic.topicID
-                let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
-                strongSelf.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
-                UIPasteboard.general.string = ""
+                self.pasteboardAnimator.startAnimation()
             }
             .store(in: &bag)
+
+        pasteboardToast.action = { [weak self] in
+            guard let self = self else { return }
+
+            var urlString: String = ""
+
+            switch self.pasteboardState.value {
+            case .emptyOrOtherContent:
+                urlString = ""
+            case .containsURL:
+                let pasteboardString = UIPasteboard.general.string ?? ""
+                if self.isValidStage1stLink(for: pasteboardString) {
+                    urlString = pasteboardString
+                    self.pasteboardState.send(.containsStage1stURL(pasteboardString))
+                } else {
+                    urlString = ""
+                    self.pasteboardState.send(.emptyOrOtherContent)
+                    let alertController = UIAlertController(title: NSLocalizedString("ContainerViewController.PasteboardAlert.title", comment: ""), message: nil, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("ContainerViewController.PasteboardAlert.OK", comment: ""), style: .default, handler: nil))
+                    self.present(alertController, animated: true)
+                }
+            case .containsStage1stURL(let stage1stURL):
+                urlString = stage1stURL
+            }
+
+            guard let topic = Parser.extractTopic(from: urlString) else {
+                return
+            }
+
+            let topicID = topic.topicID
+            let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
+            self.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
+            UIPasteboard.general.string = ""
+        }
+
+        func setupPasteboardChecker() {
+            Task {
+                S1LogDebug("Change count: \(UIPasteboard.general.changeCount)")
+                self.pasteboardChangeCount.send(UIPasteboard.general.changeCount)
+                try await Task.sleep(nanoseconds:1_000_000_000)
+                setupPasteboardChecker()
+            }
+        }
+        setupPasteboardChecker()
+    }
+
+    func isValidStage1stLink(for string: String) -> Bool {
+        guard string.hasPrefix("http") else { return false }
+
+        let hasValidDomain: Bool = {
+            for serverAddress in AppEnvironment.current.serverAddress.used where string.hasPrefix(serverAddress) {
+                return true
+            }
+            return false
+        }()
+
+        guard hasValidDomain else { return false }
+
+        guard Parser.extractTopic(from: string) != nil else {
+            return false
+        }
+
+        return true
     }
 }
 
@@ -287,26 +350,27 @@ extension ContainerViewController {
 
 extension ContainerViewController {
     override func didReceivePaletteChangeNotification(_ notification: Notification?) {
-        pasteboardToast.button.setTitleColor(AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint"), for: .normal)
-        pasteboardToast.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
         view.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
         scrollTabBar.backgroundColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.bartint")
     }
 }
 
 private class PasteboardLinkHintToast: UIView {
-    let button = UIButton()
+
+    var hostingControllerHolder: UIViewController?
+    var action: (() -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        clipsToBounds = true
-        layer.cornerRadius = 8.0
-        addSubview(button)
+        let button = PasteboardButton(action: { [weak self] in self?.action?() })
+            .environmentObject(AppEnvironment.current.colorManager)
+         let hostingController = UIHostingController(rootView: button)
+        hostingControllerHolder = hostingController
 
-        button.setTitle(NSLocalizedString("ContainerViewController.PasteboardLintHint.title", comment: ""), for: .normal)
+        addSubview(hostingController.view)
 
-        button.snp.makeConstraints { (make) in
+        hostingController.view.snp.makeConstraints { (make) in
             make.edges.equalTo(self)
         }
     }
