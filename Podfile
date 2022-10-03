@@ -90,6 +90,7 @@ post_install do |installer|
             if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 13.0
                 config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
             end
+            config.build_settings["DEVELOPMENT_TEAM"] = "ZXQ9B2EVU5"
         end
     end
 end
