@@ -13,7 +13,6 @@ import CloudKit
 import Reachability
 import Kingfisher
 import Sentry
-import Keys
 
 #if DEBUG
 import OHHTTPStubs
@@ -364,7 +363,7 @@ private extension AppDelegate {
     }
 
     func setupCrashReporters() {
-        if !Stage1stKeys().sentryDSN.isEmpty {
+        if !Keys.sentryDSN.isEmpty {
             let env: String = {
                 #if DEBUG
                 return "development"
@@ -374,7 +373,7 @@ private extension AppDelegate {
             }()
 
             SentrySDK.start { (options) in
-                options.dsn = Stage1stKeys().sentryDSN
+                options.dsn = Keys.sentryDSN
                 options.environment = env
                 options.maxBreadcrumbs = 150
                 options.beforeSend = { event in

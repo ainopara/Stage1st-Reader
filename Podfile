@@ -93,11 +93,3 @@ post_install do |installer|
         end
     end
 end
-
-plugin 'cocoapods-keys', {
-    :project => "Stage1st",
-    :target => "Stage1st",
-    :keys => [
-        "SentryDSN"
-    ]
-}

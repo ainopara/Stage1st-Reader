@@ -11,3 +11,4 @@ xcbaselines
 /Archive
 /Stage1stTests/Fixtures/SnapshotResponse
 /.bundle
+/Stage1st/Keys.swift

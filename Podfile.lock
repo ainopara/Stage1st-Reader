@@ -38,7 +38,6 @@ PODS:
   - HorizontalFloatingHeaderLayout (2.0.0)
   - Html (0.3.1)
   - JTSImageViewController (1.5)
-  - Keys (1.0.1)
   - KissXML (5.2.3)
   - Masonry (1.1.0)
   - OHHTTPStubs/Core (8.0.0)
@@ -153,7 +152,6 @@ DEPENDENCIES:
   - HorizontalFloatingHeaderLayout
   - Html (~> 0.3)
   - JTSImageViewController (from `https://github.com/ainopara/JTSImageViewController.git`)
-  - Keys (from `Pods/CocoaPodsKeys`)
   - KissXML (from `https://github.com/ainopara/KissXML.git`)
   - Masonry
   - OHHTTPStubs/HTTPMessage
@@ -197,8 +195,6 @@ EXTERNAL SOURCES:
     :path: "./Frameworks/Ainoaibo"
   JTSImageViewController:
     :git: https://github.com/ainopara/JTSImageViewController.git
-  Keys:
-    :path: Pods/CocoaPodsKeys
   KissXML:
     :git: https://github.com/ainopara/KissXML.git
   YapDatabase:
@@ -230,7 +226,6 @@ SPEC CHECKSUMS:
   HorizontalFloatingHeaderLayout: 921b8a7bb830e1855abaa416d43c125541d636f1
   Html: 36e4910baff75809d3640ccbd306d6d1571397e9
   JTSImageViewController: 89ae3c003060c65418fd3224ebbd67acc6046608
-  Keys: a576f4c9c1c641ca913a959a9c62ed3f215a8de9
   KissXML: 09f88ff8161fd058d67b70740b8b516687b52823
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   OHHTTPStubs: 9cbce6364bec557cc3439aa6bb7514670d780881
@@ -244,6 +239,6 @@ SPEC CHECKSUMS:
   YapDatabase: e9cf10cbf11d91f7c6dc723b0ff54fa8a04e3c8d
   YYKeyboardManager: ff53d2e80d1808567a7f004028bd200d9469a89f
 
-PODFILE CHECKSUM: fdc3135d9b792ba62fa832bc6e676e1a33182866
+PODFILE CHECKSUM: f4ba7040b11fcab524033aee407fb079dd3bef8e
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.3
