@@ -66,4 +66,28 @@ class StripTailTests: XCTestCase {
         """
         XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
     }
+
+    func testStripS1FunTail1() {
+        let input = """
+        Test<br />
+        <br />
+        —— 来自 <a href="https://s1fun.koalcat.com" target="_blank">S1Fun</a>
+        """
+        let expectedOutput = """
+        Test
+        """
+        XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
+    }
+
+    func testForumHelperTail1() {
+        let input = """
+        Test<br />
+        <br />
+        <a href="https://bbs.saraba1st.com/2b/forum.php?mod=viewthread&amp;tid=2029836" target="_blank">论坛助手,iPhone</a>
+        """
+        let expectedOutput = """
+        Test
+        """
+        XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
+    }
 }
