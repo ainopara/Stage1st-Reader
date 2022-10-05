@@ -181,7 +181,7 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
         let cellViewModel = viewModel.cellViewModel(at: indexPath.item)
 
         refreshHUD.showLoadingIndicator()
-        AppEnvironment.current.apiService.topic(with: cellViewModel.path) { [weak self] (result) in
+        AppEnvironment.current.apiService.findPost(withPath: cellViewModel.path) { [weak self] (result) in
             guard let strongSelf = self else { return }
             switch result {
             case .success(let topic):

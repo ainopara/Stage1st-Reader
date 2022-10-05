@@ -116,21 +116,6 @@ extension ContentViewModel {
         return dataCenter.searchFloorInCache(by: floorID)
     }
 
-    func chainSearchQuoteFloorInCache(_ firstFloorID: Int) -> [Floor] {
-        var result: [Floor] = []
-        var nextFloorID = firstFloorID
-        while let floor = self.searchFloorInCache(nextFloorID) {
-            result.insert(floor, at: 0)
-            if let quoteFloorID = floor.firstQuoteReplyFloorID {
-                nextFloorID = quoteFloorID
-            } else {
-                return result
-            }
-        }
-
-        return result
-    }
-
     func pageBaseURL() -> URL {
         return templateBundle().url(forResource: "blank", withExtension: "html", subdirectory: "html")!
     }
@@ -230,11 +215,7 @@ extension ContentViewModel {
 }
 
 // MARK: - View Model
-extension ContentViewModel: ContentViewModelMaker {
-    func contentViewModel(topic: S1Topic) -> ContentViewModel {
-        return ContentViewModel(topic: topic)
-    }
-}
+extension ContentViewModel: ContentViewModelMaker { }
 
 extension ContentViewModel {
     func reportComposeViewModel(floor: Floor) -> ReportComposeViewModel {
@@ -246,10 +227,10 @@ extension ContentViewModel {
 }
 
 extension ContentViewModel: QuoteFloorViewModelMaker {
-    func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel {
+    func quoteFloorViewModel(quoteLinkURL: String, centerFloorID: Int) -> QuoteFloorViewModel {
         return QuoteFloorViewModel(
+            initialLink: quoteLinkURL,
             topic: topic,
-            floors: floors,
             centerFloorID: centerFloorID,
             baseURL: pageBaseURL()
         )
@@ -257,9 +238,8 @@ extension ContentViewModel: QuoteFloorViewModelMaker {
 }
 
 extension ContentViewModel: UserViewModelMaker {
-    func userViewModel(userID: Int) -> UserViewModel {
-        let username = currentFloors.first(where: { $0.author.id == userID })?.author.name
-        return UserViewModel(user: User(id: userID, name: username ?? ""))
+    func getUsername(for userID: Int) -> String? {
+        currentFloors.first(where: { $0.author.id == userID })?.author.name
     }
 }
 

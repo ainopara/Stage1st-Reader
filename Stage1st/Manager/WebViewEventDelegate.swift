@@ -84,7 +84,16 @@ extension WebViewEventDelegate {
 
 // MARK: - User
 protocol UserViewModelMaker {
+    func getUsername(for userID: Int) -> String?
     func userViewModel(userID: Int) -> UserViewModel
+}
+
+extension UserViewModelMaker {
+    func getUsername(for userID: Int) -> String? { nil }
+    func userViewModel(userID: Int) -> UserViewModel {
+        let username = getUsername(for: userID)
+        return UserViewModel(user: User(id: userID, name: username ?? ""))
+    }
 }
 
 protocol UserPresenter: AnyObject {
@@ -119,6 +128,12 @@ protocol ContentViewModelMaker {
     func contentViewModel(topic: S1Topic) -> ContentViewModel
 }
 
+extension ContentViewModelMaker {
+    func contentViewModel(topic: S1Topic) -> ContentViewModel {
+        return ContentViewModel(topic: topic)
+    }
+}
+
 protocol ContentPresenter: AnyObject {
     associatedtype ViewModel: ContentViewModelMaker
     var presentType: PresentType { get set }
@@ -139,7 +154,7 @@ extension ContentPresenter where Self: UIViewController {
 
 // MARK: - Quote Floor
 protocol QuoteFloorViewModelMaker {
-    func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel
+    func quoteFloorViewModel(quoteLinkURL: String, centerFloorID: Int) -> QuoteFloorViewModel
 }
 
 protocol QuoteFloorPresenter: AnyObject {
@@ -147,14 +162,14 @@ protocol QuoteFloorPresenter: AnyObject {
     var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
 
-    func showQuoteFloorViewController(floors: [Floor], centerFloorID: Int)
+    func showQuoteFloorViewController(quoteLinkURL: String, centerFloorID: Int)
 }
 
 extension QuoteFloorPresenter where Self: UIViewController {
-    func showQuoteFloorViewController(floors: [Floor], centerFloorID: Int) {
+    func showQuoteFloorViewController(quoteLinkURL: String, centerFloorID: Int) {
         self.presentType = .quote
 
-        let quoteFloorViewModel = viewModel.quoteFloorViewModel(floors: floors, centerFloorID: centerFloorID)
+        let quoteFloorViewModel = viewModel.quoteFloorViewModel(quoteLinkURL: quoteLinkURL, centerFloorID: centerFloorID)
         let quoteFloorViewController = QuoteFloorViewController(viewModel: quoteFloorViewModel)
         navigationController?.pushViewController(quoteFloorViewController, animated: true)
     }

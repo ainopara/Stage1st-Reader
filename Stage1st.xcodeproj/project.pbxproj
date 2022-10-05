@@ -76,6 +76,7 @@
 		865673191A7A7B190025D22E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865673171A7A7B190025D22E /* Settings.storyboard */; };
 		86593C4328EAF1E1000C6FBF /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86593C4228EAF1E1000C6FBF /* Keys.swift */; };
 		86593C4528EB18FE000C6FBF /* PasteboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86593C4428EB18FE000C6FBF /* PasteboardButton.swift */; };
+		86593C4728ED397A000C6FBF /* DiscuzClient+FindPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86593C4628ED397A000C6FBF /* DiscuzClient+FindPost.swift */; };
 		865A892E21CDFD0400692C7D /* DiscuzError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A892D21CDFD0400692C7D /* DiscuzError.swift */; };
 		8661263C1CB289EF00180C6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661263B1CB289EF00180C6A /* AppDelegate.swift */; };
 		86654BF5217B80A300F50A90 /* RawTopicList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86654BF4217B80A300F50A90 /* RawTopicList.swift */; };
@@ -147,7 +148,6 @@
 		86F1A90D20FB942F00646736 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F1A90C20FB942F00646736 /* ContainerViewController.swift */; };
 		86F1CA7322E47F370041F80D /* URLDetectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F1CA7222E47F370041F80D /* URLDetectTests.swift */; };
 		86F312E81C4F45880026D6BB /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F312E71C4F45880026D6BB /* libxml2.tbd */; };
-		86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */; };
 		86F9CD5021B394AA0015FA3D /* NoticeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9CD4F21B394AA0015FA3D /* NoticeViewModel.swift */; };
 		86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9E2FB21648D490087A1A4 /* EventTracker.swift */; };
 		86FD238F20C66B8A00106A90 /* ReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86FD238E20C66B8A00106A90 /* ReplyViewController.swift */; };
@@ -269,6 +269,7 @@
 		865673181A7A7B190025D22E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
 		86593C4228EAF1E1000C6FBF /* Keys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		86593C4428EB18FE000C6FBF /* PasteboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardButton.swift; sourceTree = "<group>"; };
+		86593C4628ED397A000C6FBF /* DiscuzClient+FindPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+FindPost.swift"; sourceTree = "<group>"; };
 		865A892D21CDFD0400692C7D /* DiscuzError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscuzError.swift; sourceTree = "<group>"; };
 		8661263B1CB289EF00180C6A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86654BF4217B80A300F50A90 /* RawTopicList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawTopicList.swift; sourceTree = "<group>"; };
@@ -347,7 +348,6 @@
 		86F1A90C20FB942F00646736 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		86F1CA7222E47F370041F80D /* URLDetectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLDetectTests.swift; path = "../../../../../../System/Volumes/Data/Users/ainopara/Documents/Projects/Stage1st-Reader/Stage1stTests/URLDetectTests.swift"; sourceTree = "<group>"; };
 		86F312E71C4F45880026D6BB /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
-		86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuoteFloorCell.swift; sourceTree = "<group>"; };
 		86F9CD4F21B394AA0015FA3D /* NoticeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeViewModel.swift; sourceTree = "<group>"; };
 		86F9E2FB21648D490087A1A4 /* EventTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTracker.swift; sourceTree = "<group>"; };
 		86FD238E20C66B8A00106A90 /* ReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyViewController.swift; sourceTree = "<group>"; };
@@ -612,6 +612,7 @@
 				865544B721E23C4B007B7557 /* DiscuzClient+Reply.swift */,
 				8606D48B22ADFD250059C4A8 /* DiscuzClient+NewTopic.swift */,
 				861902302346E90F000A0750 /* DiscuzClient+DailyTask.swift */,
+				86593C4628ED397A000C6FBF /* DiscuzClient+FindPost.swift */,
 			);
 			path = DiscuzClient;
 			sourceTree = "<group>";
@@ -621,7 +622,6 @@
 			children = (
 				86EF6CE91C6879D7007ADEE4 /* QuoteFloorViewModel.swift */,
 				866CDB961B526DB100FBB133 /* QuoteFloorViewController.swift */,
-				86F312E91C4F54100026D6BB /* QuoteFloorCell.swift */,
 			);
 			path = QuoteFloor;
 			sourceTree = "<group>";
@@ -1192,7 +1192,6 @@
 				8634ADE91FAAF3C2004A9CB7 /* ColorManager.swift in Sources */,
 				86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */,
 				8687C7BE1DA0BA630038A2F6 /* MahjongFaceItem.swift in Sources */,
-				86F312EA1C4F54100026D6BB /* QuoteFloorCell.swift in Sources */,
 				8606D48F22AE051F0059C4A8 /* TopicComposeViewController.swift in Sources */,
 				8634ADFF1FAAFE9C004A9CB7 /* ReportComposeViewController.swift in Sources */,
 				869BD71223EFC3D400AAE96C /* AppDelegate+Migration.swift in Sources */,
@@ -1286,6 +1285,7 @@
 				86F9E2FC21648D490087A1A4 /* EventTracker.swift in Sources */,
 				8634ADE41FAAF3C2004A9CB7 /* REComposeViewController.m in Sources */,
 				860573521B76290D00C70781 /* S1YapDatabaseAdapter.m in Sources */,
+				86593C4728ED397A000C6FBF /* DiscuzClient+FindPost.swift in Sources */,
 				86D3ADB0214E22AF00FCB189 /* MahjongFaceInputView.swift in Sources */,
 				36BE3F491E962126006C5984 /* ServerAddress.swift in Sources */,
 				8634ADEC1FAAF3C2004A9CB7 /* PessimisticPanGestureRecognizer.swift in Sources */,

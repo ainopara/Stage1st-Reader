@@ -882,13 +882,12 @@ extension ContentViewController: WKNavigationDelegate {
                 let tidString = queries["ptid"],
                 let tid = Int(tidString), tid == viewModel.topic.topicID.intValue,
                 let pidString = queries["pid"],
-                let pid = Int(pidString),
-                let chainQuoteFloors = Optional.some(viewModel.chainSearchQuoteFloorInCache(pid)), chainQuoteFloors.count > 0
+                let pid = Int(pidString)
             {
                 AppEnvironment.current.eventTracker.logEvent("Open Quote Link", attributes: [
                     "source": "Content",
                 ])
-                showQuoteFloorViewController(floors: chainQuoteFloors, centerFloorID: chainQuoteFloors.last!.id)
+                showQuoteFloorViewController(quoteLinkURL: url.absoluteString, centerFloorID: pid)
                 decisionHandler(.cancel)
                 return
             }

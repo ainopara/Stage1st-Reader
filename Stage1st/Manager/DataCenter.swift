@@ -277,6 +277,27 @@ extension DataCenter {
         }
     }
 
+    func floors(topicID: Int, page: Int) async throws -> [Floor] {
+        if let cachedFloors = cacheDatabaseManager.floors(in: topicID, page: page), cachedFloors.count > 0 {
+            return cachedFloors
+        }
+
+        let rawFloorList = try await apiManager.floors(in: topicID, page: page)
+
+        guard let rawFloors = rawFloorList.variables?.postList else {
+            throw "Empty floors."
+        }
+
+        let floors = rawFloors.compactMap { Floor(rawPost: $0) }
+
+        guard !floors.isEmpty else {
+            throw "Failed to parse floors."
+        }
+
+        await cacheDatabaseManager.set(floors: floors, topicID: topicID, page: page)
+        return floors
+    }
+
     func precacheFloors(for topic: S1Topic, with page: Int, shouldUpdate: Bool) {
         guard shouldUpdate || !hasPrecachedFloors(for: topic.topicID.intValue, page: page) else {
             S1LogVerbose("[Database] Precache \(topic.topicID)-\(page) hit")

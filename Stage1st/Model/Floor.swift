@@ -100,6 +100,20 @@ extension Floor {
 }
 
 public extension Floor {
+
+    var firstQuoteReplyLink: String? {
+        guard
+            let urlString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first
+        else {
+            return nil
+        }
+
+        let unescapedURLString = urlString.aibo_stringByUnescapingFromHTML()
+
+        S1LogDebug("First Quote Floor url: \(unescapedURLString)")
+        return unescapedURLString
+    }
+
     var firstQuoteReplyFloorID: Int? {
         guard
             let urlString = S1Global.regexExtract(from: content, withPattern: "<div class=\"quote\"><blockquote><a href=\"([^\"]*)\"", andColums: [1]).first,

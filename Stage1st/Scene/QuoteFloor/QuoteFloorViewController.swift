@@ -12,11 +12,14 @@ import JTSImageViewController
 import Photos
 
 class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter, ContentPresenter {
+
     let viewModel: QuoteFloorViewModel
 
     lazy var webView: WKWebView = {
         WKWebView(frame: .zero, configuration: self.sharedWKWebViewConfiguration())
     }()
+
+    let refreshHUD = Hud(frame: .zero)
 
     var presentType: PresentType = .none {
         didSet {
@@ -84,11 +87,26 @@ extension QuoteFloorViewController {
         super.viewDidLoad()
 
         view.addSubview(webView)
+        view.addSubview(refreshHUD)
+
         webView.snp.makeConstraints({ (make) -> Void in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
             make.leading.trailing.equalTo(self.view)
         })
+
+        refreshHUD.snp.makeConstraints { make in
+            make.center.equalTo(view)
+            make.width.lessThanOrEqualTo(view).priority(250.0)
+        }
+
+        refreshHUD.showLoadingIndicator()
+
+        Task {
+            viewModel.floors = await viewModel.loadMoreQuoteFloors()
+            reloadWebView()
+            refreshHUD.hide(delay: 0.3)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -124,11 +142,15 @@ extension QuoteFloorViewController {
         setNeedsStatusBarAppearanceUpdate()
 
         if notification != nil {
-            webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
+            reloadWebView()
         }
     }
 
     @objc open func didReceiveUserBlockStatusDidChangedNotification(_: Notification?) {
+        reloadWebView()
+    }
+
+    func reloadWebView() {
         webView.loadHTMLString(viewModel.generatePage(with: viewModel.floors), baseURL: viewModel.baseURL)
     }
 }

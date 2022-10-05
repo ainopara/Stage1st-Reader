@@ -86,6 +86,12 @@ class CacheDatabaseManager: NSObject {
         })
     }
 
+    func set(floors: [Floor], topicID: Int, page: Int) async {
+        return await withCheckedContinuation { continuation in
+            set(floors: floors, topicID: topicID, page: page) { continuation.resume(returning: ()) }
+        }
+    }
+
     func floors(in topicID: Int, page: Int) -> [Floor]? {
         let key = _key(for: topicID, page: page)
         var result: [Floor]?
