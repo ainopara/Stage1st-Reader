@@ -87,7 +87,7 @@ protocol UserViewModelMaker {
     func userViewModel(userID: Int) -> UserViewModel
 }
 
-protocol UserPresenter {
+protocol UserPresenter: AnyObject {
     associatedtype ViewModel: UserViewModelMaker
     var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
@@ -97,8 +97,7 @@ protocol UserPresenter {
 
 extension UserPresenter where Self: UIViewController {
     func showUserViewController(userID: Int) {
-        var mutableSelf = self // FIXME: Make swift complier happy, remove this when the issue fixed.
-        mutableSelf.presentType = .user
+        self.presentType = .user
 
         let userViewModel = viewModel.userViewModel(userID: userID)
         let userViewController = UserViewController(viewModel: userViewModel)
@@ -120,7 +119,7 @@ protocol ContentViewModelMaker {
     func contentViewModel(topic: S1Topic) -> ContentViewModel
 }
 
-protocol ContentPresenter {
+protocol ContentPresenter: AnyObject {
     associatedtype ViewModel: ContentViewModelMaker
     var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
@@ -130,8 +129,7 @@ protocol ContentPresenter {
 
 extension ContentPresenter where Self: UIViewController {
     func showContentViewController(topic: S1Topic) {
-        var mutableSelf = self // FIXME: Make swift complier happy, remove this when the issue fixed.
-        mutableSelf.presentType = .content
+        self.presentType = .content
 
         let contentViewModel = viewModel.contentViewModel(topic: topic)
         let contentViewController = ContentViewController(viewModel: contentViewModel)
@@ -144,7 +142,7 @@ protocol QuoteFloorViewModelMaker {
     func quoteFloorViewModel(floors: [Floor], centerFloorID: Int) -> QuoteFloorViewModel
 }
 
-protocol QuoteFloorPresenter {
+protocol QuoteFloorPresenter: AnyObject {
     associatedtype ViewModel: QuoteFloorViewModelMaker
     var presentType: PresentType { get set }
     var viewModel: ViewModel { get }
@@ -154,8 +152,7 @@ protocol QuoteFloorPresenter {
 
 extension QuoteFloorPresenter where Self: UIViewController {
     func showQuoteFloorViewController(floors: [Floor], centerFloorID: Int) {
-        var mutableSelf = self // FIXME: Make swift complier happy, remove this when the issue fixed.
-        mutableSelf.presentType = .quote
+        self.presentType = .quote
 
         let quoteFloorViewModel = viewModel.quoteFloorViewModel(floors: floors, centerFloorID: centerFloorID)
         let quoteFloorViewController = QuoteFloorViewController(viewModel: quoteFloorViewModel)
@@ -170,7 +167,7 @@ enum ImagePresenterTransitionSource {
     case position(CGRect)
 }
 
-protocol ImagePresenter {
+protocol ImagePresenter: AnyObject {
     var presentType: PresentType { get set }
     var webView: WKWebView { get }
 
@@ -180,9 +177,8 @@ protocol ImagePresenter {
 extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControllerInteractionsDelegate, Self: JTSImageViewControllerOptionsDelegate {
     func showImageViewController(transitionSource: ImagePresenterTransitionSource, imageURL: URL) {
         DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            var mutableStrongSelf = strongSelf // FIXME: Make swift complier happy, remove this when the issue fixed.
-            mutableStrongSelf.presentType = .image
+            guard let self = self else { return }
+            self.presentType = .image
             S1LogDebug("[ImagePresenter] JTS View Image: \(imageURL)")
 
             func configureImageInfo(completion: @escaping (JTSImageInfo) -> Void) {
@@ -192,29 +188,29 @@ extension ImagePresenter where Self: UIViewController, Self: JTSImageViewControl
                 case .offScreen:
                     completion(imageInfo)
                 case let .positionOfElementID(imageID):
-                    strongSelf.webView.s1_positionOfElement(with: imageID, completion: { (rect) in
-                        imageInfo.referenceRect = rect ?? CGRect(origin: strongSelf.webView.center, size: .zero)
-                        imageInfo.referenceView = strongSelf.webView
+                    self.webView.s1_positionOfElement(with: imageID, completion: { (rect) in
+                        imageInfo.referenceRect = rect ?? CGRect(origin: self.webView.center, size: .zero)
+                        imageInfo.referenceView = self.webView
                         completion(imageInfo)
                     })
                 case let .position(positionRect):
                     imageInfo.referenceRect = positionRect
-                    imageInfo.referenceView = strongSelf.view
+                    imageInfo.referenceView = self.view
                     completion(imageInfo)
                 }
             }
 
             configureImageInfo { [weak self] (imageInfo) in
-                guard let strongSelf = self else { return }
+                guard let self = self else { return }
                 let imageViewController = JTSImageViewController(imageInfo: imageInfo, mode: .image, backgroundStyle: .blurred)
-                imageViewController?.interactionsDelegate = strongSelf
-                imageViewController?.optionsDelegate = strongSelf
+                imageViewController?.interactionsDelegate = self
+                imageViewController?.optionsDelegate = self
                 imageViewController?.modalPresentationStyle = .fullScreen
                 switch transitionSource {
                 case .offScreen:
-                    imageViewController?.show(from: strongSelf, transition: .fromOffscreen)
+                    imageViewController?.show(from: self, transition: .fromOffscreen)
                 default:
-                    imageViewController?.show(from: strongSelf, transition: .fromOriginalPosition)
+                    imageViewController?.show(from: self, transition: .fromOriginalPosition)
                 }
             }
         }

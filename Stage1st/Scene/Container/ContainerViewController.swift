@@ -276,7 +276,7 @@ extension ContainerViewController {
 
         func setupPasteboardChecker() {
             Task {
-                S1LogDebug("Change count: \(UIPasteboard.general.changeCount)")
+                S1LogVerbose("Change count: \(UIPasteboard.general.changeCount)")
                 self.pasteboardChangeCount.send(UIPasteboard.general.changeCount)
                 try await Task.sleep(nanoseconds:1_000_000_000)
                 setupPasteboardChecker()
