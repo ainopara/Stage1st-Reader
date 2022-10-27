@@ -30,8 +30,7 @@ iframe {
 
 .i_table {
     border-radius: 0px;
-    word-break: break-all;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     table-layout: fixed;
     font-family: 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
     /*width: 90; for iPad in CSS file*/
