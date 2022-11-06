@@ -55,7 +55,7 @@ platform :ios do
     
     retry_count = 10
     begin
-      sentry_upload_dif(include_sources: true, wait: true)
+      sentry_upload_dif(wait: true)
     rescue => ex
       puts "#{ex}"
       if retry_count > 0
