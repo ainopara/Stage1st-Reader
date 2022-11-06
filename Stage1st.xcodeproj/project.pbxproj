@@ -316,6 +316,7 @@
 		86A1834320845F08000F5F8A /* CloudKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		86A393C41DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+WKWebViewHack.h"; sourceTree = "<group>"; };
 		86A393C51DA64DCB00E30C01 /* UIScrollView+WKWebViewHack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+WKWebViewHack.m"; sourceTree = "<group>"; };
+		86A628AF29175E8800099729 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		86A6A4E9200B86670037AB38 /* Stage1stMahjongFaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage1stMahjongFaceTests.swift; sourceTree = "<group>"; };
 		86A7FEB32414CD9100CDFC8E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarButton.swift; sourceTree = "<group>"; };
@@ -765,6 +766,7 @@
 		C095872B16CA8A36007E0119 = {
 			isa = PBXGroup;
 			children = (
+				86A628AF29175E8800099729 /* README.md */,
 				8623AD0D24716C850010792B /* CHANGELOG.md */,
 				C095873D16CA8A36007E0119 /* Stage1st */,
 				8681E6BD1CEF61ED004269D3 /* Stage1stTests */,
