@@ -153,136 +153,139 @@ extension ContainerViewController {
             }
             .store(in: &bag)
 
-        pasteboardChangeCount
-            .removeDuplicates()
-            .sink { changeCount in
-                S1LogDebug("pastebard changed -> \(changeCount)")
-                if #available(iOS 15.0, *) {
-                    UIPasteboard.general.detectPatterns(for: [\.probableWebURL]) { [weak self] result in
-                        guard let self = self else { return }
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .success(let patternDetected) where patternDetected.contains(\.probableWebURL):
-                                self.pasteboardState.send(.containsURL)
-                            case .success, .failure:
-                                self.pasteboardState.send(.emptyOrOtherContent)
+        if AppEnvironment.current.settings.enableOpenPasteboardLink.value {
+
+            pasteboardChangeCount
+                .removeDuplicates()
+                .sink { changeCount in
+                    S1LogDebug("pastebard changed -> \(changeCount)")
+                    if #available(iOS 15.0, *) {
+                        UIPasteboard.general.detectPatterns(for: [\.probableWebURL]) { [weak self] result in
+                            guard let self = self else { return }
+                            DispatchQueue.main.async {
+                                switch result {
+                                case .success(let patternDetected) where patternDetected.contains(\.probableWebURL):
+                                    self.pasteboardState.send(.containsURL)
+                                case .success, .failure:
+                                    self.pasteboardState.send(.emptyOrOtherContent)
+                                }
                             }
                         }
-                    }
-                } else
-                if #available(iOS 14.0, *) {
-                    UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
-                        guard let self = self else { return }
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
-                                self.pasteboardState.send(.containsURL)
-                            case .success, .failure:
-                                S1LogDebug("Unable to detect a url in pasteboard")
-                                self.pasteboardState.send(.emptyOrOtherContent)
+                    } else
+                    if #available(iOS 14.0, *) {
+                        UIPasteboard.general.detectPatterns(for: [.probableWebURL]) { [weak self] (result) in
+                            guard let self = self else { return }
+                            DispatchQueue.main.async {
+                                switch result {
+                                case .success(let patternDetected) where patternDetected.contains(.probableWebURL):
+                                    self.pasteboardState.send(.containsURL)
+                                case .success, .failure:
+                                    S1LogDebug("Unable to detect a url in pasteboard")
+                                    self.pasteboardState.send(.emptyOrOtherContent)
+                                }
                             }
                         }
-                    }
-                } else {
-                    // Fallback on earlier versions
-                    if UIPasteboard.general.hasStrings {
-                        let pasteBoardString = UIPasteboard.general.string ?? ""
-                        if self.isValidStage1stLink(for: pasteBoardString) {
-                            self.pasteboardState.send(.containsStage1stURL(pasteBoardString))
+                    } else {
+                        // Fallback on earlier versions
+                        if UIPasteboard.general.hasStrings {
+                            let pasteBoardString = UIPasteboard.general.string ?? ""
+                            if self.isValidStage1stLink(for: pasteBoardString) {
+                                self.pasteboardState.send(.containsStage1stURL(pasteBoardString))
+                            } else {
+                                self.pasteboardState.send(.emptyOrOtherContent)
+                            }
                         } else {
                             self.pasteboardState.send(.emptyOrOtherContent)
                         }
+                    }
+                }
+                .store(in: &bag)
+
+            pasteboardState
+                .removeDuplicates()
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] state in
+                    guard let self = self else { return }
+                    let shouldBeShowing: Bool = {
+                        switch state {
+                        case .containsURL, .containsStage1stURL:
+                            return true
+                        case .emptyOrOtherContent:
+                            return false
+                        }
+                    }()
+                    self.view.layoutIfNeeded()
+                    if shouldBeShowing {
+                        self.pasteboardAnimator.addAnimations {
+                            self.pasteboardToast.snp.remakeConstraints({ (make) in
+                                make.height.equalTo(32.0)
+                                make.width.equalTo(160.0)
+                                make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
+                                make.trailing.equalTo(self.view.snp.trailing).offset(-8.0)
+                            })
+                            self.view.layoutIfNeeded()
+                            self.pasteboardToast.alpha = 1.0
+                        }
                     } else {
-                        self.pasteboardState.send(.emptyOrOtherContent)
+                        self.pasteboardAnimator.addAnimations {
+                            self.pasteboardToast.snp.remakeConstraints({ (make) in
+                                make.height.equalTo(32.0)
+                                make.width.equalTo(160.0)
+                                make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
+                                make.leading.equalTo(self.view.snp.trailing).offset(8.0)
+                            })
+                            self.view.layoutIfNeeded()
+                            self.pasteboardToast.alpha = 5.0
+                        }
                     }
+                    self.pasteboardAnimator.startAnimation()
                 }
-            }
-            .store(in: &bag)
+                .store(in: &bag)
 
-        pasteboardState
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
+            pasteboardToast.action = { [weak self] in
                 guard let self = self else { return }
-                let shouldBeShowing: Bool = {
-                    switch state {
-                    case .containsURL, .containsStage1stURL:
-                        return true
-                    case .emptyOrOtherContent:
-                        return false
-                    }
-                }()
-                self.view.layoutIfNeeded()
-                if shouldBeShowing {
-                    self.pasteboardAnimator.addAnimations {
-                        self.pasteboardToast.snp.remakeConstraints({ (make) in
-                            make.height.equalTo(32.0)
-                            make.width.equalTo(160.0)
-                            make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
-                            make.trailing.equalTo(self.view.snp.trailing).offset(-8.0)
-                        })
-                        self.view.layoutIfNeeded()
-                        self.pasteboardToast.alpha = 1.0
-                    }
-                } else {
-                    self.pasteboardAnimator.addAnimations {
-                        self.pasteboardToast.snp.remakeConstraints({ (make) in
-                            make.height.equalTo(32.0)
-                            make.width.equalTo(160.0)
-                            make.bottom.equalTo(self.scrollTabBar.snp.top).offset(-8.0)
-                            make.leading.equalTo(self.view.snp.trailing).offset(8.0)
-                        })
-                        self.view.layoutIfNeeded()
-                        self.pasteboardToast.alpha = 5.0
-                    }
-                }
-                self.pasteboardAnimator.startAnimation()
-            }
-            .store(in: &bag)
 
-        pasteboardToast.action = { [weak self] in
-            guard let self = self else { return }
+                var urlString: String = ""
 
-            var urlString: String = ""
-
-            switch self.pasteboardState.value {
-            case .emptyOrOtherContent:
-                urlString = ""
-            case .containsURL:
-                let pasteboardString = UIPasteboard.general.string ?? ""
-                if self.isValidStage1stLink(for: pasteboardString) {
-                    urlString = pasteboardString
-                    self.pasteboardState.send(.containsStage1stURL(pasteboardString))
-                } else {
+                switch self.pasteboardState.value {
+                case .emptyOrOtherContent:
                     urlString = ""
-                    self.pasteboardState.send(.emptyOrOtherContent)
-                    let alertController = UIAlertController(title: NSLocalizedString("ContainerViewController.PasteboardAlert.title", comment: ""), message: nil, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("ContainerViewController.PasteboardAlert.OK", comment: ""), style: .default, handler: nil))
-                    self.present(alertController, animated: true)
+                case .containsURL:
+                    let pasteboardString = UIPasteboard.general.string ?? ""
+                    if self.isValidStage1stLink(for: pasteboardString) {
+                        urlString = pasteboardString
+                        self.pasteboardState.send(.containsStage1stURL(pasteboardString))
+                    } else {
+                        urlString = ""
+                        self.pasteboardState.send(.emptyOrOtherContent)
+                        let alertController = UIAlertController(title: NSLocalizedString("ContainerViewController.PasteboardAlert.title", comment: ""), message: nil, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("ContainerViewController.PasteboardAlert.OK", comment: ""), style: .default, handler: nil))
+                        self.present(alertController, animated: true)
+                    }
+                case .containsStage1stURL(let stage1stURL):
+                    urlString = stage1stURL
                 }
-            case .containsStage1stURL(let stage1stURL):
-                urlString = stage1stURL
+
+                guard let topic = Parser.extractTopic(from: urlString) else {
+                    return
+                }
+
+                let topicID = topic.topicID
+                let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
+                self.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
+                UIPasteboard.general.string = ""
             }
 
-            guard let topic = Parser.extractTopic(from: urlString) else {
-                return
+            func setupPasteboardChecker() {
+                Task {
+                    S1LogVerbose("Change count: \(UIPasteboard.general.changeCount)")
+                    self.pasteboardChangeCount.send(UIPasteboard.general.changeCount)
+                    try await Task.sleep(nanoseconds:1_000_000_000)
+                    setupPasteboardChecker()
+                }
             }
-
-            let topicID = topic.topicID
-            let processedTopic = AppEnvironment.current.dataCenter.traced(topicID: topicID.intValue) ?? topic
-            self.navigationController?.pushViewController(ContentViewController(topic: processedTopic), animated: true)
-            UIPasteboard.general.string = ""
+            setupPasteboardChecker()
         }
-
-        func setupPasteboardChecker() {
-            Task {
-                S1LogVerbose("Change count: \(UIPasteboard.general.changeCount)")
-                self.pasteboardChangeCount.send(UIPasteboard.general.changeCount)
-                try await Task.sleep(nanoseconds:1_000_000_000)
-                setupPasteboardChecker()
-            }
-        }
-        setupPasteboardChecker()
     }
 
     func isValidStage1stLink(for string: String) -> Bool {

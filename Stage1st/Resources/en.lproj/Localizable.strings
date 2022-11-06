@@ -86,6 +86,8 @@
 "AdvancedSettingsViewController.TapticFeedbackRow.title" = "Enable taptic feedback when switching forum";
 "AdvancedSettingsViewController.NightNodeGestureRow.header" = "Night Mode";
 "AdvancedSettingsViewController.NightNodeGestureRow.title" = "Switch night mode via gesture";
+"AdvancedSettingsViewController.OpenPasteboardRow.header" = "Detect Pasteboard Link";
+"AdvancedSettingsViewController.OpenPasteboardRow.title" = "Enable";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "Reset";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "Reset to Default Settings";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "Reset settings in advanced settings to default.";

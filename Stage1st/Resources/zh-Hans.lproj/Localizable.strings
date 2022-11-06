@@ -186,9 +186,12 @@
 "AdvancedSettingsViewController.TapticFeedbackRow.title" = "切换论坛时开启 Taptic 反馈";
 "AdvancedSettingsViewController.NightNodeGestureRow.header" = "夜间模式";
 "AdvancedSettingsViewController.NightNodeGestureRow.title" = "通过手势切换夜间模式";
+"AdvancedSettingsViewController.OpenPasteboardRow.header" = "检测剪切板链接";
+"AdvancedSettingsViewController.OpenPasteboardRow.title" = "功能开关";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "重置";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "重置为默认设置";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "将高级选项中的设置重置为默认设置。";
+
 
 "CloudKitViewController.iCloudSection.header" = "iCloud 同步";
 "CloudKitViewController.AccountStatusRow.title" = "iCloud 账户状态";

@@ -81,6 +81,18 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             action: { row in settings.gestureControledNightModeSwitch.value = (row as! SwitchRow).switchValue }
         ))
 
+        let openPasteboardSection = Section(
+            title: NSLocalizedString("AdvancedSettingsViewController.OpenPasteboardRow.header", comment: ""),
+            rows: [
+                SwitchRow(
+                    text: NSLocalizedString("AdvancedSettingsViewController.OpenPasteboardRow.title", comment: ""),
+                    switchValue: settings.enableOpenPasteboardLink.value,
+                    action: { row in settings.enableOpenPasteboardLink.value = (row as! SwitchRow).switchValue }
+                )
+            ],
+            footer: ""
+        )
+
         let resetSection = Section(
             title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""),
             rows: [],
@@ -98,6 +110,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             shareWithoutImageSection,
             tapticFeedbackSection,
             nightNodeGestureSection,
+            openPasteboardSection,
             resetSection
         ]
     }
