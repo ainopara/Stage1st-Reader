@@ -4,7 +4,12 @@
     <title>Stage1st Reader</title>
     <meta http-equiv="Content-Type" content="text/html;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    {{#isOlderOS}}
+    <link rel="stylesheet" href="../css/content_base_legacy.css">
+    {{/isOlderOS}}
+    {{^isOlderOS}}
     <link rel="stylesheet" href="../css/content_base.css">
+    {{/isOlderOS}}
     <link rel="stylesheet" href="../css/{{font-style-file}}">
     <style>
       {{# color}}

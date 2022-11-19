@@ -82,10 +82,15 @@ extension PageRenderer {
             return data
         }
 
+        func SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version: String) -> Bool {
+            return UIDevice.current.systemVersion.compare(version, options: .numeric) != .orderedAscending
+        }
+
         return [
             "font-style-file": fontStyleFile(),
             "color": colorStyle(),
             "floors": floorsData(),
+            "isOlderOS": !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version: "16.0")
         ]
     }
 
