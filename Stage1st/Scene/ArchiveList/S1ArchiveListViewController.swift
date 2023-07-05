@@ -88,6 +88,9 @@ class S1ArchiveListViewController: UIViewController {
 
         // TableView
         tableView.rowHeight = 54.0
+        if #available(iOS 15, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
         tableView.cellLayoutMarginsFollowReadableWidth = false
         tableView.separatorInset = .zero
         tableView.delegate = self
