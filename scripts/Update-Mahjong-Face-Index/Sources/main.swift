@@ -105,7 +105,7 @@ func main() throws {
     }
 
     let encoder = JSONEncoder()
-    encoder.outputFormatting = [.prettyPrinted]
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     let encodedData = try encoder.encode(mahjongCategories)
     let indexFile = try mahjongRoot.file(named: "index.json")
     try indexFile.write(encodedData)
