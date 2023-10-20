@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import SwiftUI
 
 public final class DiscuzClient: NSObject {
     public let baseURL: String
@@ -20,15 +21,24 @@ public final class DiscuzClient: NSObject {
             redirectHandler: Redirector(behavior: Redirector.Behavior.modify({ (task, request, response) -> URLRequest? in
                 if task.originalRequest?.url?.absoluteString == request.url?.absoluteString {
                     S1LogWarn("Redirect to self detected! request \(String(describing: task.originalRequest?.url?.absoluteString)) will redirect to \(String(describing: request.url?.absoluteString))")
-                    AppEnvironment.current.eventTracker.recordError(NSError(
-                        domain: "S1RedirectIssue",
-                        code: 0,
-                        userInfo: [
-                            "originalRequest": task.originalRequest?.url?.absoluteString ?? "",
-                            "currentRequest": task.currentRequest?.url?.absoluteString ?? "",
-                            "redirectedTo": request.url?.absoluteString ?? ""
-                        ]
-                    ))
+                    
+                    if #available(iOS 14.0, *) {
+                        @AppStorage("redirectIssueReportedDate") var redirectIssueReportedDate: Double = 0
+
+                        if Date().timeIntervalSince1970 - redirectIssueReportedDate > 24 * 3600.0 {
+                            redirectIssueReportedDate = Date().timeIntervalSince1970
+                        }
+                        AppEnvironment.current.eventTracker.recordError(NSError(
+                            domain: "S1RedirectIssue",
+                            code: 0,
+                            userInfo: [
+                                "originalRequest": task.originalRequest?.url?.absoluteString ?? "",
+                                "currentRequest": task.currentRequest?.url?.absoluteString ?? "",
+                                "redirectedTo": request.url?.absoluteString ?? ""
+                            ]
+                        ))
+                    }
+
                     return request
                 } else {
                     S1LogDebug("request \(String(describing: task.originalRequest?.url?.absoluteString)) will redirect to \(String(describing: request.url?.absoluteString))")
