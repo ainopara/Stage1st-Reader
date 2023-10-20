@@ -144,6 +144,11 @@ final class ContentViewController: UIViewController, ImagePresenter, UserPresent
         webView.scrollView.backgroundColor = .clear
         webView.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         webView.isOpaque = false
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        #endif
         webView.loadHTMLString(blankPageHTMLString, baseURL: URL(string: "about:blank"))
 
         // Decoration line

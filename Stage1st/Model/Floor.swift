@@ -71,6 +71,7 @@ extension Floor {
                 pattern: "\\[thgame_biliplay\\{,=av\\}(\\d+)\\{,=page\\}(\\d+)[^\\]]*\\]\\[/thgame_biliplay\\]",
                 with: render(Node.a(attributes: [.href("https://www.bilibili.com/video/av$1/index_$2.html")], .raw("https://www.bilibili.com/video/av$1/index_$2.html")))
             )
+            .replacingOccurrences(of: "\r\n", with: "\n")
 
         guard
             attachments.count > 0,
