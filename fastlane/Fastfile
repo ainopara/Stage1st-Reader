@@ -32,7 +32,13 @@ platform :ios do
       scheme: 'Stage1st', 
       export_method: "app-store", 
       include_bitcode: false,
-      output_directory: "Archive/#{options[:version]}(#{build_number})"
+      output_directory: "Archive/#{options[:version]}(#{build_number})",
+      export_options: {
+        provisioningProfiles: {
+          "Stage1st" => "Stage1stReaderDistribution"
+        },
+        manageAppVersionAndBuildNumber: false
+      }
     )
 
     retry_count = 10
