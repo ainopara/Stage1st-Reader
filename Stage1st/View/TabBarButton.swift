@@ -17,11 +17,20 @@ struct TabBarButton: View {
     var width: CGFloat = 90.0
 
     var body: some View {
-        Text(title)
-            .font(Font(UIFont.systemFont(ofSize: 14.0)))
-            .foregroundColor(colorManager.s1_title)
-            .frame(width: width, height: 44.0)
-            .background(isSelected ? colorManager.s1_tint_h : .clear)
+        if #available(iOS 14.0, *) {
+            Text(title)
+                .font(Font(UIFont.systemFont(ofSize: 14.0)))
+                .foregroundColor(colorManager.s1_title)
+                .frame(width: width, height: 44.0)
+                .background(isSelected ? colorManager.s1_tint_h : .clear)
+                .hoverEffect()
+        } else {
+            Text(title)
+                .font(Font(UIFont.systemFont(ofSize: 14.0)))
+                .foregroundColor(colorManager.s1_title)
+                .frame(width: width, height: 44.0)
+                .background(isSelected ? colorManager.s1_tint_h : .clear)
+        }
     }
 }
 
