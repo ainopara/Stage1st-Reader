@@ -505,7 +505,10 @@ extension DataCenter {
     }
 
     func hasFullPrecachedFloors(for topicID: Int, page: Int) -> Bool {
-        guard let floors = cacheDatabaseManager.floors(in: topicID, page: page), floors.count >= 30 else {
+        guard
+            let floors = cacheDatabaseManager.floors(in: topicID, page: page),
+            floors.count >= AppEnvironment.current.settings.postPerPage.value
+        else {
             return false
         }
 

@@ -33,6 +33,7 @@ extension DefaultsKeys {
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
     static let lastDailyTaskDate = DefaultsKey<[String: Date]>("lastDailyTaskDate")
+    static let postPerPage = DefaultsKey<Int>("postPerPage")
 }
 
 class Stage1stSettings: DefaultsBasedSettings {
@@ -61,6 +62,7 @@ class Stage1stSettings: DefaultsBasedSettings {
     let tapticFeedbackForForumSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let gestureControledNightModeSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let enableOpenPasteboardLink: CurrentValueSubject<Bool, Never> = CurrentValueSubject(true)
+    let postPerPage: CurrentValueSubject<Int, Never> = CurrentValueSubject(40)
 
     // Cleaning
     let previousWebKitCacheCleaningDate: CurrentValueSubject<Date?, Never> = CurrentValueSubject(nil)
@@ -245,6 +247,7 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: tapticFeedbackForForumSwitch, to: .tapticFeedbackForForumSwitch, defaultValue: false)
         bind(property: gestureControledNightModeSwitch, to: .gestureControledNightModeSwitch, defaultValue: true)
         bind(property: enableOpenPasteboardLink, to: .enableOpenPasteboardLink, defaultValue: true)
+        bind(property: postPerPage, to: .postPerPage, defaultValue: 40)
 
         // Cleaning
         bind(property: previousWebKitCacheCleaningDate, to: .previousWebKitCacheCleaningDate)
@@ -303,6 +306,9 @@ class Stage1stSettings: DefaultsBasedSettings {
         }.store(in: &bag)
         enableOpenPasteboardLink.sink { (value) in
             S1LogDebug("Settings: enableOpenPasteboardLink -> \(String(describing: value))")
+        }.store(in: &bag)
+        postPerPage.sink { (value) in
+            S1LogDebug("Settings: postPerPage -> \(String(describing: value))")
         }.store(in: &bag)
     }
 }

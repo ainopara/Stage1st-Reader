@@ -43,7 +43,7 @@ class ContentViewModel: NSObject, PageRenderer {
         previousPage = MutableProperty(currentPage.value)
 
         if let replyCount = topic.replyCount?.intValue {
-            totalPages = MutableProperty(replyCount / 30 + 1)
+            totalPages = MutableProperty(replyCount / AppEnvironment.current.settings.postPerPage.value + 1)
         } else {
             totalPages = MutableProperty(currentPage.value)
         }
@@ -69,7 +69,7 @@ class ContentViewModel: NSObject, PageRenderer {
         }
 
         totalPages <~ replyCount.producer
-            .map { ($0?.intValue ?? 0) / 30 + 1 }
+            .map { ($0?.intValue ?? 0) / AppEnvironment.current.settings.postPerPage.value + 1 }
 
         previousPage <~ currentPage.combinePrevious(currentPage.value).producer.map { arg in
             let (previous, _) = arg
@@ -89,7 +89,7 @@ extension ContentViewModel {
             guard let strongSelf = self else { return }
             switch result {
             case let .success((floors, isFromCache)):
-                let shouldRefetch = isFromCache && floors.count != 30 && !strongSelf.isInLastPage()
+                let shouldRefetch = isFromCache && floors.count != AppEnvironment.current.settings.postPerPage.value && !strongSelf.isInLastPage()
                 guard !shouldRefetch else {
                     strongSelf.dataCenter.removePrecachedFloors(for: strongSelf.topic, with: Int(strongSelf.currentPage.value))
                     strongSelf.currentContentPage(completion: completion)

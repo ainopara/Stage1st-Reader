@@ -106,7 +106,7 @@ public extension DiscuzClient {
         let parameters: Parameters = [
             "module": "viewthread",
             "version": 1,
-            "ppp": 30,
+            "ppp": AppEnvironment.current.settings.postPerPage.value,
             "submodule": "checkpost",
             "mobile": "no",
             "tid": topicID,

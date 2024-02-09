@@ -230,6 +230,8 @@ extension SettingsViewController {
             S1LogInfo("WebKit disk cache cleaned.")
             AppEnvironment.current.settings.previousWebKitCacheCleaningDate.value = Date()
         }
+
+        AppEnvironment.current.cacheDatabaseManager.removeAllCaches()
     }
 
     @objc func totalCacheSize() -> UInt {

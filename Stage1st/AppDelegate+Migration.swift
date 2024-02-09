@@ -14,6 +14,7 @@ extension AppDelegate {
         migrateTo3_7()
         migrateTo3_12_2()
         migrateTo3_16()
+        migrateTo3_24()
     }
 
     private func migrateTo3_7() {
@@ -48,5 +49,13 @@ extension AppDelegate {
         let forums = displayForumArray.compactMap { name in bundle.forums.first(where: { $0.name == name }) }
         AppEnvironment.current.settings.forumOrderV2.value = forums.map { $0.id }
         userDefaults.removeObject(forKey: "Order")
+    }
+
+    private func migrateTo3_24() {
+        if !UserDefaults.standard.bool(forKey: "migrationTo324") {
+            let cacheDatabaseManager = AppEnvironment.current.cacheDatabaseManager
+            cacheDatabaseManager.removeAllCaches()
+            UserDefaults.standard.set(true, forKey: "migrationTo324")
+        }
     }
 }

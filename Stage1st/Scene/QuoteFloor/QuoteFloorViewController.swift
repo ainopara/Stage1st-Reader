@@ -45,6 +45,11 @@ class QuoteFloorViewController: UIViewController, ImagePresenter, UserPresenter,
         webView.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         webView.scrollView.delegate = self
         webView.isOpaque = false
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        #endif
 
         NotificationCenter.default.addObserver(
             self,
