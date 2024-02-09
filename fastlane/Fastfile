@@ -28,11 +28,13 @@ platform :ios do
     build_number = (build_number_string.to_i + 4000).to_s
     increment_build_number(build_number: build_number)
 
+    output_directory = "Archive/#{options[:version]}(#{build_number})"
+
     gym(
       scheme: 'Stage1st', 
       export_method: "app-store", 
       include_bitcode: false,
-      output_directory: "Archive/#{options[:version]}(#{build_number})",
+      output_directory: output_directory,
       export_options: {
         provisioningProfiles: {
           "Stage1st" => "Stage1stReaderDistribution"
@@ -61,7 +63,11 @@ platform :ios do
     
     retry_count = 10
     begin
-      sentry_upload_dif(wait: true)
+      sentry_upload_dif(
+        path: output_directory,
+        include_sources: true,
+        wait: true
+      )
     rescue => ex
       puts "#{ex}"
       if retry_count > 0
