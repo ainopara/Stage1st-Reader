@@ -1016,8 +1016,8 @@
 			);
 			mainGroup = C095872B16CA8A36007E0119;
 			packageReferences = (
-				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */,
+				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */,
+				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */,
 			);
 			productRefGroup = C095873516CA8A36007E0119 /* Products */;
 			projectDirPath = "";
@@ -1076,12 +1076,14 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/1PasswordExtension/OnePasswordExtensionResources.bundle",
 				"${PODS_ROOT}/AcknowList/Resources/AcknowList.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/HorizontalFloatingHeaderLayout/HorizontalFloatingHeaderLayout.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Sentry/Sentry.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OnePasswordExtensionResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AcknowList.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HorizontalFloatingHeaderLayout.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Sentry.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1700,7 +1702,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+		869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
@@ -1708,7 +1710,7 @@
 				minimumVersion = 7.1.0;
 			};
 		};
-		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */ = {
+		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRMustache.swift.git";
 			requirement = {
@@ -1721,12 +1723,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		8682B15024A1C06F004E8C05 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			package = 869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */;
 			productName = Kingfisher;
 		};
 		869BD70F23EF00C500AAE96C /* Mustache */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */;
+			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */;
 			productName = Mustache;
 		};
 /* End XCSwiftPackageProductDependency section */

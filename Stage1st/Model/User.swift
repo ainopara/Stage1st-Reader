@@ -20,6 +20,13 @@ public final class User: Codable {
 
 extension User {
     var avatarURL: URL? {
-        return URL(string: "https://centeru.saraba1st.com/avatar.php?uid=\(id)&size=middle")
+        let idString = String(format: "%09d", id)
+
+        let xyz = idString.prefix(3)
+        let ab = idString.dropFirst(3).prefix(2)
+        let cd = idString.dropFirst(5).prefix(2)
+        let ef = idString.dropFirst(7)
+
+        return URL(string: "https://avatar.saraba1st.com/\(xyz)/\(ab)/\(cd)/\(ef)_avatar_middle.jpg")
     }
 }

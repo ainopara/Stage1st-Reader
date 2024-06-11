@@ -71,7 +71,7 @@ class S1EventTracker: EventTracker {
         // Assigning an empty breadcrumbs will prevent client from attching stored breadcrumbs to this event
         event.breadcrumbs = []
         // Assigning threads and debugMeta will prevent client from generating threads and debugMeta for this event
-        event.threads = [Sentry.Thread(threadId: 0)]
+        event.threads = [SentryThread(threadId: 0)]
         event.debugMeta = [DebugMeta()]
         SentrySDK.capture(event: event)
     }

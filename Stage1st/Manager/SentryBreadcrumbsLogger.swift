@@ -51,6 +51,6 @@ class SentryBreadcrumbsLogger: DDAbstractLogger {
         breadcrumb.message = finalMessage
         breadcrumb.timestamp = logMessage.timestamp
         breadcrumb.level = level
-        SentrySDK.addBreadcrumb(crumb: breadcrumb)
+        SentrySDK.addBreadcrumb(breadcrumb)
     }
 }

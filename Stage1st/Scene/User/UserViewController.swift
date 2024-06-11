@@ -67,7 +67,9 @@ final class UserViewController: UIViewController {
                 guard let strongSelf = self else { return }
 
                 if let avatarURL = user.avatarURL {
-                    strongSelf.avatarView.kf.setImage(with: avatarURL)
+                    strongSelf.avatarView.kf.setImage(with: avatarURL, placeholder: UIImage(named: "noavatar"))
+                } else {
+                    strongSelf.avatarView.image = UIImage(named: "noavatar")
                 }
             }
             .store(in: &bag)

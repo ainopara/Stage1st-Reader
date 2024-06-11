@@ -90,7 +90,9 @@ class NoticeCell: UICollectionViewCell {
 
     func configure(with viewModel: ViewModel) {
         if let avatarURL = viewModel.user.avatarURL {
-            avatarImageView.kf.setImage(with: avatarURL)
+            avatarImageView.kf.setImage(with: avatarURL, placeholder: UIImage(named: "noavatar"))
+        } else {
+            avatarImageView.image = UIImage(named: "noavatar")
         }
 
         titleLabel.text = viewModel.title

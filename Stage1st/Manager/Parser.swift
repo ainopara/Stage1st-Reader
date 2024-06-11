@@ -43,12 +43,15 @@ enum Parser {
         let queryDict = self.extractQuerys(from: urlString)
         if
             let topicIDString = queryDict["tid"],
-            let topicPageString = queryDict["page"],
-            let topicID = Int(topicIDString),
-            let topicPage = Int(topicPageString)
+            let topicID = Int(topicIDString)
         {
             let topic = S1Topic(topicID: NSNumber(value: topicID))
-            topic.lastViewedPage = NSNumber(value: topicPage)
+            if
+                let topicPageString = queryDict["page"],
+                let topicPage = Int(topicPageString)
+            {
+                topic.lastViewedPage = NSNumber(value: topicPage)
+            }
             topic.locateFloorIDTag = URLComponents(string: urlString)?.fragment
             S1LogDebug("Extract Topic \(topic)")
             return topic

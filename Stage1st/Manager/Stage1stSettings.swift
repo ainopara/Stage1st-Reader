@@ -221,6 +221,10 @@ class Stage1stSettings: DefaultsBasedSettings {
             {
               "id": 151,
               "name": "虚拟主播VTB"
+            },
+            {
+              "id": 156,
+              "name": "二游格斗"
             }
           ]
         }
