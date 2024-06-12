@@ -64,6 +64,7 @@
 		864DF0512341EE46005504A5 /* RequestNameGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864DF0502341EE46005504A5 /* RequestNameGenerator.swift */; };
 		864E1CC219C34E5B00350FA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */; };
 		864F963521F4675F0001D445 /* NavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */; };
+		8654D53B2C19570D0023B716 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8654D53A2C1956CA0023B716 /* PrivacyInfo.xcprivacy */; };
 		8655448C21E1DF7E007B7557 /* FloorProcessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */; };
 		865544A821E2379D007B7557 /* DiscuzClient+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544A721E2379D007B7557 /* DiscuzClient+Search.swift */; };
 		865544AF21E237F7007B7557 /* DiscuzClient+Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */; };
@@ -256,6 +257,7 @@
 		864DF0502341EE46005504A5 /* RequestNameGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestNameGenerator.swift; sourceTree = "<group>"; };
 		864E1CC119C34E5B00350FA6 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		864F963421F4675F0001D445 /* NavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationControllerDelegate.swift; sourceTree = "<group>"; };
+		8654D53A2C1956CA0023B716 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		8655448B21E1DF7E007B7557 /* FloorProcessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloorProcessTests.swift; sourceTree = "<group>"; };
 		865544A721E2379D007B7557 /* DiscuzClient+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Search.swift"; sourceTree = "<group>"; };
 		865544AE21E237F7007B7557 /* DiscuzClient+Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Profile.swift"; sourceTree = "<group>"; };
@@ -815,6 +817,7 @@
 				862DB7AB1C8AF8D50068F75F /* PrefixHeader.pch */,
 				C095873F16CA8A36007E0119 /* Stage1st-Info.plist */,
 				865616821AC6C48C00CFD773 /* Stage1st.entitlements */,
+				8654D53A2C1956CA0023B716 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Stage1st;
 			sourceTree = "<group>";
@@ -1016,8 +1019,8 @@
 			);
 			mainGroup = C095872B16CA8A36007E0119;
 			packageReferences = (
-				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */,
-				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */,
+				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */,
 			);
 			productRefGroup = C095873516CA8A36007E0119 /* Products */;
 			projectDirPath = "";
@@ -1051,6 +1054,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86038F441B5B3DA400F84F1A /* ColorMap.plist in Resources */,
+				8654D53B2C19570D0023B716 /* PrivacyInfo.xcprivacy in Resources */,
 				865673191A7A7B190025D22E /* Settings.storyboard in Resources */,
 				86DD5BFC1B57754E00A6FD34 /* DefaultPalette.plist in Resources */,
 				86EBF1EF1CE6F19D00641A2D /* WebTemplate.bundle in Resources */,
@@ -1702,7 +1706,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */ = {
+		869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
@@ -1710,7 +1714,7 @@
 				minimumVersion = 7.1.0;
 			};
 		};
-		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */ = {
+		869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRMustache.swift.git";
 			requirement = {
@@ -1723,12 +1727,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		8682B15024A1C06F004E8C05 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher.git" */;
+			package = 869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
 		};
 		869BD70F23EF00C500AAE96C /* Mustache */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift.git" */;
+			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */;
 			productName = Mustache;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -105,7 +105,7 @@ extension PageRenderer {
         let officialPattern1 = brPattern1 + "(—+|-+) ?发送自 <a href[^>]*>STAGE1 Mobile</a>"
         let officialPattern2 = brPattern1 + "<a href=[^>]*><font[^>]*>( | )*(—+|-+) ?(来自|來自|from) ?[^<>]*?</font></a>"
         let s1NextGoosePattern1 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*S1-Next[^>]*>[^<]*?</a>[^<]*"
-        let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*pan\\.baidu[^>]*>[^<]*?</a>[^<]*"
+        let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*((pan\\.baidu)|(pgyer\\.com/xfPejhuq))[^>]*>[^<]*?</a>[^<]*"
         let s1FunPattern = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*s1fun[^>]*>[^<]*?</a>[^<]*"
         let forumHelperPattern = brPattern1 + "<a href=[^>]*2029836[^>]*>论坛助手,[^<]*?</a>[^<]*"
 
