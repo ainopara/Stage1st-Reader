@@ -32,7 +32,7 @@ final class TopicListCell: UITableViewCell {
         }
 
         contentView.addSubview(titleLabel)
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = 3
         titleLabel.snp.makeConstraints { (make) in
             make.trailing.equalTo(contentView).offset(-20.0)
             make.centerY.equalTo(contentView.snp.centerY)
