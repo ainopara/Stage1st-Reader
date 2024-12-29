@@ -6,9 +6,9 @@
 //  Copyright © 2016 Renaissance. All rights reserved.
 //
 
-import Mustache
-import KissXML
 import CocoaLumberjack
+import KissXML
+import Mustache
 import Reachability
 
 protocol PageRenderer {
@@ -40,7 +40,7 @@ extension PageRenderer {
             let data = Box(pageData(with: floors, topic: topic))
             let result = try template.render(data)
             return result
-        } catch let error {
+        } catch {
             S1LogWarn("[PageRenderer] error: \(error)")
             return ""
         }
@@ -76,7 +76,7 @@ extension PageRenderer {
             var isFirstInPage = true
             var data = [[String: Any?]]()
             for floor in floors {
-                data.append(floorData(with: floor, topicAuthorID: topic.authorUserID.flatMap({ UInt(truncating: $0) }), isFirstInPage: isFirstInPage))
+                data.append(floorData(with: floor, topicAuthorID: topic.authorUserID.flatMap { UInt(truncating: $0) }, isFirstInPage: isFirstInPage))
                 isFirstInPage = false
             }
             return data
@@ -90,7 +90,7 @@ extension PageRenderer {
             "font-style-file": fontStyleFile(),
             "color": colorStyle(),
             "floors": floorsData(),
-            "isOlderOS": !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version: "16.0")
+            "isOlderOS": !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version: "16.0"),
         ]
     }
 
@@ -105,7 +105,7 @@ extension PageRenderer {
         let officialPattern1 = brPattern1 + "(—+|-+) ?发送自 <a href[^>]*>STAGE1 Mobile</a>"
         let officialPattern2 = brPattern1 + "<a href=[^>]*><font[^>]*>( | )*(—+|-+) ?(来自|來自|from) ?[^<>]*?</font></a>"
         let s1NextGoosePattern1 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*S1-Next[^>]*>[^<]*?</a>[^<]*"
-        let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*((pan\\.baidu)|(pgyer\\.com/xfPejhuq))[^>]*>[^<]*?</a>[^<]*"
+        let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*((pan\\.baidu)|(pgyer\\.com))[^>]*>[^<]*?</a>[^<]*"
         let s1FunPattern = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*s1fun[^>]*>[^<]*?</a>[^<]*"
         let forumHelperPattern = brPattern1 + "<a href=[^>]*2029836[^>]*>论坛助手,[^<]*?</a>[^<]*"
 
@@ -197,7 +197,7 @@ extension PageRenderer {
                                     image.addAttribute(withName: "src", stringValue: finalURL.absoluteString)
                                 } else {
                                     AppEnvironment.current.eventTracker.logEvent("MahjongFace Cache Miss", attributes: [
-                                        "url": srcString!
+                                        "url": srcString!,
                                     ])
                                 }
                             }
@@ -225,13 +225,13 @@ extension PageRenderer {
                         "//font[@color='White']",
                         "//font[@color='#ffffff']",
                         "//font[@color='Black' or @color='black' or @color='#000000']/font[@style='background-color:Black' or @style='background-color:black']",
-                        "//font[@style='background-color:Black' or @style='background-color:black']/font[@color='Black' or @color='black' or @color='#000000']"
+                        "//font[@style='background-color:Black' or @style='background-color:black']/font[@color='Black' or @color='black' or @color='#000000']",
                     ]
 
                     let spoilers = spoilerXpathList
                         .map { (try? xmlDocument.nodes(forXPath: $0)) as? [DDXMLElement] }
-                        .compactMap { $0 }  // [[T]?] -> [[T]]
-                        .flatMap { $0 }  // [[T]] -> [T]
+                        .compactMap { $0 } // [[T]?] -> [[T]]
+                        .flatMap { $0 } // [[T]] -> [T]
 
                     for spoilerElement in spoilers {
                         spoilerElement.removeAttribute(forName: "color")
@@ -279,10 +279,10 @@ extension PageRenderer {
                 let processes = [
                     processImages,
                     processSpoilers,
-                    processIndents
+                    processIndents,
                 ]
 
-                let processedDocument = processes.reduce(xmlDocument) { (data, process) in process(data) }
+                let processedDocument = processes.reduce(xmlDocument) { data, process in process(data) }
                 let processedString = processedDocument.xmlString(withOptions: UInt(XMLNodePrettyPrint)) as NSString
                 let clamppedString = processedString.substring(with: NSRange(
                     location: 183,
@@ -331,11 +331,11 @@ extension PageRenderer {
         }
 
         func processAttachments(attachmentImageURLs: [String: URL]) -> [[String: String]] {
-            return attachmentImageURLs.map { (attachmentID, attachmentURL) in
-                return [
+            return attachmentImageURLs.map { attachmentID, attachmentURL in
+                [
                     "url": attachmentURL.absoluteString.s1_replace(pattern: "^http", with: "image"),
                     "trueURL": attachmentURL.absoluteString,
-                    "ID": attachmentID
+                    "ID": attachmentID,
                 ]
             }
         }

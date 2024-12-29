@@ -718,6 +718,12 @@ extension ContentViewController {
             replyFloorBlock()
         }))
 
+        #if DEBUG
+        floorActionController.addAction(UIAlertAction(title: "Inspect Raw Content", style: .default, handler: { _ in
+            S1LogDebug("Raw Content: \n\(floor.content)")
+        }))
+        #endif
+
         floorActionController.addAction(UIAlertAction(title: NSLocalizedString("ContentViewController.FloorActionSheet.Cancel", comment: ""), style: .cancel, handler: nil))
 
         if let popover = floorActionController.popoverPresentationController {

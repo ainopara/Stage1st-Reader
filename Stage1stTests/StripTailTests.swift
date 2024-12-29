@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import XCTest
 @testable import Stage1st
+import XCTest
 
 class StripTailTests: XCTestCase {
     class Stripper: PageRenderer {
@@ -87,6 +87,18 @@ class StripTailTests: XCTestCase {
         """
         let expectedOutput = """
         Test
+        """
+        XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
+    }
+
+    func testStripGooseTail1() {
+        let input = """
+        <td class="t_f" id="postmessage_1">Content<br />
+        <br />
+        —— 来自 <a href="https://www.pgyer.com/GcUxKd4w" target="_blank">鹅球</a> v3.2.91</td>
+        """
+        let expectedOutput = """
+        <td class="t_f" id="postmessage_1">Content</td>
         """
         XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
     }
