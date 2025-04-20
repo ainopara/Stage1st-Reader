@@ -102,4 +102,16 @@ class StripTailTests: XCTestCase {
         """
         XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
     }
+
+    func testStripGooseTail2() {
+        let input = """
+        <td class="t_f" id="postmessage_1">Content<br />
+        <br />
+        ——来自&nbsp;&nbsp;HUAWEI Mate 60 OpenHarmony-5.0.4.150(16) 上的 <a href="https://stage1st.com/2b/forum.php?mod=viewthread&amp;tid=2244111" target="_blank">S1 Orange</a> 1.3.0</td>
+        """
+        let expectedOutput = """
+        <td class="t_f" id="postmessage_1">Content</td>
+        """
+        XCTAssertEqual(stripper.stripTails(content: input), expectedOutput)
+    }
 }

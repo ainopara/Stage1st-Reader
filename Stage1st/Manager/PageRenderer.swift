@@ -108,6 +108,7 @@ extension PageRenderer {
         let s1NextGoosePattern2 = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*((pan\\.baidu)|(pgyer\\.com))[^>]*>[^<]*?</a>[^<]*"
         let s1FunPattern = brPattern1 + "—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*s1fun[^>]*>[^<]*?</a>[^<]*"
         let forumHelperPattern = brPattern1 + "<a href=[^>]*2029836[^>]*>论坛助手,[^<]*?</a>[^<]*"
+        let s1OrangePattern = brPattern1 + "\\n*—+ ?(来自|來自|from) ?[^<>]*<a href=[^>]*>[^<]*?S1 Orange[^<]*?</a>[^<]*"
 
         mutableString.s1_replace(pattern: pattern0, with: "")
         mutableString.s1_replace(pattern: pattern1, with: "")
@@ -118,6 +119,7 @@ extension PageRenderer {
         mutableString.s1_replace(pattern: s1NextGoosePattern2, with: "")
         mutableString.s1_replace(pattern: s1FunPattern, with: "")
         mutableString.s1_replace(pattern: forumHelperPattern, with: "")
+        mutableString.s1_replace(pattern: s1OrangePattern, with: "")
 
         return mutableString as String
     }
