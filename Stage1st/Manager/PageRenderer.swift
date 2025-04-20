@@ -133,7 +133,7 @@ extension PageRenderer {
                         if
                             let srcString = imageSourceString,
                             let urlComponents = URLComponents(string: srcString),
-                            urlComponents.host == "static.saraba1st.com",
+                            urlComponents.host == "static.stage1st.com",
                             urlComponents.path.hasPrefix("/image/smiley")
                         {
                             return true
