@@ -10,11 +10,11 @@ import Alamofire
 import SwiftUI
 
 public final class DiscuzClient: NSObject {
-    public let baseURL: String
+    public let baseURL: () -> String
 
     let session: Session
 
-    public init(baseURL: String, configuration: URLSessionConfiguration) {
+    public init(baseURL: @escaping () -> String, configuration: URLSessionConfiguration) {
         self.baseURL = baseURL
         self.session = Session(
             configuration: configuration,

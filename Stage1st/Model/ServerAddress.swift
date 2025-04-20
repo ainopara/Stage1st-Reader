@@ -33,9 +33,9 @@ class ServerAddress: NSObject, NSCoding {
     let lastUpdateDate: Date
 
     static let `default` = ServerAddress(
-        main: "https://bbs.saraba1st.com/2b",
-        page: "https://bbs.saraba1st.com/2b",
-        api: "https://bbs.saraba1st.com/2b",
+        main: "https://stage1st.com/2b",
+        page: "https://stage1st.com/2b",
+        api: "https://stage1st.com/2b",
         used: [
             "http://bbs.saraba1st.com",
             "http://www.stage1st.com",
@@ -45,10 +45,10 @@ class ServerAddress: NSObject, NSCoding {
         ],
         lastUpdateDate: DateComponents(
             calendar: Calendar.current,
-            year: 2017,
-            month: 9,
-            day: 21,
-            hour: 8,
+            year: 2025,
+            month: 4,
+            day: 16,
+            hour: 12,
             minute: 0,
             second: 0,
             nanosecond: 0

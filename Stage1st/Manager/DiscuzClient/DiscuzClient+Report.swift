@@ -25,12 +25,12 @@ public extension DiscuzClient {
             "inajax": 1,
         ]
 
-        let URLString = generateURLString(baseURL + "/misc.php", parameters: URLParameters)
+        let URLString = generateURLString(baseURL() + "/misc.php", parameters: URLParameters)
 
         let bodyParameters: Parameters = [
             "report_select": "其他",
             "message": reason,
-            "referer": baseURL + "/forum.php?mod=viewthread&tid=\(topicID)",
+            "referer": baseURL() + "/forum.php?mod=viewthread&tid=\(topicID)",
             "reportsubmit": "true",
             "rtype": "post",
             "rid": floorID,

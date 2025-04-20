@@ -28,7 +28,7 @@ class AppEnvironment: NSObject {
 class Environment: NSObject {
 
     let forumName: String
-    let serverAddress: ServerAddress
+    var serverAddress: ServerAddress
     let cookieStorage: HTTPCookieStorage
     let settings: Stage1stSettings
     let reachability: Reachability
@@ -77,13 +77,14 @@ class Environment: NSObject {
         eventTracker = S1EventTracker()
         cacheDatabaseManager = CacheDatabaseManager(path: Self.cacheDatabasePath(with: cacheDatabaseName))
 
-        if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
-            serverAddress = cachedServerAddress
+        let serverAddress = if let cachedServerAddress = cacheDatabaseManager.serverAddress(), cachedServerAddress.isPrefered(to: ServerAddress.default) {
+            cachedServerAddress
         } else {
-            serverAddress = ServerAddress.default
+            ServerAddress.default
         }
+        self.serverAddress = serverAddress
 
-        apiService = DiscuzClient(baseURL: serverAddress.api, configuration: sessionConfiguration)
+        apiService = DiscuzClient(baseURL: { serverAddress.api }, configuration: sessionConfiguration)
         webKitImageDownloader = WebKitImageDownloader(name: "ImageDownloader")
 
         databaseManager = DatabaseManager(name: databaseName)

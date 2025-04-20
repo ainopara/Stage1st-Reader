@@ -33,7 +33,7 @@ public extension DiscuzClient {
             "ajaxtarget": "fwin_content_reply"
         ]
 
-        return session.request(baseURL + "/forum.php", parameters: parameters)
+        return session.request(baseURL() + "/forum.php", parameters: parameters)
             .responseData { response in
                 completion(response.result)
             }
@@ -59,7 +59,7 @@ public extension DiscuzClient {
             "inajax": 1
         ]
 
-        let urlString = generateURLString(baseURL + "/forum.php", parameters: urlParameters)
+        let urlString = generateURLString(baseURL() + "/forum.php", parameters: urlParameters)
 
         let bodyParameters: Parameters = parameters
 
@@ -90,7 +90,7 @@ public extension DiscuzClient {
             "inajax": 1
         ]
 
-        let urlString = generateURLString(baseURL + "/forum.php", parameters: urlParameters)
+        let urlString = generateURLString(baseURL() + "/forum.php", parameters: urlParameters)
 
         let bodyParameters: Parameters = [
             "posttime": "\(Int(Date().timeIntervalSinceNow))",

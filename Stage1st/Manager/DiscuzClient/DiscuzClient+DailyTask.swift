@@ -18,7 +18,7 @@ public extension DiscuzClient {
                 "formhash": formhash
             ]
 
-            let urlString = self.baseURL + "/study_daily_attendance-daily_attendance.html"
+            let urlString = self.baseURL() + "/study_daily_attendance-daily_attendance.html"
 
             self.session.request(urlString, method: .get, parameters: urlParameters)
                 .responseString { (response) in

@@ -246,10 +246,10 @@ private extension AppDelegate {
 
             if serverAddress.isPrefered(to: AppEnvironment.current.serverAddress) {
                 AppEnvironment.current.cacheDatabaseManager.set(serverAddress: serverAddress)
-                AppEnvironment.replaceCurrent(with: Environment())
+                AppEnvironment.current.serverAddress = serverAddress
 
                 DispatchQueue.main.async {
-                    Toast.shared.post(message: "论坛地址已更新，请重新启动应用。", duration: .second(2.0))
+                    Toast.shared.post(message: "论坛地址已更新", duration: .second(2.0))
                 }
             } else {
                 S1LogInfo("[ServerAddressUpdate] Server address do not need to update.")

@@ -53,6 +53,6 @@ public extension DiscuzClient {
         withPath referencePath: String,
         completion: @escaping (Result<S1Topic, Error>) -> Void
     ) -> Alamofire.Request {
-        return findPost(with: baseURL + "/" + referencePath, completion: completion)
+        return findPost(with: baseURL() + "/" + referencePath, completion: completion)
     }
 }

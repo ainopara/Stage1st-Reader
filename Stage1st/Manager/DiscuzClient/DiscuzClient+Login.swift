@@ -45,7 +45,7 @@ public extension DiscuzClient {
             }
         }
 
-        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: AFDataResponse<CheckLoginTypeResult>) in
+        return session.request(baseURL() + "/api/mobile/index.php", parameters: parameters).responseDecodable { (response: AFDataResponse<CheckLoginTypeResult>) in
             switch response.result {
             case let .success(result):
                 hasSeccodeBlock(result.variables.sechash)
@@ -99,7 +99,7 @@ public extension DiscuzClient {
             URLParameters["sechash"] = hash
             URLParameters["seccodeverify"] = code
         }
-        let URLString = generateURLString(baseURL + "/api/mobile/", parameters: URLParameters)
+        let URLString = generateURLString(baseURL() + "/api/mobile/", parameters: URLParameters)
 
         let bodyParameters: Parameters = [
             "username": username,
@@ -149,7 +149,7 @@ public extension DiscuzClient {
             "mobile": "no",
             "sechash": sechash
         ]
-        return session.request(baseURL + "/api/mobile/index.php", parameters: parameters).responseData { response in
+        return session.request(baseURL() + "/api/mobile/index.php", parameters: parameters).responseData { response in
             switch response.result {
             case let .success(imageData):
                 guard let image = UIImage(data: imageData) else {

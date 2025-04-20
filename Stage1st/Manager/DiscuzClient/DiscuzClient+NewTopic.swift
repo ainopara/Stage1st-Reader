@@ -31,7 +31,7 @@ public extension DiscuzClient {
             "topicsubmit": "yes",
         ]
 
-        let urlString = generateURLString(baseURL + "/forum.php", parameters: urlParameters)
+        let urlString = generateURLString(baseURL() + "/forum.php", parameters: urlParameters)
 
         var bodyParameters: Parameters = [
             "posttime": "\(Int(Date().timeIntervalSinceNow))",
