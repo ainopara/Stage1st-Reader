@@ -12,7 +12,7 @@
 "2UX-Wg-p1U.text" = "Upload Queue";
 
 /* Class = "UILabel"; text = "Display Image"; ObjectID = "4y5-0D-ImP"; */
-"4y5-0D-ImP.text" = "Display Image (Mobile Data)";
+"4y5-0D-ImP.text" = "Display Images (Mobile Data)";
 
 /* Class = "UITableViewController"; title = "Forum Order"; ObjectID = "6R3-p1-NMf"; */
 "6R3-p1-NMf.title" = "Forum Order";
@@ -99,7 +99,7 @@
 "mV7-3q-fFB.text" = "Detail";
 
 /* Class = "UILabel"; text = "Not Login"; ObjectID = "nZs-MV-DJo"; */
-"nZs-MV-DJo.text" = "Not Login";
+"nZs-MV-DJo.text" = "Not Logged In";
 
 /* Class = "UILabel"; text = "Login"; ObjectID = "ng5-KU-SG1"; */
 "ng5-KU-SG1.text" = "Login";
@@ -124,4 +124,4 @@
 "NMt-Wj-mxr.text" = "Image Cache";
 "R9N-SG-MAF.text" = "Advanced Settings";
 "Hje-fj-JEC.text" = "Acknowledgements";
-"xEP-Zu-zjE.text" = "Match Syatem Dark Mode";
+"xEP-Zu-zjE.text" = "Match System Dark Mode";
