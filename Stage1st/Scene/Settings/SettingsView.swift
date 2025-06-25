@@ -10,6 +10,8 @@ import SwiftUI
 import Combine
 import Kingfisher
 
+#if SETTINGS_SWIFTUI
+
 class SettingsViewState: ObservableObject {
 
     typealias ObjectWillChangePublisher = ObservableObjectPublisher
@@ -189,3 +191,5 @@ struct SettingsView_Previews: PreviewProvider {
         ))
     }
 }
+
+#endif
