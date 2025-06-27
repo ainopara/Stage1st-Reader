@@ -17,9 +17,9 @@ class NoticeViewController: UIViewController {
             case networkError(Error)
         }
         case error(LoadError)
-        case loaded([ReplyNotice])
-        case fetchingMore([ReplyNotice])
-        case allLoaded([ReplyNotice])
+        case loaded([Notice])
+        case fetchingMore([Notice])
+        case allLoaded([Notice])
     }
     
     let state = MutableProperty<State>(.loading)
@@ -176,7 +176,7 @@ extension NoticeViewController {
     
     private func setupViewModel() {
         cellViewModels <~ state
-            .map { (state) -> [ReplyNotice] in
+            .map { (state) -> [Notice] in
                 switch state {
                 case .loading, .error:
                     return []
@@ -185,7 +185,7 @@ extension NoticeViewController {
                 }
             }
             .map { (models) in
-                models.compactMap { try? NoticeCell.ViewModel(replyNotice: $0) }
+                models.compactMap { try? NoticeCell.ViewModel(notice: $0) }
             }
 
         isEmptyViewHidden <~ state.map { state in
@@ -219,19 +219,51 @@ extension NoticeViewController {
         .skipRepeats()
 
         if AppEnvironment.current.settings.currentUsername.value != nil {
-            AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in
-                guard let strongSelf = self else { return }
-
-                switch response.result {
-                case .success(let notices):
-                    let notices = notices.list.sorted(by: { $0.dateline > $1.dateline })
-                    strongSelf.state.value = .loaded(notices)
-                case .failure(let error):
+            loadNotices()
+        } else {
+            state.value = .allLoaded([])
+        }
+    }
+    
+    private func loadNotices() {
+        AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in
+            guard let strongSelf = self else { return }
+            
+            switch response.result {
+            case .success(let rawNoticeList):
+                let noticeList = NoticeList(from: rawNoticeList)
+                let notices = noticeList.list.sorted(by: { $0.dateline > $1.dateline })
+                strongSelf.state.value = .loaded(notices)
+            case .failure(let error):
+                if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = error {
+                    strongSelf.tryFallbackDecoding()
+                } else {
                     strongSelf.state.value = .error(.networkError(error))
                 }
             }
-        } else {
-            state.value = .allLoaded([])
+        }
+    }
+    
+    private func tryFallbackDecoding() {
+        AppEnvironment.current.apiService.session.request(
+            AppEnvironment.current.apiService.baseURL() + "/api/mobile/index.php",
+            parameters: [
+                "module": "mynotelist",
+                "version": 2,
+                "view": "mypost", 
+                "page": 1,
+                "mobile": "no"
+            ]
+        ).responseDecodable { [weak self] (response: AFDataResponse<NoticeList>) in
+            guard let strongSelf = self else { return }
+            
+            switch response.result {
+            case .success(let noticeList):
+                let notices = noticeList.list.sorted(by: { $0.dateline > $1.dateline })
+                strongSelf.state.value = .loaded(notices)
+            case .failure(let error):
+                strongSelf.state.value = .error(.networkError(error))
+            }
         }
     }
 }

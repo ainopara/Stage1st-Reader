@@ -95,6 +95,7 @@
 		86A7FEB62414CD9F00CDFC8E /* TabBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */; };
 		86A7FEB82414DC3F00CDFC8E /* ColorManager+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */; };
 		86A94EE72E0E589600A21F2A /* Html in Frameworks */ = {isa = PBXBuildFile; productRef = 86A94EE62E0E589600A21F2A /* Html */; };
+		86A94F4C2E0E5EE900A21F2A /* NoticeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A94F4B2E0E5EE900A21F2A /* NoticeList.swift */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */; };
 		86B464AA218D4FEC002C2A66 /* RawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464A9218D4FEC002C2A66 /* RawMessage.swift */; };
 		86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */; };
@@ -250,6 +251,7 @@
 		86A7FEB32414CD9100CDFC8E /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarButton.swift; sourceTree = "<group>"; };
 		86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColorManager+SwiftUI.swift"; sourceTree = "<group>"; };
+		86A94F4B2E0E5EE900A21F2A /* NoticeList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeList.swift; sourceTree = "<group>"; };
 		86ADC88E189CC1BE0036D669 /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiscuzClient+Teleport.swift"; sourceTree = "<group>"; };
 		86B464A9218D4FEC002C2A66 /* RawMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawMessage.swift; sourceTree = "<group>"; };
@@ -428,6 +430,7 @@
 		865544B221E239BD007B7557 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				86A94F4B2E0E5EE900A21F2A /* NoticeList.swift */,
 				86654BF4217B80A300F50A90 /* RawTopicList.swift */,
 				865544B521E23A22007B7557 /* RawFloorList.swift */,
 				865544B321E23A0D007B7557 /* RawForum.swift */,
@@ -1011,6 +1014,7 @@
 				869E023A1DA67293006A45FE /* ActivityItemProvider.swift in Sources */,
 				861902312346E90F000A0750 /* DiscuzClient+DailyTask.swift in Sources */,
 				8619023423489420000A0750 /* Future+sinkResult.swift in Sources */,
+				86A94F4C2E0E5EE900A21F2A /* NoticeList.swift in Sources */,
 				8634ADA61FAAF309004A9CB7 /* RootNavigationController.swift in Sources */,
 				86CB9CAB2342F6BD00CE6D0A /* assert.swift in Sources */,
 				86654BFD217C61B700F50A90 /* NoticeCount.swift in Sources */,

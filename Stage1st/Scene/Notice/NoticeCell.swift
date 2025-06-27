@@ -141,6 +141,34 @@ extension NoticeCell {
         let path: String
         let isNew: Bool
 
+        init(notice: Notice) throws {
+            guard case .post = notice.type else {
+                AppEnvironment.current.eventTracker.logEvent("Unknown Reply Type", attributes: [
+                    "type": notice.type.rawValue,
+                    "rawData": try String(decoding: JSONEncoder().encode(notice), as: UTF8.self)
+                ])
+                throw "Unexpected notice type \(notice.type.rawValue)"
+            }
+            let document = try HTMLDocument(string: notice.note)
+            let result = document.xpath("//a")
+
+            guard let targetMessage = result.dropFirst().first else {
+                throw "Failed to extract node."
+            }
+
+            guard let link = targetMessage.attributes["href"] else {
+                throw "Failed to extract link."
+            }
+
+            let message = targetMessage.stringValue
+
+            self.title = message
+            self.path = link.aibo_stringByUnescapingFromHTML()
+            self.date = notice.dateline
+            self.user = User(id: notice.authorid, name: notice.author ?? "")
+            self.isNew = notice.new
+        }
+        
         init(replyNotice: ReplyNotice) throws {
             guard case .post = replyNotice.type else {
                 AppEnvironment.current.eventTracker.logEvent("Unknown Reply Type", attributes: [
