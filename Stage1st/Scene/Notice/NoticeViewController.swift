@@ -31,6 +31,7 @@ class NoticeViewController: UIViewController {
     let navigationBar = UINavigationBar()
     let collectionView: UICollectionView
     private let emptyView = EmptyView()
+    private let errorView = ErrorView()
     let refreshHUD = Hud(frame: .zero)
 
     let loadingIndicator = UIActivityIndicatorView(style: .medium)
@@ -106,6 +107,8 @@ extension NoticeViewController {
         view.addSubview(collectionView)
 
         view.addSubview(emptyView)
+        
+        view.addSubview(errorView)
 
         view.addSubview(loadingIndicator)
     }
@@ -129,6 +132,10 @@ extension NoticeViewController {
         emptyView.snp.makeConstraints { (make) in
             make.edges.equalTo(collectionView)
         }
+        
+        errorView.snp.makeConstraints { (make) in
+            make.edges.equalTo(collectionView)
+        }
     }
 
     private func setupBindings() {
@@ -140,8 +147,10 @@ extension NoticeViewController {
 
         emptyView.reactive.isHidden <~ isEmptyViewHidden
         loadingIndicator.reactive.isAnimating <~ isLoadingIndicatorAnimating
+        errorView.reactive.isHidden <~ shouldShowErrorView.map { !$0 }
         
-        state.producer.startWithValues { (state) in
+        state.producer.startWithValues { [weak self] (state) in
+            guard let strongSelf = self else { return }
             switch state {
             case .loading:
                 S1LogDebug("state -> loading")
@@ -153,6 +162,10 @@ extension NoticeViewController {
                 S1LogDebug("state -> allLoaded(\(data.count))")
             case .error(let error):
                 S1LogDebug("state -> error(\(error))")
+                switch error {
+                case .networkError(let networkError):
+                    strongSelf.errorView.configure(with: networkError.localizedDescription)
+                }
             }
         }
     }
@@ -315,6 +328,34 @@ private class EmptyView: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private class ErrorView: UIView {
+    let label = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = AppEnvironment.current.colorManager.colorForKey("appearance.toolbar.tint")
+        label.font = .systemFont(ofSize: 16.0)
+        addSubview(label)
+        
+        label.snp.makeConstraints { (make) in
+            make.center.equalTo(self)
+            make.left.greaterThanOrEqualTo(self).offset(20)
+            make.right.lessThanOrEqualTo(self).offset(-20)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with errorMessage: String) {
+        label.text = "\(errorMessage)"
     }
 }
 
