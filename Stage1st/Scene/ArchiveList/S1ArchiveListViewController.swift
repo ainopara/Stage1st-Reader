@@ -102,7 +102,11 @@ class S1ArchiveListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
-        searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        if #available(iOS 18.0, *) {
+            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
+        } else {
+            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        }
         searchBarWrapperView.clipsToBounds = true
         searchBarWrapperView.addSubview(searchBar)
         searchBar.snp.makeConstraints { (make) in

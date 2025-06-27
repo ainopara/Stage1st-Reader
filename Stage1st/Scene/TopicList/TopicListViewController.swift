@@ -93,10 +93,15 @@ final class TopicListViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
-        /// How wrapper view works: UISearchBar wrapped in a parent view with frame.y == 4.0 frame.height == 36
-        /// The height of the parent view is 50 or 55 (in iPhone X)
-        /// Adding the parent view to wrapper view with height == 44.0 makes searchBar looks vertical center.
-        searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        if #available(iOS 18.0, *) {
+            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 50.0)
+        } else {
+            /// How wrapper view works: UISearchBar wrapped in a parent view with frame.y == 4.0 frame.height == 36
+            /// The height of the parent view is 50 or 55 (in iPhone X)
+            /// Adding the parent view to wrapper view with height == 44.0 makes searchBar looks vertical center.
+            searchBarWrapperView.frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: 44.0)
+        }
+
         searchBarWrapperView.clipsToBounds = true
         searchBarWrapperView.addSubview(searchBar)
         searchBar.snp.makeConstraints { (make) in
