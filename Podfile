@@ -25,7 +25,6 @@ target "Stage1st" do
     # XML
     pod 'KissXML', :git => 'https://github.com/ainopara/KissXML.git'
     pod 'Fuzi', '~> 3.0'
-    pod 'Html', '~> 0.3'
 
     # Debug
     pod 'CocoaLumberjack'

@@ -366,9 +366,18 @@ private class ErrorView: UIView {
 import SwiftUI
 
 struct NoticeView: UIViewControllerRepresentable {
+    let initialState: NoticeViewController.State?
+    
+    init(initialState: NoticeViewController.State? = nil) {
+        self.initialState = initialState
+    }
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<NoticeView>) -> NoticeViewController {
-        return NoticeViewController()
+        let controller = NoticeViewController()
+        if let state = initialState {
+            controller.state.value = state
+        }
+        return controller
     }
 
     func updateUIViewController(_ uiViewController: NoticeViewController, context: UIViewControllerRepresentableContext<NoticeView>) {
@@ -377,6 +386,21 @@ struct NoticeView: UIViewControllerRepresentable {
 
 struct NoticeView_Previews: PreviewProvider {
     static var previews: some View {
-        NoticeView()
+        Group {
+            NoticeView()
+                .previewDisplayName("Default")
+            
+            NoticeView(initialState: .loading)
+                .previewDisplayName("Loading")
+            
+            NoticeView(initialState: .error(.networkError(URLError(.notConnectedToInternet))))
+                .previewDisplayName("Network Error")
+            
+            NoticeView(initialState: .error(.networkError(NSError(domain: "DecodingError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode JSON response"]))))
+                .previewDisplayName("Decode Error")
+            
+            NoticeView(initialState: .allLoaded([]))
+                .previewDisplayName("Empty State")
+        }
     }
 }

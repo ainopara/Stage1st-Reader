@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -94,6 +94,7 @@
 		86A7FEB42414CD9100CDFC8E /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB32414CD9100CDFC8E /* TabBar.swift */; };
 		86A7FEB62414CD9F00CDFC8E /* TabBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB52414CD9F00CDFC8E /* TabBarButton.swift */; };
 		86A7FEB82414DC3F00CDFC8E /* ColorManager+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A7FEB72414DC3F00CDFC8E /* ColorManager+SwiftUI.swift */; };
+		86A94EE72E0E589600A21F2A /* Html in Frameworks */ = {isa = PBXBuildFile; productRef = 86A94EE62E0E589600A21F2A /* Html */; };
 		86AF9E3B1CF434EC008C7E8D /* DiscuzClient+Teleport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF9E3A1CF434EC008C7E8D /* DiscuzClient+Teleport.swift */; };
 		86B464AA218D4FEC002C2A66 /* RawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464A9218D4FEC002C2A66 /* RawMessage.swift */; };
 		86B464AC218DB366002C2A66 /* StringBoolTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B464AB218DB366002C2A66 /* StringBoolTransformer.swift */; };
@@ -285,7 +286,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		86A94EBA2E0B851400A21F2A /* Scene */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Scene; sourceTree = "<group>"; };
+		86A94EBA2E0B851400A21F2A /* Scene */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Scene;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -313,6 +318,7 @@
 				8605734F1B7623A300C70781 /* CloudKit.framework in Frameworks */,
 				2353682C2ADA69420446B6FE /* Pods_Stage1st.framework in Frameworks */,
 				8682B15124A1C06F004E8C05 /* Kingfisher in Frameworks */,
+				86A94EE72E0E589600A21F2A /* Html in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -730,6 +736,7 @@
 			packageProductDependencies = (
 				869BD70F23EF00C500AAE96C /* Mustache */,
 				8682B15024A1C06F004E8C05 /* Kingfisher */,
+				86A94EE62E0E589600A21F2A /* Html */,
 			);
 			productName = Stage1st;
 			productReference = C095873416CA8A36007E0119 /* Stage1st.app */;
@@ -777,7 +784,6 @@
 				};
 			};
 			buildConfigurationList = C095872F16CA8A36007E0119 /* Build configuration list for PBXProject "Stage1st" */;
-			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -789,7 +795,9 @@
 			packageReferences = (
 				869BD70923EEF80200AAE96C /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */,
+				86A94EE52E0E589600A21F2A /* XCRemoteSwiftPackageReference "swift-html" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = C095873516CA8A36007E0119 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -842,19 +850,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/1PasswordExtension/OnePasswordExtensionResources.bundle",
-				"${PODS_ROOT}/AcknowList/Resources/AcknowList.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/HorizontalFloatingHeaderLayout/HorizontalFloatingHeaderLayout.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/Sentry/Sentry.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Stage1st/Pods-Stage1st-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/OnePasswordExtensionResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AcknowList.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HorizontalFloatingHeaderLayout.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Sentry.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1422,6 +1427,14 @@
 				minimumVersion = 4.0.1;
 			};
 		};
+		86A94EE52E0E589600A21F2A /* XCRemoteSwiftPackageReference "swift-html" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-html.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1434,6 +1447,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 869BD70E23EF00C500AAE96C /* XCRemoteSwiftPackageReference "GRMustache.swift" */;
 			productName = Mustache;
+		};
+		86A94EE62E0E589600A21F2A /* Html */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86A94EE52E0E589600A21F2A /* XCRemoteSwiftPackageReference "swift-html" */;
+			productName = Html;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
