@@ -27,6 +27,6 @@ extension User {
         let cd = idString.dropFirst(5).prefix(2)
         let ef = idString.dropFirst(7)
 
-        return URL(string: "https://avatar.saraba1st.com/\(xyz)/\(ab)/\(cd)/\(ef)_avatar_middle.jpg")
+        return URL(string: "https://avatar.stage1st.com/\(xyz)/\(ab)/\(cd)/\(ef)_avatar_middle.jpg")
     }
 }
