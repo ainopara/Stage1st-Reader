@@ -10,7 +10,22 @@ import SnapKit
 import ReactiveSwift
 
 class NoticeViewController: UIViewController {
-    let viewModel: NoticeViewModel
+    enum State {
+        case loading
+        enum LoadError {
+            case networkError(Error)
+        }
+        case error(LoadError)
+        case loaded([ReplyNotice])
+        case fetchingMore([ReplyNotice])
+        case allLoaded([ReplyNotice])
+    }
+    
+    let state = MutableProperty<State>(.loading)
+    let cellViewModels = MutableProperty<[NoticeCell.ViewModel]>([])
+    let isEmptyViewHidden = MutableProperty<Bool>(false)
+    let isLoadingIndicatorAnimating = MutableProperty<Bool>(false)
+    let shouldShowErrorView = MutableProperty<Bool>(false)
 
     let layout = UICollectionViewFlowLayout()
     let navigationBar = UINavigationBar()
@@ -20,19 +35,15 @@ class NoticeViewController: UIViewController {
 
     let loadingIndicator = UIActivityIndicatorView(style: .medium)
 
-    @objc
-    convenience init() {
-        self.init(viewModel: NoticeViewModel())
-    }
-
-    init(viewModel: NoticeViewModel) {
-        self.viewModel = viewModel
+    init() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
         super.init(nibName: nil, bundle: nil)
 
         title = "回复提醒"
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backAction))
+        
+        setupViewModel()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -122,13 +133,89 @@ extension NoticeViewController {
 
     private func setupBindings() {
 
-        viewModel.state.producer.startWithValues { [weak self] (_) in
+        state.producer.startWithValues { [weak self] (_) in
             guard let strongSelf = self else { return }
             strongSelf.collectionView.reloadData()
         }
 
-        emptyView.reactive.isHidden <~ viewModel.isEmptyViewHidden
-        loadingIndicator.reactive.isAnimating <~ viewModel.isLoadingIndicatorAnimating
+        emptyView.reactive.isHidden <~ isEmptyViewHidden
+        loadingIndicator.reactive.isAnimating <~ isLoadingIndicatorAnimating
+        
+        state.producer.startWithValues { (state) in
+            switch state {
+            case .loading:
+                S1LogDebug("state -> loading")
+            case .loaded(let data):
+                S1LogDebug("state -> laoded(\(data.count))")
+            case .fetchingMore(let data):
+                S1LogDebug("state -> fetchingMore(\(data.count))")
+            case .allLoaded(let data):
+                S1LogDebug("state -> allLoaded(\(data.count))")
+            case .error(let error):
+                S1LogDebug("state -> error(\(error))")
+            }
+        }
+    }
+    
+    private func setupViewModel() {
+        cellViewModels <~ state
+            .map { (state) -> [ReplyNotice] in
+                switch state {
+                case .loading, .error:
+                    return []
+                case .loaded(let notice), .fetchingMore(let notice), .allLoaded(let notice):
+                    return notice
+                }
+            }
+            .map { (models) in
+                models.compactMap { try? NoticeCell.ViewModel(replyNotice: $0) }
+            }
+
+        isEmptyViewHidden <~ state.map { state in
+            switch state {
+            case .loaded(let data), .allLoaded(let data):
+                return !data.isEmpty
+            case .loading, .error, .fetchingMore:
+                return true
+            }
+        }
+        .skipRepeats()
+
+        isLoadingIndicatorAnimating <~ state.map { state in
+            switch state {
+            case .loaded, .allLoaded, .error, .fetchingMore:
+                return false
+            case .loading:
+                return true
+            }
+        }
+        .skipRepeats()
+
+        shouldShowErrorView <~ state.map { (state) in
+            switch state {
+            case .error:
+                return true
+            default:
+                return false
+            }
+        }
+        .skipRepeats()
+
+        if AppEnvironment.current.settings.currentUsername.value != nil {
+            AppEnvironment.current.apiService.notices(page: 1) { [weak self] (response) in
+                guard let strongSelf = self else { return }
+
+                switch response.result {
+                case .success(let notices):
+                    let notices = notices.list.sorted(by: { $0.dateline > $1.dateline })
+                    strongSelf.state.value = .loaded(notices)
+                case .failure(let error):
+                    strongSelf.state.value = .error(.networkError(error))
+                }
+            }
+        } else {
+            state.value = .allLoaded([])
+        }
     }
 }
 
@@ -157,12 +244,12 @@ extension NoticeViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfItem()
+        return cellViewModels.value.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "notice", for: indexPath) as! NoticeCell
-        let cellViewModel = viewModel.cellViewModel(at: indexPath.item)
+        let cellViewModel = cellViewModels.value[indexPath.item]
         cell.configure(with: cellViewModel)
         return cell
     }
@@ -178,7 +265,7 @@ extension NoticeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
 
-        let cellViewModel = viewModel.cellViewModel(at: indexPath.item)
+        let cellViewModel = cellViewModels.value[indexPath.item]
 
         refreshHUD.showLoadingIndicator()
         AppEnvironment.current.apiService.findPost(withPath: cellViewModel.path) { [weak self] (result) in
