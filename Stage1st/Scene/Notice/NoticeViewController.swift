@@ -8,6 +8,7 @@
 
 import SnapKit
 import ReactiveSwift
+import Alamofire
 
 class NoticeViewController: UIViewController {
     enum State {
@@ -164,6 +165,9 @@ extension NoticeViewController {
                 S1LogDebug("state -> error(\(error))")
                 switch error {
                 case .networkError(let networkError):
+                    if case AFError.responseSerializationFailed(.decodingFailed(let decodingError)) = networkError {
+                        AppEnvironment.current.eventTracker.recordError(decodingError, withAdditionalUserInfo: ["S1Context": "Fetch Notice List"])
+                    }
                     strongSelf.errorView.configure(with: networkError.localizedDescription)
                 }
             }
