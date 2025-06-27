@@ -30,6 +30,7 @@ extension DefaultsKeys {
     static let tapticFeedbackForForumSwitch = DefaultsKey<Bool>("TapticFeedbackForForumSwitch")
     static let gestureControledNightModeSwitch = DefaultsKey<Bool>("gestureControledNightModeSwitch")
     static let enableOpenPasteboardLink = DefaultsKey<Bool>("enableOpenPasteboardLink")
+    static let showFilledBellIcon = DefaultsKey<Bool>("showFilledBellIcon")
 
     static let previousWebKitCacheCleaningDate = DefaultsKey<Date>("PreviousWebKitCacheCleaningDate")
     static let lastDailyTaskDate = DefaultsKey<[String: Date]>("lastDailyTaskDate")
@@ -62,6 +63,7 @@ class Stage1stSettings: DefaultsBasedSettings {
     let tapticFeedbackForForumSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let gestureControledNightModeSwitch: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let enableOpenPasteboardLink: CurrentValueSubject<Bool, Never> = CurrentValueSubject(true)
+    let showFilledBellIcon: CurrentValueSubject<Bool, Never> = CurrentValueSubject(true)
     let postPerPage: CurrentValueSubject<Int, Never> = CurrentValueSubject(40)
 
     // Cleaning
@@ -251,6 +253,7 @@ class Stage1stSettings: DefaultsBasedSettings {
         bind(property: tapticFeedbackForForumSwitch, to: .tapticFeedbackForForumSwitch, defaultValue: false)
         bind(property: gestureControledNightModeSwitch, to: .gestureControledNightModeSwitch, defaultValue: true)
         bind(property: enableOpenPasteboardLink, to: .enableOpenPasteboardLink, defaultValue: true)
+        bind(property: showFilledBellIcon, to: .showFilledBellIcon, defaultValue: true)
         bind(property: postPerPage, to: .postPerPage, defaultValue: 40)
 
         // Cleaning

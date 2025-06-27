@@ -19,7 +19,7 @@ class DataCenter: NSObject {
     let cacheDatabaseManager: CacheDatabaseManager
 
     let formhash = CurrentValueSubject<String?, Never>(nil)
-    let noticeCount: MutableProperty<NoticeCount?> = MutableProperty(nil)
+    let noticeCount = CurrentValueSubject<NoticeCount?, Never>(nil)
 
     private var topicListCache = [Int: [S1Topic]]()
     private var topicListCachePageNumber = [Int: Int]()
@@ -98,7 +98,7 @@ extension DataCenter {
                     strongSelf.formhash.send(formhash)
                 }
 
-                strongSelf.noticeCount.value = parsedTopics.noticeCount
+                strongSelf.noticeCount.send(parsedTopics.noticeCount)
 
                 let processedTopics = strongSelf.processAndCacheTopics(parsedTopics.topics, key: key, page: page)
                 completion(.success(processedTopics))
@@ -234,7 +234,7 @@ extension DataCenter {
             case let .success(rawFloorList):
                 strongSelf.updateLoginState(rawFloorList.variables?.memberUsername)
                 if let notice = rawFloorList.variables?.notice {
-                    strongSelf.noticeCount.value = notice
+                    strongSelf.noticeCount.send(notice)
                 }
 
                 if let latestTopic = S1Topic(rawFloorList: rawFloorList) {

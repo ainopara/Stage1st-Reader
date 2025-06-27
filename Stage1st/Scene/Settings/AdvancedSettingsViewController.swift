@@ -93,6 +93,18 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             footer: ""
         )
 
+        let showFilledBellIconSection = Section(
+            title: NSLocalizedString("AdvancedSettingsViewController.ShowFilledBellIconRow.header", comment: ""),
+            rows: [
+                SwitchRow(
+                    text: NSLocalizedString("AdvancedSettingsViewController.ShowFilledBellIconRow.title", comment: ""),
+                    switchValue: settings.showFilledBellIcon.value,
+                    action: { row in settings.showFilledBellIcon.value = (row as! SwitchRow).switchValue }
+                )
+            ],
+            footer: NSLocalizedString("AdvancedSettingsViewController.ShowFilledBellIconRow.footer", comment: "")
+        )
+
         let resetSection = Section(
             title: NSLocalizedString("AdvancedSettingsViewController.ResetSettingsRow.header", comment: ""),
             rows: [],
@@ -111,6 +123,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
             tapticFeedbackSection,
             nightNodeGestureSection,
             openPasteboardSection,
+            showFilledBellIconSection,
             resetSection
         ]
     }
@@ -122,6 +135,7 @@ final class AdvancedSettingsViewController: QuickTableViewController {
         settings.removeValue(for: .shareWithoutImage)
         settings.removeValue(for: .tapticFeedbackForForumSwitch)
         settings.removeValue(for: .gestureControledNightModeSwitch)
+        settings.removeValue(for: .showFilledBellIcon)
         updateTable()
     }
 }

@@ -10,6 +10,7 @@ import SnapKit
 import DeviceKit
 import Ainoaibo
 import ReactiveSwift
+import Combine
 
 class S1ArchiveListViewController: UIViewController {
 
@@ -30,6 +31,8 @@ class S1ArchiveListViewController: UIViewController {
     var dataCenter: DataCenter {
         return viewModel.dataCenter
     }
+    
+    private var bag = Set<AnyCancellable>()
 
     var keyValueObservations = [NSKeyValueObservation]()
 
@@ -57,11 +60,13 @@ class S1ArchiveListViewController: UIViewController {
         )
 
         AppEnvironment.current.dataCenter.noticeCount
-            .map { ($0?.myPost ?? 0) == 0 ? UIImage(systemName: "bell") : UIImage(systemName: "bell.fill") }
-            .producer
-            .start(on: UIScheduler())
-            .observe(on: UIScheduler())
-            .startWithValues { [weak self] (image) in
+            .combineLatest(AppEnvironment.current.settings.showFilledBellIcon)
+            .map { (noticeCount, showFilled) in
+                let hasNotices = (noticeCount?.myPost ?? 0) > 0
+                return (hasNotices && showFilled) ? UIImage(systemName: "bell.fill") : UIImage(systemName: "bell")
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] (image) in
                 guard let strongSelf = self else { return }
                 strongSelf.naviItem.rightBarButtonItem = UIBarButtonItem(
                     image: image,
@@ -69,7 +74,8 @@ class S1ArchiveListViewController: UIViewController {
                     target: strongSelf,
                     action: #selector(S1ArchiveListViewController.notification)
                 )
-        }
+            }
+            .store(in: &bag)
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -234,7 +240,7 @@ extension S1ArchiveListViewController {
     }
 
     @objc func notification(_ sender: Any) {
-        AppEnvironment.current.dataCenter.noticeCount.value = nil
+        AppEnvironment.current.dataCenter.noticeCount.send(nil)
         self.navigationController?.pushViewController(NoticeViewController(), animated: true)
     }
 }

@@ -10,6 +10,7 @@ import Ainoaibo
 import ReactiveSwift
 import DeviceKit
 import SwiftUI
+import Combine
 
 final class TopicListViewController: UIViewController {
 
@@ -25,6 +26,8 @@ final class TopicListViewController: UIViewController {
     let footerView = MessageFooterView()
     let refreshHUD = Hud(frame: .zero)
     let composeButton = UIButton()
+    
+    private var bag = Set<AnyCancellable>()
 
     private var observations = [NSKeyValueObservation]()
 
@@ -43,11 +46,13 @@ final class TopicListViewController: UIViewController {
         )
 
         AppEnvironment.current.dataCenter.noticeCount
-            .map { ($0?.myPost ?? 0) == 0 ? UIImage(systemName: "bell") : UIImage(systemName: "bell.fill") }
-            .producer
-            .start(on: UIScheduler())
-            .observe(on: UIScheduler())
-            .startWithValues { [weak self] (image) in
+            .combineLatest(AppEnvironment.current.settings.showFilledBellIcon)
+            .map { (noticeCount, showFilled) in
+                let hasNotices = (noticeCount?.myPost ?? 0) > 0
+                return (hasNotices && showFilled) ? UIImage(systemName: "bell.fill") : UIImage(systemName: "bell")
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] (image) in
                 guard let strongSelf = self else { return }
                 strongSelf.naviItem.rightBarButtonItems = [
                     UIBarButtonItem(
@@ -64,6 +69,7 @@ final class TopicListViewController: UIViewController {
                     )
                 ]
             }
+            .store(in: &bag)
 
         navigationBar.delegate = self
         navigationBar.pushItem(naviItem, animated: false)
@@ -473,7 +479,7 @@ extension TopicListViewController {
     }
 
     @objc func notification(_ sender: Any) {
-        AppEnvironment.current.dataCenter.noticeCount.value = nil
+        AppEnvironment.current.dataCenter.noticeCount.send(nil)
         self.navigationController?.pushViewController(NoticeViewController(), animated: true)
     }
 

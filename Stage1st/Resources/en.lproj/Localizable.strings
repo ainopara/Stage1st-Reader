@@ -88,6 +88,9 @@
 "AdvancedSettingsViewController.NightNodeGestureRow.title" = "Switch night mode via gesture";
 "AdvancedSettingsViewController.OpenPasteboardRow.header" = "Detect Pasteboard Link";
 "AdvancedSettingsViewController.OpenPasteboardRow.title" = "Enable";
+"AdvancedSettingsViewController.ShowFilledBellIconRow.header" = "Bell Icon";
+"AdvancedSettingsViewController.ShowFilledBellIconRow.title" = "Show filled bell when there are notices";
+"AdvancedSettingsViewController.ShowFilledBellIconRow.footer" = "Show a filled bell icon in the navigation bar when there are unread notices.";
 "AdvancedSettingsViewController.ResetSettingsRow.header" = "Reset";
 "AdvancedSettingsViewController.ResetSettingsRow.title" = "Reset to Default Settings";
 "AdvancedSettingsViewController.ResetSettingsRow.footer" = "Reset settings in advanced settings to default.";
